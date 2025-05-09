@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, BarChart2, Calendar, Clock, ClipboardCheck, Settings, Users, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -74,6 +74,7 @@ const viewOptions = [
 ];
 
 const Features = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewType, setViewType] = useState("grid");
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
@@ -88,10 +89,8 @@ const Features = () => {
     setSelectedFeature(title);
     
     if (demoEnabled) {
-      toast({
-        title: "Demo Activated",
-        description: `${title} demo has been launched. Explore the feature now.`,
-      });
+      // Navigate to the feature demo page
+      navigate(`/feature/${encodeURIComponent(title)}`);
     } else {
       toast({
         title: "Demo Not Available",
@@ -101,10 +100,7 @@ const Features = () => {
   };
   
   const handleExploreAll = () => {
-    toast({
-      title: "All Features",
-      description: "Take a tour of all our powerful maintenance features.",
-    });
+    navigate('/feature/Work%20Order%20Management');
   };
 
   return (
