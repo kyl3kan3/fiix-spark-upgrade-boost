@@ -3,17 +3,7 @@ import React from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-
-export interface FeatureItem {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  category: string;
-  benefits: string[];
-  demoEnabled: boolean;
-}
+import { FeatureItem } from "./FeaturesData";
 
 interface FeatureCardProps {
   item: FeatureItem;
