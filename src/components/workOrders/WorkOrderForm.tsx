@@ -83,8 +83,13 @@ const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormPro
       }
 
       const workOrderData = {
-        ...values,
+        title: values.title,
+        description: values.description,
+        priority: values.priority,
+        status: values.status,
         due_date: values.due_date ? new Date(values.due_date).toISOString() : null,
+        asset_id: values.asset_id || null,
+        assigned_to: values.assigned_to || null
       };
 
       let response;
@@ -98,7 +103,10 @@ const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormPro
       } else {
         response = await supabase
           .from("work_orders")
-          .insert([{ ...workOrderData, created_by: user.id }])
+          .insert({
+            ...workOrderData,
+            created_by: user.id
+          })
           .select();
       }
 

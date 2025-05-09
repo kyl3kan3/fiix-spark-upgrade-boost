@@ -52,8 +52,13 @@ const AssetForm = ({ initialData, assetId, onSuccess }: AssetFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const assetData = {
-        ...values,
+        name: values.name, // Ensure name is always provided
+        description: values.description || null,
+        location: values.location || null,
+        model: values.model || null,
+        serial_number: values.serial_number || null,
         purchase_date: values.purchase_date ? values.purchase_date : null,
+        status: values.status
       };
 
       let response;
@@ -67,7 +72,7 @@ const AssetForm = ({ initialData, assetId, onSuccess }: AssetFormProps) => {
       } else {
         response = await supabase
           .from("assets")
-          .insert([assetData])
+          .insert(assetData)
           .select();
       }
 
