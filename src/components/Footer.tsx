@@ -29,22 +29,22 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2">
             <div className="mb-4">
-              <span className="text-2xl font-bold text-fiix-600">Fiix</span>
+              <span className="text-2xl font-bold text-maintenease-600">MaintenEase</span>
             </div>
             <p className="text-gray-600 mb-6 max-w-xs">
               Modern maintenance management software that helps teams organize, track, and optimize their operations.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-500 hover:text-fiix-600" aria-label="Twitter">
+              <a href="#" className="text-gray-500 hover:text-maintenease-600" aria-label="Twitter">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fiix-600" aria-label="Facebook">
+              <a href="#" className="text-gray-500 hover:text-maintenease-600" aria-label="Facebook">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fiix-600" aria-label="Instagram">
+              <a href="#" className="text-gray-500 hover:text-maintenease-600" aria-label="Instagram">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-500 hover:text-fiix-600" aria-label="LinkedIn">
+              <a href="#" className="text-gray-500 hover:text-maintenease-600" aria-label="LinkedIn">
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -56,7 +56,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 {column.links.map((link, linkIdx) => (
                   <li key={linkIdx}>
-                    <a href="#" className="text-gray-600 hover:text-fiix-600 transition-colors">
+                    <a href="#" className="text-gray-600 hover:text-maintenease-600 transition-colors">
                       {link}
                     </a>
                   </li>
@@ -69,7 +69,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm mb-4 md:mb-0">
-              &copy; {currentYear} Fiix Software. All rights reserved.
+              &copy; {currentYear} MaintenEase Software. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-500 hover:text-gray-700 text-sm">
