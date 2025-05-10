@@ -35,6 +35,10 @@ const AssetsPage = () => {
     asset.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.model.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddAsset = () => {
+    navigate('/assets/new');
+  };
   
   return (
     <SidebarProvider defaultOpen={true}>
@@ -46,10 +50,11 @@ const AssetsPage = () => {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold">Asset Management</h1>
               <Button 
-                onClick={() => navigate('/assets/new')}
-                className="bg-fiix-500 hover:bg-fiix-600"
+                onClick={handleAddAsset}
+                className="bg-fiix-500 hover:bg-fiix-600 text-white"
+                size="lg"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 h-5 w-5" />
                 Add Asset
               </Button>
             </div>
@@ -65,46 +70,58 @@ const AssetsPage = () => {
                 />
               </div>
               
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Model</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredAssets.map((asset) => (
-                    <TableRow key={asset.id} className="hover:bg-gray-50">
-                      <TableCell>{asset.id}</TableCell>
-                      <TableCell>{asset.name}</TableCell>
-                      <TableCell>{asset.model}</TableCell>
-                      <TableCell>{asset.location}</TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          asset.status === "Operational" ? "bg-green-100 text-green-800" :
-                          asset.status === "Maintenance Required" ? "bg-yellow-100 text-yellow-800" :
-                          "bg-red-100 text-red-800"
-                        }`}>
-                          {asset.status}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => navigate(`/assets/edit/${asset.id}`)}
-                        >
-                          Edit
-                        </Button>
-                      </TableCell>
+              {filteredAssets.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Asset ID</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Model</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredAssets.map((asset) => (
+                      <TableRow key={asset.id} className="hover:bg-gray-50">
+                        <TableCell>{asset.id}</TableCell>
+                        <TableCell>{asset.name}</TableCell>
+                        <TableCell>{asset.model}</TableCell>
+                        <TableCell>{asset.location}</TableCell>
+                        <TableCell>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            asset.status === "Operational" ? "bg-green-100 text-green-800" :
+                            asset.status === "Maintenance Required" ? "bg-yellow-100 text-yellow-800" :
+                            "bg-red-100 text-red-800"
+                          }`}>
+                            {asset.status}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => navigate(`/assets/edit/${asset.id}`)}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-10">
+                  <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">No assets found</h3>
+                  <p className="text-gray-500 mb-4">No assets match your search criteria.</p>
+                  <Button onClick={handleAddAsset} className="bg-fiix-500 hover:bg-fiix-600">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Your First Asset
+                  </Button>
+                </div>
+              )}
             </div>
           </main>
           <Footer />
