@@ -276,11 +276,11 @@ const FeatureDemo = () => {
         <h2 className="text-2xl font-bold mb-4">Feature Demo Not Found</h2>
         <p className="mb-8">The requested feature demo is not available.</p>
         <Button 
-          onClick={() => navigate('/')} 
+          onClick={() => navigate('/dashboard')} 
           className="bg-fiix-500 hover:bg-fiix-600"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Return to Features
+          Return to Dashboard
         </Button>
       </div>
     );
@@ -289,11 +289,11 @@ const FeatureDemo = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <Button 
-        onClick={() => navigate('/')} 
+        onClick={() => navigate('/dashboard')} 
         className="mb-6 bg-gray-100 hover:bg-gray-200 text-gray-800"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Features
+        Back to Dashboard
       </Button>
       
       <div className="mb-8">
