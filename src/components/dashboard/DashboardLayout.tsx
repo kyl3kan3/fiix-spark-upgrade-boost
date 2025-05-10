@@ -1,6 +1,7 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardNotifications from "./DashboardNotifications";
@@ -13,7 +14,15 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
+  const [showNotifications, setShowNotifications] = useState(false);
   
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) {
+      toast.info("Notifications panel opened");
+    }
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full bg-gray-50">
@@ -29,7 +38,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => {}}
+                  onClick={toggleNotifications}
                   className="relative"
                 >
                   <Bell className="h-5 w-5" />
@@ -52,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             {children}
             
             {/* Notifications Panel */}
-            <DashboardNotifications />
+            {showNotifications && <DashboardNotifications />}
           </div>
         </SidebarInset>
       </div>

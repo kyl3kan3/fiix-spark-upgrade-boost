@@ -1,40 +1,54 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarPlus, ClipboardList, FileText, Settings, Users, Wrench } from "lucide-react";
+import { CalendarPlus, ClipboardList, FileText, Settings, Wrench, Users } from "lucide-react";
 
 const DashboardQuickActions = () => {
+  const navigate = useNavigate();
+
+  const handleActionClick = (action: string, path?: string) => {
+    if (path) {
+      navigate(path);
+    } else {
+      toast.success(`${action} action initiated`, {
+        description: "This functionality will be implemented soon."
+      });
+    }
+  };
+  
   const quickActions = [
     { 
       title: "New Work Order", 
       icon: <ClipboardList className="h-5 w-5" />, 
       color: "bg-blue-100 text-blue-700",
-      onClick: () => console.log("New Work Order clicked") 
+      onClick: () => handleActionClick("New Work Order", "/feature/Work%20Order%20Management") 
     },
     { 
       title: "Schedule Maintenance", 
       icon: <CalendarPlus className="h-5 w-5" />, 
       color: "bg-green-100 text-green-700",
-      onClick: () => console.log("Schedule Maintenance clicked") 
+      onClick: () => handleActionClick("Schedule Maintenance") 
     },
     { 
       title: "Asset Management", 
       icon: <Wrench className="h-5 w-5" />, 
       color: "bg-purple-100 text-purple-700",
-      onClick: () => console.log("Asset Management clicked") 
+      onClick: () => handleActionClick("Asset Management") 
     },
     { 
       title: "Team Members", 
       icon: <Users className="h-5 w-5" />, 
       color: "bg-orange-100 text-orange-700",
-      onClick: () => console.log("Team Members clicked") 
+      onClick: () => handleActionClick("Team Members", "/team") 
     },
     { 
       title: "Reports", 
       icon: <FileText className="h-5 w-5" />, 
       color: "bg-yellow-100 text-yellow-700",
-      onClick: () => console.log("Reports clicked") 
+      onClick: () => handleActionClick("Reports") 
     }
   ];
   

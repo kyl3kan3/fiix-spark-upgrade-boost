@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
@@ -30,8 +31,10 @@ const Dashboard = () => {
     const url = new URL(window.location.href);
     if (value === "overview") {
       url.searchParams.delete("tab");
+      toast.info("Overview dashboard loaded");
     } else {
       url.searchParams.set("tab", value);
+      toast.info(`${value.charAt(0).toUpperCase() + value.slice(1)} section loaded`);
     }
     window.history.pushState({}, "", url);
   };
