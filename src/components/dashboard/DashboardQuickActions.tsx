@@ -30,13 +30,13 @@ const DashboardQuickActions = () => {
       title: "Schedule Maintenance", 
       icon: <CalendarPlus className="h-5 w-5" />, 
       color: "bg-green-100 text-green-700",
-      onClick: () => handleActionClick("Schedule Maintenance") 
+      onClick: () => handleActionClick("Schedule Maintenance", "/feature/Preventive%20Maintenance") 
     },
     { 
       title: "Asset Management", 
       icon: <Wrench className="h-5 w-5" />, 
       color: "bg-purple-100 text-purple-700",
-      onClick: () => handleActionClick("Asset Management") 
+      onClick: () => handleActionClick("Asset Management", "/feature/Asset%20Management") 
     },
     { 
       title: "Team Members", 
@@ -48,7 +48,7 @@ const DashboardQuickActions = () => {
       title: "Reports", 
       icon: <FileText className="h-5 w-5" />, 
       color: "bg-yellow-100 text-yellow-700",
-      onClick: () => handleActionClick("Reports") 
+      onClick: () => handleActionClick("Reports", "/feature/Reports") 
     }
   ];
   

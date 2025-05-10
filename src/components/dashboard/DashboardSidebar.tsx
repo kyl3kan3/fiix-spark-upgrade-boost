@@ -19,7 +19,10 @@ import {
   Clipboard,
   Users,
   LogOut,
-  HelpCircle
+  HelpCircle,
+  Calendar,
+  Wrench,
+  FileText
 } from "lucide-react";
 
 const DashboardSidebar: React.FC = () => {
@@ -59,6 +62,21 @@ const DashboardSidebar: React.FC = () => {
       icon: Clipboard,
       label: "Work Orders",
       onClick: () => navigate("/feature/Work%20Order%20Management")
+    },
+    {
+      icon: Calendar,
+      label: "Maintenance",
+      onClick: () => navigate("/feature/Preventive%20Maintenance")
+    },
+    {
+      icon: Wrench,
+      label: "Assets",
+      onClick: () => navigate("/feature/Asset%20Management")
+    },
+    {
+      icon: FileText,
+      label: "Reports",
+      onClick: () => navigate("/feature/Reports")
     },
     {
       icon: Users,

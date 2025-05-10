@@ -3,6 +3,7 @@ import React from "react";
 import WorkOrderContent from "./WorkOrderContent";
 import PreventiveMaintenanceContent from "./PreventiveMaintenanceContent";
 import AssetManagementContent from "./AssetManagementContent";
+import ReportsContent from "./ReportsContent";
 
 export interface FeatureContent {
   title: string;
@@ -30,5 +31,10 @@ export const featureContentMap: FeatureContentMap = {
     title: "Asset Management",
     description: "Track and manage all your equipment and assets",
     content: <AssetManagementContent />
+  },
+  "Reports": {
+    title: "Reports",
+    description: "Generate and view maintenance reports and analytics",
+    content: <ReportsContent />
   }
 };
