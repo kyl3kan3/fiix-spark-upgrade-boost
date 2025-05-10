@@ -1,15 +1,16 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { AssetFormData } from "@/types/workOrders";
 import { AssetFormFields } from "./AssetFormFields";
 import { assetFormSchema, AssetFormValues } from "./AssetFormSchema";
-import { createAsset, updateAsset } from "@/services/assetService";
+import { createAsset, getAssetById, updateAsset } from "@/services/assetService";
 
 type AssetFormProps = {
   initialData?: AssetFormData;
@@ -17,25 +18,49 @@ type AssetFormProps = {
   onSuccess?: () => void;
 };
 
-const AssetForm = ({ initialData, assetId, onSuccess }: AssetFormProps) => {
+const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const isEditing = !!assetId;
 
+  // Fetch asset data if editing
+  const { data: assetData, isLoading } = useQuery({
+    queryKey: ["asset", assetId],
+    queryFn: () => assetId ? getAssetById(assetId) : null,
+    enabled: !!assetId,
+  });
+
   const form = useForm<AssetFormValues>({
     resolver: zodResolver(assetFormSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
-      location: initialData?.location || "",
-      model: initialData?.model || "",
-      serial_number: initialData?.serial_number || "",
-      purchase_date: initialData?.purchase_date 
-        ? new Date(initialData.purchase_date).toISOString().split("T")[0] 
-        : "",
-      status: initialData?.status || "active"
+      name: "",
+      description: "",
+      location: "",
+      model: "",
+      serial_number: "",
+      purchase_date: "",
+      status: "active",
+      parent_id: ""
     },
   });
+
+  // Update form values when asset data is loaded
+  useEffect(() => {
+    if (assetData && isEditing) {
+      form.reset({
+        name: assetData.name,
+        description: assetData.description || "",
+        location: assetData.location || "",
+        model: assetData.model || "",
+        serial_number: assetData.serial_number || "",
+        purchase_date: assetData.purchase_date 
+          ? new Date(assetData.purchase_date).toISOString().split("T")[0] 
+          : "",
+        status: assetData.status,
+        parent_id: assetData.parent_id || ""
+      });
+    }
+  }, [assetData, form, isEditing]);
 
   const onSubmit = async (values: AssetFormValues) => {
     try {
@@ -72,10 +97,14 @@ const AssetForm = ({ initialData, assetId, onSuccess }: AssetFormProps) => {
     }
   };
 
+  if (isLoading) {
+    return <div className="text-center py-4">Loading asset data...</div>;
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <AssetFormFields form={form} />
+        <AssetFormFields form={form} currentAssetId={assetId} />
         
         <div className="flex justify-end space-x-2">
           <Button 

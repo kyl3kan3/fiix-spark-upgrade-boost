@@ -3,14 +3,27 @@ import React from "react";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { AssetFormValues } from "./AssetFormSchema";
+import { useQuery } from "@tanstack/react-query";
+import { getAllAssets } from "@/services/assetService";
 
 type AssetFormFieldsProps = {
   form: UseFormReturn<AssetFormValues>;
+  currentAssetId?: string; // Optional ID of current asset when editing
 };
 
-export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form }) => {
+export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentAssetId }) => {
+  // Fetch all assets for parent selection
+  const { data: assets, isLoading } = useQuery({
+    queryKey: ["assets"],
+    queryFn: getAllAssets
+  });
+
+  // Filter out the current asset (we can't set an asset as its own parent)
+  const availableParentAssets = assets?.filter(asset => asset.id !== currentAssetId) || [];
+
   return (
     <>
       <FormField
@@ -105,6 +118,35 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form }) => {
           )}
         />
       </div>
+
+      <FormField
+        control={form.control}
+        name="parent_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Parent Asset</FormLabel>
+            <Select 
+              onValueChange={field.onChange} 
+              value={field.value || ""}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a parent asset (optional)" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="">None (Top Level Asset)</SelectItem>
+                {availableParentAssets.map((asset) => (
+                  <SelectItem key={asset.id} value={asset.id}>
+                    {asset.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </>
   );
 };

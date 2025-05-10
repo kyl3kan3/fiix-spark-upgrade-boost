@@ -17,6 +17,7 @@ export type Database = {
           location: string | null
           model: string | null
           name: string
+          parent_id: string | null
           purchase_date: string | null
           serial_number: string | null
           status: string
@@ -29,6 +30,7 @@ export type Database = {
           location?: string | null
           model?: string | null
           name: string
+          parent_id?: string | null
           purchase_date?: string | null
           serial_number?: string | null
           status?: string
@@ -41,12 +43,21 @@ export type Database = {
           location?: string | null
           model?: string | null
           name?: string
+          parent_id?: string | null
           purchase_date?: string | null
           serial_number?: string | null
           status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_asset_parent"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
