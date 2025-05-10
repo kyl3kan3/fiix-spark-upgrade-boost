@@ -46,7 +46,7 @@ const Auth = () => {
     try {
       if (isSignUp) {
         // Handle sign up
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -58,10 +58,17 @@ const Auth = () => {
         });
         
         if (error) throw error;
-        toast.success("Account created successfully! Please check your email for verification.");
+        
+        // Check if email confirmation is required
+        if (data?.user?.identities?.length === 0) {
+          toast.info("This email is already registered. Please sign in instead.");
+          setIsSignUp(false);
+        } else {
+          toast.success("Account created successfully! Please check your email for verification.");
+        }
       } else {
         // Handle sign in
-        console.log("Attempting to sign in with:", { email, password });
+        console.log("Attempting to sign in with:", { email });
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password
@@ -74,8 +81,18 @@ const Auth = () => {
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
-      setAuthError(error.message || "An error occurred during authentication");
-      toast.error(error.message || "An error occurred during authentication");
+      
+      // Better error messaging
+      let errorMessage = "Authentication failed";
+      
+      if (error.message.includes("invalid_credentials") || error.message.includes("Invalid login")) {
+        errorMessage = "Invalid email or password";
+      } else if (error.message.includes("Email not confirmed")) {
+        errorMessage = "Please confirm your email address before signing in";
+      }
+      
+      setAuthError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
