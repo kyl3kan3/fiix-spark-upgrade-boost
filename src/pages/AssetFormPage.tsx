@@ -20,7 +20,7 @@ const AssetFormPage = () => {
         <DashboardSidebar />
         <div className="flex-1 flex flex-col">
           <Navbar />
-          <main className="flex-grow container mx-auto px-4 py-12">
+          <main className="flex-grow container mx-auto px-4 py-12 mt-20">
             <Button 
               onClick={() => navigate('/assets')} 
               className="mb-6 bg-gray-100 hover:bg-gray-200 text-gray-800"
