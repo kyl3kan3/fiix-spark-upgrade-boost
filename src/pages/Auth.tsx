@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Auth = () => {
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if we should default to signup mode based on URL param
@@ -39,6 +41,7 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setAuthError(null); // Clear any previous errors
     
     try {
       if (isSignUp) {
@@ -57,26 +60,21 @@ const Auth = () => {
         if (error) throw error;
         toast.success("Account created successfully! Please check your email for verification.");
       } else {
-        // Handle sign in - Fix: Move persistSession outside the options object
+        // Handle sign in
+        console.log("Attempting to sign in with:", { email, password });
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
         
         if (error) throw error;
-
-        // If remember me is checked, set session persistence
-        if (rememberMe) {
-          // This is where we would typically set session persistence
-          // But the current Supabase JS client doesn't support this at the signIn level
-          // It's configured at the client initialization level instead
-          console.log("Remember me enabled");
-        }
         
         toast.success("Logged in successfully!");
         navigate("/dashboard");
       }
     } catch (error: any) {
+      console.error("Authentication error:", error);
+      setAuthError(error.message || "An error occurred during authentication");
       toast.error(error.message || "An error occurred during authentication");
     } finally {
       setIsSubmitting(false);
@@ -91,6 +89,14 @@ const Auth = () => {
             {isSignUp ? "Create your account" : "Sign in to your account"}
           </h2>
         </div>
+        
+        {authError && (
+          <Alert variant="destructive">
+            <AlertTitle>Authentication Error</AlertTitle>
+            <AlertDescription>{authError}</AlertDescription>
+          </Alert>
+        )}
+        
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md">
             {isSignUp && (
