@@ -4,7 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
     // Check if we should default to signup mode based on URL param
@@ -21,19 +24,58 @@ const Auth = () => {
     if (params.get("signup") === "true") {
       setIsSignUp(true);
     }
-  }, [location]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    // Check if user is already logged in
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate("/dashboard");
+      }
+    };
+    
+    checkSession();
+  }, [location, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // This is a placeholder for future auth implementation
-    // Currently just simulates a successful login/signup
-    setTimeout(() => {
-      toast.success(isSignUp ? "Account created successfully!" : "Logged in successfully!");
-      navigate("/dashboard");
+    try {
+      if (isSignUp) {
+        // Handle sign up
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              first_name: name.split(' ')[0],
+              last_name: name.split(' ').slice(1).join(' ')
+            }
+          }
+        });
+        
+        if (error) throw error;
+        toast.success("Account created successfully! Please check your email for verification.");
+      } else {
+        // Handle sign in
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+          options: {
+            // Set persistent session if remember me is checked
+            persistSession: rememberMe
+          }
+        });
+        
+        if (error) throw error;
+        toast.success("Logged in successfully!");
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during authentication");
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -89,6 +131,19 @@ const Auth = () => {
                 className="mt-1"
               />
             </div>
+            
+            {!isSignUp && (
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="remember-me" 
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                />
+                <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer">
+                  Stay logged in
+                </Label>
+              </div>
+            )}
           </div>
 
           <div>
