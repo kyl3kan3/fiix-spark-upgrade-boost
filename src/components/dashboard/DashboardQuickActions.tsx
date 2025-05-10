@@ -36,7 +36,7 @@ const DashboardQuickActions = () => {
       title: "Asset Management", 
       icon: <Wrench className="h-5 w-5" />, 
       color: "bg-purple-100 text-purple-700",
-      onClick: () => handleActionClick("Asset Management", "/feature/Asset%20Management") 
+      onClick: () => handleActionClick("Asset Management", "/assets") 
     },
     { 
       title: "Team Members", 

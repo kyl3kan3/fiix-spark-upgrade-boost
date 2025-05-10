@@ -71,7 +71,7 @@ const DashboardSidebar: React.FC = () => {
     {
       icon: Wrench,
       label: "Assets",
-      onClick: () => navigate("/feature/Asset%20Management")
+      onClick: () => navigate("/assets")
     },
     {
       icon: FileText,

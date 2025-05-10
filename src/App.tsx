@@ -13,6 +13,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Team from "./pages/Team";
 import Help from "./pages/Help";
+import AssetFormPage from "./pages/AssetFormPage";
+import AssetsPage from "./pages/AssetsPage";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +40,6 @@ const App = () => {
   }, []);
 
   if (!sessionChecked) {
-    // You could add a loading spinner here if desired
     return null;
   }
 
@@ -53,6 +54,9 @@ const App = () => {
             <Route path="/team" element={<Team />} />
             <Route path="/help" element={<Help />} />
             <Route path="/feature/:featureId" element={<FeatureDemoPage />} />
+            <Route path="/assets" element={<AssetsPage />} />
+            <Route path="/assets/new" element={<AssetFormPage />} />
+            <Route path="/assets/edit/:assetId" element={<AssetFormPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

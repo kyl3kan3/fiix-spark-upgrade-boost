@@ -1,10 +1,25 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { Package } from "lucide-react";
 
 const AssetManagementContent: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Asset Management</h2>
+        <Button 
+          onClick={() => navigate('/assets/new')}
+          className="bg-fiix-500 hover:bg-fiix-600"
+        >
+          <Package className="mr-2 h-4 w-4" />
+          Add Asset
+        </Button>
+      </div>
+      
       <div className="bg-gray-100 p-6 rounded-lg">
         <h3 className="text-lg font-medium mb-4">Asset Inventory</h3>
         <div className="overflow-x-auto">
