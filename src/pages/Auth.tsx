@@ -31,7 +31,7 @@ const Auth = () => {
     // Currently just simulates a successful login/signup
     setTimeout(() => {
       toast.success(isSignUp ? "Account created successfully!" : "Logged in successfully!");
-      navigate("/");
+      navigate("/dashboard");
       setIsSubmitting(false);
     }, 1500);
   };
