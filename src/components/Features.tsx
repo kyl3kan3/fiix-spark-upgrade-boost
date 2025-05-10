@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/sonner";
 import FeatureCard from "./features/FeatureCard";
 import FeatureFilters from "./features/FeatureFilters";
 import { featureItems } from "./features/FeaturesData";
@@ -13,7 +13,6 @@ const Features = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewType, setViewType] = useState("grid");
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
-  const { toast } = useToast();
   
   // Filter features based on selected category
   const filteredFeatures = selectedCategory === "all" 
@@ -27,10 +26,7 @@ const Features = () => {
       // Navigate to the feature demo page
       navigate(`/feature/${encodeURIComponent(title)}`);
     } else {
-      toast({
-        title: "Demo Not Available",
-        description: `${title} demo is coming soon. Please check back later.`,
-      });
+      toast(`${title} demo is coming soon. Please check back later.`);
     }
   };
   
