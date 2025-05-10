@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarPlus, ClipboardList, FileText, Settings, Tool, Users } from "lucide-react";
+import { CalendarPlus, ClipboardList, FileText, Settings, Users, Wrench } from "lucide-react";
 
 const DashboardQuickActions = () => {
   const quickActions = [
@@ -20,7 +20,7 @@ const DashboardQuickActions = () => {
     },
     { 
       title: "Asset Management", 
-      icon: <Tool className="h-5 w-5" />, 
+      icon: <Wrench className="h-5 w-5" />, 
       color: "bg-purple-100 text-purple-700",
       onClick: () => console.log("Asset Management clicked") 
     },
