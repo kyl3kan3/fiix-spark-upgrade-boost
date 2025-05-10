@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,12 +40,16 @@ const Navbar = () => {
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Pricing</a>
           </div>
           <div className="flex items-center space-x-3">
-            <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50">
-              Log In
-            </Button>
-            <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white">
-              Get Started
-            </Button>
+            <Link to="/auth">
+              <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50">
+                Log In
+              </Button>
+            </Link>
+            <Link to="/auth?signup=true">
+              <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white">
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -65,12 +70,16 @@ const Navbar = () => {
             <a href="#testimonials" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
             <div className="flex flex-col space-y-3 pt-2">
-              <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 w-full">
-                Log In
-              </Button>
-              <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white w-full">
-                Get Started
-              </Button>
+              <Link to="/auth">
+                <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 w-full">
+                  Log In
+                </Button>
+              </Link>
+              <Link to="/auth?signup=true">
+                <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white w-full">
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
