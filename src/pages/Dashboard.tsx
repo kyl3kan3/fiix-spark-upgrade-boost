@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, LogOut } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,9 +23,34 @@ const Dashboard = () => {
     { id: "WO-2023-153", title: "Leaking Pipe Repair", status: "open", priority: "high" },
     { id: "WO-2023-152", title: "Light Fixture Replacement", status: "completed", priority: "low" },
   ];
+
+  const handleLogout = () => {
+    // For now just navigate to home page
+    navigate("/");
+  };
   
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-12">
+    <div className="min-h-screen bg-gray-50">
+      {/* Dashboard Header/Navigation */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4 flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <span className="text-xl font-bold text-maintenease-600">MaintenEase</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
+        </div>
+      </header>
+      
       <div className="container mx-auto px-4 pt-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
