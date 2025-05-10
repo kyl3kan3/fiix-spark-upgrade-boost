@@ -51,7 +51,7 @@ const AssetsPage = () => {
               <h1 className="text-3xl font-bold">Asset Management</h1>
               <Button 
                 onClick={handleAddAsset}
-                className="bg-fiix-500 hover:bg-fiix-600 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 text-lg flex items-center shadow-md"
                 size="lg"
               >
                 <Plus className="mr-2 h-5 w-5" />
@@ -116,7 +116,7 @@ const AssetsPage = () => {
                   <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-1">No assets found</h3>
                   <p className="text-gray-500 mb-4">No assets match your search criteria.</p>
-                  <Button onClick={handleAddAsset} className="bg-fiix-500 hover:bg-fiix-600">
+                  <Button onClick={handleAddAsset} className="bg-blue-600 hover:bg-blue-700 text-white flex items-center">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Your First Asset
                   </Button>
