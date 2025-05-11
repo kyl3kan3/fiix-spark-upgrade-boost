@@ -79,7 +79,8 @@ const WorkOrderDetailPage: React.FC = () => {
           </div>
         </div>
         
-        <WorkOrderDetail workOrder={workOrder} />
+        {/* Pass the workOrder directly, since the component is already using props */}
+        <WorkOrderDetail />
       </div>
     </DashboardLayout>
   );

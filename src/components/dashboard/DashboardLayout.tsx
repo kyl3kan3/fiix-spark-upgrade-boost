@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom"; // Changed from useNavigate to Link
 import { toast } from "sonner";
 import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   
   const toggleNotifications = () => {
@@ -47,11 +46,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={() => navigate("/profile")}
+                  asChild
                   className="flex items-center gap-2"
                 >
-                  <User className="h-4 w-4" />
-                  <span>Profile</span>
+                  <Link to="/profile">
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </Button>
               </div>
             </div>
