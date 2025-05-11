@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useWorkOrderDetails } from "@/components/workOrders/hooks/useWorkOrderDetails";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, Edit, Clipboard } from "lucide-react";
-import { WorkOrderDetail } from "@/components/workOrders/WorkOrderDetail";
+import WorkOrderDetail from "@/components/workOrders/WorkOrderDetail";
 
 const WorkOrderDetailPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
