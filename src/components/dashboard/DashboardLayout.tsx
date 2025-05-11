@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Bell, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
   
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -26,6 +27,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
     toast.info(sidebarOpen ? "Sidebar collapsed" : "Sidebar expanded");
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
 
   return (
@@ -57,13 +62,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  asChild
+                  onClick={handleProfileClick}
                   className="flex items-center gap-2"
                 >
-                  <Link to="/profile">
-                    <User className="h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
+                  <User className="h-4 w-4" />
+                  <span>Profile</span>
                 </Button>
               </div>
             </div>

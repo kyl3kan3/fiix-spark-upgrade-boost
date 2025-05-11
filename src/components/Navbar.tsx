@@ -1,12 +1,15 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { Link } from 'react-router-dom';
+import { Menu, X, User } from "lucide-react";
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,9 +20,27 @@ const Navbar = () => {
       }
     };
 
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsLoggedIn(!!data.session);
+    };
+
+    checkAuth();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleDashboardClick = () => {
+    navigate("/dashboard");
+  };
 
   return (
     <nav 
@@ -40,23 +61,37 @@ const Navbar = () => {
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Pricing</a>
           </div>
           <div className="flex items-center space-x-3">
-            <Link to="/auth">
-              <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50">
-                Log In
-              </Button>
-            </Link>
-            <Link to="/auth?signup=true">
-              <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white">
-                Get Started
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Button onClick={handleDashboardClick} variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50">
+                  Dashboard
+                </Button>
+                <Button onClick={handleProfileClick} className="flex items-center gap-2 bg-maintenease-600 hover:bg-maintenease-700 text-white">
+                  <User size={16} />
+                  Profile
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50">
+                    Log In
+                  </Button>
+                </Link>
+                <Link to="/auth?signup=true">
+                  <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
         {/* Mobile Menu Button */}
         <button 
           className="md:hidden text-gray-700" 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={toggleMobileMenu}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -70,16 +105,30 @@ const Navbar = () => {
             <a href="#testimonials" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
             <div className="flex flex-col space-y-3 pt-2">
-              <Link to="/auth">
-                <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 w-full">
-                  Log In
-                </Button>
-              </Link>
-              <Link to="/auth?signup=true">
-                <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white w-full">
-                  Get Started
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <Button onClick={handleDashboardClick} variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 w-full">
+                    Dashboard
+                  </Button>
+                  <Button onClick={handleProfileClick} className="bg-maintenease-600 hover:bg-maintenease-700 text-white w-full flex items-center justify-center gap-2">
+                    <User size={16} />
+                    Profile
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth" className="w-full">
+                    <Button variant="outline" className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 w-full">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link to="/auth?signup=true" className="w-full">
+                    <Button className="bg-maintenease-600 hover:bg-maintenease-700 text-white w-full">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
