@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Team from "./pages/Team";
 import Help from "./pages/Help";
+import Calendar from "./pages/Calendar";
 import AssetFormPage from "./pages/AssetFormPage";
 import AssetsPage from "./pages/AssetsPage";
 import WorkOrdersPage from "./pages/WorkOrdersPage";
@@ -56,6 +57,7 @@ const App = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/team" element={<Team />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/help" element={<Help />} />
             <Route path="/feature/:featureId" element={<FeatureDemoPage />} />
             <Route path="/assets" element={<AssetsPage />} />
