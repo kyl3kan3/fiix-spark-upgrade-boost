@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useWorkOrderDetails } from "@/components/workOrders/hooks/useWorkOrderDetails";
 import { Button } from "@/components/ui/button";
