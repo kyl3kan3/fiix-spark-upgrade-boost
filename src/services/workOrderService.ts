@@ -41,3 +41,18 @@ export async function updateWorkOrder(workOrderId: string, values: WorkOrderForm
     
   return response;
 }
+
+export async function getWorkOrderById(workOrderId: string) {
+  const response = await supabase
+    .from("work_orders")
+    .select(`
+      *,
+      asset:assets(*),
+      assignee:profiles!work_orders_assigned_to_fkey(*),
+      creator:profiles!work_orders_created_by_fkey(*)
+    `)
+    .eq("id", workOrderId)
+    .single();
+    
+  return response;
+}

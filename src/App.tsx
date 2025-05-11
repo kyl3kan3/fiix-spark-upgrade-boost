@@ -15,6 +15,9 @@ import Team from "./pages/Team";
 import Help from "./pages/Help";
 import AssetFormPage from "./pages/AssetFormPage";
 import AssetsPage from "./pages/AssetsPage";
+import WorkOrdersPage from "./pages/WorkOrdersPage";
+import WorkOrderDetailPage from "./pages/WorkOrderDetailPage";
+import WorkOrderFormPage from "./pages/WorkOrderFormPage";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +60,10 @@ const App = () => {
             <Route path="/assets" element={<AssetsPage />} />
             <Route path="/assets/new" element={<AssetFormPage />} />
             <Route path="/assets/edit/:assetId" element={<AssetFormPage />} />
+            <Route path="/work-orders" element={<WorkOrdersPage />} />
+            <Route path="/work-orders/new" element={<WorkOrderFormPage />} />
+            <Route path="/work-orders/:workOrderId" element={<WorkOrderDetailPage />} />
+            <Route path="/work-orders/edit/:workOrderId" element={<WorkOrderFormPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

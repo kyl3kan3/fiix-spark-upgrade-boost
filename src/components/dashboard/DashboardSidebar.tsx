@@ -61,7 +61,7 @@ const DashboardSidebar: React.FC = () => {
     {
       icon: Clipboard,
       label: "Work Orders",
-      onClick: () => navigate("/feature/Work%20Order%20Management")
+      onClick: () => navigate("/work-orders")
     },
     {
       icon: Calendar,
