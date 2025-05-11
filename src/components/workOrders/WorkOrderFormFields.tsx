@@ -148,7 +148,7 @@ export const WorkOrderFormFields = ({ form }: WorkOrderFormFieldsProps) => {
               <FormLabel>Asset</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
-                defaultValue={field.value}
+                value={field.value || "none"}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -156,6 +156,7 @@ export const WorkOrderFormFields = ({ form }: WorkOrderFormFieldsProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
+                  <SelectItem value="none">No Asset</SelectItem>
                   {assets?.map((asset) => (
                     <SelectItem key={asset.id} value={asset.id}>
                       {asset.name}
@@ -177,7 +178,7 @@ export const WorkOrderFormFields = ({ form }: WorkOrderFormFieldsProps) => {
             <FormLabel>Assign To</FormLabel>
             <Select 
               onValueChange={field.onChange} 
-              defaultValue={field.value}
+              value={field.value || "none"}
             >
               <FormControl>
                 <SelectTrigger>
@@ -185,6 +186,7 @@ export const WorkOrderFormFields = ({ form }: WorkOrderFormFieldsProps) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
+                <SelectItem value="none">Unassigned</SelectItem>
                 {technicians?.map((tech) => (
                   <SelectItem key={tech.id} value={tech.id}>
                     {tech.first_name} {tech.last_name}

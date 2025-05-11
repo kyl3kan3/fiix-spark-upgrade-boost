@@ -9,8 +9,12 @@ export const workOrderFormSchema = z.object({
   priority: z.enum(["low", "medium", "high", "urgent"] as const),
   status: z.enum(["pending", "in_progress", "completed", "cancelled"] as const),
   due_date: z.string().optional(),
-  asset_id: z.string().optional(),
-  assigned_to: z.string().optional()
+  asset_id: z.union([z.string(), z.literal("none")]).optional().transform(val => 
+    val === "none" ? null : val
+  ),
+  assigned_to: z.union([z.string(), z.literal("none")]).optional().transform(val => 
+    val === "none" ? null : val
+  )
 });
 
 // Type for the form values
