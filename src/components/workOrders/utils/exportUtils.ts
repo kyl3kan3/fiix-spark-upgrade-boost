@@ -176,3 +176,107 @@ export const exportWorkOrderToCsv = (workOrder: WorkOrderWithRelations) => {
   link.click();
   document.body.removeChild(link);
 };
+
+export const exportWorkOrderToExcel = (workOrder: WorkOrderWithRelations) => {
+  // Generate Excel data as a blob
+  // Excel files are binary, so we'll use the .xlsx MIME type
+  
+  // First, construct XML for Excel spreadsheet
+  let xmlContent = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>';
+  xmlContent += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ';
+  xmlContent += 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+  
+  // Add styles
+  xmlContent += '<Styles>';
+  xmlContent += '<Style ss:ID="Header"><Font ss:Bold="1"/></Style>';
+  xmlContent += '</Styles>';
+  
+  // Start main worksheet
+  xmlContent += '<Worksheet ss:Name="Work Order Details">';
+  xmlContent += '<Table>';
+  
+  // Add headers row
+  xmlContent += '<Row ss:StyleID="Header">';
+  ['Field', 'Value'].forEach(header => {
+    xmlContent += `<Cell><Data ss:Type="String">${header}</Data></Cell>`;
+  });
+  xmlContent += '</Row>';
+  
+  // Add data rows for work order details
+  const addRow = (field: string, value: string) => {
+    xmlContent += '<Row>';
+    xmlContent += `<Cell><Data ss:Type="String">${field}</Data></Cell>`;
+    xmlContent += `<Cell><Data ss:Type="String">${value}</Data></Cell>`;
+    xmlContent += '</Row>';
+  };
+  
+  addRow('ID', workOrder.id.split('-')[0]);
+  addRow('Title', workOrder.title);
+  addRow('Status', workOrder.status.replace('_', ' '));
+  addRow('Priority', workOrder.priority);
+  addRow('Created Date', formatDate(workOrder.created_at));
+  addRow('Due Date', workOrder.due_date ? formatDate(workOrder.due_date) : 'Not set');
+  addRow('Created By', workOrder.creator ? 
+    `${workOrder.creator.first_name} ${workOrder.creator.last_name}` : 'Unknown');
+  addRow('Assigned To', workOrder.assignee ? 
+    `${workOrder.assignee.first_name} ${workOrder.assignee.last_name}` : 'Unassigned');
+  
+  if (workOrder.asset) {
+    addRow('Asset', workOrder.asset.name);
+    if (workOrder.asset.location) addRow('Location', workOrder.asset.location);
+    if (workOrder.asset.serial_number) addRow('Serial Number', workOrder.asset.serial_number);
+  }
+  
+  addRow('Description', workOrder.description);
+  
+  xmlContent += '</Table>';
+  xmlContent += '</Worksheet>';
+  
+  // Add comments worksheet if there are comments
+  if (workOrder.comments && workOrder.comments.length > 0) {
+    xmlContent += '<Worksheet ss:Name="Comments">';
+    xmlContent += '<Table>';
+    
+    // Add headers row
+    xmlContent += '<Row ss:StyleID="Header">';
+    ['User', 'Date', 'Comment'].forEach(header => {
+      xmlContent += `<Cell><Data ss:Type="String">${header}</Data></Cell>`;
+    });
+    xmlContent += '</Row>';
+    
+    // Add comment rows
+    workOrder.comments.forEach((comment: CommentWithUser) => {
+      xmlContent += '<Row>';
+      xmlContent += `<Cell><Data ss:Type="String">${
+        comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : 'Unknown'
+      }</Data></Cell>`;
+      xmlContent += `<Cell><Data ss:Type="String">${formatDate(comment.created_at)}</Data></Cell>`;
+      xmlContent += `<Cell><Data ss:Type="String">${
+        comment.comment.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      }</Data></Cell>`;
+      xmlContent += '</Row>';
+    });
+    
+    xmlContent += '</Table>';
+    xmlContent += '</Worksheet>';
+  }
+  
+  xmlContent += '</Workbook>';
+  
+  // Create the Excel blob
+  const blob = new Blob([xmlContent], { 
+    type: 'application/vnd.ms-excel' 
+  });
+  
+  // Create download link
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `work_order_${workOrder.id.split('-')[0]}_${workOrder.title.replace(/\s+/g, '_').toLowerCase()}.xls`);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};

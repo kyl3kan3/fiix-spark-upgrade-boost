@@ -2,10 +2,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Download, FileSpreadsheet } from "lucide-react";
+import { Pencil, Trash2, Download, FileSpreadsheet, FileText } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { formatDate } from "../utils/dateUtils";
-import { exportWorkOrderToPdf, exportWorkOrderToCsv } from "../utils/exportUtils";
+import { exportWorkOrderToPdf, exportWorkOrderToCsv, exportWorkOrderToExcel } from "../utils/exportUtils";
 
 interface WorkOrderHeaderProps {
   workOrder: WorkOrderWithRelations;
@@ -22,6 +22,10 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
 
   const handleExportCsv = () => {
     exportWorkOrderToCsv(workOrder);
+  };
+  
+  const handleExportExcel = () => {
+    exportWorkOrderToExcel(workOrder);
   };
 
   return (
@@ -48,6 +52,10 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
         <Button variant="outline" onClick={handleExportCsv}>
           <FileSpreadsheet className="h-4 w-4 mr-2" />
           CSV
+        </Button>
+        <Button variant="outline" onClick={handleExportExcel}>
+          <FileText className="h-4 w-4 mr-2" />
+          Excel
         </Button>
         <Button variant="outline" asChild>
           <Link to={`/work-orders/${workOrder.id}/edit`}>
