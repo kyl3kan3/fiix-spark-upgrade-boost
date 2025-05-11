@@ -43,6 +43,7 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
       parent_id: "none",
       parent_name: "",
       parent_description: "",
+      parent_location: "", // Add default value for parent location
       new_location: false,
       new_location_name: ""
     },
@@ -64,6 +65,7 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
         parent_id: assetData.parent_id || "none",
         parent_name: "",
         parent_description: "",
+        parent_location: "", // Reset parent location field
         new_location: false,
         new_location_name: ""
       });
@@ -79,7 +81,7 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
         const parentResponse = await createParentAsset({
           name: values.parent_name,
           description: values.parent_description || "",
-          location: values.location,
+          location: values.parent_location || "", // Use parent_location value
           status: "active",
         });
         

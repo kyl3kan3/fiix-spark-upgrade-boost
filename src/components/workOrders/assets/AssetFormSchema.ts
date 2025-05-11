@@ -16,6 +16,7 @@ export const assetFormSchema = z.object({
   // New fields for creating parent asset
   parent_name: z.string().optional(),
   parent_description: z.string().optional(),
+  parent_location: z.string().optional(), // Add this field for parent location
   // Flag to indicate if we're adding a new location
   new_location: z.boolean().default(false),
   // Field for new location name

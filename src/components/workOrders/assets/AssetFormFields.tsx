@@ -10,7 +10,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllAssets, getAllLocations, createLocation } from "@/services/assetService";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 type AssetFormFieldsProps = {
@@ -82,6 +81,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
       // Reset parent fields if not creating a new parent
       form.setValue("parent_name", "");
       form.setValue("parent_description", "");
+      form.setValue("parent_location", ""); // Reset parent location
     }
   };
 
@@ -286,6 +286,35 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
                     value={field.value || ""}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Add location field for parent asset */}
+          <FormField
+            control={form.control}
+            name="parent_location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Parent Asset Location</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a location for parent asset" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {locations?.map((location) => (
+                      <SelectItem key={location.id} value={location.name}>
+                        {location.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
