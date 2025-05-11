@@ -6,7 +6,7 @@ import { exportReportToPdf } from "@/utils/pdfExport";
 import ReportsList from "./reports/ReportsList";
 import ReportChart from "./reports/ReportChart";
 import CustomReportForm from "./reports/CustomReportForm";
-import { monthlyWorkOrders } from "./reports/data";
+import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -28,11 +28,27 @@ const ReportsContent: React.FC = () => {
     
     setIsExporting(true);
     try {
-      // For demonstration purposes, we're using the same data for all reports
-      // In a real application, you would use different data for each report type
-      await exportReportToPdf(selectedReport, monthlyWorkOrders);
+      const dataToExport = getReportData();
+      await exportReportToPdf(selectedReport, dataToExport);
+      toast.success("Report exported to PDF successfully");
+    } catch (error) {
+      toast.error("Failed to export report");
+      console.error("Export error:", error);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const getReportData = () => {
+    switch (selectedReport) {
+      case "Work Order Statistics":
+        return monthlyWorkOrders;
+      case "Asset Performance":
+        return assetPerformanceData;
+      case "Maintenance Trends":
+        return maintenanceTrendsData;
+      default:
+        return monthlyWorkOrders;
     }
   };
 
@@ -45,7 +61,7 @@ const ReportsContent: React.FC = () => {
       {selectedReport && (
         <ReportChart 
           reportType={selectedReport}
-          data={monthlyWorkOrders}
+          data={getReportData()}
           isMobile={isMobile}
           isExporting={isExporting}
           onExport={handleExportPdf}

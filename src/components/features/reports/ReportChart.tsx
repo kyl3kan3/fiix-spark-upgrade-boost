@@ -13,7 +13,10 @@ import {
   Tooltip, 
   Legend,
   BarChart as RechartBarChart,
-  Bar
+  Bar,
+  PieChart as RechartPieChart,
+  Pie,
+  Cell
 } from "recharts";
 
 interface ReportChartProps {
@@ -23,6 +26,8 @@ interface ReportChartProps {
   isExporting: boolean;
   onExport: () => void;
 }
+
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe', '#00C49F'];
 
 const ReportChart: React.FC<ReportChartProps> = ({ reportType, data, isMobile, isExporting, onExport }) => {
   return (
@@ -74,25 +79,32 @@ const ReportChart: React.FC<ReportChartProps> = ({ reportType, data, isMobile, i
                 <Legend />
                 <Bar dataKey="requested" fill="#8884d8" name="Work Orders Requested" />
                 <Bar dataKey="completed" fill="#82ca9d" name="Work Orders Completed" />
+                <Bar dataKey="onTime" fill="#0088fe" name="Completed On Time" />
+                <Bar dataKey="late" fill="#ff8042" name="Completed Late" />
               </RechartBarChart>
             ) : reportType === "Asset Performance" ? (
-              <RechartLineChart data={data}>
+              <RechartBarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
                 <XAxis dataKey="month" />
-                <YAxis />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="completed" stroke="#8884d8" activeDot={{ r: 8 }} name="Performance Rating" />
-              </RechartLineChart>
+                <Bar yAxisId="left" dataKey="reliability" fill="#8884d8" name="Reliability %" />
+                <Bar yAxisId="left" dataKey="downtime" fill="#ff8042" name="Downtime %" />
+                <Bar yAxisId="right" dataKey="maintenanceCost" fill="#82ca9d" name="Maintenance Cost ($)" />
+              </RechartBarChart>
             ) : (
               <RechartLineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
                 <XAxis dataKey="month" />
-                <YAxis />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="requested" stroke="#8884d8" activeDot={{ r: 8 }} name="Preventive" />
-                <Line type="monotone" dataKey="completed" stroke="#82ca9d" activeDot={{ r: 8 }} name="Corrective" />
+                <Line yAxisId="left" type="monotone" dataKey="preventive" stroke="#8884d8" activeDot={{ r: 8 }} name="Preventive" />
+                <Line yAxisId="left" type="monotone" dataKey="corrective" stroke="#ff8042" activeDot={{ r: 8 }} name="Corrective" />
+                <Line yAxisId="right" type="monotone" dataKey="costs" stroke="#82ca9d" activeDot={{ r: 8 }} name="Costs ($)" />
               </RechartLineChart>
             )}
           </ResponsiveContainer>
