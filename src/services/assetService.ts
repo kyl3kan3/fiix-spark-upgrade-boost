@@ -2,6 +2,17 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
 
+// Define an interface for the asset with children for the hierarchy
+interface AssetWithChildren {
+  id: string;
+  name: string;
+  description: string | null;
+  location: string | null;
+  status: string;
+  parent_id: string | null;
+  children: AssetWithChildren[];
+}
+
 export async function getAllAssets() {
   const { data, error } = await supabase
     .from("assets")
@@ -81,23 +92,27 @@ export async function getAssetHierarchy() {
   if (error) throw error;
   
   // Build hierarchy structure
-  const assetMap = new Map();
-  const rootAssets = [];
+  const assetMap = new Map<string, AssetWithChildren>();
+  const rootAssets: AssetWithChildren[] = [];
   
   // First pass: create map of all assets
   assets?.forEach(asset => {
-    asset.children = [];
-    assetMap.set(asset.id, asset);
+    // Initialize the asset with an empty children array
+    const assetWithChildren: AssetWithChildren = {
+      ...asset,
+      children: []
+    };
+    assetMap.set(asset.id, assetWithChildren);
   });
   
   // Second pass: build hierarchical structure
   assets?.forEach(asset => {
     if (asset.parent_id && assetMap.has(asset.parent_id)) {
       // This asset has a parent, add it to the parent's children
-      assetMap.get(asset.parent_id).children.push(asset);
+      assetMap.get(asset.parent_id)!.children.push(assetMap.get(asset.id)!);
     } else {
       // This is a root asset (no parent)
-      rootAssets.push(asset);
+      rootAssets.push(assetMap.get(asset.id)!);
     }
   });
   
