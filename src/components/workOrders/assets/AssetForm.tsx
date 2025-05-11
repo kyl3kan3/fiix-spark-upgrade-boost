@@ -40,7 +40,7 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
       serial_number: "",
       purchase_date: "",
       status: "active",
-      parent_id: ""
+      parent_id: "none"
     },
   });
 
@@ -57,7 +57,7 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
           ? new Date(assetData.purchase_date).toISOString().split("T")[0] 
           : "",
         status: assetData.status,
-        parent_id: assetData.parent_id || ""
+        parent_id: assetData.parent_id || "none"
       });
     }
   }, [assetData, form, isEditing]);

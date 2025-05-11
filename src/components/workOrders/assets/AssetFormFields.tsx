@@ -127,7 +127,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
             <FormLabel>Parent Asset</FormLabel>
             <Select 
               onValueChange={field.onChange} 
-              value={field.value || ""}
+              value={field.value || "none"}
             >
               <FormControl>
                 <SelectTrigger>
@@ -135,7 +135,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="">None (Top Level Asset)</SelectItem>
+                <SelectItem value="none">None (Top Level Asset)</SelectItem>
                 {availableParentAssets.map((asset) => (
                   <SelectItem key={asset.id} value={asset.id}>
                     {asset.name}

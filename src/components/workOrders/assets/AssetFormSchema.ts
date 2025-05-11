@@ -10,7 +10,9 @@ export const assetFormSchema = z.object({
   serial_number: z.string().optional(),
   purchase_date: z.string().optional(),
   status: z.string().default("active"),
-  parent_id: z.string().optional()
+  parent_id: z.union([z.string(), z.literal("none")]).optional().transform(val => 
+    val === "none" ? null : val
+  )
 });
 
 export type AssetFormValues = z.infer<typeof assetFormSchema>;
