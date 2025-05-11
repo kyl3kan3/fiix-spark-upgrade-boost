@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +30,11 @@ import {
 import { Loader2 } from "lucide-react";
 import { WorkOrderComment, WorkOrderWithRelations } from "@/types/workOrders";
 
+// Define props interface for the component
+interface WorkOrderDetailProps {
+  workOrder: WorkOrderWithRelations;
+}
+
 const statusColorMap: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   in_progress: "bg-blue-100 text-blue-800",
@@ -44,37 +49,17 @@ const priorityColorMap: Record<string, string> = {
   urgent: "bg-red-100 text-red-800",
 };
 
-const WorkOrderDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+// Update component to receive and use the workOrder prop
+const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-  // Fetch work order details
-  const { data: workOrder, isLoading, error, refetch } = useQuery({
-    queryKey: ["workOrder", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("work_orders")
-        .select(`
-          *,
-          asset:assets(*),
-          assignee:profiles!work_orders_assigned_to_fkey(*),
-          creator:profiles!work_orders_created_by_fkey(*)
-        `)
-        .eq("id", id)
-        .single();
-
-      if (error) throw error;
-      return data as WorkOrderWithRelations;
-    },
-  });
-
   // Fetch comments for this work order
   const { data: comments, refetch: refetchComments } = useQuery({
-    queryKey: ["workOrderComments", id],
+    queryKey: ["workOrderComments", workOrder.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("work_order_comments")
@@ -82,21 +67,13 @@ const WorkOrderDetail: React.FC = () => {
           *,
           user:profiles(*)
         `)
-        .eq("work_order_id", id)
+        .eq("work_order_id", workOrder.id)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
       return data as (WorkOrderComment & { user: any })[];
     },
   });
-
-  if (error) {
-    toast({
-      title: "Error loading work order",
-      description: (error as Error).message || "An error occurred",
-      variant: "destructive"
-    });
-  }
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "—";
@@ -115,7 +92,7 @@ const WorkOrderDetail: React.FC = () => {
       const { error } = await supabase
         .from("work_orders")
         .delete()
-        .eq("id", id);
+        .eq("id", workOrder.id);
 
       if (error) throw error;
 
@@ -155,7 +132,7 @@ const WorkOrderDetail: React.FC = () => {
       const { error } = await supabase
         .from("work_order_comments")
         .insert({
-          work_order_id: id,
+          work_order_id: workOrder.id,
           user_id: user.id,
           comment: newComment.trim()
         });
@@ -180,27 +157,6 @@ const WorkOrderDetail: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-      </div>
-    );
-  }
-
-  if (!workOrder) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        <AlertTriangle className="h-10 w-10 mx-auto text-yellow-500 mb-4" />
-        <h2 className="text-xl font-medium mb-2">Work Order Not Found</h2>
-        <p className="mb-4">The work order you're looking for doesn't exist or has been deleted.</p>
-        <Link to="/work-orders">
-          <Button variant="outline">Back to Work Orders</Button>
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="flex flex-col space-y-6">
@@ -222,7 +178,7 @@ const WorkOrderDetail: React.FC = () => {
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to={`/work-orders/${id}/edit`}>
+              <Link to={`/work-orders/${workOrder.id}/edit`}>
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
               </Link>
