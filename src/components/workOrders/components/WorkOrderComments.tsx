@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,6 +64,13 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
       };
     },
   });
+
+  // Add comments to workOrder object for PDF export
+  useEffect(() => {
+    if (commentsData?.comments && workOrder) {
+      workOrder.comments = commentsData.comments;
+    }
+  }, [commentsData, workOrder]);
 
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;

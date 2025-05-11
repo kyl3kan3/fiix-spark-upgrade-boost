@@ -2,9 +2,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Download } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { formatDate } from "../utils/dateUtils";
+import { exportWorkOrderToPdf } from "../utils/pdfUtils";
 
 interface WorkOrderHeaderProps {
   workOrder: WorkOrderWithRelations;
@@ -15,6 +16,10 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
   workOrder, 
   onDelete 
 }) => {
+  const handleExportPdf = () => {
+    exportWorkOrderToPdf(workOrder);
+  };
+
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
@@ -26,11 +31,15 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
         </div>
       </div>
       
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button variant="outline" asChild>
           <Link to="/work-orders">
             Back
           </Link>
+        </Button>
+        <Button variant="outline" onClick={handleExportPdf}>
+          <Download className="h-4 w-4 mr-2" />
+          Export PDF
         </Button>
         <Button variant="outline" asChild>
           <Link to={`/work-orders/${workOrder.id}/edit`}>
