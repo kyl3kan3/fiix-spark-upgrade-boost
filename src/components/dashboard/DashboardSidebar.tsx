@@ -8,7 +8,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   Settings,
-  Tool,
+  Wrench,
   Users
 } from "lucide-react";
 
@@ -32,7 +32,7 @@ const DashboardSidebar = () => {
     {
       name: "Assets",
       href: "/assets",
-      icon: <Tool className="h-5 w-5" />,
+      icon: <Wrench className="h-5 w-5" />,
       isActive: location.pathname.includes("/assets"),
     },
     {
