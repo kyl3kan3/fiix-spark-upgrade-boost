@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, PieChart, LineChart, FilterIcon } from "lucide-react";
+import { BarChart3, PieChart, LineChart, FilterIcon, Download, Loader2 } from "lucide-react";
 import { 
   ResponsiveContainer, 
   LineChart as RechartLineChart, 
@@ -16,6 +16,8 @@ import {
   Bar
 } from "recharts";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { exportReportToPdf } from "@/utils/pdfExport";
 
 // Sample data for reports
 const monthlyWorkOrders = [
@@ -29,6 +31,8 @@ const monthlyWorkOrders = [
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const isMobile = useIsMobile();
   
   const handleGenerateReport = (reportType: string) => {
     setSelectedReport(reportType);
@@ -38,6 +42,19 @@ const ReportsContent: React.FC = () => {
   const handleGenerateCustomReport = (e: React.FormEvent) => {
     e.preventDefault();
     toast.success("Custom report generated successfully");
+  };
+
+  const handleExportPdf = async () => {
+    if (!selectedReport) return;
+    
+    setIsExporting(true);
+    try {
+      // For demonstration purposes, we're using the same data for all reports
+      // In a real application, you would use different data for each report type
+      await exportReportToPdf(selectedReport, monthlyWorkOrders);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -117,10 +134,31 @@ const ReportsContent: React.FC = () => {
                 {selectedReport === "Maintenance Trends" && <LineChart className="h-5 w-5" />}
                 <span>{selectedReport}</span>
               </div>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
-                <FilterIcon className="h-4 w-4" />
-                <span>Filter</span>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <FilterIcon className="h-4 w-4" />
+                  <span className={isMobile ? "sr-only" : ""}>Filter</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-1"
+                  onClick={handleExportPdf}
+                  disabled={isExporting}
+                >
+                  {isExporting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className={isMobile ? "sr-only" : ""}>Exporting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      <span className={isMobile ? "sr-only" : ""}>Export PDF</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -200,7 +238,24 @@ const ReportsContent: React.FC = () => {
             </div>
           </div>
           
-          <Button type="submit" className="bg-fiix-500 hover:bg-fiix-600">Generate Custom Report</Button>
+          <div className="flex gap-4">
+            <Button 
+              type="submit" 
+              className="bg-fiix-500 hover:bg-fiix-600"
+            >
+              Generate Custom Report
+            </Button>
+            <Button 
+              type="button"
+              variant="outline"
+              onClick={() => toast.info("PDF export will be available after generating the report")}
+              className="flex items-center gap-2"
+              disabled={true}
+            >
+              <Download className="h-4 w-4" />
+              Export PDF
+            </Button>
+          </div>
         </form>
       </div>
     </div>
