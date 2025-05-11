@@ -127,8 +127,8 @@ const Team = () => {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <label className="text-right text-sm font-medium col-span-1">Role</label>
-                <Select defaultValue="technician" className="col-span-3">
-                  <SelectTrigger>
+                <Select defaultValue="technician">
+                  <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                   <SelectContent>

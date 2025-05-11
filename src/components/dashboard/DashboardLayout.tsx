@@ -1,8 +1,8 @@
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Changed from useNavigate to Link
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Bell, User } from "lucide-react";
+import { Bell, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardSidebar from "./DashboardSidebar";
@@ -14,12 +14,18 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     if (!showNotifications) {
       toast.info("Notifications panel opened");
     }
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+    toast.info(sidebarOpen ? "Sidebar collapsed" : "Sidebar expanded");
   };
 
   return (
@@ -31,7 +37,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <header className="bg-white border-b border-gray-200">
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
-                <SidebarTrigger />
+                <SidebarTrigger>
+                  <Button variant="ghost" size="icon" className="mr-2">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                </SidebarTrigger>
               </div>
               <div className="flex items-center space-x-4">
                 <Button 
