@@ -10,9 +10,22 @@ export const assetFormSchema = z.object({
   serial_number: z.string().optional(),
   purchase_date: z.string().optional(),
   status: z.string().default("active"),
-  parent_id: z.union([z.string(), z.literal("none")]).optional().transform(val => 
+  parent_id: z.union([z.string(), z.literal("none"), z.literal("new")]).optional().transform(val => 
     val === "none" ? null : val
-  )
+  ),
+  // New fields for creating parent asset
+  parent_name: z.string().optional(),
+  parent_description: z.string().optional(),
+  // Flag to indicate if we're adding a new location
+  new_location: z.boolean().default(false),
+  // Field for new location name
+  new_location_name: z.string().optional(),
 });
 
 export type AssetFormValues = z.infer<typeof assetFormSchema>;
+
+// Location interface for dropdown
+export interface Location {
+  id: string;
+  name: string;
+}

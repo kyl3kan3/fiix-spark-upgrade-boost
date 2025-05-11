@@ -13,6 +13,12 @@ interface AssetWithChildren {
   children: AssetWithChildren[];
 }
 
+// Interface for the Location
+export interface Location {
+  id: string;
+  name: string;
+}
+
 export async function getAllAssets() {
   const { data, error } = await supabase
     .from("assets")
@@ -34,7 +40,7 @@ export async function getAssetById(assetId: string) {
   return data;
 }
 
-export async function createAsset(assetData: AssetFormValues) {
+export async function createAsset(assetData: Partial<AssetFormValues>) {
   const formattedData = {
     name: assetData.name,
     description: assetData.description || null,
@@ -54,7 +60,21 @@ export async function createAsset(assetData: AssetFormValues) {
   return response;
 }
 
-export async function updateAsset(assetId: string, assetData: AssetFormValues) {
+export async function createParentAsset(parentData: {
+  name: string;
+  description: string;
+  location: string | null;
+  status: string;
+}) {
+  const response = await supabase
+    .from("assets")
+    .insert(parentData)
+    .select();
+    
+  return response;
+}
+
+export async function updateAsset(assetId: string, assetData: Partial<AssetFormValues>) {
   const formattedData = {
     name: assetData.name,
     description: assetData.description || null,
@@ -73,6 +93,58 @@ export async function updateAsset(assetId: string, assetData: AssetFormValues) {
     .select();
     
   return response;
+}
+
+// Function to get all unique locations
+export async function getAllLocations() {
+  const { data, error } = await supabase
+    .from("assets")
+    .select("location")
+    .not("location", "is", null)
+    .order("location");
+    
+  if (error) throw error;
+  
+  // Filter out null values and create a unique set of locations
+  const uniqueLocations = Array.from(
+    new Set(data?.map(item => item.location).filter(Boolean) as string[])
+  );
+  
+  // Format locations as objects with id and name
+  return uniqueLocations.map(location => ({
+    id: location,
+    name: location
+  }));
+}
+
+// Function to create a new location (we'll store this as a new asset record to track it)
+export async function createLocation(locationName: string) {
+  // Check if location already exists
+  const { data: existingLocations } = await supabase
+    .from("assets")
+    .select("location")
+    .eq("location", locationName)
+    .limit(1);
+    
+  // If location doesn't exist yet, we'll add it by updating a dummy asset
+  // This is a simple way to maintain a list of locations without a separate table
+  if (!existingLocations || existingLocations.length === 0) {
+    // For simplicity, we'll create a minimal asset entry that just serves to register the location
+    const locationAsset = {
+      name: `Location: ${locationName}`,
+      description: `Location placeholder for: ${locationName}`,
+      location: locationName,
+      status: "active",
+    };
+    
+    const { error } = await supabase
+      .from("assets")
+      .insert(locationAsset);
+      
+    if (error) throw error;
+  }
+  
+  return { success: true };
 }
 
 export async function getAssetHierarchy() {

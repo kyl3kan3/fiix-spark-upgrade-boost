@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AssetFormData } from "@/types/workOrders";
 import { AssetFormFields } from "./AssetFormFields";
 import { assetFormSchema, AssetFormValues } from "./AssetFormSchema";
-import { createAsset, getAssetById, updateAsset } from "@/services/assetService";
+import { createAsset, getAssetById, updateAsset, createParentAsset } from "@/services/assetService";
 
 type AssetFormProps = {
   initialData?: AssetFormData;
@@ -40,7 +40,11 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
       serial_number: "",
       purchase_date: "",
       status: "active",
-      parent_id: "none"
+      parent_id: "none",
+      parent_name: "",
+      parent_description: "",
+      new_location: false,
+      new_location_name: ""
     },
   });
 
@@ -57,19 +61,54 @@ const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
           ? new Date(assetData.purchase_date).toISOString().split("T")[0] 
           : "",
         status: assetData.status,
-        parent_id: assetData.parent_id || "none"
+        parent_id: assetData.parent_id || "none",
+        parent_name: "",
+        parent_description: "",
+        new_location: false,
+        new_location_name: ""
       });
     }
   }, [assetData, form, isEditing]);
 
   const onSubmit = async (values: AssetFormValues) => {
     try {
+      let parentId = values.parent_id;
+      
+      // If creating a new parent asset
+      if (values.parent_id === "new" && values.parent_name) {
+        const parentResponse = await createParentAsset({
+          name: values.parent_name,
+          description: values.parent_description || "",
+          location: values.location,
+          status: "active",
+        });
+        
+        if (parentResponse.error) {
+          throw parentResponse.error;
+        }
+        
+        // Use the newly created parent asset's ID
+        parentId = parentResponse.data?.[0]?.id;
+      }
+      
+      // Prepare the asset data for creation/update
+      const assetData = {
+        name: values.name,
+        description: values.description,
+        location: values.location,
+        model: values.model,
+        serial_number: values.serial_number,
+        purchase_date: values.purchase_date,
+        status: values.status,
+        parent_id: parentId === "new" ? null : parentId
+      };
+      
       let response;
       
       if (isEditing && assetId) {
-        response = await updateAsset(assetId, values);
+        response = await updateAsset(assetId, assetData);
       } else {
-        response = await createAsset(values);
+        response = await createAsset(assetData);
       }
 
       if (response.error) {
