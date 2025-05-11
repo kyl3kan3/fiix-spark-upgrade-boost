@@ -1,4 +1,3 @@
-
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { WorkOrderWithRelations, WorkOrderComment } from "@/types/workOrders";
@@ -111,4 +110,69 @@ export const exportWorkOrderToPdf = (workOrder: WorkOrderWithRelations) => {
   // Save the PDF with a filename based on the work order ID and title
   const fileName = `work_order_${workOrder.id.split('-')[0]}_${workOrder.title.replace(/\s+/g, '_').toLowerCase()}.pdf`;
   doc.save(fileName);
+};
+
+export const exportWorkOrderToCsv = (workOrder: WorkOrderWithRelations) => {
+  // Define CSV headers
+  const headers = [
+    'ID',
+    'Title',
+    'Description',
+    'Status',
+    'Priority',
+    'Created Date',
+    'Due Date',
+    'Created By',
+    'Assigned To',
+    'Asset',
+    'Asset Location',
+    'Asset Serial Number'
+  ];
+  
+  // Format data for CSV
+  const data = [
+    workOrder.id.split('-')[0],
+    workOrder.title,
+    workOrder.description.replace(/,/g, ';').replace(/\n/g, ' '), // Replace commas and newlines to avoid CSV formatting issues
+    workOrder.status.replace('_', ' '),
+    workOrder.priority,
+    formatDate(workOrder.created_at),
+    workOrder.due_date ? formatDate(workOrder.due_date) : '',
+    workOrder.creator ? `${workOrder.creator.first_name} ${workOrder.creator.last_name}` : 'Unknown',
+    workOrder.assignee ? `${workOrder.assignee.first_name} ${workOrder.assignee.last_name}` : 'Unassigned',
+    workOrder.asset?.name || '',
+    workOrder.asset?.location || '',
+    workOrder.asset?.serial_number || ''
+  ];
+  
+  // Create CSV content
+  let csvContent = headers.join(',') + '\n';
+  csvContent += data.join(',');
+  
+  // Add comments section if there are comments
+  if (workOrder.comments && workOrder.comments.length > 0) {
+    csvContent += '\n\nCOMMENTS\n';
+    csvContent += 'User,Date,Comment\n';
+    
+    workOrder.comments.forEach((comment: CommentWithUser) => {
+      const commentUser = comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : 'Unknown';
+      const commentDate = formatDate(comment.created_at);
+      const commentText = comment.comment.replace(/,/g, ';').replace(/\n/g, ' '); // Replace commas and newlines
+      
+      csvContent += `${commentUser},${commentDate},${commentText}\n`;
+    });
+  }
+  
+  // Create and trigger download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `work_order_${workOrder.id.split('-')[0]}_${workOrder.title.replace(/\s+/g, '_').toLowerCase()}.csv`);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
