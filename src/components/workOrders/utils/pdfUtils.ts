@@ -1,8 +1,16 @@
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { WorkOrderWithRelations } from "@/types/workOrders";
+import { WorkOrderWithRelations, WorkOrderComment } from "@/types/workOrders";
 import { formatDate } from './dateUtils';
+
+// Define a proper type for the comment with user
+interface CommentWithUser extends WorkOrderComment {
+  user?: {
+    first_name: string;
+    last_name: string;
+  } | null;
+}
 
 export const exportWorkOrderToPdf = (workOrder: WorkOrderWithRelations) => {
   // Create a new PDF document
@@ -85,7 +93,7 @@ export const exportWorkOrderToPdf = (workOrder: WorkOrderWithRelations) => {
     autoTable(doc, {
       startY: yPosAfterDescription + 5,
       head: [['User', 'Date', 'Comment']],
-      body: workOrder.comments.map(comment => [
+      body: workOrder.comments.map((comment: CommentWithUser) => [
         comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : 'Unknown',
         formatDate(comment.created_at),
         comment.comment
