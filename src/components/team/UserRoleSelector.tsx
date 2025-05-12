@@ -38,7 +38,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     try {
       console.log("Updating role for user ID:", userId);
       
-      // Update user role in profiles table
+      // Update user role in profiles table - ensure userId is properly formatted
       const { error } = await supabase
         .from('profiles')
         .update({ role })

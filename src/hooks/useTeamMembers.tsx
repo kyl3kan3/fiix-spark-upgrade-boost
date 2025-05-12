@@ -27,7 +27,9 @@ export const useTeamMembers = () => {
         .select("*")
         .neq("id", currentUserId);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
       
       // Count unread messages for each user
       const users = await Promise.all(profiles.map(async (profile) => {
