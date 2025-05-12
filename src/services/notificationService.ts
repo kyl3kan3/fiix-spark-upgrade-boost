@@ -273,13 +273,13 @@ export const setupPushNotifications = async (): Promise<void> => {
 };
 
 // Function to initialize and configure the notification service
-export const initNotificationService = async (): Promise<void> => {
+export const initNotificationService = async (): Promise<(() => void) | undefined> => {
   try {
     // Check if user is logged in
     const { data } = await supabase.auth.getUser();
     const user = data?.user;
     
-    if (!user) return;
+    if (!user) return undefined;
     
     // Set up real-time listener for notifications
     const channel = supabase
@@ -311,5 +311,6 @@ export const initNotificationService = async (): Promise<void> => {
     };
   } catch (error) {
     console.error("Error initializing notification service:", error);
+    return undefined;
   }
 };

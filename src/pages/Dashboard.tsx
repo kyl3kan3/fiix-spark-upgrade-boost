@@ -26,16 +26,24 @@ const Dashboard: React.FC = () => {
     }
     
     // Initialize notification service
-    const cleanup = initNotificationService().catch(error => {
-      console.error("Failed to initialize notification service:", error);
-    });
+    let cleanup: (() => void) | undefined;
+    
+    const initNotifications = async () => {
+      try {
+        cleanup = await initNotificationService();
+      } catch (error) {
+        console.error("Failed to initialize notification service:", error);
+      }
+    };
+    
+    initNotifications();
     
     // Ask for push notification permission if not already granted
     setupPushNotifications().catch(error => {
       console.error("Failed to set up push notifications:", error);
     });
     
-    // If initNotificationService returns a cleanup function, use it
+    // Return cleanup function
     return () => {
       if (cleanup && typeof cleanup === 'function') {
         cleanup();
