@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -33,6 +33,24 @@ const SettingsTab: React.FC = () => {
   const [dashboardLayout, setDashboardLayout] = useState("Default");
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
+  // Load saved preferences on mount
+  useEffect(() => {
+    const storedPreferences = localStorage.getItem('notificationPreferences');
+    if (storedPreferences) {
+      setNotificationPreferences(JSON.parse(storedPreferences));
+    }
+
+    const storedDisplaySettings = localStorage.getItem('displaySettings');
+    if (storedDisplaySettings) {
+      setDisplaySettings(JSON.parse(storedDisplaySettings));
+    }
+
+    const storedLayout = localStorage.getItem('dashboardLayout');
+    if (storedLayout) {
+      setDashboardLayout(storedLayout);
+    }
+  }, []);
+
   const handleNotificationToggle = (id: number) => {
     setNotificationPreferences(prev => 
       prev.map(pref => 
@@ -48,11 +66,11 @@ const SettingsTab: React.FC = () => {
   };
 
   const handleDisplaySettingToggle = (id: string) => {
-    setDisplaySettings(prev => 
-      prev.map(setting => 
-        setting.id === id ? { ...setting, enabled: !setting.enabled } : setting
-      )
+    const updatedSettings = displaySettings.map(setting => 
+      setting.id === id ? { ...setting, enabled: !setting.enabled } : setting
     );
+    
+    setDisplaySettings(updatedSettings);
     
     const setting = displaySettings.find(s => s.id === id);
     if (setting) {
@@ -62,6 +80,9 @@ const SettingsTab: React.FC = () => {
       if (id === "darkMode") {
         applyDarkModeChange(!setting.enabled);
       }
+      
+      // Save display settings immediately to localStorage
+      localStorage.setItem('displaySettings', JSON.stringify(updatedSettings));
     }
     setHasPendingChanges(true);
   };
@@ -82,19 +103,17 @@ const SettingsTab: React.FC = () => {
   };
 
   const handleSaveSettings = () => {
-    // Here you would typically save settings to backend/localStorage
-    // For demonstration, we'll just show a toast and reset the pending changes flag
-    toast.success("Settings saved successfully");
-    setHasPendingChanges(false);
-    
-    // You could persist settings to localStorage here
+    // Save all settings to localStorage
     localStorage.setItem('notificationPreferences', JSON.stringify(notificationPreferences));
     localStorage.setItem('displaySettings', JSON.stringify(displaySettings));
     localStorage.setItem('dashboardLayout', dashboardLayout);
+    
+    toast.success("Settings saved successfully");
+    setHasPendingChanges(false);
   };
 
   return (
-    <Card>
+    <Card className="transition-colors dark:border-gray-700">
       <CardHeader>
         <CardTitle>Settings</CardTitle>
         <CardDescription>
@@ -106,10 +125,10 @@ const SettingsTab: React.FC = () => {
           <h3 className="text-lg font-medium">Notification Preferences</h3>
           <div className="grid gap-4">
             {notificationPreferences.map((pref) => (
-              <div key={pref.id} className="flex items-center justify-between p-3 border rounded-md">
+              <div key={pref.id} className="flex items-center justify-between p-3 border rounded-md dark:border-gray-700 dark:bg-gray-800/50">
                 <div>
                   <p className="font-medium">{pref.title}</p>
-                  <p className="text-sm text-gray-500">{pref.description}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{pref.description}</p>
                 </div>
                 <Switch
                   checked={pref.enabled}
@@ -125,10 +144,10 @@ const SettingsTab: React.FC = () => {
           <h3 className="text-lg font-medium">Display Settings</h3>
           <div className="grid gap-4">
             {displaySettings.map((setting) => (
-              <div key={setting.id} className="flex items-center justify-between p-3 border rounded-md">
+              <div key={setting.id} className="flex items-center justify-between p-3 border rounded-md dark:border-gray-700 dark:bg-gray-800/50">
                 <div>
                   <p className="font-medium">{setting.title}</p>
-                  <p className="text-sm text-gray-500">{setting.description}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{setting.description}</p>
                 </div>
                 <Switch
                   checked={setting.enabled}
@@ -138,13 +157,13 @@ const SettingsTab: React.FC = () => {
               </div>
             ))}
             
-            <div className="flex items-center justify-between p-3 border rounded-md">
+            <div className="flex items-center justify-between p-3 border rounded-md dark:border-gray-700 dark:bg-gray-800/50">
               <div>
                 <p className="font-medium">Dashboard Layout</p>
-                <p className="text-sm text-gray-500">Choose your preferred dashboard layout</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Choose your preferred dashboard layout</p>
               </div>
               <select 
-                className="border rounded-md px-2 py-1 text-sm"
+                className="border rounded-md px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 value={dashboardLayout}
                 onChange={handleLayoutChange}
               >

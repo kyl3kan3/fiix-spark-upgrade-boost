@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Bell, User } from "lucide-react";
@@ -18,7 +18,22 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if dark mode is enabled in localStorage when component mounts
+    const storedSettings = localStorage.getItem('displaySettings');
+    if (storedSettings) {
+      const settings = JSON.parse(storedSettings);
+      const darkModeSetting = settings.find((s: any) => s.id === "darkMode");
+      if (darkModeSetting && darkModeSetting.enabled) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, []);
   
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -30,14 +45,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const handleProfileClick = () => {
     navigate("/profile");
   };
+  
+  const handleNotificationCountChange = (count: number) => {
+    setUnreadCount(count);
+  };
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full bg-gray-50">
+      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900">
         <DashboardSidebar />
         
         <SidebarInset className="flex flex-col flex-1">
-          <header className="bg-white border-b border-gray-200">
+          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
                 <SidebarTrigger>
@@ -54,7 +73,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   className="relative"
                 >
                   <Bell className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Button>
                 <Button 
                   variant="ghost" 
@@ -69,16 +92,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
           </header>
           
-          <div className="container mx-auto px-4 pt-8 flex-1">
+          <div className="container mx-auto px-4 pt-8 flex-1 dark:bg-gray-900">
             {children}
             
             {/* Notifications Panel */}
-            {showNotifications && (
-              <DashboardNotifications 
-                isOpen={showNotifications}
-                setIsOpen={setShowNotifications}
-              />
-            )}
+            <DashboardNotifications 
+              isOpen={showNotifications}
+              setIsOpen={setShowNotifications}
+              onNotificationCountChange={handleNotificationCountChange}
+            />
           </div>
         </SidebarInset>
       </div>

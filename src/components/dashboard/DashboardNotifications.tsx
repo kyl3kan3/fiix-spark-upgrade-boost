@@ -99,7 +99,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/20 z-40" onClick={() => setIsOpen(false)} />
+        <div className="fixed inset-0 bg-black/20 dark:bg-black/50 z-40" onClick={() => setIsOpen(false)} />
       )}
       
       <div 
@@ -107,8 +107,8 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
           isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
         }`}
       >
-        <Card className="shadow-lg">
-          <div className="p-4 border-b flex items-center justify-between">
+        <Card className="shadow-lg dark:border-gray-700">
+          <div className="p-4 border-b dark:border-gray-700 flex items-center justify-between">
             <div className="flex items-center">
               <Bell className="h-5 w-5 text-maintenease-500 mr-2" />
               <h3 className="font-medium">Notifications</h3>
@@ -130,7 +130,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
           
           <div className="max-h-[400px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                 <p>No new notifications</p>
               </div>
             ) : (
@@ -138,13 +138,13 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
                 {notifications.map((notification) => (
                   <div 
                     key={notification.id} 
-                    className={`p-4 border-b last:border-0 hover:bg-gray-50 ${
-                      notification.read ? "" : "bg-blue-50/30"
+                    className={`p-4 border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800 dark:border-gray-700 ${
+                      notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20"
                     } relative`}
                   >
                     <p className="font-medium text-sm">{notification.title}</p>
-                    <p className="text-sm text-gray-600">{notification.description}</p>
-                    <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{notification.description}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{notification.time}</p>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -159,7 +159,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
             )}
           </div>
           
-          <div className="p-3 border-t flex justify-between">
+          <div className="p-3 border-t dark:border-gray-700 flex justify-between">
             <Button 
               variant="ghost" 
               size="sm"
