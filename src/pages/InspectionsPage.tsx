@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { InspectionsList } from "@/components/inspections/InspectionsList";
-import InspectionsFilters from "@/components/inspections/InspectionsFilters";
-import InspectionsCalendarView from "@/components/inspections/InspectionsCalendarView";
+import { InspectionsFilters } from "@/components/inspections/InspectionsFilters";
+import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import DailyChecklist from "@/components/inspections/DailyChecklist";
 
 const InspectionsPage = () => {
@@ -59,7 +59,7 @@ const InspectionsPage = () => {
             </TabsContent>
 
             <TabsContent value="calendar" className="mt-4">
-              <InspectionsCalendarView />
+              <InspectionsCalendarView filters={filters} />
             </TabsContent>
           </Tabs>
         </div>

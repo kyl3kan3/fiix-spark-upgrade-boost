@@ -102,10 +102,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
               )}
             </Button>
             
-            {showNotifications && <DashboardNotifications 
-              isOpen={showNotifications}
-              setIsOpen={setShowNotifications}
-            />}
+            {showNotifications && <DashboardNotifications />}
           </div>
 
           <Link to="/help">
