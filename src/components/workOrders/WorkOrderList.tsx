@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Plus } from "lucide-react";
@@ -10,27 +10,14 @@ import WorkOrdersTable from "./WorkOrdersTable";
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 
 const WorkOrderList: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string | "all">("all");
-  const [priorityFilter, setPriorityFilter] = useState<string | "all">("all");
+  const { 
+    workOrders, 
+    isLoading, 
+    filters, 
+    updateFilters, 
+    resetFilters 
+  } = useWorkOrders();
   
-  const { workOrders, isLoading } = useWorkOrders();
-
-  // Filter work orders based on search query and filters
-  const filteredWorkOrders = workOrders?.filter(workOrder => {
-    const matchesSearch = searchQuery.trim() === "" || 
-      workOrder.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workOrder.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workOrder.asset?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workOrder.assignee?.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      workOrder.assignee?.last_name?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === "all" || workOrder.status === statusFilter;
-    const matchesPriority = priorityFilter === "all" || workOrder.priority === priorityFilter;
-    
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
-
   return (
     <Card className="w-full">
       <CardHeader>
@@ -45,12 +32,9 @@ const WorkOrderList: React.FC = () => {
         </div>
         
         <WorkOrderFilters
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          priorityFilter={priorityFilter}
-          setPriorityFilter={setPriorityFilter}
+          filters={filters}
+          updateFilters={updateFilters}
+          resetFilters={resetFilters}
         />
       </CardHeader>
       
@@ -59,8 +43,8 @@ const WorkOrderList: React.FC = () => {
           <div className="flex justify-center items-center h-40">
             <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
           </div>
-        ) : filteredWorkOrders && filteredWorkOrders.length > 0 ? (
-          <WorkOrdersTable workOrders={filteredWorkOrders} />
+        ) : workOrders && workOrders.length > 0 ? (
+          <WorkOrdersTable workOrders={workOrders} isLoading={isLoading} />
         ) : (
           <EmptyWorkOrdersState />
         )}

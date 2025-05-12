@@ -3,14 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { WorkOrderWithRelations } from "@/types/workOrders";
+import { WorkOrderStatus, WorkOrderPriority, WorkOrderWithRelations } from "@/types/workOrders";
 
 export const useWorkOrders = () => {
   const { toast } = useToast();
   const [filters, setFilters] = useState({
     searchQuery: "",
-    statusFilter: "all" as string | "all",
-    priorityFilter: "all" as string | "all"
+    statusFilter: "all" as "all" | WorkOrderStatus,
+    priorityFilter: "all" as "all" | WorkOrderPriority
   });
 
   const { data: workOrders, isLoading, error, refetch } = useQuery({

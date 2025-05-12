@@ -10,17 +10,18 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { WorkOrderStatus, WorkOrderPriority } from "@/types/workOrders";
 
-interface WorkOrderFiltersProps {
+export interface WorkOrderFiltersProps {
   filters: {
     searchQuery: string;
-    statusFilter: string | "all";
-    priorityFilter: string | "all";
+    statusFilter: "all" | WorkOrderStatus;
+    priorityFilter: "all" | WorkOrderPriority;
   };
   updateFilters: (filters: Partial<{
     searchQuery: string;
-    statusFilter: string | "all";
-    priorityFilter: string | "all";
+    statusFilter: "all" | WorkOrderStatus;
+    priorityFilter: "all" | WorkOrderPriority;
   }>) => void;
   resetFilters: () => void;
 }
@@ -46,7 +47,7 @@ const WorkOrderFilters: React.FC<WorkOrderFiltersProps> = ({
         <div className="flex gap-2 flex-wrap">
           <Select
             value={filters.statusFilter}
-            onValueChange={(value) => updateFilters({ statusFilter: value })}
+            onValueChange={(value) => updateFilters({ statusFilter: value as "all" | WorkOrderStatus })}
           >
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Status" />
@@ -62,7 +63,7 @@ const WorkOrderFilters: React.FC<WorkOrderFiltersProps> = ({
           
           <Select
             value={filters.priorityFilter}
-            onValueChange={(value) => updateFilters({ priorityFilter: value })}
+            onValueChange={(value) => updateFilters({ priorityFilter: value as "all" | WorkOrderPriority })}
           >
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Priority" />
