@@ -7,6 +7,8 @@ export interface ChatUser {
   avatar: string | null;
   online: boolean;
   unread: number;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface Message {

@@ -31,7 +31,9 @@ const Team = () => {
     phone: "+1 (555) 123-4567", // Default phone as this isn't in the ChatUser type
     avatar: member.avatar || member.name.substring(0, 2).toUpperCase(),
     joined: "Recently", // This info isn't available in ChatUser
-    lastActive: member.online ? "Just now" : "Recently"
+    lastActive: member.online ? "Just now" : "Recently",
+    firstName: member.firstName,
+    lastName: member.lastName
   }));
 
   const roleColorMap: RoleColorMap = {

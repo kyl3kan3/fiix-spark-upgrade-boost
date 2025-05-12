@@ -8,12 +8,10 @@ export interface TeamMember {
   avatar: string;
   joined: string;
   lastActive: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export type RoleColorMap = {
-  administrator: string;
-  manager: string;
-  technician: string;
-  viewer: string;
   [key: string]: string;
 };

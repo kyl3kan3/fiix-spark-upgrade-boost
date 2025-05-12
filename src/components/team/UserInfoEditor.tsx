@@ -31,10 +31,9 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   
-  // Split the name into first and last name if needed
-  const nameParts = user.name.split(" ");
-  const initialFirstName = user.firstName || nameParts[0] || "";
-  const initialLastName = user.lastName || nameParts.slice(1).join(" ") || "";
+  // Use provided firstName/lastName if available, otherwise split the name
+  const initialFirstName = user.firstName || user.name.split(" ")[0] || "";
+  const initialLastName = user.lastName || user.name.split(" ").slice(1).join(" ") || "";
 
   const form = useForm({
     defaultValues: {
@@ -65,6 +64,7 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
         throw error;
       }
       
+      console.log("Profile updated successfully");
       toast.success("User information updated successfully");
       onUserUpdated();
       onOpenChange(false);

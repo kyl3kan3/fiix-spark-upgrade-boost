@@ -66,7 +66,9 @@ export const useTeamMembers = () => {
           role: profile.role || "viewer",
           avatar: profile.avatar_url ? profile.avatar_url : (displayName.substring(0, 2).toUpperCase()),
           online: false,  // We'll set this to false for now
-          unread: count || 0
+          unread: count || 0,
+          firstName: profile.first_name || '',
+          lastName: profile.last_name || ''
         };
       }));
 

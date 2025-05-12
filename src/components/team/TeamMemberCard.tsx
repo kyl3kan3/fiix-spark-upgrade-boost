@@ -16,6 +16,8 @@ interface TeamMemberProps {
     avatar: string;
     joined: string;
     lastActive: string;
+    firstName?: string;
+    lastName?: string;
   };
   roleColorMap: Record<string, string>;
   onMemberUpdated: () => void;
@@ -76,6 +78,8 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
             name: member.name,
             email: member.email,
             phone: member.phone,
+            firstName: member.firstName,
+            lastName: member.lastName,
           }}
           onUserUpdated={onMemberUpdated}
         />
