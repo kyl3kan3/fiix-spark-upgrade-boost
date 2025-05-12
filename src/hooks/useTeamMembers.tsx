@@ -64,7 +64,7 @@ export const useTeamMembers = () => {
           name: displayName,
           email: profile.email,
           role: profile.role || "viewer",
-          avatar: profile.avatar_url ? profile.avatar_url : (displayName.substring(0, 2).toUpperCase()),
+          avatar: profile.avatar_url ? profile.avatar_url : (profile.first_name && profile.last_name ? `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase() : displayName.substring(0, 2).toUpperCase()),
           online: false,  // We'll set this to false for now
           unread: count || 0,
           firstName: profile.first_name || '',
@@ -92,6 +92,26 @@ export const useTeamMembers = () => {
   useEffect(() => {
     console.log("useEffect triggered in useTeamMembers, fetching data...");
     fetchTeamMembers();
+
+    // Create a channel to listen for new messages
+    const channel = supabase
+      .channel('public:messages')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'messages'
+        },
+        () => {
+          // When any message changes, refresh the unread counts
+          console.log("Message table changed, refreshing team members");
+          fetchTeamMembers();
+        })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [fetchTeamMembers, lastRefreshed]);
 
   return { 

@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import { Search, UserCheck, Circle } from "lucide-react";
+import { Search, MessageCircle, Circle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatUser } from "@/types/chat";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 interface UserListProps {
   users: ChatUser[];
@@ -19,12 +20,19 @@ const UserList: React.FC<UserListProps> = ({
   onSelectUser,
   loading 
 }) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => 
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [users, searchQuery]);
+
+  // Sort users with unread messages first
+  const sortedUsers = useMemo(() => {
+    return [...filteredUsers].sort((a, b) => b.unread - a.unread);
+  }, [filteredUsers]);
 
   return (
     <div className="flex flex-col h-full">
@@ -37,8 +45,6 @@ const UserList: React.FC<UserListProps> = ({
           className="pl-8"
         />
       </div>
-      
-      <h3 className="text-sm font-medium mb-2">Team Members</h3>
       
       <ScrollArea className="flex-1">
         {loading ? (
@@ -55,12 +61,16 @@ const UserList: React.FC<UserListProps> = ({
           </div>
         ) : (
           <div className="space-y-1">
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
+            {sortedUsers.length > 0 ? (
+              sortedUsers.map((user) => (
                 <div
                   key={user.id}
-                  className={`flex items-center p-2 rounded cursor-pointer ${
-                    selectedUser?.id === user.id ? "bg-maintenease-100" : "hover:bg-gray-100"
+                  className={`flex items-center p-2 rounded cursor-pointer transition-colors ${
+                    selectedUser?.id === user.id 
+                      ? "bg-maintenease-100" 
+                      : user.unread > 0 
+                        ? "bg-maintenease-50 hover:bg-maintenease-100" 
+                        : "hover:bg-gray-100"
                   }`}
                   onClick={() => onSelectUser(user)}
                 >
@@ -69,16 +79,18 @@ const UserList: React.FC<UserListProps> = ({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="font-medium truncate">{user.name}</p>
+                      <p className={`font-medium truncate ${user.unread > 0 ? "text-maintenease-800 font-semibold" : ""}`}>
+                        {user.name}
+                      </p>
                       {user.unread > 0 && (
-                        <span className="ml-2 bg-maintenease-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <Badge variant="default" className="ml-2 bg-maintenease-600">
                           {user.unread}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
-                      {user.online ? (
-                        <UserCheck className="h-3 w-3 text-green-500 mr-1" />
+                      {user.unread > 0 ? (
+                        <MessageCircle className="h-3 w-3 text-maintenease-600 mr-1" />
                       ) : (
                         <Circle className="h-3 w-3 text-gray-400 mr-1" />
                       )}
@@ -88,7 +100,9 @@ const UserList: React.FC<UserListProps> = ({
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-gray-500">No users found</div>
+              <div className="text-center py-4 text-gray-500">
+                {searchQuery ? "No users found" : "No team members available"}
+              </div>
             )}
           </div>
         )}

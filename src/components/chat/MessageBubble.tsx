@@ -1,18 +1,19 @@
 
 import React from "react";
-import { format } from "date-fns";
 import { CheckCheck } from "lucide-react";
 import { Message } from "@/types/chat";
 
 interface MessageBubbleProps {
   message: Message;
   isOwnMessage: boolean;
+  formattedTime: string;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwnMessage }) => {
-  const messageTime = new Date(message.created_at);
-  const formattedTime = format(messageTime, "HH:mm");
-  
+const MessageBubble: React.FC<MessageBubbleProps> = ({ 
+  message, 
+  isOwnMessage,
+  formattedTime
+}) => {
   return (
     <div 
       className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}

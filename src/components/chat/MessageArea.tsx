@@ -1,12 +1,12 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Paperclip } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import { ChatUser, Message } from "@/types/chat";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 interface MessageAreaProps {
   selectedUser: ChatUser | null;
@@ -40,7 +40,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
   }, [selectedUser, messages, onMarkAsRead]);
 
   const handleSend = async () => {
-    if (newMessage.trim() && !sending) {
+    if (newMessage.trim() && !sending && selectedUser) {
       setSending(true);
       await onSendMessage(newMessage);
       setNewMessage("");
@@ -69,6 +69,46 @@ const MessageArea: React.FC<MessageAreaProps> = ({
     getCurrentUser();
   }, []);
 
+  const formatMessageDate = (dateString: string) => {
+    const today = new Date();
+    const messageDate = new Date(dateString);
+    
+    // If message is from today, show only time
+    if (messageDate.toDateString() === today.toDateString()) {
+      return format(messageDate, "HH:mm");
+    }
+    
+    // If message is from this year, show date without year
+    if (messageDate.getFullYear() === today.getFullYear()) {
+      return format(messageDate, "d MMM, HH:mm");
+    }
+    
+    // Otherwise show full date
+    return format(messageDate, "d MMM yyyy, HH:mm");
+  };
+  
+  // Group messages by date
+  const groupedMessages = React.useMemo(() => {
+    const groups: { date: string; messages: Message[] }[] = [];
+    
+    messages.forEach(message => {
+      const messageDate = new Date(message.created_at);
+      const dateKey = messageDate.toDateString();
+      
+      const existingGroup = groups.find(group => group.date === dateKey);
+      if (existingGroup) {
+        existingGroup.messages.push(message);
+      } else {
+        groups.push({
+          date: dateKey,
+          messages: [message]
+        });
+      }
+    });
+    
+    return groups;
+  }, [messages]);
+  
   return (
     <div className="flex flex-col h-full">
       {selectedUser ? (
@@ -92,16 +132,30 @@ const MessageArea: React.FC<MessageAreaProps> = ({
               </div>
             ) : messages.length === 0 ? (
               <div className="text-center py-10 text-gray-500">
-                No messages yet. Start the conversation!
+                <p className="mb-2">No messages yet with {selectedUser.name}.</p>
+                <p>Start the conversation!</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    isOwnMessage={currentUser?.id === message.sender_id}
-                  />
+              <div className="space-y-6">
+                {groupedMessages.map((group, groupIndex) => (
+                  <div key={groupIndex} className="space-y-4">
+                    <div className="flex justify-center">
+                      <div className="bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded-full">
+                        {format(new Date(group.date), "EEEE, MMMM d, yyyy")}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {group.messages.map((message) => (
+                        <MessageBubble
+                          key={message.id}
+                          message={message}
+                          isOwnMessage={currentUser?.id === message.sender_id}
+                          formattedTime={formatMessageDate(message.created_at)}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
                 <div ref={messagesEndRef} />
               </div>
@@ -114,20 +168,27 @@ const MessageArea: React.FC<MessageAreaProps> = ({
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="resize-none min-h-[80px]"
+              className="resize-none min-h-[80px] focus-visible:ring-maintenease-500"
+              maxLength={5000}
             />
-            <Button 
-              className="flex-shrink-0" 
-              onClick={handleSend}
-              disabled={!newMessage.trim() || sending}
-            >
-              {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button 
+                className="flex-shrink-0" 
+                onClick={handleSend}
+                disabled={!newMessage.trim() || sending || !selectedUser}
+              >
+                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-center h-full text-gray-500">
-          Select a user to start chatting
+        <div className="flex flex-col items-center justify-center h-full text-gray-500 p-4">
+          <div className="mb-4">
+            <MessageCircle className="h-12 w-12 text-gray-300" />
+          </div>
+          <h3 className="text-lg font-medium mb-2">No conversation selected</h3>
+          <p className="text-center">Select a team member from the list to start chatting</p>
         </div>
       )}
     </div>

@@ -32,7 +32,10 @@ export const useMessages = (recipientId: string | undefined) => {
 
         if (error) throw error;
 
-        setMessages(data);
+        setMessages(data || []);
+        
+        // Mark messages from this recipient as read
+        markAsRead();
       } catch (error) {
         console.error("Error fetching messages:", error);
         toast({
@@ -55,12 +58,16 @@ export const useMessages = (recipientId: string | undefined) => {
           event: '*', 
           schema: 'public', 
           table: 'messages',
-          filter: `recipient_id=eq.${recipientId}`
+          filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
         }, 
         (payload) => {
           // Handle different types of changes
           if (payload.eventType === 'INSERT') {
             setMessages(prev => [...prev, payload.new as Message]);
+            // Auto-mark messages as read if they're from the current recipient
+            if (payload.new.sender_id === recipientId) {
+              markAsRead();
+            }
           } else if (payload.eventType === 'UPDATE') {
             setMessages(prev => 
               prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
