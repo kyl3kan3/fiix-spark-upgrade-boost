@@ -115,7 +115,7 @@ const DashboardSidebar = () => {
   ];
 
   return (
-    <Sidebar>
+    <Sidebar variant="inset">
       <SidebarContent>
         <div className="mt-6 px-2">
           <div className="flex items-center justify-between mb-4">
@@ -127,7 +127,7 @@ const DashboardSidebar = () => {
               variant="ghost" 
               size="icon" 
               onClick={toggleSidebar} 
-              className={cn("hover:bg-gray-100", !isCollapsed && "block")}
+              className="hover:bg-gray-100 transition-colors"
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -165,7 +165,7 @@ const DashboardSidebar = () => {
         </div>
       </SidebarContent>
       
-      {/* The SidebarRail component is crucial for the toggle functionality when collapsed */}
+      {/* Make sure SidebarRail is present for the toggle functionality */}
       <SidebarRail />
     </Sidebar>
   );

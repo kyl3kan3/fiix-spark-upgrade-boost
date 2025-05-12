@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
@@ -12,6 +11,7 @@ import { toast } from "sonner";
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  
   const { teamMembers, loading, refreshTeamMembers } = useTeamMembers();
   
   // Force refresh when component mounts to ensure we have the latest data
