@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -112,6 +111,14 @@ const SettingsTab: React.FC = () => {
     setHasPendingChanges(false);
   };
 
+  const handleResetSetup = () => {
+    // Confirm before resetting
+    if (window.confirm('Are you sure you want to reset the setup wizard? This will clear all setup data.')) {
+      localStorage.removeItem('maintenease_setup_complete');
+      toast.success('Setup wizard has been reset. You can now access the setup page again.');
+    }
+  };
+
   return (
     <Card className="transition-colors dark:border-gray-700">
       <CardHeader>
@@ -172,6 +179,26 @@ const SettingsTab: React.FC = () => {
                 <option>Detailed</option>
               </select>
             </div>
+          </div>
+        </div>
+        
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-medium">System Settings</h3>
+            <p className="text-sm text-muted-foreground">
+              Advanced system configuration options.
+            </p>
+          </div>
+          <div className="border-t pt-5">
+            <Button 
+              variant="destructive" 
+              onClick={handleResetSetup}
+            >
+              Reset Setup Wizard
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              This will allow you to go through the setup process again.
+            </p>
           </div>
         </div>
       </CardContent>

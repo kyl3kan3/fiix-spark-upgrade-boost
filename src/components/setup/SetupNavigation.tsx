@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
@@ -45,6 +44,7 @@ export const SetupNavigation: React.FC = () => {
     try {
       // For now, we'll just use localStorage until we create a system_settings table
       localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
+      localStorage.setItem('maintenease_setup_complete', 'true');
       
       setSetupComplete(true);
       toast.success("Setup completed successfully!");
