@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Check, DragVertical, LayoutDashboard, Plus, Trash2 } from "lucide-react";
+import { Check, MoveVertical, LayoutDashboard, Plus, Trash2 } from "lucide-react";
 import { Draggable } from "@/components/ui/draggable";
 
 interface WidgetOption {
@@ -236,7 +235,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
                     >
                       <div className="flex items-center gap-3">
                         <div className="text-gray-400 cursor-move">
-                          <DragVertical className="h-5 w-5" />
+                          <MoveVertical className="h-5 w-5" />
                         </div>
                         <div>
                           <div className="font-medium">{widget.name}</div>

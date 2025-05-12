@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -19,7 +18,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Integration, Link, FileJson, DollarSign, LucideIcon, Mail } from "lucide-react";
+import { IterationCw, Link, FileJson, DollarSign, Mail } from "lucide-react";
 
 interface IntegrationOption {
   id: string;
@@ -134,7 +133,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Integration className="h-6 w-6 text-maintenease-600" />
+        <IterationCw className="h-6 w-6 text-maintenease-600" />
         <h2 className="text-xl font-semibold">Integrations</h2>
       </div>
       

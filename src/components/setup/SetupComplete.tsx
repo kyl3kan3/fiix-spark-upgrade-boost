@@ -1,9 +1,12 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SetupComplete: React.FC = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="flex flex-col items-center py-12 text-center">
       <div className="rounded-full bg-green-100 p-3 mb-6">
@@ -54,7 +57,7 @@ const SetupComplete: React.FC = () => {
         </div>
       </div>
       
-      <Button size="lg" className="gap-2 mb-6">
+      <Button size="lg" className="gap-2 mb-6" onClick={() => navigate('/dashboard')}>
         Go to Dashboard <ArrowRight className="h-4 w-4" />
       </Button>
       

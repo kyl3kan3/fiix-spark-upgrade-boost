@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, ArrowRight, CheckCircle, Settings } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import CompanyInfoSetup from "@/components/setup/CompanyInfoSetup";
@@ -52,7 +52,8 @@ const SetupPage = () => {
 
   const handleNext = async () => {
     if (currentStep < steps.length - 1) {
-      // Save current step data to Supabase here if needed
+      // Save current step data to local storage for now
+      localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
       setCurrentStep(currentStep + 1);
       window.scrollTo(0, 0);
     }
@@ -75,11 +76,8 @@ const SetupPage = () => {
 
   const handleComplete = async () => {
     try {
-      // Save all setup data to Supabase
-      await supabase.from('system_settings').upsert({
-        settings: setupData,
-        updated_by: (await supabase.auth.getSession()).data.session?.user.id
-      });
+      // For now, we'll just use localStorage until we create a system_settings table
+      localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
       
       setSetupComplete(true);
       toast.success("Setup completed successfully!");

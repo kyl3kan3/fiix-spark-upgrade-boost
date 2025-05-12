@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, Clock, AlertTriangle, MessageSquare, AlarmClock, Mail, SmartPhone } from "lucide-react";
+import { Bell, Clock, AlertTriangle, MessageSquare, AlarmClock, Mail, Smartphone } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -212,7 +212,7 @@ const NotificationSetup: React.FC<NotificationSettingsProps> = ({ data, onUpdate
                       <span className="text-sm">Email</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <SmartPhone className="h-4 w-4 text-muted-foreground" />
+                      <Smartphone className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Push</span>
                     </div>
                     <div className="flex items-center gap-2">
