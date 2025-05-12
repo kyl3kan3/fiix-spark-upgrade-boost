@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -19,59 +18,10 @@ import { ArrowLeft, Check, X, Clock } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Inspection } from "@/types/inspections";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
-// Mock inspections data - in a real app you'd fetch from API/database
-const mockInspections: Record<string, Inspection> = {
-  "insp-001": {
-    id: "insp-001",
-    title: "Annual HVAC System Inspection",
-    description: "Comprehensive inspection of the HVAC system",
-    assetId: "asset-001",
-    assetName: "Main Building HVAC",
-    status: "scheduled",
-    priority: "high",
-    assignedTo: "John Doe",
-    scheduledDate: "2025-05-25T10:00:00",
-    items: [
-      { id: "item-001", name: "Filter check", passed: null, notes: "" },
-      { id: "item-002", name: "Duct inspection", passed: null, notes: "" },
-      { id: "item-003", name: "Thermostat calibration", passed: null, notes: "" }
-    ]
-  },
-  "insp-002": {
-    id: "insp-002",
-    title: "Quarterly Fire Alarm Test",
-    description: "Routine inspection of all fire alarm systems",
-    assetId: "asset-002",
-    assetName: "Building Safety Systems",
-    status: "completed",
-    priority: "critical",
-    assignedTo: "Sarah Johnson",
-    scheduledDate: "2025-05-10T09:00:00",
-    completedDate: "2025-05-10T11:30:00",
-    items: [
-      { id: "item-004", name: "Alarm trigger test", passed: true, notes: "All systems responding properly" },
-      { id: "item-005", name: "Sprinkler system check", passed: true, notes: "Pressure optimal" },
-      { id: "item-006", name: "Emergency lighting test", passed: true, notes: "All lights functional" }
-    ]
-  },
-  "insp-003": {
-    id: "insp-003",
-    title: "Monthly Generator Inspection",
-    description: "Regular inspection of backup power systems",
-    assetId: "asset-003",
-    assetName: "Backup Generator #2",
-    status: "in-progress",
-    priority: "medium",
-    assignedTo: "Mike Smith",
-    scheduledDate: "2025-05-15T13:00:00",
-    items: [
-      { id: "item-007", name: "Fuel level check", passed: true, notes: "Fuel at 85%" },
-      { id: "item-008", name: "Battery test", passed: null, notes: "" },
-      { id: "item-009", name: "Load test", passed: null, notes: "" }
-    ]
-  }
-};
+// Empty object to replace mock data
+const mockInspections: Record<string, Inspection> = {};
 
 const InspectionDetailPage = () => {
   const { inspectionId } = useParams();
@@ -153,6 +103,8 @@ const InspectionDetailPage = () => {
       status: newStatus,
       completedDate: newStatus === 'completed' ? new Date().toISOString() : inspection.completedDate
     });
+    
+    toast.success(`Inspection status updated to ${newStatus}`);
   };
 
   return (

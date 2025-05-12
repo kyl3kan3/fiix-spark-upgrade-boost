@@ -6,23 +6,27 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import DashboardQuickActions from "../DashboardQuickActions";
 import DashboardRecentActivities from "../DashboardRecentActivities";
 import DashboardTasksOverview from "../DashboardTasksOverview";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 
 const OverviewTab: React.FC = () => {
   const navigate = useNavigate();
   
-  // Mock data for dashboard elements
-  const workOrderStats = {
-    total: 24,
-    open: 8,
-    inProgress: 12,
-    completed: 4,
-  };
+  // State for dashboard data
+  const [workOrderStats, setWorkOrderStats] = useState({
+    total: 0,
+    open: 0,
+    inProgress: 0,
+    completed: 0,
+  });
   
-  const recentWorkOrders = [
-    { id: "WO-2023-154", title: "HVAC Maintenance", status: "in-progress", priority: "medium" },
-    { id: "WO-2023-153", title: "Leaking Pipe Repair", status: "open", priority: "high" },
-    { id: "WO-2023-152", title: "Light Fixture Replacement", status: "completed", priority: "low" },
-  ];
+  const [recentWorkOrders, setRecentWorkOrders] = useState([]);
+  
+  // Fetch real data when available
+  useEffect(() => {
+    // In a real implementation, this would fetch data from the backend
+    // For now, we'll just use empty data
+  }, []);
   
   return (
     <div className="space-y-6">
@@ -86,33 +90,39 @@ const OverviewTab: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentWorkOrders.map((order) => (
-              <div 
-                key={order.id} 
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div>
-                  <p className="font-medium">{order.title}</p>
-                  <p className="text-sm text-gray-500">{order.id}</p>
+            {recentWorkOrders.length > 0 ? (
+              recentWorkOrders.map((order) => (
+                <div 
+                  key={order.id} 
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div>
+                    <p className="font-medium">{order.title}</p>
+                    <p className="text-sm text-gray-500">{order.id}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
+                      ${order.priority === "high" ? "bg-red-100 text-red-800" : 
+                        order.priority === "medium" ? "bg-yellow-100 text-yellow-800" : 
+                        "bg-green-100 text-green-800"}`}
+                    >
+                      {order.priority}
+                    </span>
+                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
+                      ${order.status === "open" ? "bg-blue-100 text-blue-800" : 
+                        order.status === "in-progress" ? "bg-purple-100 text-purple-800" : 
+                        "bg-green-100 text-green-800"}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
-                    ${order.priority === "high" ? "bg-red-100 text-red-800" : 
-                      order.priority === "medium" ? "bg-yellow-100 text-yellow-800" : 
-                      "bg-green-100 text-green-800"}`}
-                  >
-                    {order.priority}
-                  </span>
-                  <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
-                    ${order.status === "open" ? "bg-blue-100 text-blue-800" : 
-                      order.status === "in-progress" ? "bg-purple-100 text-purple-800" : 
-                      "bg-green-100 text-green-800"}`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
+              ))
+            ) : (
+              <div className="text-center p-6 text-gray-500">
+                No work orders available
               </div>
-            ))}
+            )}
           </div>
         </CardContent>
         <CardFooter>

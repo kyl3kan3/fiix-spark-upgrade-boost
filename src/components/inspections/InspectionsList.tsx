@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Inspection } from "@/types/inspections";
@@ -13,58 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
-// Mock data for inspections
-const mockInspections: Inspection[] = [
-  {
-    id: "insp-001",
-    title: "Annual HVAC System Inspection",
-    description: "Comprehensive inspection of the HVAC system",
-    assetId: "asset-001",
-    assetName: "Main Building HVAC",
-    status: "scheduled",
-    priority: "high",
-    assignedTo: "John Doe",
-    scheduledDate: "2025-05-25T10:00:00",
-    items: [
-      { id: "item-001", name: "Filter check", passed: null, notes: "" },
-      { id: "item-002", name: "Duct inspection", passed: null, notes: "" },
-      { id: "item-003", name: "Thermostat calibration", passed: null, notes: "" }
-    ]
-  },
-  {
-    id: "insp-002",
-    title: "Quarterly Fire Alarm Test",
-    description: "Routine inspection of all fire alarm systems",
-    assetId: "asset-002",
-    assetName: "Building Safety Systems",
-    status: "completed",
-    priority: "critical",
-    assignedTo: "Sarah Johnson",
-    scheduledDate: "2025-05-10T09:00:00",
-    completedDate: "2025-05-10T11:30:00",
-    items: [
-      { id: "item-004", name: "Alarm trigger test", passed: true, notes: "All systems responding properly" },
-      { id: "item-005", name: "Sprinkler system check", passed: true, notes: "Pressure optimal" },
-      { id: "item-006", name: "Emergency lighting test", passed: true, notes: "All lights functional" }
-    ]
-  },
-  {
-    id: "insp-003",
-    title: "Monthly Generator Inspection",
-    description: "Regular inspection of backup power systems",
-    assetId: "asset-003",
-    assetName: "Backup Generator #2",
-    status: "in-progress",
-    priority: "medium",
-    assignedTo: "Mike Smith",
-    scheduledDate: "2025-05-15T13:00:00",
-    items: [
-      { id: "item-007", name: "Fuel level check", passed: true, notes: "Fuel at 85%" },
-      { id: "item-008", name: "Battery test", passed: null, notes: "" },
-      { id: "item-009", name: "Load test", passed: null, notes: "" }
-    ]
-  }
-];
+// Empty array to be replaced with data from the database
+const inspections: Inspection[] = [];
 
 interface InspectionsListProps {
   filters: {
@@ -77,7 +26,7 @@ interface InspectionsListProps {
 
 export const InspectionsList: React.FC<InspectionsListProps> = ({ filters }) => {
   const navigate = useNavigate();
-  const [inspections] = useState<Inspection[]>(mockInspections);
+  const [inspections] = useState<Inspection[]>(inspections);
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -150,7 +99,7 @@ export const InspectionsList: React.FC<InspectionsListProps> = ({ filters }) => 
                   </span>
                 </TableCell>
                 <TableCell>{inspection.assignedTo}</TableCell>
-                <TableCell>{format(new Date(inspection.scheduledDate), "MMM d, yyyy")}</TableCell>
+                <TableCell>{inspection.scheduledDate ? format(new Date(inspection.scheduledDate), "MMM d, yyyy") : ""}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"

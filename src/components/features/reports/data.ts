@@ -1,4 +1,3 @@
-
 // Sample data for reports
 export const monthlyWorkOrders = [
   { month: "Jan", completed: 42, requested: 52, onTime: 38, late: 4, preventive: 18, corrective: 24 },
