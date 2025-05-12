@@ -26,9 +26,31 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 
+// A wrapper hook that safely uses the sidebar context or provides fallback values
+const useSafeShidebar = () => {
+  // Fallback state in case the provider is not available
+  const [localState, setLocalState] = useState<"expanded" | "collapsed">("expanded");
+  
+  try {
+    // Try to use the actual sidebar context
+    return useSidebar();
+  } catch (error) {
+    // If context is not available, return fallback implementations
+    return {
+      state: localState,
+      open: localState === "expanded",
+      setOpen: (value: boolean) => setLocalState(value ? "expanded" : "collapsed"),
+      isMobile: false,
+      openMobile: false,
+      setOpenMobile: () => {},
+      toggleSidebar: () => setLocalState(prev => prev === "expanded" ? "collapsed" : "expanded")
+    };
+  }
+};
+
 const DashboardSidebar = () => {
   const location = useLocation();
-  const { state: sidebarState, toggleSidebar } = useSidebar();
+  const { state: sidebarState, toggleSidebar } = useSafeShidebar();
   const isCollapsed = sidebarState === "collapsed";
   
   const isActive = (path: string) => location.pathname === path;

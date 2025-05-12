@@ -16,7 +16,7 @@ const AssetFormPage = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex h-screen">
+      <div className="flex h-screen w-full">
         <DashboardSidebar />
         <div className="flex-1 flex flex-col">
           <Navbar />

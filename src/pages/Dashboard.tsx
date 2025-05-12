@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
@@ -11,38 +12,40 @@ import NavbarApp from '@/components/NavbarApp';
 
 const Dashboard: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <NavbarApp />
-      
-      <div className="container mx-auto px-4 py-8">
-        <DashboardHeader />
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen bg-gray-50 flex flex-col w-full">
+        <NavbarApp />
         
-        <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className="mb-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="tasks">Tasks</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+        <div className="container mx-auto px-4 py-8">
+          <DashboardHeader />
           
-          <TabsContent value="overview">
-            <OverviewTab />
-          </TabsContent>
-          
-          <TabsContent value="analytics">
-            <AnalyticsTab />
-          </TabsContent>
-          
-          <TabsContent value="tasks">
-            <TasksTab />
-          </TabsContent>
-          
-          <TabsContent value="settings">
-            <SettingsTab />
-          </TabsContent>
-        </Tabs>
+          <Tabs defaultValue="overview" className="mt-6">
+            <TabsList className="mb-6">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="tasks">Tasks</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview">
+              <OverviewTab />
+            </TabsContent>
+            
+            <TabsContent value="analytics">
+              <AnalyticsTab />
+            </TabsContent>
+            
+            <TabsContent value="tasks">
+              <TasksTab />
+            </TabsContent>
+            
+            <TabsContent value="settings">
+              <SettingsTab />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
