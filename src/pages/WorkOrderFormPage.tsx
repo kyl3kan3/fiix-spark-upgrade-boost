@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { getWorkOrderById } from "@/services/workOrderService";
 import { Helmet } from "react-helmet";
 
@@ -33,6 +34,7 @@ const WorkOrderFormPage: React.FC = () => {
       <Helmet>
         <title>{isEditMode ? "Edit Work Order" : "New Work Order"} | MaintenEase</title>
       </Helmet>
+      <BackToDashboard />
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">
           {isEditMode ? "Edit Work Order" : "Create Work Order"}
