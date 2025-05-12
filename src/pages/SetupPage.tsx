@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -119,15 +118,17 @@ const SetupPage = () => {
           <CardContent>
             <Progress value={progressPercentage} className="mb-4" />
             
-            <TabsList className="hidden">
-              {steps.map((step) => (
-                <TabsTrigger key={step.id} value={step.id}>
-                  {step.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            
-            <Tabs defaultValue={steps[currentStep].id} className="mt-4">
+            {/* Main setup content */}
+            <Tabs value={steps[currentStep].id}>
+              {/* The TabsList was here but not inside Tabs, moved it inside the Tabs component */}
+              <TabsList className="hidden">
+                {steps.map((step) => (
+                  <TabsTrigger key={step.id} value={step.id}>
+                    {step.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              
               <TabsContent value="company-info">
                 <CompanyInfoSetup 
                   data={setupData.companyInfo} 
