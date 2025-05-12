@@ -13,7 +13,8 @@ import {
   Users,
   CheckSquare,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,6 +75,12 @@ const DashboardSidebar = () => {
       href: "/team",
       icon: <Users className="h-5 w-5" />,
       isActive: isActive("/team"),
+    },
+    {
+      name: "Chat",
+      href: "/chat",
+      icon: <MessageSquare className="h-5 w-5" />,
+      isActive: isActive("/chat"),
     },
     {
       name: "Help",

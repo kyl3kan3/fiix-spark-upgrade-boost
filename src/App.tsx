@@ -24,6 +24,7 @@ import ReportsPage from "./pages/ReportsPage";
 import InspectionsPage from "./pages/InspectionsPage";
 import InspectionDetailPage from "./pages/InspectionDetailPage";
 import NewInspectionPage from "./pages/NewInspectionPage";
+import Chat from "./pages/Chat";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => {
             <Route path="/team" element={<Team />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/chat" element={<Chat />} />
             {/* Keep the feature demo routes, just not on the main path */}
             <Route path="/feature/:featureId" element={<FeatureDemoPage />} />
             <Route path="/assets" element={<AssetsPage />} />
