@@ -24,13 +24,13 @@ const DashboardQuickActions = () => {
       title: "New Work Order", 
       icon: <ClipboardList className="h-5 w-5" />, 
       color: "bg-blue-100 text-blue-700",
-      onClick: () => handleActionClick("New Work Order", "/feature/Work%20Order%20Management") 
+      onClick: () => handleActionClick("New Work Order", "/work-orders/new") 
     },
     { 
       title: "Schedule Maintenance", 
       icon: <CalendarPlus className="h-5 w-5" />, 
       color: "bg-green-100 text-green-700",
-      onClick: () => handleActionClick("Schedule Maintenance", "/feature/Preventive%20Maintenance") 
+      onClick: () => handleActionClick("Schedule Maintenance", "/calendar") 
     },
     { 
       title: "Asset Management", 
@@ -48,7 +48,7 @@ const DashboardQuickActions = () => {
       title: "Reports", 
       icon: <FileText className="h-5 w-5" />, 
       color: "bg-yellow-100 text-yellow-700",
-      onClick: () => handleActionClick("Reports", "/feature/Reports") 
+      onClick: () => handleActionClick("Reports", "/reports") 
     }
   ];
   
