@@ -4,14 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarPlus, ClipboardList, FileText, Settings, Wrench, Users, CheckSquare } from "lucide-react";
+import { CalendarPlus, ClipboardList, FileText, Wrench, Users, CheckSquare } from "lucide-react";
 
 const DashboardQuickActions = () => {
   const navigate = useNavigate();
 
   const handleActionClick = (action: string, path?: string) => {
     if (path) {
+      // Add a console log to debug navigation
+      console.log(`Navigating to: ${path}`);
       navigate(path);
+      // Show a toast to confirm navigation attempt
+      toast.info(`Navigating to ${action}`);
     } else {
       toast.success(`${action} action initiated`, {
         description: "This functionality will be implemented soon."
@@ -42,7 +46,10 @@ const DashboardQuickActions = () => {
       title: "Inspections", 
       icon: <CheckSquare className="h-5 w-5" />, 
       color: "bg-indigo-100 text-indigo-700",
-      onClick: () => handleActionClick("Inspections", "/inspections") 
+      onClick: () => {
+        console.log("Inspection button clicked");
+        handleActionClick("Inspections", "/inspections");
+      }
     },
     { 
       title: "Reports", 
@@ -64,7 +71,10 @@ const DashboardQuickActions = () => {
               key={index}
               variant="ghost"
               className="flex flex-col h-auto py-6 px-3 border rounded-lg hover:bg-gray-50"
-              onClick={action.onClick}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent any default behavior
+                action.onClick();
+              }}
             >
               <div className={`${action.color} p-2 rounded-full mb-3`}>
                 {action.icon}
