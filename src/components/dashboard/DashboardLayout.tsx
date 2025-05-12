@@ -6,7 +6,7 @@ import { Bell, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardSidebar from "./DashboardSidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -14,7 +14,6 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   
   const toggleNotifications = () => {
@@ -22,11 +21,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     if (!showNotifications) {
       toast.info("Notifications panel opened");
     }
-  };
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-    toast.info(sidebarOpen ? "Sidebar collapsed" : "Sidebar expanded");
   };
 
   const handleProfileClick = () => {
