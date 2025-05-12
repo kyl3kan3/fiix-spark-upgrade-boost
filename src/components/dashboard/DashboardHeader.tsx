@@ -27,6 +27,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
+import { getUserNotifications } from "@/services/notificationService";
 
 interface DashboardHeaderProps {
   userName?: string;
@@ -34,7 +35,7 @@ interface DashboardHeaderProps {
 
 const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(3);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
 
   // This ensures the notifications panel closes when we navigate away
@@ -46,6 +47,21 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const handleNotificationCountChange = (count: number) => {
     setUnreadNotificationsCount(count);
   };
+  
+  // Fetch notifications count on component mount
+  useEffect(() => {
+    const fetchNotificationsCount = async () => {
+      try {
+        const notifications = await getUserNotifications();
+        const unreadCount = notifications.filter(n => !n.read).length;
+        setUnreadNotificationsCount(unreadCount);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+    
+    fetchNotificationsCount();
+  }, []);
   
   // Check notification preferences when component mounts
   useEffect(() => {

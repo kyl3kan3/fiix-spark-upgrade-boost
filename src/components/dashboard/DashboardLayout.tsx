@@ -11,6 +11,7 @@ import {
   SidebarInset, 
   SidebarTrigger 
 } from "@/components/ui/sidebar";
+import { getUserNotifications } from "@/services/notificationService";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -33,6 +34,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         document.documentElement.classList.remove('dark');
       }
     }
+    
+    // Fetch notifications count on component mount
+    const fetchNotificationsCount = async () => {
+      try {
+        const notifications = await getUserNotifications();
+        const unreadCount = notifications.filter(n => !n.read).length;
+        setUnreadCount(unreadCount);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+    
+    fetchNotificationsCount();
   }, []);
   
   const toggleNotifications = () => {
