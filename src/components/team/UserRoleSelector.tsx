@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { CheckIcon, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserRoleSelectorProps {
   userId: string;
@@ -33,8 +34,13 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     setIsSaving(true);
     
     try {
-      // Simulating API call - would connect to Supabase in a real implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Update user role in profiles table
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('id', userId);
+      
+      if (error) throw error;
       
       toast.success(`Role updated to ${role}`);
       setIsChanged(false);

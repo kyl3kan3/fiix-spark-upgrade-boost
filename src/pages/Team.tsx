@@ -6,63 +6,24 @@ import TeamFilters from "../components/team/TeamFilters";
 import TeamMembersList from "../components/team/TeamMembersList";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
+import { useTeamMembers } from "../hooks/useTeamMembers";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const { teamMembers, loading } = useTeamMembers();
   
-  const teamMembers: TeamMember[] = [
-    { 
-      id: 1, 
-      name: "John Smith", 
-      role: "administrator", 
-      email: "john@example.com", 
-      phone: "+1 (555) 123-4567", 
-      avatar: "JS",
-      joined: "3 years ago",
-      lastActive: "2 hours ago"
-    },
-    { 
-      id: 2, 
-      name: "Sarah Johnson", 
-      role: "technician", 
-      email: "sarah@example.com", 
-      phone: "+1 (555) 234-5678", 
-      avatar: "SJ",
-      joined: "1 year ago",
-      lastActive: "Just now"
-    },
-    { 
-      id: 3, 
-      name: "Michael Lee", 
-      role: "technician", 
-      email: "michael@example.com", 
-      phone: "+1 (555) 345-6789", 
-      avatar: "ML",
-      joined: "2 years ago",
-      lastActive: "3 days ago"
-    },
-    { 
-      id: 4, 
-      name: "Emily Davis", 
-      role: "manager", 
-      email: "emily@example.com", 
-      phone: "+1 (555) 456-7890", 
-      avatar: "ED",
-      joined: "6 months ago",
-      lastActive: "1 day ago"
-    },
-    { 
-      id: 5, 
-      name: "Robert Wilson", 
-      role: "viewer", 
-      email: "robert@example.com", 
-      phone: "+1 (555) 567-8901", 
-      avatar: "RW",
-      joined: "1 month ago",
-      lastActive: "1 week ago"
-    },
-  ];
+  // Convert ChatUser type to TeamMember type
+  const mappedMembers: TeamMember[] = teamMembers.map(member => ({
+    id: parseInt(member.id),
+    name: member.name,
+    role: member.role || "viewer",
+    email: member.email,
+    phone: "+1 (555) 123-4567", // Default phone as this isn't in the ChatUser type
+    avatar: member.avatar || member.name.substring(0, 2).toUpperCase(),
+    joined: "Recently", // This info isn't available in ChatUser
+    lastActive: member.online ? "Just now" : "Recently"
+  }));
 
   const roleColorMap: RoleColorMap = {
     administrator: "bg-red-100 text-red-800",
@@ -71,7 +32,7 @@ const Team = () => {
     viewer: "bg-gray-100 text-gray-800"
   };
 
-  const filteredMembers = teamMembers.filter(member => {
+  const filteredMembers = mappedMembers.filter(member => {
     const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           member.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = roleFilter === "all" || member.role === roleFilter;
@@ -90,7 +51,8 @@ const Team = () => {
       />
       <TeamMembersList 
         members={filteredMembers} 
-        roleColorMap={roleColorMap} 
+        roleColorMap={roleColorMap}
+        loading={loading}
       />
       <RolePermissionsOverview />
     </DashboardLayout>
