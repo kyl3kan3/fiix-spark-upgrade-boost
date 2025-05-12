@@ -24,6 +24,10 @@ interface TeamMemberProps {
 const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMemberUpdated }) => {
   const [isEditing, setIsEditing] = useState(false);
 
+  const handleRoleUpdated = () => {
+    onMemberUpdated();
+  };
+
   return (
     <div className="card overflow-hidden border rounded-lg">
       <div className="p-6 relative">
@@ -76,7 +80,11 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
       </div>
       <div className="bg-gray-50 px-6 py-3 flex items-center justify-between">
         <span className="text-sm font-medium">Role Access</span>
-        <UserRoleSelector userId={member.id.toString()} currentRole={member.role} />
+        <UserRoleSelector 
+          userId={member.id.toString()} 
+          currentRole={member.role} 
+          onRoleUpdated={handleRoleUpdated}
+        />
       </div>
     </div>
   );

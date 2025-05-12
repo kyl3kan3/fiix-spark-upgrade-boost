@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ChatUser } from "@/types/chat";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const useTeamMembers = () => {
   const [teamMembers, setTeamMembers] = useState<ChatUser[]>([]);
