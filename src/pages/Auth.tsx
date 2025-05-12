@@ -38,8 +38,10 @@ const Auth = () => {
   const handleAuthSuccess = (email: string) => {
     setAuthError(null);
     if (isSignUp) {
-      // Stay on page for signup (since confirmation might be needed)
+      // For new users, redirect to setup page
+      navigate("/setup");
     } else {
+      // For existing users, redirect to dashboard
       navigate("/dashboard");
     }
   };

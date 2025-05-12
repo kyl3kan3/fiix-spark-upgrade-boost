@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -58,9 +59,8 @@ const App = () => {
       <BrowserRouter>
         <TooltipProvider>
           <Routes>
-            {/* Changed the root path to go directly to Auth */}
             <Route path="/" element={<Navigate to="/auth" />} />
-            <Route path="/landing" element={<Index />} /> {/* Keep the original Index as /landing */}
+            <Route path="/landing" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<ProfilePage />} />
@@ -69,7 +69,6 @@ const App = () => {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/help" element={<Help />} />
             <Route path="/chat" element={<Chat />} />
-            {/* Keep the feature demo routes, just not on the main path */}
             <Route path="/feature/:featureId" element={<FeatureDemoPage />} />
             <Route path="/assets" element={<AssetsPage />} />
             <Route path="/assets/new" element={<AssetFormPage />} />
@@ -82,7 +81,6 @@ const App = () => {
             <Route path="/inspections" element={<InspectionsPage />} />
             <Route path="/inspections/new" element={<NewInspectionPage />} />
             <Route path="/inspections/:inspectionId" element={<InspectionDetailPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
