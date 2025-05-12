@@ -7,7 +7,7 @@ import { Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { InspectionsList } from "@/components/inspections/InspectionsList";
+import InspectionsList from "@/components/inspections/InspectionsList";
 import { InspectionsFilters } from "@/components/inspections/InspectionsFilters";
 import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import DailyChecklist from "@/components/inspections/DailyChecklist";
@@ -26,7 +26,7 @@ const InspectionsPage = () => {
   });
 
   const handleCreateNew = () => {
-    navigate("/new-inspection");
+    navigate("/inspections/new");
   };
 
   return (
@@ -55,7 +55,7 @@ const InspectionsPage = () => {
             </div>
 
             <TabsContent value="list" className="mt-4">
-              <InspectionsList filters={filters} />
+              <InspectionsList />
             </TabsContent>
 
             <TabsContent value="calendar" className="mt-4">
