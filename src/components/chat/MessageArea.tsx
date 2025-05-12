@@ -1,8 +1,9 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Loader2, Paperclip } from "lucide-react";
+import { Send, Loader2, Paperclip, MessageCircle } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import { ChatUser, Message } from "@/types/chat";
 import { supabase } from "@/integrations/supabase/client";
