@@ -56,12 +56,15 @@ export const useTeamMembers = () => {
           return null;
         }
 
+        const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+        const displayName = fullName || profile.email;
+
         return {
           id: profile.id,
-          name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email,
+          name: displayName,
           email: profile.email,
           role: profile.role || "viewer",
-          avatar: profile.avatar_url ? profile.avatar_url.substring(0, 2).toUpperCase() : null,
+          avatar: profile.avatar_url ? profile.avatar_url : (displayName.substring(0, 2).toUpperCase()),
           online: false,  // We'll set this to false for now
           unread: count || 0
         };

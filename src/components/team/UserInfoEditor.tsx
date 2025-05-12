@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
@@ -49,6 +48,8 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
   const handleSubmit = async (data: any) => {
     setIsSaving(true);
     try {
+      console.log("Updating user info:", user.id, data);
+      
       // Update user info in profiles table
       const { error } = await supabase
         .from('profiles')
@@ -59,7 +60,10 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
         })
         .eq('id', user.id);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error updating profile:", error);
+        throw error;
+      }
       
       toast.success("User information updated successfully");
       onUserUpdated();
