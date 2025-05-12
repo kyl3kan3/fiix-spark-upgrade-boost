@@ -1,15 +1,14 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
 import AnalyticsTab from '@/components/dashboard/tabs/AnalyticsTab';
 import TasksTab from '@/components/dashboard/tabs/TasksTab';
 import SettingsTab from '@/components/dashboard/tabs/SettingsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import NavbarApp from '@/components/NavbarApp';
 import { initNotificationService, setupPushNotifications } from '@/services/notificationService';
-import { toast } from 'sonner';
 
 const Dashboard: React.FC = () => {
   // Check stored dark mode preference on component mount
@@ -53,36 +52,38 @@ const Dashboard: React.FC = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col w-full transition-colors">
-        <NavbarApp />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full transition-colors">
+        <DashboardSidebar />
         
-        <div className="container mx-auto px-4 py-8">
-          <DashboardHeader />
-          
-          <Tabs defaultValue="overview" className="mt-6">
-            <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="tasks">Tasks</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
+        <div className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <DashboardHeader />
             
-            <TabsContent value="overview">
-              <OverviewTab />
-            </TabsContent>
-            
-            <TabsContent value="analytics">
-              <AnalyticsTab />
-            </TabsContent>
-            
-            <TabsContent value="tasks">
-              <TasksTab />
-            </TabsContent>
-            
-            <TabsContent value="settings">
-              <SettingsTab />
-            </TabsContent>
-          </Tabs>
+            <Tabs defaultValue="overview" className="mt-6">
+              <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="overview">
+                <OverviewTab />
+              </TabsContent>
+              
+              <TabsContent value="analytics">
+                <AnalyticsTab />
+              </TabsContent>
+              
+              <TabsContent value="tasks">
+                <TasksTab />
+              </TabsContent>
+              
+              <TabsContent value="settings">
+                <SettingsTab />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
     </SidebarProvider>
