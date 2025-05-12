@@ -12,6 +12,7 @@ import { InspectionsFilters } from "@/components/inspections/InspectionsFilters"
 import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import DailyChecklist from "@/components/inspections/DailyChecklist";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import { useInspections } from "@/hooks/useInspections";
 
 const InspectionsPage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ const InspectionsPage = () => {
       to: undefined,
     },
   });
+
+  // Use our custom hook to fetch inspections
+  const { inspections, loading, refreshInspections } = useInspections(filters);
 
   const handleCreateNew = () => {
     navigate("/inspections/new");
@@ -58,7 +62,7 @@ const InspectionsPage = () => {
             </div>
 
             <TabsContent value="list" className="mt-4">
-              <InspectionsList />
+              <InspectionsList inspections={inspections} loading={loading} />
             </TabsContent>
 
             <TabsContent value="calendar" className="mt-4">
