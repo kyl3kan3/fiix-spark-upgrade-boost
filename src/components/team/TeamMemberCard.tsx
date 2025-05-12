@@ -25,12 +25,13 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
   const [isEditing, setIsEditing] = useState(false);
 
   const handleRoleUpdated = () => {
-    console.log("Role updated for member:", member.id);
+    console.log("Role updated for member:", member.id, "- triggering refresh");
+    // Make sure to call the parent's onMemberUpdated function to refresh the list
     onMemberUpdated();
   };
 
   return (
-    <div className="card overflow-hidden border rounded-lg">
+    <div className="card overflow-hidden border rounded-lg" key={`member-${member.id}-${member.role}`}>
       <div className="p-6 relative">
         <Button
           size="icon"

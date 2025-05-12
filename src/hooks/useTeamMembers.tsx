@@ -7,11 +7,12 @@ import { toast } from "sonner";
 export const useTeamMembers = () => {
   const [teamMembers, setTeamMembers] = useState<ChatUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastRefreshed, setLastRefreshed] = useState(Date.now());
 
   const fetchTeamMembers = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("Fetching team members...");
+      console.log("Fetching team members...", new Date().toISOString());
       
       // Get current user
       const { data: currentUserData, error: userError } = await supabase.auth.getUser();
@@ -77,9 +78,21 @@ export const useTeamMembers = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchTeamMembers();
-  }, [fetchTeamMembers]);
+  // Force refresh function that can be called to refresh team members
+  const refreshTeamMembers = useCallback(() => {
+    console.log("Manually triggering team members refresh");
+    setLastRefreshed(Date.now()); // This will trigger useEffect
+  }, []);
 
-  return { teamMembers, loading, refetchMembers: fetchTeamMembers };
+  useEffect(() => {
+    console.log("useEffect triggered in useTeamMembers, fetching data...");
+    fetchTeamMembers();
+  }, [fetchTeamMembers, lastRefreshed]);
+
+  return { 
+    teamMembers, 
+    loading, 
+    refetchMembers: fetchTeamMembers,
+    refreshTeamMembers 
+  };
 };

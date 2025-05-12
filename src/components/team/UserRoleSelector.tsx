@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -24,6 +24,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  
+  // This will ensure that if the currentRole prop changes externally, our component updates
+  useEffect(() => {
+    setRole(currentRole);
+  }, [currentRole]);
 
   const handleRoleChange = (newRole: string) => {
     if (newRole !== role) {
@@ -36,7 +41,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     setIsSaving(true);
     
     try {
-      console.log("Updating role for user ID:", userId);
+      console.log("Updating role for user ID:", userId, "to role:", role);
       
       // Ensure we're working with a valid user ID
       if (!userId) {
@@ -47,7 +52,8 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
       const { data, error } = await supabase
         .from('profiles')
         .update({ role })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select();
       
       if (error) {
         console.error("Supabase error:", error);

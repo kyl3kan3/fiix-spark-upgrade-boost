@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
 import TeamFilters from "../components/team/TeamFilters";
@@ -7,11 +7,18 @@ import TeamMembersList from "../components/team/TeamMembersList";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
+import { toast } from "sonner";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const { teamMembers, loading, refetchMembers } = useTeamMembers();
+  const { teamMembers, loading, refreshTeamMembers } = useTeamMembers();
+  
+  // Force refresh when component mounts to ensure we have the latest data
+  useEffect(() => {
+    console.log("Team component mounted, refreshing team members data");
+    refreshTeamMembers();
+  }, [refreshTeamMembers]);
   
   // Convert ChatUser type to TeamMember type
   const mappedMembers: TeamMember[] = teamMembers.map(member => ({
@@ -42,8 +49,9 @@ const Team = () => {
 
   const handleMemberUpdated = useCallback(() => {
     console.log("Member updated, refreshing data...");
-    refetchMembers();
-  }, [refetchMembers]);
+    refreshTeamMembers();
+    toast.success("Team member information updated");
+  }, [refreshTeamMembers]);
 
   return (
     <DashboardLayout>
