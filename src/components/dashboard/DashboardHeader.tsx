@@ -42,6 +42,11 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
     setShowNotifications(false);
   };
   
+  // Handler for notification count changes
+  const handleNotificationCountChange = (count: number) => {
+    setUnreadNotificationsCount(count);
+  };
+  
   // Check notification preferences when component mounts
   useEffect(() => {
     const storedPreferences = localStorage.getItem('notificationPreferences');
@@ -128,6 +133,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
           <DashboardNotifications 
             isOpen={showNotifications} 
             setIsOpen={setShowNotifications} 
+            onNotificationCountChange={handleNotificationCountChange}
           />
 
           <Link to="/help">

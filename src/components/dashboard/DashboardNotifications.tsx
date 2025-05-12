@@ -8,11 +8,13 @@ import { toast } from "sonner";
 interface DashboardNotificationsProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onNotificationCountChange?: (count: number) => void;
 }
 
 const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({ 
   isOpen, 
-  setIsOpen 
+  setIsOpen,
+  onNotificationCountChange
 }) => {
   const [notifications, setNotifications] = useState([
     {
@@ -54,16 +56,34 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
     }));
     setNotifications(updatedNotifications);
     toast.success("All notifications marked as read");
+    
+    // Update the notification count in the parent component
+    if (onNotificationCountChange) {
+      onNotificationCountChange(0);
+    }
   };
 
   const handleDismissNotification = (id: number) => {
     const updatedNotifications = notifications.filter(notification => notification.id !== id);
     setNotifications(updatedNotifications);
+    
+    // Update the notification count after dismissing
+    if (onNotificationCountChange) {
+      const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
+      onNotificationCountChange(newUnreadCount);
+    }
   };
 
   const getUnreadCount = () => {
     return notifications.filter(notification => !notification.read).length;
   };
+
+  // Notify parent component of unread count when it changes
+  useEffect(() => {
+    if (onNotificationCountChange) {
+      onNotificationCountChange(getUnreadCount());
+    }
+  }, [notifications, onNotificationCountChange]);
 
   // Let's check if notification preferences exist in localStorage
   useEffect(() => {
