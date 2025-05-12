@@ -7,14 +7,18 @@ import NotificationSetup from "./NotificationSetup";
 import IntegrationsSetup from "./IntegrationsSetup";
 import DashboardCustomizationSetup from "./DashboardCustomizationSetup";
 import SetupComplete from "./SetupComplete";
+import { SetupStepComponentProps } from "./SetupContainer";
+
+// Create a type for the setup step components
+type SetupStepComponent = React.ComponentType<SetupStepComponentProps>;
 
 export const steps = [
-  { id: "company-info", label: "Company Info", component: CompanyInfoSetup },
-  { id: "user-roles", label: "User Roles", component: UserRolesSetup },
-  { id: "asset-categories", label: "Asset Categories", component: AssetCategoriesSetup },
-  { id: "maintenance-schedules", label: "Schedules", component: MaintenanceScheduleSetup },
-  { id: "notifications", label: "Notifications", component: NotificationSetup },
-  { id: "integrations", label: "Integrations", component: IntegrationsSetup },
-  { id: "dashboard", label: "Dashboard", component: DashboardCustomizationSetup },
-  { id: "complete", label: "Complete", component: SetupComplete }
+  { id: "company-info", label: "Company Info", component: CompanyInfoSetup as SetupStepComponent },
+  { id: "user-roles", label: "User Roles", component: UserRolesSetup as SetupStepComponent },
+  { id: "asset-categories", label: "Asset Categories", component: AssetCategoriesSetup as SetupStepComponent },
+  { id: "maintenance-schedules", label: "Schedules", component: MaintenanceScheduleSetup as SetupStepComponent },
+  { id: "notifications", label: "Notifications", component: NotificationSetup as SetupStepComponent },
+  { id: "integrations", label: "Integrations", component: IntegrationsSetup as SetupStepComponent },
+  { id: "dashboard", label: "Dashboard", component: DashboardCustomizationSetup as SetupStepComponent },
+  { id: "complete", label: "Complete", component: SetupComplete as SetupStepComponent }
 ];

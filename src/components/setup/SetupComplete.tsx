@@ -3,8 +3,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SetupStepComponentProps } from "./SetupContainer";
 
-const SetupComplete: React.FC = () => {
+const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {
   const navigate = useNavigate();
   
   return (

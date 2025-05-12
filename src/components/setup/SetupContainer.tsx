@@ -8,6 +8,12 @@ import { SetupNavigation } from "./SetupNavigation";
 import { useSetup } from "./SetupContext";
 import { steps } from "./setupSteps";
 
+// Define a common type for setup step components
+export interface SetupStepComponentProps {
+  data: Record<string, any>;
+  onUpdate: (data: any) => void;
+}
+
 export const SetupContainer: React.FC = () => {
   const { currentStep, updateSetupData, setupData } = useSetup();
   
