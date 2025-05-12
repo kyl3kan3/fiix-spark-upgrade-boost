@@ -1,8 +1,24 @@
 
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  
+  // Only show footer on landing page or feature demo pages
+  const showFullFooter = location.pathname === "/landing" || location.pathname.startsWith("/feature");
+  
+  if (!showFullFooter) {
+    // Simple footer for main application pages
+    return (
+      <footer className="bg-gray-50 border-t border-gray-200 py-4">
+        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
+          &copy; {currentYear} MaintenEase Software. All rights reserved.
+        </div>
+      </footer>
+    );
+  }
 
   const footerLinks = [
     {
