@@ -11,9 +11,16 @@ export const useTeamMembers = () => {
   const fetchTeamMembers = useCallback(async () => {
     try {
       setLoading(true);
+      console.log("Fetching team members...");
       
       // Get current user
-      const { data: currentUserData } = await supabase.auth.getUser();
+      const { data: currentUserData, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error("Error getting current user:", userError);
+        throw userError;
+      }
+      
       const currentUserId = currentUserData?.user?.id;
 
       if (!currentUserId) {
@@ -28,8 +35,11 @@ export const useTeamMembers = () => {
         .neq("id", currentUserId);
 
       if (error) {
+        console.error("Error fetching profiles:", error);
         throw error;
       }
+      
+      console.log("Fetched profiles:", profiles);
       
       // Count unread messages for each user
       const users = await Promise.all(profiles.map(async (profile) => {
@@ -56,7 +66,9 @@ export const useTeamMembers = () => {
         };
       }));
 
-      setTeamMembers(users.filter(Boolean) as ChatUser[]);
+      const filteredUsers = users.filter(Boolean) as ChatUser[];
+      console.log("Processed team members:", filteredUsers);
+      setTeamMembers(filteredUsers);
     } catch (error) {
       console.error("Error fetching team members:", error);
       toast.error("Failed to load team members");

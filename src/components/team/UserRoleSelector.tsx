@@ -38,8 +38,13 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     try {
       console.log("Updating role for user ID:", userId);
       
-      // Update user role in profiles table - ensure userId is properly formatted
-      const { error } = await supabase
+      // Ensure we're working with a valid user ID
+      if (!userId) {
+        throw new Error("Invalid user ID");
+      }
+      
+      // Update user role in profiles table
+      const { data, error } = await supabase
         .from('profiles')
         .update({ role })
         .eq('id', userId);
@@ -49,12 +54,14 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
         throw error;
       }
       
+      console.log("Role update response:", data);
       toast.success(`Role updated to ${role}`);
       setIsChanged(false);
       setIsEditing(false);
       
       // Call the callback function to trigger data refresh in parent component
       if (onRoleUpdated) {
+        console.log("Calling onRoleUpdated callback");
         onRoleUpdated();
       }
     } catch (error) {
