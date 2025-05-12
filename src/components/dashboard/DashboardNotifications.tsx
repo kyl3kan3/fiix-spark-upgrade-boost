@@ -1,12 +1,18 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Bell, X } from "lucide-react";
 
-const DashboardNotifications = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
+interface DashboardNotificationsProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({ 
+  isOpen, 
+  setIsOpen 
+}) => {
   const notifications = [
     {
       id: 1,

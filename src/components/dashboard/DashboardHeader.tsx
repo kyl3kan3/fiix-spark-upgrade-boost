@@ -83,27 +83,30 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
             </Button>
           </Link>
           
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Notifications"
-              className="relative"
-              onClick={() => setShowNotifications(!showNotifications)}
-            >
-              <Bell className="h-5 w-5" />
-              {unreadNotificationsCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
-                >
-                  {unreadNotificationsCount}
-                </Badge>
-              )}
-            </Button>
-            
-            {showNotifications && <DashboardNotifications />}
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Notifications"
+            className="relative"
+            onClick={() => setShowNotifications(!showNotifications)}
+          >
+            <Bell className="h-5 w-5" />
+            {unreadNotificationsCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
+              >
+                {unreadNotificationsCount}
+              </Badge>
+            )}
+          </Button>
+          
+          {showNotifications && (
+            <DashboardNotifications 
+              isOpen={showNotifications} 
+              setIsOpen={setShowNotifications} 
+            />
+          )}
 
           <Link to="/help">
             <Button
