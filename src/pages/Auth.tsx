@@ -12,6 +12,7 @@ const Auth = () => {
   const location = useLocation();
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Check if we should default to signup mode based on URL param
@@ -24,7 +25,10 @@ const Auth = () => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
+        setIsAuthenticated(true);
         navigate("/dashboard");
+      } else {
+        setIsAuthenticated(false);
       }
     };
     
@@ -54,7 +58,8 @@ const Auth = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
         <AuthHeader 
           isSignUp={isSignUp} 
-          onBackToDashboard={() => navigate("/dashboard")} 
+          onBackToDashboard={() => navigate("/dashboard")}
+          showBackButton={isAuthenticated} // Only show back button if authenticated
         />
         
         <AuthError message={authError} />
