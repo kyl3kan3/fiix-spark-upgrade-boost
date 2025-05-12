@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ArrowLeft } from "lucide-react";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -66,6 +67,16 @@ const ProfilePage = () => {
   return (
     <DashboardLayout>
       <div className="container mx-auto px-4 py-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate("/dashboard")}
+          className="mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Dashboard
+        </Button>
+        
         <h1 className="text-2xl font-bold mb-6">User Profile</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
