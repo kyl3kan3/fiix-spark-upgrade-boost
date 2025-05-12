@@ -38,7 +38,9 @@ export const getUserNotifications = async (): Promise<Notification[]> => {
     .order('created_at', { ascending: false });
   
   if (error) throw error;
-  return data || [];
+  
+  // Cast the type to ensure it matches our interface
+  return (data as Notification[]) || [];
 };
 
 // Function to get user notification preferences
@@ -55,7 +57,9 @@ export const getUserNotificationPreferences = async (): Promise<NotificationPref
     throw error;
   }
   
-  return data;
+  // Cast the digest_frequency to ensure it matches our expected type
+  const typedData = data as unknown as NotificationPreference;
+  return typedData;
 };
 
 // Function to update user notification preferences
@@ -272,7 +276,9 @@ export const setupPushNotifications = async (): Promise<void> => {
 export const initNotificationService = async (): Promise<void> => {
   try {
     // Check if user is logged in
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user;
+    
     if (!user) return;
     
     // Set up real-time listener for notifications
@@ -299,6 +305,7 @@ export const initNotificationService = async (): Promise<void> => {
       )
       .subscribe();
 
+    // Return function to clean up
     return () => {
       supabase.removeChannel(channel);
     };

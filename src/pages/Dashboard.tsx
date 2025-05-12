@@ -1,7 +1,6 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
 import AnalyticsTab from '@/components/dashboard/tabs/AnalyticsTab';
@@ -27,7 +26,7 @@ const Dashboard: React.FC = () => {
     }
     
     // Initialize notification service
-    initNotificationService().catch(error => {
+    const cleanup = initNotificationService().catch(error => {
       console.error("Failed to initialize notification service:", error);
     });
     
@@ -35,6 +34,13 @@ const Dashboard: React.FC = () => {
     setupPushNotifications().catch(error => {
       console.error("Failed to set up push notifications:", error);
     });
+    
+    // If initNotificationService returns a cleanup function, use it
+    return () => {
+      if (cleanup && typeof cleanup === 'function') {
+        cleanup();
+      }
+    };
   }, []);
 
   return (

@@ -34,48 +34,53 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
 
   useEffect(() => {
     // Listen for new notifications
-    const { data: { user } } = supabase.auth.getUser();
-    if (!user) return;
+    async function setupNotificationListener() {
+      const { data } = await supabase.auth.getUser();
+      const user = data?.user;
+      if (!user) return;
 
-    const channel = supabase
-      .channel('notifications-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          // Add new notification to the list
-          const newNotification = payload.new as Notification;
-          setNotifications(prev => [newNotification, ...prev]);
-          
-          // Update unread count
-          if (onNotificationCountChange) {
-            onNotificationCountChange(getUnreadCount() + 1);
+      const channel = supabase
+        .channel('notifications-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            // Add new notification to the list
+            const newNotification = payload.new as Notification;
+            setNotifications(prev => [newNotification, ...prev]);
+            
+            // Update unread count
+            if (onNotificationCountChange) {
+              onNotificationCountChange(getUnreadCount() + 1);
+            }
+
+            // Show toast if notification panel is closed
+            if (!isOpen) {
+              toast.info(newNotification.title, {
+                description: newNotification.body,
+                duration: 5000,
+                action: {
+                  label: "View",
+                  onClick: () => setIsOpen(true)
+                }
+              });
+            }
           }
+        )
+        .subscribe();
 
-          // Show toast if notification panel is closed
-          if (!isOpen) {
-            toast.info(newNotification.title, {
-              description: newNotification.body,
-              duration: 5000,
-              action: {
-                label: "View",
-                onClick: () => setIsOpen(true)
-              }
-            });
-          }
-        }
-      )
-      .subscribe();
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+    setupNotificationListener();
+  }, [isOpen, onNotificationCountChange]);
 
   const loadNotifications = async () => {
     setLoading(true);
