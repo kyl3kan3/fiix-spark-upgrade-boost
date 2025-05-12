@@ -11,17 +11,41 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import { Loader2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { formatDate } from "@/components/workOrders/workOrderUtils";
 import { statusColorMap, priorityColorMap } from "@/components/workOrders/workOrderUtils";
+import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 
 interface WorkOrdersTableProps {
   workOrders: WorkOrderWithRelations[];
+  isLoading?: boolean;
+  error?: Error | null;
 }
 
-const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders }) => {
+const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading, error }) => {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-40 bg-white rounded-lg shadow">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 bg-white rounded-lg shadow">
+        <p className="text-red-500">Error loading work orders: {error.message}</p>
+      </div>
+    );
+  }
+
+  if (!workOrders || workOrders.length === 0) {
+    return <EmptyWorkOrdersState />;
+  }
+
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto bg-white rounded-lg shadow">
       <Table>
         <TableHeader>
           <TableRow>
