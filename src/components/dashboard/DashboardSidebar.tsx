@@ -23,7 +23,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  useSidebar
+  useSidebar,
+  SidebarRail
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -163,6 +164,9 @@ const DashboardSidebar = () => {
           </SidebarMenu>
         </div>
       </SidebarContent>
+      
+      {/* Add the SidebarRail component which includes the toggle functionality */}
+      <SidebarRail />
     </Sidebar>
   );
 };
