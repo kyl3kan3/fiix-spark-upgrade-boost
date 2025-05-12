@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AssetForm from "@/components/workOrders/assets/AssetForm";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const AssetFormPage = () => {
   const { assetId } = useParams();
@@ -13,6 +14,8 @@ const AssetFormPage = () => {
 
   return (
     <DashboardLayout>
+      <BackToDashboard />
+      
       <Button 
         onClick={() => navigate('/assets')} 
         className="mb-6 bg-gray-100 hover:bg-gray-200 text-gray-800"
