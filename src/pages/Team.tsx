@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
@@ -7,6 +8,7 @@ import RolePermissionsOverview from "../components/team/RolePermissionsOverview"
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
 import { toast } from "sonner";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,6 +57,7 @@ const Team = () => {
 
   return (
     <DashboardLayout>
+      <BackToDashboard />
       <TeamHeader />
       <TeamFilters 
         searchQuery={searchQuery}

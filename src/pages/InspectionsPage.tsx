@@ -11,6 +11,7 @@ import InspectionsList from "@/components/inspections/InspectionsList";
 import { InspectionsFilters } from "@/components/inspections/InspectionsFilters";
 import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import DailyChecklist from "@/components/inspections/DailyChecklist";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const InspectionsPage = () => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const InspectionsPage = () => {
         <title>Inspections | MaintenEase</title>
       </Helmet>
 
+      <BackToDashboard />
+      
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:flex-1 space-y-6">
           <div className="flex items-center justify-between">

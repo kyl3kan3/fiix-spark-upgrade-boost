@@ -3,6 +3,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import NewInspectionForm from "@/components/inspections/NewInspectionForm";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const NewInspectionPage = () => {
   return (
@@ -10,6 +11,8 @@ const NewInspectionPage = () => {
       <Helmet>
         <title>New Inspection | MaintenEase</title>
       </Helmet>
+      
+      <BackToDashboard />
       
       <div className="space-y-4">
         <div className="flex items-center justify-between">

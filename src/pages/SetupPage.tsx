@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { SetupProvider } from "@/components/setup/SetupContext";
 import { SetupContainer } from "@/components/setup/SetupContainer";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const SetupPage = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const SetupPage = () => {
 
   return (
     <DashboardLayout>
+      <BackToDashboard />
       <SetupProvider>
         <SetupContainer />
       </SetupProvider>
