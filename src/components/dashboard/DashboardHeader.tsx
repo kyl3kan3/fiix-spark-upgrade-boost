@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -33,7 +32,12 @@ interface DashboardHeaderProps {
 
 const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [unreadNotificationsCount] = useState(3);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(3);
+
+  // This ensures the notifications panel closes when we navigate away
+  const handleCloseNotifications = () => {
+    setShowNotifications(false);
+  };
 
   return (
     <header className="border-b bg-white sticky top-0 z-30">

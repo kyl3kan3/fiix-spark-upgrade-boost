@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Bell, X } from "lucide-react";
@@ -13,7 +13,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   isOpen, 
   setIsOpen 
 }) => {
-  const notifications = [
+  const [notifications, setNotifications] = useState([
     {
       id: 1,
       title: "Work Order Updated",
@@ -42,7 +42,19 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
       time: "Yesterday",
       read: true,
     },
-  ];
+  ]);
+
+  const handleMarkAllAsRead = () => {
+    const updatedNotifications = notifications.map(notification => ({
+      ...notification,
+      read: true
+    }));
+    setNotifications(updatedNotifications);
+  };
+
+  const getUnreadCount = () => {
+    return notifications.filter(notification => !notification.read).length;
+  };
 
   return (
     <>
@@ -60,6 +72,11 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
             <div className="flex items-center">
               <Bell className="h-5 w-5 text-maintenease-500 mr-2" />
               <h3 className="font-medium">Notifications</h3>
+              {getUnreadCount() > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {getUnreadCount()}
+                </span>
+              )}
             </div>
             <Button 
               variant="ghost" 
@@ -95,7 +112,12 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
           </div>
           
           <div className="p-3 border-t flex justify-between">
-            <Button variant="ghost" size="sm">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleMarkAllAsRead}
+              disabled={getUnreadCount() === 0}
+            >
               Mark all as read
             </Button>
             <Button variant="ghost" size="sm">
