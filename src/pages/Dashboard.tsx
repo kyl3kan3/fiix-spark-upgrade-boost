@@ -1,8 +1,5 @@
-
 import React, { useEffect } from 'react';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
 import AnalyticsTab from '@/components/dashboard/tabs/AnalyticsTab';
 import TasksTab from '@/components/dashboard/tabs/TasksTab';
@@ -51,42 +48,34 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full transition-colors">
-        <DashboardSidebar />
-        
-        <SidebarInset>
-          <div className="container mx-auto px-4 py-8">
-            <DashboardHeader />
-            
-            <Tabs defaultValue="overview" className="mt-6">
-              <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="overview">
-                <OverviewTab />
-              </TabsContent>
-              
-              <TabsContent value="analytics">
-                <AnalyticsTab />
-              </TabsContent>
-              
-              <TabsContent value="tasks">
-                <TasksTab />
-              </TabsContent>
-              
-              <TabsContent value="settings">
-                <SettingsTab />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </SidebarInset>
+    <DashboardLayout>
+      <div className="container mx-auto">
+        <Tabs defaultValue="overview" className="mt-6">
+          <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="tasks">Tasks</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="overview">
+            <OverviewTab />
+          </TabsContent>
+          
+          <TabsContent value="analytics">
+            <AnalyticsTab />
+          </TabsContent>
+          
+          <TabsContent value="tasks">
+            <TasksTab />
+          </TabsContent>
+          
+          <TabsContent value="settings">
+            <SettingsTab />
+          </TabsContent>
+        </Tabs>
       </div>
-    </SidebarProvider>
+    </DashboardLayout>
   );
 };
 
