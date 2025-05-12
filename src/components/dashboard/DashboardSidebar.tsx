@@ -127,7 +127,7 @@ const DashboardSidebar = () => {
               variant="ghost" 
               size="icon" 
               onClick={toggleSidebar} 
-              className="hover:bg-gray-100"
+              className={cn("hover:bg-gray-100", !isCollapsed && "block")}
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -165,7 +165,7 @@ const DashboardSidebar = () => {
         </div>
       </SidebarContent>
       
-      {/* Add the SidebarRail component which includes the toggle functionality */}
+      {/* The SidebarRail component is crucial for the toggle functionality when collapsed */}
       <SidebarRail />
     </Sidebar>
   );

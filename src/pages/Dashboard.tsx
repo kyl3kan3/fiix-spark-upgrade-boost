@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full transition-colors">
         <DashboardSidebar />
         
-        <div className="flex-1">
+        <SidebarInset>
           <div className="container mx-auto px-4 py-8">
             <DashboardHeader />
             
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
               </TabsContent>
             </Tabs>
           </div>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
