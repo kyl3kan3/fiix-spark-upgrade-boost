@@ -16,6 +16,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sidebar } from "@/components/ui/sidebar";
 
 const DashboardSidebar = () => {
   const location = useLocation();
@@ -78,62 +79,64 @@ const DashboardSidebar = () => {
   ];
 
   return (
-    <div className={`${isCollapsed ? 'w-20' : 'w-64'} transition-all duration-300 hidden lg:flex flex-col bg-white border-r border-gray-200 p-4 fixed top-0 bottom-0 pt-16`}>
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        onClick={toggleSidebar} 
-        className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50"
-      >
-        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-      </Button>
-      
-      <div className="mt-8 flex flex-col flex-grow">
-        <nav className="flex-1 space-y-1">
-          {sidebarItems.map((item) => (
+    <Sidebar>
+      <div className={`${isCollapsed ? 'w-20' : 'w-64'} transition-all duration-300 hidden lg:flex flex-col bg-white border-r border-gray-200 p-4 h-full`}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleSidebar} 
+          className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50"
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </Button>
+        
+        <div className="mt-8 flex flex-col flex-grow">
+          <nav className="flex-1 space-y-1">
+            {sidebarItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+                  item.isActive
+                    ? "bg-maintenease-50 text-maintenease-700"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <span
+                  className={`${
+                    item.isActive ? "text-maintenease-600" : "text-gray-500"
+                  } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
+                >
+                  {item.icon}
+                </span>
+                {!isCollapsed && item.name}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-auto pb-8">
             <Link
-              key={item.name}
-              to={item.href}
+              to="/dashboard?tab=settings"
               className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-                item.isActive
+                location.pathname === "/dashboard" && location.search.includes("tab=settings")
                   ? "bg-maintenease-50 text-maintenease-700"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
               <span
                 className={`${
-                  item.isActive ? "text-maintenease-600" : "text-gray-500"
+                  location.pathname === "/dashboard" && location.search.includes("tab=settings")
+                    ? "text-maintenease-600"
+                    : "text-gray-500"
                 } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
               >
-                {item.icon}
+                <Settings className="h-5 w-5" />
               </span>
-              {!isCollapsed && item.name}
+              {!isCollapsed && "Settings"}
             </Link>
-          ))}
-        </nav>
-        <div className="mt-auto pb-8">
-          <Link
-            to="/dashboard?tab=settings"
-            className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-              location.pathname === "/dashboard" && location.search.includes("tab=settings")
-                ? "bg-maintenease-50 text-maintenease-700"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            <span
-              className={`${
-                location.pathname === "/dashboard" && location.search.includes("tab=settings")
-                  ? "text-maintenease-600"
-                  : "text-gray-500"
-              } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
-            >
-              <Settings className="h-5 w-5" />
-            </span>
-            {!isCollapsed && "Settings"}
-          </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </Sidebar>
   );
 };
 
