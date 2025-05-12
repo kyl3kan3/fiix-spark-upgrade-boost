@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Bell, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface DashboardNotificationsProps {
   isOpen: boolean;
