@@ -1,0 +1,153 @@
+
+import React from "react";
+import { Card } from "@/components/ui/card";
+import { Inspection } from "@/types/inspections";
+import { format } from "date-fns";
+
+// Reuse mock data from InspectionsList
+const mockInspections: Inspection[] = [
+  {
+    id: "insp-001",
+    title: "Annual HVAC System Inspection",
+    description: "Comprehensive inspection of the HVAC system",
+    assetId: "asset-001",
+    assetName: "Main Building HVAC",
+    status: "scheduled",
+    priority: "high",
+    assignedTo: "John Doe",
+    scheduledDate: "2025-05-25T10:00:00",
+    items: [
+      { id: "item-001", name: "Filter check", passed: null, notes: "" },
+      { id: "item-002", name: "Duct inspection", passed: null, notes: "" },
+      { id: "item-003", name: "Thermostat calibration", passed: null, notes: "" }
+    ]
+  },
+  {
+    id: "insp-002",
+    title: "Quarterly Fire Alarm Test",
+    description: "Routine inspection of all fire alarm systems",
+    assetId: "asset-002",
+    assetName: "Building Safety Systems",
+    status: "completed",
+    priority: "critical",
+    assignedTo: "Sarah Johnson",
+    scheduledDate: "2025-05-10T09:00:00",
+    completedDate: "2025-05-10T11:30:00",
+    items: [
+      { id: "item-004", name: "Alarm trigger test", passed: true, notes: "All systems responding properly" },
+      { id: "item-005", name: "Sprinkler system check", passed: true, notes: "Pressure optimal" },
+      { id: "item-006", name: "Emergency lighting test", passed: true, notes: "All lights functional" }
+    ]
+  },
+  {
+    id: "insp-003",
+    title: "Monthly Generator Inspection",
+    description: "Regular inspection of backup power systems",
+    assetId: "asset-003",
+    assetName: "Backup Generator #2",
+    status: "in-progress",
+    priority: "medium",
+    assignedTo: "Mike Smith",
+    scheduledDate: "2025-05-15T13:00:00",
+    items: [
+      { id: "item-007", name: "Fuel level check", passed: true, notes: "Fuel at 85%" },
+      { id: "item-008", name: "Battery test", passed: null, notes: "" },
+      { id: "item-009", name: "Load test", passed: null, notes: "" }
+    ]
+  }
+];
+
+interface InspectionsCalendarViewProps {
+  filters: {
+    status: string;
+    priority: string;
+    assignedTo: string;
+    dateRange: { from: Date | undefined; to: Date | undefined };
+  };
+}
+
+export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = ({ filters }) => {
+  // Simple calendar view - in a real app you'd use a more sophisticated calendar component
+  const daysInMonth = 31; // Simplified for demo
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  
+  // Map inspections to their days
+  const inspectionsByDay: { [key: number]: Inspection[] } = {};
+  
+  mockInspections.forEach(inspection => {
+    const date = new Date(inspection.scheduledDate);
+    const day = date.getDate();
+    if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+      if (!inspectionsByDay[day]) {
+        inspectionsByDay[day] = [];
+      }
+      inspectionsByDay[day].push(inspection);
+    }
+  });
+
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'scheduled':
+        return 'border-blue-300 bg-blue-50';
+      case 'in-progress':
+        return 'border-yellow-300 bg-yellow-50';
+      case 'completed':
+        return 'border-green-300 bg-green-50';
+      case 'failed':
+        return 'border-red-300 bg-red-50';
+      case 'cancelled':
+        return 'border-gray-300 bg-gray-50';
+      default:
+        return 'border-gray-300 bg-gray-50';
+    }
+  };
+  
+  return (
+    <Card className="p-4">
+      <h2 className="text-xl font-semibold mb-4">
+        {format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}
+      </h2>
+      
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <div key={day} className="text-center text-sm font-medium">
+            {day}
+          </div>
+        ))}
+      </div>
+      
+      <div className="grid grid-cols-7 gap-2">
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const day = i + 1;
+          const date = new Date(currentYear, currentMonth, day);
+          const dayInspections = inspectionsByDay[day] || [];
+          
+          return (
+            <div 
+              key={day} 
+              className={`min-h-24 border rounded-md p-1 ${
+                date.getDate() === currentDate.getDate() ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+              }`}
+            >
+              <div className="text-right text-sm font-medium mb-1">{day}</div>
+              
+              <div className="space-y-1">
+                {dayInspections.map(inspection => (
+                  <div 
+                    key={inspection.id} 
+                    className={`p-1 text-xs rounded border ${getStatusColor(inspection.status)}`}
+                  >
+                    <div className="font-medium truncate">{inspection.title}</div>
+                    <div className="text-gray-500 truncate">{inspection.assetName}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};

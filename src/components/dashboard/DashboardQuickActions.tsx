@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarPlus, ClipboardList, FileText, Settings, Wrench, Users } from "lucide-react";
+import { CalendarPlus, ClipboardList, FileText, Settings, Wrench, Users, CheckSquare } from "lucide-react";
 
 const DashboardQuickActions = () => {
   const navigate = useNavigate();
@@ -39,10 +39,10 @@ const DashboardQuickActions = () => {
       onClick: () => handleActionClick("Asset Management", "/assets") 
     },
     { 
-      title: "Team Members", 
-      icon: <Users className="h-5 w-5" />, 
-      color: "bg-orange-100 text-orange-700",
-      onClick: () => handleActionClick("Team Members", "/team") 
+      title: "Inspections", 
+      icon: <CheckSquare className="h-5 w-5" />, 
+      color: "bg-indigo-100 text-indigo-700",
+      onClick: () => handleActionClick("Inspections", "/inspections") 
     },
     { 
       title: "Reports", 

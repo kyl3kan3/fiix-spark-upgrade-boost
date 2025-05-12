@@ -9,7 +9,8 @@ import {
   LifeBuoy,
   Settings,
   Wrench,
-  Users
+  Users,
+  CheckSquare
 } from "lucide-react";
 
 const DashboardSidebar = () => {
@@ -28,6 +29,12 @@ const DashboardSidebar = () => {
       href: "/work-orders",
       icon: <FileText className="h-5 w-5" />,
       isActive: location.pathname.includes("/work-orders"),
+    },
+    {
+      name: "Inspections",
+      href: "/inspections",
+      icon: <CheckSquare className="h-5 w-5" />,
+      isActive: location.pathname.includes("/inspections"),
     },
     {
       name: "Assets",
