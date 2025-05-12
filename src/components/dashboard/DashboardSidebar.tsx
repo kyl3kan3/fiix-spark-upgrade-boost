@@ -121,12 +121,12 @@ const DashboardSidebar = () => {
             <SidebarMenuItem>
               <SidebarMenuButton 
                 asChild
-                isActive={location.pathname === "/dashboard" && location.search.includes("tab=settings")}
-                tooltip={isCollapsed ? "Settings" : undefined}
+                isActive={isActive("/setup")}
+                tooltip={isCollapsed ? "Setup" : undefined}
               >
-                <Link to="/dashboard?tab=settings" className="flex items-center mt-auto">
+                <Link to="/setup" className="flex items-center">
                   <span><Settings className="h-5 w-5" /></span>
-                  {!isCollapsed && <span className="ml-3">Settings</span>}
+                  {!isCollapsed && <span className="ml-3">Setup</span>}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
