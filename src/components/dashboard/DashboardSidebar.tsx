@@ -25,6 +25,7 @@ import {
   SidebarMenuButton,
   useSidebar
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 // A wrapper hook that safely uses the sidebar context or provides fallback values
 const useSafeShidebar = () => {
@@ -117,7 +118,7 @@ const DashboardSidebar = () => {
       <SidebarContent>
         <div className="mt-6 px-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className={`font-semibold text-lg ${isCollapsed ? 'hidden' : 'block'}`}>
+            <h2 className={cn("font-semibold text-lg", isCollapsed ? 'hidden' : 'block')}>
               MaintenEase
             </h2>
             
