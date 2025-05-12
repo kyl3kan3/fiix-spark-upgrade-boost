@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +11,7 @@ import FeatureDemoPage from "./pages/FeatureDemoPage";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
-import SetupPage from "./pages/SetupPage"; // Import the new SetupPage component
+import SetupPage from "./pages/SetupPage"; 
 import Team from "./pages/Team";
 import Help from "./pages/Help";
 import Calendar from "./pages/Calendar";
@@ -58,14 +57,17 @@ const App = () => {
       <BrowserRouter>
         <TooltipProvider>
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* Changed the root path to go directly to Auth */}
+            <Route path="/" element={<Navigate to="/auth" />} />
+            <Route path="/landing" element={<Index />} /> {/* Keep the original Index as /landing */}
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/setup" element={<SetupPage />} /> {/* Add the setup route */}
+            <Route path="/setup" element={<SetupPage />} />
             <Route path="/team" element={<Team />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/help" element={<Help />} />
+            {/* Keep the feature demo routes, just not on the main path */}
             <Route path="/feature/:featureId" element={<FeatureDemoPage />} />
             <Route path="/assets" element={<AssetsPage />} />
             <Route path="/assets/new" element={<AssetFormPage />} />
