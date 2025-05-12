@@ -41,6 +41,7 @@ const Team = () => {
   });
 
   const handleMemberUpdated = useCallback(() => {
+    console.log("Member updated, refreshing data...");
     refetchMembers();
   }, [refetchMembers]);
 

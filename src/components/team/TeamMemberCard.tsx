@@ -25,6 +25,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
   const [isEditing, setIsEditing] = useState(false);
 
   const handleRoleUpdated = () => {
+    console.log("Role updated for member:", member.id);
     onMemberUpdated();
   };
 

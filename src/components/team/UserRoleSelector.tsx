@@ -44,7 +44,10 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
         .update({ role })
         .eq('id', userId);
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
       
       toast.success(`Role updated to ${role}`);
       setIsChanged(false);
