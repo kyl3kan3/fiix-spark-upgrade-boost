@@ -73,7 +73,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             {children}
             
             {/* Notifications Panel */}
-            {showNotifications && <DashboardNotifications />}
+            {showNotifications && (
+              <DashboardNotifications 
+                isOpen={showNotifications}
+                setIsOpen={setShowNotifications}
+              />
+            )}
           </div>
         </SidebarInset>
       </div>
