@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
 import SetupPage from "./pages/SetupPage"; 
+import Settings from "./pages/Settings"; // Import the new Settings page
 import Team from "./pages/Team";
 import Help from "./pages/Help";
 import Calendar from "./pages/Calendar";
@@ -64,6 +65,7 @@ const App = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<Settings />} /> {/* Add the Settings route */}
             <Route path="/setup" element={<SetupPage />} />
             <Route path="/team" element={<Team />} />
             <Route path="/calendar" element={<Calendar />} />
