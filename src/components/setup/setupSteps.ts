@@ -1,12 +1,12 @@
 
-import { CompanyInfoSetup } from "./CompanyInfoSetup";
-import { UserRolesSetup } from "./UserRolesSetup";
-import { AssetCategoriesSetup } from "./AssetCategoriesSetup";
-import { MaintenanceScheduleSetup } from "./MaintenanceScheduleSetup";
-import { NotificationSetup } from "./NotificationSetup";
-import { IntegrationsSetup } from "./IntegrationsSetup";
-import { DashboardCustomizationSetup } from "./DashboardCustomizationSetup";
-import { SetupComplete } from "./SetupComplete";
+import CompanyInfoSetup from "./CompanyInfoSetup";
+import UserRolesSetup from "./UserRolesSetup";
+import AssetCategoriesSetup from "./AssetCategoriesSetup";
+import MaintenanceScheduleSetup from "./MaintenanceScheduleSetup";
+import NotificationSetup from "./NotificationSetup";
+import IntegrationsSetup from "./IntegrationsSetup";
+import DashboardCustomizationSetup from "./DashboardCustomizationSetup";
+import SetupComplete from "./SetupComplete";
 
 export const steps = [
   { id: "company-info", label: "Company Info", component: CompanyInfoSetup },
