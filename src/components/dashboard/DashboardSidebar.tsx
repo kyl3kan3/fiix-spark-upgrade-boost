@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   BarChart2,
@@ -10,12 +11,20 @@ import {
   Settings,
   Wrench,
   Users,
-  CheckSquare
+  CheckSquare,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const DashboardSidebar = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   
   const sidebarItems = [
     {
@@ -69,7 +78,16 @@ const DashboardSidebar = () => {
   ];
 
   return (
-    <div className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200 p-4 fixed top-0 bottom-0 pt-16">
+    <div className={`${isCollapsed ? 'w-20' : 'w-64'} transition-all duration-300 hidden lg:flex flex-col bg-white border-r border-gray-200 p-4 fixed top-0 bottom-0 pt-16`}>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={toggleSidebar} 
+        className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50"
+      >
+        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+      </Button>
+      
       <div className="mt-8 flex flex-col flex-grow">
         <nav className="flex-1 space-y-1">
           {sidebarItems.map((item) => (
@@ -83,13 +101,13 @@ const DashboardSidebar = () => {
               }`}
             >
               <span
-                className={`mr-3 ${
+                className={`${
                   item.isActive ? "text-maintenease-600" : "text-gray-500"
-                }`}
+                } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
               >
                 {item.icon}
               </span>
-              {item.name}
+              {!isCollapsed && item.name}
             </Link>
           ))}
         </nav>
@@ -103,15 +121,15 @@ const DashboardSidebar = () => {
             }`}
           >
             <span
-              className={`mr-3 ${
+              className={`${
                 location.pathname === "/dashboard" && location.search.includes("tab=settings")
                   ? "text-maintenease-600"
                   : "text-gray-500"
-              }`}
+              } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
             >
               <Settings className="h-5 w-5" />
             </span>
-            Settings
+            {!isCollapsed && "Settings"}
           </Link>
         </div>
       </div>
