@@ -48,7 +48,7 @@ export const useTeamMembers = () => {
             id: profile.id,
             name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.email,
             email: profile.email,
-            role: profile.role,
+            role: profile.role || "viewer",
             avatar: profile.avatar_url ? profile.avatar_url.substring(0, 2).toUpperCase() : null,
             online: false,  // We'll set this to false for now
             unread: count || 0

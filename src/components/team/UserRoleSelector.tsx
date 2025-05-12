@@ -22,6 +22,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
   const [role, setRole] = useState<string>(currentRole);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isChanged, setIsChanged] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleRoleChange = (newRole: string) => {
     if (newRole !== role) {
@@ -44,6 +45,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
       
       toast.success(`Role updated to ${role}`);
       setIsChanged(false);
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating role:", error);
       toast.error("Failed to update role. Please try again.");
@@ -52,34 +54,67 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     }
   };
 
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing) {
+      // Reset to current role when entering edit mode
+      setRole(currentRole);
+      setIsChanged(false);
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
-      <Select value={role} onValueChange={handleRoleChange}>
-        <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Select role" />
-        </SelectTrigger>
-        <SelectContent>
-          {roles.map((role) => (
-            <SelectItem key={role.value} value={role.value}>
-              {role.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      
-      {isChanged && (
-        <Button 
-          size="sm" 
-          className="px-3" 
-          onClick={handleSave} 
-          disabled={isSaving}
-        >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <CheckIcon className="h-4 w-4" />
-          )}
-        </Button>
+      {isEditing ? (
+        <>
+          <Select value={role} onValueChange={handleRoleChange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select role" />
+            </SelectTrigger>
+            <SelectContent>
+              {roles.map((role) => (
+                <SelectItem key={role.value} value={role.value}>
+                  {role.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          <Button 
+            size="sm" 
+            className="px-3" 
+            onClick={handleSave} 
+            disabled={isSaving || !isChanged}
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckIcon className="h-4 w-4" />
+            )}
+          </Button>
+          
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="px-3" 
+            onClick={toggleEdit}
+            disabled={isSaving}
+          >
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <>
+          <span className="w-[140px] text-sm">{roles.find(r => r.value === currentRole)?.label || currentRole}</span>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="px-3" 
+            onClick={toggleEdit}
+          >
+            Edit
+          </Button>
+        </>
       )}
     </div>
   );

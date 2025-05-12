@@ -5,7 +5,7 @@ import TeamMemberCard from "./TeamMemberCard";
 import { Loader2 } from "lucide-react";
 
 interface TeamMember {
-  id: number;
+  id: string | number;  // Support both string and number types
   name: string;
   role: string;
   email: string;
@@ -38,7 +38,14 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({ members, roleColorMap
         ) : members.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {members.map((member) => (
-              <TeamMemberCard key={member.id} member={member} roleColorMap={roleColorMap} />
+              <TeamMemberCard 
+                key={member.id} 
+                member={{
+                  ...member,
+                  id: typeof member.id === 'string' ? parseInt(member.id) : member.id
+                }} 
+                roleColorMap={roleColorMap} 
+              />
             ))}
           </div>
         ) : (

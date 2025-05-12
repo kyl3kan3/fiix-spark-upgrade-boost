@@ -1,6 +1,6 @@
 
 export interface TeamMember {
-  id: number;
+  id: string | number;
   name: string;
   role: string;
   email: string;
@@ -10,6 +10,10 @@ export interface TeamMember {
   lastActive: string;
 }
 
-export interface RoleColorMap {
+export type RoleColorMap = {
+  administrator: string;
+  manager: string;
+  technician: string;
+  viewer: string;
   [key: string]: string;
-}
+};

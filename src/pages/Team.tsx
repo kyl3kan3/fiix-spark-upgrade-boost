@@ -15,7 +15,7 @@ const Team = () => {
   
   // Convert ChatUser type to TeamMember type
   const mappedMembers: TeamMember[] = teamMembers.map(member => ({
-    id: parseInt(member.id),
+    id: member.id, // Keep original string id
     name: member.name,
     role: member.role || "viewer",
     email: member.email,
