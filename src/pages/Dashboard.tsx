@@ -9,6 +9,8 @@ import TasksTab from '@/components/dashboard/tabs/TasksTab';
 import SettingsTab from '@/components/dashboard/tabs/SettingsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import NavbarApp from '@/components/NavbarApp';
+import { initNotificationService, setupPushNotifications } from '@/services/notificationService';
+import { toast } from 'sonner';
 
 const Dashboard: React.FC = () => {
   // Check stored dark mode preference on component mount
@@ -23,6 +25,16 @@ const Dashboard: React.FC = () => {
         document.documentElement.classList.remove('dark');
       }
     }
+    
+    // Initialize notification service
+    initNotificationService().catch(error => {
+      console.error("Failed to initialize notification service:", error);
+    });
+    
+    // Ask for push notification permission if not already granted
+    setupPushNotifications().catch(error => {
+      console.error("Failed to set up push notifications:", error);
+    });
   }, []);
 
   return (

@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Bell, X } from "lucide-react";
 import { toast } from "sonner";
+import { 
+  getUserNotifications, 
+  markNotificationAsRead, 
+  markAllNotificationsAsRead,
+  Notification
+} from "@/services/notificationService";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DashboardNotificationsProps {
   isOpen: boolean;
@@ -16,85 +23,122 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   setIsOpen,
   onNotificationCountChange
 }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "Work Order Updated",
-      description: "WO-2023-154 status changed to In Progress",
-      time: "10 minutes ago",
-      read: false,
-    },
-    {
-      id: 2,
-      title: "Maintenance Alert",
-      description: "Scheduled maintenance for Line A is due tomorrow",
-      time: "1 hour ago",
-      read: false,
-    },
-    {
-      id: 3,
-      title: "System Update",
-      description: "New features have been added to the system",
-      time: "2 hours ago",
-      read: true,
-    },
-    {
-      id: 4,
-      title: "Inventory Alert",
-      description: "Low inventory for replacement filters",
-      time: "Yesterday",
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleMarkAllAsRead = () => {
-    if (getUnreadCount() === 0) return; // Don't do anything if no unread notifications
-    
-    const updatedNotifications = notifications.map(notification => ({
-      ...notification,
-      read: true
-    }));
-    setNotifications(updatedNotifications);
-    toast.success("All notifications marked as read");
-    
-    // Update the notification count in the parent component
-    if (onNotificationCountChange) {
-      onNotificationCountChange(0);
+  useEffect(() => {
+    if (isOpen) {
+      loadNotifications();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    // Listen for new notifications
+    const { data: { user } } = supabase.auth.getUser();
+    if (!user) return;
+
+    const channel = supabase
+      .channel('notifications-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          // Add new notification to the list
+          const newNotification = payload.new as Notification;
+          setNotifications(prev => [newNotification, ...prev]);
+          
+          // Update unread count
+          if (onNotificationCountChange) {
+            onNotificationCountChange(getUnreadCount() + 1);
+          }
+
+          // Show toast if notification panel is closed
+          if (!isOpen) {
+            toast.info(newNotification.title, {
+              description: newNotification.body,
+              duration: 5000,
+              action: {
+                label: "View",
+                onClick: () => setIsOpen(true)
+              }
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const loadNotifications = async () => {
+    setLoading(true);
+    try {
+      const notificationsData = await getUserNotifications();
+      setNotifications(notificationsData);
+      
+      // Update unread count
+      if (onNotificationCountChange) {
+        onNotificationCountChange(notificationsData.filter(n => !n.read).length);
+      }
+    } catch (error) {
+      console.error("Error loading notifications:", error);
+      toast.error("Failed to load notifications");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDismissNotification = (id: number) => {
-    const updatedNotifications = notifications.filter(notification => notification.id !== id);
-    setNotifications(updatedNotifications);
+  const handleMarkAllAsRead = async () => {
+    if (getUnreadCount() === 0) return; // Don't do anything if no unread notifications
     
-    // Update the notification count after dismissing
-    if (onNotificationCountChange) {
-      const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
-      onNotificationCountChange(newUnreadCount);
+    try {
+      await markAllNotificationsAsRead();
+      
+      // Update local state
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      toast.success("All notifications marked as read");
+      
+      // Update the notification count in the parent component
+      if (onNotificationCountChange) {
+        onNotificationCountChange(0);
+      }
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+      toast.error("Failed to mark notifications as read");
+    }
+  };
+
+  const handleDismissNotification = async (id: string) => {
+    try {
+      await markNotificationAsRead(id);
+      
+      // Update local state
+      const updatedNotifications = notifications.map(n => 
+        n.id === id ? { ...n, read: true } : n
+      );
+      setNotifications(updatedNotifications);
+      
+      // Update the notification count after dismissing
+      if (onNotificationCountChange) {
+        const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
+        onNotificationCountChange(newUnreadCount);
+      }
+    } catch (error) {
+      console.error("Error dismissing notification:", error);
+      toast.error("Failed to dismiss notification");
     }
   };
 
   const getUnreadCount = () => {
-    return notifications.filter(notification => !notification.read).length;
+    return notifications.filter(n => !n.read).length;
   };
-
-  // Notify parent component of unread count when it changes
-  useEffect(() => {
-    if (onNotificationCountChange) {
-      onNotificationCountChange(getUnreadCount());
-    }
-  }, [notifications, onNotificationCountChange]);
-
-  // Let's check if notification preferences exist in localStorage
-  useEffect(() => {
-    const storedPreferences = localStorage.getItem('notificationPreferences');
-    if (storedPreferences) {
-      const preferences = JSON.parse(storedPreferences);
-      // We could use these preferences to filter which notifications to show
-      // For now we'll just log them
-      console.log("Loaded notification preferences:", preferences);
-    }
-  }, []);
 
   return (
     <>
@@ -129,7 +173,11 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
           </div>
           
           <div className="max-h-[400px] overflow-y-auto">
-            {notifications.length === 0 ? (
+            {loading ? (
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                <p>Loading notifications...</p>
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                 <p>No new notifications</p>
               </div>
@@ -142,9 +190,27 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
                       notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20"
                     } relative`}
                   >
-                    <p className="font-medium text-sm">{notification.title}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">{notification.description}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{notification.time}</p>
+                    <div className="flex items-start">
+                      {notification.type === 'email' && (
+                        <span className="text-blue-500 text-xs px-1.5 py-0.5 bg-blue-100 rounded mr-2">Email</span>
+                      )}
+                      {notification.type === 'sms' && (
+                        <span className="text-green-500 text-xs px-1.5 py-0.5 bg-green-100 rounded mr-2">SMS</span>
+                      )}
+                      {notification.type === 'push' && (
+                        <span className="text-purple-500 text-xs px-1.5 py-0.5 bg-purple-100 rounded mr-2">Push</span>
+                      )}
+                      {notification.type === 'in_app' && (
+                        <span className="text-orange-500 text-xs px-1.5 py-0.5 bg-orange-100 rounded mr-2">App</span>
+                      )}
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{notification.title}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{notification.body}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                          {new Date(notification.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
                     <Button
                       variant="ghost"
                       size="sm"

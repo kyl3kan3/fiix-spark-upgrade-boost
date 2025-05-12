@@ -59,6 +59,33 @@ export type Database = {
           },
         ]
       }
+      device_tokens: {
+        Row: {
+          created_at: string
+          device_type: string
+          id: string
+          last_used_at: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_type: string
+          id?: string
+          last_used_at?: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_type?: string
+          id?: string
+          last_used_at?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -83,6 +110,78 @@ export type Database = {
           read?: boolean
           recipient_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          digest_frequency: string
+          email_address: string | null
+          email_enabled: boolean
+          id: string
+          phone_number: string | null
+          push_enabled: boolean
+          sms_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          digest_frequency?: string
+          email_address?: string | null
+          email_enabled?: boolean
+          id?: string
+          phone_number?: string | null
+          push_enabled?: boolean
+          sms_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          digest_frequency?: string
+          email_address?: string | null
+          email_enabled?: boolean
+          id?: string
+          phone_number?: string | null
+          push_enabled?: boolean
+          sms_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read: boolean
+          reference_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          reference_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          reference_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
