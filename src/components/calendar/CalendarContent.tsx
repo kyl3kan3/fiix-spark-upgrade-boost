@@ -31,7 +31,6 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
             {date ? format(date, "MMMM d, yyyy") : "Scheduled Events"}
           </CardTitle>
           <Tabs
-            defaultValue="day"
             value={activeView}
             onValueChange={setActiveView}
             className="w-[260px]"
@@ -51,17 +50,19 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
       </CardHeader>
       
       <CardContent>
-        <TabsContent value="day" className="mt-0">
-          <DayView events={filteredEvents} />
-        </TabsContent>
-        
-        <TabsContent value="week" className="mt-0">
-          <WeekView />
-        </TabsContent>
-        
-        <TabsContent value="month" className="mt-0">
-          <MonthView events={filteredEvents} />
-        </TabsContent>
+        <Tabs value={activeView}>
+          <TabsContent value="day" className="mt-0">
+            <DayView events={filteredEvents} />
+          </TabsContent>
+          
+          <TabsContent value="week" className="mt-0">
+            <WeekView />
+          </TabsContent>
+          
+          <TabsContent value="month" className="mt-0">
+            <MonthView events={filteredEvents} />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
