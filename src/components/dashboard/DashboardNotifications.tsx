@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Bell, X } from "lucide-react";
@@ -45,16 +45,35 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   ]);
 
   const handleMarkAllAsRead = () => {
+    if (getUnreadCount() === 0) return; // Don't do anything if no unread notifications
+    
     const updatedNotifications = notifications.map(notification => ({
       ...notification,
       read: true
     }));
+    setNotifications(updatedNotifications);
+    toast.success("All notifications marked as read");
+  };
+
+  const handleDismissNotification = (id: number) => {
+    const updatedNotifications = notifications.filter(notification => notification.id !== id);
     setNotifications(updatedNotifications);
   };
 
   const getUnreadCount = () => {
     return notifications.filter(notification => !notification.read).length;
   };
+
+  // Let's check if notification preferences exist in localStorage
+  useEffect(() => {
+    const storedPreferences = localStorage.getItem('notificationPreferences');
+    if (storedPreferences) {
+      const preferences = JSON.parse(storedPreferences);
+      // We could use these preferences to filter which notifications to show
+      // For now we'll just log them
+      console.log("Loaded notification preferences:", preferences);
+    }
+  }, []);
 
   return (
     <>
@@ -100,11 +119,19 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
                     key={notification.id} 
                     className={`p-4 border-b last:border-0 hover:bg-gray-50 ${
                       notification.read ? "" : "bg-blue-50/30"
-                    }`}
+                    } relative`}
                   >
                     <p className="font-medium text-sm">{notification.title}</p>
                     <p className="text-sm text-gray-600">{notification.description}</p>
                     <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 hover:opacity-100 focus:opacity-100"
+                      onClick={() => handleDismissNotification(notification.id)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
                   </div>
                 ))}
               </div>

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Bell,
@@ -23,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { toast } from "sonner";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
 
@@ -33,10 +35,28 @@ interface DashboardHeaderProps {
 const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(3);
+  const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
 
   // This ensures the notifications panel closes when we navigate away
   const handleCloseNotifications = () => {
     setShowNotifications(false);
+  };
+  
+  // Check notification preferences when component mounts
+  useEffect(() => {
+    const storedPreferences = localStorage.getItem('notificationPreferences');
+    if (storedPreferences) {
+      const preferences = JSON.parse(storedPreferences);
+      const pushSetting = preferences.find((p: any) => p.title === "Push Notifications");
+      if (pushSetting) {
+        setPushNotificationsEnabled(pushSetting.enabled);
+      }
+    }
+  }, []);
+  
+  const handleLogout = () => {
+    toast.info("You have been logged out");
+    // Here you would typically clear user session
   };
 
   return (
@@ -105,12 +125,10 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
             )}
           </Button>
           
-          {showNotifications && (
-            <DashboardNotifications 
-              isOpen={showNotifications} 
-              setIsOpen={setShowNotifications} 
-            />
-          )}
+          <DashboardNotifications 
+            isOpen={showNotifications} 
+            setIsOpen={setShowNotifications} 
+          />
 
           <Link to="/help">
             <Button
@@ -161,7 +179,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut size={16} className="mr-2" />
                 Logout
               </DropdownMenuItem>

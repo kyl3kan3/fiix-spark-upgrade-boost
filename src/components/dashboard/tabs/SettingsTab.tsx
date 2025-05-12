@@ -31,6 +31,7 @@ const SettingsTab: React.FC = () => {
   ]);
 
   const [dashboardLayout, setDashboardLayout] = useState("Default");
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
   const handleNotificationToggle = (id: number) => {
     setNotificationPreferences(prev => 
@@ -43,6 +44,7 @@ const SettingsTab: React.FC = () => {
     if (preference) {
       toast.success(`${preference.title} ${!preference.enabled ? 'enabled' : 'disabled'}`);
     }
+    setHasPendingChanges(true);
   };
 
   const handleDisplaySettingToggle = (id: string) => {
@@ -55,16 +57,40 @@ const SettingsTab: React.FC = () => {
     const setting = displaySettings.find(s => s.id === id);
     if (setting) {
       toast.success(`${setting.title} ${!setting.enabled ? 'enabled' : 'disabled'}`);
+      
+      // Apply dark mode change immediately if it's toggled
+      if (id === "darkMode") {
+        applyDarkModeChange(!setting.enabled);
+      }
+    }
+    setHasPendingChanges(true);
+  };
+
+  const applyDarkModeChange = (isDarkMode: boolean) => {
+    // Apply dark mode to document directly
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
   };
 
   const handleLayoutChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDashboardLayout(e.target.value);
     toast.success(`Dashboard layout changed to ${e.target.value}`);
+    setHasPendingChanges(true);
   };
 
   const handleSaveSettings = () => {
+    // Here you would typically save settings to backend/localStorage
+    // For demonstration, we'll just show a toast and reset the pending changes flag
     toast.success("Settings saved successfully");
+    setHasPendingChanges(false);
+    
+    // You could persist settings to localStorage here
+    localStorage.setItem('notificationPreferences', JSON.stringify(notificationPreferences));
+    localStorage.setItem('displaySettings', JSON.stringify(displaySettings));
+    localStorage.setItem('dashboardLayout', dashboardLayout);
   };
 
   return (
@@ -132,10 +158,11 @@ const SettingsTab: React.FC = () => {
       </CardContent>
       <CardFooter>
         <Button 
-          className="bg-maintenease-600 hover:bg-maintenease-700 ml-auto"
+          className={`ml-auto ${hasPendingChanges ? 'bg-maintenease-600 hover:bg-maintenease-700' : 'bg-gray-400 hover:bg-gray-500'}`}
           onClick={handleSaveSettings}
+          disabled={!hasPendingChanges}
         >
-          Save Settings
+          {hasPendingChanges ? "Save Settings" : "No Changes"}
         </Button>
       </CardFooter>
     </Card>
