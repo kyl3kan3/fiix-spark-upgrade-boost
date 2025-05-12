@@ -57,11 +57,7 @@ export const useTeamMembers = () => {
       setTeamMembers(users.filter(Boolean) as ChatUser[]);
     } catch (error) {
       console.error("Error fetching team members:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load team members",
-        variant: "destructive"
-      });
+      toast.error("Failed to load team members");
     } finally {
       setLoading(false);
     }
