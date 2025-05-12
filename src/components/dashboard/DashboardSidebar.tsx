@@ -16,16 +16,21 @@ import {
   ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sidebar } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar
+} from "@/components/ui/sidebar";
 
 const DashboardSidebar = () => {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { state: sidebarState, toggleSidebar } = useSidebar();
+  const isCollapsed = sidebarState === "collapsed";
   
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const isActive = (path: string) => location.pathname === path;
   
   const sidebarItems = [
     {
@@ -80,62 +85,54 @@ const DashboardSidebar = () => {
 
   return (
     <Sidebar>
-      <div className={`${isCollapsed ? 'w-20' : 'w-64'} transition-all duration-300 hidden lg:flex flex-col bg-white border-r border-gray-200 p-4 h-full`}>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={toggleSidebar} 
-          className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50"
-        >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </Button>
-        
-        <div className="mt-8 flex flex-col flex-grow">
-          <nav className="flex-1 space-y-1">
-            {sidebarItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-                  item.isActive
-                    ? "bg-maintenease-50 text-maintenease-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <span
-                  className={`${
-                    item.isActive ? "text-maintenease-600" : "text-gray-500"
-                  } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
-                >
-                  {item.icon}
-                </span>
-                {!isCollapsed && item.name}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-auto pb-8">
-            <Link
-              to="/dashboard?tab=settings"
-              className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-                location.pathname === "/dashboard" && location.search.includes("tab=settings")
-                  ? "bg-maintenease-50 text-maintenease-700"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+      <SidebarContent>
+        <div className="mt-6 px-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className={`font-semibold text-lg ${isCollapsed ? 'hidden' : 'block'}`}>
+              MaintenEase
+            </h2>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSidebar} 
+              className="hover:bg-gray-100"
             >
-              <span
-                className={`${
-                  location.pathname === "/dashboard" && location.search.includes("tab=settings")
-                    ? "text-maintenease-600"
-                    : "text-gray-500"
-                } ${isCollapsed ? 'mr-0' : 'mr-3'}`}
-              >
-                <Settings className="h-5 w-5" />
-              </span>
-              {!isCollapsed && "Settings"}
-            </Link>
+              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
           </div>
+          
+          <SidebarMenu>
+            {sidebarItems.map((item) => (
+              <SidebarMenuItem key={item.name}>
+                <SidebarMenuButton 
+                  asChild
+                  isActive={item.isActive}
+                  tooltip={isCollapsed ? item.name : undefined}
+                >
+                  <Link to={item.href} className="flex items-center">
+                    <span>{item.icon}</span>
+                    {!isCollapsed && <span className="ml-3">{item.name}</span>}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                asChild
+                isActive={location.pathname === "/dashboard" && location.search.includes("tab=settings")}
+                tooltip={isCollapsed ? "Settings" : undefined}
+              >
+                <Link to="/dashboard?tab=settings" className="flex items-center mt-auto">
+                  <span><Settings className="h-5 w-5" /></span>
+                  {!isCollapsed && <span className="ml-3">Settings</span>}
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </div>
-      </div>
+      </SidebarContent>
     </Sidebar>
   );
 };

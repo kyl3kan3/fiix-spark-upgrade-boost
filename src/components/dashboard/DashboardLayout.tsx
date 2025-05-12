@@ -1,12 +1,16 @@
 
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Bell, Menu, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardSidebar from "./DashboardSidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { 
+  SidebarProvider, 
+  SidebarInset, 
+  SidebarTrigger 
+} from "@/components/ui/sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -37,8 +41,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
                 <SidebarTrigger>
-                  <Button variant="ghost" size="icon" className="mr-2">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="mr-2 md:hidden">
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SidebarTrigger>
