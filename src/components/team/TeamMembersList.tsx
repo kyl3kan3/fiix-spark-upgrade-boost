@@ -19,9 +19,15 @@ interface TeamMembersListProps {
   members: TeamMember[];
   roleColorMap: Record<string, string>;
   loading?: boolean;
+  onMemberUpdated: () => void;
 }
 
-const TeamMembersList: React.FC<TeamMembersListProps> = ({ members, roleColorMap, loading = false }) => {
+const TeamMembersList: React.FC<TeamMembersListProps> = ({ 
+  members, 
+  roleColorMap, 
+  loading = false,
+  onMemberUpdated
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -40,11 +46,9 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({ members, roleColorMap
             {members.map((member) => (
               <TeamMemberCard 
                 key={member.id} 
-                member={{
-                  ...member,
-                  id: typeof member.id === 'string' ? parseInt(member.id) : member.id
-                }} 
+                member={member}
                 roleColorMap={roleColorMap} 
+                onMemberUpdated={onMemberUpdated}
               />
             ))}
           </div>

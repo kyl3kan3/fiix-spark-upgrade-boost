@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
 import TeamFilters from "../components/team/TeamFilters";
@@ -11,7 +11,7 @@ import { useTeamMembers } from "../hooks/useTeamMembers";
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const { teamMembers, loading } = useTeamMembers();
+  const { teamMembers, loading, refetchMembers } = useTeamMembers();
   
   // Convert ChatUser type to TeamMember type
   const mappedMembers: TeamMember[] = teamMembers.map(member => ({
@@ -40,6 +40,10 @@ const Team = () => {
     return matchesSearch && matchesRole;
   });
 
+  const handleMemberUpdated = useCallback(() => {
+    refetchMembers();
+  }, [refetchMembers]);
+
   return (
     <DashboardLayout>
       <TeamHeader />
@@ -53,6 +57,7 @@ const Team = () => {
         members={filteredMembers} 
         roleColorMap={roleColorMap}
         loading={loading}
+        onMemberUpdated={handleMemberUpdated}
       />
       <RolePermissionsOverview />
     </DashboardLayout>

@@ -1,12 +1,14 @@
 
-import React from "react";
-import { Mail, Phone } from "lucide-react";
+import React, { useState } from "react";
+import { Mail, Phone, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import UserRoleSelector from "./UserRoleSelector";
+import UserInfoEditor from "./UserInfoEditor";
 
 interface TeamMemberProps {
   member: {
-    id: number;
+    id: string | number;
     name: string;
     role: string;
     email: string;
@@ -16,12 +18,24 @@ interface TeamMemberProps {
     lastActive: string;
   };
   roleColorMap: Record<string, string>;
+  onMemberUpdated: () => void;
 }
 
-const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap }) => {
+const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMemberUpdated }) => {
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
     <div className="card overflow-hidden border rounded-lg">
-      <div className="p-6">
+      <div className="p-6 relative">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="absolute right-3 top-3"
+          onClick={() => setIsEditing(true)}
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
+        
         <div className="flex items-start gap-4">
           <div className="h-12 w-12 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-lg">
             {member.avatar}
@@ -47,6 +61,18 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap }) => 
             </div>
           </div>
         </div>
+        
+        <UserInfoEditor
+          open={isEditing}
+          onOpenChange={setIsEditing}
+          user={{
+            id: member.id.toString(),
+            name: member.name,
+            email: member.email,
+            phone: member.phone,
+          }}
+          onUserUpdated={onMemberUpdated}
+        />
       </div>
       <div className="bg-gray-50 px-6 py-3 flex items-center justify-between">
         <span className="text-sm font-medium">Role Access</span>
