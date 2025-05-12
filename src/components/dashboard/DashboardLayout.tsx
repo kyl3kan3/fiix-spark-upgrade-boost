@@ -6,7 +6,7 @@ import { Bell, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardSidebar from "./DashboardSidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -32,7 +32,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="flex min-h-screen w-full bg-gray-50">
         <DashboardSidebar />
         
-        <SidebarInset>
+        <SidebarInset className="flex flex-col flex-1">
           <header className="bg-white border-b border-gray-200">
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
@@ -66,7 +66,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
           </header>
           
-          <div className="container mx-auto px-4 pt-8">
+          <div className="container mx-auto px-4 pt-8 flex-1">
             {children}
             
             {/* Notifications Panel */}
