@@ -32,7 +32,7 @@ export const useAdminStatus = (): AdminStatusResult => {
         // Get current user's role from profiles
         const { data, error } = await supabase
           .from('profiles')
-          .select('role, first_name, last_name')
+          .select('role, first_name, last_name, company_name')
           .eq('id', user.id)
           .single();
           
@@ -41,21 +41,9 @@ export const useAdminStatus = (): AdminStatusResult => {
         // Check if user is an administrator
         setIsAdminUser(data?.role === "administrator");
         
-        // Fetch company info - handle the case where column may not exist
-        try {
-          // Use maybeSingle instead to prevent errors if no data is found
-          const { data: companyData } = await supabase
-            .from('profiles')
-            .select('company_name')
-            .eq('id', user.id)
-            .maybeSingle();
-            
-          if (companyData && 'company_name' in companyData) {
-            // Type assertion to ensure proper typing
-            setCompanyName(companyData.company_name as string | null || undefined);
-          }
-        } catch (companyError) {
-          console.error("Error fetching company name:", companyError);
+        // Set company name if available
+        if (data && 'company_name' in data) {
+          setCompanyName(data.company_name as string | undefined);
         }
       } catch (err: any) {
         console.error("Error checking admin status:", err);

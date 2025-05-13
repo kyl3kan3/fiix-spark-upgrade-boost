@@ -2,11 +2,13 @@
 import { useState, useEffect } from "react";
 import { CompanyInfo } from "./types";
 import { toast } from "sonner";
+import { useAdminStatus } from "@/hooks/team/useAdminStatus";
 
 export const useCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [setupCompleted, setSetupCompleted] = useState(false);
+  const { companyName } = useAdminStatus();
 
   useEffect(() => {
     // Check if setup is completed
@@ -34,6 +36,12 @@ export const useCompanyInfo = () => {
         
         if (companyInfoData) {
           setCompanyInfo(companyInfoData);
+        } else if (companyName) {
+          // If no data in localStorage but we have company name from Supabase profile
+          console.log("Using company name from Supabase profile:", companyName);
+          setCompanyInfo({ 
+            companyName: companyName
+          });
         } else {
           console.warn("No company info found in parsed data:", parsedData);
           setCompanyInfo(null);
@@ -41,15 +49,30 @@ export const useCompanyInfo = () => {
       } catch (error) {
         console.error("Error parsing company information:", error);
         toast.error("There was an error loading company information");
-        setCompanyInfo(null);
+        
+        // Still try to use the company name from Supabase profile if available
+        if (companyName) {
+          setCompanyInfo({ 
+            companyName: companyName
+          });
+        } else {
+          setCompanyInfo(null);
+        }
       }
     } else {
-      console.warn("No setup data found in localStorage");
-      setCompanyInfo(null);
+      // If no setup data in local storage, check if we have company name from Supabase profile
+      if (companyName) {
+        setCompanyInfo({ 
+          companyName: companyName
+        });
+      } else {
+        console.warn("No setup data found in localStorage and no company name in profile");
+        setCompanyInfo(null);
+      }
     }
     
     setIsLoading(false);
-  }, []);
+  }, [companyName]);
 
   return { companyInfo, isLoading, setupCompleted };
 };

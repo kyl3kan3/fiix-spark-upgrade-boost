@@ -8,7 +8,7 @@ interface CompanyDetailsProps {
   handleEditClick: () => void;
 }
 
-export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo }) => {
+export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo, handleEditClick }) => {
   // Format website for display and links
   const displayWebsite = companyInfo.website || '';
   const websiteUrl = displayWebsite.startsWith('http') 
