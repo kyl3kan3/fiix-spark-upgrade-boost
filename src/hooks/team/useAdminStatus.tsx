@@ -41,19 +41,23 @@ export const useAdminStatus = (): AdminStatusResult => {
         // Check if user is an administrator
         setIsAdminUser(data?.role === "administrator");
         
-        // Fetch company info - we need to check if the column exists
+        // Fetch company info - handle the case where column may not exist
         try {
-          const { data: companyData } = await supabase
+          // Use maybeSingle instead to prevent errors if no data is found
+          const { data: companyData, error: companyError } = await supabase
             .from('profiles')
             .select('company_name')
             .eq('id', user.id)
             .maybeSingle();
             
-          if (companyData && companyData.company_name) {
+          if (companyError) {
+            console.error("Error fetching company name:", companyError);
+          } else if (companyData) {
+            // Only try to access company_name if companyData exists
             setCompanyName(companyData.company_name);
           }
         } catch (companyError) {
-          console.error("Error fetching company name (column may not exist):", companyError);
+          console.error("Error fetching company name:", companyError);
         }
       } catch (err: any) {
         console.error("Error checking admin status:", err);
