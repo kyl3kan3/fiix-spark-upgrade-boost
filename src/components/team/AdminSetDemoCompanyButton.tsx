@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useCurrentUserCompanyName } from "@/hooks/useCurrentUserCompanyName";
@@ -13,6 +13,7 @@ interface ProfileCompany {
 const AdminSetDemoCompanyButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { companyName, loading: companyLoading } = useCurrentUserCompanyName();
+  const { toast } = useToast();
 
   const handleSetCompany = async () => {
     setLoading(true);
@@ -111,3 +112,4 @@ const AdminSetDemoCompanyButton: React.FC = () => {
 };
 
 export default AdminSetDemoCompanyButton;
+
