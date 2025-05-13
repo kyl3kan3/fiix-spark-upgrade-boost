@@ -31,7 +31,10 @@ const MemberCardBody: React.FC<MemberCardBodyProps> = ({
       <MemberActions onEditClick={() => setIsEditing(true)} />
       
       <div className="flex items-start gap-4">
-        <MemberAvatar avatar={member.avatar} online={member.online} />
+        <MemberAvatar 
+          avatar={member.avatar} 
+          online={member.online ?? false} // Use optional chaining with fallback
+        />
         <MemberInfo member={member} roleColorMap={roleColorMap} />
       </div>
       

@@ -51,7 +51,8 @@ export const useAdminStatus = (): AdminStatusResult => {
             .maybeSingle();
             
           if (companyData && 'company_name' in companyData) {
-            setCompanyName(companyData.company_name);
+            // Type assertion to ensure proper typing
+            setCompanyName(companyData.company_name as string | null || undefined);
           }
         } catch (companyError) {
           console.error("Error fetching company name:", companyError);
