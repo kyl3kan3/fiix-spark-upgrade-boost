@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,6 +11,7 @@ export interface OrganizationInvitation {
   status: string;
   created_at: string;
   accepted_at: string | null;
+  token: string | null; // <-- Added line
 }
 
 function generateToken(length = 32) {
@@ -99,3 +101,4 @@ export const useOrganizationInvitations = (
     sendInvitation,
   };
 };
+
