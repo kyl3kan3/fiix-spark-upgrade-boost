@@ -1,3 +1,4 @@
+
 export interface TeamMember {
   id: string | number;
   name: string;
@@ -10,6 +11,7 @@ export interface TeamMember {
   firstName?: string;
   lastName?: string;
   companyName?: string; // Added company name field
+  online?: boolean; // Added online property to fix the type error
 }
 
 export type RoleColorMap = {
@@ -24,3 +26,4 @@ export interface TeamMemberFormValues {
   role: string;
   companyName?: string;
 }
+
