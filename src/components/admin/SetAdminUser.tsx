@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { setUserAsAdmin } from "@/utils/adminUtils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SetAdminUserProps {
   email?: string;
@@ -12,6 +13,34 @@ interface SetAdminUserProps {
 
 const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com" }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [currentRole, setCurrentRole] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
+  
+  // Check the current role when component mounts
+  useEffect(() => {
+    const checkCurrentRole = async () => {
+      try {
+        setIsChecking(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('email', email)
+          .single();
+          
+        if (error) throw error;
+        
+        setCurrentRole(data?.role || null);
+        console.log(`Current role for ${email}: ${data?.role}`);
+      } catch (error) {
+        console.error("Error checking role:", error);
+        setCurrentRole(null);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+    
+    checkCurrentRole();
+  }, [email]);
   
   const handleSetAdmin = async () => {
     setIsLoading(true);
@@ -21,6 +50,8 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
       
       if (result.success) {
         toast.success(`Successfully set ${email} as administrator`);
+        // Update the displayed role after successful change
+        setCurrentRole("administrator");
       } else {
         toast.error(`Failed to set ${email} as administrator: ${result.error?.message || 'Unknown error'}`);
       }
@@ -42,23 +73,41 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
-          <p>
-            Make <strong>{email}</strong> an administrator
-          </p>
-          <Button 
-            onClick={handleSetAdmin} 
-            disabled={isLoading}
-            className="max-w-xs"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Setting as admin...
-              </>
+          <div className="flex items-center space-x-2">
+            <p>
+              <strong>{email}</strong>
+            </p>
+            {isChecking ? (
+              <span className="text-sm text-gray-500">(Checking current role...)</span>
+            ) : currentRole ? (
+              <span className={`text-sm font-medium px-2 py-1 rounded-full ${
+                currentRole === 'administrator' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+              }`}>
+                Current role: {currentRole}
+              </span>
             ) : (
-              'Grant Administrator Access'
+              <span className="text-sm text-gray-500">(Role unknown)</span>
             )}
-          </Button>
+          </div>
+          
+          {currentRole === 'administrator' ? (
+            <p className="text-green-600">This user already has administrator access.</p>
+          ) : (
+            <Button 
+              onClick={handleSetAdmin} 
+              disabled={isLoading || isChecking}
+              className="max-w-xs"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Setting as admin...
+                </>
+              ) : (
+                'Grant Administrator Access'
+              )}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
