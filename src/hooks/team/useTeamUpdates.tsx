@@ -1,0 +1,63 @@
+
+import { useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { ChatUser } from "@/types/chat";
+
+export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateAction<ChatUser[]>>) => {
+  const updateTeamMember = useCallback(async (userId: string, updates: {
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    email?: string;
+  }) => {
+    try {
+      console.log("Updating team member:", userId, updates);
+      
+      const updateData: Record<string, any> = {};
+      if (updates.firstName !== undefined) updateData.first_name = updates.firstName;
+      if (updates.lastName !== undefined) updateData.last_name = updates.lastName;
+      if (updates.role !== undefined) updateData.role = updates.role;
+      if (updates.email !== undefined) updateData.email = updates.email;
+      
+      const { error } = await supabase
+        .from("profiles")
+        .update(updateData)
+        .eq("id", userId);
+        
+      if (error) {
+        console.error("Error updating team member:", error);
+        throw error;
+      }
+      
+      // Update local state with the new information
+      setTeamMembers(prev => 
+        prev.map(member => 
+          member.id === userId 
+            ? { 
+                ...member, 
+                ...(updates.firstName !== undefined && { firstName: updates.firstName }),
+                ...(updates.lastName !== undefined && { lastName: updates.lastName }),
+                ...(updates.role !== undefined && { role: updates.role }),
+                ...(updates.email !== undefined && { email: updates.email }),
+                ...(updates.firstName !== undefined || updates.lastName !== undefined ? { 
+                  name: `${updates.firstName || member.firstName} ${updates.lastName || member.lastName}`.trim() || member.email,
+                  avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ? 
+                    `${(updates.firstName || member.firstName)[0]}${(updates.lastName || member.lastName)[0]}`.toUpperCase() : 
+                    (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
+                } : {})
+              } 
+            : member
+        )
+      );
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating team member:", error);
+      toast.error("Failed to update team member");
+      return { success: false, error };
+    }
+  }, [setTeamMembers]);
+
+  return { updateTeamMember };
+};
