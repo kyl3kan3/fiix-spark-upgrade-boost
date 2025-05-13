@@ -18,7 +18,11 @@ const DeleteAccountButton: React.FC = () => {
     // Get current user id
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-      toast.error("Unable to find your account.");
+      toast({
+        title: "Error",
+        description: "Unable to find your account.",
+        variant: "destructive",
+      });
       setIsDeleting(false);
       setOpen(false);
       return;
@@ -30,9 +34,11 @@ const DeleteAccountButton: React.FC = () => {
     const { error } = await supabase.auth.admin.deleteUser(user.id);
     // If admin API fails (typical for client-side), fallback to signOut and remove local profile data
     if (error) {
-      // Try to delete with client SDK (usually requires elevated permissions)
-      // Most Supabase setups require server-side function to truly delete a user account
-      toast.error("Account deletion failed. Please contact an admin.");
+      toast({
+        title: "Account Deletion Failed",
+        description: "Account deletion failed. Please contact an admin.",
+        variant: "destructive",
+      });
       setIsDeleting(false);
       setOpen(false);
       return;
@@ -40,7 +46,11 @@ const DeleteAccountButton: React.FC = () => {
 
     // Remove local session and profile data
     await supabase.auth.signOut();
-    toast.success("Your account has been deleted.");
+    toast({
+      title: "Account Deleted",
+      description: "Your account has been deleted.",
+      variant: "default",
+    });
     setIsDeleting(false);
     setOpen(false);
     navigate("/auth");
@@ -76,7 +86,6 @@ const DeleteAccountButton: React.FC = () => {
           <Button
             variant="destructive"
             onClick={handleDelete}
-            loading={isDeleting}
             disabled={isDeleting}
           >
             {isDeleting ? "Deleting..." : "Confirm Delete"}
