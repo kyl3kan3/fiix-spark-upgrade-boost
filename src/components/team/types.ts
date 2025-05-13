@@ -1,4 +1,3 @@
-
 export interface TeamMember {
   id: string | number;
   name: string;
@@ -17,6 +16,8 @@ export type RoleColorMap = {
   [key: string]: string;
 };
 
+// This type is now imported from teamMemberFormSchema.ts 
+// but we keep it here for backward compatibility
 export interface TeamMemberFormValues {
   name: string;
   email: string;
