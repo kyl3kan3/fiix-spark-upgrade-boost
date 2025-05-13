@@ -6,11 +6,12 @@ interface AuthToggleProps {
 
 const AuthToggle = ({ isSignUp, onToggle }: AuthToggleProps) => {
   return (
-    <div className="text-center mt-4">
+    <div className="text-center mt-6 animate-fade-in transition-all duration-300">
       <button
         type="button"
         onClick={onToggle}
-        className="text-maintenease-600 hover:text-maintenease-800 text-sm font-medium"
+        className="text-[#9b87f5] hover:text-[#7e6ad4] text-sm font-medium transition-colors underline underline-offset-4"
+        aria-label={isSignUp ? "Switch to sign in" : "Switch to sign up"}
       >
         {isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
       </button>

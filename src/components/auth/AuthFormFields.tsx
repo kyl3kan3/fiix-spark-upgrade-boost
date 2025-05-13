@@ -25,9 +25,9 @@ export const SignInFields = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-4 rounded-md">
+    <div className="space-y-6 rounded-md">
       <div>
-        <Label htmlFor="email-address">Email address</Label>
+        <Label htmlFor="email-address" className="text-gray-700">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -36,12 +36,12 @@ export const SignInFields = ({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-          className="mt-1"
+          placeholder="you@email.com"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-gray-700">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -52,19 +52,19 @@ export const SignInFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1"
+            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] pr-10 transition-shadow duration-150"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
             tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
       </div>
-      
       <div className="flex items-center space-x-2">
         <Checkbox 
           id="remember-me" 
@@ -99,9 +99,9 @@ export const SignUpFields = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-4 rounded-md">
+    <div className="space-y-6 rounded-md">
       <div>
-        <Label htmlFor="name">Full Name</Label>
+        <Label htmlFor="name" className="text-gray-700">Full Name</Label>
         <Input
           id="name"
           name="name"
@@ -110,11 +110,11 @@ export const SignUpFields = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="John Doe"
-          className="mt-1"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="email-address">Email address</Label>
+        <Label htmlFor="email-address" className="text-gray-700">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -123,12 +123,12 @@ export const SignUpFields = ({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-          className="mt-1"
+          placeholder="you@email.com"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-gray-700">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -139,13 +139,14 @@ export const SignUpFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1"
+            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] pr-10 transition-shadow duration-150"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
             tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>

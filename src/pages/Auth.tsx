@@ -15,13 +15,10 @@ const Auth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if we should default to signup mode based on URL param
     const params = new URLSearchParams(location.search);
     if (params.get("signup") === "true") {
       setIsSignUp(true);
     }
-
-    // Check if user is already logged in
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
@@ -31,17 +28,14 @@ const Auth = () => {
         setIsAuthenticated(false);
       }
     };
-    
     checkSession();
   }, [location, navigate]);
 
   const handleAuthSuccess = (email: string) => {
     setAuthError(null);
     if (isSignUp) {
-      // For new users, redirect to setup page
       navigate("/setup");
     } else {
-      // For existing users, redirect to dashboard
       navigate("/dashboard");
     }
   };
@@ -52,26 +46,23 @@ const Auth = () => {
 
   const handleToggleMode = () => {
     setIsSignUp(!isSignUp);
-    setAuthError(null); // Clear errors on toggle
+    setAuthError(null);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-tr from-[#e5deff] via-[#d6bcfa] to-[#9b87f5]">
+      <div className="max-w-md w-full glass p-10 rounded-xl shadow-xl animate-fade-in transition-all duration-500">
         <AuthHeader 
           isSignUp={isSignUp} 
           onBackToDashboard={() => navigate("/dashboard")}
-          showBackButton={isAuthenticated} // Only show back button if authenticated
+          showBackButton={isAuthenticated}
         />
-        
         <AuthError message={authError} />
-        
         <AuthForm 
           isSignUp={isSignUp} 
           onSuccess={handleAuthSuccess}
           onError={handleAuthError}
         />
-
         <AuthToggle 
           isSignUp={isSignUp} 
           onToggle={handleToggleMode} 

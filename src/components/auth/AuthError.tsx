@@ -6,13 +6,21 @@ interface AuthErrorProps {
 }
 
 const AuthError = ({ message }: AuthErrorProps) => {
-  if (!message) return null;
-  
   return (
-    <Alert variant="destructive">
-      <AlertTitle>Authentication Error</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
-    </Alert>
+    <div
+      className={`transition-all duration-300 ${
+        message ? "max-h-40 opacity-100 mb-4 animate-fade-in" : "max-h-0 opacity-0 mb-0"
+      } overflow-hidden`}
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      {message && (
+        <Alert variant="destructive">
+          <AlertTitle>Authentication Error</AlertTitle>
+          <AlertDescription>{message}</AlertDescription>
+        </Alert>
+      )}
+    </div>
   );
 };
 
