@@ -10,8 +10,16 @@ export interface TeamMember {
   lastActive: string;
   firstName?: string;
   lastName?: string;
+  companyName?: string; // Added company name field
 }
 
 export type RoleColorMap = {
   [key: string]: string;
 };
+
+export interface TeamMemberFormValues {
+  name: string;
+  email: string;
+  role: string;
+  companyName?: string;
+}

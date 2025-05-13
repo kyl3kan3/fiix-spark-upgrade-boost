@@ -11,3 +11,10 @@ export interface CompanyInfo {
   website?: string;
   logo?: string | null;
 }
+
+export interface CompanyInfoContextType {
+  companyInfo: CompanyInfo | null;
+  isLoading: boolean;
+  error: string | null;
+  fetchCompanyInfo: () => Promise<void>;
+}
