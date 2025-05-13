@@ -4,14 +4,17 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, LogOut } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserEmail = async () => {
@@ -20,6 +23,11 @@ const ProfilePage = () => {
     };
     fetchUserEmail();
   }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
 
   return (
     <DashboardLayout>
@@ -41,6 +49,16 @@ const ProfilePage = () => {
           {/* Use currently logged-in user for admin section */}
           <SetAdminUser email={userEmail ?? undefined} />
           <DeleteAccountButton />
+          {/* Sign out button */}
+          <div className="flex justify-end pt-2">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" /> Sign out
+            </Button>
+          </div>
         </div>
       </div>
     </DashboardLayout>
@@ -48,3 +66,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
