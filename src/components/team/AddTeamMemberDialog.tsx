@@ -73,8 +73,9 @@ const AddTeamMemberDialog = () => {
         
         // Fetch company info
         const { data: companyData } = await supabase
-          .from('company_info')
+          .from('profiles')
           .select('company_name')
+          .eq('id', user.id)
           .maybeSingle();
           
         if (companyData?.company_name) {

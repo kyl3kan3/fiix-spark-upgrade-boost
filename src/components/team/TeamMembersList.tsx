@@ -30,6 +30,7 @@ interface TeamMembersListProps {
     lastName?: string;
     role?: string;
     email?: string;
+    phone?: string;
   }) => void;
 }
 
