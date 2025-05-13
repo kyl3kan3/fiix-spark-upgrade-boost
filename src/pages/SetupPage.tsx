@@ -17,6 +17,14 @@ const SetupPage = () => {
     if (setupComplete === 'true') {
       toast.info("Setup has already been completed. You can edit your settings here.");
     }
+    
+    // Log setup data for debugging
+    const setupData = localStorage.getItem('maintenease_setup');
+    if (setupData) {
+      console.log("Setup data exists in localStorage");
+    } else {
+      console.log("No setup data found in localStorage");
+    }
   }, [navigate]);
 
   return (

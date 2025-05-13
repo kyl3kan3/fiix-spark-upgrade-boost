@@ -32,13 +32,18 @@ const CompanyInformation = () => {
 
     // Retrieve company information from local storage
     const setupData = localStorage.getItem('maintenease_setup');
+    console.log("Raw setup data:", setupData);
+    
     if (setupData) {
       try {
         const parsedData = JSON.parse(setupData);
-        if (parsedData.companyInfo && Object.keys(parsedData.companyInfo).length > 0) {
+        console.log("Parsed setup data:", parsedData);
+        
+        if (parsedData && parsedData.companyInfo) {
+          console.log("Company info found:", parsedData.companyInfo);
           setCompanyInfo(parsedData.companyInfo);
         } else {
-          console.warn("Company info exists but is empty");
+          console.warn("No company info in parsed data:", parsedData);
           setCompanyInfo(null);
         }
       } catch (error) {
@@ -50,6 +55,7 @@ const CompanyInformation = () => {
       console.warn("No setup data found in localStorage");
       setCompanyInfo(null);
     }
+    
     setIsLoading(false);
   }, []);
 
