@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -16,16 +15,20 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
       // Get current user
       const { data: currentUserData, error: userError } = await supabase.auth.getUser();
       
-      if (userError) {
-        console.error("Error getting current user:", userError);
-        throw userError;
+      if (userError || !currentUserData?.user) {
+        console.error("Error getting current user or not logged in:", userError);
+        toast("Please sign in to view team members");
+        setTeamMembers([]);
+        setLoading(false);
+        return;
       }
       
-      const currentUserId = currentUserData?.user?.id;
+      const currentUserId = currentUserData.user.id;
 
       if (!currentUserId) {
         console.error("No current user found");
-        toast.error("Please sign in to view team members");
+        toast("Please sign in to view team members");
+        setTeamMembers([]);
         setLoading(false);
         return;
       }
@@ -113,7 +116,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
       setTeamMembers(filteredUsers);
     } catch (error) {
       console.error("Error fetching team members:", error);
-      toast.error("Failed to load team members");
+      toast("Failed to load team members");
+      setTeamMembers([]); // Make sure no members are shown on error
     } finally {
       setLoading(false);
     }
