@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
@@ -8,6 +9,7 @@ import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
 import { toast } from "@/components/ui/use-toast";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import AdminSetDemoCompanyButton from "@/components/team/AdminSetDemoCompanyButton";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,6 +80,10 @@ const Team = () => {
   return (
     <DashboardLayout>
       <BackToDashboard />
+      {/* Add the demo company admin button at the top */}
+      <div className="mb-4">
+        <AdminSetDemoCompanyButton />
+      </div>
       <TeamHeader />
       <TeamFilters 
         searchQuery={searchQuery}
@@ -97,3 +103,4 @@ const Team = () => {
 };
 
 export default Team;
+
