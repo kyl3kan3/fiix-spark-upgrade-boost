@@ -48,7 +48,14 @@ export const SetupContainer: React.FC = () => {
                 {currentStep === steps.findIndex(s => s.id === step.id) && (
                   <CurrentStepComponent 
                     data={setupData[step.id.replace(/-/g, '') as keyof typeof setupData]} 
-                    onUpdate={(data: any) => updateSetupData(step.id.replace(/-/g, '') as keyof typeof setupData, data)} 
+                    onUpdate={(data: any) => {
+                      // Make sure we're using the correct camelCase for company-info
+                      const sectionKey = step.id === 'company-info' 
+                        ? 'companyInfo' 
+                        : step.id.replace(/-/g, '') as keyof typeof setupData;
+                      
+                      updateSetupData(sectionKey, data);
+                    }} 
                   />
                 )}
               </TabsContent>

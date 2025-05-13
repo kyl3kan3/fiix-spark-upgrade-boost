@@ -25,7 +25,15 @@ const getInitialSetupData = (): SetupData => {
   try {
     const savedData = localStorage.getItem('maintenease_setup');
     if (savedData) {
-      return JSON.parse(savedData);
+      const parsedData = JSON.parse(savedData);
+      
+      // Fix any lowercase key issue - ensure we use camelCase keys
+      if (parsedData.companyinfo && !parsedData.companyInfo) {
+        parsedData.companyInfo = parsedData.companyinfo;
+        delete parsedData.companyinfo;
+      }
+      
+      return parsedData;
     }
   } catch (error) {
     console.error("Error loading setup data from localStorage:", error);
@@ -56,7 +64,15 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const savedData = localStorage.getItem('maintenease_setup');
       if (savedData) {
-        setSetupData(JSON.parse(savedData));
+        const parsedData = JSON.parse(savedData);
+        
+        // Fix any lowercase key issue
+        if (parsedData.companyinfo && !parsedData.companyInfo) {
+          parsedData.companyInfo = parsedData.companyinfo;
+          delete parsedData.companyinfo;
+        }
+        
+        setSetupData(parsedData);
       }
     } catch (error) {
       console.error("Error loading setup data:", error);
@@ -75,14 +91,17 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateSetupData = (section: keyof SetupData, data: any) => {
     setSetupData(prev => {
+      // Ensure we're using the correct camelCase key
+      const normalizedSection = section.charAt(0).toLowerCase() + section.slice(1);
+      
       const updatedData = {
         ...prev,
-        [section]: data
+        [normalizedSection]: data
       };
       
       // Save to localStorage immediately
       localStorage.setItem('maintenease_setup', JSON.stringify(updatedData));
-      console.log(`Updated ${section} in setupData:`, data);
+      console.log(`Updated ${normalizedSection} in setupData:`, data);
       
       return updatedData;
     });

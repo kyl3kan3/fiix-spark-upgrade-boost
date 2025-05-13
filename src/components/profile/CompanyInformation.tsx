@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Globe, Mail, Phone, MapPin } from "lucide-react";
@@ -39,11 +38,20 @@ const CompanyInformation = () => {
         const parsedData = JSON.parse(setupData);
         console.log("Parsed setup data:", parsedData);
         
-        if (parsedData && parsedData.companyInfo) {
-          console.log("Company info found:", parsedData.companyInfo);
-          setCompanyInfo(parsedData.companyInfo);
+        // Check both companyInfo (correct key) and companyinfo (lowercase key)
+        let companyInfoData = null;
+        if (parsedData && parsedData.companyInfo && Object.keys(parsedData.companyInfo).length > 0) {
+          console.log("Company info found in companyInfo:", parsedData.companyInfo);
+          companyInfoData = parsedData.companyInfo;
+        } else if (parsedData && parsedData.companyinfo && Object.keys(parsedData.companyinfo).length > 0) {
+          console.log("Company info found in companyinfo:", parsedData.companyinfo);
+          companyInfoData = parsedData.companyinfo;
+        }
+        
+        if (companyInfoData) {
+          setCompanyInfo(companyInfoData);
         } else {
-          console.warn("No company info in parsed data:", parsedData);
+          console.warn("No company info found in parsed data:", parsedData);
           setCompanyInfo(null);
         }
       } catch (error) {
