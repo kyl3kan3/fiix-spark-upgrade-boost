@@ -195,6 +195,7 @@ export type Database = {
           organization_id: string
           role: string
           status: string
+          token: string | null
         }
         Insert: {
           accepted_at?: string | null
@@ -205,6 +206,7 @@ export type Database = {
           organization_id: string
           role?: string
           status?: string
+          token?: string | null
         }
         Update: {
           accepted_at?: string | null
@@ -215,6 +217,7 @@ export type Database = {
           organization_id?: string
           role?: string
           status?: string
+          token?: string | null
         }
         Relationships: [
           {

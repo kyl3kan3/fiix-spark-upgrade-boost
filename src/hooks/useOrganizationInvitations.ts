@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,6 +12,13 @@ export interface OrganizationInvitation {
   accepted_at: string | null;
 }
 
+function generateToken(length = 32) {
+  // Generates a random hex string (32 characters)
+  const arr = new Uint8Array(length / 2);
+  window.crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
 // Now takes currentUserId
 export const useOrganizationInvitations = (
   organizationId: string | null,
@@ -22,7 +28,7 @@ export const useOrganizationInvitations = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch invitations
+  // Fetch invitations (now also retrieves the token)
   useEffect(() => {
     const fetchInvitations = async () => {
       if (!organizationId) return;
@@ -30,7 +36,8 @@ export const useOrganizationInvitations = (
       const { data, error } = await supabase
         .from("organization_invitations")
         .select("*")
-        .eq("organization_id", organizationId);
+        .eq("organization_id", organizationId)
+        .order("created_at", { ascending: false });
       if (error) {
         setError(error.message);
         setInvitations([]);
@@ -43,7 +50,7 @@ export const useOrganizationInvitations = (
     fetchInvitations();
   }, [organizationId]);
 
-  // Send an invitation, now requires currentUserId
+  // Send an invitation, now requires currentUserId and adds a token
   const sendInvitation = async (
     email: string,
     role: string = "technician"
@@ -56,7 +63,11 @@ export const useOrganizationInvitations = (
       setError("No current user ID found");
       return null;
     }
+
     setLoading(true);
+    // Generate a secure random token for invite
+    const token = generateToken();
+
     const { data, error } = await supabase
       .from("organization_invitations")
       .insert([
@@ -65,6 +76,7 @@ export const useOrganizationInvitations = (
           email,
           role,
           invited_by: currentUserId,
+          token,
         }
       ])
       .select()
@@ -76,7 +88,7 @@ export const useOrganizationInvitations = (
       return null;
     }
     // Add to current list
-    setInvitations((prev) => [...prev, data as OrganizationInvitation]);
+    setInvitations((prev) => [data as OrganizationInvitation, ...prev]);
     return data as OrganizationInvitation;
   };
 
