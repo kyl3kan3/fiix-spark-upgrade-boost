@@ -1,4 +1,3 @@
-
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -72,11 +71,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       return { success: true, data: data?.[0] };
     } catch (error) {
       console.error("Error updating team member:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update team member",
-        variant: "destructive"
-      });
+      toast("Failed to update team member");
       return { success: false, error };
     }
   }, [setTeamMembers]);

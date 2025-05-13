@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
@@ -42,31 +41,18 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
 
   const handleSave = async () => {
     try {
-      // Only administrators can change roles
       if (!canEditRoles) {
-        toast({
-          title: "Permission Denied",
-          description: "You do not have permission to change roles",
-          variant: "destructive"
-        });
+        toast("You do not have permission to change roles");
         throw new Error("You do not have permission to change roles");
       }
-      
       setIsSaving(true);
       console.log(`Attempting to update role for user ${userId} to ${role}`);
-      
       const result = await updateUserRole(userId, role);
-      
       if (result.success) {
         console.log("Role update successful:", result.data);
-        toast({
-          title: "Role Updated",
-          description: `Role updated to ${role}`
-        });
+        toast(`Role updated to ${role}`);
         setIsChanged(false);
         setIsEditing(false);
-        
-        // Call the callback function to trigger data refresh in parent component
         onRoleUpdated(role);
       } else {
         console.error("Role update failed:", result.error);
@@ -74,11 +60,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
       }
     } catch (error: any) {
       console.error("Error in handleSave:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update role. Please try again.",
-        variant: "destructive"
-      });
+      toast(error.message || "Failed to update role. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -86,17 +68,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
 
   const toggleEdit = () => {
     if (!canEditRoles) {
-      toast({
-        title: "Permission Denied",
-        description: "You need administrator privileges to change user roles",
-        variant: "destructive"
-      });
+      toast("You need administrator privileges to change user roles");
       return;
     }
-    
     setIsEditing(!isEditing);
     if (!isEditing) {
-      // Reset to current role when entering edit mode
       setRole(currentRole);
       setIsChanged(false);
     }

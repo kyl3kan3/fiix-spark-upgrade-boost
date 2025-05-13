@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
@@ -66,22 +65,12 @@ const Team = () => {
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          toast({
-            title: "Success",
-            description: "Team member information updated"
-          });
-          
-          // Force refresh to make sure we have the latest data from the database
-          console.log("Manually triggering team members refresh");
+          toast("Team member information updated");
           setRefreshTrigger(prev => prev + 1);
           refreshTeamMembers();
         } else {
           console.error("Update failed:", result.error);
-          toast({
-            title: "Error",
-            description: "Failed to update team member",
-            variant: "destructive"
-          });
+          toast("Failed to update team member");
         }
       });
   }, [updateTeamMember, refreshTeamMembers]);

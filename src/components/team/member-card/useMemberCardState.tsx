@@ -16,23 +16,12 @@ export const useMemberCardState = (
 
   const handleRoleUpdated = (role: string) => {
     console.log("Role updated for member:", memberId, "to role:", role);
-    
     try {
-      // Call the parent component's update function
       onMemberUpdated(memberId.toString(), { role });
-      
-      // Show success toast
-      toast({
-        title: "Role Updated",
-        description: `User role has been updated to ${role}`,
-      });
+      toast(`User role has been updated to ${role}`);
     } catch (error) {
       console.error("Error in handleRoleUpdated:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update role. Please try again.",
-        variant: "destructive"
-      });
+      toast("Failed to update role. Please try again.");
     }
   };
 
