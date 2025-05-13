@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 
@@ -20,7 +19,12 @@ interface UserInfoEditorProps {
     firstName?: string;
     lastName?: string;
   };
-  onUserUpdated: () => void;
+  onUserUpdated: (updates: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  }) => void;
 }
 
 const UserInfoEditor: React.FC<UserInfoEditorProps> = ({ 
@@ -44,34 +48,24 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
     }
   });
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = (data: any) => {
     setIsSaving(true);
     try {
-      console.log("Updating user info:", user.id, data);
+      console.log("Submitting user info update:", data);
       
-      // Update user info in profiles table
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-        })
-        .eq('id', user.id);
+      // Call the onUserUpdated callback
+      onUserUpdated({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone
+      });
       
-      if (error) {
-        console.error("Error updating profile:", error);
-        throw error;
-      }
-      
-      console.log("Profile updated successfully");
       toast.success("User information updated successfully");
-      onUserUpdated();
-      onOpenChange(false);
+      setIsSaving(false);
     } catch (error) {
-      console.error("Error updating user information:", error);
+      console.error("Error in form submission:", error);
       toast.error("Failed to update user information. Please try again.");
-    } finally {
       setIsSaving(false);
     }
   };

@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface UserRoleSelectorProps {
   userId: string;
   currentRole: string;
-  onRoleUpdated?: () => void;
+  onRoleUpdated: (role: string) => void;
 }
 
 const roles = [
@@ -66,10 +66,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
       setIsEditing(false);
       
       // Call the callback function to trigger data refresh in parent component
-      if (onRoleUpdated) {
-        console.log("Calling onRoleUpdated callback");
-        onRoleUpdated();
-      }
+      onRoleUpdated(role);
     } catch (error) {
       console.error("Error updating role:", error);
       toast.error("Failed to update role. Please try again.");

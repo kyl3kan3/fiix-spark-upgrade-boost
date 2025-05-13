@@ -24,6 +24,16 @@ const ChatInterface = () => {
       setSelectedUser(userWithUnread || teamMembers[0]);
     } else if (teamMembers.length === 0) {
       setSelectedUser(null);
+    } else if (selectedUser) {
+      // Update selected user if it's in teamMembers
+      const updatedUser = teamMembers.find(user => user.id === selectedUser.id);
+      if (updatedUser && (
+        updatedUser.name !== selectedUser.name || 
+        updatedUser.online !== selectedUser.online || 
+        updatedUser.unread !== selectedUser.unread
+      )) {
+        setSelectedUser(updatedUser);
+      }
     }
   }, [teamMembers, selectedUser]);
 

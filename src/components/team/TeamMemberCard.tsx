@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Mail, Phone, Edit } from "lucide-react";
+import { Mail, Phone, Edit, CircleCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import UserRoleSelector from "./UserRoleSelector";
@@ -18,18 +18,34 @@ interface TeamMemberProps {
     lastActive: string;
     firstName?: string;
     lastName?: string;
+    online?: boolean;
   };
   roleColorMap: Record<string, string>;
-  onMemberUpdated: () => void;
+  onMemberUpdated: (userId: string, updates: {
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    email?: string;
+  }) => void;
 }
 
 const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMemberUpdated }) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleRoleUpdated = () => {
-    console.log("Role updated for member:", member.id, "- triggering refresh");
-    // Make sure to call the parent's onMemberUpdated function to refresh the list
-    onMemberUpdated();
+  const handleRoleUpdated = (role: string) => {
+    console.log("Role updated for member:", member.id, "to role:", role);
+    // Call the parent's onMemberUpdated function
+    onMemberUpdated(member.id.toString(), { role });
+  };
+
+  const handleUserInfoUpdated = (updates: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  }) => {
+    onMemberUpdated(member.id.toString(), updates);
+    setIsEditing(false);
   };
 
   return (
@@ -45,8 +61,11 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
         </Button>
         
         <div className="flex items-start gap-4">
-          <div className="h-12 w-12 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-lg">
+          <div className="h-12 w-12 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-lg relative">
             {member.avatar}
+            {member.online && (
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+            )}
           </div>
           <div className="flex-1">
             <h3 className="font-medium">{member.name}</h3>
@@ -64,7 +83,16 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
               </a>
               <div className="text-xs text-gray-500 mt-2">
                 <div>Joined: {member.joined}</div>
-                <div>Last active: {member.lastActive}</div>
+                <div className="flex items-center">
+                  Status: {member.online ? (
+                    <span className="text-green-600 flex items-center ml-1">
+                      <CircleCheck className="h-3 w-3 mr-1" />
+                      Online
+                    </span>
+                  ) : (
+                    <span className="text-gray-500 ml-1">Last active: {member.lastActive}</span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -81,7 +109,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
             firstName: member.firstName,
             lastName: member.lastName,
           }}
-          onUserUpdated={onMemberUpdated}
+          onUserUpdated={(updates) => handleUserInfoUpdated(updates)}
         />
       </div>
       <div className="bg-gray-50 px-6 py-3 flex items-center justify-between">
@@ -89,7 +117,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
         <UserRoleSelector 
           userId={member.id.toString()} 
           currentRole={member.role} 
-          onRoleUpdated={handleRoleUpdated}
+          onRoleUpdated={() => handleRoleUpdated(member.role)}
         />
       </div>
     </div>

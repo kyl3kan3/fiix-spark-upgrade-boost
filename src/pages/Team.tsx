@@ -14,7 +14,7 @@ const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   
-  const { teamMembers, loading, refreshTeamMembers } = useTeamMembers();
+  const { teamMembers, loading, refreshTeamMembers, updateTeamMember } = useTeamMembers();
   
   // Force refresh when component mounts to ensure we have the latest data
   useEffect(() => {
@@ -33,7 +33,8 @@ const Team = () => {
     joined: "Recently", // This info isn't available in ChatUser
     lastActive: member.online ? "Just now" : "Recently",
     firstName: member.firstName,
-    lastName: member.lastName
+    lastName: member.lastName,
+    online: member.online
   }));
 
   const roleColorMap: RoleColorMap = {
@@ -51,11 +52,17 @@ const Team = () => {
     return matchesSearch && matchesRole;
   });
 
-  const handleMemberUpdated = useCallback(() => {
-    console.log("Member updated, refreshing data...");
-    refreshTeamMembers();
-    toast.success("Team member information updated");
-  }, [refreshTeamMembers]);
+  const handleMemberUpdated = useCallback(async (userId: string, updates: {
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    email?: string;
+  }) => {
+    const result = await updateTeamMember(userId, updates);
+    if (result.success) {
+      toast.success("Team member information updated");
+    }
+  }, [updateTeamMember]);
 
   return (
     <DashboardLayout>
