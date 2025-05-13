@@ -58,6 +58,9 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
         const displayName = fullName || profile.email;
 
+        // Cast the profile to include phone_number since we've added it to the database
+        const profileWithPhone = profile as any;
+
         return {
           id: profile.id,
           name: displayName,
@@ -68,8 +71,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
           unread: count || 0,
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
-          // Check if phone_number exists in the profile object, if not use an empty string
-          phone: profile.phone_number || '' 
+          phone: profileWithPhone.phone_number || ''
         };
       }));
 
