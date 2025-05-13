@@ -4,7 +4,6 @@ import { toast } from "sonner";
 
 export const updateUserRole = async (userId: string, role: string) => {
   try {
-    // Only administrators can change roles
     // Ensure we're working with a valid user ID
     if (!userId) {
       throw new Error("Invalid user ID");

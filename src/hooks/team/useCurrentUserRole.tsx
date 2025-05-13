@@ -4,14 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useCurrentUserRole = () => {
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Check current user's role on component mount
   useEffect(() => {
     const checkCurrentUserRole = async () => {
-      setIsLoading(true);
       try {
+        setIsLoading(true);
+        
         // Get current user
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -29,10 +28,9 @@ export const useCurrentUserRole = () => {
         if (error) throw error;
         
         setCurrentUserRole(data?.role || null);
-        console.log("Current user's role:", data?.role);
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error checking user role:", error);
-        setError(error);
+        setCurrentUserRole(null);
       } finally {
         setIsLoading(false);
       }
@@ -41,10 +39,12 @@ export const useCurrentUserRole = () => {
     checkCurrentUserRole();
   }, []);
   
+  // Determine if the current user can edit roles (only administrators can)
+  const canEditRoles = currentUserRole === 'administrator';
+
   return {
     currentUserRole,
     isLoading,
-    error,
-    canEditRoles: currentUserRole === "administrator"
+    canEditRoles
   };
 };
