@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Building2, Upload } from "lucide-react";
+import { toast } from "sonner";
 
 const companyInfoSchema = z.object({
   companyName: z.string().min(2, { message: "Company name is required" }),
@@ -47,6 +47,13 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     },
   });
 
+  // Initialize logo preview from existing data
+  useEffect(() => {
+    if (data?.logo) {
+      setLogoPreview(data.logo);
+    }
+  }, [data]);
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -54,14 +61,25 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       reader.onloadend = () => {
         const result = reader.result as string;
         setLogoPreview(result);
+        // Update immediately with the current form values and new logo
         onUpdate({ ...form.getValues(), logo: result });
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Auto-save when form values change
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      onUpdate({ ...values, logo: logoPreview });
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form, logoPreview, onUpdate]);
+
   const onSubmit = (values: CompanyInfoFormValues) => {
     onUpdate({ ...values, logo: logoPreview });
+    toast.success("Company information saved");
   };
 
   return (
@@ -226,7 +244,7 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
                 )}
               />
               
-              <Button type="submit" className="hidden">Save</Button>
+              <Button type="submit">Save Company Information</Button>
             </form>
           </Form>
         </div>

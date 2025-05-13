@@ -28,6 +28,7 @@ const CompanyInformation = () => {
     if (setupData) {
       try {
         const parsedData = JSON.parse(setupData);
+        console.log("Retrieved company info from localStorage:", parsedData);
         if (parsedData.companyInfo) {
           setCompanyInfo(parsedData.companyInfo);
         }

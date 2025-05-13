@@ -12,12 +12,10 @@ const SetupPage = () => {
 
   // Check if setup has been completed
   useEffect(() => {
-    const setupData = localStorage.getItem('maintenease_setup');
     const setupComplete = localStorage.getItem('maintenease_setup_complete');
     
     if (setupComplete === 'true') {
-      toast.info("Setup has already been completed.");
-      navigate("/dashboard");
+      toast.info("Setup has already been completed. You can edit your settings here.");
     }
   }, [navigate]);
 
