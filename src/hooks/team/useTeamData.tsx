@@ -31,9 +31,10 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
       }
 
       // Fetch all profiles except current user
+      // Using a more specific select statement to avoid issues with missing columns
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("id, email, first_name, last_name, role, avatar_url, phone_number, company_name")
+        .select("id, email, first_name, last_name, role, avatar_url, phone_number")
         .neq("id", currentUserId);
 
       if (error) {
@@ -48,6 +49,28 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         setTeamMembers([]);
         setLoading(false);
         return;
+      }
+      
+      // Try to fetch company names separately to handle the case if column doesn't exist
+      let companyNames: Record<string, string> = {};
+      try {
+        const { data: companyData, error: companyError } = await supabase
+          .from("profiles")
+          .select("id, company_name")
+          .neq("id", currentUserId);
+          
+        if (!companyError && companyData) {
+          companyNames = companyData.reduce((acc: Record<string, string>, profile: any) => {
+            if (profile.company_name) {
+              acc[profile.id] = profile.company_name;
+            }
+            return acc;
+          }, {});
+        } else {
+          console.log("Company name data not available:", companyError);
+        }
+      } catch (err) {
+        console.log("Error fetching company names, will continue without them:", err);
       }
       
       // Count unread messages for each user
@@ -81,7 +104,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
           phone: profileWithData.phone_number || '',
-          companyName: profileWithData.company_name || ''
+          companyName: companyNames[profile.id] || ''
         };
       }));
 

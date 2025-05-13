@@ -10,6 +10,7 @@ export interface ChatUser {
   firstName?: string;
   lastName?: string;
   phone?: string;
+  companyName?: string;
 }
 
 export interface Message {
