@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import UserRoleSelector from "../UserRoleSelector";
 
 interface MemberCardFooterProps {
@@ -13,6 +13,21 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
   currentRole,
   onRoleUpdated
 }) => {
+  const [displayRole, setDisplayRole] = useState(currentRole);
+  
+  // Update the displayed role when the prop changes
+  useEffect(() => {
+    console.log(`MemberCardFooter: currentRole changed to ${currentRole}`);
+    setDisplayRole(currentRole);
+  }, [currentRole]);
+  
+  // Function to handle role updates
+  const handleRoleUpdated = (role: string) => {
+    console.log(`MemberCardFooter: role updated to ${role}`);
+    setDisplayRole(role);
+    onRoleUpdated(role);
+  };
+  
   // Always ensure userId is a string as required by the UserRoleSelector
   const userIdString = userId.toString();
   
@@ -21,8 +36,8 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
       <span className="text-sm font-medium">Role Access</span>
       <UserRoleSelector 
         userId={userIdString} 
-        currentRole={currentRole} 
-        onRoleUpdated={onRoleUpdated}
+        currentRole={displayRole} 
+        onRoleUpdated={handleRoleUpdated}
       />
     </div>
   );

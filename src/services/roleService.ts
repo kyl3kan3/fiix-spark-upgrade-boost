@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 
 export const updateUserRole = async (userId: string, role: string) => {
   try {
@@ -12,14 +12,14 @@ export const updateUserRole = async (userId: string, role: string) => {
     console.log("Updating role for user ID:", userId, "to role:", role);
     
     // Update user role in profiles table with proper return handling
-    const { data, error } = await supabase
+    const { error: updateError } = await supabase
       .from('profiles')
       .update({ role })
       .eq('id', userId);
     
-    if (error) {
-      console.error("Supabase error:", error);
-      throw error;
+    if (updateError) {
+      console.error("Supabase update error:", updateError);
+      throw updateError;
     }
     
     // Get the updated profile to confirm changes
@@ -36,11 +36,21 @@ export const updateUserRole = async (userId: string, role: string) => {
     
     console.log("Role update confirmed:", updatedProfile);
     
+    // Verify the role was actually updated
+    if (updatedProfile.role !== role) {
+      console.error("Role was not updated correctly. Expected:", role, "Actual:", updatedProfile.role);
+      throw new Error("Role update did not take effect. Please try again.");
+    }
+    
     // Return success with the updated profile data
     return { success: true, data: updatedProfile };
   } catch (error: any) {
     console.error("Error updating role:", error);
-    toast.error(error.message || "Failed to update role. Please try again.");
+    toast({
+      title: "Error updating role",
+      description: error.message || "Failed to update role. Please try again.",
+      variant: "destructive" 
+    });
     return { success: false, error };
   }
 };

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { useCurrentUserRole } from "@/hooks/team/useCurrentUserRole";
 import { updateUserRole } from "@/services/roleService";
@@ -27,12 +27,14 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
   
   // This will ensure that if the currentRole prop changes externally, our component updates
   useEffect(() => {
+    console.log(`UserRoleSelector: currentRole prop changed to ${currentRole}`);
     setRole(currentRole);
     setIsChanged(false);
   }, [currentRole]);
 
   const handleRoleChange = (newRole: string) => {
     if (newRole !== role) {
+      console.log(`Role changed from ${role} to ${newRole}`);
       setRole(newRole);
       setIsChanged(true);
     }
@@ -42,7 +44,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
     try {
       // Only administrators can change roles
       if (!canEditRoles) {
-        toast.error("You do not have permission to change roles");
+        toast({
+          title: "Permission Denied",
+          description: "You do not have permission to change roles",
+          variant: "destructive"
+        });
         throw new Error("You do not have permission to change roles");
       }
       
@@ -53,7 +59,10 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
       
       if (result.success) {
         console.log("Role update successful:", result.data);
-        toast.success(`Role updated to ${role}`);
+        toast({
+          title: "Role Updated",
+          description: `Role updated to ${role}`
+        });
         setIsChanged(false);
         setIsEditing(false);
         
@@ -65,7 +74,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
       }
     } catch (error: any) {
       console.error("Error in handleSave:", error);
-      toast.error(error.message || "Failed to update role. Please try again.");
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update role. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsSaving(false);
     }
@@ -73,7 +86,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
 
   const toggleEdit = () => {
     if (!canEditRoles) {
-      toast.error("You need administrator privileges to change user roles");
+      toast({
+        title: "Permission Denied",
+        description: "You need administrator privileges to change user roles",
+        variant: "destructive"
+      });
       return;
     }
     

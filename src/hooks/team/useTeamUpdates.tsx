@@ -1,7 +1,7 @@
 
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { ChatUser } from "@/types/chat";
 
 export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateAction<ChatUser[]>>) => {
@@ -39,11 +39,14 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       
       console.log("Update successful, received data:", data);
       
-      // Update local state with the new information
-      setTeamMembers(prev => 
-        prev.map(member => 
-          member.id === userId 
-            ? { 
+      // Update local state with the new information immediately
+      if (updates.role !== undefined) {
+        console.log(`Updating role for user ${userId} to ${updates.role} in local state`);
+        setTeamMembers(prev => 
+          prev.map(member => {
+            if (member.id === userId) {
+              console.log(`Found member to update: ${member.name}`);
+              const updatedMember = { 
                 ...member, 
                 ...(updates.firstName !== undefined && { firstName: updates.firstName }),
                 ...(updates.lastName !== undefined && { lastName: updates.lastName }),
@@ -57,15 +60,23 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
                     `${(updates.firstName || member.firstName)[0]}${(updates.lastName || member.lastName)[0]}`.toUpperCase() : 
                     (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
                 } : {})
-              } 
-            : member
-        )
-      );
+              };
+              console.log("Updated member object:", updatedMember);
+              return updatedMember;
+            }
+            return member;
+          })
+        );
+      }
       
       return { success: true, data: data?.[0] };
     } catch (error) {
       console.error("Error updating team member:", error);
-      toast.error("Failed to update team member");
+      toast({
+        title: "Error",
+        description: "Failed to update team member",
+        variant: "destructive"
+      });
       return { success: false, error };
     }
   }, [setTeamMembers]);

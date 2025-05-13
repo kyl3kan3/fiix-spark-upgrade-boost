@@ -7,12 +7,13 @@ import TeamMembersList from "../components/team/TeamMembersList";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   const { teamMembers, loading, refreshTeamMembers, updateTeamMember } = useTeamMembers();
   
@@ -20,7 +21,7 @@ const Team = () => {
   useEffect(() => {
     console.log("Team component mounted, refreshing team members data");
     refreshTeamMembers();
-  }, [refreshTeamMembers]);
+  }, [refreshTeamMembers, refreshTrigger]);
   
   // Convert ChatUser type to TeamMember type
   const mappedMembers: TeamMember[] = teamMembers.map(member => ({
@@ -65,13 +66,22 @@ const Team = () => {
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          toast.success("Team member information updated");
+          toast({
+            title: "Success",
+            description: "Team member information updated"
+          });
+          
           // Force refresh to make sure we have the latest data from the database
           console.log("Manually triggering team members refresh");
+          setRefreshTrigger(prev => prev + 1);
           refreshTeamMembers();
         } else {
           console.error("Update failed:", result.error);
-          toast.error("Failed to update team member");
+          toast({
+            title: "Error",
+            description: "Failed to update team member",
+            variant: "destructive"
+          });
         }
       });
   }, [updateTeamMember, refreshTeamMembers]);
