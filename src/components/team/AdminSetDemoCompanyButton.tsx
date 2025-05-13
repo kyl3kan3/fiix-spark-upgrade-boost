@@ -1,19 +1,11 @@
 
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { useCurrentUserCompanyName } from "@/hooks/useCurrentUserCompanyName";
-
-interface ProfileCompany {
-  company_name: string;
-}
 
 const AdminSetDemoCompanyButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const { companyName, loading: companyLoading } = useCurrentUserCompanyName();
-  const { toast } = useToast();
 
   const handleSetCompany = async () => {
     setLoading(true);
@@ -21,11 +13,7 @@ const AdminSetDemoCompanyButton: React.FC = () => {
       // Get current admin user info
       const { data: { user }, error: meError } = await supabase.auth.getUser();
       if (meError || !user) {
-        toast({
-          title: "Error",
-          description: "Could not get your user info",
-          variant: "destructive",
-        });
+        toast("Could not get your user info");
         setLoading(false);
         return;
       }
@@ -38,11 +26,7 @@ const AdminSetDemoCompanyButton: React.FC = () => {
         .maybeSingle();
 
       if (profileError || !profile?.company_name) {
-        toast({
-          title: "Profile incomplete",
-          description: "Your profile does not have a company name set.",
-          variant: "destructive",
-        });
+        toast("Your profile does not have a company name set.");
         setLoading(false);
         return;
       }
@@ -57,11 +41,7 @@ const AdminSetDemoCompanyButton: React.FC = () => {
         .maybeSingle();
 
       if (getError || !demoUser) {
-        toast({
-          title: "Demo user missing",
-          description: "Could not find demo user",
-          variant: "destructive",
-        });
+        toast("Could not find demo user");
         setLoading(false);
         return;
       }
@@ -73,39 +53,21 @@ const AdminSetDemoCompanyButton: React.FC = () => {
         .eq("id", demoUser.id);
 
       if (updateError) {
-        toast({
-          title: "Update error",
-          description: "Error updating company name for demo user",
-          variant: "destructive",
-        });
+        toast("Error updating company name for demo user");
       } else {
-        toast({
-          title: "Success",
-          description: `Demo user is now attached to ${adminCompanyName}!`,
-          variant: "default",
-        });
+        toast(`Demo user is now attached to ${adminCompanyName}!`);
       }
     } catch (err) {
       console.error(err);
-      toast({
-        title: "Unexpected error",
-        description: "Unexpected error occurred",
-        variant: "destructive",
-      });
+      toast("Unexpected error occurred");
     }
     setLoading(false);
   };
 
   return (
-    <Button
-      variant="outline"
-      disabled={loading || companyLoading || !companyName}
-      onClick={handleSetCompany}
-      aria-busy={loading || companyLoading}
-    >
-      {(loading || companyLoading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {companyName
-        ? `Attach demo@demo.com to ${companyName}`
+    <Button variant="outline" disabled={loading} onClick={handleSetCompany}>
+      {loading
+        ? "Updating demo user..."
         : "Attach demo@demo.com to MY company"}
     </Button>
   );

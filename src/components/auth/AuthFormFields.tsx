@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,9 +25,9 @@ export const SignInFields = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-6 rounded-md">
+    <div className="space-y-4 rounded-md">
       <div>
-        <Label htmlFor="email-address" className="text-[#403e43] dark:text-white mb-1 font-semibold">Email address</Label>
+        <Label htmlFor="email-address">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -35,12 +36,12 @@ export const SignInFields = ({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@email.com"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
+          placeholder="your@email.com"
+          className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="password" className="text-[#403e43] dark:text-white mb-1 font-semibold">Password</Label>
+        <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -51,26 +52,26 @@ export const SignInFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none pr-10 bg-white/80 dark:bg-card/80 text-black dark:text-white shadow-sm transition-shadow duration-150"
+            className="mt-1"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 focus:outline-none hover:scale-110 transition-all"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             tabIndex={-1}
-            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
       </div>
+      
       <div className="flex items-center space-x-2">
         <Checkbox 
           id="remember-me" 
           checked={rememberMe}
           onCheckedChange={(checked) => setRememberMe(checked as boolean)}
         />
-        <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer text-[#403e43] dark:text-white">
+        <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer">
           Stay logged in
         </Label>
       </div>
@@ -98,9 +99,9 @@ export const SignUpFields = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-6 rounded-md">
+    <div className="space-y-4 rounded-md">
       <div>
-        <Label htmlFor="name" className="text-[#403e43] dark:text-white mb-1 font-semibold">Full Name</Label>
+        <Label htmlFor="name">Full Name</Label>
         <Input
           id="name"
           name="name"
@@ -109,11 +110,11 @@ export const SignUpFields = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="John Doe"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
+          className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="email-address" className="text-[#403e43] dark:text-white mb-1 font-semibold">Email address</Label>
+        <Label htmlFor="email-address">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -122,12 +123,12 @@ export const SignUpFields = ({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@email.com"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
+          placeholder="your@email.com"
+          className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="password" className="text-[#403e43] dark:text-white mb-1 font-semibold">Password</Label>
+        <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -138,14 +139,13 @@ export const SignUpFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none pr-10 bg-white/80 dark:bg-card/80 text-black dark:text-white shadow-sm transition-shadow duration-150"
+            className="mt-1"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 focus:outline-none hover:scale-110 transition-all"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             tabIndex={-1}
-            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
