@@ -28,6 +28,11 @@ export const OrganizationInviteForm: React.FC<OrganizationInviteFormProps> = ({ 
 
   const { sendInvitation, loading, invitations, error } = useOrganizationInvitations(organizationId, currentUserId);
 
+  // Log fetched invitations for debugging
+  useEffect(() => {
+    console.log('[OrganizationInviteForm] Fetched invitations:', invitations);
+  }, [invitations]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
