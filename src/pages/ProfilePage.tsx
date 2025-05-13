@@ -1,4 +1,3 @@
-
 import React from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
@@ -7,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
+import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 
 const ProfilePage = () => {
   return (
@@ -31,6 +31,8 @@ const ProfilePage = () => {
           </Alert>
           
           <SetAdminUser email="kyl3kan3@gmail.com" />
+
+          <DeleteAccountButton />
         </div>
       </div>
     </DashboardLayout>
