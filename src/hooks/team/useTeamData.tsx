@@ -33,7 +33,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
       // Fetch all profiles except current user
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, email, first_name, last_name, role, avatar_url, phone_number, company_name")
         .neq("id", currentUserId);
 
       if (error) {
@@ -67,8 +67,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
         const displayName = fullName || profile.email;
 
-        // Cast the profile to include phone_number since we've added it to the database
-        const profileWithPhone = profile as any;
+        // Cast the profile to include profile data
+        const profileWithData = profile as any;
 
         return {
           id: profile.id,
@@ -80,7 +80,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
           unread: count || 0,
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
-          phone: profileWithPhone.phone_number || ''
+          phone: profileWithData.phone_number || '',
+          companyName: profileWithData.company_name || ''
         };
       }));
 

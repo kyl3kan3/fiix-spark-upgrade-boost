@@ -7,7 +7,7 @@ import TeamMembersList from "../components/team/TeamMembersList";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const Team = () => {
@@ -34,6 +34,7 @@ const Team = () => {
     lastActive: member.online ? "Just now" : "Recently",
     firstName: member.firstName,
     lastName: member.lastName,
+    companyName: member.companyName,
     online: member.online
   }));
 
@@ -58,12 +59,16 @@ const Team = () => {
     role?: string;
     email?: string;
     phone?: string;
+    companyName?: string;
   }) => {
     console.log("Member update in Team.tsx:", userId, updates);
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          toast.success("Team member information updated");
+          toast({
+            title: "Success",
+            description: "Team member information updated"
+          });
           // Force refresh to make sure we have the latest data from the database
           refreshTeamMembers();
         }

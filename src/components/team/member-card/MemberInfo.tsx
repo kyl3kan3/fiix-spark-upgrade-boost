@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Mail, Phone, CircleCheck } from "lucide-react";
+import { Mail, Phone, CircleCheck, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface MemberInfoProps {
@@ -12,6 +12,7 @@ interface MemberInfoProps {
     joined: string;
     lastActive: string;
     online?: boolean;
+    companyName?: string;
   };
   roleColorMap: Record<string, string>;
 }
@@ -32,6 +33,14 @@ const MemberInfo: React.FC<MemberInfoProps> = ({ member, roleColorMap }) => {
           <Phone className="h-3 w-3 mr-1" />
           {member.phone || "No phone number"}
         </a>
+        
+        {member.companyName && (
+          <div className="text-sm flex items-center">
+            <Building2 className="h-3 w-3 mr-1" />
+            {member.companyName}
+          </div>
+        )}
+        
         <div className="text-xs text-gray-500 mt-2">
           <div>Joined: {member.joined}</div>
           <div className="flex items-center">
