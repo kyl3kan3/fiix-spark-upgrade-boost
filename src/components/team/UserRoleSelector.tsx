@@ -44,6 +44,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
     try {
       // Only administrators can change roles
       if (!canEditRoles) {
+        toast.error("You do not have permission to change roles");
         throw new Error("You do not have permission to change roles");
       }
       

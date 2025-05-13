@@ -24,6 +24,8 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       if (updates.phone !== undefined) updateData.phone_number = updates.phone; // Map phone to phone_number field
       if (updates.companyName !== undefined) updateData.company_name = updates.companyName; // Map companyName to company_name field
       
+      console.log("Sending update to Supabase:", updateData);
+      
       const { error } = await supabase
         .from("profiles")
         .update(updateData)

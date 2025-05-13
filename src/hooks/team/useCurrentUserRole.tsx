@@ -27,6 +27,7 @@ export const useCurrentUserRole = () => {
           
         if (error) throw error;
         
+        console.log("Current user role data:", data);
         setCurrentUserRole(data?.role || null);
       } catch (error) {
         console.error("Error checking user role:", error);

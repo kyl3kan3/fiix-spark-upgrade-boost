@@ -7,7 +7,7 @@ import TeamMembersList from "../components/team/TeamMembersList";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const Team = () => {
@@ -65,7 +65,6 @@ const Team = () => {
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          // Using toast from Sonner which has a different API
           toast("Team member information updated");
           // Force refresh to make sure we have the latest data from the database
           refreshTeamMembers();
