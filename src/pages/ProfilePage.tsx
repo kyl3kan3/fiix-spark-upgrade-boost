@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
@@ -7,21 +8,29 @@ import { InfoIcon } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProfilePage = () => {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserEmail(user?.email ?? null);
+    };
+    fetchUserEmail();
+  }, []);
+
   return (
     <DashboardLayout>
       <BackToDashboard />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-        
         <div className="space-y-8">
           {/* Profile Information */}
           <ProfileInformation />
-          
           {/* Company Information */}
           <CompanyInformation />
-          
           {/* Administrator Access */}
           <Alert className="mb-4 bg-blue-50 border-blue-200">
             <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />
@@ -29,9 +38,8 @@ const ProfilePage = () => {
               Administrator access lets you manage all users and system settings
             </AlertDescription>
           </Alert>
-          
-          <SetAdminUser email="kyl3kan3@gmail.com" />
-
+          {/* Use currently logged-in user for admin section */}
+          <SetAdminUser email={userEmail ?? undefined} />
           <DeleteAccountButton />
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,26 +10,45 @@ interface SetAdminUserProps {
   email?: string;
 }
 
-const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com" }) => {
+const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(email ?? null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentRole, setCurrentRole] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(true);
-  
-  // Check the current role when component mounts
+
+  // If email prop is not provided, load the current user's email
   useEffect(() => {
+    if (!email) {
+      const fetchMe = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        setCurrentUserEmail(user?.email ?? null);
+      };
+      fetchMe();
+    } else {
+      setCurrentUserEmail(email);
+    }
+  }, [email]);
+
+  // Check the current role when email is determined
+  useEffect(() => {
+    if (!currentUserEmail) {
+      setCurrentRole(null);
+      setIsChecking(false);
+      return;
+    }
     const checkCurrentRole = async () => {
       try {
         setIsChecking(true);
         const { data, error } = await supabase
           .from('profiles')
           .select('role')
-          .eq('email', email)
+          .eq('email', currentUserEmail)
           .single();
-          
+
         if (error) throw error;
-        
+
         setCurrentRole(data?.role || null);
-        console.log(`Current role for ${email}: ${data?.role}`);
+        console.log(`Current role for ${currentUserEmail}: ${data?.role}`);
       } catch (error) {
         console.error("Error checking role:", error);
         setCurrentRole(null);
@@ -38,22 +56,22 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
         setIsChecking(false);
       }
     };
-    
+
     checkCurrentRole();
-  }, [email]);
-  
+  }, [currentUserEmail]);
+
   const handleSetAdmin = async () => {
+    if (!currentUserEmail) return;
     setIsLoading(true);
-    
+
     try {
-      const result = await setUserAsAdmin(email);
-      
+      const result = await setUserAsAdmin(currentUserEmail);
+
       if (result.success) {
-        toast.success(`Successfully set ${email} as administrator`);
-        // Update the displayed role after successful change
+        toast.success(`Successfully set ${currentUserEmail} as administrator`);
         setCurrentRole("administrator");
       } else {
-        toast.error(`Failed to set ${email} as administrator: ${result.error?.message || 'Unknown error'}`);
+        toast.error(`Failed to set ${currentUserEmail} as administrator: ${result.error?.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error("Error in set admin process:", error);
@@ -62,7 +80,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
       setIsLoading(false);
     }
   };
-  
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -75,7 +93,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
         <div className="flex flex-col space-y-4">
           <div className="flex items-center space-x-2">
             <p>
-              <strong>{email}</strong>
+              <strong>{currentUserEmail ?? "Unknown user"}</strong>
             </p>
             {isChecking ? (
               <span className="text-sm text-gray-500">(Checking current role...)</span>
@@ -89,13 +107,13 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email = "kyl3kan3@gmail.com
               <span className="text-sm text-gray-500">(Role unknown)</span>
             )}
           </div>
-          
+
           {currentRole === 'administrator' ? (
             <p className="text-green-600">This user already has administrator access.</p>
           ) : (
             <Button 
               onClick={handleSetAdmin} 
-              disabled={isLoading || isChecking}
+              disabled={isLoading || isChecking || !currentUserEmail}
               className="max-w-xs"
             >
               {isLoading ? (
