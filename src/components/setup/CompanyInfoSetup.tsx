@@ -1,28 +1,17 @@
+
 import React, { useState, useEffect } from "react";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Building2, Upload } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { toast } from "sonner";
 
-const companyInfoSchema = z.object({
-  companyName: z.string().min(2, { message: "Company name is required" }),
-  industry: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zipCode: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email({ message: "Invalid email address" }).optional(),
-  website: z.string().url({ message: "Invalid website URL" }).optional().or(z.literal("")),
-});
-
-type CompanyInfoFormValues = z.infer<typeof companyInfoSchema>;
+import CompanyLogoUploader from "./company/CompanyLogoUploader";
+import BasicInfoFields from "./company/BasicInfoFields";
+import AddressFields from "./company/AddressFields";
+import ContactInfoFields from "./company/ContactInfoFields";
+import { companyInfoSchema, CompanyInfoFormValues } from "./company/companyInfoSchema";
 
 interface CompanyInfoSetupProps {
   data: any;
@@ -54,18 +43,9 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     }
   }, [data]);
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setLogoPreview(result);
-        // Update immediately with the current form values and new logo
-        onUpdate({ ...form.getValues(), logo: result });
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleLogoChange = (logoData: string | null) => {
+    setLogoPreview(logoData);
+    onUpdate({ ...form.getValues(), logo: logoData });
   };
 
   // Auto-save when form values change
@@ -97,192 +77,19 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
         <div className="w-full md:w-2/3">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="companyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter company name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="industry"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Industry</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select industry" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                        <SelectItem value="hospitality">Hospitality</SelectItem>
-                        <SelectItem value="real_estate">Real Estate</SelectItem>
-                        <SelectItem value="retail">Retail</SelectItem>
-                        <SelectItem value="transportation">Transportation</SelectItem>
-                        <SelectItem value="utilities">Utilities</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Street address" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input placeholder="City" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>State/Province</FormLabel>
-                      <FormControl>
-                        <Input placeholder="State/Province" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="zipCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>ZIP/Postal Code</FormLabel>
-                      <FormControl>
-                        <Input placeholder="ZIP/Postal code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Phone number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="contact@company.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="website"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Website</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://company.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
+              <BasicInfoFields form={form} />
+              <AddressFields form={form} />
+              <ContactInfoFields form={form} />
               <Button type="submit">Save Company Information</Button>
             </form>
           </Form>
         </div>
         
         <div className="w-full md:w-1/3">
-          <div className="border rounded-md p-4">
-            <p className="font-medium mb-2">Company Logo</p>
-            <div 
-              className="border-2 border-dashed rounded-md flex items-center justify-center flex-col h-40 bg-gray-50 mb-4"
-            >
-              {logoPreview ? (
-                <img 
-                  src={logoPreview} 
-                  alt="Company logo preview" 
-                  className="max-h-36 max-w-full object-contain" 
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center text-gray-500">
-                  <Upload className="h-10 w-10 mb-2" />
-                  <p className="text-sm">Upload company logo</p>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex justify-center">
-              <label className="cursor-pointer">
-                <Button variant="outline" type="button" className="w-full">
-                  {logoPreview ? "Change Logo" : "Upload Logo"}
-                </Button>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleLogoChange}
-                />
-              </label>
-            </div>
-          </div>
+          <CompanyLogoUploader 
+            initialLogo={logoPreview} 
+            onLogoChange={handleLogoChange} 
+          />
         </div>
       </div>
     </div>
