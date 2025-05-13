@@ -22,9 +22,14 @@ interface CompanyInfo {
 const CompanyInformation = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [setupCompleted, setSetupCompleted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if setup is completed
+    const isSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
+    setSetupCompleted(isSetupComplete);
+
     // Retrieve company information from local storage
     const setupData = localStorage.getItem('maintenease_setup');
     if (setupData) {
@@ -71,18 +76,22 @@ const CompanyInformation = () => {
 
   // Handle case when there's no company info or it's incomplete
   if (!companyInfo || !companyInfo.companyName) {
+    const buttonText = setupCompleted ? "Update Company Information" : "Complete Setup";
+    
     return (
       <Card>
         <CardHeader>
           <CardTitle>Company Information</CardTitle>
-          <CardDescription>No company information available</CardDescription>
+          <CardDescription>{setupCompleted ? "Company information incomplete" : "No company information available"}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            You haven't completed the company setup process yet. Complete the setup to add your company details.
+            {setupCompleted
+              ? "Your company information is incomplete. Please update your company details."
+              : "You haven't completed the company setup process yet. Complete the setup to add your company details."}
           </p>
           <Button onClick={handleEditClick}>
-            Complete Setup
+            {buttonText}
           </Button>
         </CardContent>
       </Card>
