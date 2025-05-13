@@ -14,6 +14,7 @@ interface TeamMemberProps {
     role?: string;
     email?: string;
     phone?: string;
+    companyName?: string;
   }) => void;
 }
 

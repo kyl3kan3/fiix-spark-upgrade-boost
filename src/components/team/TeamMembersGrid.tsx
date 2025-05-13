@@ -12,6 +12,7 @@ interface TeamMembersGridProps {
     role?: string;
     email?: string;
     phone?: string;
+    companyName?: string;
   }) => void;
 }
 

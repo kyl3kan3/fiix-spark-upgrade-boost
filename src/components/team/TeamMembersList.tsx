@@ -18,6 +18,7 @@ interface TeamMember {
   lastActive: string;
   firstName?: string;
   lastName?: string;
+  companyName?: string;
   online?: boolean;
 }
 
@@ -31,6 +32,7 @@ interface TeamMembersListProps {
     role?: string;
     email?: string;
     phone?: string;
+    companyName?: string;
   }) => void;
 }
 
