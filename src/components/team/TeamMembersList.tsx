@@ -2,8 +2,9 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TeamMemberCard from "./TeamMemberCard";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface TeamMember {
   id: string | number;  // Support both string and number types
@@ -81,8 +82,17 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            No team members found matching the current filters.
+          <div className="text-center py-8">
+            <Alert variant="warning" className="max-w-md mx-auto">
+              <AlertCircle className="h-5 w-5" />
+              <AlertDescription className="text-muted-foreground">
+                No team members found. Make sure you are signed in and have team members registered in your organization.
+                <br /><br />
+                <span className="text-xs">
+                  (Check console logs for more details)
+                </span>
+              </AlertDescription>
+            </Alert>
           </div>
         )}
       </CardContent>

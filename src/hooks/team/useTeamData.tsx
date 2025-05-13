@@ -25,6 +25,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
 
       if (!currentUserId) {
         console.error("No current user found");
+        toast.error("Please sign in to view team members");
+        setLoading(false);
         return;
       }
 
@@ -39,7 +41,14 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         throw error;
       }
       
-      console.log("Fetched profiles:", profiles);
+      console.log(`Fetched ${profiles ? profiles.length : 0} profiles:`, profiles);
+      
+      if (!profiles || profiles.length === 0) {
+        console.log("No team members found in database");
+        setTeamMembers([]);
+        setLoading(false);
+        return;
+      }
       
       // Count unread messages for each user
       const users = await Promise.all(profiles.map(async (profile) => {
