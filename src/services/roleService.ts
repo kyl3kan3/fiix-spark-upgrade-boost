@@ -15,8 +15,7 @@ export const updateUserRole = async (userId: string, role: string) => {
     const { data, error } = await supabase
       .from('profiles')
       .update({ role })
-      .eq('id', userId)
-      .select();
+      .eq('id', userId);
     
     if (error) {
       console.error("Supabase error:", error);
