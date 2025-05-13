@@ -33,7 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send the email
     const emailResponse = await resend.emails.send({
-      from: "MaintenEase <notifications@maintenease.com>",
+      from: "MaintenEase <onboarding@resend.dev>", // Updated sender
       to: [to],
       subject: subject,
       html: `
@@ -69,3 +69,4 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
+
