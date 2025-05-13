@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,8 @@ import BasicInfoFields from "./company/BasicInfoFields";
 import AddressFields from "./company/AddressFields";
 import ContactInfoFields from "./company/ContactInfoFields";
 import { companyInfoSchema, CompanyInfoFormValues } from "./company/companyInfoSchema";
+
+import { supabase } from "@/integrations/supabase/client";
 
 interface CompanyInfoSetupProps {
   data: any;
@@ -57,9 +58,31 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     return () => subscription.unsubscribe();
   }, [form, logoPreview, onUpdate]);
 
-  const onSubmit = (values: CompanyInfoFormValues) => {
+  // Utility to set current user as administrator if not already
+  const setCurrentUserAsAdmin = async () => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !user) return;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!profile || profile.role !== "administrator") {
+      await supabase.from("profiles").update({ role: "administrator" }).eq("id", user.id);
+    }
+  };
+
+  const onSubmit = async (values: CompanyInfoFormValues) => {
     onUpdate({ ...values, logo: logoPreview });
     toast.success("Company information saved");
+
+    // Assign admin to first user who sets up the company if not already admin
+    await setCurrentUserAsAdmin();
   };
 
   return (
