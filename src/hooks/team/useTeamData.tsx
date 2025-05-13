@@ -68,7 +68,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
           unread: count || 0,
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
-          phone: profile.phone_number || '' // Include phone number from profile
+          // Check if phone_number exists in the profile object, if not use an empty string
+          phone: profile.phone_number || '' 
         };
       }));
 
