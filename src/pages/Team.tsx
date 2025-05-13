@@ -65,10 +65,8 @@ const Team = () => {
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          toast({
-            title: "Success",
-            description: "Team member information updated"
-          });
+          // Using toast from Sonner which has a different API
+          toast("Team member information updated");
           // Force refresh to make sure we have the latest data from the database
           refreshTeamMembers();
         }
