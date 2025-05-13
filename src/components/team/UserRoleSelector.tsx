@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { CheckIcon, Loader2 } from "lucide-react";
+import { CheckIcon, Loader2, LockIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UserRoleSelectorProps {
@@ -24,12 +24,50 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  // Check current user's role on component mount
+  useEffect(() => {
+    const checkCurrentUserRole = async () => {
+      setIsLoading(true);
+      try {
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+        
+        // Get current user's role from profiles
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+          
+        if (error) throw error;
+        
+        setCurrentUserRole(data?.role || null);
+        console.log("Current user's role:", data?.role);
+      } catch (error) {
+        console.error("Error checking user role:", error);
+        toast.error("Could not verify your permission level");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkCurrentUserRole();
+  }, []);
   
   // This will ensure that if the currentRole prop changes externally, our component updates
   useEffect(() => {
     setRole(currentRole);
     setIsChanged(false);
   }, [currentRole]);
+
+  const canEditRoles = currentUserRole === "administrator";
 
   const handleRoleChange = (newRole: string) => {
     if (newRole !== role) {
@@ -42,6 +80,11 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
     setIsSaving(true);
     
     try {
+      // Only administrators can change roles
+      if (!canEditRoles) {
+        throw new Error("You do not have permission to change roles");
+      }
+      
       console.log("Updating role for user ID:", userId, "to role:", role);
       
       // Ensure we're working with a valid user ID
@@ -68,15 +111,20 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
       
       // Call the callback function to trigger data refresh in parent component
       onRoleUpdated(role);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating role:", error);
-      toast.error("Failed to update role. Please try again.");
+      toast.error(error.message || "Failed to update role. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
 
   const toggleEdit = () => {
+    if (!canEditRoles) {
+      toast.error("You need administrator privileges to change user roles");
+      return;
+    }
+    
     setIsEditing(!isEditing);
     if (!isEditing) {
       // Reset to current role when entering edit mode
@@ -84,6 +132,15 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
       setIsChanged(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="w-[140px] text-sm">Loading permissions...</span>
+        <Loader2 className="h-4 w-4 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">
@@ -134,7 +191,14 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
             className="px-3" 
             onClick={toggleEdit}
           >
-            Edit
+            {canEditRoles ? (
+              "Edit"
+            ) : (
+              <>
+                <LockIcon className="h-3 w-3 mr-1" />
+                Locked
+              </>
+            )}
           </Button>
         </>
       )}

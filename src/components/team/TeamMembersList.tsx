@@ -1,10 +1,11 @@
 
-import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import TeamMemberCard from "./TeamMemberCard";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TeamMember {
   id: string | number;  // Support both string and number types
@@ -38,6 +39,40 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
   loading = false,
   onMemberUpdated
 }) => {
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [checkingPermissions, setCheckingPermissions] = useState(true);
+  
+  // Check current user's role on component mount
+  useEffect(() => {
+    const checkCurrentUserRole = async () => {
+      try {
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          throw new Error("Not authenticated");
+        }
+        
+        // Get current user's role from profiles
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+          
+        if (error) throw error;
+        
+        setCurrentUserRole(data?.role || null);
+      } catch (error) {
+        console.error("Error checking user role:", error);
+      } finally {
+        setCheckingPermissions(false);
+      }
+    };
+    
+    checkCurrentUserRole();
+  }, []);
+  
   return (
     <Card>
       <CardHeader>
@@ -47,7 +82,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {loading ? (
+        {loading || checkingPermissions ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="border rounded-lg overflow-hidden">
@@ -96,6 +131,19 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
           </div>
         )}
       </CardContent>
+      
+      {/* Show permission notice if user is not an admin */}
+      {currentUserRole && currentUserRole !== 'administrator' && !loading && !checkingPermissions && (
+        <CardFooter className="pt-0">
+          <Alert className="w-full bg-amber-50 border-amber-200">
+            <ShieldAlert className="h-5 w-5 text-amber-600 mr-2" />
+            <AlertDescription className="text-amber-800">
+              You need administrator privileges to change user roles. 
+              Your current role: <strong>{currentUserRole}</strong>
+            </AlertDescription>
+          </Alert>
+        </CardFooter>
+      )}
     </Card>
   );
 };
