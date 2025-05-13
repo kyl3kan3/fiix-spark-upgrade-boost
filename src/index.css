@@ -102,13 +102,46 @@
 
 @layer utilities {
   .glass {
-    @apply bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-lg;
+    @apply bg-white/80 backdrop-blur-lg border border-white/30 rounded-xl shadow-2xl;
   }
   .animate-fade-in {
     animation: fade-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .animate-scale-in {
+    animation: scale-in 0.55s cubic-bezier(0.21, 0.84, 0.6, 1.35) both;
+  }
+  .hover-scale {
+    @apply transition-transform duration-150 hover:scale-105;
   }
 }
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(32px) scale(0.98);}
   to { opacity: 1; transform: translateY(0) scale(1);}
+}
+@keyframes scale-in {
+  from { opacity: 0.4; transform: scale(0.94);}
+  to { opacity: 1; transform: scale(1);}
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
 }

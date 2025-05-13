@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +26,7 @@ export const SignInFields = ({
   return (
     <div className="space-y-6 rounded-md">
       <div>
-        <Label htmlFor="email-address" className="text-gray-700">Email address</Label>
+        <Label htmlFor="email-address" className="text-[#403e43] dark:text-white mb-1 font-semibold">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -37,11 +36,11 @@ export const SignInFields = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="password" className="text-gray-700">Password</Label>
+        <Label htmlFor="password" className="text-[#403e43] dark:text-white mb-1 font-semibold">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -52,12 +51,12 @@ export const SignInFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] pr-10 transition-shadow duration-150"
+            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none pr-10 bg-white/80 dark:bg-card/80 text-black dark:text-white shadow-sm transition-shadow duration-150"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 focus:outline-none hover:scale-110 transition-all"
             tabIndex={-1}
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
@@ -71,7 +70,7 @@ export const SignInFields = ({
           checked={rememberMe}
           onCheckedChange={(checked) => setRememberMe(checked as boolean)}
         />
-        <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer">
+        <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer text-[#403e43] dark:text-white">
           Stay logged in
         </Label>
       </div>
@@ -101,7 +100,7 @@ export const SignUpFields = ({
   return (
     <div className="space-y-6 rounded-md">
       <div>
-        <Label htmlFor="name" className="text-gray-700">Full Name</Label>
+        <Label htmlFor="name" className="text-[#403e43] dark:text-white mb-1 font-semibold">Full Name</Label>
         <Input
           id="name"
           name="name"
@@ -110,11 +109,11 @@ export const SignUpFields = ({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="John Doe"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="email-address" className="text-gray-700">Email address</Label>
+        <Label htmlFor="email-address" className="text-[#403e43] dark:text-white mb-1 font-semibold">Email address</Label>
         <Input
           id="email-address"
           name="email"
@@ -124,11 +123,11 @@ export const SignUpFields = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
-          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] transition-shadow duration-150"
+          className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none bg-white/80 dark:bg-card/80 placeholder:text-gray-400 text-black dark:text-white shadow-sm transition-shadow duration-150"
         />
       </div>
       <div>
-        <Label htmlFor="password" className="text-gray-700">Password</Label>
+        <Label htmlFor="password" className="text-[#403e43] dark:text-white mb-1 font-semibold">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -139,12 +138,12 @@ export const SignUpFields = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] pr-10 transition-shadow duration-150"
+            className="mt-1 focus:ring-2 focus:ring-[#9b87f5] border-none pr-10 bg-white/80 dark:bg-card/80 text-black dark:text-white shadow-sm transition-shadow duration-150"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 focus:outline-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 focus:outline-none hover:scale-110 transition-all"
             tabIndex={-1}
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
