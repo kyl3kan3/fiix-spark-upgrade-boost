@@ -15,12 +15,12 @@ const DeleteAccountButton: React.FC = () => {
   const handleDelete = async () => {
     setIsDeleting(true);
 
-    // Get current user id
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
+    // Get current session to get the jwt token
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session) {
       toast({
         title: "Error",
-        description: "Unable to find your account.",
+        description: "No user session found.",
         variant: "destructive",
       });
       setIsDeleting(false);
@@ -28,32 +28,46 @@ const DeleteAccountButton: React.FC = () => {
       return;
     }
 
-    // Delete user using Supabase admin API
-    // Must be done by an authenticated user, assuming RLS/Edge Function allows user to self-delete.
-    // This demo uses deleteUser() which is available to the logged-in user (with password confirmation)
-    const { error } = await supabase.auth.admin.deleteUser(user.id);
-    // If admin API fails (typical for client-side), fallback to signOut and remove local profile data
-    if (error) {
+    try {
+      const res = await fetch("https://gowdckitwgmctqlpqzod.functions.supabase.co/delete-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`,
+        }
+      });
+
+      const body = await res.json();
+
+      if (res.ok && body.success) {
+        // User deleted successfully
+        await supabase.auth.signOut();
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been deleted.",
+          variant: "default",
+        });
+        setIsDeleting(false);
+        setOpen(false);
+        navigate("/auth");
+      } else {
+        toast({
+          title: "Account Deletion Failed",
+          description: body.error || "Could not delete your account.",
+          variant: "destructive",
+        });
+        setIsDeleting(false);
+        setOpen(false);
+      }
+    } catch (err: any) {
       toast({
-        title: "Account Deletion Failed",
-        description: "Account deletion failed. Please contact an admin.",
+        title: "Network Error",
+        description: err.message || "Failed to connect to server.",
         variant: "destructive",
       });
       setIsDeleting(false);
       setOpen(false);
-      return;
     }
-
-    // Remove local session and profile data
-    await supabase.auth.signOut();
-    toast({
-      title: "Account Deleted",
-      description: "Your account has been deleted.",
-      variant: "default",
-    });
-    setIsDeleting(false);
-    setOpen(false);
-    navigate("/auth");
   };
 
   return (
