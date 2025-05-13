@@ -10,6 +10,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
     lastName?: string;
     role?: string;
     email?: string;
+    phone?: string;
   }) => {
     try {
       console.log("Updating team member:", userId, updates);
@@ -19,6 +20,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       if (updates.lastName !== undefined) updateData.last_name = updates.lastName;
       if (updates.role !== undefined) updateData.role = updates.role;
       if (updates.email !== undefined) updateData.email = updates.email;
+      if (updates.phone !== undefined) updateData.phone_number = updates.phone; // Map phone to phone_number field
       
       const { error } = await supabase
         .from("profiles")
@@ -40,6 +42,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
                 ...(updates.lastName !== undefined && { lastName: updates.lastName }),
                 ...(updates.role !== undefined && { role: updates.role }),
                 ...(updates.email !== undefined && { email: updates.email }),
+                ...(updates.phone !== undefined && { phone: updates.phone }),
                 ...(updates.firstName !== undefined || updates.lastName !== undefined ? { 
                   name: `${updates.firstName || member.firstName} ${updates.lastName || member.lastName}`.trim() || member.email,
                   avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ? 

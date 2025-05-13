@@ -53,7 +53,7 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
     try {
       console.log("Submitting user info update:", data);
       
-      // Call the onUserUpdated callback
+      // Call the onUserUpdated callback with all form data including phone
       onUserUpdated({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -63,6 +63,7 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
       
       toast.success("User information updated successfully");
       setIsSaving(false);
+      onOpenChange(false); // Close dialog after successful update
     } catch (error) {
       console.error("Error in form submission:", error);
       toast.error("Failed to update user information. Please try again.");

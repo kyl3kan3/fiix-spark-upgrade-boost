@@ -28,6 +28,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({ userId, currentRole
   // This will ensure that if the currentRole prop changes externally, our component updates
   useEffect(() => {
     setRole(currentRole);
+    setIsChanged(false);
   }, [currentRole]);
 
   const handleRoleChange = (newRole: string) => {

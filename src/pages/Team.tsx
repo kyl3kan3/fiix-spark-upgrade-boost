@@ -28,7 +28,7 @@ const Team = () => {
     name: member.name,
     role: member.role || "viewer",
     email: member.email,
-    phone: "+1 (555) 123-4567", // Default phone as this isn't in the ChatUser type
+    phone: member.phone || "+1 (555) 123-4567", // Use member phone if available
     avatar: member.avatar || member.name.substring(0, 2).toUpperCase(),
     joined: "Recently", // This info isn't available in ChatUser
     lastActive: member.online ? "Just now" : "Recently",
@@ -57,14 +57,18 @@ const Team = () => {
     lastName?: string;
     role?: string;
     email?: string;
+    phone?: string;
   }) => {
+    console.log("Member update in Team.tsx:", userId, updates);
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
           toast.success("Team member information updated");
+          // Force refresh to make sure we have the latest data from the database
+          refreshTeamMembers();
         }
       });
-  }, [updateTeamMember]);
+  }, [updateTeamMember, refreshTeamMembers]);
 
   return (
     <DashboardLayout>

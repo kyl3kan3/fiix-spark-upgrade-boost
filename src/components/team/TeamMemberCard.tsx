@@ -26,6 +26,7 @@ interface TeamMemberProps {
     lastName?: string;
     role?: string;
     email?: string;
+    phone?: string;
   }) => void;
 }
 
@@ -44,6 +45,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
     email?: string;
     phone?: string;
   }) => {
+    console.log("User info update:", updates);
     onMemberUpdated(member.id.toString(), updates);
     setIsEditing(false);
   };
@@ -79,7 +81,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
               </a>
               <a href={`tel:${member.phone}`} className="text-sm flex items-center text-blue-600 hover:underline">
                 <Phone className="h-3 w-3 mr-1" />
-                {member.phone}
+                {member.phone || "No phone number"}
               </a>
               <div className="text-xs text-gray-500 mt-2">
                 <div>Joined: {member.joined}</div>
@@ -105,7 +107,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
             id: member.id.toString(),
             name: member.name,
             email: member.email,
-            phone: member.phone,
+            phone: member.phone || "",
             firstName: member.firstName,
             lastName: member.lastName,
           }}

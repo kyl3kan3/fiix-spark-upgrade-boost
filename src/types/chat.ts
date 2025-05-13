@@ -9,6 +9,7 @@ export interface ChatUser {
   unread: number;
   firstName?: string;
   lastName?: string;
+  phone?: string;
 }
 
 export interface Message {
