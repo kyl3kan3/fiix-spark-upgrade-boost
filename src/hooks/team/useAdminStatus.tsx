@@ -44,16 +44,13 @@ export const useAdminStatus = (): AdminStatusResult => {
         // Fetch company info - handle the case where column may not exist
         try {
           // Use maybeSingle instead to prevent errors if no data is found
-          const { data: companyData, error: companyError } = await supabase
+          const { data: companyData } = await supabase
             .from('profiles')
             .select('company_name')
             .eq('id', user.id)
             .maybeSingle();
             
-          if (companyError) {
-            console.error("Error fetching company name:", companyError);
-          } else if (companyData) {
-            // Only try to access company_name if companyData exists
+          if (companyData && 'company_name' in companyData) {
             setCompanyName(companyData.company_name);
           }
         } catch (companyError) {
