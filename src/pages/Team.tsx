@@ -52,16 +52,18 @@ const Team = () => {
     return matchesSearch && matchesRole;
   });
 
-  const handleMemberUpdated = useCallback(async (userId: string, updates: {
+  const handleMemberUpdated = useCallback((userId: string, updates: {
     firstName?: string;
     lastName?: string;
     role?: string;
     email?: string;
   }) => {
-    const result = await updateTeamMember(userId, updates);
-    if (result.success) {
-      toast.success("Team member information updated");
-    }
+    updateTeamMember(userId, updates)
+      .then((result) => {
+        if (result.success) {
+          toast.success("Team member information updated");
+        }
+      });
   }, [updateTeamMember]);
 
   return (

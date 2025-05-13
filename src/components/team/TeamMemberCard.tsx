@@ -117,7 +117,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
         <UserRoleSelector 
           userId={member.id.toString()} 
           currentRole={member.role} 
-          onRoleUpdated={() => handleRoleUpdated(member.role)}
+          onRoleUpdated={handleRoleUpdated}
         />
       </div>
     </div>
