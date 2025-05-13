@@ -13,11 +13,14 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
   currentRole,
   onRoleUpdated
 }) => {
+  // Always ensure userId is a string as required by the UserRoleSelector
+  const userIdString = userId.toString();
+  
   return (
     <div className="bg-gray-50 px-6 py-3 flex items-center justify-between">
       <span className="text-sm font-medium">Role Access</span>
       <UserRoleSelector 
-        userId={userId.toString()} 
+        userId={userIdString} 
         currentRole={currentRole} 
         onRoleUpdated={onRoleUpdated}
       />

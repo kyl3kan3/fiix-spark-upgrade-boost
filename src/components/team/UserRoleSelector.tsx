@@ -48,6 +48,7 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
         throw new Error("You do not have permission to change roles");
       }
       
+      console.log(`Attempting to update role for user ${userId} to ${role}`);
       const result = await updateUserRole(userId, role);
       
       if (result.success) {

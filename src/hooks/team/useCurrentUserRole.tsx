@@ -15,8 +15,11 @@ export const useCurrentUserRole = () => {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
+          console.log("No authenticated user found");
           throw new Error("Not authenticated");
         }
+        
+        console.log("Checking role for user ID:", user.id);
         
         // Get current user's role from profiles
         const { data, error } = await supabase
@@ -25,7 +28,10 @@ export const useCurrentUserRole = () => {
           .eq('id', user.id)
           .single();
           
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase error fetching role:", error);
+          throw error;
+        }
         
         console.log("Current user role data:", data);
         setCurrentUserRole(data?.role || null);
@@ -42,6 +48,8 @@ export const useCurrentUserRole = () => {
   
   // Determine if the current user can edit roles (only administrators can)
   const canEditRoles = currentUserRole === 'administrator';
+  
+  console.log("Current user role:", currentUserRole, "Can edit roles:", canEditRoles);
 
   return {
     currentUserRole,
