@@ -39,8 +39,6 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
-    
     try {
       // Only administrators can change roles
       if (!canEditRoles) {
@@ -48,10 +46,13 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
         throw new Error("You do not have permission to change roles");
       }
       
+      setIsSaving(true);
       console.log(`Attempting to update role for user ${userId} to ${role}`);
+      
       const result = await updateUserRole(userId, role);
       
       if (result.success) {
+        console.log("Role update successful:", result.data);
         toast.success(`Role updated to ${role}`);
         setIsChanged(false);
         setIsEditing(false);
@@ -59,7 +60,8 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
         // Call the callback function to trigger data refresh in parent component
         onRoleUpdated(role);
       } else {
-        throw result.error;
+        console.error("Role update failed:", result.error);
+        throw result.error || new Error("Unknown error occurred");
       }
     } catch (error: any) {
       console.error("Error in handleSave:", error);

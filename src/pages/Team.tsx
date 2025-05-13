@@ -65,9 +65,13 @@ const Team = () => {
     updateTeamMember(userId, updates)
       .then((result) => {
         if (result.success) {
-          toast("Team member information updated");
+          toast.success("Team member information updated");
           // Force refresh to make sure we have the latest data from the database
+          console.log("Manually triggering team members refresh");
           refreshTeamMembers();
+        } else {
+          console.error("Update failed:", result.error);
+          toast.error("Failed to update team member");
         }
       });
   }, [updateTeamMember, refreshTeamMembers]);

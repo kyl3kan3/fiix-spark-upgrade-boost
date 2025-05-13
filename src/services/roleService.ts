@@ -15,15 +15,24 @@ export const updateUserRole = async (userId: string, role: string) => {
     const { data, error } = await supabase
       .from('profiles')
       .update({ role })
-      .eq('id', userId);
+      .eq('id', userId)
+      .select();
     
     if (error) {
       console.error("Supabase error:", error);
       throw error;
     }
     
+    // Log the actual response data
     console.log("Role update response:", data);
-    return { success: true, data };
+    
+    // Verify the update actually worked
+    if (!data || data.length === 0) {
+      console.error("No data returned from update operation");
+      throw new Error("Failed to update role. No data returned.");
+    }
+    
+    return { success: true, data: data[0] };
   } catch (error: any) {
     console.error("Error updating role:", error);
     toast.error(error.message || "Failed to update role. Please try again.");

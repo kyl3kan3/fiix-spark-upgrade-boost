@@ -26,15 +26,18 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       
       console.log("Sending update to Supabase:", updateData);
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .update(updateData)
-        .eq("id", userId);
+        .eq("id", userId)
+        .select();
         
       if (error) {
         console.error("Error updating team member:", error);
         throw error;
       }
+      
+      console.log("Update successful, received data:", data);
       
       // Update local state with the new information
       setTeamMembers(prev => 
@@ -59,7 +62,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
         )
       );
       
-      return { success: true };
+      return { success: true, data: data?.[0] };
     } catch (error) {
       console.error("Error updating team member:", error);
       toast.error("Failed to update team member");
