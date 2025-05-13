@@ -13,7 +13,11 @@ export interface OrganizationInvitation {
   accepted_at: string | null;
 }
 
-export const useOrganizationInvitations = (organizationId: string | null) => {
+// Now takes currentUserId
+export const useOrganizationInvitations = (
+  organizationId: string | null,
+  currentUserId: string | null
+) => {
   const [invitations, setInvitations] = useState<OrganizationInvitation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,16 +43,30 @@ export const useOrganizationInvitations = (organizationId: string | null) => {
     fetchInvitations();
   }, [organizationId]);
 
-  // Send an invitation
-  const sendInvitation = async (email: string, role: string = "technician") => {
+  // Send an invitation, now requires currentUserId
+  const sendInvitation = async (
+    email: string,
+    role: string = "technician"
+  ) => {
     if (!organizationId) {
       setError("No organization selected");
+      return null;
+    }
+    if (!currentUserId) {
+      setError("No current user ID found");
       return null;
     }
     setLoading(true);
     const { data, error } = await supabase
       .from("organization_invitations")
-      .insert([{ organization_id: organizationId, email, role }])
+      .insert([
+        {
+          organization_id: organizationId,
+          email,
+          role,
+          invited_by: currentUserId,
+        }
+      ])
       .select()
       .single();
 
@@ -58,7 +76,7 @@ export const useOrganizationInvitations = (organizationId: string | null) => {
       return null;
     }
     // Add to current list
-    setInvitations(prev => [...prev, data as OrganizationInvitation]);
+    setInvitations((prev) => [...prev, data as OrganizationInvitation]);
     return data as OrganizationInvitation;
   };
 
