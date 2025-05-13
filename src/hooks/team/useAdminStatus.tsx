@@ -49,7 +49,7 @@ export const useAdminStatus = (): AdminStatusResult => {
             .eq('id', user.id)
             .maybeSingle();
             
-          if (companyData && 'company_name' in companyData) {
+          if (companyData && companyData.company_name) {
             setCompanyName(companyData.company_name);
           }
         } catch (companyError) {
