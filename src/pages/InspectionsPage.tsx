@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Calendar } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -54,8 +54,8 @@ const InspectionsPage = () => {
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:flex-1 space-y-6">
-          {/* Floating top bar with filters */}
-          <div className="sticky top-16 z-10 pt-4 pb-2 bg-background/95 backdrop-blur">
+          {/* Floating top bar with filters - adding proper sticky positioning */}
+          <div className="sticky top-0 z-40 pt-4 pb-2 bg-background/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold">Inspections</h1>
               <Button onClick={handleCreateNew}>
@@ -75,12 +75,12 @@ const InspectionsPage = () => {
             </Tabs>
           </div>
 
-          {/* Tab contents */}
-          <TabsContent value="list" className="mt-4">
+          {/* Tab contents - adding padding top to create space below the sticky header */}
+          <TabsContent value="list" className="mt-4 pt-4">
             <InspectionsList inspections={inspections} loading={loading} />
           </TabsContent>
 
-          <TabsContent value="calendar" className="mt-4">
+          <TabsContent value="calendar" className="mt-4 pt-4">
             <InspectionsCalendarView filters={filters} />
           </TabsContent>
         </div>
