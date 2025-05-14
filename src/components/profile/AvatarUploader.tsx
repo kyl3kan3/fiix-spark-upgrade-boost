@@ -7,11 +7,13 @@ import { toast } from "@/hooks/use-toast";
 interface AvatarUploaderProps {
   currentAvatarUrl: string | null;
   onAvatarChange: (url: string | null) => void;
+  "aria-label"?: string;
 }
 
 const AvatarUploader: React.FC<AvatarUploaderProps> = ({
   currentAvatarUrl,
   onAvatarChange,
+  "aria-label": ariaLabel,
 }) => {
   const [preview, setPreview] = useState(currentAvatarUrl);
   const [loading, setLoading] = useState(false);
@@ -43,6 +45,14 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
         onClick={() => inputRef.current?.click()}
         style={{ cursor: "pointer" }}
         title="Change avatar"
+        role="button"
+        aria-label={ariaLabel || "Change profile picture"}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            inputRef.current?.click();
+          }
+        }}
       >
         {preview ? (
           <img src={preview} alt="User avatar" className="w-24 h-24 object-cover" />

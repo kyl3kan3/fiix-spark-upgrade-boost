@@ -173,7 +173,7 @@ const ProfileInformation = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle as="h2" tabIndex={0}>User Profile</CardTitle>
+        <CardTitle tabIndex={0}>User Profile</CardTitle>
         <CardDescription>Your personal information</CardDescription>
       </CardHeader>
       <CardContent>
@@ -181,9 +181,7 @@ const ProfileInformation = () => {
           <AvatarUploader 
             currentAvatarUrl={profileData.avatar_url} 
             onAvatarChange={handleAvatarChange}
-            // aria-label + role for accessibility
             aria-label="Profile avatar, click to change"
-            role="img"
           />
           <div className="w-full">
             {editMode ? (
