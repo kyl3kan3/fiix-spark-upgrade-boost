@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Shield, Clock, Pencil } from "lucide-react";
+import { Shield, Clock, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import AvatarUploader from "./AvatarUploader";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProfileData {
   id: string;
@@ -121,16 +122,24 @@ const ProfileInformation = () => {
   };
 
   if (isLoading) {
+    // Improved Skeleton experience and accessibility
     return (
-      <Card>
+      <Card role="status" aria-live="polite" aria-busy="true">
         <CardHeader>
           <CardTitle>User Profile</CardTitle>
           <CardDescription>Loading your profile information...</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="h-6 bg-gray-100 rounded animate-pulse"></div>
-          <div className="h-6 bg-gray-100 rounded animate-pulse"></div>
-          <div className="h-6 bg-gray-100 rounded animate-pulse"></div>
+        <CardContent className="flex gap-6">
+          <div>
+            <Skeleton className="w-24 h-24 rounded-full mb-2" aria-label="Profile avatar loading" />
+            <Skeleton className="w-20 h-6" aria-label="User name loading" />
+            <Skeleton className="w-24 h-4 mt-2" aria-label="Email loading" />
+          </div>
+          <div className="w-full space-y-4">
+            <Skeleton className="h-8 w-48" aria-label="Name field loading" />
+            <Skeleton className="h-8 w-48" aria-label="Email field loading" />
+            <Skeleton className="h-8 w-36" aria-label="Phone field loading" />
+          </div>
         </CardContent>
       </Card>
     );
@@ -164,85 +173,102 @@ const ProfileInformation = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User Profile</CardTitle>
+        <CardTitle as="h2" tabIndex={0}>User Profile</CardTitle>
         <CardDescription>Your personal information</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-6">
-          <AvatarUploader currentAvatarUrl={profileData.avatar_url} onAvatarChange={handleAvatarChange} />
+          <AvatarUploader 
+            currentAvatarUrl={profileData.avatar_url} 
+            onAvatarChange={handleAvatarChange}
+            // aria-label + role for accessibility
+            aria-label="Profile avatar, click to change"
+            role="img"
+          />
           <div className="w-full">
             {editMode ? (
-              <form onSubmit={handleProfileUpdate} className="space-y-4">
+              <form onSubmit={handleProfileUpdate} className="space-y-4" aria-label="Edit profile form">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
                   <div>
-                    <label className="block text-xs font-semibold mb-1">First Name</label>
+                    <label htmlFor="first_name" className="block text-xs font-semibold mb-1">First Name</label>
                     <input
+                      id="first_name"
                       type="text"
                       name="first_name"
                       value={form.first_name}
                       onChange={handleFormChange}
                       className="w-full border rounded py-2 px-3"
                       disabled={isSaving}
+                      aria-required="true"
+                      aria-label="First Name"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1">Last Name</label>
+                    <label htmlFor="last_name" className="block text-xs font-semibold mb-1">Last Name</label>
                     <input
+                      id="last_name"
                       type="text"
                       name="last_name"
                       value={form.last_name}
                       onChange={handleFormChange}
                       className="w-full border rounded py-2 px-3"
                       disabled={isSaving}
+                      aria-required="true"
+                      aria-label="Last Name"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1">Email</label>
+                    <label htmlFor="email" className="block text-xs font-semibold mb-1">Email</label>
                     <input
+                      id="email"
                       type="email"
                       name="email"
                       value={form.email}
                       onChange={handleFormChange}
                       className="w-full border rounded py-2 px-3"
                       disabled={isSaving}
+                      aria-required="true"
+                      aria-label="Email"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold mb-1">Phone Number</label>
+                    <label htmlFor="phone_number" className="block text-xs font-semibold mb-1">Phone Number</label>
                     <input
+                      id="phone_number"
                       type="tel"
                       name="phone_number"
                       value={form.phone_number}
                       onChange={handleFormChange}
                       className="w-full border rounded py-2 px-3"
                       disabled={isSaving}
+                      aria-label="Phone Number"
                     />
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" disabled={isSaving}>
+                  <Button type="submit" disabled={isSaving} aria-label="Save changes">
                     {isSaving ? "Saving..." : "Save Changes"}
                   </Button>
-                  <Button type="button" variant="outline" onClick={() => setEditMode(false)} disabled={isSaving}>
+                  <Button type="button" variant="outline" onClick={() => setEditMode(false)} disabled={isSaving} aria-label="Cancel editing">
                     Cancel
                   </Button>
                 </div>
               </form>
             ) : (
               <div>
-                <div className="flex justify-between">
-                  <h3 className="text-xl font-medium text-gray-900">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-medium text-gray-900" tabIndex={0}>
                     {[profileData.first_name, profileData.last_name].filter(Boolean).join(" ") || "No name provided"}
                   </h3>
-                  <Button variant="ghost" size="sm" onClick={() => setEditMode(true)}>
-                    <Pencil className="w-4 h-4" />
-                    Edit
+                  <Button variant="ghost" size="sm" onClick={() => setEditMode(true)} aria-label="Edit profile">
+                    <Pencil className="w-4 h-4" aria-hidden="true" />
+                    <span>Edit</span>
                   </Button>
                 </div>
-                <div className="text-muted-foreground">{profileData.email}</div>
+                <div className="text-muted-foreground" tabIndex={0}>{profileData.email}</div>
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
                   <div className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-gray-500" />
+                    <Shield className="h-5 w-5 text-gray-500" aria-hidden="true" />
                     <span>
                       <span className="font-medium">Role:</span>{" "}
                       <span className={`${profileData.role === 'administrator' ? 'text-blue-600' : 'text-gray-600'} capitalize`}>
@@ -257,7 +283,7 @@ const ProfileInformation = () => {
                     </div>
                   )}
                   <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-gray-500" />
+                    <Clock className="h-5 w-5 text-gray-500" aria-hidden="true" />
                     <span>
                       <span className="font-medium">Member since:</span>{" "}
                       <span>{formatDate(profileData.created_at)}</span>
