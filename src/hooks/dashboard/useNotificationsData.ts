@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -16,6 +16,7 @@ export function useNotificationsData(
 ) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const channelRef = useRef<any>(null);
 
   // Load notifications when component mounts or when panel is opened
   useEffect(() => {
@@ -26,67 +27,69 @@ export function useNotificationsData(
 
   // Set up realtime listener for new notifications
   useEffect(() => {
-    // Listen for new notifications
-    async function setupNotificationListener() {
-      const { data } = await supabase.auth.getUser();
-      const user = data?.user;
-      if (!user) return;
+    setupNotificationListener();
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, []);
 
-      const channel = supabase
-        .channel('notifications-changes')
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`
-          },
-          (payload) => {
-            // Add new notification to the list
-            const newNotification = payload.new as Notification;
-            setNotifications(prev => [newNotification, ...prev]);
-            
-            // Update unread count
-            if (onNotificationCountChange) {
-              onNotificationCountChange(getUnreadCount() + 1);
-            }
+  // Setup notification listener
+  const setupNotificationListener = async () => {
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user;
+    if (!user) return;
 
-            // Show toast if notification panel is closed
-            if (!isOpen) {
-              toast(newNotification.title, {
-                description: newNotification.body,
-                duration: 5000,
-                className: "animate-fade-in bg-white/90 dark:bg-gray-900/90 shadow-lg border border-blue-400/30",
-                // Sonner allows custom actions
-                action: {
-                  label: "View",
-                  onClick: () => {
-                    // This will be handled by the parent component
-                    // since we don't have direct access to setIsOpen here
-                  }
+    const channel = supabase
+      .channel('notifications-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          // Add new notification to the list
+          const newNotification = payload.new as Notification;
+          setNotifications(prev => [newNotification, ...prev]);
+          
+          // Update unread count
+          if (onNotificationCountChange) {
+            onNotificationCountChange(getUnreadCount() + 1);
+          }
+
+          // Show toast if notification panel is closed
+          if (!isOpen) {
+            toast(newNotification.title, {
+              description: newNotification.body,
+              duration: 5000,
+              className: "animate-fade-in bg-white/90 dark:bg-gray-900/90 shadow-lg border border-blue-400/30",
+              // Sonner allows custom actions
+              action: {
+                label: "View",
+                onClick: () => {
+                  // This will be handled by the parent component
+                  // since we don't have direct access to setIsOpen here
                 }
-              });
-              // Play notification sound via callback prop
-              if (typeof onNewNotification === "function") {
-                onNewNotification();
               }
+            });
+            // Play notification sound via callback prop
+            if (typeof onNewNotification === "function") {
+              onNewNotification();
             }
           }
-        )
-        .subscribe();
+        }
+      )
+      .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
+    channelRef.current = channel;
+  };
 
-    setupNotificationListener();
-    // eslint-disable-next-line
-  }, [isOpen, onNotificationCountChange, onNewNotification]);
-
-  const loadNotifications = async () => {
-    setLoading(true);
+  const loadNotifications = useCallback(async () => {
+    if (loading === false) setLoading(true);
     try {
       const notificationsData = await getUserNotifications();
       setNotifications(notificationsData);
@@ -99,10 +102,12 @@ export function useNotificationsData(
     } finally {
       setLoading(false);
     }
-  };
+  }, [onNotificationCountChange]);
 
   const handleMarkAllAsRead = async () => {
-    if (getUnreadCount() === 0) return;
+    const unreadCount = getUnreadCount();
+    if (unreadCount === 0) return;
+    
     try {
       await markAllNotificationsAsRead();
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -133,9 +138,9 @@ export function useNotificationsData(
     }
   };
 
-  const getUnreadCount = () => {
+  const getUnreadCount = useCallback(() => {
     return notifications.filter(n => !n.read).length;
-  };
+  }, [notifications]);
 
   return {
     notifications,

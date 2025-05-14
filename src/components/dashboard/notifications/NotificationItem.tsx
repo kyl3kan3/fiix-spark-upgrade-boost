@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Check } from "lucide-react";
 import { Notification } from "@/services/notificationService";
 import NotificationTypeBadge from "./NotificationTypeBadge";
 
@@ -18,11 +18,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <div 
       className={`p-4 border-b last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800 dark:border-gray-700 ${
         notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20"
-      } relative`}
+      } relative transition-colors duration-200 group animate-fade-in`}
     >
       <div className="flex items-start">
         <NotificationTypeBadge type={notification.type} />
-        <div className="flex-1">
+        <div className="flex-1 ml-2">
           <p className="font-medium text-sm">{notification.title}</p>
           <p className="text-sm text-gray-600 dark:text-gray-300">{notification.body}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
@@ -30,13 +30,16 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           </p>
         </div>
       </div>
+      
       <Button
         variant="ghost"
         size="sm"
-        className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 hover:opacity-100 focus:opacity-100"
+        className="absolute top-2 right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
         onClick={() => onDismiss(notification.id)}
+        aria-label="Mark as read"
+        title="Mark as read"
       >
-        <X className="h-3 w-3" />
+        {notification.read ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
       </Button>
     </div>
   );
