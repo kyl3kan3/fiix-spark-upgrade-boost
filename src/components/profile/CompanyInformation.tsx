@@ -10,10 +10,15 @@ import { CompanyDetails } from "./company/CompanyDetails";
 import { useCompanyInfo } from "./company/useCompanyInfo";
 
 const CompanyInformation: React.FC = () => {
-  const { companyInfo, isLoading, setupCompleted } = useCompanyInfo();
+  const { companyInfo, isLoading, setupCompleted, updateCompanyInfo } = useCompanyInfo();
   const navigate = useNavigate();
 
   const handleEditClick = () => {
+    if (companyInfo) {
+      // Store current info in session storage so the setup page can access it
+      sessionStorage.setItem('edit_company_info', JSON.stringify(companyInfo));
+    }
+    
     navigate('/setup');
     toast.info("You can update your company information here");
   };

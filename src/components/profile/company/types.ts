@@ -16,5 +16,6 @@ export interface CompanyInfoContextType {
   companyInfo: CompanyInfo | null;
   isLoading: boolean;
   error: string | null;
+  updateCompanyInfo: (data: CompanyInfo) => Promise<boolean>;
   fetchCompanyInfo: () => Promise<void>;
 }

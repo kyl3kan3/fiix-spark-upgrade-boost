@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,28 @@ interface CompanyInfoSetupProps {
 
 const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  
+  // Check if we have company data from profile edit
+  useEffect(() => {
+    const editData = sessionStorage.getItem('edit_company_info');
+    if (editData) {
+      try {
+        const parsedEditData = JSON.parse(editData);
+        // Use this data to initialize form if available
+        if (parsedEditData && Object.keys(parsedEditData).length > 0) {
+          form.reset(parsedEditData);
+          
+          if (parsedEditData.logo) {
+            setLogoPreview(parsedEditData.logo);
+          }
+        }
+        // Clear session storage after use
+        sessionStorage.removeItem('edit_company_info');
+      } catch (e) {
+        console.error("Error parsing edit company data:", e);
+      }
+    }
+  }, []);
   
   const form = useForm<CompanyInfoFormValues>({
     resolver: zodResolver(companyInfoSchema),
@@ -78,8 +101,32 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
   };
 
   const onSubmit = async (values: CompanyInfoFormValues) => {
-    onUpdate({ ...values, logo: logoPreview });
-    toast.success("Company information saved");
+    const formData = { ...values, logo: logoPreview };
+    onUpdate(formData);
+    
+    // Save company name to profile
+    try {
+      if (values.companyName) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { error } = await supabase
+            .from('profiles')
+            .update({ company_name: values.companyName })
+            .eq('id', user.id);
+            
+          if (error) {
+            console.error("Error updating company name in profile:", error);
+            toast.error("Company name couldn't be saved to your profile");
+            return;
+          }
+        }
+      }
+      
+      toast.success("Company information saved");
+    } catch (error) {
+      console.error("Error saving company information:", error);
+      toast.error("Failed to save company information");
+    }
 
     // Assign admin to first user who sets up the company if not already admin
     await setCurrentUserAsAdmin();
