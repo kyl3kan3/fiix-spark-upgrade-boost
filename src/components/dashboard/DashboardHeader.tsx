@@ -1,33 +1,17 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import {
-  Bell,
-  Search,
-  Menu,
-  Settings,
-  MessageSquare,
-  LogOut,
-  ChevronDown,
-  HelpCircle
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
 import { getUserNotifications } from "@/services/notificationService";
 import NotificationSound, { NotificationSoundHandle } from "@/components/ui/NotificationSound";
+import SearchBar from "./header/SearchBar";
+import HeaderActions from "./header/HeaderActions";
+import ProfileMenu from "./header/ProfileMenu";
 
 interface DashboardHeaderProps {
   userName?: string;
@@ -39,7 +23,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
 
   // Notification sound ref
-  const notificationSoundRef = React.useRef<NotificationSoundHandle>(null);
+  const notificationSoundRef = useRef<NotificationSoundHandle>(null);
 
   // This ensures the notifications panel closes when we navigate away
   const handleCloseNotifications = () => {
@@ -92,6 +76,10 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
     }
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   return (
     <header className="border-b bg-white sticky top-0 z-30">
       <div className="px-4 sm:px-6 lg:px-8 flex h-14 items-center justify-between">
@@ -118,46 +106,15 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
             </Link>
           </div>
 
-          <div className="relative w-full max-w-md hidden md:flex items-center">
-            <Search className="absolute left-2.5 h-4 w-4 text-gray-500" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full bg-white pl-8 py-1"
-            />
-          </div>
+          <SearchBar />
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to="/chat">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Chat"
-              className="relative"
-            >
-              <MessageSquare className="h-5 w-5" />
-            </Button>
-          </Link>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Notifications"
-            className="relative"
-            onClick={() => setShowNotifications(!showNotifications)}
-          >
-            <Bell className="h-5 w-5" />
-            {unreadNotificationsCount > 0 && (
-              <Badge
-                variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center pulse"
-                aria-label={`${unreadNotificationsCount} unread notifications`}
-              >
-                {unreadNotificationsCount}
-              </Badge>
-            )}
-          </Button>
+          <HeaderActions 
+            unreadNotificationsCount={unreadNotificationsCount}
+            toggleNotifications={toggleNotifications}
+            notificationSoundRef={notificationSoundRef}
+          />
           
           <DashboardNotifications 
             isOpen={showNotifications} 
@@ -166,63 +123,14 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
             onNewNotification={handleNewNotification}
           />
 
-          <Link to="/help">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Help"
-              className="hidden sm:flex"
-            >
-              <HelpCircle className="h-5 w-5" />
-            </Button>
-          </Link>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="p-1 sm:flex gap-2 items-center justify-between"
-              >
-                <Avatar className="h-8 w-8 border">
-                  <AvatarImage alt={userName} />
-                  <AvatarFallback className="text-xs bg-maintenease-50 text-maintenease-600">
-                    {userName
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden md:flex items-center gap-1">
-                  <span className="text-sm font-medium line-clamp-1">
-                    {userName}
-                  </span>
-                  <ChevronDown size={16} />
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/profile" className="cursor-pointer">
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings" className="cursor-pointer">
-                  <Settings size={16} className="mr-2" />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut size={16} className="mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ProfileMenu 
+            userName={userName}
+            onLogout={handleLogout}
+          />
         </div>
       </div>
+
+      <NotificationSound ref={notificationSoundRef} />
     </header>
   );
 };
