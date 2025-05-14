@@ -11,14 +11,8 @@ import { toast } from "sonner";
 const PreventiveMaintenanceContent: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   
-  // Sample maintenance tasks
-  const [maintenanceTasks, setMaintenanceTasks] = useState<MaintenanceTask[]>([
-    { id: 1, title: "HVAC Filter Change", asset: "Building A", dueDate: new Date(2025, 4, 15), priority: "medium" },
-    { id: 2, title: "Machine Lubrication", asset: "Production Line 2", dueDate: new Date(2025, 4, 22), priority: "high" },
-    { id: 3, title: "Safety Inspection", asset: "Warehouse", dueDate: new Date(2025, 4, 27), priority: "medium" },
-    { id: 4, title: "Electrical System Check", asset: "Main Office", dueDate: new Date(2025, 5, 5), priority: "low" },
-    { id: 5, title: "Conveyor Belt Inspection", asset: "Assembly Line", dueDate: new Date(2025, 5, 12), priority: "high" }
-  ]);
+  // Empty maintenance tasks - will be populated from database
+  const [maintenanceTasks, setMaintenanceTasks] = useState<MaintenanceTask[]>([]);
   
   // Current month's tasks for calendar highlights
   const currentMonthTaskDays = maintenanceTasks.map(task => task.dueDate.getDate());

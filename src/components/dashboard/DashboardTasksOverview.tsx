@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,8 +40,7 @@ const DashboardTasksOverview = () => {
   });
 
   useEffect(() => {
-    // In a real implementation, this would fetch data from the backend
-    // For now, we'll just use empty data
+    // This will be replaced with real data fetching from Supabase
   }, []);
 
   return (

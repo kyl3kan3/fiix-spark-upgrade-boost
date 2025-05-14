@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,7 @@ const OverviewTab: React.FC = () => {
   
   // Fetch real data when available
   useEffect(() => {
-    // In a real implementation, this would fetch data from the backend
-    // For now, we'll just use empty data
+    // This will be replaced with real data fetching from Supabase
   }, []);
   
   return (

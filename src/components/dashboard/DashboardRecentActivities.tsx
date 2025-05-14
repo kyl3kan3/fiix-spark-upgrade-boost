@@ -1,14 +1,13 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, CheckCircle, ClipboardList, Settings, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const DashboardRecentActivities = () => {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    // In a real implementation, this would fetch activities from the backend
-    // For now, we'll just use empty data
+    // This will be replaced with real data fetching from Supabase
   }, []);
 
   return (

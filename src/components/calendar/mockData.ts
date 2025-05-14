@@ -1,3 +1,4 @@
+
 // This file will be replaced with real data from the database
 export const events = [];
 
