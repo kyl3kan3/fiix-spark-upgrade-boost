@@ -22,30 +22,31 @@ import {
   Pie,
   Cell
 } from "recharts";
+import { toast } from "sonner";
 
-// Sample data for charts
-const workOrdersData = [
-  { month: "Jan", completed: 45, pending: 28, canceled: 5 },
-  { month: "Feb", completed: 52, pending: 23, canceled: 3 },
-  { month: "Mar", completed: 48, pending: 25, canceled: 7 },
-  { month: "Apr", completed: 61, pending: 19, canceled: 4 },
-  { month: "May", completed: 55, pending: 21, canceled: 2 },
-  { month: "Jun", completed: 67, pending: 15, canceled: 3 },
+// Empty data placeholders
+const emptyWorkOrdersData = [
+  { month: "Jan", completed: 0, pending: 0, canceled: 0 },
+  { month: "Feb", completed: 0, pending: 0, canceled: 0 },
+  { month: "Mar", completed: 0, pending: 0, canceled: 0 },
+  { month: "Apr", completed: 0, pending: 0, canceled: 0 },
+  { month: "May", completed: 0, pending: 0, canceled: 0 },
+  { month: "Jun", completed: 0, pending: 0, canceled: 0 },
 ];
 
-const maintenanceCostsData = [
-  { month: "Jan", planned: 5800, unplanned: 3200 },
-  { month: "Feb", planned: 6100, unplanned: 2700 },
-  { month: "Mar", planned: 5900, unplanned: 4100 },
-  { month: "Apr", planned: 6300, unplanned: 2300 },
-  { month: "May", planned: 6700, unplanned: 1900 },
-  { month: "Jun", planned: 7200, unplanned: 1500 },
+const emptyMaintenanceCostsData = [
+  { month: "Jan", planned: 0, unplanned: 0 },
+  { month: "Feb", planned: 0, unplanned: 0 },
+  { month: "Mar", planned: 0, unplanned: 0 },
+  { month: "Apr", planned: 0, unplanned: 0 },
+  { month: "May", planned: 0, unplanned: 0 },
+  { month: "Jun", planned: 0, unplanned: 0 },
 ];
 
-const assetStatusData = [
-  { name: "Operational", value: 75, color: "#10B981" },
-  { name: "Under Maintenance", value: 15, color: "#F59E0B" },
-  { name: "Out of Service", value: 10, color: "#EF4444" },
+const emptyAssetStatusData = [
+  { name: "Operational", value: 0, color: "#10B981" },
+  { name: "Under Maintenance", value: 0, color: "#F59E0B" },
+  { name: "Out of Service", value: 0, color: "#EF4444" },
 ];
 
 const workCompletionRateConfig = {
@@ -56,6 +57,10 @@ const workCompletionRateConfig = {
 };
 
 const AnalyticsTab: React.FC = () => {
+  const handleDataNotAvailable = () => {
+    toast.info("Analytics data will be available once connected to your database.");
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -84,10 +89,10 @@ const AnalyticsTab: React.FC = () => {
                       cy="50" 
                     />
                     <circle 
-                      className="text-maintenease-600" 
+                      className="text-gray-300" 
                       strokeWidth="10" 
                       strokeDasharray="251.2"
-                      strokeDashoffset="62.8" 
+                      strokeDashoffset="251.2" 
                       strokeLinecap="round" 
                       stroke="currentColor" 
                       fill="transparent" 
@@ -96,7 +101,7 @@ const AnalyticsTab: React.FC = () => {
                       cy="50" 
                     />
                   </svg>
-                  <span className="absolute text-2xl font-bold">75%</span>
+                  <span className="absolute text-2xl font-bold">0%</span>
                 </div>
               </div>
             </CardContent>
@@ -109,7 +114,7 @@ const AnalyticsTab: React.FC = () => {
             <CardContent>
               <div className="flex items-center justify-center h-[180px]">
                 <div className="text-center">
-                  <p className="text-3xl font-bold">4.2</p>
+                  <p className="text-3xl font-bold">--</p>
                   <p className="text-sm text-gray-500">hours</p>
                 </div>
               </div>
@@ -123,7 +128,7 @@ const AnalyticsTab: React.FC = () => {
             <CardContent>
               <div className="flex items-center justify-center h-[180px]">
                 <div className="text-center">
-                  <p className="text-3xl font-bold">$12,450</p>
+                  <p className="text-3xl font-bold">$0</p>
                   <p className="text-sm text-gray-500">This month</p>
                 </div>
               </div>
@@ -140,10 +145,10 @@ const AnalyticsTab: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-[300px]" onClick={handleDataNotAvailable}>
               <ResponsiveContainer width="100%" height="100%">
                 <RechartLineChart
-                  data={workOrdersData}
+                  data={emptyWorkOrdersData}
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
@@ -186,10 +191,10 @@ const AnalyticsTab: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[250px]">
+              <div className="h-[250px]" onClick={handleDataNotAvailable}>
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartBarChart
-                    data={maintenanceCostsData}
+                    data={emptyMaintenanceCostsData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
@@ -214,11 +219,11 @@ const AnalyticsTab: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[250px]">
+              <div className="h-[250px]" onClick={handleDataNotAvailable}>
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartPieChart>
                     <Pie
-                      data={assetStatusData}
+                      data={emptyAssetStatusData}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -227,7 +232,7 @@ const AnalyticsTab: React.FC = () => {
                       dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {assetStatusData.map((entry, index) => (
+                      {emptyAssetStatusData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
