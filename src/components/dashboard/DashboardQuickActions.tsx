@@ -53,9 +53,9 @@ const DashboardQuickActions = () => {
   ];
   
   return (
-    <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+    <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Quick Actions</CardTitle>
+        <CardTitle className="text-lg dark:text-gray-200">Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -70,7 +70,7 @@ const DashboardQuickActions = () => {
               <div className={`p-2 rounded-full mb-3`}>
                 {action.icon}
               </div>
-              <span className="text-sm font-medium">{action.title}</span>
+              <span className="text-sm font-medium dark:text-gray-100">{action.title}</span>
             </Button>
           ))}
         </div>

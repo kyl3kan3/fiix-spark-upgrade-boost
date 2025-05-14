@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -116,6 +117,13 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out',
 				'slide-up': 'slide-up 0.7s ease-out',
 				"entry-fade-slide": "entry-fade-slide 0.45s cubic-bezier(0.4,0,0.2,1)",
+			},
+			// Add custom gradients for glassmorphism and primary accent
+			backgroundImage: {
+				'card-gradient': 'linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)',
+				'glass-morphism': 'linear-gradient(112.1deg, rgba(255,255,255,0.85) 0%, rgba(233,245,255,0.60) 100%)',
+				'dark-card-gradient': 'linear-gradient(135deg, #24243e 0%, #302b63 50%, #0f0c29 100%)',
+				'dark-glass-morphism': 'linear-gradient(120deg, rgba(36,40,62,0.65) 0%, rgba(15,12,41,0.90) 100%)'
 			}
 		}
 	},
@@ -126,12 +134,20 @@ export default {
 				".card-gradient": {
 					"background": "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)"
 				},
-				".hover-scale": {
-					"transition": "transform 0.18s cubic-bezier(0.4,0,0.2,1)",
-					"will-change": "transform",
-					"&:hover": {
-						"transform": "scale(1.045)"
-					}
+				".card-gradient-dark": {
+					"background": "linear-gradient(135deg, #222e34 0%, #09101c 100%)"
+				},
+				".glass-morphism": {
+					"background": "linear-gradient(112.1deg, rgba(255,255,255,0.90) 0%, rgba(233,245,255,0.72) 100%)",
+					"backdropFilter": "blur(20px)",
+					"borderRadius": "1.1rem",
+					"border": "1.5px solid rgba(255,255,255,0.22)"
+				},
+				".glass-morphism-dark": {
+					"background": "linear-gradient(112.1deg, rgba(36,40,62,0.80) 0%, rgba(15,12,41,0.86) 100%)",
+					"backdropFilter": "blur(20px)",
+					"borderRadius": "1.1rem",
+					"border": "1.5px solid rgba(30,47,60,0.48)"
 				}
 			});
 		}

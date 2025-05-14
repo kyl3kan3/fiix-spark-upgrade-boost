@@ -36,36 +36,36 @@ const OverviewTab: React.FC = () => {
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Total Work Orders</CardTitle>
+            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Total Work Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-gray-900">{workOrderStats.total}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{workOrderStats.total}</p>
           </CardContent>
         </Card>
         
-        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Open</CardTitle>
+            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Open</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-yellow-500">{workOrderStats.open}</p>
           </CardContent>
         </Card>
         
-        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">In Progress</CardTitle>
+            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">In Progress</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-blue-500">{workOrderStats.inProgress}</p>
           </CardContent>
         </Card>
         
-        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Completed</CardTitle>
+            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Completed</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-green-500">{workOrderStats.completed}</p>
@@ -86,7 +86,7 @@ const OverviewTab: React.FC = () => {
       </div>
       
       {/* Recent Work Orders */}
-      <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+      <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
         <CardHeader>
           <CardTitle>Recent Work Orders</CardTitle>
           <CardDescription>
@@ -99,7 +99,7 @@ const OverviewTab: React.FC = () => {
               recentWorkOrders.map((order) => (
                 <div 
                   key={order.id} 
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
                 >
                   <div>
                     <p className="font-medium">{order.title}</p>

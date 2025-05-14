@@ -44,9 +44,9 @@ const DashboardTasksOverview = () => {
   }, []);
 
   return (
-    <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
+    <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-lg">Tasks Overview</CardTitle>
+        <CardTitle className="text-lg dark:text-gray-200">Tasks Overview</CardTitle>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
