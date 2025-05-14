@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -28,6 +27,7 @@ import { toast } from "sonner";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
 import { getUserNotifications } from "@/services/notificationService";
+import NotificationSound, { NotificationSoundHandle } from "@/components/ui/NotificationSound";
 
 interface DashboardHeaderProps {
   userName?: string;
@@ -37,6 +37,9 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
+
+  // Notification sound ref
+  const notificationSoundRef = React.useRef<NotificationSoundHandle>(null);
 
   // This ensures the notifications panel closes when we navigate away
   const handleCloseNotifications = () => {
@@ -78,6 +81,15 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const handleLogout = () => {
     toast.info("You have been logged out");
     // Here you would typically clear user session
+  };
+
+  // Called by child when new notification arrives (via event handler prop)
+  const handleNewNotification = () => {
+    // Optionally play notification sound
+    if (notificationSoundRef.current) {
+      // You could check user prefs here to enable/disable sound
+      notificationSoundRef.current.play();
+    }
   };
 
   return (
@@ -139,7 +151,8 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
             {unreadNotificationsCount > 0 && (
               <Badge
                 variant="destructive"
-                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
+                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center pulse"
+                aria-label={`${unreadNotificationsCount} unread notifications`}
               >
                 {unreadNotificationsCount}
               </Badge>
@@ -149,7 +162,8 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
           <DashboardNotifications 
             isOpen={showNotifications} 
             setIsOpen={setShowNotifications} 
-            onNotificationCountChange={handleNotificationCountChange}
+            onNotificationCountChange={setUnreadNotificationsCount}
+            onNewNotification={handleNewNotification}
           />
 
           <Link to="/help">

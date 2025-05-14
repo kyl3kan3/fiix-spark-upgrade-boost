@@ -16,12 +16,14 @@ interface DashboardNotificationsProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onNotificationCountChange?: (count: number) => void;
+  onNewNotification?: () => void; // New prop for sound/side effects
 }
 
 const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({ 
   isOpen, 
   setIsOpen,
-  onNotificationCountChange
+  onNotificationCountChange,
+  onNewNotification
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,11 +66,18 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
               toast.info(newNotification.title, {
                 description: newNotification.body,
                 duration: 5000,
+                className: "animate-fade-in bg-white/90 dark:bg-gray-900/90 shadow-lg border border-blue-400/30",
+                // Sonner allows custom styles and may be styled further in theme
+                // Optionally add an action button:
                 action: {
                   label: "View",
                   onClick: () => setIsOpen(true)
                 }
               });
+              // Play notification sound via callback prop
+              if (typeof onNewNotification === "function") {
+                onNewNotification();
+              }
             }
           }
         )
@@ -80,15 +89,14 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
     }
 
     setupNotificationListener();
-  }, [isOpen, onNotificationCountChange]);
+    // eslint-disable-next-line
+  }, [isOpen, onNotificationCountChange, onNewNotification]);
 
   const loadNotifications = async () => {
     setLoading(true);
     try {
       const notificationsData = await getUserNotifications();
       setNotifications(notificationsData);
-      
-      // Update unread count
       if (onNotificationCountChange) {
         onNotificationCountChange(notificationsData.filter(n => !n.read).length);
       }
@@ -101,16 +109,14 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   };
 
   const handleMarkAllAsRead = async () => {
-    if (getUnreadCount() === 0) return; // Don't do anything if no unread notifications
-    
+    if (getUnreadCount() === 0) return;
     try {
       await markAllNotificationsAsRead();
-      
-      // Update local state
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      toast.success("All notifications marked as read");
-      
-      // Update the notification count in the parent component
+      toast.success("All notifications marked as read", {
+        duration: 2000,
+        className: "animate-fade-in bg-green-50 dark:bg-green-700 text-green-900 dark:text-green-100"
+      });
       if (onNotificationCountChange) {
         onNotificationCountChange(0);
       }
@@ -123,14 +129,10 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
   const handleDismissNotification = async (id: string) => {
     try {
       await markNotificationAsRead(id);
-      
-      // Update local state
       const updatedNotifications = notifications.map(n => 
         n.id === id ? { ...n, read: true } : n
       );
       setNotifications(updatedNotifications);
-      
-      // Update the notification count after dismissing
       if (onNotificationCountChange) {
         const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
         onNotificationCountChange(newUnreadCount);
@@ -162,7 +164,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
               <Bell className="h-5 w-5 text-maintenease-500 mr-2" />
               <h3 className="font-medium">Notifications</h3>
               {getUnreadCount() > 0 && (
-                <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse animate-pulse" style={{ animationDuration: "1.2s" }}>
                   {getUnreadCount()}
                 </span>
               )}
@@ -170,7 +172,7 @@ const DashboardNotifications: React.FC<DashboardNotificationsProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-8 w-8 p-0" 
+              className="h-8 w-8 p-0"
               onClick={() => setIsOpen(false)}
             >
               <X className="h-4 w-4" />
