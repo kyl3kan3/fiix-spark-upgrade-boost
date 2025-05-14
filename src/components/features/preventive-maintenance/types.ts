@@ -5,4 +5,10 @@ export interface MaintenanceTask {
   asset: string;
   dueDate: Date;
   priority: "low" | "medium" | "high";
+  frequency?: {
+    value: number;
+    unit: "days" | "weeks" | "months" | "years";
+  };
+  lastCompleted?: Date;
+  isRecurring: boolean;
 }

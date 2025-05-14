@@ -1,7 +1,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, RepeatIcon } from "lucide-react";
 
 interface MaintenanceTask {
   id: number;
@@ -9,6 +9,12 @@ interface MaintenanceTask {
   asset: string;
   dueDate: Date;
   priority: "low" | "medium" | "high";
+  frequency?: {
+    value: number;
+    unit: "days" | "weeks" | "months" | "years";
+  };
+  lastCompleted?: Date;
+  isRecurring: boolean;
 }
 
 interface MaintenanceTaskListProps {
@@ -42,8 +48,21 @@ const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, select
           className="p-3 bg-white rounded border flex justify-between items-center hover:bg-gray-50 transition-colors"
         >
           <div>
-            <p className="font-medium">{task.title}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-medium">{task.title}</p>
+              {task.isRecurring && (
+                <span className="inline-flex items-center text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                  <RepeatIcon className="h-3 w-3 mr-1" />
+                  Recurring
+                </span>
+              )}
+            </div>
             <p className="text-sm text-gray-500">Asset: {task.asset}</p>
+            {task.frequency && (
+              <p className="text-xs text-gray-500">
+                Every {task.frequency.value} {task.frequency.unit}
+              </p>
+            )}
           </div>
           <div className="flex flex-col items-end">
             <span className="text-sm font-medium text-fiix-600">
