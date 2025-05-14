@@ -1,10 +1,8 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Inspection } from "@/types/inspections";
 import { format } from "date-fns";
-
-// Empty array to replace mock data
-const inspections: Inspection[] = [];
 
 interface InspectionsCalendarViewProps {
   filters: {
@@ -22,10 +20,50 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
   
+  // Mock inspections for calendar display
+  const mockInspections: Inspection[] = [
+    {
+      id: "1",
+      title: "HVAC Inspection",
+      description: "Regular check",
+      status: "scheduled",
+      priority: "medium",
+      assignedTo: "John Doe",
+      scheduledDate: new Date(currentYear, currentMonth, 15).toISOString(),
+      assetId: "hvac-001",
+      assetName: "HVAC System",
+      items: []
+    },
+    {
+      id: "2",
+      title: "Electrical Check",
+      description: "Safety inspection",
+      status: "in-progress",
+      priority: "high",
+      assignedTo: "Jane Smith",
+      scheduledDate: new Date(currentYear, currentMonth, 10).toISOString(),
+      assetId: "elec-002",
+      assetName: "Main Panel",
+      items: []
+    },
+    {
+      id: "3",
+      title: "Fire Safety",
+      description: "Annual review",
+      status: "completed",
+      priority: "critical",
+      assignedTo: "Robert Johnson",
+      scheduledDate: new Date(currentYear, currentMonth, 5).toISOString(),
+      assetId: "fire-003",
+      assetName: "Fire Systems",
+      items: []
+    }
+  ];
+  
   // Map inspections to their days
   const inspectionsByDay: { [key: number]: Inspection[] } = {};
   
-  inspections.forEach(inspection => {
+  mockInspections.forEach(inspection => {
     const date = new Date(inspection.scheduledDate);
     const day = date.getDate();
     if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {

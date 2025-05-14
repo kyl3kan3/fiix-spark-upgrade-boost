@@ -15,26 +15,7 @@ export const useInspections = (filters: any = {}) => {
       setLoading(true);
       console.log("Fetching inspections...", new Date().toISOString());
       
-      // Get current user
-      const { data: currentUserData, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error("Error getting current user:", userError);
-        throw userError;
-      }
-      
-      const currentUserId = currentUserData?.user?.id;
-
-      if (!currentUserId) {
-        console.error("No current user found");
-        return;
-      }
-
-      // Fetch inspections from the database
-      // For now, we'll simulate having inspections since we don't have a real table yet
-      // In a real implementation, we would fetch from a Supabase table
-      
-      // Simulated inspections data
+      // Mock inspections data
       const mockInspections: Inspection[] = [
         {
           id: "1",
