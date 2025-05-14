@@ -38,8 +38,9 @@ const Auth = () => {
   const handleAuthSuccess = (email: string) => {
     setAuthError(null);
     if (isSignUp) {
-      // For new users, redirect to setup page
-      navigate("/setup");
+      // For new users, redirect to onboarding page
+      localStorage.setItem("pending_auth_email", email);
+      navigate("/onboarding");
     } else {
       // For existing users, redirect to dashboard
       navigate("/dashboard");
