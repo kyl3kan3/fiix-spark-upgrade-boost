@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -70,7 +71,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="absolute inset-0 -z-10 card-gradient dark:card-gradient-dark" />
         <DashboardSidebar />
         <SidebarInset className="flex flex-col flex-1">
-          <header className="glass-morphism dark:glass-morphism-dark border-b border-gray-200 dark:border-gray-700 shadow-md shadow-maintenease-100/10">
+          {/* Fixed header that will always stay at the top */}
+          <header className="sticky top-0 z-50 glass-morphism dark:glass-morphism-dark border-b border-gray-200 dark:border-gray-700 shadow-md shadow-maintenease-100/10">
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
                 <SidebarTrigger>
