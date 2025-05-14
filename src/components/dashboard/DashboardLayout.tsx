@@ -1,16 +1,12 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Bell, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import DashboardNotifications from "./DashboardNotifications";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
-import { 
-  SidebarProvider, 
-  SidebarInset, 
-  SidebarTrigger 
-} from "@/components/ui/sidebar";
+import DashboardNotifications from "./DashboardNotifications";
+import DashboardHeader from "./layout/DashboardHeader";
+import GradientBackground from "./layout/GradientBackground";
+import ContentContainer from "./layout/ContentContainer";
 import { getUserNotifications } from "@/services/notificationService";
 
 interface DashboardLayoutProps {
@@ -20,7 +16,6 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const navigate = useNavigate();
   
   useEffect(() => {
     // Check if dark mode is enabled in localStorage when component mounts
@@ -36,28 +31,24 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     }
     
     // Fetch notifications count on component mount
-    const fetchNotificationsCount = async () => {
-      try {
-        const notifications = await getUserNotifications();
-        const unreadCount = notifications.filter(n => !n.read).length;
-        setUnreadCount(unreadCount);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-    
     fetchNotificationsCount();
   }, []);
+  
+  const fetchNotificationsCount = async () => {
+    try {
+      const notifications = await getUserNotifications();
+      const unreadCount = notifications.filter(n => !n.read).length;
+      setUnreadCount(unreadCount);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
   
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
     if (!showNotifications) {
       toast.info("Notifications panel opened");
     }
-  };
-
-  const handleProfileClick = () => {
-    navigate("/profile");
   };
   
   const handleNotificationCountChange = (count: number) => {
@@ -67,57 +58,23 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full relative overflow-x-clip">
-        {/* Animated unified gradient BG, dark & light */}
-        <div className="absolute inset-0 -z-10 card-gradient dark:card-gradient-dark" />
+        <GradientBackground />
         <DashboardSidebar />
         <SidebarInset className="flex flex-col flex-1">
-          {/* Fixed header that will always stay at the top */}
-          <header className="sticky top-0 z-50 glass-morphism dark:glass-morphism-dark border-b border-gray-200 dark:border-gray-700 shadow-md shadow-maintenease-100/10">
-            <div className="container mx-auto px-4 flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <SidebarTrigger>
-                  <Button variant="ghost" size="icon" className="mr-2 md:hidden">
-                    <span className="sr-only">Toggle menu</span>
-                  </Button>
-                </SidebarTrigger>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={toggleNotifications}
-                  className="relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                      {unreadCount}
-                    </span>
-                  )}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleProfileClick}
-                  className="flex items-center gap-2"
-                >
-                  <User className="h-4 w-4" />
-                  <span>Profile</span>
-                </Button>
-              </div>
-            </div>
-          </header>
+          <DashboardHeader 
+            unreadCount={unreadCount} 
+            toggleNotifications={toggleNotifications} 
+          />
           
-          <div className="container mx-auto px-2 pt-8 flex-1 max-w-[1440px] dark:bg-transparent">
+          <ContentContainer>
             {children}
             
-            {/* Notifications Panel */}
             <DashboardNotifications 
               isOpen={showNotifications}
               setIsOpen={setShowNotifications}
               onNotificationCountChange={handleNotificationCountChange}
             />
-          </div>
+          </ContentContainer>
         </SidebarInset>
       </div>
     </SidebarProvider>
