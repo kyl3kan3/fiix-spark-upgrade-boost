@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import InspectionsList from "@/components/inspections/InspectionsList";
@@ -34,6 +35,15 @@ const InspectionsPage = () => {
     navigate("/inspections/new");
   };
 
+  React.useEffect(() => {
+    // Show a toast notification about the data being simulated
+    toast.info("Using simulated inspection data", {
+      description: "Connect to a real data source for production use",
+      duration: 5000,
+      id: "inspection-mock-data-notice"
+    });
+  }, []);
+
   return (
     <DashboardLayout>
       <Helmet>
@@ -44,31 +54,35 @@ const InspectionsPage = () => {
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:flex-1 space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Inspections</h1>
-            <Button onClick={handleCreateNew}>
-              <Plus className="h-4 w-4 mr-1" /> New Inspection
-            </Button>
-          </div>
-
-          <InspectionsFilters filters={filters} setFilters={setFilters} />
-
-          <Tabs value={activeView} onValueChange={setActiveView}>
-            <div className="flex items-center justify-between">
-              <TabsList>
-                <TabsTrigger value="list">List View</TabsTrigger>
-                <TabsTrigger value="calendar">Calendar</TabsTrigger>
-              </TabsList>
+          {/* Floating top bar with filters */}
+          <div className="sticky top-16 z-10 pt-4 pb-2 bg-background/95 backdrop-blur">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-bold">Inspections</h1>
+              <Button onClick={handleCreateNew}>
+                <Plus className="h-4 w-4 mr-1" /> New Inspection
+              </Button>
             </div>
 
-            <TabsContent value="list" className="mt-4">
-              <InspectionsList inspections={inspections} loading={loading} />
-            </TabsContent>
+            <InspectionsFilters filters={filters} setFilters={setFilters} />
 
-            <TabsContent value="calendar" className="mt-4">
-              <InspectionsCalendarView filters={filters} />
-            </TabsContent>
-          </Tabs>
+            <Tabs value={activeView} onValueChange={setActiveView} className="mt-4">
+              <div className="flex items-center justify-between">
+                <TabsList>
+                  <TabsTrigger value="list">List View</TabsTrigger>
+                  <TabsTrigger value="calendar">Calendar</TabsTrigger>
+                </TabsList>
+              </div>
+            </Tabs>
+          </div>
+
+          {/* Tab contents */}
+          <TabsContent value="list" className="mt-4">
+            <InspectionsList inspections={inspections} loading={loading} />
+          </TabsContent>
+
+          <TabsContent value="calendar" className="mt-4">
+            <InspectionsCalendarView filters={filters} />
+          </TabsContent>
         </div>
 
         {/* Daily Checklist Sidebar */}

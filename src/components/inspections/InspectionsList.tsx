@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Calendar, FileText, User } from "lucide-react";
+import { PlusCircle, Calendar, FileText, User, AlertTriangle } from "lucide-react";
 import { Inspection } from "@/types/inspections";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -93,9 +93,21 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
     );
   }
 
-  // Inspections list
+  // Mock data notice
   return (
     <div className="space-y-4">
+      <Card className="p-4 border-amber-200 bg-amber-50">
+        <div className="flex items-start">
+          <AlertTriangle className="h-5 w-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" />
+          <div>
+            <h3 className="font-medium text-amber-800">Simulated Data</h3>
+            <p className="text-amber-700 text-sm">
+              This is demo data. In a production environment, connect to your database to view real inspection records.
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {inspections.map((inspection) => (
         <Card
           key={inspection.id}
