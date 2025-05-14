@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,12 +99,12 @@
   body {
     @apply bg-background text-foreground;
   }
-  // Subtle glass effect for dark mode cards and sections
+  /* Subtle glass effect for dark mode cards and sections */
   .glass-morphism {
-    @apply backdrop-blur-xl shadow-lg border border-white/10 rounded-2xl transition-all;
+    @apply backdrop-blur-xl shadow-lg border 'border-white/10' rounded-2xl transition-all;
   }
   .glass-morphism-dark {
-    @apply backdrop-blur-2xl shadow-lg border border-gray-800/40 rounded-2xl transition-all;
+    @apply backdrop-blur-2xl shadow-lg border 'border-gray-800/40' rounded-2xl transition-all;
   }
 }
 
