@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -105,15 +104,36 @@ export default {
 				'slide-up': {
 					'0%': { transform: 'translateY(20px)', opacity: '0' },
 					'100%': { transform: 'translateY(0)', opacity: '1' }
-				}
+				},
+				"entry-fade-slide": {
+					"0%": { opacity: "0", transform: "translateY(24px)" },
+					"100%": { opacity: "1", transform: "translateY(0)" }
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'slide-up': 'slide-up 0.7s ease-out'
+				'slide-up': 'slide-up 0.7s ease-out',
+				"entry-fade-slide": "entry-fade-slide 0.45s cubic-bezier(0.4,0,0.2,1)",
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		function ({ addUtilities }) {
+			addUtilities({
+				".card-gradient": {
+					"background": "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)"
+				},
+				".hover-scale": {
+					"transition": "transform 0.18s cubic-bezier(0.4,0,0.2,1)",
+					"will-change": "transform",
+					"&:hover": {
+						"transform": "scale(1.045)"
+					}
+				}
+			});
+		}
+	],
 } satisfies Config;

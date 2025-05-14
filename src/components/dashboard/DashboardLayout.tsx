@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -66,11 +65,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen w-full relative overflow-x-clip">
+        {/* Add animated gradient BG */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-maintenease-100 via-white to-maintenease-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800" />
         <DashboardSidebar />
-        
         <SidebarInset className="flex flex-col flex-1">
-          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-md shadow-maintenease-100/10">
             <div className="container mx-auto px-4 flex items-center justify-between h-16">
               <div className="flex items-center">
                 <SidebarTrigger>
@@ -106,7 +106,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
           </header>
           
-          <div className="container mx-auto px-4 pt-8 flex-1 dark:bg-gray-900">
+          <div className="container mx-auto px-2 pt-8 flex-1 max-w-[1440px] dark:bg-gray-900">
             {children}
             
             {/* Notifications Panel */}

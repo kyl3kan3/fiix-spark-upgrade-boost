@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -29,13 +28,15 @@ const OverviewTab: React.FC = () => {
   }, []);
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-entry">
       {/* Quick Actions */}
-      <DashboardQuickActions />
+      <div className="animate-entry">
+        <DashboardQuickActions />
+      </div>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-gray-500">Total Work Orders</CardTitle>
           </CardHeader>
@@ -44,7 +45,7 @@ const OverviewTab: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-gray-500">Open</CardTitle>
           </CardHeader>
@@ -53,7 +54,7 @@ const OverviewTab: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-gray-500">In Progress</CardTitle>
           </CardHeader>
@@ -62,7 +63,7 @@ const OverviewTab: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-gray-500">Completed</CardTitle>
           </CardHeader>
@@ -74,14 +75,18 @@ const OverviewTab: React.FC = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activities */}
-        <DashboardRecentActivities />
+        <div className="animate-entry">
+          <DashboardRecentActivities />
+        </div>
         
         {/* Tasks Overview */}
-        <DashboardTasksOverview />
+        <div className="animate-entry">
+          <DashboardTasksOverview />
+        </div>
       </div>
       
       {/* Recent Work Orders */}
-      <Card>
+      <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
         <CardHeader>
           <CardTitle>Recent Work Orders</CardTitle>
           <CardDescription>

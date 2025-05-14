@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +44,7 @@ const DashboardTasksOverview = () => {
   }, []);
 
   return (
-    <Card>
+    <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-lg">Tasks Overview</CardTitle>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">

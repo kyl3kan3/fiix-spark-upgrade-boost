@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -54,7 +53,7 @@ const DashboardQuickActions = () => {
   ];
   
   return (
-    <Card>
+    <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">Quick Actions</CardTitle>
       </CardHeader>
@@ -64,10 +63,11 @@ const DashboardQuickActions = () => {
             <Button
               key={index}
               variant="ghost"
-              className="flex flex-col h-auto py-6 px-3 border rounded-lg hover:bg-gray-50"
+              className={`flex flex-col h-auto py-6 px-3 border rounded-lg hover-scale ${action.color} animate-entry`}
               onClick={() => action.onClick()}
+              tabIndex={0}
             >
-              <div className={`${action.color} p-2 rounded-full mb-3`}>
+              <div className={`p-2 rounded-full mb-3`}>
                 {action.icon}
               </div>
               <span className="text-sm font-medium">{action.title}</span>

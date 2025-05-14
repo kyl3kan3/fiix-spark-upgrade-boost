@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, CheckCircle, ClipboardList, Settings, User } from "lucide-react";
@@ -13,7 +12,7 @@ const DashboardRecentActivities = () => {
   }, []);
 
   return (
-    <Card>
+    <Card className="card-gradient shadow-lg rounded-2xl animate-entry">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">Recent Activities</CardTitle>
       </CardHeader>

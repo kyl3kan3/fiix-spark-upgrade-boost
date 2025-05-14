@@ -49,9 +49,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto">
-        <Tabs defaultValue="overview" className="mt-6">
-          <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300">
+      <div className="container mx-auto pb-8">
+        <Tabs defaultValue="overview" className="mt-6 animate-entry">
+          <TabsList className="mb-6 dark:bg-gray-800 dark:text-gray-300 bg-white/70 backdrop-blur-xl shadow-sm border">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
