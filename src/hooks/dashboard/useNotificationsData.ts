@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   getUserNotifications, 
@@ -54,12 +54,11 @@ export function useNotificationsData(
 
             // Show toast if notification panel is closed
             if (!isOpen) {
-              toast({
-                title: newNotification.title,
+              toast(newNotification.title, {
                 description: newNotification.body,
                 duration: 5000,
                 className: "animate-fade-in bg-white/90 dark:bg-gray-900/90 shadow-lg border border-blue-400/30",
-                // Sonner allows custom styles and may be styled further in theme
+                // Sonner allows custom actions
                 action: {
                   label: "View",
                   onClick: () => {
@@ -96,11 +95,7 @@ export function useNotificationsData(
       }
     } catch (error) {
       console.error("Error loading notifications:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load notifications",
-        variant: "destructive"
-      });
+      toast.error("Failed to load notifications");
     } finally {
       setLoading(false);
     }
@@ -111,21 +106,13 @@ export function useNotificationsData(
     try {
       await markAllNotificationsAsRead();
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      toast({
-        title: "Success",
-        description: "All notifications marked as read",
-        className: "animate-fade-in bg-green-50 dark:bg-green-700 text-green-900 dark:text-green-100"
-      });
+      toast.success("All notifications marked as read");
       if (onNotificationCountChange) {
         onNotificationCountChange(0);
       }
     } catch (error) {
       console.error("Error marking notifications as read:", error);
-      toast({
-        title: "Error",
-        description: "Failed to mark notifications as read",
-        variant: "destructive"
-      });
+      toast.error("Failed to mark notifications as read");
     }
   };
 
@@ -142,11 +129,7 @@ export function useNotificationsData(
       }
     } catch (error) {
       console.error("Error dismissing notification:", error);
-      toast({
-        title: "Error",
-        description: "Failed to dismiss notification",
-        variant: "destructive"
-      });
+      toast.error("Failed to dismiss notification");
     }
   };
 
