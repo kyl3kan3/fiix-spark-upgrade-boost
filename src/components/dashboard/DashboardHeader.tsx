@@ -7,7 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
-import { getUserNotifications } from "@/services/notificationService";
+import { getUserNotifications } from "@/services/notifications";
 import NotificationSound, { NotificationSoundHandle } from "@/components/ui/NotificationSound";
 import SearchBar from "./header/SearchBar";
 import HeaderActions from "./header/HeaderActions";

@@ -5,7 +5,7 @@ import AnalyticsTab from '@/components/dashboard/tabs/AnalyticsTab';
 import TasksTab from '@/components/dashboard/tabs/TasksTab';
 import SettingsTab from '@/components/dashboard/tabs/SettingsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { initNotificationService, setupPushNotifications } from '@/services/notificationService';
+import { initNotificationService, setupPushNotifications } from '@/services/notifications';
 
 const Dashboard: React.FC = () => {
   // Check stored dark mode preference on component mount

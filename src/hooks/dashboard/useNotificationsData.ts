@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import {
   markNotificationAsRead, 
   markAllNotificationsAsRead,
   Notification
-} from "@/services/notificationService";
+} from "@/services/notifications";
 
 export function useNotificationsData(
   onNotificationCountChange?: (count: number) => void,

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -7,7 +6,7 @@ import DashboardNotifications from "./DashboardNotifications";
 import DashboardHeader from "./layout/DashboardHeader";
 import GradientBackground from "./layout/GradientBackground";
 import ContentContainer from "./layout/ContentContainer";
-import { getUserNotifications } from "@/services/notificationService";
+import { getUserNotifications } from "@/services/notifications";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

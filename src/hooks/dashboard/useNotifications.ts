@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { getUserNotifications } from "@/services/notificationService";
+import { getUserNotifications } from "@/services/notifications";
 
 export function useNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
