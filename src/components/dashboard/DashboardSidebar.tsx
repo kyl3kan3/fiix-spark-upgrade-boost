@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -114,8 +115,9 @@ const DashboardSidebar = () => {
     },
     {
       name: "Locations",
-      icon: MapPin,
-      href: "/locations"
+      href: "/locations",
+      icon: <MapPin className="h-5 w-5" />,
+      isActive: location.pathname.includes("/locations"),
     }
   ];
 
