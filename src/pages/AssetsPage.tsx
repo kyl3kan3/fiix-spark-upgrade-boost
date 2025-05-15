@@ -12,7 +12,7 @@ import { getAllAssets, getAssetHierarchy } from "@/services/assetService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { AssetHierarchyView } from "@/components/workOrders/assets/AssetHierarchyView";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 
 const AssetsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,8 +41,10 @@ const AssetsPage: React.FC = () => {
 
   const error = assetsError || hierarchyError;
   if (error) {
-    toast.error("Failed to load assets", { 
-      description: "There was an error loading the asset data."
+    toast({
+      title: "Error",
+      description: "Failed to load assets. There was an error loading the asset data.",
+      variant: "destructive",
     });
   }
 

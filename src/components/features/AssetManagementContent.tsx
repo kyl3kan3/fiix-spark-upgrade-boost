@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Package } from "lucide-react";
+import { Package, Plus } from "lucide-react";
 
 const AssetManagementContent: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const AssetManagementContent: React.FC = () => {
           onClick={() => navigate('/assets/new')}
           className="bg-fiix-500 hover:bg-fiix-600"
         >
-          <Package className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-4 w-4" />
           Add Asset
         </Button>
       </div>
