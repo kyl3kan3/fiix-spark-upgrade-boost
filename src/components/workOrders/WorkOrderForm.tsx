@@ -40,7 +40,7 @@ const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormPro
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 dark:text-gray-200">
         <WorkOrderFormFields form={form} />
         <FormActions isSubmitting={isSubmitting} isEditing={isEditing} />
       </form>

@@ -54,18 +54,18 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((index) => (
-          <Card key={index} className="p-4">
+          <Card key={index} className="p-4 dark:border-gray-700">
             <div className="flex flex-col md:flex-row md:justify-between gap-4">
               <div className="space-y-2 flex-1">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-6 w-3/4 dark:bg-gray-700" />
+                <Skeleton className="h-4 w-1/2 dark:bg-gray-700" />
                 <div className="mt-4">
-                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-4 w-1/3 dark:bg-gray-700" />
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Skeleton className="h-6 w-20" />
-                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-6 w-20 dark:bg-gray-700" />
+                <Skeleton className="h-6 w-20 dark:bg-gray-700" />
               </div>
             </div>
           </Card>
@@ -78,8 +78,8 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
   if (inspections.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No inspections found</h3>
-        <p className="text-gray-500 mb-6">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No inspections found</h3>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
           Start by creating your first inspection checklist
         </p>
         <Button
@@ -96,12 +96,12 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
   // Mock data notice
   return (
     <div className="space-y-4">
-      <Card className="p-4 border-amber-200 bg-amber-50">
+      <Card className="p-4 border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800/50">
         <div className="flex items-start">
-          <AlertTriangle className="h-5 w-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" />
+          <AlertTriangle className="h-5 w-5 text-amber-500 dark:text-amber-400 mr-2 mt-0.5 flex-shrink-0" />
           <div>
-            <h3 className="font-medium text-amber-800">Simulated Data</h3>
-            <p className="text-amber-700 text-sm">
+            <h3 className="font-medium text-amber-800 dark:text-amber-300">Simulated Data</h3>
+            <p className="text-amber-700 dark:text-amber-400 text-sm">
               This is demo data. In a production environment, connect to your database to view real inspection records.
             </p>
           </div>
@@ -111,25 +111,25 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
       {inspections.map((inspection) => (
         <Card
           key={inspection.id}
-          className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+          className="p-4 hover:shadow-md transition-shadow cursor-pointer dark:border-gray-700"
           onClick={() => navigate(`/inspections/${inspection.id}`)}
         >
           <div className="flex flex-col md:flex-row md:justify-between gap-2">
             <div>
-              <h3 className="font-medium">{inspection.title}</h3>
-              <p className="text-sm text-gray-500 line-clamp-2 mt-1">{inspection.description}</p>
+              <h3 className="font-medium dark:text-gray-100">{inspection.title}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{inspection.description}</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-3 text-sm">
                 <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-                  {format(new Date(inspection.scheduledDate), "MMM d, yyyy")}
+                  <Calendar className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                  <span className="dark:text-gray-300">{format(new Date(inspection.scheduledDate), "MMM d, yyyy")}</span>
                 </div>
                 <div className="flex items-center">
-                  <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                  {inspection.assetName}
+                  <FileText className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                  <span className="dark:text-gray-300">{inspection.assetName}</span>
                 </div>
                 <div className="flex items-center">
-                  <User className="h-4 w-4 mr-2 text-gray-500" />
-                  {inspection.assignedTo}
+                  <User className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                  <span className="dark:text-gray-300">{inspection.assignedTo}</span>
                 </div>
               </div>
             </div>

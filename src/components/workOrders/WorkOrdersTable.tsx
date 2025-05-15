@@ -26,16 +26,16 @@ interface WorkOrdersTableProps {
 const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading, error }) => {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-40 bg-white rounded-lg shadow">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex justify-center items-center h-40 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500 dark:text-gray-400" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-10 bg-white rounded-lg shadow">
-        <p className="text-red-500">Error loading work orders: {error.message}</p>
+      <div className="text-center py-10 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
+        <p className="text-red-500 dark:text-red-400">Error loading work orders: {error.message}</p>
       </div>
     );
   }
@@ -45,10 +45,10 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
   }
 
   return (
-    <div className="overflow-x-auto bg-white rounded-lg shadow">
+    <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="dark:border-gray-700">
             <TableHead>Title</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Priority</TableHead>
@@ -60,7 +60,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
         </TableHeader>
         <TableBody>
           {workOrders.map((workOrder) => (
-            <TableRow key={workOrder.id}>
+            <TableRow key={workOrder.id} className="dark:border-gray-700">
               <TableCell className="font-medium">
                 <Link to={`/work-orders/${workOrder.id}`} className="hover:underline">
                   {workOrder.title}
@@ -86,7 +86,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
                 {workOrder.due_date ? formatDate(workOrder.due_date) : "—"}
               </TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="dark:border-gray-600 dark:hover:bg-gray-700">
                   <Link to={`/work-orders/${workOrder.id}`}>
                     View
                   </Link>
