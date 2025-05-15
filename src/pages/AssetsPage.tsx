@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +11,7 @@ import { getAllAssets, getAssetHierarchy } from "@/services/assetService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { AssetHierarchyView } from "@/components/workOrders/assets/AssetHierarchyView";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 const AssetsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,10 +40,8 @@ const AssetsPage: React.FC = () => {
 
   const error = assetsError || hierarchyError;
   if (error) {
-    toast({
-      title: "Error",
-      description: "Failed to load assets. There was an error loading the asset data.",
-      variant: "destructive",
+    toast.error("Failed to load assets", { 
+      description: "There was an error loading the asset data."
     });
   }
 

@@ -1,10 +1,13 @@
 
+// This file is kept for backward compatibility
+// and re-exports toast from sonner
+
 import { toast } from "sonner";
 
 // Re-export toast from sonner for consistent usage throughout the app
 export { toast };
 
-// For backwards compatibility with components using the old shadcn/ui toast
+// For backwards compatibility with components using the old shadcn/ui toast format
 export const useToast = () => {
   return {
     toast: (props: any) => {
