@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,7 +6,7 @@ import {
   getUserNotifications, 
   markNotificationAsRead, 
   markAllNotificationsAsRead,
-  Notification
+  type Notification
 } from "@/services/notifications";
 
 export function useNotificationsData(

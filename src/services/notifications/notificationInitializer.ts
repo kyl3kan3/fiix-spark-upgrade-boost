@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Notification } from "./types";
+import type { Notification as NotificationType } from "./types";
 
 // Function to setup push notifications
 export const setupPushNotifications = async (): Promise<void> => {
@@ -86,7 +86,7 @@ export const initNotificationService = async (): Promise<(() => void) | undefine
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          const newNotification = payload.new as Notification;
+          const newNotification = payload.new as NotificationType;
           // Show notification
           if (newNotification.type === 'in_app' && ("Notification" in window)) {
             new Notification(newNotification.title, {

@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { Notification } from "@/services/notificationService";
+import type { Notification } from "@/services/notifications";
 import NotificationItem from "./NotificationItem";
 
 interface NotificationsListProps {

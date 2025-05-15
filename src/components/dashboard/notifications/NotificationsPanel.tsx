@@ -8,7 +8,7 @@ import NotificationsList from "./NotificationsList";
 import NotificationsPanelHeader from "./NotificationsPanelHeader";
 import NotificationsPanelFooter from "./NotificationsPanelFooter";
 import { useNotificationsData } from "@/hooks/dashboard/useNotificationsData";
-import { Notification } from "@/services/notificationService";
+import type { Notification } from "@/services/notifications";
 
 interface NotificationsPanelProps {
   isOpen: boolean;
