@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -83,6 +84,14 @@ const AssetsPage: React.FC = () => {
               Hierarchy View
             </TabsTrigger>
           </TabsList>
+          
+          {/* Always show the Add Asset button in the tabs header for better visibility */}
+          <Link to="/assets/new">
+            <Button className="bg-fiix-500 hover:bg-fiix-600">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Asset
+            </Button>
+          </Link>
         </div>
         
         <TabsContent value="grid">
