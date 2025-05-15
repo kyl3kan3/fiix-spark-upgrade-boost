@@ -19,6 +19,7 @@ const RolePermissionsOverview: React.FC = () => {
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="detailed">Detailed Permissions</TabsTrigger>
             </TabsList>
+            
             <TabsContent value="overview">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
@@ -59,6 +60,7 @@ const RolePermissionsOverview: React.FC = () => {
                 ))}
               </div>
             </TabsContent>
+            
             <TabsContent value="detailed">
               <table className="w-full border-collapse">
                 <thead>

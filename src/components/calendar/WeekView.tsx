@@ -6,6 +6,10 @@ const WeekView: React.FC = () => {
   return (
     <div className="overflow-x-auto">
       <Tabs defaultValue="week-view">
+        <TabsList className="mb-4">
+          <TabsTrigger value="week-view">Week View</TabsTrigger>
+        </TabsList>
+        
         <TabsContent value="week-view">
           <table className="min-w-full border-collapse">
             <thead>

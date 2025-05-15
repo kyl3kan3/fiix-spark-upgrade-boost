@@ -72,17 +72,16 @@ const InspectionsPage = () => {
                   <TabsTrigger value="calendar">Calendar</TabsTrigger>
                 </TabsList>
               </div>
+              
+              <TabsContent value="list" className="mt-4 pt-4">
+                <InspectionsList inspections={inspections} loading={loading} />
+              </TabsContent>
+
+              <TabsContent value="calendar" className="mt-4 pt-4">
+                <InspectionsCalendarView filters={filters} />
+              </TabsContent>
             </Tabs>
           </div>
-
-          {/* Tab contents - adding padding top to create space below the sticky header */}
-          <TabsContent value="list" className="mt-4 pt-4">
-            <InspectionsList inspections={inspections} loading={loading} />
-          </TabsContent>
-
-          <TabsContent value="calendar" className="mt-4 pt-4">
-            <InspectionsCalendarView filters={filters} />
-          </TabsContent>
         </div>
 
         {/* Daily Checklist Sidebar */}
