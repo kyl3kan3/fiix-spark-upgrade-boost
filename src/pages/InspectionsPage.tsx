@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import InspectionsList from "@/components/inspections/InspectionsList";
@@ -34,15 +33,6 @@ const InspectionsPage = () => {
   const handleCreateNew = () => {
     navigate("/inspections/new");
   };
-
-  React.useEffect(() => {
-    // Show a toast notification about the data being simulated
-    toast.info("Using simulated inspection data", {
-      description: "Connect to a real data source for production use",
-      duration: 5000,
-      id: "inspection-mock-data-notice"
-    });
-  }, []);
 
   return (
     <DashboardLayout>
