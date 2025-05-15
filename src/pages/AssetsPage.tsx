@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -52,6 +51,7 @@ const AssetsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Assets</h1>
         
+        {/* Make Add Asset button consistently visible in the header */}
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="relative flex-grow md:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -85,9 +85,9 @@ const AssetsPage: React.FC = () => {
             </TabsTrigger>
           </TabsList>
           
-          {/* Always show the Add Asset button in the tabs header for better visibility */}
+          {/* Keep the Add Asset button in tabs header but with more visibility */}
           <Link to="/assets/new">
-            <Button className="bg-fiix-500 hover:bg-fiix-600">
+            <Button className="bg-fiix-500 hover:bg-fiix-600 shadow-sm">
               <Plus className="mr-2 h-4 w-4" />
               Add Asset
             </Button>
