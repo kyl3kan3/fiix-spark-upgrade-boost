@@ -27,6 +27,7 @@ import InspectionDetailPage from "./pages/InspectionDetailPage";
 import NewInspectionPage from "./pages/NewInspectionPage";
 import Chat from "./pages/Chat";
 import OnboardingPage from "./pages/OnboardingPage";
+import LocationsPage from "./pages/LocationsPage"; // Add the new Locations page
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,7 @@ const App = () => {
             <Route path="/inspections" element={<InspectionsPage />} />
             <Route path="/inspections/new" element={<NewInspectionPage />} />
             <Route path="/inspections/:inspectionId" element={<InspectionDetailPage />} />
+            <Route path="/locations" element={<LocationsPage />} /> {/* Add the new Locations route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />

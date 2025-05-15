@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
 
 // Define an interface for the asset with children for the hierarchy
-interface AssetWithChildren {
+export interface AssetWithChildren {
   id: string;
   name: string;
   description: string | null;

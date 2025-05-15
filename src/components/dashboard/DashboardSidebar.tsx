@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -14,7 +13,8 @@ import {
   CheckSquare,
   ChevronLeft,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -112,6 +112,11 @@ const DashboardSidebar = () => {
       icon: <LifeBuoy className="h-5 w-5" />,
       isActive: isActive("/help"),
     },
+    {
+      name: "Locations",
+      icon: MapPin,
+      href: "/locations"
+    }
   ];
 
   return (
