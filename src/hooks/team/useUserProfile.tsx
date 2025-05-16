@@ -74,15 +74,18 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
             return;
           }
           
-          // Ensure data is an object and has the required company_id field
-          if (typeof data === 'object' && 
-              'company_id' in data && 
-              data.company_id !== null) {
+          // TypeScript safe check - first ensure data exists and is an object
+          const profileDataObj = data as Record<string, any>;
+          
+          // Then check for company_id property
+          if (typeof profileDataObj === 'object' && 
+              'company_id' in profileDataObj && 
+              profileDataObj.company_id !== null) {
             // Safe to cast to UserProfileData since we've verified the key property
-            setProfileData(data as UserProfileData);
+            setProfileData(profileDataObj as UserProfileData);
             setError(null);
           } else {
-            console.error("Invalid profile data: missing company_id", data);
+            console.error("Invalid profile data: missing company_id", profileDataObj);
             setProfileData(null);
             setError("User must be associated with a company");
           }
