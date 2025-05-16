@@ -7,7 +7,7 @@ const Settings = () => {
   
   useEffect(() => {
     // Redirect to the profile page with settings tab selected
-    navigate("/profile?tab=settings");
+    navigate("/profile?tab=settings", { replace: true });
   }, [navigate]);
   
   return (

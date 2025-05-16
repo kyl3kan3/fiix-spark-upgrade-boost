@@ -42,6 +42,16 @@ const ProfilePage = () => {
     fetchUserEmail();
   }, []);
 
+  // Effect to update active tab when URL changes
+  useEffect(() => {
+    const currentTabParam = new URLSearchParams(location.search).get('tab');
+    if (currentTabParam === 'settings' && activeTab !== 'settings') {
+      setActiveTab('settings');
+    } else if (!currentTabParam && activeTab !== 'profile') {
+      setActiveTab('profile');
+    }
+  }, [location.search, activeTab]);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
