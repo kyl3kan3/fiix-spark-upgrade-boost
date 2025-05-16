@@ -1,8 +1,8 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Package, Plus, Search, List, Grid3X3, MapPin } from "lucide-react";
+import { Package, Plus, Search, List, Grid3X3, MapPin, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -13,10 +13,35 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { AssetHierarchyView } from "@/components/workOrders/assets/AssetHierarchyView";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const AssetsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "hierarchy">("grid");
+  const [assetCategories, setAssetCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  
+  // Load asset categories from setup data
+  useEffect(() => {
+    try {
+      const setupData = localStorage.getItem('maintenease_setup');
+      if (setupData) {
+        const parsedData = JSON.parse(setupData);
+        const categories = parsedData?.assetCategories?.categories || [];
+        if (Array.isArray(categories) && categories.length > 0) {
+          setAssetCategories(categories.map(cat => cat.name || cat));
+        }
+      }
+    } catch (error) {
+      console.error("Error loading asset categories from setup:", error);
+    }
+  }, []);
   
   // Fetch flat list of assets
   const { data: assets, isLoading: assetsLoading, error: assetsError } = useQuery({
@@ -30,9 +55,21 @@ const AssetsPage: React.FC = () => {
     queryFn: getAssetHierarchy
   });
   
+  const handleCategoryToggle = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category) 
+        : [...prev, category]
+    );
+  };
+  
   const filteredAssets = assets?.filter(asset => 
-    asset.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (asset.location && asset.location.toLowerCase().includes(searchQuery.toLowerCase()))
+    (searchQuery === "" || 
+      asset.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (asset.location && asset.location.toLowerCase().includes(searchQuery.toLowerCase()))
+    ) && 
+    (selectedCategories.length === 0 || 
+      (asset.category && selectedCategories.includes(asset.category)))
   );
 
   const handleViewChange = (value: string) => {
@@ -64,6 +101,34 @@ const AssetsPage: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            
+            {assetCategories.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="whitespace-nowrap">
+                    <Filter className="mr-2 h-4 w-4" />
+                    Categories
+                    {selectedCategories.length > 0 && (
+                      <Badge variant="secondary" className="ml-2 rounded-full">
+                        {selectedCategories.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {assetCategories.map((category) => (
+                    <DropdownMenuCheckboxItem
+                      key={category}
+                      checked={selectedCategories.includes(category)}
+                      onCheckedChange={() => handleCategoryToggle(category)}
+                    >
+                      {category}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
             <Link to="/assets/new">
               <Button className="whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white font-medium">
                 <Plus className="mr-2 h-4 w-4" />
@@ -111,7 +176,9 @@ const AssetsPage: React.FC = () => {
                 <Package className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No assets found</h3>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Get started by creating a new asset.
+                  {searchQuery || selectedCategories.length > 0 
+                    ? "Try adjusting your search or filters." 
+                    : "Get started by creating a new asset."}
                 </p>
                 <div className="mt-6">
                   <Link to="/assets/new">
@@ -139,6 +206,15 @@ const AssetsPage: React.FC = () => {
                               <p className="text-sm">{asset.location}</p>
                             </div>
                           )}
+                          
+                          {asset.category && (
+                            <div className="mt-1">
+                              <Badge variant="outline" className="text-xs">
+                                {asset.category}
+                              </Badge>
+                            </div>
+                          )}
+                          
                           <div className="mt-2">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               asset.status === "operational" ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100" :

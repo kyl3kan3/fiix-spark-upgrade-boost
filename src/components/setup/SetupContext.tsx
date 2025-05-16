@@ -5,6 +5,7 @@ interface SetupData {
   companyInfo: Record<string, any>;
   userRoles: Record<string, any>;
   assetCategories: Record<string, any>;
+  locations: Record<string, any>;
   maintenanceSchedules: Record<string, any>;
   notifications: Record<string, any>;
   integrations: Record<string, any>;
@@ -43,6 +44,7 @@ const getInitialSetupData = (): SetupData => {
     companyInfo: {},
     userRoles: {},
     assetCategories: {},
+    locations: {},
     maintenanceSchedules: {},
     notifications: {},
     integrations: {},
