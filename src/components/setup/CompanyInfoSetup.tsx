@@ -24,6 +24,7 @@ interface CompanyInfoSetupProps {
 const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<CompanyInfoFormValues>({
     resolver: zodResolver(companyInfoSchema),
@@ -108,22 +109,25 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     const formData = { ...values, logo: logoPreview };
     onUpdate(formData);
     
+    setIsSubmitting(true);
     try {
       if (companyId) {
         // Update existing company
         await updateCompany(companyId, formData);
+        toast.success("Company information updated");
       } else {
         // Create new company
         const company = await createCompany(formData);
         if (company) {
           setCompanyId(company.id);
+          toast.success("Company created successfully");
         }
       }
-      
-      toast.success("Company information saved");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving company information:", error);
-      toast.error("Failed to save company information");
+      toast.error(error.message || "Failed to save company information");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,7 +149,13 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
               <BasicInfoFields form={form} />
               <AddressFields form={form} />
               <ContactInfoFields form={form} />
-              <Button type="submit">Save Company Information</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting 
+                  ? "Saving..." 
+                  : companyId 
+                    ? "Update Company Information" 
+                    : "Create Company"}
+              </Button>
             </form>
           </Form>
         </div>

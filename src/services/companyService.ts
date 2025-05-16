@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CompanyInfo } from "@/components/profile/company/types";
@@ -61,6 +60,24 @@ export const createCompany = async (companyData: Partial<CompanyInfo>) => {
     
     if (!user) {
       throw new Error("User not authenticated");
+    }
+    
+    // Check if company with the same name already exists
+    if (companyData.companyName) {
+      const { data: existingCompany, error: searchError } = await supabase
+        .from("companies")
+        .select("id")
+        .ilike("name", companyData.companyName)
+        .maybeSingle();
+      
+      if (searchError) {
+        console.error("Error checking existing companies:", searchError);
+        throw searchError;
+      }
+      
+      if (existingCompany) {
+        throw new Error("A company with this name already exists");
+      }
     }
     
     // Create company
@@ -129,6 +146,25 @@ export const createCompany = async (companyData: Partial<CompanyInfo>) => {
  */
 export const updateCompany = async (companyId: string, companyData: Partial<CompanyInfo>) => {
   try {
+    // Check if company with the same name already exists (except for this company)
+    if (companyData.companyName) {
+      const { data: existingCompany, error: searchError } = await supabase
+        .from("companies")
+        .select("id")
+        .ilike("name", companyData.companyName)
+        .neq("id", companyId)
+        .maybeSingle();
+      
+      if (searchError) {
+        console.error("Error checking existing companies:", searchError);
+        throw searchError;
+      }
+      
+      if (existingCompany) {
+        throw new Error("A company with this name already exists");
+      }
+    }
+    
     const updateData: Record<string, any> = {
       name: companyData.companyName,
       industry: companyData.industry,
