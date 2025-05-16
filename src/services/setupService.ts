@@ -49,14 +49,14 @@ export const loadSetupData = async (): Promise<SetupData> => {
       if (data) {
         console.log("Loaded setup data from database");
         const setupData: SetupData = {
-          companyInfo: data.company_info || {},
-          userRoles: data.user_roles || {},
-          assetCategories: data.asset_categories || {},
-          locations: data.locations || {},
-          maintenanceSchedules: data.maintenance_schedules || {},
-          notifications: data.notifications || {},
-          integrations: data.integrations || {},
-          dashboardCustomization: data.dashboard_customization || {}
+          companyInfo: data.company_info as Record<string, any> || {},
+          userRoles: data.user_roles as Record<string, any> || {},
+          assetCategories: data.asset_categories as Record<string, any> || {},
+          locations: data.locations as Record<string, any> || {},
+          maintenanceSchedules: data.maintenance_schedules as Record<string, any> || {},
+          notifications: data.notifications as Record<string, any> || {},
+          integrations: data.integrations as Record<string, any> || {},
+          dashboardCustomization: data.dashboard_customization as Record<string, any> || {}
         };
 
         // Sync to localStorage for offline use
