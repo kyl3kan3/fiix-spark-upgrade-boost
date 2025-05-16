@@ -34,12 +34,18 @@ export const useAdminStatus = (): AdminStatusResult => {
           .from('profiles')
           .select('role, first_name, last_name')
           .eq('id', user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single to prevent errors
           
-        if (error) throw error;
+        if (error) {
+          console.error("Error fetching profile:", error);
+          setError("Could not verify your permissions");
+          setIsLoading(false);
+          return;
+        }
 
         // Check if user is an administrator
         setIsAdminUser(data?.role === "administrator");
+        console.log("Admin status check: User role is", data?.role);
         
         // Make a separate query for company_name to handle the case where it might not exist yet
         try {
@@ -47,7 +53,7 @@ export const useAdminStatus = (): AdminStatusResult => {
             .from('profiles')
             .select('company_name')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
             
           if (!companyError && companyData && 'company_name' in companyData) {
             setCompanyName(companyData.company_name as string | undefined);

@@ -29,9 +29,15 @@ export function useProfileData() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle(); // Using maybeSingle instead of single
         
       if (error) throw error;
+      
+      if (!data) {
+        console.log("No profile data found, user may need to complete onboarding");
+        setIsLoading(false);
+        return;
+      }
       
       setProfileData(data);
       setForm({

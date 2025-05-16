@@ -16,7 +16,9 @@ export const useCurrentUserRole = () => {
         
         if (!user) {
           console.log("No authenticated user found");
-          throw new Error("Not authenticated");
+          setCurrentUserRole(null);
+          setIsLoading(false);
+          return;
         }
         
         console.log("Checking role for user ID:", user.id);
@@ -26,11 +28,13 @@ export const useCurrentUserRole = () => {
           .from('profiles')
           .select('role')
           .eq('id', user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single
           
         if (error) {
           console.error("Supabase error fetching role:", error);
-          throw error;
+          setCurrentUserRole(null);
+          setIsLoading(false);
+          return;
         }
         
         console.log("Current user role data:", data);

@@ -75,13 +75,6 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       throw updateError;
     }
     
-    // Get current user profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-      
     // Set user as administrator (regardless of current role)
     const { error: roleError } = await supabase
       .from("profiles")

@@ -13,21 +13,33 @@ export const useUserRolePermissions = () => {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
-          throw new Error("Not authenticated");
+          console.log("No authenticated user found");
+          setCurrentUserRole(null);
+          setCheckingPermissions(false);
+          return;
         }
+        
+        console.log("Checking permissions for user ID:", user.id);
         
         // Get current user's role from profiles
         const { data, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single
           
-        if (error) throw error;
+        if (error) {
+          console.error("Error checking permissions:", error);
+          setCurrentUserRole(null);
+          setCheckingPermissions(false);
+          return;
+        }
         
+        console.log("User permissions data:", data);
         setCurrentUserRole(data?.role || null);
       } catch (error) {
         console.error("Error checking user role:", error);
+        setCurrentUserRole(null);
       } finally {
         setCheckingPermissions(false);
       }
