@@ -48,7 +48,7 @@ const AssetsPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto py-6">
+      <div className="container mx-auto py-6 px-4">
         <BackToDashboard />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assets</h1>
@@ -59,13 +59,13 @@ const AssetsPage: React.FC = () => {
               <Input
                 type="search"
                 placeholder="Search assets..."
-                className="pl-8 w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="pl-8 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Link to="/assets/new">
-              <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600 text-white font-medium">
+              <Button className="whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white font-medium">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Asset
               </Button>
@@ -74,12 +74,18 @@ const AssetsPage: React.FC = () => {
         </div>
 
         <Tabs defaultValue="grid" className="w-full" onValueChange={handleViewChange}>
-          <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800">
-            <TabsTrigger value="grid" className="flex items-center data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 text-gray-700 dark:text-gray-300">
+          <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <TabsTrigger 
+              value="grid" 
+              className="flex items-center text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white"
+            >
               <Grid3X3 className="h-4 w-4 mr-2" />
               Grid View
             </TabsTrigger>
-            <TabsTrigger value="hierarchy" className="flex items-center data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 text-gray-700 dark:text-gray-300">
+            <TabsTrigger 
+              value="hierarchy" 
+              className="flex items-center text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white"
+            >
               <List className="h-4 w-4 mr-2" />
               Hierarchy View
             </TabsTrigger>
@@ -109,7 +115,7 @@ const AssetsPage: React.FC = () => {
                 </p>
                 <div className="mt-6">
                   <Link to="/assets/new">
-                    <Button className="bg-fiix-500 hover:bg-fiix-600 text-white font-medium">
+                    <Button className="bg-blue-500 hover:bg-blue-600 text-white font-medium">
                       <Plus className="mr-2 h-4 w-4" />
                       New Asset
                     </Button>
@@ -119,11 +125,11 @@ const AssetsPage: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredAssets?.map((asset) => (
-                  <Link to={`/assets/edit/${asset.id}`} key={asset.id}>
+                  <Link to={`/assets/edit/${asset.id}`} key={asset.id} className="block">
                     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-start">
-                        <div className="bg-fiix-100 dark:bg-fiix-900 p-3 rounded-lg mr-4">
-                          <Package className="h-5 w-5 text-fiix-600 dark:text-fiix-300" />
+                        <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
+                          <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
                         </div>
                         <div>
                           <h3 className="font-medium text-gray-900 dark:text-white">{asset.name}</h3>
@@ -151,7 +157,7 @@ const AssetsPage: React.FC = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="hierarchy" className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <TabsContent value="hierarchy" className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 mt-4">
             <AssetHierarchyView assets={hierarchyData || []} isLoading={hierarchyLoading} />
           </TabsContent>
         </Tabs>
@@ -159,7 +165,7 @@ const AssetsPage: React.FC = () => {
         {/* Fixed position Add Asset button */}
         <div className="fixed bottom-8 right-8 z-40">
           <Link to="/assets/new">
-            <Button className="bg-fiix-500 hover:bg-fiix-600 text-white rounded-full w-14 h-14 shadow-lg">
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 shadow-lg">
               <Plus className="h-6 w-6" />
             </Button>
           </Link>
