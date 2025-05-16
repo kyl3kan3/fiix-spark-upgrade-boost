@@ -59,8 +59,16 @@ export const useUserProfile = (fields: string[] = ['role']): UserProfileResult =
           setProfileData(null);
         } else {
           console.log("User profile data:", data);
-          // Ensure we're setting a properly typed value or null
-          setProfileData(data as UserProfileData | null);
+          
+          // Check if data is non-null and matches the expected shape
+          if (data && typeof data === 'object') {
+            // Safely cast data to UserProfileData
+            setProfileData(data as UserProfileData);
+          } else {
+            // If data is null or not of expected shape, set to null
+            setProfileData(null);
+          }
+          
           setError(null);
         }
       } catch (err) {
