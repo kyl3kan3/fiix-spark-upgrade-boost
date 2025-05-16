@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CompanyInfo } from "@/components/profile/company/types";
@@ -55,6 +56,8 @@ export const fetchUserCompany = async () => {
  */
 export const createCompany = async (companyData: Partial<CompanyInfo>) => {
   try {
+    console.log("Creating company with data:", companyData);
+    
     // Get the current user
     const { data: { user } } = await supabase.auth.getUser();
     
@@ -102,6 +105,8 @@ export const createCompany = async (companyData: Partial<CompanyInfo>) => {
       console.error("Error creating company:", companyError);
       throw companyError;
     }
+    
+    console.log("Company created successfully:", company);
     
     // Associate user with the company
     const { error: updateError } = await supabase

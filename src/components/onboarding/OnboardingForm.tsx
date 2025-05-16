@@ -96,6 +96,7 @@ const OnboardingForm: React.FC = () => {
     setSubmitting(true);
 
     try {
+      console.log("Starting onboarding submission with state:", state);
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -109,6 +110,8 @@ const OnboardingForm: React.FC = () => {
       const firstName = names[0];
       const lastName = names.slice(1).join(' ');
       
+      console.log("Updating user profile with name:", { firstName, lastName, role: state.role });
+      
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
@@ -119,10 +122,13 @@ const OnboardingForm: React.FC = () => {
         .eq("id", user.id);
         
       if (profileError) {
+        console.error("Profile update error:", profileError);
         throw profileError;
       }
 
       if (isInvited && inviteDetails) {
+        console.log("User was invited to company:", inviteDetails.organization_id);
+        
         // Add user to the invited company
         const { error: companyError } = await supabase
           .from("profiles")
@@ -130,6 +136,7 @@ const OnboardingForm: React.FC = () => {
           .eq("id", user.id);
           
         if (companyError) {
+          console.error("Error adding user to company:", companyError);
           throw companyError;
         }
         
@@ -143,17 +150,26 @@ const OnboardingForm: React.FC = () => {
           .eq("id", inviteDetails.id);
           
         if (inviteError) {
+          console.error("Error updating invitation status:", inviteError);
           throw inviteError;
         }
         
         toast.success("You've joined the company!");
       } else if (state.company) {
         // Create a new company if user isn't invited
-        await createCompany({
-          companyName: state.company
-        });
-        
-        toast.success("Company created successfully!");
+        console.log("Creating new company:", state.company);
+        try {
+          await createCompany({
+            companyName: state.company
+          });
+          
+          toast.success("Company created successfully!");
+        } catch (err: any) {
+          console.error("Company creation error:", err);
+          toast.error(err.message || "Failed to create company");
+          setSubmitting(false);
+          return;
+        }
       }
 
       // Mark onboarding as complete
