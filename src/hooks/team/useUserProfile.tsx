@@ -69,9 +69,13 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
           // Improved null checking - first ensure data exists
           if (data) {
             // Then check if it's an object with a valid company_id property
-            if (typeof data === 'object' && data !== null && 'company_id' in data && data.company_id !== null) {
+            // Add explicit non-null assertion for TypeScript
+            const profileData = data as Record<string, any>;
+            if (typeof profileData === 'object' && 
+                'company_id' in profileData && 
+                profileData.company_id !== null) {
               // Now it's safe to cast data to UserProfileData
-              setProfileData(data as UserProfileData);
+              setProfileData(profileData as UserProfileData);
               setError(null);
             } else {
               console.error("Invalid profile data: missing company_id", data);
