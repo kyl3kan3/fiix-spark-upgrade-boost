@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
+import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany } from "@/services/company";
 import { CompanyInfo } from "./types";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { fetchUserCompany, updateCompany, createCompany, mapCompanyToCompanyInfo } from "@/services/companyService";
+import { useNavigate } from "react-router-dom";
 
 export const useCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
@@ -11,6 +10,7 @@ export const useCompanyInfo = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [setupCompleted, setSetupCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fetchCompanyInfo = async () => {
     try {
