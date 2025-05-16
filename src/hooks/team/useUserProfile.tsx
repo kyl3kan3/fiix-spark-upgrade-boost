@@ -66,21 +66,21 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         } else {
           console.log("User profile data:", data);
           
-          // Check if data is non-null and matches the expected shape
-          if (data && typeof data === 'object' && data.company_id) {
-            // Safely cast data to UserProfileData
-            setProfileData(data as UserProfileData);
+          // Check if data is non-null and has company_id
+          if (data && typeof data === 'object') {
+            if (data.company_id) {
+              // Safely cast data to UserProfileData
+              setProfileData(data as UserProfileData);
+              setError(null);
+            } else {
+              console.error("Invalid profile data: missing company_id", data);
+              setProfileData(null);
+              setError("User must be associated with a company");
+            }
           } else {
-            // Log the reason why the data is invalid
-            console.error("Invalid profile data: missing company_id or improper format", data);
+            console.error("No profile data found, user may need to complete onboarding");
             setProfileData(null);
             setError("User profile data is incomplete. Company association required.");
-          }
-          
-          if (!data || !data.company_id) {
-            setError("User must be associated with a company");
-          } else {
-            setError(null);
           }
         }
       } catch (err) {

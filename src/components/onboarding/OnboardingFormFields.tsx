@@ -2,25 +2,20 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FormState, InviteDetails } from "../hooks/onboarding/types";
 
 interface FormFieldsProps {
-  company: string;
-  fullName: string;
-  role: string;
-  email: string;
-  notifications: boolean;
+  state: FormState;
   isInvited: boolean;
+  inviteDetails: InviteDetails | null;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckbox: (checked: boolean) => void;
 }
 
 const OnboardingFormFields: React.FC<FormFieldsProps> = ({
-  company,
-  fullName,
-  role,
-  email,
-  notifications,
+  state,
   isInvited,
+  inviteDetails,
   handleChange,
   handleCheckbox
 }) => {
@@ -31,7 +26,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
         <Input
           name="fullName"
           placeholder="Jane Doe"
-          value={fullName}
+          value={state.fullName}
           required
           onChange={handleChange}
         />
@@ -42,7 +37,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
         <Input
           name="role"
           placeholder="Facilities Manager"
-          value={role}
+          value={state.role}
           required
           onChange={handleChange}
         />
@@ -63,7 +58,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           <Input
             name="company"
             placeholder="Acme Corp"
-            value={company}
+            value={state.company}
             required
             onChange={handleChange}
           />
@@ -76,15 +71,15 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           name="email"
           type="email"
           required
-          value={email}
+          value={state.email}
           onChange={handleChange}
-          readOnly={!!email}
+          readOnly={!!state.email}
         />
       </div>
       
       <div className="flex items-center gap-3">
         <Checkbox
-          checked={notifications}
+          checked={state.notifications}
           onCheckedChange={handleCheckbox}
           id="onboarding-notifications"
         />
