@@ -33,7 +33,7 @@ import CompanyRequiredWrapper from '@/components/common/CompanyRequiredWrapper';
 function App() {
   return (
     <Router>
-      <Toaster position="top-right" />
+      <Toaster />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />
