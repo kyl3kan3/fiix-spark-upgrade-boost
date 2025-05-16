@@ -158,7 +158,6 @@ export const useOnboarding = () => {
         
         toast.success("You've joined the company!");
       } else if (state.company) {
-        // Create a new company if user isn't invited
         console.log("Creating new company:", state.company);
         try {
           await createCompany({
@@ -174,10 +173,8 @@ export const useOnboarding = () => {
         }
       }
 
-      // Mark onboarding as complete
       localStorage.setItem('maintenease_setup_complete', 'true');
       
-      // Clean up localStorage
       localStorage.removeItem("pending_auth_email");
       localStorage.removeItem("pending_company_name");
       
