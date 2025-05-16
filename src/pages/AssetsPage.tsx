@@ -48,18 +48,18 @@ const AssetsPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full">
+      <div className="container mx-auto py-6">
         <BackToDashboard />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <h1 className="text-2xl font-bold text-gray-900">Assets</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assets</h1>
           
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="relative flex-grow md:w-64">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search assets..."
-                className="pl-8 w-full"
+                className="pl-8 w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -74,12 +74,12 @@ const AssetsPage: React.FC = () => {
         </div>
 
         <Tabs defaultValue="grid" className="w-full" onValueChange={handleViewChange}>
-          <TabsList className="mb-4">
-            <TabsTrigger value="grid" className="flex items-center">
+          <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800">
+            <TabsTrigger value="grid" className="flex items-center data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 text-gray-700 dark:text-gray-300">
               <Grid3X3 className="h-4 w-4 mr-2" />
               Grid View
             </TabsTrigger>
-            <TabsTrigger value="hierarchy" className="flex items-center">
+            <TabsTrigger value="hierarchy" className="flex items-center data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 text-gray-700 dark:text-gray-300">
               <List className="h-4 w-4 mr-2" />
               Hierarchy View
             </TabsTrigger>
@@ -89,22 +89,22 @@ const AssetsPage: React.FC = () => {
             {assetsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="p-4">
-                    <Skeleton className="h-6 w-3/4 mb-4" />
-                    <Skeleton className="h-4 w-1/2 mb-2" />
-                    <Skeleton className="h-4 w-1/4" />
+                  <Card key={i} className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <Skeleton className="h-6 w-3/4 mb-4 bg-gray-200 dark:bg-gray-700" />
+                    <Skeleton className="h-4 w-1/2 mb-2 bg-gray-200 dark:bg-gray-700" />
+                    <Skeleton className="h-4 w-1/4 bg-gray-200 dark:bg-gray-700" />
                   </Card>
                 ))}
               </div>
             ) : error ? (
-              <div className="text-center py-12">
-                <p className="text-red-500">Error loading assets.</p>
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p className="text-red-500 dark:text-red-400">Error loading assets.</p>
               </div>
             ) : filteredAssets?.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-lg shadow">
-                <Package className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No assets found</h3>
-                <p className="mt-1 text-sm text-gray-500">
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <Package className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No assets found</h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   Get started by creating a new asset.
                 </p>
                 <div className="mt-6">
@@ -120,24 +120,24 @@ const AssetsPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredAssets?.map((asset) => (
                   <Link to={`/assets/edit/${asset.id}`} key={asset.id}>
-                    <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-start">
-                        <div className="bg-fiix-100 p-3 rounded-lg mr-4">
-                          <Package className="h-5 w-5 text-fiix-600" />
+                        <div className="bg-fiix-100 dark:bg-fiix-900 p-3 rounded-lg mr-4">
+                          <Package className="h-5 w-5 text-fiix-600 dark:text-fiix-300" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-900">{asset.name}</h3>
+                          <h3 className="font-medium text-gray-900 dark:text-white">{asset.name}</h3>
                           {asset.location && (
-                            <div className="flex items-center text-gray-500 mt-1">
+                            <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1">
                               <MapPin className="h-3 w-3 mr-1" />
                               <p className="text-sm">{asset.location}</p>
                             </div>
                           )}
                           <div className="mt-2">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              asset.status === "operational" ? "bg-green-100 text-green-800" :
-                              asset.status === "maintenance" ? "bg-yellow-100 text-yellow-800" :
-                              "bg-red-100 text-red-800"
+                              asset.status === "operational" ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100" :
+                              asset.status === "maintenance" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100" :
+                              "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
                             }`}>
                               {asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
                             </span>
@@ -151,7 +151,7 @@ const AssetsPage: React.FC = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="hierarchy">
+          <TabsContent value="hierarchy" className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <AssetHierarchyView assets={hierarchyData || []} isLoading={hierarchyLoading} />
           </TabsContent>
         </Tabs>
