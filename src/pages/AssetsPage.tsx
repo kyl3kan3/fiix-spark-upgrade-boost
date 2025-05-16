@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -51,8 +52,8 @@ const AssetsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Assets</h1>
         
-        {/* Make Add Asset button consistently visible in the header */}
-        <div className="flex items-center gap-4 w-full md:w-auto">
+        {/* Search and Add Asset button in header - always visible */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-grow md:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             <Input
@@ -64,7 +65,7 @@ const AssetsPage: React.FC = () => {
             />
           </div>
           <Link to="/assets/new">
-            <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600">
+            <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600 text-white font-medium shadow-md">
               <Plus className="mr-2 h-4 w-4" />
               Add Asset
             </Button>
@@ -84,14 +85,6 @@ const AssetsPage: React.FC = () => {
               Hierarchy View
             </TabsTrigger>
           </TabsList>
-          
-          {/* Keep the Add Asset button in tabs header but with more visibility */}
-          <Link to="/assets/new">
-            <Button className="bg-fiix-500 hover:bg-fiix-600 shadow-sm">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Asset
-            </Button>
-          </Link>
         </div>
         
         <TabsContent value="grid">
@@ -118,7 +111,7 @@ const AssetsPage: React.FC = () => {
               </p>
               <div className="mt-6">
                 <Link to="/assets/new">
-                  <Button className="bg-fiix-500 hover:bg-fiix-600">
+                  <Button className="bg-fiix-500 hover:bg-fiix-600 text-white font-medium shadow-md">
                     <Plus className="mr-2 h-4 w-4" />
                     New Asset
                   </Button>
@@ -164,6 +157,15 @@ const AssetsPage: React.FC = () => {
           <AssetHierarchyView assets={hierarchyData || []} isLoading={hierarchyLoading} />
         </TabsContent>
       </Tabs>
+      
+      {/* Fixed position Add Asset button */}
+      <div className="fixed bottom-8 right-8 z-40">
+        <Link to="/assets/new">
+          <Button className="bg-fiix-500 hover:bg-fiix-600 text-white rounded-full w-16 h-16 shadow-lg">
+            <Plus className="h-8 w-8" />
+          </Button>
+        </Link>
+      </div>
     </DashboardLayout>
   );
 };
