@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { addUserToCompany } from "@/services/companyService";
+import { addUserToCompany } from "@/services/company";
 
 // This component displays a button that administrators can use to set demo users
 // to their company for testing and demonstration purposes

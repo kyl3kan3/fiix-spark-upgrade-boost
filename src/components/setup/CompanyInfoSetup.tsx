@@ -14,7 +14,7 @@ import ContactInfoFields from "./company/ContactInfoFields";
 import { companyInfoSchema, CompanyInfoFormValues } from "./company/companyInfoSchema";
 
 import { supabase } from "@/integrations/supabase/client";
-import { createCompany, updateCompany, fetchUserCompany, mapCompanyToCompanyInfo } from "@/services/companyService";
+import { createCompany, updateCompany, fetchUserCompany, mapCompanyToCompanyInfo } from "@/services/company";
 
 interface CompanyInfoSetupProps {
   data: any;

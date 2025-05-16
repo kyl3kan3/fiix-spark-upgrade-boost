@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany } from "@/services/company";
+import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany, createCompany } from "@/services/company";
 import { CompanyInfo } from "./types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
