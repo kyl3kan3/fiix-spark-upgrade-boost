@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { loadSetupData, saveSetupData, SetupData } from "@/services/setupService";
+import { loadSetupData, saveSetupData, SetupData, initialSetupData } from "@/services/setup";
 import { toast } from "sonner";
 
 interface SetupContextType {

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -8,7 +7,7 @@ import { SetupContainer } from "@/components/setup/SetupContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";
-import { isSetupCompleted } from "@/services/setupService";
+import { isSetupCompleted, resetSetupData } from "@/services/setup";
 import { Button } from "@/components/ui/button";
 import { 
   AlertDialog,
@@ -21,7 +20,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { resetSetupData } from "@/services/setupService";
 
 const SetupPage = () => {
   const navigate = useNavigate();

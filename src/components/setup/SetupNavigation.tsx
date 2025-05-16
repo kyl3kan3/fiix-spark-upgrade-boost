@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
@@ -6,7 +5,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSetup } from "./SetupContext";
 import { steps } from "./setupSteps";
-import { saveSetupData } from "@/services/setupService";
+import { saveSetupData } from "@/services/setup";
 
 export const SetupNavigation: React.FC = () => {
   const navigate = useNavigate();
