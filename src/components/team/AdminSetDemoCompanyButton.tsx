@@ -1,77 +1,118 @@
 
 import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
+import { addUserToCompany } from "@/services/companyService";
 
+// This component displays a button that administrators can use to set demo users
+// to their company for testing and demonstration purposes
 const AdminSetDemoCompanyButton: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-
-  const handleSetCompany = async () => {
-    setLoading(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Check if the current user is an administrator
+  React.useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('role, company_id')
+        .eq('id', user.id)
+        .single();
+        
+      if (data && data.role === 'administrator' && data.company_id) {
+        setIsAdmin(true);
+      }
+    };
+    
+    checkAdmin();
+  }, []);
+  
+  // If not an admin, don't render anything
+  if (!isAdmin) return null;
+  
+  const handleSetDemoCompany = async () => {
     try {
-      // Get current admin user info
-      const { data: { user }, error: meError } = await supabase.auth.getUser();
-      if (meError || !user) {
-        toast("Could not get your user info");
-        setLoading(false);
+      setIsLoading(true);
+      
+      // Get the current user's company ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Not logged in",
+          description: "Please log in to use this feature",
+        });
         return;
       }
-
-      // Fetch the company_name from your profile
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("company_name")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (profileError || !profile?.company_name) {
-        toast("Your profile does not have a company name set.");
-        setLoading(false);
+      
+      const { data: currentUser } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
+        
+      if (!currentUser?.company_id) {
+        toast({
+          title: "No company found",
+          description: "You need to set up a company first",
+        });
         return;
       }
-
-      const adminCompanyName = profile.company_name;
-
-      // Find the demo user profile
-      const { data: demoUser, error: getError } = await supabase
-        .from("profiles")
-        .select("id, email, company_name")
-        .eq("email", "demo@demo.com")
-        .maybeSingle();
-
-      if (getError || !demoUser) {
-        toast("Could not find demo user");
-        setLoading(false);
-        return;
+      
+      // Get all demo users (this is just an example, you'd need to define what a "demo user" is)
+      const { data: demoUsers, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', 'demo@example.com');
+        
+      if (error) {
+        console.error("Error fetching demo users:", error);
+        throw new Error("Failed to find demo users");
       }
-
-      // Update demo user to use your company name
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ company_name: adminCompanyName })
-        .eq("id", demoUser.id);
-
-      if (updateError) {
-        toast("Error updating company name for demo user");
+      
+      // Update each demo user's company_id
+      if (demoUsers && demoUsers.length > 0) {
+        const updatePromises = demoUsers.map(demoUser => 
+          addUserToCompany(demoUser.id, currentUser.company_id!)
+        );
+        
+        await Promise.all(updatePromises);
+        
+        toast({
+          title: "Company Updated",
+          description: `${demoUsers.length} demo users have been added to your company.`,
+        });
       } else {
-        toast(`Demo user is now attached to ${adminCompanyName}!`);
+        toast({
+          description: "No demo users found to update",
+        });
       }
-    } catch (err) {
-      console.error(err);
-      toast("Unexpected error occurred");
+    } catch (error) {
+      console.error("Error setting demo company:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update demo users",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setLoading(false);
   };
-
+  
   return (
-    <Button variant="outline" disabled={loading} onClick={handleSetCompany}>
-      {loading
-        ? "Updating demo user..."
-        : "Attach demo@demo.com to MY company"}
+    <Button 
+      variant="outline" 
+      size="sm" 
+      onClick={handleSetDemoCompany}
+      disabled={isLoading}
+      className="mb-2"
+    >
+      {isLoading ? "Processing..." : "Set Demo Users to My Company"}
     </Button>
   );
 };
 
 export default AdminSetDemoCompanyButton;
-

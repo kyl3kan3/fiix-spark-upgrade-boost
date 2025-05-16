@@ -14,6 +14,7 @@ import ContactInfoFields from "./company/ContactInfoFields";
 import { companyInfoSchema, CompanyInfoFormValues } from "./company/companyInfoSchema";
 
 import { supabase } from "@/integrations/supabase/client";
+import { createCompany, updateCompany, fetchUserCompany, mapCompanyToCompanyInfo } from "@/services/companyService";
 
 interface CompanyInfoSetupProps {
   data: any;
@@ -22,7 +23,23 @@ interface CompanyInfoSetupProps {
 
 const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
   
+  const form = useForm<CompanyInfoFormValues>({
+    resolver: zodResolver(companyInfoSchema),
+    defaultValues: {
+      companyName: data?.companyName || "",
+      industry: data?.industry || "",
+      address: data?.address || "",
+      city: data?.city || "",
+      state: data?.state || "",
+      zipCode: data?.zipCode || "",
+      phone: data?.phone || "",
+      email: data?.email || "",
+      website: data?.website || "",
+    },
+  });
+
   // Check if we have company data from profile edit
   useEffect(() => {
     const editData = sessionStorage.getItem('edit_company_info');
@@ -45,20 +62,26 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     }
   }, []);
   
-  const form = useForm<CompanyInfoFormValues>({
-    resolver: zodResolver(companyInfoSchema),
-    defaultValues: {
-      companyName: data?.companyName || "",
-      industry: data?.industry || "",
-      address: data?.address || "",
-      city: data?.city || "",
-      state: data?.state || "",
-      zipCode: data?.zipCode || "",
-      phone: data?.phone || "",
-      email: data?.email || "",
-      website: data?.website || "",
-    },
-  });
+  // Load existing company data
+  useEffect(() => {
+    const loadCompanyData = async () => {
+      try {
+        const company = await fetchUserCompany();
+        if (company) {
+          setCompanyId(company.id);
+          const companyInfo = mapCompanyToCompanyInfo(company);
+          form.reset(companyInfo);
+          if (company.logo) {
+            setLogoPreview(company.logo);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading company data:", error);
+      }
+    };
+    
+    loadCompanyData();
+  }, []);
 
   // Initialize logo preview from existing data
   useEffect(() => {
@@ -81,44 +104,19 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     return () => subscription.unsubscribe();
   }, [form, logoPreview, onUpdate]);
 
-  // Utility to set current user as administrator if not already
-  const setCurrentUserAsAdmin = async () => {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (userError || !user) return;
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (!profile || profile.role !== "administrator") {
-      await supabase.from("profiles").update({ role: "administrator" }).eq("id", user.id);
-    }
-  };
-
   const onSubmit = async (values: CompanyInfoFormValues) => {
     const formData = { ...values, logo: logoPreview };
     onUpdate(formData);
     
-    // Save company name to profile
     try {
-      if (values.companyName) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { error } = await supabase
-            .from('profiles')
-            .update({ company_name: values.companyName })
-            .eq('id', user.id);
-            
-          if (error) {
-            console.error("Error updating company name in profile:", error);
-            toast.error("Company name couldn't be saved to your profile");
-            return;
-          }
+      if (companyId) {
+        // Update existing company
+        await updateCompany(companyId, formData);
+      } else {
+        // Create new company
+        const company = await createCompany(formData);
+        if (company) {
+          setCompanyId(company.id);
         }
       }
       
@@ -127,9 +125,6 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       console.error("Error saving company information:", error);
       toast.error("Failed to save company information");
     }
-
-    // Assign admin to first user who sets up the company if not already admin
-    await setCurrentUserAsAdmin();
   };
 
   return (

@@ -1,3 +1,4 @@
+
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
@@ -21,7 +22,6 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       if (updates.role !== undefined) updateData.role = updates.role;
       if (updates.email !== undefined) updateData.email = updates.email;
       if (updates.phone !== undefined) updateData.phone_number = updates.phone; // Map phone to phone_number field
-      if (updates.companyName !== undefined) updateData.company_name = updates.companyName; // Map companyName to company_name field
       
       console.log("Sending update to Supabase:", updateData);
       
@@ -39,34 +39,34 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       console.log("Update successful, received data:", data);
       
       // Update local state with the new information immediately
-      if (updates.role !== undefined) {
-        console.log(`Updating role for user ${userId} to ${updates.role} in local state`);
-        setTeamMembers(prev => 
-          prev.map(member => {
-            if (member.id === userId) {
-              console.log(`Found member to update: ${member.name}`);
-              const updatedMember = { 
-                ...member, 
-                ...(updates.firstName !== undefined && { firstName: updates.firstName }),
-                ...(updates.lastName !== undefined && { lastName: updates.lastName }),
-                ...(updates.role !== undefined && { role: updates.role }),
-                ...(updates.email !== undefined && { email: updates.email }),
-                ...(updates.phone !== undefined && { phone: updates.phone }),
-                ...(updates.companyName !== undefined && { companyName: updates.companyName }),
-                ...(updates.firstName !== undefined || updates.lastName !== undefined ? { 
-                  name: `${updates.firstName || member.firstName} ${updates.lastName || member.lastName}`.trim() || member.email,
-                  avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ? 
-                    `${(updates.firstName || member.firstName)[0]}${(updates.lastName || member.lastName)[0]}`.toUpperCase() : 
-                    (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
-                } : {})
-              };
-              console.log("Updated member object:", updatedMember);
-              return updatedMember;
-            }
-            return member;
-          })
-        );
-      }
+      setTeamMembers(prev => 
+        prev.map(member => {
+          if (member.id === userId) {
+            console.log(`Found member to update: ${member.name}`);
+            const updatedMember = { 
+              ...member, 
+              ...(updates.firstName !== undefined && { firstName: updates.firstName }),
+              ...(updates.lastName !== undefined && { lastName: updates.lastName }),
+              ...(updates.role !== undefined && { role: updates.role }),
+              ...(updates.email !== undefined && { email: updates.email }),
+              ...(updates.phone !== undefined && { phone: updates.phone }),
+              ...(updates.firstName !== undefined || updates.lastName !== undefined ? { 
+                name: `${updates.firstName || member.firstName} ${updates.lastName || member.lastName}`.trim() || member.email,
+                avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ? 
+                  `${(updates.firstName || member.firstName)[0]}${(updates.lastName || member.lastName)[0]}`.toUpperCase() : 
+                  (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
+              } : {})
+            };
+            console.log("Updated member object:", updatedMember);
+            return updatedMember;
+          }
+          return member;
+        })
+      );
+      
+      // If company name is being updated, we need to update the company record,
+      // but since we're moving to a proper company structure, we no longer
+      // update the company name directly in the profile.
       
       return { success: true, data: data?.[0] };
     } catch (error) {

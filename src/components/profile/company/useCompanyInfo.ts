@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import { CompanyInfo } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { fetchUserCompany, updateCompany, createCompany, mapCompanyToCompanyInfo } from "@/services/companyService";
 
 export const useCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [setupCompleted, setSetupCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,54 +21,17 @@ export const useCompanyInfo = () => {
       const isSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
       setSetupCompleted(isSetupComplete);
 
-      // First try to get company info from Supabase profile
-      const { data: { user } } = await supabase.auth.getUser();
+      // Fetch company from Supabase
+      const company = await fetchUserCompany();
       
-      if (user) {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('company_name')
-          .eq('id', user.id)
-          .single();
-          
-        if (!profileError && profileData && profileData.company_name) {
-          console.log("Retrieved company name from Supabase profile:", profileData.company_name);
-          
-          // Check if we have more detailed company info in localStorage
-          const setupData = localStorage.getItem('maintenease_setup');
-          if (setupData) {
-            try {
-              const parsedData = JSON.parse(setupData);
-              let companyInfoData = null;
-              
-              if (parsedData && parsedData.companyInfo && Object.keys(parsedData.companyInfo).length > 0) {
-                companyInfoData = parsedData.companyInfo;
-              } else if (parsedData && parsedData.companyinfo && Object.keys(parsedData.companyinfo).length > 0) {
-                companyInfoData = parsedData.companyinfo;
-              }
-              
-              if (companyInfoData) {
-                // Combine data from localStorage with profile
-                setCompanyInfo({
-                  ...companyInfoData,
-                  companyName: companyInfoData.companyName || profileData.company_name
-                });
-                return;
-              }
-            } catch (error) {
-              console.error("Error parsing localStorage company info:", error);
-            }
-          }
-          
-          // If we only have company name from profile, use that
-          setCompanyInfo({ 
-            companyName: profileData.company_name 
-          });
-          return;
-        }
+      if (company) {
+        console.log("Retrieved company from Supabase:", company);
+        setCompanyId(company.id);
+        setCompanyInfo(mapCompanyToCompanyInfo(company));
+        return;
       }
       
-      // Fallback to localStorage if no data in Supabase
+      // Fallback to localStorage if not found in Supabase
       const setupData = localStorage.getItem('maintenease_setup');
       
       if (setupData) {
@@ -85,8 +50,7 @@ export const useCompanyInfo = () => {
             return;
           }
         } catch (error) {
-          console.error("Error parsing company information:", error);
-          setError("There was an error loading company information");
+          console.error("Error parsing localStorage company info:", error);
         }
       }
       
@@ -117,20 +81,15 @@ export const useCompanyInfo = () => {
       parsedData.companyInfo = data;
       localStorage.setItem('maintenease_setup', JSON.stringify(parsedData));
       
-      // Then update company name in Supabase profile
-      if (data.companyName) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ company_name: data.companyName })
-            .eq('id', user.id);
-            
-          if (updateError) {
-            console.error("Error updating company name in profile:", updateError);
-            toast("Company name saved locally but couldn't be updated in your profile");
-            // Don't return false, we still saved to localStorage
-          }
+      // Then update in Supabase database
+      if (companyId) {
+        // Update existing company
+        await updateCompany(companyId, data);
+      } else {
+        // Create new company
+        const company = await createCompany(data);
+        if (company) {
+          setCompanyId(company.id);
         }
       }
       
@@ -151,6 +110,7 @@ export const useCompanyInfo = () => {
 
   return { 
     companyInfo, 
+    companyId,
     isLoading, 
     error,
     setupCompleted,

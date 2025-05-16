@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -33,11 +34,27 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         return;
       }
 
-      // Fetch all profiles except current user
-      // Using a more specific select statement to avoid issues with missing columns
+      // First, get the current user's company_id
+      const { data: currentUserProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("company_id")
+        .eq("id", currentUserId)
+        .single();
+        
+      if (profileError || !currentUserProfile?.company_id) {
+        console.error("Error getting current user's company or user has no company:", profileError);
+        setTeamMembers([]);
+        setLoading(false);
+        return;
+      }
+      
+      const companyId = currentUserProfile.company_id;
+
+      // Fetch all profiles from the same company except current user
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("id, email, first_name, last_name, role, avatar_url, phone_number")
+        .select("id, email, first_name, last_name, role, avatar_url, phone_number, company_id")
+        .eq("company_id", companyId)
         .neq("id", currentUserId);
 
       if (error) {
@@ -54,27 +71,18 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         return;
       }
       
-      // Try to fetch company names separately to handle the case if column doesn't exist
-      let companyNames: Record<string, string> = {};
-      try {
-        const { data: companyData, error: companyError } = await supabase
-          .from("profiles")
-          .select("id, company_name")
-          .neq("id", currentUserId);
-          
-        if (!companyError && companyData) {
-          companyNames = companyData.reduce((acc: Record<string, string>, profile: any) => {
-            if (profile.company_name) {
-              acc[profile.id] = profile.company_name;
-            }
-            return acc;
-          }, {});
-        } else {
-          console.log("Company name data not available:", companyError);
-        }
-      } catch (err) {
-        console.log("Error fetching company names, will continue without them:", err);
+      // Get company information for the profiles
+      const { data: company, error: companyError } = await supabase
+        .from("companies")
+        .select("name")
+        .eq("id", companyId)
+        .single();
+        
+      if (companyError) {
+        console.error("Error fetching company:", companyError);
       }
+      
+      const companyName = company ? company.name : '';
       
       // Count unread messages for each user
       const users = await Promise.all(profiles.map(async (profile) => {
@@ -93,9 +101,6 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
         const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
         const displayName = fullName || profile.email;
 
-        // Cast the profile to include profile data
-        const profileWithData = profile as any;
-
         return {
           id: profile.id,
           name: displayName,
@@ -106,8 +111,8 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
           unread: count || 0,
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
-          phone: profileWithData.phone_number || '',
-          companyName: companyNames[profile.id] || ''
+          phone: profile.phone_number || '',
+          companyName: companyName
         };
       }));
 
