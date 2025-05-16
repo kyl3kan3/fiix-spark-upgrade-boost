@@ -66,11 +66,11 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         } else {
           console.log("User profile data:", data);
           
-          // Check if data is non-null and has company_id
-          if (data && typeof data === 'object') {
-            // Fix the null-checking issue by adding an explicit null check for data
-            if (data !== null && 'company_id' in data && data.company_id !== null) {
-              // Safely cast data to UserProfileData
+          // Improved null checking - first ensure data exists
+          if (data) {
+            // Then check if it's an object with a valid company_id property
+            if (typeof data === 'object' && data !== null && 'company_id' in data && data.company_id !== null) {
+              // Now it's safe to cast data to UserProfileData
               setProfileData(data as UserProfileData);
               setError(null);
             } else {
