@@ -41,6 +41,12 @@ export const useAuth = () => {
   const signUp = async (email: string, password: string, name: string, companyName: string = "") => {
     setIsSubmitting(true);
     try {
+      // Require a company name for all new sign-ups
+      if (!companyName) {
+        toast.error("Company name is required");
+        return { success: false, error: "Company name is required" };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -48,7 +54,7 @@ export const useAuth = () => {
           data: {
             first_name: name.split(' ')[0],
             last_name: name.split(' ').slice(1).join(' '),
-            company_name: companyName // Store company name in user metadata for later use
+            company_name: companyName
           }
         }
       });

@@ -4,7 +4,7 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, LogOut } from "lucide-react";
+import { InfoIcon, LogOut, AlertTriangle } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
@@ -13,11 +13,13 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
+import { useUserProfile } from "@/hooks/team/useUserProfile";
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { profileData, error: profileError } = useUserProfile(['role', 'company_id']);
   
   // Extract the tab from the URL search params
   const searchParams = new URLSearchParams(location.search);
@@ -62,6 +64,16 @@ const ProfilePage = () => {
       <BackToDashboard />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+        
+        {/* Show error if there's a company requirement issue */}
+        {profileError && profileError.includes("company") && (
+          <Alert className="mb-6 bg-red-50 border-red-200">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <AlertDescription className="text-red-700">
+              {profileError}. Please set up your company information to continue using the application.
+            </AlertDescription>
+          </Alert>
+        )}
         
         <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
           <TabsList className="mb-6 bg-white/70 backdrop-blur-xl shadow-sm border">

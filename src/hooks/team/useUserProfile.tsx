@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface UserProfileData {
   role: string | null;
   company_name?: string;
+  company_id: string; // Now required since we've made it non-nullable
   first_name?: string;
   last_name?: string;
   [key: string]: any;
@@ -17,7 +18,7 @@ interface UserProfileResult {
   userId: string | null;
 }
 
-export const useUserProfile = (fields: string[] = ['role']): UserProfileResult => {
+export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserProfileResult => {
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,8 +43,13 @@ export const useUserProfile = (fields: string[] = ['role']): UserProfileResult =
         setUserId(user.id);
         console.log("Fetching profile for user ID:", user.id);
         
+        // Make sure company_id is always included in the fields
+        const fieldsToFetch = fields.includes('company_id') 
+          ? fields 
+          : [...fields, 'company_id'];
+        
         // Build the select query with requested fields
-        const selectFields = fields.join(', ');
+        const selectFields = fieldsToFetch.join(', ');
         
         // Get profile data from profiles
         const { data, error: fetchError } = await supabase
@@ -61,15 +67,21 @@ export const useUserProfile = (fields: string[] = ['role']): UserProfileResult =
           console.log("User profile data:", data);
           
           // Check if data is non-null and matches the expected shape
-          if (data && typeof data === 'object') {
+          if (data && typeof data === 'object' && data.company_id) {
             // Safely cast data to UserProfileData
             setProfileData(data as UserProfileData);
           } else {
-            // If data is null or not of expected shape, set to null
+            // Log the reason why the data is invalid
+            console.error("Invalid profile data: missing company_id or improper format", data);
             setProfileData(null);
+            setError("User profile data is incomplete. Company association required.");
           }
           
-          setError(null);
+          if (!data || !data.company_id) {
+            setError("User must be associated with a company");
+          } else {
+            setError(null);
+          }
         }
       } catch (err) {
         console.error("Error in useUserProfile:", err);

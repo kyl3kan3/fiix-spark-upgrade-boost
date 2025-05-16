@@ -36,12 +36,44 @@ export const useOnboardingSubmit = (
       
       console.log("Updating user profile with name:", { firstName, lastName, role: state.role });
       
+      // Handle company assignment first to satisfy the NOT NULL constraint
+      let companyId: string | undefined;
+
+      if (isInvited && inviteDetails) {
+        // Use invited company
+        companyId = inviteDetails.organization_id;
+        console.log("User was invited to company:", companyId);
+      } else if (state.company) {
+        // Create new company since it's required
+        try {
+          console.log("Creating new company:", state.company);
+          const newCompany = await createCompany({
+            companyName: state.company
+          });
+          
+          companyId = newCompany.id;
+          toast.success("Company created successfully!");
+        } catch (err: any) {
+          console.error("Company creation error:", err);
+          toast.error(err.message || "Failed to create company");
+          setSubmitting(false);
+          return;
+        }
+      } else {
+        // Company is now required
+        toast.error("Company information is required");
+        setSubmitting(false);
+        return;
+      }
+      
+      // Now update the profile with all information including company_id
       const { error: profileError } = await supabase
         .from("profiles")
         .update({
           first_name: firstName,
           last_name: lastName,
-          role: isInvited ? inviteDetails?.role : "administrator"
+          role: isInvited ? inviteDetails?.role : "administrator",
+          company_id: companyId
         })
         .eq("id", user.id);
         
@@ -51,19 +83,6 @@ export const useOnboardingSubmit = (
       }
 
       if (isInvited && inviteDetails) {
-        console.log("User was invited to company:", inviteDetails.organization_id);
-        
-        // Add user to the invited company
-        const { error: companyError } = await supabase
-          .from("profiles")
-          .update({ company_id: inviteDetails.organization_id })
-          .eq("id", user.id);
-          
-        if (companyError) {
-          console.error("Error adding user to company:", companyError);
-          throw companyError;
-        }
-        
         // Update invitation status
         const { error: inviteError } = await supabase
           .from("organization_invitations")
@@ -76,22 +95,6 @@ export const useOnboardingSubmit = (
         if (inviteError) {
           console.error("Error updating invitation status:", inviteError);
           throw inviteError;
-        }
-        
-        toast.success("You've joined the company!");
-      } else if (state.company) {
-        console.log("Creating new company:", state.company);
-        try {
-          await createCompany({
-            companyName: state.company
-          });
-          
-          toast.success("Company created successfully!");
-        } catch (err: any) {
-          console.error("Company creation error:", err);
-          toast.error(err.message || "Failed to create company");
-          setSubmitting(false);
-          return;
         }
       }
 
