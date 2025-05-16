@@ -52,7 +52,6 @@ const AssetsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Assets</h1>
         
-        {/* Search and Add Asset button in header - always visible */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-grow md:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -65,7 +64,7 @@ const AssetsPage: React.FC = () => {
             />
           </div>
           <Link to="/assets/new">
-            <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600 text-white font-medium shadow-md">
+            <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600 text-white font-medium">
               <Plus className="mr-2 h-4 w-4" />
               Add Asset
             </Button>
@@ -111,7 +110,7 @@ const AssetsPage: React.FC = () => {
               </p>
               <div className="mt-6">
                 <Link to="/assets/new">
-                  <Button className="bg-fiix-500 hover:bg-fiix-600 text-white font-medium shadow-md">
+                  <Button className="bg-fiix-500 hover:bg-fiix-600 text-white font-medium">
                     <Plus className="mr-2 h-4 w-4" />
                     New Asset
                   </Button>
@@ -161,8 +160,8 @@ const AssetsPage: React.FC = () => {
       {/* Fixed position Add Asset button */}
       <div className="fixed bottom-8 right-8 z-40">
         <Link to="/assets/new">
-          <Button className="bg-fiix-500 hover:bg-fiix-600 text-white rounded-full w-16 h-16 shadow-lg">
-            <Plus className="h-8 w-8" />
+          <Button className="bg-fiix-500 hover:bg-fiix-600 text-white rounded-full w-14 h-14 shadow-lg">
+            <Plus className="h-6 w-6" />
           </Button>
         </Link>
       </div>
