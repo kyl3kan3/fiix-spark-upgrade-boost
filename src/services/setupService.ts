@@ -219,3 +219,50 @@ export const isSetupCompleted = async (): Promise<boolean> => {
     return false;
   }
 };
+
+/**
+ * Resets all setup data
+ */
+export const resetSetupData = async (): Promise<boolean> => {
+  try {
+    // Clear localStorage data
+    localStorage.removeItem('maintenease_setup');
+    localStorage.removeItem('maintenease_setup_complete');
+    
+    // Check if user is authenticated
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.user) {
+      console.log("User not authenticated, cleared localStorage only");
+      return true;
+    }
+    
+    // Clear database data - we update with empty values rather than delete
+    // to maintain the record but reset all settings
+    const { error } = await supabase
+      .from('system_settings')
+      .update({
+        company_info: null,
+        user_roles: null,
+        asset_categories: null,
+        locations: null,
+        maintenance_schedules: null,
+        notifications: null,
+        integrations: null, 
+        dashboard_customization: null,
+        setup_completed: false
+      })
+      .not('id', 'is', null);
+    
+    if (error) {
+      console.error("Error resetting setup data in database:", error);
+      return false;
+    }
+    
+    console.log("Reset setup data in database");
+    return true;
+  } catch (error) {
+    console.error("Error in resetSetupData:", error);
+    return false;
+  }
+};
