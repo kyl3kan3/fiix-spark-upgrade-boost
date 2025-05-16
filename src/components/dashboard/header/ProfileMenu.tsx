@@ -52,7 +52,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ userName, onLogout }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/settings" className="cursor-pointer">
+          <Link to="/profile?tab=settings" className="cursor-pointer">
             <Settings size={16} className="mr-2" />
             Settings
           </Link>

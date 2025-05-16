@@ -1,9 +1,9 @@
+
 import React, { useEffect } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import OverviewTab from '@/components/dashboard/tabs/OverviewTab';
 import AnalyticsTab from '@/components/dashboard/tabs/AnalyticsTab';
 import TasksTab from '@/components/dashboard/tabs/TasksTab';
-import SettingsTab from '@/components/dashboard/tabs/SettingsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { initNotificationService, setupPushNotifications } from '@/services/notifications';
 
@@ -55,7 +55,6 @@ const Dashboard: React.FC = () => {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="tasks">Tasks</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
@@ -68,10 +67,6 @@ const Dashboard: React.FC = () => {
           
           <TabsContent value="tasks">
             <TasksTab />
-          </TabsContent>
-          
-          <TabsContent value="settings">
-            <SettingsTab />
           </TabsContent>
         </Tabs>
       </div>
