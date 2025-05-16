@@ -36,8 +36,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       }
     }
     
-    // Use the service role client for creating the company to bypass RLS
-    // Note: This is a workaround until proper RLS policies are established
+    // Create company - RLS policies are now in place to handle permissions
     const { data: company, error: companyError } = await supabase
       .from("companies")
       .insert({
@@ -51,19 +50,13 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
         email: companyData.email,
         website: companyData.website,
         logo: companyData.logo,
-        created_by: user.id // Add the user ID as the creator
+        created_by: user.id 
       })
       .select()
       .single();
     
     if (companyError) {
       console.error("Error creating company:", companyError);
-      
-      // Check if this is an RLS error
-      if (companyError.message.includes("new row violates row-level security policy")) {
-        throw new Error("You don't have permission to create a company. Please contact your administrator.");
-      }
-      
       throw companyError;
     }
     
