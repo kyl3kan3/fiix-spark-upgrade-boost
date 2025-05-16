@@ -86,6 +86,8 @@ interface SignUpFieldsProps {
   setPassword: (password: string) => void;
   name: string;
   setName: (name: string) => void;
+  companyName: string;
+  setCompanyName: (companyName: string) => void;
 }
 
 export const SignUpFields = ({
@@ -94,7 +96,9 @@ export const SignUpFields = ({
   password,
   setPassword,
   name,
-  setName
+  setName,
+  companyName,
+  setCompanyName
 }: SignUpFieldsProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -124,6 +128,19 @@ export const SignUpFields = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label htmlFor="company-name">Company Name</Label>
+        <Input
+          id="company-name"
+          name="companyName"
+          type="text"
+          required
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          placeholder="Acme Corp"
           className="mt-1"
         />
       </div>

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export const useAuth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +38,7 @@ export const useAuth = () => {
     }
   };
 
-  const signUp = async (email: string, password: string, name: string) => {
+  const signUp = async (email: string, password: string, name: string, companyName: string = "") => {
     setIsSubmitting(true);
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -47,7 +47,8 @@ export const useAuth = () => {
         options: {
           data: {
             first_name: name.split(' ')[0],
-            last_name: name.split(' ').slice(1).join(' ')
+            last_name: name.split(' ').slice(1).join(' '),
+            company_name: companyName // Store company name in user metadata for later use
           }
         }
       });
@@ -59,6 +60,11 @@ export const useAuth = () => {
         toast.info("This email is already registered. Please sign in instead.");
         return { success: false, error: "This email is already registered" };
       } else {
+        // Store company name for use during onboarding
+        if (companyName) {
+          localStorage.setItem("pending_company_name", companyName);
+        }
+        
         toast.success("Account created successfully! Please check your email for verification.");
         return { success: true, error: null };
       }

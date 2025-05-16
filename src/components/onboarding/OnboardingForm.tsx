@@ -21,9 +21,14 @@ const getInitialEmail = () => {
   return localStorage.getItem("pending_auth_email") || "";
 };
 
+const getInitialCompanyName = () => {
+  // Try to get company name from localStorage or just empty
+  return localStorage.getItem("pending_company_name") || "";
+};
+
 const OnboardingForm: React.FC = () => {
   const [state, setState] = useState<FormState>({
-    company: "",
+    company: getInitialCompanyName(),
     fullName: "",
     role: "",
     email: getInitialEmail(),
@@ -59,6 +64,24 @@ const OnboardingForm: React.FC = () => {
     
     checkInvitation();
   }, [state.email]);
+
+  // Populate user data from auth
+  useEffect(() => {
+    const getUserData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata) {
+        const firstName = user.user_metadata.first_name || '';
+        const lastName = user.user_metadata.last_name || '';
+        const fullName = `${firstName} ${lastName}`.trim();
+        
+        if (fullName) {
+          setState(prev => ({ ...prev, fullName }));
+        }
+      }
+    };
+    
+    getUserData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState({ ...state, [e.target.name]: e.target.value });
@@ -135,6 +158,10 @@ const OnboardingForm: React.FC = () => {
 
       // Mark onboarding as complete
       localStorage.setItem('maintenease_setup_complete', 'true');
+      
+      // Clean up localStorage
+      localStorage.removeItem("pending_auth_email");
+      localStorage.removeItem("pending_company_name");
       
       toast.success("Onboarding complete! Redirecting to dashboard...");
       setTimeout(() => {

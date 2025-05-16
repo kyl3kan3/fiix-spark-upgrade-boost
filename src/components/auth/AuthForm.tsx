@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInFields, SignUpFields } from "./AuthFormFields";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,17 +14,26 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   
   const { isSubmitting, signIn, signUp } = useAuth();
+  
+  // Check for email from previous screen or localStorage
+  useEffect(() => {
+    const pendingEmail = localStorage.getItem("pending_auth_email");
+    if (pendingEmail) {
+      setEmail(pendingEmail);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       if (isSignUp) {
-        // Handle sign up
-        const { success, error } = await signUp(email, password, name);
+        // Handle sign up with company name
+        const { success, error } = await signUp(email, password, name, companyName);
         
         if (success) {
           onSuccess(email);
@@ -56,6 +65,8 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
           setPassword={setPassword}
           name={name}
           setName={setName}
+          companyName={companyName}
+          setCompanyName={setCompanyName}
         />
       ) : (
         <SignInFields
