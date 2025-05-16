@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { loadSetupData, saveSetupData, SetupData, initialSetupData } from "@/services/setup";
+import { loadSetupData, saveSetupData, SetupData } from "@/services/setup";
 import { toast } from "sonner";
 
 interface SetupContextType {
@@ -13,8 +13,8 @@ interface SetupContextType {
   isLoading: boolean;
 }
 
-// Initialize with empty data
-const initialSetupData: SetupData = {
+// Initialize with empty data - removed "initialSetupData" variable to prevent conflict
+const defaultSetupData: SetupData = {
   companyInfo: {},
   userRoles: {},
   assetCategories: {},
@@ -30,7 +30,7 @@ const SetupContext = createContext<SetupContextType | undefined>(undefined);
 export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [setupComplete, setSetupComplete] = useState(false);
-  const [setupData, setSetupData] = useState<SetupData>(initialSetupData);
+  const [setupData, setSetupData] = useState<SetupData>(defaultSetupData);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load initial data from Supabase or localStorage
