@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
@@ -5,6 +6,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSetup } from "./SetupContext";
 import { steps } from "./setupSteps";
+import { saveSetupData } from "@/services/setupService";
 
 export const SetupNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -13,13 +15,14 @@ export const SetupNavigation: React.FC = () => {
     setCurrentStep, 
     setupData, 
     setupComplete,
-    setSetupComplete 
+    setSetupComplete,
+    isLoading 
   } = useSetup();
 
   const handleNext = async () => {
     if (currentStep < steps.length - 1) {
-      // Save current step data to local storage
-      localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
+      // Save current step data
+      await saveSetupData(setupData, false);
       setCurrentStep(currentStep + 1);
       window.scrollTo(0, 0);
     }
@@ -42,17 +45,20 @@ export const SetupNavigation: React.FC = () => {
 
   const handleComplete = async () => {
     try {
-      // For now, we'll just use localStorage until we create a system_settings table
-      localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
-      localStorage.setItem('maintenease_setup_complete', 'true');
-      
       setSetupComplete(true);
-      toast.success("Setup completed successfully!");
+      // Save setup data with completed flag
+      const success = await saveSetupData(setupData, true);
       
-      // Redirect to dashboard after short delay
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2000);
+      if (success) {
+        toast.success("Setup completed successfully!");
+        
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      } else {
+        toast.error("There was an issue saving your setup data. Please try again.");
+      }
     } catch (error) {
       console.error("Error saving setup data:", error);
       toast.error("Failed to save setup data. Please try again.");
@@ -64,14 +70,14 @@ export const SetupNavigation: React.FC = () => {
       <Button
         variant="outline"
         onClick={handlePrevious}
-        disabled={currentStep === 0}
+        disabled={currentStep === 0 || isLoading}
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Previous
       </Button>
       
       <div className="flex gap-2">
         {currentStep < steps.length - 2 && (
-          <Button variant="ghost" onClick={handleSkip}>
+          <Button variant="ghost" onClick={handleSkip} disabled={isLoading}>
             Skip for now
           </Button>
         )}
@@ -79,13 +85,13 @@ export const SetupNavigation: React.FC = () => {
         {currentStep === steps.length - 1 ? (
           <Button 
             onClick={handleComplete}
-            disabled={setupComplete}
+            disabled={setupComplete || isLoading}
           >
             <CheckCircle className="mr-2 h-4 w-4" /> 
             Complete Setup
           </Button>
         ) : (
-          <Button onClick={handleNext}>
+          <Button onClick={handleNext} disabled={isLoading}>
             Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}

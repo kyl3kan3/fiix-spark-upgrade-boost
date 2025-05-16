@@ -293,6 +293,51 @@ export type Database = {
         }
         Relationships: []
       }
+      system_settings: {
+        Row: {
+          asset_categories: Json | null
+          company_info: Json | null
+          created_at: string | null
+          dashboard_customization: Json | null
+          id: string
+          integrations: Json | null
+          locations: Json | null
+          maintenance_schedules: Json | null
+          notifications: Json | null
+          setup_completed: boolean | null
+          updated_at: string | null
+          user_roles: Json | null
+        }
+        Insert: {
+          asset_categories?: Json | null
+          company_info?: Json | null
+          created_at?: string | null
+          dashboard_customization?: Json | null
+          id?: string
+          integrations?: Json | null
+          locations?: Json | null
+          maintenance_schedules?: Json | null
+          notifications?: Json | null
+          setup_completed?: boolean | null
+          updated_at?: string | null
+          user_roles?: Json | null
+        }
+        Update: {
+          asset_categories?: Json | null
+          company_info?: Json | null
+          created_at?: string | null
+          dashboard_customization?: Json | null
+          id?: string
+          integrations?: Json | null
+          locations?: Json | null
+          maintenance_schedules?: Json | null
+          notifications?: Json | null
+          setup_completed?: boolean | null
+          updated_at?: string | null
+          user_roles?: Json | null
+        }
+        Relationships: []
+      }
       work_order_comments: {
         Row: {
           comment: string

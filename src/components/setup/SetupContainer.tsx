@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SetupHeader } from "./SetupHeader";
 import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
@@ -15,9 +16,34 @@ export interface SetupStepComponentProps {
 }
 
 export const SetupContainer: React.FC = () => {
-  const { currentStep, updateSetupData, setupData } = useSetup();
+  const { currentStep, updateSetupData, setupData, isLoading } = useSetup();
   
   const CurrentStepComponent = steps[currentStep].component;
+  
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <SetupHeader />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-4 w-1/4 mt-2" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </CardContent>
+          <CardFooter>
+            <div className="flex justify-between w-full">
+              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-10 w-24" />
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
   
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
