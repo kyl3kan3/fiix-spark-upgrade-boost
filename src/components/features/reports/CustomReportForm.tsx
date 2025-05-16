@@ -1,75 +1,140 @@
 
-import React from "react";
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CalendarIcon, FilterIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface CustomReportFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
 const CustomReportForm: React.FC<CustomReportFormProps> = ({ onSubmit }) => {
-  const metrics = ["Completion Time", "Cost", "Labor Hours", "Parts Used", "Downtime", "Failure Causes"];
-  
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+  const [reportName, setReportName] = useState("");
+  const [reportCategory, setReportCategory] = useState("work_orders");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(e);
+  };
+
   return (
-    <div className="bg-gray-100 p-6 rounded-lg">
-      <h3 className="text-lg font-medium mb-4">Custom Reports</h3>
-      <p className="mb-4">Create customized reports by selecting the metrics and data you want to analyze.</p>
-      
-      <form className="space-y-4" onSubmit={onSubmit}>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Report Type</label>
-            <select className="w-full p-2 border rounded-md">
-              <option>Work Order Analysis</option>
-              <option>Asset Performance</option>
-              <option>Maintenance Costs</option>
-              <option>Technician Productivity</option>
-            </select>
+    <Card>
+      <CardHeader>
+        <CardTitle>Generate Custom Report</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Report Name</label>
+              <Input 
+                placeholder="Monthly Maintenance Summary" 
+                value={reportName}
+                onChange={(e) => setReportName(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Category</label>
+              <Select 
+                value={reportCategory} 
+                onValueChange={setReportCategory}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="work_orders">Work Orders</SelectItem>
+                  <SelectItem value="assets">Assets</SelectItem>
+                  <SelectItem value="maintenance">Maintenance</SelectItem>
+                  <SelectItem value="costs">Costs & Budget</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Time Period</label>
-            <select className="w-full p-2 border rounded-md">
-              <option>Last 7 days</option>
-              <option>Last 30 days</option>
-              <option>Last 90 days</option>
-              <option>Custom range</option>
-            </select>
+          
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Start Date</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "PPP") : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">End Date</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "PPP") : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium mb-1">Include Metrics</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {metrics.map((metric) => (
-              <div key={metric} className="flex items-center">
-                <input type="checkbox" id={metric} className="mr-2" />
-                <label htmlFor={metric} className="text-sm">{metric}</label>
-              </div>
-            ))}
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Additional Filters</label>
+            <div className="flex items-center space-x-2">
+              <Button type="button" variant="outline" className="flex items-center">
+                <FilterIcon className="h-4 w-4 mr-2" /> Add Filter
+              </Button>
+              <span className="text-sm text-gray-500">Optional</span>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex gap-4">
+          
           <Button 
             type="submit" 
-            className="bg-fiix-500 hover:bg-fiix-600"
+            className="w-full bg-fiix-500 hover:bg-fiix-600 text-white"
           >
             Generate Custom Report
           </Button>
-          <Button 
-            type="button"
-            variant="outline"
-            onClick={() => toast.info("PDF export will be available after generating the report")}
-            className="flex items-center gap-2"
-            disabled={true}
-          >
-            <Download className="h-4 w-4" />
-            Export PDF
-          </Button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 

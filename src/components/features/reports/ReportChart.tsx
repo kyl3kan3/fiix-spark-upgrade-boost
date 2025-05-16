@@ -2,22 +2,9 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FilterIcon, Download, Loader2, BarChart3, PieChart, LineChart } from "lucide-react";
-import { 
-  ResponsiveContainer, 
-  LineChart as RechartLineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend,
-  BarChart as RechartBarChart,
-  Bar,
-  PieChart as RechartPieChart,
-  Pie,
-  Cell
-} from "recharts";
+import { BarChart, LineChart, PieChart, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { BarChart as BarChartIcon, Download, Printer } from "lucide-react";
+import { BarChartComponent, LineChartComponent, PieChartComponent } from "@/components/ui/chart";
 
 interface ReportChartProps {
   reportType: string;
@@ -27,87 +14,86 @@ interface ReportChartProps {
   onExport: () => void;
 }
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088fe', '#00C49F'];
-
-const ReportChart: React.FC<ReportChartProps> = ({ reportType, data, isMobile, isExporting, onExport }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {reportType === "Work Order Statistics" && <BarChart3 className="h-5 w-5" />}
-            {reportType === "Asset Performance" && <PieChart className="h-5 w-5" />}
-            {reportType === "Maintenance Trends" && <LineChart className="h-5 w-5" />}
-            <span>{reportType}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="flex items-center gap-1">
-              <FilterIcon className="h-4 w-4" />
-              <span className={isMobile ? "sr-only" : ""}>Filter</span>
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1"
-              onClick={onExport}
-              disabled={isExporting}
-            >
-              {isExporting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className={isMobile ? "sr-only" : ""}>Exporting...</span>
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4" />
-                  <span className={isMobile ? "sr-only" : ""}>Export PDF</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[350px]">
-          <ResponsiveContainer width="100%" height="100%">
-            {reportType === "Work Order Statistics" ? (
-              <RechartBarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="requested" fill="#8884d8" name="Work Orders Requested" />
-                <Bar dataKey="completed" fill="#82ca9d" name="Work Orders Completed" />
-                <Bar dataKey="onTime" fill="#0088fe" name="Completed On Time" />
-                <Bar dataKey="late" fill="#ff8042" name="Completed Late" />
-              </RechartBarChart>
-            ) : reportType === "Asset Performance" ? (
-              <RechartBarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip />
-                <Legend />
-                <Bar yAxisId="left" dataKey="reliability" fill="#8884d8" name="Reliability %" />
-                <Bar yAxisId="left" dataKey="downtime" fill="#ff8042" name="Downtime %" />
-                <Bar yAxisId="right" dataKey="maintenanceCost" fill="#82ca9d" name="Maintenance Cost ($)" />
-              </RechartBarChart>
-            ) : (
-              <RechartLineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-                <Tooltip />
-                <Legend />
-                <Line yAxisId="left" type="monotone" dataKey="preventive" stroke="#8884d8" activeDot={{ r: 8 }} name="Preventive" />
-                <Line yAxisId="left" type="monotone" dataKey="corrective" stroke="#ff8042" activeDot={{ r: 8 }} name="Corrective" />
-                <Line yAxisId="right" type="monotone" dataKey="costs" stroke="#82ca9d" activeDot={{ r: 8 }} name="Costs ($)" />
-              </RechartLineChart>
-            )}
+const ReportChart: React.FC<ReportChartProps> = ({ 
+  reportType, 
+  data, 
+  isMobile, 
+  isExporting,
+  onExport 
+}) => {
+  // Determine which chart to render based on report type
+  const renderChart = () => {
+    switch (reportType) {
+      case "Work Order Statistics":
+        return (
+          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+            <BarChartComponent data={data} />
           </ResponsiveContainer>
+        );
+      case "Asset Performance":
+        return (
+          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+            <PieChartComponent data={data} />
+          </ResponsiveContainer>
+        );
+      case "Maintenance Trends":
+      case "Custom Report":
+        return (
+          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+            <LineChartComponent data={data} />
+          </ResponsiveContainer>
+        );
+      default:
+        return (
+          <div className="flex flex-col items-center justify-center h-64">
+            <BarChartIcon className="h-12 w-12 text-gray-300 mb-2" />
+            <p className="text-gray-500">Select a report type to generate a chart</p>
+          </div>
+        );
+    }
+  };
+  
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <Card id="report-chart-container">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-xl font-bold">{reportType}</CardTitle>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrint}
+            className="hidden md:flex items-center gap-2"
+          >
+            <Printer className="h-4 w-4" />
+            Print
+          </Button>
+          <Button 
+            size="sm"
+            onClick={onExport}
+            disabled={isExporting}
+            className="bg-fiix-500 hover:bg-fiix-600 text-white"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            {isExporting ? "Exporting..." : "Export PDF"}
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4">
+        {renderChart()}
+        
+        <div className="mt-4">
+          <h4 className="font-medium text-sm mb-2">Report Summary</h4>
+          <p className="text-sm text-gray-600">
+            This {reportType.toLowerCase()} report shows data from the last 30 days. 
+            {reportType === "Work Order Statistics" && " Work orders have increased by 12% compared to the previous period."}
+            {reportType === "Asset Performance" && " Asset performance has improved with 8% less downtime compared to the previous period."}
+            {reportType === "Maintenance Trends" && " Preventive maintenance has increased by 15% while corrective maintenance has decreased."}
+            {reportType === "Custom Report" && " This custom report reflects the parameters you've selected."}
+          </p>
         </div>
       </CardContent>
     </Card>
