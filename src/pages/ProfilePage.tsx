@@ -24,14 +24,17 @@ const ProfilePage = () => {
   const tabParam = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabParam === 'settings' ? 'settings' : 'profile');
 
-  // Update URL when tab changes
+  // Update URL when tab changes without page reload
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    if (value === 'settings') {
-      navigate('/profile?tab=settings', { replace: true });
-    } else {
-      navigate('/profile', { replace: true });
-    }
+    
+    // Update the URL without full page reload
+    const newUrl = value === 'settings' 
+      ? '/profile?tab=settings' 
+      : '/profile';
+      
+    // Use history.pushState to update URL without reload
+    window.history.pushState({}, '', newUrl);
   };
 
   useEffect(() => {
@@ -43,6 +46,22 @@ const ProfilePage = () => {
   }, []);
 
   // Effect to update active tab when URL changes
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tabFromUrl = params.get('tab');
+      setActiveTab(tabFromUrl === 'settings' ? 'settings' : 'profile');
+    };
+
+    // Listen for browser back/forward navigation
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Effect to ensure tab state matches URL on mount and URL changes
   useEffect(() => {
     const currentTabParam = new URLSearchParams(location.search).get('tab');
     if (currentTabParam === 'settings' && activeTab !== 'settings') {
