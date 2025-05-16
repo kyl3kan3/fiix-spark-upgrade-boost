@@ -66,26 +66,25 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         } else {
           console.log("User profile data:", data);
           
-          // Improved null checking - first ensure data exists
-          if (data) {
-            // Then check if it's an object with a valid company_id property
-            // Add explicit non-null assertion for TypeScript
-            const profileData = data as Record<string, any>;
-            if (typeof profileData === 'object' && 
-                'company_id' in profileData && 
-                profileData.company_id !== null) {
-              // Now it's safe to cast data to UserProfileData
-              setProfileData(profileData as UserProfileData);
-              setError(null);
-            } else {
-              console.error("Invalid profile data: missing company_id", data);
-              setProfileData(null);
-              setError("User must be associated with a company");
-            }
-          } else {
+          if (!data) {
+            // Handle case where no profile data was found
             console.error("No profile data found, user may need to complete onboarding");
             setProfileData(null);
             setError("User profile data is incomplete. Company association required.");
+            return;
+          }
+          
+          // Ensure data is an object and has the required company_id field
+          if (typeof data === 'object' && 
+              'company_id' in data && 
+              data.company_id !== null) {
+            // Safe to cast to UserProfileData since we've verified the key property
+            setProfileData(data as UserProfileData);
+            setError(null);
+          } else {
+            console.error("Invalid profile data: missing company_id", data);
+            setProfileData(null);
+            setError("User must be associated with a company");
           }
         }
       } catch (err) {
