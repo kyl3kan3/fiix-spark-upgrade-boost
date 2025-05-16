@@ -68,7 +68,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
           
           // Check if data is non-null and has company_id
           if (data && typeof data === 'object') {
-            if (data.company_id) {
+            if ('company_id' in data && data.company_id) {
               // Safely cast data to UserProfileData
               setProfileData(data as UserProfileData);
               setError(null);

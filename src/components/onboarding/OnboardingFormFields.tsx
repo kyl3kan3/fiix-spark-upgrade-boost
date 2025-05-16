@@ -2,7 +2,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FormState, InviteDetails } from "../hooks/onboarding/types";
+import { FormState, InviteDetails } from "@/hooks/onboarding/types";
 
 interface FormFieldsProps {
   state: FormState;
