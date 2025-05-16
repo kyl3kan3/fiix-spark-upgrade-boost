@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { addUserToCompany } from "@/services/companyService";
 
 // This component displays a button that administrators can use to set demo users
@@ -41,9 +41,8 @@ const AdminSetDemoCompanyButton: React.FC = () => {
       // Get the current user's company ID
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Not logged in",
-          description: "Please log in to use this feature",
+        toast("Not logged in", {
+          description: "Please log in to use this feature"
         });
         return;
       }
@@ -55,9 +54,8 @@ const AdminSetDemoCompanyButton: React.FC = () => {
         .single();
         
       if (!currentUser?.company_id) {
-        toast({
-          title: "No company found",
-          description: "You need to set up a company first",
+        toast("No company found", {
+          description: "You need to set up a company first"
         });
         return;
       }
@@ -81,22 +79,15 @@ const AdminSetDemoCompanyButton: React.FC = () => {
         
         await Promise.all(updatePromises);
         
-        toast({
-          title: "Company Updated",
-          description: `${demoUsers.length} demo users have been added to your company.`,
+        toast("Company Updated", {
+          description: `${demoUsers.length} demo users have been added to your company.`
         });
       } else {
-        toast({
-          description: "No demo users found to update",
-        });
+        toast("No demo users found to update");
       }
     } catch (error) {
       console.error("Error setting demo company:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update demo users",
-        variant: "destructive",
-      });
+      toast.error("Failed to update demo users");
     } finally {
       setIsLoading(false);
     }
