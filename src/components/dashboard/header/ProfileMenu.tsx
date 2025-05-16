@@ -46,13 +46,13 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ userName, onLogout }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/profile" className="cursor-pointer">
+        <DropdownMenuItem>
+          <Link to="/profile" className="flex items-center w-full cursor-pointer">
             Profile
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/profile?tab=settings" className="cursor-pointer">
+        <DropdownMenuItem>
+          <Link to="/profile?tab=settings" className="flex items-center w-full cursor-pointer">
             <Settings size={16} className="mr-2" />
             Settings
           </Link>
