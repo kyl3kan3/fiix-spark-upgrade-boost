@@ -33,8 +33,8 @@ const ProfilePage = () => {
       ? '/profile?tab=settings' 
       : '/profile';
       
-    // Use history.pushState to update URL without reload
-    window.history.pushState({}, '', newUrl);
+    // Use navigate with replace option to avoid adding to history
+    navigate(newUrl, { replace: true });
   };
 
   useEffect(() => {
@@ -47,29 +47,10 @@ const ProfilePage = () => {
 
   // Effect to update active tab when URL changes
   useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      const tabFromUrl = params.get('tab');
-      setActiveTab(tabFromUrl === 'settings' ? 'settings' : 'profile');
-    };
-
-    // Listen for browser back/forward navigation
-    window.addEventListener('popstate', handlePopState);
-    
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
-
-  // Effect to ensure tab state matches URL on mount and URL changes
-  useEffect(() => {
-    const currentTabParam = new URLSearchParams(location.search).get('tab');
-    if (currentTabParam === 'settings' && activeTab !== 'settings') {
-      setActiveTab('settings');
-    } else if (!currentTabParam && activeTab !== 'profile') {
-      setActiveTab('profile');
-    }
-  }, [location.search, activeTab]);
+    const params = new URLSearchParams(location.search);
+    const tabFromUrl = params.get('tab');
+    setActiveTab(tabFromUrl === 'settings' ? 'settings' : 'profile');
+  }, [location.search]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

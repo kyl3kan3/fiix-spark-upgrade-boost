@@ -6,7 +6,7 @@ const Settings = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Redirect to the profile page with settings tab selected
+    // Redirect to the profile page with settings tab selected without page reload
     navigate("/profile?tab=settings", { replace: true });
   }, [navigate]);
   

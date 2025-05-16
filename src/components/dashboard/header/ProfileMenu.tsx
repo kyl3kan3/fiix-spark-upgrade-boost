@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Settings, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,13 @@ interface ProfileMenuProps {
 }
 
 const ProfileMenu: React.FC<ProfileMenuProps> = ({ userName, onLogout }) => {
+  const navigate = useNavigate();
+  
+  const handleProfileClick = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    navigate(path);
+  };
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,16 +53,12 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ userName, onLogout }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/profile" className="flex items-center w-full cursor-pointer">
-            Profile
-          </Link>
+        <DropdownMenuItem onClick={(e) => handleProfileClick(e, "/profile")}>
+          Profile
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/profile?tab=settings" className="flex items-center w-full cursor-pointer">
-            <Settings size={16} className="mr-2" />
-            Settings
-          </Link>
+        <DropdownMenuItem onClick={(e) => handleProfileClick(e, "/profile?tab=settings")}>
+          <Settings size={16} className="mr-2" />
+          Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogout}>
