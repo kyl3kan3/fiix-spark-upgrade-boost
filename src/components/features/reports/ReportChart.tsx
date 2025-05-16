@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, LineChart, PieChart, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { BarChart as BarChartIcon, Download, Printer } from "lucide-react";
-import { BarChartComponent, LineChartComponent, PieChartComponent } from "@/components/ui/chart";
+import { BarChartComponent, LineChartComponent, PieChartComponent } from "./ChartComponents";
 
 interface ReportChartProps {
   reportType: string;

@@ -10,7 +10,6 @@ import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useSetup } from "@/components/setup/SetupContext";
-import { useAuth } from "@/hooks/useAuth";
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -18,7 +17,6 @@ const ReportsContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
   const { setupData } = useSetup();
-  const { session } = useAuth();
   
   // Simulate loading state for better UX
   useEffect(() => {
