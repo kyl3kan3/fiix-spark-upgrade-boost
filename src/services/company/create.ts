@@ -75,23 +75,25 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       throw updateError;
     }
     
-    // Set user as administrator if not already
+    // Get current user profile
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single();
       
-    if (profile && profile.role !== "administrator") {
-      const { error: roleError } = await supabase
-        .from("profiles")
-        .update({ role: "administrator" })
-        .eq("id", user.id);
-      
-      if (roleError) {
-        console.error("Error setting user as administrator:", roleError);
-      }
+    // Set user as administrator (regardless of current role)
+    const { error: roleError } = await supabase
+      .from("profiles")
+      .update({ role: "administrator" })
+      .eq("id", user.id);
+    
+    if (roleError) {
+      console.error("Error setting user as administrator:", roleError);
+      throw roleError;
     }
+    
+    console.log("User set as administrator for the company");
     
     return company;
   } catch (error) {
