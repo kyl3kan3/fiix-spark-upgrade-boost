@@ -23,6 +23,9 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       throw new Error("User not authenticated");
     }
     
+    // Get user email for profile updates
+    const email = user.email || '';
+    
     // Check if company with the same name already exists
     if (companyData.companyName) {
       const { data: existingCompany, error: searchError } = await supabase
@@ -42,11 +45,12 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
         // If company exists, associate user with it instead of creating a new one
         const { error: updateError } = await supabase
           .from("profiles")
-          .update({ 
+          .upsert({ 
+            id: user.id,
             company_id: existingCompany.id,
-            role: "administrator" 
-          })
-          .eq("id", user.id);
+            role: "administrator",
+            email: email
+          });
           
         if (updateError) {
           console.error("Error associating user with existing company:", updateError);
@@ -123,11 +127,12 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     // First update - set company_id
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ 
+      .upsert({ 
+        id: user.id,
         company_id: company.id,
-        role: "administrator"
-      })
-      .eq("id", user.id);
+        role: "administrator",
+        email: email
+      });
     
     if (updateError) {
       console.error("Error associating user with company:", updateError);

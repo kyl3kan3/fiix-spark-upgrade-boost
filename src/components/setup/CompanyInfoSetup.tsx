@@ -130,11 +130,14 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       // Check current profile
       const { data: profile } = await supabase
         .from("profiles")
-        .select("company_id, role")
+        .select("company_id, role, email")
         .eq("id", userId)
         .maybeSingle();
       
       console.log("Current user profile:", profile);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      const email = user?.email || '';
       
       // If profile doesn't exist or company_id is not set
       if (!profile || !profile.company_id) {
@@ -146,7 +149,8 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
           .upsert({
             id: userId,
             company_id: companyId,
-            role: "administrator"
+            role: "administrator",
+            email: email
           });
         
         if (updateError) {
