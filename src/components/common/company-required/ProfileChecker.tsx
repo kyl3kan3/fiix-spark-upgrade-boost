@@ -39,14 +39,51 @@ export const ProfileChecker: React.FC<ProfileCheckerProps> = ({ onCompanyFound }
         // Get email from user object
         const email = user.email || '';
         
+        // First, we need to find a company or create a default one
+        // to satisfy the company_id foreign key constraint
+        const { data: defaultCompany, error: companyError } = await supabase
+          .from('companies')
+          .select('id')
+          .limit(1)
+          .maybeSingle();
+          
+        if (companyError) {
+          console.error("Error finding default company:", companyError);
+          setIsRefreshing(false);
+          return null;
+        }
+        
+        let companyId: string;
+        
+        if (!defaultCompany) {
+          // Create a temporary company if none exists
+          const { data: newCompany, error: createCompanyError } = await supabase
+            .from('companies')
+            .insert({
+              name: 'Default Company',
+              created_by: user.id
+            })
+            .select('id')
+            .single();
+            
+          if (createCompanyError) {
+            console.error("Error creating default company:", createCompanyError);
+            setIsRefreshing(false);
+            return null;
+          }
+          
+          companyId = newCompany.id;
+        } else {
+          companyId = defaultCompany.id;
+        }
+        
         const { error: createError } = await supabase
           .from('profiles')
           .insert({
             id: user.id,
             email: email,
             role: 'technician',
-            // Don't set company_id when creating initial profile
-            // This avoids the UUID validation error
+            company_id: companyId // Use the found/created company ID
           });
           
         if (createError) {
