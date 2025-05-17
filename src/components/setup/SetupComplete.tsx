@@ -4,9 +4,32 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SetupStepComponentProps } from "./SetupContainer";
+import { toast } from "sonner";
+import { useSetup } from "./SetupContext";
+import { saveSetupData } from "@/services/setup";
 
 const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {
   const navigate = useNavigate();
+  const { setupData } = useSetup();
+  
+  const handleGoToDashboard = async () => {
+    try {
+      // Ensure setup is marked as complete both locally and in the database
+      const success = await saveSetupData(setupData, true);
+      
+      if (success) {
+        toast.success("Setup completed successfully!");
+        navigate('/dashboard');
+      } else {
+        toast.error("There was an issue saving your setup data. Proceeding anyway.");
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error("Error finalizing setup:", error);
+      toast.error("Failed to finalize setup. Proceeding anyway.");
+      navigate('/dashboard');
+    }
+  };
   
   return (
     <div className="flex flex-col items-center py-12 text-center">
@@ -58,7 +81,7 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
         </div>
       </div>
       
-      <Button size="lg" className="gap-2 mb-6" onClick={() => navigate('/dashboard')}>
+      <Button size="lg" className="gap-2 mb-6" onClick={handleGoToDashboard}>
         Go to Dashboard <ArrowRight className="h-4 w-4" />
       </Button>
       

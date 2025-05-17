@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
@@ -50,11 +51,12 @@ export const SetupNavigation: React.FC = () => {
       
       if (success) {
         toast.success("Setup completed successfully!");
+        localStorage.setItem('maintenease_setup_complete', 'true'); // Ensure local storage is set
         
         // Redirect to dashboard after short delay
         setTimeout(() => {
           navigate("/dashboard");
-        }, 2000);
+        }, 1000);
       } else {
         toast.error("There was an issue saving your setup data. Please try again.");
       }
