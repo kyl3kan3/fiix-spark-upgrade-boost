@@ -15,7 +15,7 @@ export interface SetupStepComponentProps {
 }
 
 export const SetupContainer: React.FC = () => {
-  const { currentStep, updateSetupData, setupData, isLoading } = useSetup();
+  const { currentStep, setCurrentStep, updateSetupData, setupData, isLoading } = useSetup();
   
   // Keep the tabs in sync with the current step
   useEffect(() => {
