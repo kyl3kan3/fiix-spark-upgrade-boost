@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "@/hooks/team/useUserProfile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Building2, AlertTriangle } from "lucide-react";
+import { Building2, AlertTriangle, RefreshCcw } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { isSetupCompleted } from "@/services/setup";
 import { useState, useEffect } from "react";
@@ -18,32 +18,74 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const { profileData, isLoading: profileLoading, error: profileError } = useUserProfile(['role', 'company_id']);
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [forceRefresh, setForceRefresh] = useState(0);
   const navigate = useNavigate();
 
   // Function to directly check the user's profile in the database
   const checkUserCompanyInDatabase = async () => {
     try {
+      setIsRefreshing(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
+      if (!user) {
+        setIsRefreshing(false);
+        return null;
+      }
       
-      const { data: profile } = await supabase
+      // Check if profile exists first
+      const { data: profileExists, error: profileCheckError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+        
+      if (profileCheckError) {
+        console.error("Error checking profile existence:", profileCheckError);
+      }
+      
+      // If profile doesn't exist, create it with basic info
+      if (!profileExists) {
+        console.log("Profile doesn't exist, creating one");
+        const { error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email,
+            role: 'technician'
+          });
+          
+        if (createError) {
+          console.error("Error creating profile:", createError);
+        }
+      }
+      
+      // Now check for company association
+      const { data: profile, error: fetchError } = await supabase
         .from('profiles')
         .select('company_id, role')
         .eq('id', user.id)
         .maybeSingle();
+        
+      if (fetchError) {
+        console.error("Error fetching user profile:", fetchError);
+        setIsRefreshing(false);
+        return null;
+      }
         
       console.log("Direct database check for profile:", profile);
       
       if (profile?.company_id) {
         // If company_id exists, mark setup as complete
         localStorage.setItem('maintenease_setup_complete', 'true');
+        setIsRefreshing(false);
         return profile.company_id;
       }
       
+      setIsRefreshing(false);
       return null;
     } catch (error) {
       console.error("Error checking user profile directly:", error);
+      setIsRefreshing(false);
       return null;
     }
   };
@@ -52,6 +94,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   useEffect(() => {
     const checkCompanyProfileLink = async () => {
       if (profileData?.company_id) {
+        console.log("Profile data has company_id:", profileData.company_id);
         setSetupComplete(true);
         localStorage.setItem('maintenease_setup_complete', 'true');
         setIsLoading(false);
@@ -61,6 +104,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
       // If no company_id in profile data, check database directly as fallback
       const companyId = await checkUserCompanyInDatabase();
       if (companyId) {
+        console.log("Found company ID from database check:", companyId);
         setSetupComplete(true);
         setIsLoading(false);
         // Force a refresh to update profile data
@@ -76,6 +120,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
           
           // If localStorage indicates complete, use that result immediately
           if (localSetupComplete) {
+            console.log("Setup marked as complete in localStorage");
             setSetupComplete(true);
             setIsLoading(false);
             return;
@@ -84,7 +129,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
           // Otherwise check database (this will also update localStorage if needed)
           const isComplete = await isSetupCompleted();
           setSetupComplete(isComplete);
-          console.log("Setup completed status:", isComplete);
+          console.log("Setup completed status from check:", isComplete);
         } catch (error) {
           console.error("Error checking setup completion:", error);
           setSetupComplete(false);
@@ -136,7 +181,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   }
 
   // Add a button to check company association directly
-  const handleCheckCompanyAssociation = async () => {
+  const handleRefreshCompanyAssociation = async () => {
     try {
       toast.info("Checking company association...");
       
@@ -153,6 +198,67 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     } catch (error) {
       console.error("Error checking company association:", error);
       toast.error("Error checking company association");
+    }
+  };
+
+  // Add a function to attempt fixing the profile
+  const handleFixProfile = async () => {
+    try {
+      toast.info("Attempting to fix your profile...");
+      setIsRefreshing(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Not authenticated. Please log in again.");
+        setIsRefreshing(false);
+        return;
+      }
+      
+      // Check if there's a company that was created by this user
+      const { data: company } = await supabase
+        .from("companies")
+        .select("id")
+        .eq("created_by", user.id)
+        .maybeSingle();
+        
+      if (!company) {
+        toast.warning("No company found that was created by you. Please complete setup.");
+        setIsRefreshing(false);
+        return;
+      }
+      
+      console.log("Found company created by user:", company);
+      
+      // Update profile with company ID and admin role
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .upsert({
+          id: user.id,
+          company_id: company.id,
+          role: "administrator",
+          email: user.email
+        });
+        
+      if (updateError) {
+        console.error("Error fixing profile:", updateError);
+        toast.error("Failed to update profile. Please try setup again.");
+        setIsRefreshing(false);
+        return;
+      }
+      
+      localStorage.setItem('maintenease_setup_complete', 'true');
+      toast.success("Profile fixed successfully! You now have admin access.");
+      
+      // Force refresh after a short delay
+      setTimeout(() => {
+        setForceRefresh(prev => prev + 1);
+        setIsRefreshing(false);
+      }, 1000);
+      
+    } catch (error) {
+      console.error("Error fixing profile:", error);
+      toast.error("Error occurred while fixing profile");
+      setIsRefreshing(false);
     }
   };
 
@@ -189,10 +295,39 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
           
           <Button 
             variant="outline"
-            onClick={handleCheckCompanyAssociation} 
+            onClick={handleRefreshCompanyAssociation} 
             className="w-full"
+            disabled={isRefreshing}
           >
-            Check Company Association
+            {isRefreshing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Checking...
+              </>
+            ) : (
+              <>
+                <RefreshCcw className="h-4 w-4 mr-2" />
+                Refresh Company Association
+              </>
+            )}
+          </Button>
+          
+          <Button 
+            variant="secondary"
+            onClick={handleFixProfile} 
+            className="w-full"
+            disabled={isRefreshing}
+          >
+            {isRefreshing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Fixing...
+              </>
+            ) : (
+              <>
+                Fix Admin Access
+              </>
+            )}
           </Button>
         </div>
       </div>

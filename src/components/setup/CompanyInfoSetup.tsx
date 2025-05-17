@@ -25,6 +25,7 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   
   const form = useForm<CompanyInfoFormValues>({
     resolver: zodResolver(companyInfoSchema),
@@ -40,6 +41,19 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       website: data?.website || "",
     },
   });
+
+  // Get current user
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        console.log("Current user ID:", user.id);
+      }
+    };
+    
+    getCurrentUser();
+  }, []);
 
   // Check if we have company data from profile edit
   useEffect(() => {
@@ -108,6 +122,49 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     return () => subscription.unsubscribe();
   }, [form, logoPreview, onUpdate]);
 
+  // Check and fix user profile if needed
+  const checkAndFixUserProfile = async (companyId: string) => {
+    if (!userId) return;
+    
+    try {
+      // Check current profile
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("company_id, role")
+        .eq("id", userId)
+        .maybeSingle();
+      
+      console.log("Current user profile:", profile);
+      
+      // If profile doesn't exist or company_id is not set
+      if (!profile || !profile.company_id) {
+        console.log("Fixing user profile - setting company_id and role");
+        
+        // Try to update/create profile
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .upsert({
+            id: userId,
+            company_id: companyId,
+            role: "administrator"
+          });
+        
+        if (updateError) {
+          console.error("Error fixing user profile:", updateError);
+          throw updateError;
+        } else {
+          console.log("User profile fixed successfully");
+          return true;
+        }
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error checking/fixing user profile:", error);
+      return false;
+    }
+  };
+
   const onSubmit = async (values: CompanyInfoFormValues) => {
     const formData = { ...values, logo: logoPreview };
     onUpdate(formData);
@@ -119,6 +176,10 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       if (companyId) {
         // Update existing company
         await updateCompany(companyId, formData);
+        
+        // Ensure user profile is linked to company
+        await checkAndFixUserProfile(companyId);
+        
         toast.success("Company information updated");
       } else {
         // Create new company
@@ -128,21 +189,10 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
           setCompanyId(company.id);
           
           // Make sure user profile is updated with the company ID
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            const { error } = await supabase
-              .from("profiles")
-              .update({ company_id: company.id })
-              .eq("id", user.id);
-              
-            if (error) {
-              console.error("Failed to associate user with company:", error);
-              toast.error("Failed to associate your account with the company");
-            } else {
-              console.log("User associated with company:", company.id);
-              localStorage.setItem('maintenease_setup_complete', 'true');
-            }
-          }
+          await checkAndFixUserProfile(company.id);
+          
+          // Set completion flag
+          localStorage.setItem('maintenease_setup_complete', 'true');
           
           toast.success("Company created successfully");
         }

@@ -12,7 +12,12 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     console.log("Creating company with data:", companyData);
     
     // Get the current user
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError) {
+      console.error("Error fetching user:", userError);
+      throw new Error("Failed to get current user");
+    }
     
     if (!user) {
       throw new Error("User not authenticated");
@@ -37,7 +42,10 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
         // If company exists, associate user with it instead of creating a new one
         const { error: updateError } = await supabase
           .from("profiles")
-          .update({ company_id: existingCompany.id })
+          .update({ 
+            company_id: existingCompany.id,
+            role: "administrator" 
+          })
           .eq("id", user.id);
           
         if (updateError) {
@@ -45,7 +53,9 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
           throw updateError;
         }
         
-        // Also set user as administrator for the company
+        console.log("User set as administrator for existing company");
+        
+        // Update user roles in a separate query to ensure it's set
         const { error: roleError } = await supabase
           .from("profiles")
           .update({ role: "administrator" })
@@ -71,11 +81,20 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
           throw fetchError;
         }
         
+        // Verify the profile update was successful by checking again
+        const { data: profileCheck } = await supabase
+          .from("profiles")
+          .select("company_id, role")
+          .eq("id", user.id)
+          .maybeSingle();
+          
+        console.log("Updated profile check:", profileCheck);
+        
         return company;
       }
     }
     
-    // Create company - RLS policies are now in place to handle permissions
+    // Create company 
     const { data: company, error: companyError } = await supabase
       .from("companies")
       .insert({
@@ -101,11 +120,12 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     
     console.log("Company created successfully:", company);
     
-    // Associate user with the company
+    // First update - set company_id
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ 
-        company_id: company.id 
+        company_id: company.id,
+        role: "administrator"
       })
       .eq("id", user.id);
     
@@ -114,7 +134,9 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       throw updateError;
     }
     
-    // Set user as administrator (regardless of current role)
+    console.log("User profile updated with company ID:", company.id);
+    
+    // Second update - ensure role is set separately (for redundancy)
     const { error: roleError } = await supabase
       .from("profiles")
       .update({ role: "administrator" })
@@ -126,6 +148,15 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     }
     
     console.log("User set as administrator for the company");
+    
+    // Verify the profile update was successful
+    const { data: profileCheck } = await supabase
+      .from("profiles")
+      .select("company_id, role")
+      .eq("id", user.id)
+      .maybeSingle();
+      
+    console.log("Updated profile check:", profileCheck);
     
     // Set setup complete flag
     localStorage.setItem('maintenease_setup_complete', 'true');
