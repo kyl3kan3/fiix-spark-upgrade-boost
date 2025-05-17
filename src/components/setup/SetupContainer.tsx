@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -65,7 +64,16 @@ export const SetupContainer: React.FC = () => {
           <SetupProgress />
           
           {/* Main setup content */}
-          <Tabs value={steps[currentStep].id} defaultValue={steps[0].id}>
+          <Tabs 
+            value={steps[currentStep].id} 
+            defaultValue={steps[0].id}
+            onValueChange={(value) => {
+              const newStepIndex = steps.findIndex(step => step.id === value);
+              if (newStepIndex !== -1) {
+                setCurrentStep(newStepIndex);
+              }
+            }}
+          >
             <TabsList className="hidden">
               {steps.map((step) => (
                 <TabsTrigger key={step.id} value={step.id}>
@@ -76,7 +84,7 @@ export const SetupContainer: React.FC = () => {
             
             <div className="mt-6">
               <CurrentStepComponent 
-                data={setupData[steps[currentStep].id.replace(/-/g, '') as keyof typeof setupData] || {}} 
+                data={setupData[steps[currentStep].id.replace(/-/g, '').replace('company-info', 'companyInfo') as keyof typeof setupData] || {}} 
                 onUpdate={(data: any) => {
                   // Make sure we're using the correct camelCase for company-info
                   const sectionKey = steps[currentStep].id === 'company-info' 

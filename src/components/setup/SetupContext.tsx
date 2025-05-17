@@ -59,24 +59,32 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Update setup data in state and save to Supabase and localStorage
   const updateSetupData = async (section: keyof SetupData, data: any) => {
-    setSetupData(prev => {
-      // Ensure we're using the correct camelCase key
-      const normalizedSection = section.charAt(0).toLowerCase() + section.slice(1) as keyof SetupData;
-      
-      const updatedData = {
-        ...prev,
-        [normalizedSection]: data
-      };
-      
-      console.log(`Updated ${normalizedSection} in setupData:`, data);
-      
-      // Save to Supabase and localStorage asynchronously
-      saveSetupData(updatedData, setupComplete).catch(error => {
-        console.error(`Error saving ${normalizedSection}:`, error);
+    console.log(`Updating section ${String(section)} with data:`, data);
+    
+    try {
+      setSetupData(prev => {
+        // Ensure we're using the correct camelCase key
+        const normalizedSection = section.charAt(0).toLowerCase() + section.slice(1) as keyof SetupData;
+        
+        const updatedData = {
+          ...prev,
+          [normalizedSection]: data
+        };
+        
+        console.log(`Updated ${String(normalizedSection)} in setupData:`, data);
+        
+        // Save to Supabase and localStorage asynchronously
+        saveSetupData(updatedData, setupComplete).catch(error => {
+          console.error(`Error saving ${String(normalizedSection)}:`, error);
+          toast.error(`Failed to save ${String(normalizedSection)} data`);
+        });
+        
+        return updatedData;
       });
-      
-      return updatedData;
-    });
+    } catch (error) {
+      console.error(`Error in updateSetupData for section ${String(section)}:`, error);
+      toast.error(`Failed to update ${String(section)} data`);
+    }
   };
 
   // Update setup completion status in state and save to Supabase and localStorage
@@ -87,8 +95,10 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       try {
         await saveSetupData(setupData, setupComplete);
+        console.log("Updated completion status:", setupComplete);
       } catch (error) {
         console.error("Error updating setup completion status:", error);
+        toast.error("Failed to update setup completion status");
       }
     };
     

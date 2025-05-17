@@ -34,6 +34,8 @@ export const SetupNavigation: React.FC = () => {
         window.scrollTo(0, 0);
         
         console.log(`Moving to step ${currentStep + 1}: ${steps[currentStep + 1].label}`);
+      } else {
+        console.log("Already at the last step");
       }
     } catch (error) {
       console.error("Error navigating to next step:", error);
@@ -45,6 +47,7 @@ export const SetupNavigation: React.FC = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       window.scrollTo(0, 0);
+      console.log(`Moving to previous step ${currentStep - 1}: ${steps[currentStep - 1].label}`);
     }
   };
 
@@ -88,7 +91,7 @@ export const SetupNavigation: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-between border-t pt-6">
+    <div className="flex justify-between w-full border-t pt-6">
       <Button
         variant="outline"
         onClick={handlePrevious}
