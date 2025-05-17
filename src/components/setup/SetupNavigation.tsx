@@ -21,11 +21,23 @@ export const SetupNavigation: React.FC = () => {
   } = useSetup();
 
   const handleNext = async () => {
-    if (currentStep < steps.length - 1) {
-      // Save current step data
-      await saveSetupData(setupData, false);
-      setCurrentStep(currentStep + 1);
-      window.scrollTo(0, 0);
+    try {
+      if (currentStep < steps.length - 1) {
+        // Save current step data
+        console.log("Saving setup data before moving to next step:", setupData);
+        await saveSetupData(setupData, false);
+        
+        // Update step in state
+        setCurrentStep(currentStep + 1);
+        
+        // Scroll to top for better UX
+        window.scrollTo(0, 0);
+        
+        console.log(`Moving to step ${currentStep + 1}: ${steps[currentStep + 1].label}`);
+      }
+    } catch (error) {
+      console.error("Error navigating to next step:", error);
+      toast.error("There was a problem saving your progress. Please try again.");
     }
   };
 
@@ -81,13 +93,19 @@ export const SetupNavigation: React.FC = () => {
         variant="outline"
         onClick={handlePrevious}
         disabled={currentStep === 0 || isLoading}
+        type="button"
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Previous
       </Button>
       
       <div className="flex gap-2">
         {currentStep < steps.length - 2 && (
-          <Button variant="ghost" onClick={handleSkip} disabled={isLoading}>
+          <Button 
+            variant="ghost" 
+            onClick={handleSkip} 
+            disabled={isLoading}
+            type="button"
+          >
             Skip for now
           </Button>
         )}
@@ -96,12 +114,17 @@ export const SetupNavigation: React.FC = () => {
           <Button 
             onClick={handleComplete}
             disabled={setupComplete || isLoading}
+            type="button"
           >
             <CheckCircle className="mr-2 h-4 w-4" /> 
             Complete Setup
           </Button>
         ) : (
-          <Button onClick={handleNext} disabled={isLoading}>
+          <Button 
+            onClick={handleNext} 
+            disabled={isLoading}
+            type="button"
+          >
             Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}

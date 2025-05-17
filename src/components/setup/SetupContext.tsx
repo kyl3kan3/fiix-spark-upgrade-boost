@@ -13,7 +13,7 @@ interface SetupContextType {
   isLoading: boolean;
 }
 
-// Initialize with empty data - removed "initialSetupData" variable to prevent conflict
+// Initialize with empty data
 const defaultSetupData: SetupData = {
   companyInfo: {},
   userRoles: {},
@@ -40,6 +40,7 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         // Load data from Supabase (falls back to localStorage)
         const data = await loadSetupData();
+        console.log("Loaded setup data:", data);
         setSetupData(data);
         
         // Check if setup is complete
@@ -67,12 +68,12 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         [normalizedSection]: data
       };
       
+      console.log(`Updated ${normalizedSection} in setupData:`, data);
+      
       // Save to Supabase and localStorage asynchronously
       saveSetupData(updatedData, setupComplete).catch(error => {
         console.error(`Error saving ${normalizedSection}:`, error);
       });
-      
-      console.log(`Updated ${normalizedSection} in setupData:`, data);
       
       return updatedData;
     });
