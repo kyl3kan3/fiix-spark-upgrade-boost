@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -75,7 +76,7 @@ export const SetupContainer: React.FC = () => {
             
             <div className="mt-6">
               <CurrentStepComponent 
-                data={setupData[step.id.replace(/-/g, '') as keyof typeof setupData] || {}} 
+                data={setupData[steps[currentStep].id.replace(/-/g, '') as keyof typeof setupData] || {}} 
                 onUpdate={(data: any) => {
                   // Make sure we're using the correct camelCase for company-info
                   const sectionKey = steps[currentStep].id === 'company-info' 
