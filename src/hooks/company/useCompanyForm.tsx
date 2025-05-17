@@ -12,6 +12,9 @@ export const useCompanyForm = (initialData: any, onUpdate: (data: any) => void) 
   const { companyId } = useCompanyData(form, setLogoPreview);
   const { checkAndFixUserProfile } = useUserProfile();
   const { isSubmitting, handleSubmit: submitCompany } = useCompanySubmit(checkAndFixUserProfile);
+  
+  // Declare the state before using it in other hooks
+  const [companyIdState, setCompanyId] = useState<string | null>(companyId);
 
   const { handleSubmit } = useCompanyFormSubmit(
     submitCompany, 
@@ -20,8 +23,6 @@ export const useCompanyForm = (initialData: any, onUpdate: (data: any) => void) 
     onUpdate, 
     setCompanyId
   );
-
-  const [companyIdState, setCompanyId] = useState<string | null>(companyId);
 
   return {
     form,
