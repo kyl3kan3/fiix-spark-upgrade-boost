@@ -46,14 +46,17 @@ export const SetupNavigation: React.FC = () => {
 
   const handleComplete = async () => {
     try {
-      // Mark setup as complete
+      // Mark setup as complete in context
       setSetupComplete(true);
       
-      // Save setup data with completed flag
+      // Save setup data with completed flag to database
       const success = await saveSetupData(setupData, true);
       
       // Ensure localStorage is also updated
       setLocalSetupComplete();
+      
+      // Double-check the localStorage flag is set
+      localStorage.setItem('maintenease_setup_complete', 'true');
       
       if (success) {
         toast.success("Setup completed successfully!");

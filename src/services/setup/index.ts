@@ -71,7 +71,14 @@ export const saveSetupData = async (setupData: SetupData, isComplete: boolean = 
       return false;
     }
 
-    console.log("Saved setup data to database");
+    console.log(`Saved setup data to database, isComplete flag: ${isComplete}`);
+    
+    // Double-check that local storage flag is set
+    if (isComplete) {
+      localStorage.setItem('maintenease_setup_complete', 'true');
+      console.log("Setup complete flag set to true in local storage");
+    }
+    
     return true;
   } catch (error) {
     console.error("Error in saveSetupData:", error);
@@ -86,6 +93,7 @@ export const isSetupCompleted = async (): Promise<boolean> => {
   try {
     // First check localStorage for quick access
     if (isSetupCompletedLocally()) {
+      console.log("Setup completed according to localStorage");
       return true;
     }
     
@@ -93,7 +101,13 @@ export const isSetupCompleted = async (): Promise<boolean> => {
     const isAuthenticated = await isUserAuthenticated();
     
     if (isAuthenticated) {
-      return await isSetupCompletedInDatabase();
+      const isCompleteInDb = await isSetupCompletedInDatabase();
+      if (isCompleteInDb) {
+        // Sync to localStorage
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        console.log("Setup completed according to database, updated localStorage");
+      }
+      return isCompleteInDb;
     }
     
     return false;

@@ -14,4 +14,9 @@ export const clearOnboardingStorage = (): void => {
 
 export const setSetupComplete = (): void => {
   localStorage.setItem('maintenease_setup_complete', 'true');
+  console.log("Local storage setup complete flag set to true");
+};
+
+export const isSetupCompleteInLocalStorage = (): boolean => {
+  return localStorage.getItem('maintenease_setup_complete') === 'true';
 };

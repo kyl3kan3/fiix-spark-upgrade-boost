@@ -23,6 +23,17 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     // Check if setup is completed from both local storage and database
     const checkSetupStatus = async () => {
       try {
+        // First check localStorage for immediate result
+        const localSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
+        
+        // If localStorage indicates complete, use that result immediately
+        if (localSetupComplete) {
+          setSetupComplete(true);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Otherwise check database (this will also update localStorage if needed)
         const isComplete = await isSetupCompleted();
         setSetupComplete(isComplete);
         console.log("Setup completed status:", isComplete);
@@ -49,6 +60,13 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     );
   }
 
+  // Debug log to help track the issue
+  console.log("CompanyRequiredWrapper state:", { 
+    setupComplete, 
+    hasCompanyId: !!profileData?.company_id, 
+    company_id: profileData?.company_id 
+  });
+
   // If setup is explicitly marked as complete, allow access
   if (setupComplete === true) {
     console.log("Setup is marked as complete, allowing access");
@@ -59,6 +77,10 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // This handles cases where the company was created but setup wasn't marked complete
   if (profileData?.company_id) {
     console.log("Company ID exists, allowing access");
+    
+    // Auto-mark setup as complete if we have a company ID but setup wasn't marked
+    localStorage.setItem('maintenease_setup_complete', 'true');
+    
     return <>{children}</>;
   }
 
