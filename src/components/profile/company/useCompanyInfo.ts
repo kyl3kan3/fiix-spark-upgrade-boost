@@ -22,14 +22,19 @@ export const useCompanyInfo = () => {
       const isSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
       setSetupCompleted(isSetupComplete);
 
-      // Fetch company from Supabase
-      const company = await fetchUserCompany();
-      
-      if (company) {
-        console.log("Retrieved company from Supabase:", company);
-        setCompanyId(company.id);
-        setCompanyInfo(mapCompanyToCompanyInfo(company));
-        return;
+      try {
+        // Fetch company from Supabase
+        const company = await fetchUserCompany();
+        
+        if (company) {
+          console.log("Retrieved company from Supabase:", company);
+          setCompanyId(company.id);
+          setCompanyInfo(mapCompanyToCompanyInfo(company));
+          return;
+        }
+      } catch (companyError) {
+        console.error("Error fetching company:", companyError);
+        // Continue to fallback instead of throwing error
       }
       
       // Fallback to localStorage if not found in Supabase

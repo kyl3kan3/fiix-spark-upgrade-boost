@@ -17,7 +17,7 @@ export const loadSetupData = async (): Promise<SetupData> => {
       const { data: settings, error: settingsError } = await supabase
         .from("system_settings")
         .select("*")
-        .maybeSingle();
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle case where no rows exist
         
       if (settingsError) {
         console.error("Error fetching settings from Supabase:", settingsError);
@@ -230,7 +230,7 @@ export const isSetupCompleted = async (): Promise<boolean> => {
       const { data: settings, error: fetchError } = await supabase
         .from("system_settings")
         .select("setup_completed")
-        .maybeSingle();
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle case where no rows exist
         
       if (fetchError) {
         console.error("Error fetching setup completion status:", fetchError);
