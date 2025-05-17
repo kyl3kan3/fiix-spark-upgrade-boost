@@ -11,15 +11,17 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
   try {
     console.log("Creating company with data:", companyData);
     
-    // Get the current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    // Get the current user - with better error handling
+    const { data, error: userError } = await supabase.auth.getUser();
     
     if (userError) {
       console.error("Error fetching user:", userError);
       throw new Error("Failed to get current user");
     }
     
+    const user = data?.user;
     if (!user) {
+      console.error("No authenticated user found");
       throw new Error("User not authenticated");
     }
     
@@ -167,7 +169,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     localStorage.setItem('maintenease_setup_complete', 'true');
     
     return company;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in createCompany:", error);
     throw error;
   }

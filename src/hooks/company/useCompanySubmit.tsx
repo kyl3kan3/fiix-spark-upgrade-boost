@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
 import { createCompany, updateCompany } from "@/services/company";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useCompanySubmit = (
   checkAndFixUserProfile: (companyId: string) => Promise<boolean>
@@ -20,6 +21,16 @@ export const useCompanySubmit = (
     
     setIsSubmitting(true);
     try {
+      // Check if user is logged in first
+      const { data, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !data.user) {
+        console.error("Authentication error:", authError || "No user found");
+        toast.error("You must be signed in to save company information");
+        setIsSubmitting(false);
+        return null;
+      }
+      
       let updatedCompanyId = companyId;
       
       if (companyId) {
@@ -49,7 +60,15 @@ export const useCompanySubmit = (
       return updatedCompanyId;
     } catch (error: any) {
       console.error("Error saving company information:", error);
-      toast.error(error.message || "Failed to save company information");
+      let errorMessage = error.message || "Failed to save company information";
+      
+      // Handle specific error types with user-friendly messages
+      if (errorMessage.includes("Failed to get current user") || 
+          errorMessage.includes("User not authenticated")) {
+        errorMessage = "You need to be signed in to save company information. Please sign in and try again.";
+      }
+      
+      toast.error(errorMessage);
       return null;
     } finally {
       setIsSubmitting(false);

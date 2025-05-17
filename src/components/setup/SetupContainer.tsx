@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import SetupHeader from "./SetupHeader";
 import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
@@ -15,7 +19,15 @@ export interface SetupStepComponentProps {
 }
 
 export const SetupContainer: React.FC = () => {
-  const { currentStep, setCurrentStep, updateSetupData, setupData, isLoading } = useSetup();
+  const { 
+    currentStep, 
+    setCurrentStep, 
+    updateSetupData, 
+    setupData, 
+    isLoading, 
+    authStatus 
+  } = useSetup();
+  const navigate = useNavigate();
   
   // Keep the tabs in sync with the current step
   useEffect(() => {
@@ -23,7 +35,8 @@ export const SetupContainer: React.FC = () => {
   }, [currentStep]);
   
   const CurrentStepComponent = steps[currentStep].component;
-  
+
+  // Show loading state
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -42,6 +55,50 @@ export const SetupContainer: React.FC = () => {
             <div className="flex justify-between w-full">
               <Skeleton className="h-10 w-24" />
               <Skeleton className="h-10 w-24" />
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show authentication warning if not authenticated
+  if (authStatus === 'unauthenticated') {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <SetupHeader title="Authentication Required" subtitle="Please sign in to continue setup" />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">Authentication Required</CardTitle>
+            <CardDescription>
+              You need to be signed in to complete the setup process
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Not Authenticated</AlertTitle>
+              <AlertDescription>
+                You must be signed in to create and configure your company. Your setup progress will be saved locally,
+                but you won't be able to complete the process until you sign in.
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+          <CardFooter>
+            <div className="flex flex-col sm:flex-row gap-4 w-full">
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="w-full sm:w-auto"
+              >
+                Sign In
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/')}
+                className="w-full sm:w-auto"
+              >
+                Return Home
+              </Button>
             </div>
           </CardFooter>
         </Card>

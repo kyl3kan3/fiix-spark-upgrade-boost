@@ -12,6 +12,7 @@ interface SetupContextType {
   setupComplete: boolean;
   setSetupComplete: (complete: boolean) => void;
   isLoading: boolean;
+  authStatus: 'loading' | 'authenticated' | 'unauthenticated';
 }
 
 // Initialize with empty data
@@ -33,6 +34,45 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [setupComplete, setSetupComplete] = useState(false);
   const [setupData, setSetupData] = useState<SetupData>(defaultSetupData);
   const [isLoading, setIsLoading] = useState(true);
+  const [authStatus, setAuthStatus] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        
+        if (error) {
+          console.error("Auth error:", error);
+          setAuthStatus('unauthenticated');
+          return;
+        }
+        
+        if (data.user) {
+          console.log("User authenticated:", data.user.id);
+          setAuthStatus('authenticated');
+        } else {
+          console.log("No authenticated user found");
+          setAuthStatus('unauthenticated');
+        }
+      } catch (err) {
+        console.error("Error checking auth status:", err);
+        setAuthStatus('unauthenticated');
+      }
+    };
+    
+    checkAuth();
+    
+    // Subscribe to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", event, session?.user?.id);
+      setAuthStatus(session ? 'authenticated' : 'unauthenticated');
+    });
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   // Load initial data from Supabase or localStorage
   useEffect(() => {
@@ -114,7 +154,8 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updateSetupData,
       setupComplete,
       setSetupComplete,
-      isLoading
+      isLoading,
+      authStatus
     }}>
       {children}
     </SetupContext.Provider>
