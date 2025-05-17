@@ -23,7 +23,7 @@ export const SetupContainer: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <SetupHeader />
+        <SetupHeader title="System Setup" subtitle="Loading your setup data..." />
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-1/3" />
@@ -47,7 +47,7 @@ export const SetupContainer: React.FC = () => {
   
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <SetupHeader />
+      <SetupHeader title="MaintenEase Setup Wizard" subtitle="Configure your maintenance management system" />
       
       <Card className="mb-6">
         <CardHeader>
