@@ -21,7 +21,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // Check database status on mount
   useEffect(() => {
     refreshCompanyStatus();
-  }, []);
+  }, [refreshCompanyStatus]);
 
   // Wait for both profile data and setup check to complete
   if (isLoading) {

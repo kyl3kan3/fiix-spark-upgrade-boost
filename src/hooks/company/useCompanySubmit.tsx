@@ -36,6 +36,7 @@ export const useCompanySubmit = (
       if (companyId) {
         // Update existing company
         await updateCompany(companyId, formData);
+        console.log("Company updated with ID:", companyId);
         
         // Ensure user profile is linked to company
         await checkAndFixUserProfile(companyId);
@@ -46,6 +47,7 @@ export const useCompanySubmit = (
         const company = await createCompany(formData);
         if (company) {
           updatedCompanyId = company.id;
+          console.log("New company created with ID:", company.id);
           
           // Make sure user profile is updated with the company ID
           await checkAndFixUserProfile(company.id);
@@ -55,6 +57,12 @@ export const useCompanySubmit = (
           
           toast.success("Company created successfully");
         }
+      }
+
+      // Extra confirmation that setup is complete
+      if (updatedCompanyId) {
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        console.log("Setup marked as complete with company ID:", updatedCompanyId);
       }
 
       return updatedCompanyId;

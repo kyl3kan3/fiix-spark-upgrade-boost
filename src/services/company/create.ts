@@ -1,7 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyInfo } from "@/components/profile/company/types";
-import { toast } from "sonner";
 import { CompanyData } from "./types";
 
 /**

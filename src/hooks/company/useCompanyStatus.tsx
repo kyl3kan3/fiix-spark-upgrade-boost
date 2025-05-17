@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -10,16 +10,14 @@ export function useCompanyStatus() {
   const [profileError, setProfileError] = useState<Error | null>(null);
 
   // Check if user has completed setup
-  const checkSetupCompleted = () => {
+  const checkSetupCompleted = useCallback(() => {
     const setupCompleted = localStorage.getItem('maintenease_setup_complete');
     return setupCompleted === 'true';
-  };
+  }, []);
 
   // Load profile data
-  const loadProfileData = async () => {
+  const loadProfileData = useCallback(async () => {
     try {
-      setIsLoading(true);
-      
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -33,7 +31,7 @@ export function useCompanyStatus() {
         .from("profiles")
         .select("company_id, role")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error("Error loading profile:", error);
@@ -50,12 +48,10 @@ export function useCompanyStatus() {
         setProfileError(new Error('Unknown error loading profile data'));
       }
       return null;
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const refreshCompanyStatus = async () => {
+  const refreshCompanyStatus = useCallback(async () => {
     // Reset state for refresh
     setIsLoading(true);
     setProfileError(null);
@@ -64,6 +60,7 @@ export function useCompanyStatus() {
       // Check setup status
       const isSetupComplete = checkSetupCompleted();
       setSetupComplete(isSetupComplete);
+      console.log("Setup complete status:", isSetupComplete);
       
       // Load profile data
       const profile = await loadProfileData();
@@ -71,6 +68,12 @@ export function useCompanyStatus() {
       if (profile?.company_id) {
         setCompanyId(profile.company_id);
         console.log("Company ID found in profile:", profile.company_id);
+        
+        // If we find a company ID, make sure setup is marked as complete
+        if (!isSetupComplete) {
+          localStorage.setItem('maintenease_setup_complete', 'true');
+          setSetupComplete(true);
+        }
       } else {
         setCompanyId(null);
         console.log("No company ID found in profile");
@@ -85,18 +88,19 @@ export function useCompanyStatus() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [checkSetupCompleted, loadProfileData]);
 
   // Initial load
   useEffect(() => {
     refreshCompanyStatus();
-  }, []);
+  }, [refreshCompanyStatus]);
 
-  const handleCompanyFound = (newCompanyId: string) => {
+  const handleCompanyFound = useCallback((newCompanyId: string) => {
     setCompanyId(newCompanyId);
     localStorage.setItem('maintenease_setup_complete', 'true');
     setSetupComplete(true);
-  };
+    console.log("Company found and setup marked complete:", newCompanyId);
+  }, []);
 
   return {
     isLoading,
