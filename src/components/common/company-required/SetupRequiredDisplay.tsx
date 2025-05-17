@@ -21,6 +21,11 @@ export const SetupRequiredDisplay: React.FC<SetupRequiredDisplayProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const handleGoToSetup = () => {
+    // Force setup mode by passing parameter to clear any "already setup" message
+    navigate('/setup?forceSetup=true');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
@@ -45,7 +50,7 @@ export const SetupRequiredDisplay: React.FC<SetupRequiredDisplayProps> = ({
 
         <div className="space-y-4">
           <Button 
-            onClick={() => navigate('/setup')} 
+            onClick={handleGoToSetup} 
             className="w-full"
           >
             Complete Company Setup

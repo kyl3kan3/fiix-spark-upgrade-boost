@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect } from "react";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
 import { SetupRequiredDisplay } from "./company-required/SetupRequiredDisplay";
@@ -16,6 +17,11 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     refreshCompanyStatus,
     handleCompanyFound
   } = useCompanyStatus();
+
+  // Check database status on mount
+  useEffect(() => {
+    refreshCompanyStatus();
+  }, []);
 
   // Wait for both profile data and setup check to complete
   if (isLoading) {

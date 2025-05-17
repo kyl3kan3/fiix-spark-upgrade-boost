@@ -30,6 +30,12 @@ export const useCompanyInfo = () => {
           console.log("Retrieved company from Supabase:", company);
           setCompanyId(company.id);
           setCompanyInfo(mapCompanyToCompanyInfo(company));
+          
+          // Ensure setup is marked as complete if we have company data
+          if (!isSetupComplete && company.id) {
+            localStorage.setItem('maintenease_setup_complete', 'true');
+            setSetupCompleted(true);
+          }
           return;
         }
       } catch (companyError) {
@@ -101,6 +107,11 @@ export const useCompanyInfo = () => {
       
       // Update local state
       setCompanyInfo(data);
+      
+      // Mark setup as complete
+      localStorage.setItem('maintenease_setup_complete', 'true');
+      setSetupCompleted(true);
+      
       toast.success("Company information saved");
       return true;
     } catch (error) {

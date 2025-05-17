@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -26,6 +27,15 @@ const SetupPage = () => {
   const [showWelcomeBack, setShowWelcomeBack] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
+  const [forceSetupMode, setForceSetupMode] = useState(false);
+
+  // Check if URL has a forceSetup parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('forceSetup')) {
+      setForceSetupMode(true);
+    }
+  }, []);
 
   // Check if setup has been completed
   useEffect(() => {
@@ -34,7 +44,7 @@ const SetupPage = () => {
       try {
         const setupComplete = await isSetupCompleted();
         
-        if (setupComplete) {
+        if (setupComplete && !forceSetupMode) {
           setShowWelcomeBack(true);
           toast.info("Setup has already been completed. You can edit your settings here.");
         }
@@ -46,7 +56,7 @@ const SetupPage = () => {
     };
     
     checkSetupStatus();
-  }, [navigate]);
+  }, [navigate, forceSetupMode]);
 
   const handleResetSetup = async () => {
     setIsResetting(true);
