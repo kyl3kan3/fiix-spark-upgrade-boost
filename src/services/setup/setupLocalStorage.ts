@@ -27,16 +27,16 @@ export const loadSetupData = async (): Promise<SetupData> => {
       if (settings) {
         console.log("Found settings in Supabase:", settings);
         
-        // Convert settings to our SetupData format
+        // Convert settings to our SetupData format with proper type checking
         const setupData: SetupData = {
-          companyInfo: settings.company_info || {},
-          userRoles: settings.user_roles || {},
-          assetCategories: settings.asset_categories || {},
-          locations: settings.locations || {},
-          maintenanceSchedules: settings.maintenance_schedules || {},
-          notifications: settings.notifications || {},
-          integrations: settings.integrations || {},
-          dashboardCustomization: settings.dashboard_customization || {}
+          companyInfo: (settings.company_info as object) || {},
+          userRoles: (settings.user_roles as object) || {},
+          assetCategories: (settings.asset_categories as object) || {},
+          locations: (settings.locations as object) || {},
+          maintenanceSchedules: (settings.maintenance_schedules as object) || {},
+          notifications: (settings.notifications as object) || {},
+          integrations: (settings.integrations as object) || {},
+          dashboardCustomization: (settings.dashboard_customization as object) || {}
         };
         
         // Also update localStorage for backup
