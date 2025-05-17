@@ -32,7 +32,46 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       }
       
       if (existingCompany) {
-        throw new Error("A company with this name already exists");
+        console.log("Company with this name already exists:", existingCompany);
+        
+        // If company exists, associate user with it instead of creating a new one
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({ company_id: existingCompany.id })
+          .eq("id", user.id);
+          
+        if (updateError) {
+          console.error("Error associating user with existing company:", updateError);
+          throw updateError;
+        }
+        
+        // Also set user as administrator for the company
+        const { error: roleError } = await supabase
+          .from("profiles")
+          .update({ role: "administrator" })
+          .eq("id", user.id);
+          
+        if (roleError) {
+          console.error("Error setting user as administrator:", roleError);
+          throw roleError;
+        }
+        
+        // Set up complete flag
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        
+        // Fetch full company data to return
+        const { data: company, error: fetchError } = await supabase
+          .from("companies")
+          .select("*")
+          .eq("id", existingCompany.id)
+          .single();
+          
+        if (fetchError) {
+          console.error("Error fetching existing company details:", fetchError);
+          throw fetchError;
+        }
+        
+        return company;
       }
     }
     
@@ -87,6 +126,9 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     }
     
     console.log("User set as administrator for the company");
+    
+    // Set setup complete flag
+    localStorage.setItem('maintenease_setup_complete', 'true');
     
     return company;
   } catch (error) {

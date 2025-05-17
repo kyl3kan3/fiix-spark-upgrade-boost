@@ -69,12 +69,15 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
       try {
         const company = await fetchUserCompany();
         if (company) {
+          console.log("Found existing company:", company);
           setCompanyId(company.id);
           const companyInfo = mapCompanyToCompanyInfo(company);
           form.reset(companyInfo);
           if (company.logo) {
             setLogoPreview(company.logo);
           }
+        } else {
+          console.log("No existing company found for user");
         }
       } catch (error) {
         console.error("Error loading company data:", error);
@@ -111,6 +114,8 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     
     setIsSubmitting(true);
     try {
+      let updatedCompanyId = companyId;
+      
       if (companyId) {
         // Update existing company
         await updateCompany(companyId, formData);
@@ -119,7 +124,26 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
         // Create new company
         const company = await createCompany(formData);
         if (company) {
+          updatedCompanyId = company.id;
           setCompanyId(company.id);
+          
+          // Make sure user profile is updated with the company ID
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { error } = await supabase
+              .from("profiles")
+              .update({ company_id: company.id })
+              .eq("id", user.id);
+              
+            if (error) {
+              console.error("Failed to associate user with company:", error);
+              toast.error("Failed to associate your account with the company");
+            } else {
+              console.log("User associated with company:", company.id);
+              localStorage.setItem('maintenease_setup_complete', 'true');
+            }
+          }
+          
           toast.success("Company created successfully");
         }
       }

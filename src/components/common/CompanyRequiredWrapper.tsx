@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { isSetupCompleted } from "@/services/setup";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CompanyRequiredWrapperProps {
   children: React.ReactNode;
@@ -17,44 +18,86 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const { profileData, isLoading: profileLoading, error: profileError } = useUserProfile(['role', 'company_id']);
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [forceRefresh, setForceRefresh] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Set setup complete to true immediately if company_id exists in the profile
-    if (profileData?.company_id) {
-      setSetupComplete(true);
-      localStorage.setItem('maintenease_setup_complete', 'true');
-      setIsLoading(false);
-      return;
-    }
-
-    // Only check setup status if we don't have a company_id
-    const checkSetupStatus = async () => {
-      try {
-        // First check localStorage for immediate result
-        const localSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
+  // Function to directly check the user's profile in the database
+  const checkUserCompanyInDatabase = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id, role')
+        .eq('id', user.id)
+        .maybeSingle();
         
-        // If localStorage indicates complete, use that result immediately
-        if (localSetupComplete) {
-          setSetupComplete(true);
-          setIsLoading(false);
-          return;
-        }
-        
-        // Otherwise check database (this will also update localStorage if needed)
-        const isComplete = await isSetupCompleted();
-        setSetupComplete(isComplete);
-        console.log("Setup completed status:", isComplete);
-      } catch (error) {
-        console.error("Error checking setup completion:", error);
-        setSetupComplete(false);
-      } finally {
-        setIsLoading(false);
+      console.log("Direct database check for profile:", profile);
+      
+      if (profile?.company_id) {
+        // If company_id exists, mark setup as complete
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        return profile.company_id;
       }
+      
+      return null;
+    } catch (error) {
+      console.error("Error checking user profile directly:", error);
+      return null;
+    }
+  };
+
+  // Effect to check for user profile changes
+  useEffect(() => {
+    const checkCompanyProfileLink = async () => {
+      if (profileData?.company_id) {
+        setSetupComplete(true);
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        setIsLoading(false);
+        return;
+      }
+      
+      // If no company_id in profile data, check database directly as fallback
+      const companyId = await checkUserCompanyInDatabase();
+      if (companyId) {
+        setSetupComplete(true);
+        setIsLoading(false);
+        // Force a refresh to update profile data
+        setForceRefresh(prev => prev + 1);
+        return;
+      }
+
+      // Only check setup status if we don't have a company_id
+      const checkSetupStatus = async () => {
+        try {
+          // First check localStorage for immediate result
+          const localSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
+          
+          // If localStorage indicates complete, use that result immediately
+          if (localSetupComplete) {
+            setSetupComplete(true);
+            setIsLoading(false);
+            return;
+          }
+          
+          // Otherwise check database (this will also update localStorage if needed)
+          const isComplete = await isSetupCompleted();
+          setSetupComplete(isComplete);
+          console.log("Setup completed status:", isComplete);
+        } catch (error) {
+          console.error("Error checking setup completion:", error);
+          setSetupComplete(false);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      checkSetupStatus();
     };
 
-    checkSetupStatus();
-  }, [profileData]);
+    checkCompanyProfileLink();
+  }, [profileData, forceRefresh]);
 
   // Wait for both profile data and setup check to complete
   if (isLoading || profileLoading) {
@@ -72,7 +115,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   console.log("CompanyRequiredWrapper state:", { 
     setupComplete, 
     hasCompanyId: !!profileData?.company_id, 
-    company_id: profileData?.company_id 
+    company_id: profileData?.company_id,
+    forceRefresh
   });
 
   // If we have a company_id, always allow access
@@ -90,6 +134,27 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     console.log("Setup is marked as complete, allowing access");
     return <>{children}</>;
   }
+
+  // Add a button to check company association directly
+  const handleCheckCompanyAssociation = async () => {
+    try {
+      toast.info("Checking company association...");
+      
+      // Check the database directly
+      const companyId = await checkUserCompanyInDatabase();
+      
+      if (companyId) {
+        toast.success("Company association found. Refreshing...");
+        // Force refresh the component
+        setForceRefresh(prev => prev + 1);
+      } else {
+        toast.error("No company association found. Please complete setup.");
+      }
+    } catch (error) {
+      console.error("Error checking company association:", error);
+      toast.error("Error checking company association");
+    }
+  };
 
   // Otherwise show the setup required page
   return (
@@ -114,12 +179,20 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
           </Alert>
         )}
 
-        <div className="flex justify-center">
+        <div className="space-y-4">
           <Button 
             onClick={() => navigate('/setup')} 
             className="w-full"
           >
             Complete Company Setup
+          </Button>
+          
+          <Button 
+            variant="outline"
+            onClick={handleCheckCompanyAssociation} 
+            className="w-full"
+          >
+            Check Company Association
           </Button>
         </div>
       </div>
