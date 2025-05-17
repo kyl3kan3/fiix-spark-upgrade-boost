@@ -45,7 +45,8 @@ export const ProfileChecker: React.FC<ProfileCheckerProps> = ({ onCompanyFound }
             id: user.id,
             email: email,
             role: 'technician',
-            company_id: '' // Placeholder, will be updated if company found
+            // Don't set company_id when creating initial profile
+            // This avoids the UUID validation error
           });
           
         if (createError) {
