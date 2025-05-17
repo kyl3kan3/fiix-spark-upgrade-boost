@@ -51,7 +51,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         // Build the select query with requested fields
         const selectFields = fieldsToFetch.join(', ');
         
-        // Get profile data from profiles
+        // Get profile data from profiles - use maybeSingle() to handle case where profile doesn't exist
         const { data, error: fetchError } = await supabase
           .from('profiles')
           .select(selectFields)
@@ -61,31 +61,30 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         if (fetchError) {
           console.error("Error fetching user profile:", fetchError);
           setError("Could not fetch user profile");
-          // Always set profileData to null in case of error
           setProfileData(null);
         } else {
           console.log("User profile data:", data);
           
           if (!data) {
             // Handle case where no profile data was found
-            console.error("No profile data found, user may need to complete onboarding");
+            console.warn("No profile data found, user may need to complete onboarding");
             setProfileData(null);
-            setError("User profile data is incomplete. Company association required.");
+            setError("User profile data is incomplete. Setup process required.");
             return;
           }
           
           // TypeScript safe check - first ensure data exists and is an object
           if (data && typeof data === 'object') {
-            // Then check for company_id property - using type assertion after null check
+            // Then check for company_id property
             const profileData = data as Record<string, any>;
             if ('company_id' in profileData && profileData.company_id !== null) {
               // Safe to cast to UserProfileData since we've verified the key property
               setProfileData(profileData as UserProfileData);
               setError(null);
             } else {
-              console.error("Invalid profile data: missing company_id", data);
+              console.warn("Invalid profile data: missing company_id", data);
               setProfileData(null);
-              setError("User must be associated with a company");
+              setError("User needs to complete setup");
             }
           } else {
             setProfileData(null);
@@ -95,7 +94,6 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       } catch (err) {
         console.error("Error in useUserProfile:", err);
         setError("An unexpected error occurred");
-        // Always set profileData to null in case of error
         setProfileData(null);
       } finally {
         setIsLoading(false);

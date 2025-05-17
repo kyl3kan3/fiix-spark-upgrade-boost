@@ -25,11 +25,12 @@ export function useProfileData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
       
+      // Using maybeSingle() instead of single() to handle case where profile doesn't exist
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .maybeSingle(); // Using maybeSingle instead of single
+        .maybeSingle();
         
       if (error) throw error;
       

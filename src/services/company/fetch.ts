@@ -26,8 +26,9 @@ export const fetchUserCompany = async (): Promise<CompanyData | null> => {
       throw profileError;
     }
     
-    // If user doesn't have a company_id, return null
-    if (!profile?.company_id) {
+    // Check if profile exists and has a company_id
+    if (!profile || !profile.company_id) {
+      console.log("No company ID found in profile");
       return null;
     }
     

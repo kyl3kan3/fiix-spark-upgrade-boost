@@ -23,7 +23,7 @@ export const useUserProfile = () => {
     if (!userId) return false;
     
     try {
-      // Check current profile
+      // Check current profile - use maybeSingle() to handle case where profile doesn't exist
       const { data: profile } = await supabase
         .from("profiles")
         .select("company_id, role, email")

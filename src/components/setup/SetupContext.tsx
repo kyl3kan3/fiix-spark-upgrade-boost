@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { loadSetupData, saveSetupData, SetupData } from "@/services/setup";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SetupContextType {
   currentStep: number;
