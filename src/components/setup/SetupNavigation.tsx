@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useSetup } from "./SetupContext";
 import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
+import { setSetupComplete as setLocalSetupComplete } from "@/hooks/onboarding/storageUtils";
 
 export const SetupNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -45,13 +46,18 @@ export const SetupNavigation: React.FC = () => {
 
   const handleComplete = async () => {
     try {
+      // Mark setup as complete
       setSetupComplete(true);
+      
       // Save setup data with completed flag
       const success = await saveSetupData(setupData, true);
       
+      // Ensure localStorage is also updated
+      setLocalSetupComplete();
+      
       if (success) {
         toast.success("Setup completed successfully!");
-        localStorage.setItem('maintenease_setup_complete', 'true'); // Ensure local storage is set
+        console.log("Setup marked as complete successfully");
         
         // Redirect to dashboard after short delay
         setTimeout(() => {

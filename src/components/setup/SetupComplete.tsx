@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,15 +7,42 @@ import { SetupStepComponentProps } from "./SetupContainer";
 import { toast } from "sonner";
 import { useSetup } from "./SetupContext";
 import { saveSetupData } from "@/services/setup";
+import { setSetupComplete } from "@/hooks/onboarding/storageUtils";
 
 const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {
   const navigate = useNavigate();
-  const { setupData } = useSetup();
+  const { setupData, setSetupComplete: markSetupComplete } = useSetup();
+  
+  // Mark setup as complete when this component mounts
+  useEffect(() => {
+    const finalizeSetup = async () => {
+      try {
+        // Update the context state
+        markSetupComplete(true);
+        
+        // Save to localStorage and database with completed flag
+        await saveSetupData(setupData, true);
+        
+        // Ensure local storage is updated
+        setSetupComplete();
+        
+        console.log("Setup marked as complete on component mount");
+      } catch (error) {
+        console.error("Error finalizing setup:", error);
+      }
+    };
+    
+    finalizeSetup();
+  }, [setupData, markSetupComplete]);
   
   const handleGoToDashboard = async () => {
     try {
       // Ensure setup is marked as complete both locally and in the database
+      markSetupComplete(true);
       const success = await saveSetupData(setupData, true);
+      
+      // Ensure local storage is updated
+      setSetupComplete();
       
       if (success) {
         toast.success("Setup completed successfully!");

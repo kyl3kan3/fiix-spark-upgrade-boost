@@ -7,6 +7,7 @@ import { Building2, AlertTriangle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { isSetupCompleted } from "@/services/setup";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface CompanyRequiredWrapperProps {
   children: React.ReactNode;
@@ -24,16 +25,17 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
       try {
         const isComplete = await isSetupCompleted();
         setSetupComplete(isComplete);
+        console.log("Setup completed status:", isComplete);
       } catch (error) {
         console.error("Error checking setup completion:", error);
         setSetupComplete(false);
       } finally {
-        setIsLoading(profileLoading);
+        setIsLoading(false);
       }
     };
 
     checkSetupStatus();
-  }, [profileLoading]);
+  }, []);
 
   // Wait for both profile data and setup check to complete
   if (isLoading || profileLoading) {
@@ -47,15 +49,16 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     );
   }
 
-  // If setup is complete and we have a valid company_id, allow access
-  if (setupComplete && profileData?.company_id) {
+  // If setup is explicitly marked as complete, allow access
+  if (setupComplete === true) {
+    console.log("Setup is marked as complete, allowing access");
     return <>{children}</>;
   }
 
-  // If we have company_id but setup isn't marked as complete, still allow access
+  // If we have company_id, still allow access
   // This handles cases where the company was created but setup wasn't marked complete
   if (profileData?.company_id) {
-    console.log("Company ID exists but setup not marked as complete - allowing access anyway");
+    console.log("Company ID exists, allowing access");
     return <>{children}</>;
   }
 
