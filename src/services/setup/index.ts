@@ -51,7 +51,7 @@ export const loadSetupData = async (): Promise<SetupData> => {
  */
 export const saveSetupData = async (setupData: SetupData, isComplete: boolean = false): Promise<boolean> => {
   try {
-    // Save to localStorage first as fallback
+    // Always save to localStorage first as fallback
     saveLocalSetupData(setupData, isComplete);
     
     // Check if user is authenticated
@@ -95,6 +95,27 @@ export const isSetupCompleted = async (): Promise<boolean> => {
     if (isSetupCompletedLocally()) {
       console.log("Setup completed according to localStorage");
       return true;
+    }
+    
+    // Check if the user has a company_id in their profile
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('company_id')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (profile?.company_id) {
+          console.log("User has a company_id, marking setup as complete");
+          localStorage.setItem('maintenease_setup_complete', 'true');
+          return true;
+        }
+      }
+    } catch (error) {
+      console.error("Error checking user profile:", error);
     }
     
     // Then check database if user is authenticated

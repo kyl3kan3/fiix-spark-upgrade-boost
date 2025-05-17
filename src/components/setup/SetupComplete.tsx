@@ -26,6 +26,9 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
         // Ensure local storage is updated
         setSetupComplete();
         
+        // Triple-check the localStorage flag is set directly
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        
         console.log("Setup marked as complete on component mount");
       } catch (error) {
         console.error("Error finalizing setup:", error);
@@ -43,6 +46,9 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
       
       // Ensure local storage is updated
       setSetupComplete();
+      
+      // Triple-check the localStorage flag is set directly
+      localStorage.setItem('maintenease_setup_complete', 'true');
       
       if (success) {
         toast.success("Setup completed successfully!");

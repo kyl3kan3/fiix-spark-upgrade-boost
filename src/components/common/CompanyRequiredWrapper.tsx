@@ -20,7 +20,15 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if setup is completed from both local storage and database
+    // Set setup complete to true immediately if company_id exists in the profile
+    if (profileData?.company_id) {
+      setSetupComplete(true);
+      localStorage.setItem('maintenease_setup_complete', 'true');
+      setIsLoading(false);
+      return;
+    }
+
+    // Only check setup status if we don't have a company_id
     const checkSetupStatus = async () => {
       try {
         // First check localStorage for immediate result
@@ -46,7 +54,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     };
 
     checkSetupStatus();
-  }, []);
+  }, [profileData]);
 
   // Wait for both profile data and setup check to complete
   if (isLoading || profileLoading) {
@@ -67,20 +75,19 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     company_id: profileData?.company_id 
   });
 
-  // If setup is explicitly marked as complete, allow access
-  if (setupComplete === true) {
-    console.log("Setup is marked as complete, allowing access");
-    return <>{children}</>;
-  }
-
-  // If we have company_id, still allow access
-  // This handles cases where the company was created but setup wasn't marked complete
+  // If we have a company_id, always allow access
   if (profileData?.company_id) {
     console.log("Company ID exists, allowing access");
     
-    // Auto-mark setup as complete if we have a company ID but setup wasn't marked
+    // Auto-mark setup as complete if we have a company ID
     localStorage.setItem('maintenease_setup_complete', 'true');
     
+    return <>{children}</>;
+  }
+
+  // If setup is explicitly marked as complete, allow access
+  if (setupComplete === true) {
+    console.log("Setup is marked as complete, allowing access");
     return <>{children}</>;
   }
 
