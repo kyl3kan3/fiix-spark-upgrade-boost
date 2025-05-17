@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SetupHeader } from "./SetupHeader";
+import SetupHeader from "./SetupHeader";
 import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
 import { useSetup } from "./SetupContext";
