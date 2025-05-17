@@ -42,7 +42,9 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
     try {
       // Ensure setup is marked as complete both locally and in the database
       markSetupComplete(true);
-      const success = await saveSetupData(setupData, true);
+      
+      // Save setup data - don't test the return value directly
+      await saveSetupData(setupData, true);
       
       // Ensure local storage is updated
       setSetupComplete();
@@ -50,13 +52,8 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
       // Triple-check the localStorage flag is set directly
       localStorage.setItem('maintenease_setup_complete', 'true');
       
-      if (success) {
-        toast.success("Setup completed successfully!");
-        navigate('/dashboard');
-      } else {
-        toast.error("There was an issue saving your setup data. Proceeding anyway.");
-        navigate('/dashboard');
-      }
+      toast.success("Setup completed successfully!");
+      navigate('/dashboard');
     } catch (error) {
       console.error("Error finalizing setup:", error);
       toast.error("Failed to finalize setup. Proceeding anyway.");

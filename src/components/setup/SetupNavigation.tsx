@@ -64,8 +64,8 @@ export const SetupNavigation: React.FC = () => {
       // Mark setup as complete in context
       setSetupComplete(true);
       
-      // Save setup data with completed flag to database
-      const success = await saveSetupData(setupData, true);
+      // Save setup data with completed flag to database - don't test for return value
+      await saveSetupData(setupData, true);
       
       // Ensure localStorage is also updated
       setLocalSetupComplete();
@@ -73,17 +73,13 @@ export const SetupNavigation: React.FC = () => {
       // Double-check the localStorage flag is set
       localStorage.setItem('maintenease_setup_complete', 'true');
       
-      if (success) {
-        toast.success("Setup completed successfully!");
-        console.log("Setup marked as complete successfully");
-        
-        // Redirect to dashboard after short delay
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      } else {
-        toast.error("There was an issue saving your setup data. Please try again.");
-      }
+      toast.success("Setup completed successfully!");
+      console.log("Setup marked as complete successfully");
+      
+      // Redirect to dashboard after short delay
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } catch (error) {
       console.error("Error saving setup data:", error);
       toast.error("Failed to save setup data. Please try again.");

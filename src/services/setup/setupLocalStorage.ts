@@ -1,65 +1,64 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { SetupData } from "./setupTypes";
 
-// The localStorage key where setup data is stored
-const SETUP_DATA_KEY = "maintenease_setup";
-const SETUP_COMPLETE_KEY = "maintenease_setup_complete";
-
 /**
- * Loads setup data from Supabase or falls back to localStorage
+ * Load setup data from Supabase (if authenticated) or localStorage
  */
 export const loadSetupData = async (): Promise<SetupData> => {
   try {
-    // First try to load from Supabase if user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // First try to load from Supabase if authenticated
+    const { data, error } = await supabase.auth.getUser();
     
-    if (!authError && user) {
-      // Try to load from Supabase by getting the company info
-      const { data: company, error: companyError } = await supabase
-        .from("companies")
+    if (!error && data.user) {
+      console.log("User authenticated, loading from Supabase");
+      
+      // Fetch system settings from Supabase
+      const { data: settings, error: settingsError } = await supabase
+        .from("system_settings")
         .select("*")
-        .eq("created_by", user.id)
         .maybeSingle();
-
-      if (!companyError && company) {
-        // Map company data to setup data structure
+        
+      if (settingsError) {
+        console.error("Error fetching settings from Supabase:", settingsError);
+        throw settingsError;
+      }
+        
+      if (settings) {
+        console.log("Found settings in Supabase:", settings);
+        
+        // Convert settings to our SetupData format
         const setupData: SetupData = {
-          companyInfo: {
-            companyName: company.name || "",
-            industry: company.industry || "",
-            address: company.address || "",
-            city: company.city || "",
-            state: company.state || "",
-            zipCode: company.zip_code || "",
-            phone: company.phone || "",
-            email: company.email || "",
-            website: company.website || "",
-            logo: company.logo || null,
-          },
-          userRoles: {},
-          assetCategories: {},
-          locations: {},
-          maintenanceSchedules: {},
-          notifications: {},
-          integrations: {},
-          dashboardCustomization: {}
+          companyInfo: settings.company_info || {},
+          userRoles: settings.user_roles || {},
+          assetCategories: settings.asset_categories || {},
+          locations: settings.locations || {},
+          maintenanceSchedules: settings.maintenance_schedules || {},
+          notifications: settings.notifications || {},
+          integrations: settings.integrations || {},
+          dashboardCustomization: settings.dashboard_customization || {}
         };
-
+        
+        // Also update localStorage for backup
+        localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
+        
         return setupData;
       }
-    }
-
-    // Fall back to localStorage if Supabase fails or user is not authenticated
-    console.log("Falling back to localStorage for setup data");
-    const storedData = localStorage.getItem(SETUP_DATA_KEY);
-    if (storedData) {
+    } 
+    
+    // Fallback to localStorage
+    console.log("User not authenticated, loading from localStorage only");
+    const savedData = localStorage.getItem('maintenease_setup');
+    
+    if (savedData) {
       try {
-        return JSON.parse(storedData) as SetupData;
-      } catch (e) {
-        console.error("Error parsing localStorage setup data:", e);
+        const parsedData = JSON.parse(savedData) as SetupData;
+        return parsedData;
+      } catch (error) {
+        console.error("Error parsing localStorage data:", error);
       }
     }
-
+    
     // Return empty data if nothing found
     return {
       companyInfo: {},
@@ -72,190 +71,180 @@ export const loadSetupData = async (): Promise<SetupData> => {
       dashboardCustomization: {}
     };
   } catch (error) {
-    console.error("Error in loadSetupData:", error);
-    
-    // Fall back to localStorage in case of any error
-    const storedData = localStorage.getItem(SETUP_DATA_KEY);
-    if (storedData) {
-      try {
-        return JSON.parse(storedData) as SetupData;
-      } catch (e) {
-        console.error("Error parsing localStorage setup data:", e);
-      }
-    }
-    
-    // Return empty data as the last resort
-    return {
-      companyInfo: {},
-      userRoles: {},
-      assetCategories: {},
-      locations: {},
-      maintenanceSchedules: {},
-      notifications: {},
-      integrations: {},
-      dashboardCustomization: {}
-    };
+    console.error("Error loading setup data:", error);
+    throw error;
   }
 };
 
 /**
- * Saves setup data to Supabase and localStorage
+ * Save setup data to Supabase (if authenticated) and localStorage
+ * Returns a Promise<void> - does not return a success boolean
  */
-export const saveSetupData = async (data: SetupData, isComplete: boolean): Promise<void> => {
+export const saveSetupData = async (
+  setupData: SetupData,
+  isSetupComplete: boolean = false
+): Promise<void> => {
   try {
-    // Always save to localStorage first for redundancy
-    localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(data));
-    localStorage.setItem(SETUP_COMPLETE_KEY, isComplete.toString());
+    // Save to localStorage first for redundancy
+    localStorage.setItem('maintenease_setup', JSON.stringify(setupData));
     
-    // Check if user is authenticated before attempting to save to Supabase
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Set completion flag if specified
+    if (isSetupComplete) {
+      localStorage.setItem('maintenease_setup_complete', 'true');
+    }
     
-    if (authError || !user) {
+    // Try to save to Supabase if authenticated
+    const { data, error } = await supabase.auth.getUser();
+    
+    if (error || !data.user) {
       console.log("User not authenticated, saving to localStorage only");
       return;
     }
     
-    // If we have company info and the user is authenticated, save to Supabase
-    if (data.companyInfo && Object.keys(data.companyInfo).length > 0) {
-      // Check if user already has a company
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", user.id)
-        .maybeSingle();
-        
-      if (profileError) {
-        console.error("Error fetching user profile:", profileError);
-        return;
-      }
+    console.log("User authenticated, saving to Supabase", setupData);
+    
+    // Convert setupData to database format
+    const dbData = {
+      company_info: setupData.companyInfo,
+      user_roles: setupData.userRoles,
+      asset_categories: setupData.assetCategories,
+      locations: setupData.locations,
+      maintenance_schedules: setupData.maintenanceSchedules,
+      notifications: setupData.notifications,
+      integrations: setupData.integrations,
+      dashboard_customization: setupData.dashboardCustomization,
+      setup_completed: isSetupComplete
+    };
+    
+    // Try to update existing record first
+    const { data: existingSettings, error: fetchError } = await supabase
+      .from("system_settings")
+      .select("id")
+      .maybeSingle();
       
-      if (profile?.company_id) {
-        // Update existing company
-        const companyData = {
-          name: data.companyInfo.companyName,
-          industry: data.companyInfo.industry,
-          address: data.companyInfo.address,
-          city: data.companyInfo.city,
-          state: data.companyInfo.state,
-          zip_code: data.companyInfo.zipCode,
-          phone: data.companyInfo.phone,
-          email: data.companyInfo.email,
-          website: data.companyInfo.website,
-          logo: data.companyInfo.logo
-        };
-        
-        const { error: updateError } = await supabase
-          .from("companies")
-          .update(companyData)
-          .eq("id", profile.company_id);
-          
-        if (updateError) {
-          console.error("Error updating company:", updateError);
-        }
-      }
-      
-      // Save other setup data (to be implemented based on feature requirements)
+    if (fetchError) {
+      console.error("Error checking existing settings:", fetchError);
     }
+    
+    if (existingSettings?.id) {
+      // Update existing record
+      console.log("Updating existing settings");
+      const { error: updateError } = await supabase
+        .from("system_settings")
+        .update(dbData)
+        .eq("id", existingSettings.id);
+        
+      if (updateError) {
+        console.error("Error updating settings:", updateError);
+        throw updateError;
+      }
+    } else {
+      // Insert new record
+      console.log("Creating new settings");
+      const { error: insertError } = await supabase
+        .from("system_settings")
+        .insert([dbData]);
+        
+      if (insertError) {
+        console.error("Error inserting settings:", insertError);
+        throw insertError;
+      }
+    }
+    
+    console.log("Setup data saved successfully");
+    console.log("Updated completion status:", isSetupComplete);
   } catch (error) {
-    console.error("Error in saveSetupData:", error);
-    // Data is already saved to localStorage, so no need to retry
+    console.error("Error saving setup data:", error);
+    throw error;
   }
 };
 
 /**
- * Resets setup data in both Supabase and localStorage
+ * Reset all setup data and completion status
  */
 export const resetSetupData = async (): Promise<void> => {
   try {
-    // Clear localStorage data
-    localStorage.removeItem(SETUP_DATA_KEY);
-    localStorage.removeItem(SETUP_COMPLETE_KEY);
+    // Clear localStorage
+    localStorage.removeItem('maintenease_setup');
+    localStorage.removeItem('maintenease_setup_complete');
     
-    // Check if user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Try to clear Supabase data if authenticated
+    const { data, error } = await supabase.auth.getUser();
     
-    if (authError || !user) {
-      console.log("User not authenticated, can only reset localStorage data");
-      return;
-    }
-    
-    // Get user's company ID
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("company_id")
-      .eq("id", user.id)
-      .maybeSingle();
-      
-    if (profileError) {
-      console.error("Error fetching user profile:", profileError);
-      return;
-    }
-    
-    if (profile?.company_id) {
-      // Reset company data but don't delete it - just clear optional fields
-      const { error: updateError } = await supabase
-        .from("companies")
-        .update({
-          industry: null,
-          address: null,
-          city: null,
-          state: null,
-          zip_code: null,
-          phone: null,
-          website: null,
-          logo: null
-        })
-        .eq("id", profile.company_id);
+    if (!error && data.user) {
+      // Get existing settings
+      const { data: settings, error: fetchError } = await supabase
+        .from("system_settings")
+        .select("id")
+        .maybeSingle();
         
-      if (updateError) {
-        console.error("Error resetting company data:", updateError);
+      if (fetchError) {
+        console.error("Error fetching settings:", fetchError);
+      }
+      
+      if (settings?.id) {
+        // Update with empty data
+        const emptyData = {
+          company_info: {},
+          user_roles: {},
+          asset_categories: {},
+          locations: {},
+          maintenance_schedules: {},
+          notifications: {},
+          integrations: {},
+          dashboard_customization: {},
+          setup_completed: false
+        };
+        
+        const { error: updateError } = await supabase
+          .from("system_settings")
+          .update(emptyData)
+          .eq("id", settings.id);
+          
+        if (updateError) {
+          console.error("Error resetting settings:", updateError);
+          throw updateError;
+        }
       }
     }
     
-    // Reset other setup data as needed
-    
+    console.log("Setup data reset successfully");
   } catch (error) {
-    console.error("Error in resetSetupData:", error);
+    console.error("Error resetting setup data:", error);
+    throw error;
   }
 };
 
 /**
- * Checks if setup has been completed
+ * Check if setup has been completed
  */
 export const isSetupCompleted = async (): Promise<boolean> => {
-  // First check localStorage
-  const isComplete = localStorage.getItem(SETUP_COMPLETE_KEY) === 'true';
-  
-  // If marked complete in localStorage, return true
-  if (isComplete) {
-    return true;
-  }
-  
-  // Otherwise check Supabase for company association
   try {
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // First check localStorage
+    const localCompleted = localStorage.getItem('maintenease_setup_complete') === 'true';
     
-    if (authError || !user) {
-      return false;
-    }
+    // If authenticated, check Supabase as well
+    const { data, error } = await supabase.auth.getUser();
     
-    // Check if user has a company association
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("company_id")
-      .eq("id", user.id)
-      .maybeSingle();
+    if (!error && data.user) {
+      const { data: settings, error: fetchError } = await supabase
+        .from("system_settings")
+        .select("setup_completed")
+        .maybeSingle();
+        
+      if (fetchError) {
+        console.error("Error fetching setup completion status:", fetchError);
+      }
       
-    if (profileError) {
-      console.error("Error fetching user profile:", profileError);
-      return false;
+      if (settings) {
+        return settings.setup_completed === true || localCompleted;
+      }
     }
     
-    // If user has a company ID, consider setup completed
-    return !!profile?.company_id;
-    
+    // Default to localStorage value
+    return localCompleted;
   } catch (error) {
-    console.error("Error checking setup completion:", error);
-    return false;
+    console.error("Error checking setup completion status:", error);
+    return localStorage.getItem('maintenease_setup_complete') === 'true';
   }
 };
