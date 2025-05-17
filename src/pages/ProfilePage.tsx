@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 import { useUserProfile } from "@/hooks/team/useUserProfile";
+import { toast } from "sonner";
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -55,8 +56,14 @@ const ProfilePage = () => {
   }, [location.search]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
+    try {
+      await supabase.auth.signOut();
+      toast.success("You have been logged out successfully");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
   return (

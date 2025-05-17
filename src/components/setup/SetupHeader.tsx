@@ -1,26 +1,47 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSetup } from "./SetupContext";
-import { steps } from "./setupSteps";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
-export const SetupHeader: React.FC = () => {
+interface SetupHeaderProps {
+  title: string;
+  subtitle?: string;
+}
+
+const SetupHeader: React.FC<SetupHeaderProps> = ({ title, subtitle }) => {
   const navigate = useNavigate();
-  const { currentStep } = useSetup();
+  
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("You have been logged out successfully");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
+  };
 
   return (
-    <div className="flex items-center justify-between mb-8">
-      <div className="flex items-center gap-2">
-        <Settings className="h-6 w-6 text-maintenease-600" />
-        <h1 className="text-2xl font-bold">MaintenEase Setup Wizard</h1>
-      </div>
-      {currentStep > 0 && currentStep < steps.length - 1 && (
-        <Button variant="ghost" onClick={() => navigate("/dashboard")}>
-          Finish Later
+    <div className="mb-8">
+      <div className="flex justify-between items-center mb-2">
+        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleLogout}
+          className="flex items-center gap-1"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign out
         </Button>
-      )}
+      </div>
+      {subtitle && <p className="text-gray-500">{subtitle}</p>}
     </div>
   );
 };
+
+export default SetupHeader;

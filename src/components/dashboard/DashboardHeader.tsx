@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -12,6 +12,7 @@ import NotificationSound, { NotificationSoundHandle } from "@/components/ui/Noti
 import SearchBar from "./header/SearchBar";
 import HeaderActions from "./header/HeaderActions";
 import ProfileMenu from "./header/ProfileMenu";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DashboardHeaderProps {
   userName?: string;
@@ -21,6 +22,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
+  const navigate = useNavigate();
 
   // Notification sound ref
   const notificationSoundRef = useRef<NotificationSoundHandle>(null);
@@ -62,9 +64,15 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
     }
   }, []);
   
-  const handleLogout = () => {
-    toast.info("You have been logged out");
-    // Here you would typically clear user session
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("You have been logged out successfully");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
   // Called by child when new notification arrives (via event handler prop)
