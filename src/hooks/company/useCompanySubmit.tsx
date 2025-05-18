@@ -32,61 +32,95 @@ export const useCompanySubmit = (
       }
       
       let updatedCompanyId = companyId;
+      let success = false;
       
       if (companyId) {
         // Update existing company
-        await updateCompany(companyId, formData);
-        console.log("Company updated with ID:", companyId);
-        
-        // Ensure user profile is linked to company
-        await checkAndFixUserProfile(companyId);
-        
-        toast.success("Company information updated");
+        try {
+          await updateCompany(companyId, formData);
+          console.log("Company updated with ID:", companyId);
+          success = true;
+        } catch (updateError) {
+          console.error("Error updating company:", updateError);
+          toast.error("Failed to update company information");
+          return null;
+        }
       } else {
         // Create new company
-        const company = await createCompany(formData);
-        if (company) {
-          updatedCompanyId = company.id;
-          console.log("New company created with ID:", company.id);
-          
-          // Make sure user profile is updated with the company ID
-          await checkAndFixUserProfile(company.id);
-          
-          // Set completion flag
-          localStorage.setItem('maintenease_setup_complete', 'true');
-          
-          toast.success("Company created successfully");
-        }
-      }
-
-      // Extra confirmation that setup is complete
-      if (updatedCompanyId) {
-        localStorage.setItem('maintenease_setup_complete', 'true');
-        console.log("Setup marked as complete with company ID:", updatedCompanyId);
-        
-        // Double check the profile was updated properly
-        const { data: updatedProfile } = await supabase
-          .from("profiles")
-          .select("company_id")
-          .eq("id", data.user.id)
-          .maybeSingle();
-          
-        console.log("Profile after company save:", updatedProfile);
-        
-        if (!updatedProfile?.company_id && updatedCompanyId) {
-          console.log("Attempting additional profile update with company ID:", updatedCompanyId);
-          const { error: fixError } = await supabase
-            .from("profiles")
-            .update({ company_id: updatedCompanyId })
-            .eq("id", data.user.id);
-            
-          if (fixError) {
-            console.error("Error in additional profile update:", fixError);
+        try {
+          const company = await createCompany(formData);
+          if (company) {
+            updatedCompanyId = company.id;
+            console.log("New company created with ID:", company.id);
+            success = true;
+          } else {
+            console.error("Failed to create company - no ID returned");
+            toast.error("Failed to create company");
+            return null;
           }
+        } catch (createError) {
+          console.error("Error creating company:", createError);
+          toast.error("Failed to create company");
+          return null;
         }
       }
 
-      return updatedCompanyId;
+      if (success && updatedCompanyId) {
+        // Ensure user profile is linked to company
+        try {
+          const profileFixed = await checkAndFixUserProfile(updatedCompanyId);
+          console.log("User profile update attempted:", { profileFixed, updatedCompanyId });
+          
+          if (!profileFixed) {
+            console.warn("Failed to update user profile with company ID");
+            // We'll still continue since the company was created/updated
+          }
+        } catch (profileError) {
+          console.error("Error updating user profile:", profileError);
+          // Continue since company was created/updated
+        }
+        
+        // Set completion flag in multiple places for redundancy
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        
+        // Additional profile check and update
+        try {
+          const { data: updatedProfile } = await supabase
+            .from("profiles")
+            .select("company_id")
+            .eq("id", data.user.id)
+            .maybeSingle();
+            
+          console.log("Profile after company save:", updatedProfile);
+          
+          if (!updatedProfile?.company_id && updatedCompanyId) {
+            console.log("Attempting additional profile update with company ID:", updatedCompanyId);
+            const { error: fixError } = await supabase
+              .from("profiles")
+              .update({ company_id: updatedCompanyId })
+              .eq("id", data.user.id);
+              
+            if (fixError) {
+              console.error("Error in additional profile update:", fixError);
+            } else {
+              console.log("Additional profile update successful");
+            }
+          }
+        } catch (checkError) {
+          console.error("Error checking profile after save:", checkError);
+        }
+        
+        toast.success(companyId ? "Company information updated" : "Company created successfully");
+        
+        // Force reload after short delay to ensure all state is updated
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1000);
+        
+        return updatedCompanyId;
+      }
+
+      return null;
     } catch (error: any) {
       console.error("Error saving company information:", error);
       let errorMessage = error.message || "Failed to save company information";

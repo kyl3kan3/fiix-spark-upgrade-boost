@@ -11,8 +11,12 @@ const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting })
   const navigate = useNavigate();
 
   const handleCompanySetup = () => {
-    // Force setup mode by adding the forceSetup parameter 
-    navigate('/setup?forceSetup=true&timestamp=' + Date.now());
+    // Clear any existing setup flags to start fresh
+    localStorage.removeItem('maintenease_setup_complete');
+    
+    // Force setup mode by adding the forceSetup parameter with a unique timestamp
+    const timestamp = Date.now();
+    navigate(`/setup?forceSetup=true&timestamp=${timestamp}`);
   };
 
   return (

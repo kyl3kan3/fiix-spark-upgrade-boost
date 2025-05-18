@@ -8,6 +8,7 @@ export function useCompanyStatus() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   // Check if user has completed setup
   const checkSetupCompleted = useCallback(() => {
@@ -15,6 +16,38 @@ export function useCompanyStatus() {
     const result = setupCompleted === 'true';
     console.log("Setup completed check from localStorage:", result);
     return result;
+  }, []);
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        setIsAuthenticated(!!data.user && !error);
+      } catch (err) {
+        console.error("Error checking auth status:", err);
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuth();
+    
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", event, session?.user?.id ? "authenticated" : "unauthenticated");
+      setIsAuthenticated(!!session?.user);
+      
+      if (event === 'SIGNED_IN') {
+        // Re-check company status when user signs in
+        refreshCompanyStatus();
+      } else if (event === 'SIGNED_OUT') {
+        // Clear company data when user signs out
+        setCompanyId(null);
+      }
+    });
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   // Load profile data
@@ -75,6 +108,17 @@ export function useCompanyStatus() {
       setSetupComplete(isSetupComplete);
       console.log("Setup complete status:", isSetupComplete);
       
+      // Check authentication
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        console.log("No authenticated user found in refreshCompanyStatus");
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+      
+      setIsAuthenticated(true);
+      
       // Load profile data
       const profile = await loadProfileData();
       
@@ -117,6 +161,11 @@ export function useCompanyStatus() {
     console.log("Company found and setup marked complete:", newCompanyId);
     
     toast.success("Company setup completed");
+    
+    // Force refresh the page after a short delay to ensure all state is updated
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 1000);
   }, []);
 
   return {
@@ -124,6 +173,7 @@ export function useCompanyStatus() {
     profileError,
     setupComplete,
     companyId,
+    isAuthenticated,
     refreshCompanyStatus,
     handleCompanyFound
   };

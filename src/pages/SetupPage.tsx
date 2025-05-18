@@ -21,6 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { supabase } from "@/integrations/supabase/client";
 
 const SetupPage = () => {
   const navigate = useNavigate();
@@ -29,29 +30,68 @@ const SetupPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
   const [forceSetupMode, setForceSetupMode] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   // Check if URL has a forceSetup parameter
   useEffect(() => {
     const forceSetup = searchParams.get('forceSetup');
-    if (forceSetup) {
+    if (forceSetup === 'true') {
       console.log("Force setup mode activated");
       setForceSetupMode(true);
+      
+      // Clear setup flag in localStorage when force setup is enabled
+      localStorage.removeItem('maintenease_setup_complete');
     }
   }, [searchParams]);
+  
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error("Auth error in setup page:", error);
+          setIsAuthenticated(false);
+          // Redirect to auth if not authenticated
+          navigate('/auth');
+          return;
+        }
+        
+        setIsAuthenticated(!!data.user);
+        if (!data.user) {
+          console.log("No authenticated user found in setup page, redirecting to auth");
+          navigate('/auth');
+        }
+      } catch (err) {
+        console.error("Error checking authentication:", err);
+        setIsAuthenticated(false);
+        navigate('/auth');
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
 
   // Check if setup has been completed
   useEffect(() => {
     const checkSetupStatus = async () => {
+      if (isAuthenticated === null) return; // Wait for auth check
+      
       setIsLoading(true);
       try {
-        const setupComplete = await isSetupCompleted();
-        
-        if (setupComplete && !forceSetupMode) {
-          setShowWelcomeBack(true);
-          toast.info("Setup has already been completed. You can edit your settings here.");
-        } else {
-          console.log("Setup not completed or force mode active");
+        if (forceSetupMode) {
+          console.log("Force setup mode active, bypassing setup completion check");
           setShowWelcomeBack(false);
+        } else {
+          const setupComplete = await isSetupCompleted();
+          
+          if (setupComplete) {
+            setShowWelcomeBack(true);
+            toast.info("Setup has already been completed. You can edit your settings here.");
+          } else {
+            console.log("Setup not completed");
+            setShowWelcomeBack(false);
+          }
         }
       } catch (error) {
         console.error("Error checking setup status:", error);
@@ -60,8 +100,10 @@ const SetupPage = () => {
       }
     };
     
-    checkSetupStatus();
-  }, [navigate, forceSetupMode]);
+    if (isAuthenticated) {
+      checkSetupStatus();
+    }
+  }, [navigate, forceSetupMode, isAuthenticated]);
 
   const handleResetSetup = async () => {
     setIsResetting(true);
@@ -83,13 +125,35 @@ const SetupPage = () => {
       setIsResetting(false);
     }
   };
+  
+  // Show loading while checking authentication
+  if (isAuthenticated === null) {
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto px-4 py-8">
+          <Alert className="bg-blue-50 border-blue-200">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertTitle>Checking authentication</AlertTitle>
+            <AlertDescription>
+              Please wait while we check your authentication status...
+            </AlertDescription>
+          </Alert>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  // If not authenticated, we'll redirect in the useEffect
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <DashboardLayout>
       <BackToDashboard />
       
       <div className="container mx-auto px-4 py-4 max-w-5xl">
-        {showWelcomeBack && !isLoading && (
+        {showWelcomeBack && !isLoading && !forceSetupMode && (
           <div className="flex flex-col gap-6 mb-6">
             <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
               <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
