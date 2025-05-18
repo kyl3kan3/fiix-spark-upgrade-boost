@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { SetupProvider } from "@/components/setup/SetupContext";
@@ -24,6 +24,7 @@ import {
 
 const SetupPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showWelcomeBack, setShowWelcomeBack] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
@@ -31,11 +32,12 @@ const SetupPage = () => {
 
   // Check if URL has a forceSetup parameter
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('forceSetup')) {
+    const forceSetup = searchParams.get('forceSetup');
+    if (forceSetup) {
+      console.log("Force setup mode activated");
       setForceSetupMode(true);
     }
-  }, []);
+  }, [searchParams]);
 
   // Check if setup has been completed
   useEffect(() => {
@@ -47,6 +49,9 @@ const SetupPage = () => {
         if (setupComplete && !forceSetupMode) {
           setShowWelcomeBack(true);
           toast.info("Setup has already been completed. You can edit your settings here.");
+        } else {
+          console.log("Setup not completed or force mode active");
+          setShowWelcomeBack(false);
         }
       } catch (error) {
         console.error("Error checking setup status:", error);
@@ -63,6 +68,9 @@ const SetupPage = () => {
     try {
       await resetSetupData();
       toast.success("Setup data has been reset successfully.");
+      
+      // Clear the setup flag in localStorage
+      localStorage.removeItem('maintenease_setup_complete');
       
       // Refresh the page after a short delay
       setTimeout(() => {

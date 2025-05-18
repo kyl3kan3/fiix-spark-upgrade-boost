@@ -40,7 +40,10 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     console.log("Company ID exists, allowing access");
     
     // Auto-mark setup as complete if we have a company ID
-    localStorage.setItem('maintenease_setup_complete', 'true');
+    if (!setupComplete) {
+      localStorage.setItem('maintenease_setup_complete', 'true');
+      console.log("Setup marked as complete because company ID exists");
+    }
     
     return <>{children}</>;
   }

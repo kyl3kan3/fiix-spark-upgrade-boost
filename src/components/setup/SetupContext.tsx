@@ -86,6 +86,7 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         
         // Check if setup is complete
         const isComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
+        console.log("Setup complete from localStorage:", isComplete);
         setSetupComplete(isComplete);
       } catch (error) {
         console.error("Error initializing setup data:", error);
@@ -137,6 +138,12 @@ export const SetupProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         await saveSetupData(setupData, setupComplete);
         console.log("Updated completion status:", setupComplete);
+        
+        // Also update the localStorage flag
+        if (setupComplete) {
+          localStorage.setItem('maintenease_setup_complete', 'true');
+          console.log("Setup marked as complete in localStorage");
+        }
       } catch (error) {
         console.error("Error updating setup completion status:", error);
         toast.error("Failed to update setup completion status");

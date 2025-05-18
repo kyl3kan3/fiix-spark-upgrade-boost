@@ -12,24 +12,35 @@ export function useCompanyStatus() {
   // Check if user has completed setup
   const checkSetupCompleted = useCallback(() => {
     const setupCompleted = localStorage.getItem('maintenease_setup_complete');
-    return setupCompleted === 'true';
+    const result = setupCompleted === 'true';
+    console.log("Setup completed check from localStorage:", result);
+    return result;
   }, []);
 
   // Load profile data
   const loadProfileData = useCallback(async () => {
     try {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error("Auth error when getting user:", userError);
+        setProfileError(new Error("Authentication error: " + userError.message));
+        return null;
+      }
       
       if (!user) {
         console.log("No authenticated user found");
+        setProfileError(new Error("No authenticated user found. Please sign in."));
         return null;
       }
+
+      console.log("Loading profile for user ID:", user.id);
 
       // Load profile data
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("company_id, role")
+        .select("company_id, role, email")
         .eq("id", user.id)
         .maybeSingle();
       
@@ -38,6 +49,8 @@ export function useCompanyStatus() {
         setProfileError(new Error(error.message));
         return null;
       }
+      
+      console.log("Profile loaded:", profile);
       
       return profile;
     } catch (error) {
@@ -73,6 +86,7 @@ export function useCompanyStatus() {
         if (!isSetupComplete) {
           localStorage.setItem('maintenease_setup_complete', 'true');
           setSetupComplete(true);
+          console.log("Setup marked as complete because company ID exists in profile");
         }
       } else {
         setCompanyId(null);
@@ -92,6 +106,7 @@ export function useCompanyStatus() {
 
   // Initial load
   useEffect(() => {
+    console.log("Initial load of company status");
     refreshCompanyStatus();
   }, [refreshCompanyStatus]);
 
@@ -100,6 +115,8 @@ export function useCompanyStatus() {
     localStorage.setItem('maintenease_setup_complete', 'true');
     setSetupComplete(true);
     console.log("Company found and setup marked complete:", newCompanyId);
+    
+    toast.success("Company setup completed");
   }, []);
 
   return {

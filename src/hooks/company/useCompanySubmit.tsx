@@ -63,6 +63,27 @@ export const useCompanySubmit = (
       if (updatedCompanyId) {
         localStorage.setItem('maintenease_setup_complete', 'true');
         console.log("Setup marked as complete with company ID:", updatedCompanyId);
+        
+        // Double check the profile was updated properly
+        const { data: updatedProfile } = await supabase
+          .from("profiles")
+          .select("company_id")
+          .eq("id", data.user.id)
+          .maybeSingle();
+          
+        console.log("Profile after company save:", updatedProfile);
+        
+        if (!updatedProfile?.company_id && updatedCompanyId) {
+          console.log("Attempting additional profile update with company ID:", updatedCompanyId);
+          const { error: fixError } = await supabase
+            .from("profiles")
+            .update({ company_id: updatedCompanyId })
+            .eq("id", data.user.id);
+            
+          if (fixError) {
+            console.error("Error in additional profile update:", fixError);
+          }
+        }
       }
 
       return updatedCompanyId;

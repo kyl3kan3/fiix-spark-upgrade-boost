@@ -125,6 +125,8 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     
     console.log("Company created successfully:", company);
     
+    // Try multiple approaches to ensure the profile gets updated
+    
     // First update - set company_id
     const { error: updateError } = await supabase
       .from("profiles")
@@ -137,10 +139,22 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     
     if (updateError) {
       console.error("Error associating user with company:", updateError);
-      throw updateError;
+      
+      // Try an alternative approach if the upsert fails
+      const { error: updateAltError } = await supabase
+        .from("profiles")
+        .update({ company_id: company.id, role: "administrator" })
+        .eq("id", user.id);
+        
+      if (updateAltError) {
+        console.error("Alternative update also failed:", updateAltError);
+        throw updateError;
+      } else {
+        console.log("Alternative profile update succeeded");
+      }
+    } else {
+      console.log("User profile updated with company ID:", company.id);
     }
-    
-    console.log("User profile updated with company ID:", company.id);
     
     // Second update - ensure role is set separately (for redundancy)
     const { error: roleError } = await supabase
@@ -150,10 +164,9 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     
     if (roleError) {
       console.error("Error setting user as administrator:", roleError);
-      throw roleError;
+    } else {
+      console.log("User set as administrator for the company");
     }
-    
-    console.log("User set as administrator for the company");
     
     // Verify the profile update was successful
     const { data: profileCheck } = await supabase
