@@ -43,8 +43,23 @@ serve(async (req) => {
       });
     }
 
-    // Use service role to delete user
+    // Use service role to update foreign key references first, then delete the user
     const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+    
+    // 1. Update companies table to set created_by to null where it references this user
+    const { error: updateError } = await adminClient
+      .from("companies")
+      .update({ created_by: null })
+      .eq("created_by", userId);
+      
+    if (updateError) {
+      return new Response(
+        JSON.stringify({ error: "Unable to update company references: " + updateError.message }),
+        { status: 500, headers: corsHeaders }
+      );
+    }
+    
+    // 2. Now delete the user
     const { error } = await adminClient.auth.admin.deleteUser(userId);
 
     if (error) {
