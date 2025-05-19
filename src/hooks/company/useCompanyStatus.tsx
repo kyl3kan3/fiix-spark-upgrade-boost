@@ -42,6 +42,8 @@ export function useCompanyStatus() {
       } else if (event === 'SIGNED_OUT') {
         // Clear company data when user signs out
         setCompanyId(null);
+        setSetupComplete(false);
+        localStorage.removeItem('maintenease_setup_complete');
       }
     });
     
@@ -70,7 +72,7 @@ export function useCompanyStatus() {
 
       console.log("Loading profile for user ID:", user.id);
 
-      // Load profile data
+      // Check if the user has a company associated directly
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("company_id, role, email")
@@ -84,6 +86,36 @@ export function useCompanyStatus() {
       }
       
       console.log("Profile loaded:", profile);
+      
+      if (profile?.company_id) {
+        return profile;
+      }
+      
+      // If no company found in profile, check if the user created a company
+      const { data: createdCompanies, error: companyError } = await supabase
+        .from("companies")
+        .select("id")
+        .eq("created_by", user.id)
+        .maybeSingle();
+        
+      if (companyError) {
+        console.error("Error checking if user created companies:", companyError);
+      } else if (createdCompanies?.id) {
+        console.log("User created company found:", createdCompanies.id);
+        
+        // Update the profile with this company
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({ company_id: createdCompanies.id })
+          .eq("id", user.id);
+          
+        if (updateError) {
+          console.error("Error updating profile with created company:", updateError);
+        } else {
+          console.log("Updated profile with created company");
+          return { ...profile, company_id: createdCompanies.id };
+        }
+      }
       
       return profile;
     } catch (error) {

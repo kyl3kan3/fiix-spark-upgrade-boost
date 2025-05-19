@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface CompanySetupButtonProps {
   isSubmitting?: boolean;
@@ -13,6 +14,8 @@ const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting })
   const handleCompanySetup = () => {
     // Clear any existing setup flags to start fresh
     localStorage.removeItem('maintenease_setup_complete');
+    
+    toast.info("Starting company setup process");
     
     // Force setup mode by adding the forceSetup parameter with a unique timestamp
     const timestamp = Date.now();
