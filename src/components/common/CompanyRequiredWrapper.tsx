@@ -32,13 +32,14 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   useEffect(() => {
     const isSetupPath = location.pathname === "/setup";
     const isAuthPath = location.pathname === "/auth";
+    const isProfilePath = location.pathname === "/profile";
     
-    // Don't redirect from auth page or setup page
-    if (isAuthPath || isSetupPath) {
+    // Don't redirect from auth page, setup page, or profile page
+    if (isAuthPath || isSetupPath || isProfilePath) {
       return;
     }
     
-    // If we're not on the setup page but should be redirecting there, track attempts
+    // If we're not on these pages but should be redirecting to setup, track attempts
     if (!isSetupPath && redirectAttempts < 3 && !setupComplete && !companyId && !isLoading) {
       setRedirectAttempts(prev => prev + 1);
     }
@@ -90,6 +91,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // If setup is explicitly marked as complete, allow access
   if (setupComplete === true) {
     console.log("Setup is marked as complete, allowing access");
+    return <>{children}</>;
+  }
+
+  // Special case for profile page - always allow access even if company setup is not complete
+  if (location.pathname === "/profile") {
+    console.log("Profile page access granted regardless of company status");
     return <>{children}</>;
   }
 

@@ -18,6 +18,8 @@ import { toast } from "sonner";
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { profileData, error: profileError } = useUserProfile(['role', 'company_id']);
@@ -42,9 +44,22 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchUserEmail = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserEmail(user?.email ?? null);
+      try {
+        setLoading(true);
+        const { data: { user } } = await supabase.auth.getUser();
+        setUserEmail(user?.email ?? null);
+        if (!user) {
+          setError("You must be logged in to view your profile");
+          // Don't redirect here to avoid potential loops
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        setError("Failed to load user information");
+      } finally {
+        setLoading(false);
+      }
     };
+    
     fetchUserEmail();
   }, []);
 
@@ -65,6 +80,37 @@ const ProfilePage = () => {
       toast.error("Failed to sign out. Please try again.");
     }
   };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+          <Alert className="mb-6 bg-red-50 border-red-200">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <AlertDescription className="text-red-700">
+              {error}
+            </AlertDescription>
+          </Alert>
+          <Button onClick={() => navigate("/auth")}>Go to Login</Button>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

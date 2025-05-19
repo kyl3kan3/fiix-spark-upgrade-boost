@@ -34,30 +34,42 @@ export function useProfileData() {
         
       if (error) throw error;
       
+      console.log("Profile data fetch result:", { data, userId: user.id });
+      
       if (!data) {
         console.log("No profile data found, attempting to create one");
-        const newProfile = await createInitialProfile(user.id, user.email);
-        if (newProfile) {
-          setProfileData(newProfile);
+        await createInitialProfile(user.id, user.email || undefined);
+        
+        // Try fetching again after creating
+        const { data: newData, error: newError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle();
+          
+        if (newError) throw newError;
+        
+        if (newData) {
+          setProfileData(newData);
           setForm({
-            first_name: newProfile.first_name ?? "",
-            last_name: newProfile.last_name ?? "",
-            phone_number: newProfile.phone_number ?? "",
-            email: newProfile.email ?? "",
+            first_name: newData.first_name ?? "",
+            last_name: newData.last_name ?? "",
+            phone_number: newData.phone_number ?? "",
+            email: newData.email ?? "",
           });
+        } else {
+          throw new Error("Failed to create or fetch profile");
         }
-        setIsLoading(false);
-        return;
+      } else {
+        setProfileData(data);
+        setForm({
+          first_name: data.first_name ?? "",
+          last_name: data.last_name ?? "",
+          phone_number: data.phone_number ?? "",
+          email: data.email ?? "",
+        });
       }
-      
-      setProfileData(data);
-      setForm({
-        first_name: data.first_name ?? "",
-        last_name: data.last_name ?? "",
-        phone_number: data.phone_number ?? "",
-        email: data.email ?? "",
-      });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching profile data:", error);
       toast({
         title: "Error loading profile",
@@ -77,7 +89,7 @@ export function useProfileData() {
         .from('companies')
         .select('id')
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (!companyData) {
         console.log("No company found to associate with profile");
@@ -104,7 +116,7 @@ export function useProfileData() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .insert(newProfile)
+        .upsert(newProfile)
         .select('*')
         .single();
 
@@ -115,7 +127,7 @@ export function useProfileData() {
 
       console.log("Created new profile:", data);
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create initial profile:", error);
       return null;
     }

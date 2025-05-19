@@ -9,7 +9,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Redirect to auth page always, unless user is logged in
+    // Check authentication status and redirect accordingly
     const checkSession = async () => {
       try {
         setIsLoading(true);
@@ -22,7 +22,28 @@ const Index = () => {
         }
         
         if (data.session) {
-          // Redirect logged in users to dashboard
+          // Check if user has a profile and company association
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('company_id')
+            .eq('id', data.session.user.id)
+            .maybeSingle();
+            
+          console.log("Profile check result:", { profileData, profileError });
+            
+          if (profileError) {
+            console.error("Error checking profile:", profileError);
+          }
+          
+          // If user doesn't have a profile or company association, send to profile page
+          // This helps break out of potential redirect loops
+          if (!profileData || !profileData.company_id) {
+            console.log("User doesn't have a complete profile, redirecting to profile page");
+            navigate("/profile", { replace: true });
+            return;
+          }
+          
+          // Redirect logged in users with complete profiles to dashboard
           navigate("/dashboard", { replace: true });
         } else {
           // Redirect non-logged in users to auth
