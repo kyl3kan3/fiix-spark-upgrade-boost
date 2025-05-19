@@ -40,16 +40,24 @@ const DeleteAccountButton: React.FC = () => {
       const body = await res.json();
 
       if (res.ok && body.success) {
-        // User deleted successfully
-        await supabase.auth.signOut();
+        // Clear all local storage items before signout
+        localStorage.clear();
+        
+        // User deleted successfully - sign out and navigate
+        await supabase.auth.signOut({ scope: 'global' });
+        
         toast({
           title: "Account Deleted",
           description: "Your account has been deleted.",
           variant: "default",
         });
-        setIsDeleting(false);
+        
+        // Close the dialog first
         setOpen(false);
-        navigate("/auth");
+        setIsDeleting(false);
+        
+        // Use replace instead of navigate to prevent history issues
+        window.location.href = "/auth";
       } else {
         toast({
           title: "Account Deletion Failed",

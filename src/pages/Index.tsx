@@ -9,13 +9,25 @@ const Index = () => {
   useEffect(() => {
     // Redirect to auth page always, unless user is logged in
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        // Redirect logged in users to dashboard
-        navigate("/dashboard");
-      } else {
-        // Redirect non-logged in users to auth
-        navigate("/auth");
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error checking session:", error);
+          navigate("/auth", { replace: true });
+          return;
+        }
+        
+        if (data.session) {
+          // Redirect logged in users to dashboard
+          navigate("/dashboard", { replace: true });
+        } else {
+          // Redirect non-logged in users to auth
+          navigate("/auth", { replace: true });
+        }
+      } catch (err) {
+        console.error("Exception during session check:", err);
+        navigate("/auth", { replace: true });
       }
     };
     
