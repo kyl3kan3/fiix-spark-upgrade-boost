@@ -16,7 +16,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     setupComplete,
     companyId,
     refreshCompanyStatus,
-    handleCompanyFound
+    handleCompanyFound,
+    isAuthenticated
   } = useCompanyStatus();
   
   const navigate = useNavigate();
@@ -74,12 +75,20 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     hasCompanyId: !!companyId, 
     companyId,
     redirectAttempts,
-    path: location.pathname
+    path: location.pathname,
+    isAuthenticated
   });
 
   // Don't restrict access on the auth page
   if (location.pathname === "/auth") {
     return <>{children}</>;
+  }
+  
+  // If not authenticated and not on auth page, redirect to auth
+  if (!isAuthenticated && location.pathname !== "/auth") {
+    console.log("User not authenticated, redirecting to auth");
+    navigate("/auth", { replace: true });
+    return <LoadingDisplay />;
   }
 
   // If we have a company_id, always allow access

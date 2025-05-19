@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData, ProfileFormData } from "../types";
@@ -23,7 +22,12 @@ export function useProfileData() {
     try {
       setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.log("Not authenticated, cannot load profile");
+        setIsLoading(false);
+        setProfileError(new Error("Not authenticated"));
+        return;
+      }
       
       // Using maybeSingle() instead of single() to handle case where profile doesn't exist
       const { data, error } = await supabase
@@ -32,30 +36,24 @@ export function useProfileData() {
         .eq('id', user.id)
         .maybeSingle();
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching profile data:", error);
+        throw error;
+      }
       
       console.log("Profile data fetch result:", { data, userId: user.id });
       
       if (!data) {
         console.log("No profile data found, attempting to create one");
-        await createInitialProfile(user.id, user.email || undefined);
+        const createdProfile = await createInitialProfile(user.id, user.email || undefined);
         
-        // Try fetching again after creating
-        const { data: newData, error: newError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
-          
-        if (newError) throw newError;
-        
-        if (newData) {
-          setProfileData(newData);
+        if (createdProfile) {
+          setProfileData(createdProfile);
           setForm({
-            first_name: newData.first_name ?? "",
-            last_name: newData.last_name ?? "",
-            phone_number: newData.phone_number ?? "",
-            email: newData.email ?? "",
+            first_name: createdProfile.first_name ?? "",
+            last_name: createdProfile.last_name ?? "",
+            phone_number: createdProfile.phone_number ?? "",
+            email: createdProfile.email ?? "",
           });
         } else {
           throw new Error("Failed to create or fetch profile");
@@ -91,24 +89,14 @@ export function useProfileData() {
         .limit(1)
         .maybeSingle();
 
-      if (!companyData) {
-        console.log("No company found to associate with profile");
-        toast({
-          title: "Company setup required",
-          description: "Please complete company setup before continuing.",
-          variant: "destructive",
-        });
-        return null;
-      }
-
-      // Create initial profile with company_id
+      // Create initial profile with company_id if available
       const newProfile = {
         id: userId,
         email: email || "",
         first_name: "",
         last_name: "",
         role: "technician",
-        company_id: companyData.id,
+        company_id: companyData?.id || null,  // Make this optional
         created_at: new Date().toISOString(),
         avatar_url: null,
         phone_number: null
@@ -207,5 +195,6 @@ export function useProfileData() {
     handleFormChange,
     handleProfileUpdate,
     updateAvatar,
+    refreshProfile: fetchProfileData
   };
 }

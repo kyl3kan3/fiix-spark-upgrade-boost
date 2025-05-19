@@ -36,9 +36,14 @@ const Index = () => {
           }
           
           // If user doesn't have a profile or company association, send to profile page
-          // This helps break out of potential redirect loops
-          if (!profileData || !profileData.company_id) {
-            console.log("User doesn't have a complete profile, redirecting to profile page");
+          if (!profileData) {
+            console.log("No profile found, redirecting to profile page");
+            navigate("/profile", { replace: true });
+            return;
+          }
+          
+          if (!profileData.company_id) {
+            console.log("User doesn't have a company association, redirecting to profile page");
             navigate("/profile", { replace: true });
             return;
           }
