@@ -16,8 +16,11 @@ const Auth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [isProcessingInvite, setIsProcessingInvite] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+    
     // Check if we should default to signup mode based on URL param
     const params = new URLSearchParams(location.search);
     if (params.get("signup") === "true") {
@@ -35,24 +38,64 @@ const Auth = () => {
       }
     }
 
-    // Check if user is already logged in
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setIsAuthenticated(true);
-        if (inviteToken) {
-          // Process invite for logged in user
-          handleInviteAccept(inviteToken, data.session.user.email || "");
-        } else {
-          navigate("/dashboard");
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log("Auth state change in Auth.tsx:", event);
+        if (!isMounted) return;
+        
+        const isAuthed = !!session?.user;
+        setIsAuthenticated(isAuthed);
+        
+        if (isAuthed && isInitialized && !inviteToken) {
+          // Don't redirect during initial load or if handling an invite
+          console.log("User is authenticated, redirecting to dashboard");
+          navigate("/dashboard", { replace: true });
         }
-      } else {
-        setIsAuthenticated(false);
+      }
+    );
+
+    // THEN check for existing session
+    const checkSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error checking session in Auth.tsx:", error);
+          return;
+        }
+        
+        if (data?.session?.user) {
+          if (!isMounted) return;
+          setIsAuthenticated(true);
+          
+          if (inviteToken) {
+            // Process invite for logged in user
+            handleInviteAccept(inviteToken, data.session.user.email || "");
+          } else if (isInitialized) {
+            // Don't redirect during initial load
+            console.log("Existing session found, redirecting to dashboard");
+            navigate("/dashboard", { replace: true });
+          }
+        } else {
+          if (!isMounted) return;
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        console.error("Exception during session check in Auth.tsx:", err);
+      } finally {
+        if (isMounted) {
+          setIsInitialized(true);
+        }
       }
     };
     
     checkSession();
-  }, [location, navigate, inviteToken]);
+    
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [location, navigate, inviteToken, isInitialized]);
 
   const handleInviteToken = async (token: string) => {
     setIsProcessingInvite(true);
@@ -112,7 +155,7 @@ const Auth = () => {
       localStorage.setItem("pending_invitation", JSON.stringify(invitation));
       
       // Redirect to onboarding to complete the process
-      navigate("/onboarding");
+      navigate("/onboarding", { replace: true });
       
     } catch (error: any) {
       console.error("Error accepting invitation:", error);
@@ -125,13 +168,13 @@ const Auth = () => {
     if (isSignUp) {
       // For new users, redirect to onboarding page
       localStorage.setItem("pending_auth_email", email);
-      navigate("/onboarding");
+      navigate("/onboarding", { replace: true });
     } else if (inviteToken) {
       // For existing users accepting an invite
       handleInviteAccept(inviteToken, email);
     } else {
       // For existing users, redirect to dashboard
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
   };
 
@@ -161,7 +204,7 @@ const Auth = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
         <AuthHeader 
           isSignUp={isSignUp} 
-          onBackToDashboard={() => navigate("/dashboard")}
+          onBackToDashboard={() => navigate("/dashboard", { replace: true })}
           showBackButton={isAuthenticated} // Only show back button if authenticated
         />
         

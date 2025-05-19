@@ -24,11 +24,16 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const location = useLocation();
   const [redirectAttempts, setRedirectAttempts] = useState(0);
   const [hasRedirected, setHasRedirected] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Check database status on mount only - removing dependency array to prevent refresh loops
   useEffect(() => {
-    refreshCompanyStatus();
-  }, []); // Empty dependency array to run only once on mount
+    // Only refresh on initial load
+    if (isInitialLoad) {
+      refreshCompanyStatus();
+      setIsInitialLoad(false);
+    }
+  }, [refreshCompanyStatus, isInitialLoad]); 
   
   // Anti-loop protection
   useEffect(() => {
@@ -56,7 +61,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
       console.log("Redirecting to setup page from:", location.pathname);
       setHasRedirected(true);
       toast.info("Please complete company setup first");
-      navigate("/setup");
+      navigate("/setup", { replace: true });
     }
   }, [isLoading, setupComplete, companyId, location.pathname, navigate, redirectAttempts, hasRedirected]);
 
@@ -70,11 +75,11 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
         refreshCompanyStatus();
       }, 100);
     }
-  }, [companyId, setupComplete]); // Only run when these dependencies change
+  }, [companyId, setupComplete, refreshCompanyStatus]); 
 
   // Wait for both profile data and setup check to complete
   if (isLoading) {
-    return <LoadingDisplay />;
+    return <LoadingDisplay message="Loading your profile..." />;
   }
 
   // Debug log to help track the issue

@@ -24,7 +24,7 @@ const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting })
     
     // Force setup mode by adding the forceSetup parameter with a unique timestamp
     const timestamp = Date.now();
-    navigate(`/setup?forceSetup=true&timestamp=${timestamp}`);
+    navigate(`/setup?forceSetup=true&timestamp=${timestamp}`, { replace: true });
   };
 
   return (
