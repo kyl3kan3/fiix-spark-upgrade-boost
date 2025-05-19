@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
@@ -30,6 +31,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // Anti-loop protection
   useEffect(() => {
     const isSetupPath = location.pathname === "/setup";
+    const isAuthPath = location.pathname === "/auth";
+    
+    // Don't redirect from auth page or setup page
+    if (isAuthPath || isSetupPath) {
+      return;
+    }
     
     // If we're not on the setup page but should be redirecting there, track attempts
     if (!isSetupPath && redirectAttempts < 3 && !setupComplete && !companyId && !isLoading) {
@@ -68,6 +75,11 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     redirectAttempts,
     path: location.pathname
   });
+
+  // Don't restrict access on the auth page
+  if (location.pathname === "/auth") {
+    return <>{children}</>;
+  }
 
   // If we have a company_id, always allow access
   if (companyId) {

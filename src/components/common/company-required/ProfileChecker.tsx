@@ -49,6 +49,49 @@ export const ProfileChecker: React.FC<ProfileCheckerProps> = ({ onCompanyFound }
           
         if (companyError) {
           console.error("Error finding default company:", companyError);
+          
+          // If no companies exist, create one
+          if (companyError.code === 'PGRST116') {
+            const { data: newCompany, error: createCompanyError } = await supabase
+              .from('companies')
+              .insert({
+                name: 'Default Company',
+                created_by: user.id
+              })
+              .select('id')
+              .single();
+              
+            if (createCompanyError) {
+              console.error("Error creating default company:", createCompanyError);
+              setIsRefreshing(false);
+              return null;
+            }
+            
+            const companyId = newCompany.id;
+            
+            // Create profile with the new company ID
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                email: email,
+                role: 'technician',
+                company_id: companyId
+              });
+              
+            if (createProfileError) {
+              console.error("Error creating profile:", createProfileError);
+              setIsRefreshing(false);
+              return null;
+            }
+            
+            // Mark setup as complete
+            localStorage.setItem('maintenease_setup_complete', 'true');
+            onCompanyFound(companyId);
+            setIsRefreshing(false);
+            return companyId;
+          }
+          
           setIsRefreshing(false);
           return null;
         }
@@ -83,12 +126,20 @@ export const ProfileChecker: React.FC<ProfileCheckerProps> = ({ onCompanyFound }
             id: user.id,
             email: email,
             role: 'technician',
-            company_id: companyId // Use the found/created company ID
+            company_id: companyId
           });
           
         if (createError) {
           console.error("Error creating profile:", createError);
+          setIsRefreshing(false);
+          return null;
         }
+        
+        // Mark setup as complete
+        localStorage.setItem('maintenease_setup_complete', 'true');
+        onCompanyFound(companyId);
+        setIsRefreshing(false);
+        return companyId;
       }
       
       // Now check for company association

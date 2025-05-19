@@ -35,7 +35,17 @@ export function useProfileData() {
       if (error) throw error;
       
       if (!data) {
-        console.log("No profile data found, user may need to complete onboarding");
+        console.log("No profile data found, attempting to create one");
+        const newProfile = await createInitialProfile(user.id, user.email);
+        if (newProfile) {
+          setProfileData(newProfile);
+          setForm({
+            first_name: newProfile.first_name ?? "",
+            last_name: newProfile.last_name ?? "",
+            phone_number: newProfile.phone_number ?? "",
+            email: newProfile.email ?? "",
+          });
+        }
         setIsLoading(false);
         return;
       }
@@ -49,8 +59,65 @@ export function useProfileData() {
       });
     } catch (error) {
       console.error("Error fetching profile data:", error);
+      toast({
+        title: "Error loading profile",
+        description: "Please try refreshing the page",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Function to create an initial profile if none exists
+  const createInitialProfile = async (userId: string, email: string | undefined): Promise<ProfileData | null> => {
+    try {
+      // First check if there's any company in the system to associate with
+      const { data: companyData } = await supabase
+        .from('companies')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (!companyData) {
+        console.log("No company found to associate with profile");
+        toast({
+          title: "Company setup required",
+          description: "Please complete company setup before continuing.",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      // Create initial profile with company_id
+      const newProfile = {
+        id: userId,
+        email: email || "",
+        first_name: "",
+        last_name: "",
+        role: "technician",
+        company_id: companyData.id,
+        created_at: new Date().toISOString(),
+        avatar_url: null,
+        phone_number: null
+      };
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert(newProfile)
+        .select('*')
+        .single();
+
+      if (error) {
+        console.error("Error creating profile:", error);
+        throw error;
+      }
+
+      console.log("Created new profile:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to create initial profile:", error);
+      return null;
     }
   };
 
