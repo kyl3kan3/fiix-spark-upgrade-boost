@@ -24,7 +24,14 @@ export function useCompanyStatus() {
     const checkAuth = async () => {
       try {
         const { data, error } = await supabase.auth.getUser();
-        setIsAuthenticated(!!data.user && !error);
+        const authenticated = !!data.user && !error;
+        setIsAuthenticated(authenticated);
+        
+        // If not authenticated, clear company data
+        if (!authenticated) {
+          setCompanyId(null);
+          setSetupComplete(false);
+        }
       } catch (err) {
         console.error("Error checking auth status:", err);
         setIsAuthenticated(false);
@@ -35,7 +42,8 @@ export function useCompanyStatus() {
     
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state change:", event, session?.user?.id ? "authenticated" : "unauthenticated");
-      setIsAuthenticated(!!session?.user);
+      const authenticated = !!session?.user;
+      setIsAuthenticated(authenticated);
       
       if (event === 'SIGNED_IN') {
         // Re-check company status when user signs in

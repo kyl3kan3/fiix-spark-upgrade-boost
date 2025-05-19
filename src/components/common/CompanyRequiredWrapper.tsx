@@ -17,7 +17,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     setupComplete,
     companyId,
     refreshCompanyStatus,
-    handleCompanyFound
+    handleCompanyFound,
+    isAuthenticated
   } = useCompanyStatus();
   
   const navigate = useNavigate();
@@ -25,6 +26,14 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const [redirectAttempts, setRedirectAttempts] = useState(0);
   const [hasRedirected, setHasRedirected] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!isLoading && isAuthenticated === false) {
+      console.log("User is not authenticated, redirecting to auth page");
+      navigate("/auth", { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   // Check database status on mount only - removing dependency array to prevent refresh loops
   useEffect(() => {
@@ -55,6 +64,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // Handle redirection to setup if needed
   useEffect(() => {
     const isSetupPath = location.pathname === "/setup";
+    const isAuthPath = location.pathname === "/auth";
+    
+    // Don't redirect to setup from auth page
+    if (isAuthPath) {
+      return;
+    }
     
     // Force redirect to setup if not complete and not already on setup page
     if (!isLoading && !isSetupPath && !setupComplete && !companyId && redirectAttempts < 3 && !hasRedirected) {
@@ -82,6 +97,11 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     return <LoadingDisplay message="Loading your profile..." />;
   }
 
+  // If we need to redirect to auth, don't render anything else
+  if (isAuthenticated === false) {
+    return <LoadingDisplay message="Redirecting to login..." />;
+  }
+
   // Debug log to help track the issue
   console.log("CompanyRequiredWrapper state:", { 
     setupComplete, 
@@ -89,7 +109,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     companyId,
     redirectAttempts,
     path: location.pathname,
-    hasRedirected
+    hasRedirected,
+    isAuthenticated
   });
 
   // If we have a company_id and setup is complete, allow access

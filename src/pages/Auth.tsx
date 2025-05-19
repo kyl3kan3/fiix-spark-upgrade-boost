@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +16,7 @@ const Auth = () => {
   const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [isProcessingInvite, setIsProcessingInvite] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [hasAttemptedRedirect, setHasAttemptedRedirect] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -47,10 +47,15 @@ const Auth = () => {
         const isAuthed = !!session?.user;
         setIsAuthenticated(isAuthed);
         
-        if (isAuthed && isInitialized && !inviteToken) {
-          // Don't redirect during initial load or if handling an invite
+        if (isAuthed && isInitialized && !inviteToken && !hasAttemptedRedirect) {
+          // Only redirect once to prevent loops
+          setHasAttemptedRedirect(true);
           console.log("User is authenticated, redirecting to dashboard");
-          navigate("/dashboard", { replace: true });
+          
+          // Use a slight delay to ensure all state is updated
+          setTimeout(() => {
+            navigate("/dashboard", { replace: true });
+          }, 100);
         }
       }
     );
@@ -71,10 +76,15 @@ const Auth = () => {
           if (inviteToken) {
             // Process invite for logged in user
             handleInviteAccept(inviteToken, data.session.user.email || "");
-          } else if (isInitialized) {
-            // Don't redirect during initial load
+          } else if (isInitialized && !hasAttemptedRedirect) {
+            // Only redirect once to prevent loops
+            setHasAttemptedRedirect(true);
             console.log("Existing session found, redirecting to dashboard");
-            navigate("/dashboard", { replace: true });
+            
+            // Use a slight delay to ensure all state is updated
+            setTimeout(() => {
+              navigate("/dashboard", { replace: true });
+            }, 100);
           }
         } else {
           if (!isMounted) return;
@@ -95,7 +105,7 @@ const Auth = () => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [location, navigate, inviteToken, isInitialized]);
+  }, [location, navigate, inviteToken, isInitialized, hasAttemptedRedirect]);
 
   const handleInviteToken = async (token: string) => {
     setIsProcessingInvite(true);

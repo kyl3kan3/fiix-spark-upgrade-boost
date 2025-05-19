@@ -17,14 +17,21 @@ const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting })
     
     setIsNavigating(true);
     
-    // Clear any existing setup flags to start fresh
-    localStorage.removeItem('maintenease_setup_complete');
-    
-    toast.info("Starting company setup process");
-    
-    // Force setup mode by adding the forceSetup parameter with a unique timestamp
-    const timestamp = Date.now();
-    navigate(`/setup?forceSetup=true&timestamp=${timestamp}`, { replace: true });
+    try {
+      // Clear any existing setup flags to start fresh
+      localStorage.removeItem('maintenease_setup_complete');
+      
+      toast.info("Starting company setup process");
+      
+      // Force setup mode by adding the forceSetup parameter with a unique timestamp
+      const timestamp = Date.now();
+      // Use window.location for a full page reload to reset any stale state
+      window.location.href = `/setup?forceSetup=true&timestamp=${timestamp}`;
+    } catch (error) {
+      console.error("Error navigating to setup:", error);
+      setIsNavigating(false);
+      toast.error("Failed to navigate to setup page");
+    }
   };
 
   return (
