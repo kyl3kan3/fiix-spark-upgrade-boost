@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -10,8 +10,13 @@ interface CompanySetupButtonProps {
 
 const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting }) => {
   const navigate = useNavigate();
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const handleCompanySetup = () => {
+    if (isNavigating) return; // Prevent multiple clicks
+    
+    setIsNavigating(true);
+    
     // Clear any existing setup flags to start fresh
     localStorage.removeItem('maintenease_setup_complete');
     
@@ -26,9 +31,9 @@ const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting })
     <Button
       onClick={handleCompanySetup}
       className="w-full"
-      disabled={isSubmitting}
+      disabled={isSubmitting || isNavigating}
     >
-      {isSubmitting ? "Please wait..." : "Complete Company Setup"}
+      {isSubmitting || isNavigating ? "Please wait..." : "Complete Company Setup"}
     </Button>
   );
 };

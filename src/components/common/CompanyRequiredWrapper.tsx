@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
@@ -24,10 +25,10 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const [redirectAttempts, setRedirectAttempts] = useState(0);
   const [hasRedirected, setHasRedirected] = useState(false);
 
-  // Check database status on mount and when dependencies change
+  // Check database status on mount only - removing dependency array to prevent refresh loops
   useEffect(() => {
     refreshCompanyStatus();
-  }, [refreshCompanyStatus]);
+  }, []); // Empty dependency array to run only once on mount
   
   // Anti-loop protection
   useEffect(() => {
@@ -60,6 +61,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   }, [isLoading, setupComplete, companyId, location.pathname, navigate, redirectAttempts, hasRedirected]);
 
   // Explicitly set the setupComplete flag in localStorage if we have a company ID
+  // But only do this ONCE, not on every render
   useEffect(() => {
     if (companyId && !setupComplete) {
       localStorage.setItem('maintenease_setup_complete', 'true');
@@ -68,7 +70,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
         refreshCompanyStatus();
       }, 100);
     }
-  }, [companyId, setupComplete, refreshCompanyStatus]);
+  }, [companyId, setupComplete]); // Only run when these dependencies change
 
   // Wait for both profile data and setup check to complete
   if (isLoading) {
@@ -81,7 +83,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     hasCompanyId: !!companyId, 
     companyId,
     redirectAttempts,
-    path: location.pathname
+    path: location.pathname,
+    hasRedirected
   });
 
   // If we have a company_id and setup is complete, allow access
@@ -93,7 +96,6 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // If we have a company ID but setup isn't marked complete, mark it complete now
   if (companyId && !setupComplete) {
     console.log("Company ID exists but setup not marked complete, updating flag");
-    localStorage.setItem('maintenease_setup_complete', 'true');
     return <LoadingDisplay message="Finalizing setup..." />;
   }
 

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ export function useCompanyStatus() {
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const hasInitialized = useRef(false);
 
   // Check if user has completed setup
   const checkSetupCompleted = useCallback(() => {
@@ -130,6 +131,13 @@ export function useCompanyStatus() {
   }, []);
 
   const refreshCompanyStatus = useCallback(async () => {
+    // Prevent multiple refreshes on initial load
+    if (isLoading && hasInitialized.current) {
+      return;
+    }
+    
+    hasInitialized.current = true;
+    
     // Reset state for refresh
     setIsLoading(true);
     setProfileError(null);
@@ -178,12 +186,14 @@ export function useCompanyStatus() {
     } finally {
       setIsLoading(false);
     }
-  }, [checkSetupCompleted, loadProfileData]);
+  }, [checkSetupCompleted, loadProfileData, isLoading]);
 
-  // Initial load
+  // Initial load - only run once
   useEffect(() => {
-    console.log("Initial load of company status");
-    refreshCompanyStatus();
+    if (!hasInitialized.current) {
+      console.log("Initial load of company status");
+      refreshCompanyStatus();
+    }
   }, [refreshCompanyStatus]);
 
   const handleCompanyFound = useCallback((newCompanyId: string) => {
