@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -9,7 +9,6 @@ export function useCompanyStatus() {
   const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const hasInitialized = useRef(false);
 
   // Check if user has completed setup
   const checkSetupCompleted = useCallback(() => {
@@ -24,14 +23,7 @@ export function useCompanyStatus() {
     const checkAuth = async () => {
       try {
         const { data, error } = await supabase.auth.getUser();
-        const authenticated = !!data.user && !error;
-        setIsAuthenticated(authenticated);
-        
-        // If not authenticated, clear company data
-        if (!authenticated) {
-          setCompanyId(null);
-          setSetupComplete(false);
-        }
+        setIsAuthenticated(!!data.user && !error);
       } catch (err) {
         console.error("Error checking auth status:", err);
         setIsAuthenticated(false);
@@ -42,8 +34,7 @@ export function useCompanyStatus() {
     
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state change:", event, session?.user?.id ? "authenticated" : "unauthenticated");
-      const authenticated = !!session?.user;
-      setIsAuthenticated(authenticated);
+      setIsAuthenticated(!!session?.user);
       
       if (event === 'SIGNED_IN') {
         // Re-check company status when user signs in
@@ -51,8 +42,6 @@ export function useCompanyStatus() {
       } else if (event === 'SIGNED_OUT') {
         // Clear company data when user signs out
         setCompanyId(null);
-        setSetupComplete(false);
-        localStorage.removeItem('maintenease_setup_complete');
       }
     });
     
@@ -81,7 +70,7 @@ export function useCompanyStatus() {
 
       console.log("Loading profile for user ID:", user.id);
 
-      // Check if the user has a company associated directly
+      // Load profile data
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("company_id, role, email")
@@ -96,36 +85,6 @@ export function useCompanyStatus() {
       
       console.log("Profile loaded:", profile);
       
-      if (profile?.company_id) {
-        return profile;
-      }
-      
-      // If no company found in profile, check if the user created a company
-      const { data: createdCompanies, error: companyError } = await supabase
-        .from("companies")
-        .select("id")
-        .eq("created_by", user.id)
-        .maybeSingle();
-        
-      if (companyError) {
-        console.error("Error checking if user created companies:", companyError);
-      } else if (createdCompanies?.id) {
-        console.log("User created company found:", createdCompanies.id);
-        
-        // Update the profile with this company
-        const { error: updateError } = await supabase
-          .from("profiles")
-          .update({ company_id: createdCompanies.id })
-          .eq("id", user.id);
-          
-        if (updateError) {
-          console.error("Error updating profile with created company:", updateError);
-        } else {
-          console.log("Updated profile with created company");
-          return { ...profile, company_id: createdCompanies.id };
-        }
-      }
-      
       return profile;
     } catch (error) {
       console.error("Error in loading profile data:", error);
@@ -139,13 +98,6 @@ export function useCompanyStatus() {
   }, []);
 
   const refreshCompanyStatus = useCallback(async () => {
-    // Prevent multiple refreshes on initial load
-    if (isLoading && hasInitialized.current) {
-      return;
-    }
-    
-    hasInitialized.current = true;
-    
     // Reset state for refresh
     setIsLoading(true);
     setProfileError(null);
@@ -194,14 +146,12 @@ export function useCompanyStatus() {
     } finally {
       setIsLoading(false);
     }
-  }, [checkSetupCompleted, loadProfileData, isLoading]);
+  }, [checkSetupCompleted, loadProfileData]);
 
-  // Initial load - only run once
+  // Initial load
   useEffect(() => {
-    if (!hasInitialized.current) {
-      console.log("Initial load of company status");
-      refreshCompanyStatus();
-    }
+    console.log("Initial load of company status");
+    refreshCompanyStatus();
   }, [refreshCompanyStatus]);
 
   const handleCompanyFound = useCallback((newCompanyId: string) => {

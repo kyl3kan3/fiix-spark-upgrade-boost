@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,12 +16,8 @@ const Auth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [isProcessingInvite, setIsProcessingInvite] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [hasAttemptedRedirect, setHasAttemptedRedirect] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    
     // Check if we should default to signup mode based on URL param
     const params = new URLSearchParams(location.search);
     if (params.get("signup") === "true") {
@@ -38,74 +35,24 @@ const Auth = () => {
       }
     }
 
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log("Auth state change in Auth.tsx:", event);
-        if (!isMounted) return;
-        
-        const isAuthed = !!session?.user;
-        setIsAuthenticated(isAuthed);
-        
-        if (isAuthed && isInitialized && !inviteToken && !hasAttemptedRedirect) {
-          // Only redirect once to prevent loops
-          setHasAttemptedRedirect(true);
-          console.log("User is authenticated, redirecting to dashboard");
-          
-          // Use a slight delay to ensure all state is updated
-          setTimeout(() => {
-            navigate("/dashboard", { replace: true });
-          }, 100);
-        }
-      }
-    );
-
-    // THEN check for existing session
+    // Check if user is already logged in
     const checkSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error checking session in Auth.tsx:", error);
-          return;
-        }
-        
-        if (data?.session?.user) {
-          if (!isMounted) return;
-          setIsAuthenticated(true);
-          
-          if (inviteToken) {
-            // Process invite for logged in user
-            handleInviteAccept(inviteToken, data.session.user.email || "");
-          } else if (isInitialized && !hasAttemptedRedirect) {
-            // Only redirect once to prevent loops
-            setHasAttemptedRedirect(true);
-            console.log("Existing session found, redirecting to dashboard");
-            
-            // Use a slight delay to ensure all state is updated
-            setTimeout(() => {
-              navigate("/dashboard", { replace: true });
-            }, 100);
-          }
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsAuthenticated(true);
+        if (inviteToken) {
+          // Process invite for logged in user
+          handleInviteAccept(inviteToken, data.session.user.email || "");
         } else {
-          if (!isMounted) return;
-          setIsAuthenticated(false);
+          navigate("/dashboard");
         }
-      } catch (err) {
-        console.error("Exception during session check in Auth.tsx:", err);
-      } finally {
-        if (isMounted) {
-          setIsInitialized(true);
-        }
+      } else {
+        setIsAuthenticated(false);
       }
     };
     
     checkSession();
-    
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, [location, navigate, inviteToken, isInitialized, hasAttemptedRedirect]);
+  }, [location, navigate, inviteToken]);
 
   const handleInviteToken = async (token: string) => {
     setIsProcessingInvite(true);
@@ -165,7 +112,7 @@ const Auth = () => {
       localStorage.setItem("pending_invitation", JSON.stringify(invitation));
       
       // Redirect to onboarding to complete the process
-      navigate("/onboarding", { replace: true });
+      navigate("/onboarding");
       
     } catch (error: any) {
       console.error("Error accepting invitation:", error);
@@ -178,13 +125,13 @@ const Auth = () => {
     if (isSignUp) {
       // For new users, redirect to onboarding page
       localStorage.setItem("pending_auth_email", email);
-      navigate("/onboarding", { replace: true });
+      navigate("/onboarding");
     } else if (inviteToken) {
       // For existing users accepting an invite
       handleInviteAccept(inviteToken, email);
     } else {
       // For existing users, redirect to dashboard
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard");
     }
   };
 
@@ -214,7 +161,7 @@ const Auth = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
         <AuthHeader 
           isSignUp={isSignUp} 
-          onBackToDashboard={() => navigate("/dashboard", { replace: true })}
+          onBackToDashboard={() => navigate("/dashboard")}
           showBackButton={isAuthenticated} // Only show back button if authenticated
         />
         

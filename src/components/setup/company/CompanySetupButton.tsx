@@ -1,8 +1,7 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 interface CompanySetupButtonProps {
   isSubmitting?: boolean;
@@ -10,37 +9,23 @@ interface CompanySetupButtonProps {
 
 const CompanySetupButton: React.FC<CompanySetupButtonProps> = ({ isSubmitting }) => {
   const navigate = useNavigate();
-  const [isNavigating, setIsNavigating] = useState(false);
 
   const handleCompanySetup = () => {
-    if (isNavigating) return; // Prevent multiple clicks
+    // Clear any existing setup flags to start fresh
+    localStorage.removeItem('maintenease_setup_complete');
     
-    setIsNavigating(true);
-    
-    try {
-      // Clear any existing setup flags to start fresh
-      localStorage.removeItem('maintenease_setup_complete');
-      
-      toast.info("Starting company setup process");
-      
-      // Force setup mode by adding the forceSetup parameter with a unique timestamp
-      const timestamp = Date.now();
-      // Use window.location for a full page reload to reset any stale state
-      window.location.href = `/setup?forceSetup=true&timestamp=${timestamp}`;
-    } catch (error) {
-      console.error("Error navigating to setup:", error);
-      setIsNavigating(false);
-      toast.error("Failed to navigate to setup page");
-    }
+    // Force setup mode by adding the forceSetup parameter with a unique timestamp
+    const timestamp = Date.now();
+    navigate(`/setup?forceSetup=true&timestamp=${timestamp}`);
   };
 
   return (
     <Button
       onClick={handleCompanySetup}
       className="w-full"
-      disabled={isSubmitting || isNavigating}
+      disabled={isSubmitting}
     >
-      {isSubmitting || isNavigating ? "Please wait..." : "Complete Company Setup"}
+      {isSubmitting ? "Please wait..." : "Complete Company Setup"}
     </Button>
   );
 };
