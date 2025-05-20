@@ -30,7 +30,7 @@ export function useProfileUpdates(
       }
       
       // Update local state with new data
-      setProfileData(prev => prev ? { ...prev, ...updatedData } : null);
+      setProfileData({ ...profileData, ...updatedData });
       return true;
     } catch (error: any) {
       console.error("Error updating profile:", error);
