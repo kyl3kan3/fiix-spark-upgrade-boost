@@ -65,7 +65,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       if (fetchError) {
         console.error("Error fetching user profile:", fetchError);
         setError("Could not fetch user profile");
-        setProfileData(null); // Fix here: Set to null instead of the error object
+        setProfileData(null); // Set to null instead of the error object
         setIsLoading(false);
         return null;
       }
@@ -78,7 +78,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
     } catch (err) {
       console.error("Error in useUserProfile:", err);
       setError("An unexpected error occurred");
-      setProfileData(null); // Fix here: Set to null instead of the error object
+      setProfileData(null); // Set to null instead of the error object
       setIsLoading(false);
       return null;
     }
