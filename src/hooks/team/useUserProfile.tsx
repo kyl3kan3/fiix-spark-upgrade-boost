@@ -71,7 +71,8 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       }
 
       // Always set profileData to the data returned or null
-      setProfileData(data); // This is where the error was occurring
+      // This is where the error was occurring - ensuring we set either a valid UserProfileData or null
+      setProfileData(data || null); // Fixed: Explicitly ensure null is set if data is falsy
       setError(null);
       setIsLoading(false);
       return data;
