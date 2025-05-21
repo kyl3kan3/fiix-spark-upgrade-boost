@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import { useProfileFetcher } from "./useProfileFetcher";
 
 interface AdminStatusResult {
@@ -6,18 +7,27 @@ interface AdminStatusResult {
   companyName: string | undefined;
   isLoading: boolean;
   error: string | null;
+  refreshAdminStatus: () => Promise<any | null>;
 }
 
 export const useAdminStatus = (): AdminStatusResult => {
-  const { profileData, isLoading, error } = useProfileFetcher(['role', 'company_name']);
+  const { profileData, isLoading, error, refreshProfile } = useProfileFetcher(['role', 'company_name']);
+  const [isAdminUser, setIsAdminUser] = useState(false);
   
-  const isAdminUser = profileData?.role === 'administrator';
-  const companyName = profileData?.company_name;
+  // Update admin status when profile data changes
+  useEffect(() => {
+    if (profileData) {
+      setIsAdminUser(profileData.role === 'administrator');
+    } else if (!isLoading) {
+      setIsAdminUser(false);
+    }
+  }, [profileData, isLoading]);
   
   return {
     isAdminUser,
-    companyName,
+    companyName: profileData?.company_name,
     isLoading,
-    error
+    error,
+    refreshAdminStatus: refreshProfile
   };
 };

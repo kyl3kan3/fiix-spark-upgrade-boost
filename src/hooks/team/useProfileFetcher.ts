@@ -1,106 +1,138 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface ProfileFetcherResult {
   profileData: any | null;
   userId: string | null;
   isLoading: boolean;
   error: string | null;
+  refreshProfile: () => Promise<any | null>;
 }
 
 /**
  * Hook to fetch user profile data from Supabase
+ * with improved reliability and timeout management
  */
 export const useProfileFetcher = (fields: string[] = ['role', 'company_id']): ProfileFetcherResult => {
   const [profileData, setProfileData] = useState<any | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fetchAttempts, setFetchAttempts] = useState(0);
   
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
-          console.log("No authenticated user found");
-          setProfileData(null);
-          setUserId(null);
-          setIsLoading(false);
-          return;
-        }
-        
-        setUserId(user.id);
-        console.log("Fetching profile for user ID:", user.id);
-        
-        // Make sure company_id is always included in the fields
-        const fieldsToFetch = fields.includes('company_id') 
-          ? fields 
-          : [...fields, 'company_id'];
-        
-        // Build the select query with requested fields
-        const selectFields = fieldsToFetch.join(', ');
-        
-        // Get profile data from profiles - use maybeSingle() to handle case where profile doesn't exist
-        const { data, error: fetchError } = await supabase
-          .from('profiles')
-          .select(selectFields)
-          .eq('id', user.id)
-          .maybeSingle();
-          
-        if (fetchError) {
-          console.error("Error fetching user profile:", fetchError);
-          setError("Could not fetch user profile");
-          setProfileData(null);
-        } else {
-          console.log("User profile data:", data);
-          
-          // Process and validate the profile data
-          validateAndSetProfileData(data);
-        }
-      } catch (err) {
-        console.error("Error in useProfileFetcher:", err);
-        setError("An unexpected error occurred");
-        setProfileData(null);
-      } finally {
-        setIsLoading(false);
+  // Fetch profile function with retry logic
+  const fetchUserProfile = useCallback(async (): Promise<any | null> => {
+    try {
+      setIsLoading(true);
+      
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError) {
+        console.error("Auth error when getting user:", userError);
+        setError("Authentication error: " + userError.message);
+        return null;
       }
-    };
-
-    const validateAndSetProfileData = (data: any) => {
+      
+      if (!user) {
+        console.log("No authenticated user found");
+        setProfileData(null);
+        setUserId(null);
+        return null;
+      }
+      
+      setUserId(user.id);
+      
+      // Make sure company_id is always included in the fields
+      const fieldsToFetch = fields.includes('company_id') 
+        ? fields 
+        : [...fields, 'company_id'];
+      
+      // Build the select query with requested fields
+      const selectFields = fieldsToFetch.join(', ');
+      
+      // Get profile data from profiles - use maybeSingle() to handle case where profile doesn't exist
+      const { data, error: fetchError } = await supabase
+        .from('profiles')
+        .select(selectFields)
+        .eq('id', user.id)
+        .maybeSingle();
+        
+      if (fetchError) {
+        console.error("Error fetching user profile:", fetchError);
+        setError("Could not fetch user profile");
+        setProfileData(null);
+        return null;
+      }
+      
+      // Process and validate the profile data
       if (!data) {
-        // Handle case where no profile data was found
         console.warn("No profile data found, user may need to complete onboarding");
         setProfileData(null);
         setError("User profile data is incomplete. Setup process required.");
-        return;
+        return null;
       }
       
-      // TypeScript safe check - first ensure data exists and is an object
-      if (data && typeof data === 'object') {
+      // TypeScript safe check - ensure data exists and is an object
+      if (typeof data === 'object') {
         // Then check for company_id property
-        const profileData = data as Record<string, any>;
-        if ('company_id' in profileData && profileData.company_id !== null) {
-          // Safe to cast to UserProfileData since we've verified the key property
-          setProfileData(profileData);
+        const profile = data as Record<string, any>;
+        if ('company_id' in profile && profile.company_id !== null) {
+          setProfileData(profile);
           setError(null);
+          return profile;
         } else {
           console.warn("Invalid profile data: missing company_id", data);
           setProfileData(null);
           setError("User needs to complete setup");
+          return null;
         }
       } else {
         setProfileData(null);
         setError("Invalid profile data format");
+        return null;
       }
-    };
-    
-    fetchUserProfile();
-  }, [fields.join(',')]);
+    } catch (err) {
+      console.error("Error in useProfileFetcher:", err);
+      setError("An unexpected error occurred");
+      setProfileData(null);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fields]);
 
-  return { profileData, isLoading, error, userId };
+  // Function to refresh profile data on demand
+  const refreshProfile = useCallback(async () => {
+    setFetchAttempts(prev => prev + 1);
+    return await fetchUserProfile();
+  }, [fetchUserProfile]);
+
+  // Set up timeout to prevent getting stuck in loading state
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (isLoading && fetchAttempts > 0) {
+        setIsLoading(false);
+        setError("Profile loading timed out. Please refresh.");
+        toast.error("Failed to load profile data. Please refresh the page.");
+      }
+    }, 10000); // 10 second timeout
+    
+    return () => clearTimeout(timeoutId);
+  }, [isLoading, fetchAttempts]);
+  
+  // Initial fetch
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
+
+  return { 
+    profileData, 
+    isLoading, 
+    error, 
+    userId,
+    refreshProfile
+  };
 };

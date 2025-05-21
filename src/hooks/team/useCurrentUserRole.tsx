@@ -4,7 +4,7 @@ import { useUserProfile } from "./useUserProfile";
 import { toast } from "sonner";
 
 export const useCurrentUserRole = () => {
-  const { profileData, isLoading: isProfileLoading, error: profileError } = useUserProfile(['role']);
+  const { profileData, isLoading: isProfileLoading, error: profileError, refreshProfile } = useUserProfile(['role']);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -76,6 +76,7 @@ export const useCurrentUserRole = () => {
     isLoading,
     canEditRoles,
     error,
-    timeoutOccurred
+    timeoutOccurred,
+    refreshRole: refreshProfile
   };
 };
