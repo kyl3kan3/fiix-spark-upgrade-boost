@@ -72,6 +72,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
 
+      // Always set profileData to the data returned or null
       setProfileData(data);
       setError(null);
       setIsLoading(false);
