@@ -1,5 +1,5 @@
 
-import { useUserProfile } from "./useUserProfile";
+import { useProfileFetcher } from "./useProfileFetcher";
 
 interface AdminStatusResult {
   isAdminUser: boolean;
@@ -9,7 +9,7 @@ interface AdminStatusResult {
 }
 
 export const useAdminStatus = (): AdminStatusResult => {
-  const { profileData, isLoading, error } = useUserProfile(['role', 'company_name']);
+  const { profileData, isLoading, error } = useProfileFetcher(['role', 'company_name']);
   
   const isAdminUser = profileData?.role === 'administrator';
   const companyName = profileData?.company_name;

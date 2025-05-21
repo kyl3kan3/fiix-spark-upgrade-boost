@@ -1,9 +1,12 @@
 
 import { useState, useEffect } from "react";
-import { useUserProfile } from "./useUserProfile";
+import { useProfileFetcher } from "./useProfileFetcher";
 
+/**
+ * Hook to check user role permissions
+ */
 export const useUserRolePermissions = () => {
-  const { profileData, isLoading } = useUserProfile(['role']);
+  const { profileData, isLoading } = useProfileFetcher(['role']);
   const currentUserRole = profileData?.role || null;
   
   return {
