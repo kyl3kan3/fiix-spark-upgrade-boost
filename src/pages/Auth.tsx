@@ -16,9 +16,57 @@ const Auth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [isProcessingInvite, setIsProcessingInvite] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Check if we should default to signup mode based on URL param
+    // Check if user is already logged in
+    const checkSession = async () => {
+      try {
+        setIsCheckingAuth(true);
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error checking auth session:", error);
+          setIsAuthenticated(false);
+        } else if (data.session) {
+          console.log("User is already authenticated:", data.session.user.id);
+          setIsAuthenticated(true);
+          
+          // If not on invite flow, redirect to dashboard
+          if (!inviteToken) {
+            navigate("/dashboard");
+          }
+        } else {
+          console.log("No active session found");
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        console.error("Unexpected error during auth check:", err);
+        setIsAuthenticated(false);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    
+    checkSession();
+    
+    // Set up auth state listener
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change in Auth page:", event, session?.user?.id ? "authenticated" : "unauthenticated");
+      setIsAuthenticated(!!session?.user);
+      
+      if (event === 'SIGNED_IN' && !inviteToken) {
+        navigate("/dashboard");
+      }
+    });
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate, inviteToken]);
+
+  // Check if we should default to signup mode based on URL param
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get("signup") === "true") {
       setIsSignUp(true);
@@ -34,25 +82,7 @@ const Auth = () => {
         handleInviteToken(token);
       }
     }
-
-    // Check if user is already logged in
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setIsAuthenticated(true);
-        if (inviteToken) {
-          // Process invite for logged in user
-          handleInviteAccept(inviteToken, data.session.user.email || "");
-        } else {
-          navigate("/dashboard");
-        }
-      } else {
-        setIsAuthenticated(false);
-      }
-    };
-    
-    checkSession();
-  }, [location, navigate, inviteToken]);
+  }, [location]);
 
   const handleInviteToken = async (token: string) => {
     setIsProcessingInvite(true);
@@ -144,6 +174,22 @@ const Auth = () => {
     setAuthError(null); // Clear errors on toggle
   };
 
+  const handleBackToDashboard = () => {
+    navigate(isAuthenticated ? "/dashboard" : "/");
+  };
+
+  // Show loading state while checking auth
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white p-10 rounded-lg shadow-md text-center">
+          <h1 className="text-xl font-semibold mb-4">Checking authentication...</h1>
+          <p className="text-gray-500">Please wait a moment</p>
+        </div>
+      </div>
+    );
+  }
+
   // Show loading state while processing invitation
   if (isProcessingInvite) {
     return (
@@ -161,7 +207,7 @@ const Auth = () => {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
         <AuthHeader 
           isSignUp={isSignUp} 
-          onBackToDashboard={() => navigate("/dashboard")}
+          onBackToDashboard={handleBackToDashboard}
           showBackButton={isAuthenticated} // Only show back button if authenticated
         />
         

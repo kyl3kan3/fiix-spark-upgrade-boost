@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInFields, SignUpFields } from "./AuthFormFields";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -11,13 +12,21 @@ interface AuthFormProps {
 }
 
 const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   
-  const { isSubmitting, signIn, signUp } = useAuth();
+  const { isSubmitting, signIn, signUp, isAuthenticated } = useAuth();
+  
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
   
   // Check for email from previous screen or localStorage
   useEffect(() => {
@@ -25,7 +34,13 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
     if (pendingEmail) {
       setEmail(pendingEmail);
     }
-  }, []);
+    
+    // Check for company name from localStorage
+    const pendingCompanyName = localStorage.getItem("pending_company_name");
+    if (pendingCompanyName && isSignUp) {
+      setCompanyName(pendingCompanyName);
+    }
+  }, [isSignUp]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,21 +51,30 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
         const { success, error } = await signUp(email, password, name, companyName);
         
         if (success) {
+          console.log("Signup successful, redirecting to onboarding");
+          localStorage.setItem("pending_auth_email", email);
           onSuccess(email);
         } else if (error) {
           onError(error);
         }
       } else {
         // Handle sign in
-        const { success, error } = await signIn(email, password);
+        const { success, error, session } = await signIn(email, password);
         
-        if (success) {
+        if (success && session) {
+          console.log("Login successful, redirecting to dashboard");
+          if (rememberMe) {
+            localStorage.setItem("supabase.auth.token", JSON.stringify(session));
+          }
           onSuccess(email);
+          // Redirect to dashboard
+          navigate("/dashboard");
         } else if (error) {
           onError(error);
         }
       }
     } catch (error: any) {
+      console.error("Unexpected error during authentication:", error);
       onError("An unexpected error occurred");
     }
   };
