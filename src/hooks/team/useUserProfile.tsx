@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -69,8 +70,21 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
 
-      // Always set profileData to the data returned or null
-      setProfileData(data || null);
+      if (!data) {
+        console.log("No profile data found for user");
+        setProfileData(null);
+        setIsLoading(false);
+        return null;
+      }
+      
+      // Verify data is a valid UserProfileData object before setting state
+      if (typeof data === 'object' && data !== null && 'company_id' in data) {
+        setProfileData(data as UserProfileData);
+      } else {
+        console.warn("Invalid profile data format:", data);
+        setProfileData(null);
+      }
+      
       setError(null);
       setIsLoading(false);
       return data;
