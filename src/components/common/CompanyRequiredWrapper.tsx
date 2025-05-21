@@ -4,6 +4,7 @@ import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
 import { SetupRequiredDisplay } from "./company-required/SetupRequiredDisplay";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 interface CompanyRequiredWrapperProps {
   children: React.ReactNode;
@@ -23,6 +24,19 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const navigate = useNavigate();
   const location = useLocation();
   const [redirectAttempts, setRedirectAttempts] = useState(0);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Add loading timeout to prevent getting stuck in loading state
+  useEffect(() => {
+    if (isLoading) {
+      const timeoutId = setTimeout(() => {
+        setLoadingTimeout(true);
+        toast.error("Loading profile data timed out. Continuing with limited functionality.");
+      }, 15000); // 15 seconds timeout
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isLoading]);
 
   // Check database status on mount
   useEffect(() => {
@@ -65,7 +79,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   }, [companyId, setupComplete, refreshCompanyStatus]);
 
   // Wait for both profile data and setup check to complete
-  if (isLoading) {
+  // But don't wait forever if there's a timeout
+  if (isLoading && !loadingTimeout) {
     return <LoadingDisplay />;
   }
 
@@ -76,7 +91,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     companyId,
     redirectAttempts,
     path: location.pathname,
-    isAuthenticated
+    isAuthenticated,
+    loadingTimeout
   });
 
   // Don't restrict access on the auth page
@@ -89,6 +105,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     console.log("User not authenticated, redirecting to auth");
     navigate("/auth", { replace: true });
     return <LoadingDisplay />;
+  }
+
+  // If loading timed out, allow access to prevent being stuck
+  if (loadingTimeout) {
+    toast.warning("Some features may be limited due to profile loading issues.");
+    return <>{children}</>;
   }
 
   // If we have a company_id, always allow access
