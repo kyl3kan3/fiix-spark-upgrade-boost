@@ -40,9 +40,6 @@ export function useCompanyStatus() {
    * Refresh all company status data
    */
   const refreshCompanyStatus = async () => {
-    // Reset state for refresh
-    console.log("Refreshing company status");
-    
     // First refresh auth status
     await refreshAuthStatus();
     
@@ -54,14 +51,12 @@ export function useCompanyStatus() {
       // If we have a company ID but setup is not marked as complete, update it
       if (companyId && !setupComplete) {
         setSetupComplete(true);
-        console.log("Setup marked as complete because company ID exists in profile");
       }
     }
   };
 
   // Initial load
   useEffect(() => {
-    console.log("Initial load of company status");
     refreshCompanyStatus();
   }, []);
 

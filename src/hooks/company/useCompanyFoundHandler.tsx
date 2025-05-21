@@ -16,7 +16,6 @@ export function useCompanyFoundHandler(
   const handleCompanyFound = (newCompanyId: string) => {
     setSetupComplete(true);
     setCompanyFoundId(newCompanyId);
-    console.log("Company found and setup marked complete:", newCompanyId);
     
     showCompanySetupCompletedNotification();
     navigateToDashboard();

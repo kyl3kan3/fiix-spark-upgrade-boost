@@ -7,8 +7,6 @@ export const useCurrentUserRole = () => {
   
   // Determine if the current user can edit roles (only administrators can)
   const canEditRoles = currentUserRole === 'administrator';
-  
-  console.log("Current user role:", currentUserRole, "Can edit roles:", canEditRoles);
 
   return {
     currentUserRole,

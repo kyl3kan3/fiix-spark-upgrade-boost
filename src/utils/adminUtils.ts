@@ -7,8 +7,6 @@ import { toast } from "sonner";
  */
 export const setUserAsAdmin = async (email: string): Promise<{ success: boolean, error?: any }> => {
   try {
-    console.log(`Attempting to set user ${email} as administrator...`);
-    
     // Query to find the user by email
     const { data: userProfiles, error: queryError } = await supabase
       .from('profiles')
@@ -27,7 +25,6 @@ export const setUserAsAdmin = async (email: string): Promise<{ success: boolean,
     }
     
     const userId = userProfiles[0].id;
-    console.log(`Found user with ID: ${userId}, current role: ${userProfiles[0].role}`);
     
     // Update the user's role to administrator
     const { data, error: updateError } = await supabase
@@ -41,7 +38,6 @@ export const setUserAsAdmin = async (email: string): Promise<{ success: boolean,
       throw updateError;
     }
     
-    console.log(`Successfully updated ${email} to administrator role, response:`, data);
     return { success: true };
   } catch (error) {
     console.error("Error setting user as admin:", error);

@@ -26,8 +26,6 @@ export function useCompanyChecker(onCompanyFound: (companyId: string) => void) {
       
       // If profile doesn't exist, create it with basic info
       if (!profileExists) {
-        console.log("Profile doesn't exist, creating one");
-        
         // Get email from user object
         const email = user.email || '';
         
@@ -56,8 +54,6 @@ export function useCompanyChecker(onCompanyFound: (companyId: string) => void) {
       
       // Now check for company association
       const { profile } = await getUserProfileWithCompany(user.id);
-      
-      console.log("Direct database check for profile:", profile);
       
       if (profile?.company_id) {
         // If company_id exists, mark setup as complete

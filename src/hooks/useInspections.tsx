@@ -24,12 +24,10 @@ export const useInspections = (filters: any = {}) => {
 
   // Function to force refresh the data
   const refreshInspections = useCallback(() => {
-    console.log("Manually triggering inspections refresh");
     setLastRefreshed(Date.now());
   }, []);
 
   useEffect(() => {
-    console.log("useEffect triggered in useInspections, fetching data...");
     loadInspections();
   }, [loadInspections, lastRefreshed]);
 

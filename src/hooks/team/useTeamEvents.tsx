@@ -4,8 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
   useEffect(() => {
-    console.log("Setting up team events listeners");
-
     // Create a channel to listen for new messages
     const messageChannel = supabase
       .channel('public:messages')
@@ -16,8 +14,6 @@ export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
           table: 'messages'
         },
         () => {
-          // When any message changes, refresh the unread counts
-          console.log("Message table changed, refreshing team members");
           fetchTeamMembers();
         })
       .subscribe();
@@ -32,7 +28,6 @@ export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
           table: 'profiles'
         },
         () => {
-          console.log("Profile table changed, refreshing team members");
           fetchTeamMembers();
         })
       .subscribe();
@@ -45,7 +40,6 @@ export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
 
   // Force refresh function that can be called to refresh team members
   const refreshTeamMembers = useCallback(() => {
-    console.log("Manually triggering team members refresh");
     fetchTeamMembers();
   }, [fetchTeamMembers]);
 

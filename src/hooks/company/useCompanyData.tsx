@@ -37,15 +37,12 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
       try {
         const company = await fetchUserCompany();
         if (company) {
-          console.log("Found existing company:", company);
           setCompanyId(company.id);
           const companyInfo = mapCompanyToCompanyInfo(company);
           form.reset(companyInfo);
           if (company.logo) {
             setLogoPreview(company.logo);
           }
-        } else {
-          console.log("No existing company found for user");
         }
       } catch (error) {
         console.error("Error loading company data:", error);

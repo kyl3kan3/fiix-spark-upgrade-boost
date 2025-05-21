@@ -11,8 +11,6 @@ export const fetchInspections = async (filters: any = {}): Promise<{
   error: Error | null
 }> => {
   try {
-    console.log("Fetching inspections...", new Date().toISOString());
-    
     // In a real app, this would be an API call or Supabase query
     // For now, return empty array until real data source is implemented
     const emptyData: Inspection[] = [];

@@ -15,7 +15,6 @@ export const useMemberCardState = (
   const [isEditing, setIsEditing] = useState(false);
 
   const handleRoleUpdated = (role: string) => {
-    console.log("Role updated for member:", memberId, "to role:", role);
     try {
       onMemberUpdated(memberId.toString(), { role });
       toast(`User role has been updated to ${role}`);
@@ -31,7 +30,6 @@ export const useMemberCardState = (
     email?: string;
     phone?: string;
   }) => {
-    console.log("User info update:", updates);
     onMemberUpdated(memberId.toString(), updates);
     setIsEditing(false);
   };

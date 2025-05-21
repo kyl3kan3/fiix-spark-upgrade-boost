@@ -17,13 +17,11 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
   
   // Update the displayed role when the prop changes
   useEffect(() => {
-    console.log(`MemberCardFooter: currentRole changed to ${currentRole}`);
     setDisplayRole(currentRole);
   }, [currentRole]);
   
   // Function to handle role updates
   const handleRoleUpdated = (role: string) => {
-    console.log(`MemberCardFooter: role updated to ${role}`);
     setDisplayRole(role);
     onRoleUpdated(role);
   };

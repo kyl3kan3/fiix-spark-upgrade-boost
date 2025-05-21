@@ -8,7 +8,6 @@ export function useCompanySetupStatus() {
   const checkSetupCompleted = useCallback(() => {
     const setupCompleted = localStorage.getItem('maintenease_setup_complete');
     const result = setupCompleted === 'true';
-    console.log("Setup completed check from localStorage:", result);
     return result;
   }, []);
 
@@ -16,7 +15,6 @@ export function useCompanySetupStatus() {
   const refreshSetupStatus = useCallback(() => {
     const isSetupComplete = checkSetupCompleted();
     setSetupComplete(isSetupComplete);
-    console.log("Setup complete status:", isSetupComplete);
   }, [checkSetupCompleted]);
 
   // Update setup status in localStorage and state
