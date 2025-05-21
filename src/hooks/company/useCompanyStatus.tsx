@@ -3,8 +3,11 @@ import { useEffect } from "react";
 import { useCompanyAuthentication } from "./useCompanyAuthentication";
 import { useCompanyProfile } from "./useCompanyProfile";
 import { useCompanySetupStatus } from "./useCompanySetupStatus";
-import { toast } from "sonner";
+import { useCompanyFoundHandler } from "./useCompanyFoundHandler";
 
+/**
+ * Hook that manages the overall company status including auth, profile, and setup status
+ */
 export function useCompanyStatus() {
   const {
     isLoading: isAuthLoading, 
@@ -28,9 +31,14 @@ export function useCompanyStatus() {
     refreshSetupStatus
   } = useCompanySetupStatus();
 
+  const { handleCompanyFound } = useCompanyFoundHandler(setSetupComplete);
+
   // Combined loading state
   const isLoading = isAuthLoading || isProfileLoading;
 
+  /**
+   * Refresh all company status data
+   */
   const refreshCompanyStatus = async () => {
     // Reset state for refresh
     console.log("Refreshing company status");
@@ -56,18 +64,6 @@ export function useCompanyStatus() {
     console.log("Initial load of company status");
     refreshCompanyStatus();
   }, []);
-
-  const handleCompanyFound = (newCompanyId: string) => {
-    setSetupComplete(true);
-    console.log("Company found and setup marked complete:", newCompanyId);
-    
-    toast.success("Company setup completed");
-    
-    // Force refresh the page after a short delay to ensure all state is updated
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1000);
-  };
 
   return {
     isLoading,

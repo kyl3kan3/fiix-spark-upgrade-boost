@@ -1,13 +1,13 @@
 
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { 
   checkUserProfile, 
   findOrCreateCompany, 
   createUserProfile, 
   getUserProfileWithCompany 
 } from "../utils/companyProfileUtils";
+import { showCompanyAssociationNotification } from "@/hooks/company/utils/companyStatusNotifications";
 
 export function useCompanyChecker(onCompanyFound: (companyId: string) => void) {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -78,20 +78,22 @@ export function useCompanyChecker(onCompanyFound: (companyId: string) => void) {
 
   const handleRefreshCompanyAssociation = async () => {
     try {
-      toast.info("Checking company association...");
+      setIsRefreshing(true);
       
       // Check the database directly
       const companyId = await checkUserCompanyInDatabase();
       
+      // Use the extracted notification function
+      showCompanyAssociationNotification(!!companyId);
+      
       if (companyId) {
-        toast.success("Company association found. Refreshing...");
         onCompanyFound(companyId);
-      } else {
-        toast.error("No company association found. Please complete setup.");
       }
+      
+      setIsRefreshing(false);
     } catch (error) {
       console.error("Error checking company association:", error);
-      toast.error("Error checking company association");
+      setIsRefreshing(false);
     }
   };
 
