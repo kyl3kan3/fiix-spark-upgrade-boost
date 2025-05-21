@@ -25,23 +25,24 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const location = useLocation();
   const [redirectAttempts, setRedirectAttempts] = useState(0);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
+  const [forceRender, setForceRender] = useState(false);
 
-  // Add loading timeout to prevent getting stuck in loading state
+  // Add loading timeout to prevent getting stuck in loading state - reduced from 15 to 10 seconds
   useEffect(() => {
     if (isLoading) {
       const timeoutId = setTimeout(() => {
         setLoadingTimeout(true);
         toast.error("Loading profile data timed out. Continuing with limited functionality.");
-      }, 15000); // 15 seconds timeout
+      }, 10000); // 10 seconds timeout
       
       return () => clearTimeout(timeoutId);
     }
   }, [isLoading]);
 
-  // Check database status on mount
+  // Check database status on mount and when forceRender changes
   useEffect(() => {
     refreshCompanyStatus();
-  }, [refreshCompanyStatus]);
+  }, [refreshCompanyStatus, forceRender]);
   
   // Anti-loop protection
   useEffect(() => {
@@ -55,7 +56,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     }
     
     // If we're not on these pages but should be redirecting to setup, track attempts
-    if (!isSetupPath && redirectAttempts < 3 && !setupComplete && !companyId && !isLoading) {
+    if (!isSetupPath && redirectAttempts < 2 && !setupComplete && !companyId && !isLoading) {
       setRedirectAttempts(prev => prev + 1);
     }
     
@@ -77,6 +78,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
       }, 100);
     }
   }, [companyId, setupComplete, refreshCompanyStatus]);
+
+  // Retry button handler
+  const handleForceRefresh = () => {
+    setForceRender(prev => !prev);
+    refreshCompanyStatus();
+  };
 
   // Wait for both profile data and setup check to complete
   // But don't wait forever if there's a timeout
@@ -132,7 +139,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   }
 
   // Avoid infinite loops - if we've tried to redirect too many times, just show the children
-  if (redirectAttempts >= 3) {
+  if (redirectAttempts >= 2) {
     console.warn("Detected potential redirect loop. Bypassing setup check.");
     return <>{children}</>;
   }
@@ -142,7 +149,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     <SetupRequiredDisplay
       profileError={profileError}
       onCompanyFound={handleCompanyFound}
-      onProfileFixed={refreshCompanyStatus}
+      onProfileFixed={handleForceRefresh}
     />
   );
 };

@@ -1,24 +1,42 @@
 
 import React, { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const LoadingDisplay: React.FC = () => {
   const navigate = useNavigate();
   const [showResetButton, setShowResetButton] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  // Show reset button after 10 seconds of loading
+  // Show reset button after 5 seconds of loading (reduced from 10)
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const resetTimer = setTimeout(() => {
       setShowResetButton(true);
-    }, 10000);
+    }, 5000);
+    
+    // Show error message after 15 seconds
+    const errorTimer = setTimeout(() => {
+      setShowErrorMessage(true);
+    }, 15000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(resetTimer);
+      clearTimeout(errorTimer);
+    };
   }, []);
 
   const handleResetToProfile = () => {
     navigate("/profile");
+    toast.info("Redirected to profile page");
+  };
+
+  const handleRetry = () => {
+    localStorage.removeItem('maintenease_setup_complete');
+    localStorage.removeItem('maintenease_setup');
+    toast.info("Cleared setup data, refreshing page...");
+    window.location.reload();
   };
 
   return (
@@ -31,13 +49,35 @@ export const LoadingDisplay: React.FC = () => {
         {showResetButton && (
           <div className="mt-6">
             <p className="text-sm text-amber-600 mb-2">Taking longer than expected?</p>
-            <Button 
-              variant="outline" 
-              onClick={handleResetToProfile}
-              className="mt-2"
-            >
-              Go to profile page
-            </Button>
+            <div className="space-y-2">
+              <Button 
+                variant="outline" 
+                onClick={handleResetToProfile}
+                className="w-full"
+              >
+                Go to profile page
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleRetry}
+                className="w-full"
+              >
+                Retry with clean setup
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {showErrorMessage && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              <p className="text-sm text-red-700 font-medium">Loading problem detected</p>
+            </div>
+            <p className="text-xs text-red-600 mt-1">
+              There might be an issue with your profile data. Try the options above or sign out and back in.
+            </p>
           </div>
         )}
       </div>

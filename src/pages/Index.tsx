@@ -1,8 +1,8 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
@@ -11,8 +11,9 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showRetry, setShowRetry] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
 
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -38,18 +39,23 @@ const Index = () => {
           if (profileError) {
             console.error("Error checking profile:", profileError);
             setError("Error loading profile: " + profileError.message);
+            setShowRetry(true);
           }
           
-          // If user doesn't have a profile or company association, send to profile page
+          // If user doesn't have a profile, send to profile page
           if (!profileData) {
             navigate("/profile", { replace: true });
             return;
           }
           
+          // If user doesn't have a company association, send to profile page
           if (!profileData.company_id) {
             navigate("/profile", { replace: true });
             return;
           }
+          
+          // Set the setup complete flag since we have a valid profile with company_id
+          localStorage.setItem('maintenease_setup_complete', 'true');
           
           // Redirect logged in users with complete profiles to dashboard
           navigate("/dashboard", { replace: true });
@@ -65,26 +71,38 @@ const Index = () => {
     } catch (err) {
       console.error("Unexpected error during session check:", err);
       setError("Unexpected error occurred");
-      navigate("/auth", { replace: true });
+      setShowRetry(true);
     } finally {
       setIsLoading(false);
+      setSessionChecked(true);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     checkSession();
     
-    // Add a timeout for loading
+    // Add a timeout for loading - reduced from 10 to 8 seconds
     const timeoutId = setTimeout(() => {
-      if (isLoading) {
+      if (isLoading && !sessionChecked) {
         setIsLoading(false);
         setError("Loading took too long. Please try again.");
         setShowRetry(true);
       }
-    }, 10000);
+    }, 8000);
     
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [checkSession, isLoading, sessionChecked]);
+
+  const handleRetry = () => {
+    checkSession();
+  };
+
+  const handleClearAndRetry = () => {
+    localStorage.removeItem('maintenease_setup_complete');
+    localStorage.removeItem('maintenease_setup');
+    toast.info("Cleared setup data, retrying...");
+    checkSession();
+  };
 
   // Show loading indicator while checking session
   if (isLoading) {
@@ -105,8 +123,16 @@ const Index = () => {
           <p className="text-red-500 mb-4">{error}</p>
           {showRetry && (
             <div className="space-y-2">
-              <Button onClick={() => navigate("/auth")}>Go to Login</Button>
-              <Button variant="outline" onClick={checkSession}>Retry</Button>
+              <Button onClick={() => navigate("/auth")} className="w-full">
+                Go to Login
+              </Button>
+              <Button variant="outline" onClick={handleRetry} className="w-full">
+                <RefreshCcw className="h-4 w-4 mr-2" />
+                Retry
+              </Button>
+              <Button variant="ghost" onClick={handleClearAndRetry} className="w-full">
+                Clear Data & Retry
+              </Button>
             </div>
           )}
         </div>
