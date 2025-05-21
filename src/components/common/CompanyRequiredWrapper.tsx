@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
 import { SetupRequiredDisplay } from "./company-required/SetupRequiredDisplay";
@@ -26,22 +26,31 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const [redirectAttempts, setRedirectAttempts] = useState(0);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   const [forceRender, setForceRender] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
 
-  // Add loading timeout to prevent getting stuck in loading state - reduced from 15 to 10 seconds
+  // Add loading timeout to prevent getting stuck in loading state - reduced to 5 seconds
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading && !loadingTimeout) {
       const timeoutId = setTimeout(() => {
         setLoadingTimeout(true);
-        toast.error("Loading profile data timed out. Continuing with limited functionality.");
-      }, 10000); // 10 seconds timeout
+        toast.warning("Loading profile data timed out. Continuing with limited functionality.");
+        
+        // Force a refresh if we're stuck in loading state for too long
+        if (Date.now() - lastRefreshTime > 10000) { // If it's been more than 10 seconds since last refresh
+          refreshCompanyStatus();
+          setLastRefreshTime(Date.now());
+        }
+      }, 5000); // 5 seconds timeout (reduced from 10)
       
       return () => clearTimeout(timeoutId);
     }
-  }, [isLoading]);
+  }, [isLoading, loadingTimeout, lastRefreshTime, refreshCompanyStatus]);
 
   // Check database status on mount and when forceRender changes
   useEffect(() => {
+    console.log("CompanyRequiredWrapper: Refreshing company status");
     refreshCompanyStatus();
+    setLastRefreshTime(Date.now());
   }, [refreshCompanyStatus, forceRender]);
   
   // Anti-loop protection
@@ -80,10 +89,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   }, [companyId, setupComplete, refreshCompanyStatus]);
 
   // Retry button handler
-  const handleForceRefresh = () => {
+  const handleForceRefresh = useCallback(() => {
     setForceRender(prev => !prev);
     refreshCompanyStatus();
-  };
+    setLastRefreshTime(Date.now());
+    toast.info("Refreshing company status...");
+  }, [refreshCompanyStatus]);
 
   // Wait for both profile data and setup check to complete
   // But don't wait forever if there's a timeout
@@ -120,7 +131,13 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     return <>{children}</>;
   }
 
-  // If we have a company_id, always allow access
+  // Special case for profile page - always allow access
+  if (location.pathname === "/profile") {
+    console.log("Profile page access granted regardless of company status");
+    return <>{children}</>;
+  }
+
+  // If we have a company_id, allow access
   if (companyId) {
     console.log("Company ID exists, allowing access");
     return <>{children}</>;
@@ -129,12 +146,6 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   // If setup is explicitly marked as complete, allow access
   if (setupComplete === true) {
     console.log("Setup is marked as complete, allowing access");
-    return <>{children}</>;
-  }
-
-  // Special case for profile page - always allow access even if company setup is not complete
-  if (location.pathname === "/profile") {
-    console.log("Profile page access granted regardless of company status");
     return <>{children}</>;
   }
 

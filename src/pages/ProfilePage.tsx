@@ -4,7 +4,7 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, LogOut, AlertTriangle } from "lucide-react";
+import { InfoIcon, LogOut, AlertTriangle, RefreshCw } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
@@ -20,9 +20,11 @@ const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadStartTime] = useState(Date.now());
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
-  const { profileData, error: profileError } = useUserProfile(['role', 'company_id']);
+  const { profileData, error: profileError, isLoading: profileLoading } = useUserProfile(['role', 'company_id']);
   
   // Extract the tab from the URL search params
   const searchParams = new URLSearchParams(location.search);
@@ -42,15 +44,22 @@ const ProfilePage = () => {
     navigate(newUrl, { replace: true });
   };
 
+  // Handle refreshing the profile data
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+    toast.info("Refreshing profile data...");
+  };
+
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         setUserEmail(user?.email ?? null);
+        
         if (!user) {
+          console.error("No authenticated user found");
           setError("You must be logged in to view your profile");
-          // Don't redirect here to avoid potential loops
         }
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -61,7 +70,17 @@ const ProfilePage = () => {
     };
     
     fetchUserEmail();
-  }, []);
+    
+    // Set a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (loading && Date.now() - loadStartTime > 5000) {
+        setLoading(false);
+        setError("Loading timed out. Please try refreshing.");
+      }
+    }, 5000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [refreshKey]);
 
   // Effect to update active tab when URL changes
   useEffect(() => {
@@ -106,7 +125,13 @@ const ProfilePage = () => {
               {error}
             </AlertDescription>
           </Alert>
-          <Button onClick={() => navigate("/auth")}>Go to Login</Button>
+          <div className="flex gap-2">
+            <Button onClick={() => navigate("/auth")}>Go to Login</Button>
+            <Button variant="outline" onClick={handleRefresh}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh Profile
+            </Button>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -116,15 +141,35 @@ const ProfilePage = () => {
     <DashboardLayout>
       <BackToDashboard />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+          {profileLoading && (
+            <div className="flex items-center text-sm text-amber-600">
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Loading profile data...
+            </div>
+          )}
+          {!profileLoading && (
+            <Button variant="ghost" size="sm" onClick={handleRefresh}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          )}
+        </div>
         
         {/* Show error if there's a company requirement issue */}
-        {profileError && profileError.includes("company") && (
+        {profileError && (
           <Alert className="mb-6 bg-red-50 border-red-200">
             <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
             <AlertDescription className="text-red-700">
-              {profileError}. Please set up your company information to continue using the application.
+              {profileError}
+              {profileError.includes("company") && 
+                ". Please set up your company information to continue using the application."}
             </AlertDescription>
+            <Button variant="outline" size="sm" className="mt-2" onClick={handleRefresh}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Try Again
+            </Button>
           </Alert>
         )}
         
@@ -137,9 +182,9 @@ const ProfilePage = () => {
           <TabsContent value="profile">
             <div className="space-y-8">
               {/* Profile Information */}
-              <ProfileInformation />
+              <ProfileInformation key={`profile-info-${refreshKey}`} />
               {/* Company Information */}
-              <CompanyInformation />
+              <CompanyInformation key={`company-info-${refreshKey}`} />
               {/* Administrator Access */}
               <Alert className="mb-4 bg-blue-50 border-blue-200">
                 <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />

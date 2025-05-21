@@ -4,7 +4,7 @@ import { useUserProfile } from "./useUserProfile";
 import { toast } from "sonner";
 
 export const useCurrentUserRole = () => {
-  const { profileData, isLoading: isProfileLoading } = useUserProfile(['role']);
+  const { profileData, isLoading: isProfileLoading, error: profileError } = useUserProfile(['role']);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -17,6 +17,13 @@ export const useCurrentUserRole = () => {
   const processProfileData = useCallback(() => {
     try {
       if (!isProfileLoading) {
+        if (profileError) {
+          console.error("Error from useUserProfile:", profileError);
+          setError(new Error(profileError));
+          setIsLoading(false);
+          return;
+        }
+        
         const role = profileData?.role || null;
         setCurrentUserRole(role);
         
@@ -24,6 +31,8 @@ export const useCurrentUserRole = () => {
           console.log(`User role loaded: ${role}`);
         } else {
           console.log("No role data found for user");
+          // Set a default role to prevent blocking UI completely
+          setCurrentUserRole('user');
         }
         
         setIsLoading(false);
@@ -34,16 +43,19 @@ export const useCurrentUserRole = () => {
       setIsLoading(false);
       
       // Show toast for error
-      toast.error("Error loading user role data");
+      toast.error("Error loading user role data. Using default role.");
+      
+      // Set a default role to prevent blocking the UI completely
+      setCurrentUserRole('user');
     }
-  }, [profileData, isProfileLoading]);
+  }, [profileData, isProfileLoading, profileError]);
 
   // Effect to process profile data
   useEffect(() => {
     processProfileData();
   }, [processProfileData]);
 
-  // If profile loading takes too long, set a timeout to prevent infinite loading - reduced from 10 to 7 seconds
+  // If profile loading takes too long, set a timeout to prevent infinite loading - reduced to 5 seconds
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (isLoading) {
@@ -54,7 +66,7 @@ export const useCurrentUserRole = () => {
         // Set a default role to prevent blocking the UI completely
         setCurrentUserRole('user');
       }
-    }, 7000); // 7 seconds timeout
+    }, 5000); // 5 seconds timeout (reduced from 7)
     
     return () => clearTimeout(timeoutId);
   }, [isLoading]);
