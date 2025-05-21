@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -71,8 +70,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       }
 
       // Always set profileData to the data returned or null
-      // This is where the error was occurring - ensuring we set either a valid UserProfileData or null
-      setProfileData(data || null); // Fixed: Explicitly ensure null is set if data is falsy
+      setProfileData(data || null);
       setError(null);
       setIsLoading(false);
       return data;

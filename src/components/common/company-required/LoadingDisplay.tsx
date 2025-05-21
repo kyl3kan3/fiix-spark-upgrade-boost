@@ -6,7 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-export const LoadingDisplay: React.FC = () => {
+interface LoadingDisplayProps {
+  message?: string; // Added message prop
+}
+
+export const LoadingDisplay: React.FC<LoadingDisplayProps> = ({ message = "Loading your profile..." }) => {
   const navigate = useNavigate();
   const [showResetButton, setShowResetButton] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -69,7 +73,7 @@ export const LoadingDisplay: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center p-8 rounded-lg bg-white shadow-md max-w-md w-full">
         <Loader2 className="h-12 w-12 animate-spin text-maintenease-600 mx-auto" />
-        <p className="mt-4 text-lg font-medium text-gray-700">Loading your profile...</p>
+        <p className="mt-4 text-lg font-medium text-gray-700">{message}</p>
         <p className="mt-2 text-sm text-gray-500">This has been loading for {loadingTime} seconds</p>
         
         {showResetButton && (
