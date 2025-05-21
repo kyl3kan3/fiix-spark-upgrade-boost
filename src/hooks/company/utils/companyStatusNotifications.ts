@@ -2,31 +2,38 @@
 import { toast } from "sonner";
 
 /**
- * Show a notification when company setup is completed
+ * Show notification for when company setup is completed
  */
 export const showCompanySetupCompletedNotification = () => {
-  toast.success("Company setup completed");
+  toast.success("Company setup completed successfully!", {
+    description: "You're all set to use the application.",
+    duration: 5000
+  });
 };
 
 /**
- * Show a notification for company association status
- * @param found Whether company association was found
- */
-export const showCompanyAssociationNotification = (found: boolean) => {
-  if (found) {
-    toast.success("Company association found. Refreshing...");
-  } else {
-    toast.error("No company association found. Please complete setup.");
-  }
-};
-
-/**
- * Navigate to dashboard with a slight delay
- * to ensure all state is updated
+ * Navigate to the dashboard
  */
 export const navigateToDashboard = () => {
-  // Force refresh the page after a short delay to ensure all state is updated
+  // Use a timeout to allow the toast to be visible before navigation
   setTimeout(() => {
     window.location.href = "/dashboard";
   }, 1000);
+};
+
+/**
+ * Show notification based on company association result
+ */
+export const showCompanyAssociationNotification = (found: boolean) => {
+  if (found) {
+    toast.success("Company association found!", {
+      description: "You are now connected to your company.",
+      duration: 4000
+    });
+  } else {
+    toast.error("No company association found", {
+      description: "Please complete the setup process.",
+      duration: 4000
+    });
+  }
 };
