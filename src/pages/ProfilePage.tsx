@@ -4,7 +4,7 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, LogOut, AlertTriangle, RefreshCw } from "lucide-react";
+import { InfoIcon, LogOut, AlertTriangle, RefreshCw, Loader2 } from "lucide-react";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import CompanyInformation from "@/components/profile/CompanyInformation";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
@@ -145,7 +145,7 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
           {profileLoading && (
             <div className="flex items-center text-sm text-amber-600">
-              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Loading profile data...
             </div>
           )}
