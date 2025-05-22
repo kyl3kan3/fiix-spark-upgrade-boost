@@ -7,49 +7,68 @@ export const useAuth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
 
   // Check authentication status on mount
   useEffect(() => {
+    let mounted = true;
     const checkAuth = async () => {
       try {
         console.log("Checking auth status...");
+        
+        // Set up auth state listener first
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
+          console.log(`Auth state change: ${event}`, currentSession?.user?.id);
+          
+          if (mounted) {
+            setSession(currentSession);
+            setUser(currentSession?.user ?? null);
+            setIsAuthenticated(!!currentSession?.user);
+          }
+          
+          if (event === 'SIGNED_IN') {
+            console.log("User signed in:", currentSession?.user.id);
+            toast.success("Successfully signed in!");
+          } else if (event === 'SIGNED_OUT') {
+            console.log("User signed out");
+            toast.info("Signed out");
+          }
+        });
+        
+        // Then check for existing session
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           throw error;
         }
         
-        const authenticated = !!data.session;
-        setIsAuthenticated(authenticated);
-        
-        if (data.session) {
-          console.log("Auth initialized with session for user:", data.session.user.id);
-        } else {
-          console.log("Auth initialized with no active session");
+        if (mounted) {
+          const authenticated = !!data.session;
+          setIsAuthenticated(authenticated);
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+          
+          console.log(
+            authenticated 
+              ? `Auth initialized with session for user: ${data.session.user.id}` 
+              : "Auth initialized with no active session"
+          );
         }
+        
       } catch (err) {
         console.error("Error checking auth status:", err);
-        setIsAuthenticated(false);
-        setAuthError(err instanceof Error ? err.message : "Unknown authentication error");
+        if (mounted) {
+          setIsAuthenticated(false);
+          setAuthError(err instanceof Error ? err.message : "Unknown authentication error");
+        }
       }
     };
     
     checkAuth();
     
-    // Set up auth state listener
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state change:", event, session?.user?.id ? "authenticated" : "unauthenticated");
-      setIsAuthenticated(!!session?.user);
-      
-      if (event === 'SIGNED_IN') {
-        console.log("User signed in:", session?.user.id);
-      } else if (event === 'SIGNED_OUT') {
-        console.log("User signed out");
-      }
-    });
-    
     return () => {
-      authListener.subscription.unsubscribe();
+      mounted = false;
     };
   }, []);
 
@@ -58,6 +77,7 @@ export const useAuth = () => {
     setAuthError(null);
     try {
       console.log("Attempting to sign in with:", { email });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -70,6 +90,9 @@ export const useAuth = () => {
       if (data.session) {
         console.log("User ID:", data.session.user.id);
         console.log("Session expiry:", new Date(data.session.expires_at! * 1000));
+        setSession(data.session);
+        setUser(data.session.user);
+        setIsAuthenticated(true);
       }
       
       toast.success("Logged in successfully!");
@@ -88,6 +111,7 @@ export const useAuth = () => {
       
       setAuthError(errorMessage);
       toast.error(errorMessage);
+      setIsAuthenticated(false);
       return { success: false, error: errorMessage, session: null };
     } finally {
       setIsSubmitting(false);
@@ -152,6 +176,9 @@ export const useAuth = () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      setIsAuthenticated(false);
+      setUser(null);
+      setSession(null);
       toast.success("Logged out successfully");
       return { success: true, error: null };
     } catch (error: any) {
@@ -165,6 +192,8 @@ export const useAuth = () => {
     isSubmitting,
     isAuthenticated,
     authError,
+    user,
+    session,
     signIn,
     signUp,
     signOut

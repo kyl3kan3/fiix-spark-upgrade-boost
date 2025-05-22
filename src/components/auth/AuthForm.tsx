@@ -24,6 +24,7 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
+      console.log("User is already authenticated, redirecting to dashboard");
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
@@ -59,17 +60,19 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
         }
       } else {
         // Handle sign in
+        console.log("Attempting to sign in with email:", email);
         const { success, error, session } = await signIn(email, password);
         
         if (success && session) {
           console.log("Login successful, redirecting to dashboard");
           if (rememberMe) {
-            localStorage.setItem("supabase.auth.token", JSON.stringify(session));
+            localStorage.setItem("auth_remember_me", "true");
           }
           onSuccess(email);
           // Redirect to dashboard
           navigate("/dashboard");
         } else if (error) {
+          console.error("Login failed:", error);
           onError(error);
         }
       }

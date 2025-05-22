@@ -7,6 +7,7 @@ import AuthError from "@/components/auth/AuthError";
 import AuthToggle from "@/components/auth/AuthToggle";
 import AuthHeader from "@/components/auth/AuthHeader";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -184,7 +185,8 @@ const Auth = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-md w-full bg-white p-10 rounded-lg shadow-md text-center">
           <h1 className="text-xl font-semibold mb-4">Checking authentication...</h1>
-          <p className="text-gray-500">Please wait a moment</p>
+          <Loader2 className="animate-spin h-8 w-8 mx-auto text-maintenease-600" />
+          <p className="text-gray-500 mt-4">Please wait a moment</p>
         </div>
       </div>
     );
@@ -196,7 +198,8 @@ const Auth = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-md w-full bg-white p-10 rounded-lg shadow-md text-center">
           <h1 className="text-xl font-semibold mb-4">Processing Invitation</h1>
-          <p className="text-gray-500">Please wait while we verify your invitation...</p>
+          <Loader2 className="animate-spin h-8 w-8 mx-auto text-maintenease-600" />
+          <p className="text-gray-500 mt-4">Please wait while we verify your invitation...</p>
         </div>
       </div>
     );
