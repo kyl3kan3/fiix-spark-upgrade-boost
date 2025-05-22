@@ -79,8 +79,8 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       
       // Type guard: First check if data exists and has the correct structure
       if (typeof data === 'object' && data !== null) {
-        // Safe access using optional chaining and explicit type checking
-        const companyId = data.company_id;
+        // Safe access using optional chaining with null check to fix TS error
+        const companyId = data && 'company_id' in data ? data.company_id : null;
         
         if (companyId !== undefined && companyId !== null) {
           // Now we can safely cast data to our interface type
