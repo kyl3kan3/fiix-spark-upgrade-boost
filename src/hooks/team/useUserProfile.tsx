@@ -78,7 +78,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       }
       
       // Verify data is a valid UserProfileData object before setting state
-      if (typeof data === 'object' && data !== null && 'company_id' in data) {
+      if (data && typeof data === 'object' && 'company_id' in data) {
         setProfileData(data as UserProfileData);
       } else {
         // Fixed: Safely handle both null and invalid format cases
