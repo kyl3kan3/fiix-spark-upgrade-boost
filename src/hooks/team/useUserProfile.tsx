@@ -77,14 +77,14 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
       
-      // Verify data is a valid UserProfileData object before setting state
+      // Fixed: First check if data exists, then check the data type and properties
+      // This ensures we're not trying to check properties on a null object
       if (data && typeof data === 'object' && 'company_id' in data) {
+        // Safe to cast to UserProfileData now
         setProfileData(data as UserProfileData);
       } else {
-        // Fixed: Safely handle both null and invalid format cases
-        if (data !== null) {
-          console.warn("Invalid profile data format:", data);
-        }
+        // Safely handle both null and invalid format cases
+        console.warn("Invalid profile data format:", data);
         setProfileData(null);
       }
       
