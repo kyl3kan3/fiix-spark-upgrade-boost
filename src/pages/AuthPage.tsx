@@ -18,7 +18,6 @@ const AuthPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +25,7 @@ const AuthPage: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/profile");
+      navigate("/company-setup");
     }
   }, [isAuthenticated, navigate]);
 
@@ -38,21 +37,15 @@ const AuthPage: React.FC = () => {
     try {
       if (isSignUp) {
         // Handle signup
-        if (!companyName) {
-          setError("Company name is required");
-          setIsSubmitting(false);
-          return;
-        }
-        
         const { success, error } = await signUp(email, password, {
           first_name: firstName,
-          last_name: lastName,
-          company_name: companyName
+          last_name: lastName
         });
 
         if (success) {
           // Store email for convenience on future login attempts
           localStorage.setItem("last_email", email);
+          navigate("/company-setup");
         } else if (error) {
           setError(error);
         }
@@ -62,7 +55,7 @@ const AuthPage: React.FC = () => {
         
         if (success) {
           localStorage.setItem("last_email", email);
-          navigate("/profile");
+          navigate("/company-setup");
         } else if (error) {
           setError(error);
         }
@@ -142,16 +135,6 @@ const AuthPage: React.FC = () => {
                           required
                         />
                       </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="companyName">Company Name</Label>
-                      <Input
-                        id="companyName"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        placeholder="Acme Inc"
-                        required
-                      />
                     </div>
                   </>
                 )}
