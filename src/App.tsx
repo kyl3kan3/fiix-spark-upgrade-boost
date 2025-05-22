@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
 
 // Pages
@@ -32,7 +33,7 @@ import CompanyRequiredWrapper from '@/components/common/CompanyRequiredWrapper';
 
 function App() {
   return (
-    <Router>
+    <>
       <Toaster />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -143,7 +144,7 @@ function App() {
         } />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
