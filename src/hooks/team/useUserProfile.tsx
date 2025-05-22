@@ -81,7 +81,7 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
       if (typeof data === 'object' && data !== null && 'company_id' in data) {
         setProfileData(data as UserProfileData);
       } else {
-        // Fixed: Only log warning if data exists but is in wrong format
+        // Fixed: Safely handle both null and invalid format cases
         if (data !== null) {
           console.warn("Invalid profile data format:", data);
         }
