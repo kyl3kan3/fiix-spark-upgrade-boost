@@ -22,14 +22,14 @@ import InspectionDetailPage from '@/pages/InspectionDetailPage';
 import Chat from '@/pages/Chat';
 import Calendar from '@/pages/Calendar';
 import Settings from '@/pages/Settings';
-import Auth from '@/pages/Auth';
+import AuthPage from '@/pages/AuthPage';
 import Help from '@/pages/Help';
 import NotFound from '@/pages/NotFound';
 import OnboardingPage from '@/pages/OnboardingPage';
 import SetupPage from '@/pages/SetupPage';
 
-// Component to enforce company requirement
-import CompanyRequiredWrapper from '@/components/common/CompanyRequiredWrapper';
+// Component to enforce authentication
+import AuthGuard from '@/components/auth/AuthGuard';
 
 function App() {
   return (
@@ -37,110 +37,110 @@ function App() {
       <Toaster />
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/setup" element={<SetupPage />} />
         
-        {/* Protected routes that require company setup */}
+        {/* Protected routes that require authentication */}
         <Route path="/dashboard" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Dashboard />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/profile" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <ProfilePage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/team" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Team />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/features" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <FeatureDemoPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/work-orders" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <WorkOrdersPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/work-orders/:id" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <WorkOrderDetailPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/work-orders/new" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <WorkOrderFormPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/work-orders/edit/:id" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <WorkOrderFormPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/assets" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <AssetsPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/assets/new" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <AssetFormPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/assets/edit/:id" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <AssetFormPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/locations" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <LocationsPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/reports" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <ReportsPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/inspections" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <InspectionsPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/inspections/new" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <NewInspectionPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/inspections/:id" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <InspectionDetailPage />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/chat" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Chat />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/calendar" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Calendar />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/settings" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Settings />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="/help" element={
-          <CompanyRequiredWrapper>
+          <AuthGuard>
             <Help />
-          </CompanyRequiredWrapper>
+          </AuthGuard>
         } />
         <Route path="*" element={<NotFound />} />
       </Routes>

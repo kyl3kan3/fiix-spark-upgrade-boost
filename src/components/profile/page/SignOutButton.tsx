@@ -3,15 +3,16 @@ import React from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const SignOutButton: React.FC = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOut();
       toast.success("You have been logged out successfully");
       navigate("/auth");
     } catch (error) {

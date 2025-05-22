@@ -8,27 +8,34 @@ import SetAdminUser from "@/components/admin/SetAdminUser";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import SignOutButton from "./SignOutButton";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProfileTabContentProps {
   refreshKey: number;
 }
 
 export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey }) => {
+  const { user } = useAuth();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   
-  // Effect to get user email from supabase for the admin section
+  // Effect to get user email
   useEffect(() => {
-    const loadUserEmail = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUserEmail(user?.email ?? null);
-      } catch (err) {
-        console.error("Error getting user email:", err);
-      }
-    };
-    
-    loadUserEmail();
-  }, [refreshKey]);
+    if (user?.email) {
+      setUserEmail(user.email);
+    } else {
+      // Fallback to direct Supabase query if needed
+      const getUserEmail = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          setUserEmail(user?.email ?? null);
+        } catch (err) {
+          console.error("Error getting user email:", err);
+        }
+      };
+      
+      getUserEmail();
+    }
+  }, [user, refreshKey]);
 
   return (
     <div className="space-y-8">
