@@ -57,7 +57,7 @@ export const useProfilePage = () => {
         
         console.log("Fetching user data for profile page");
         
-        // Get current user
+        // Get current user directly without using hooks
         const { data, error: userError } = await supabase.auth.getUser();
         
         if (userError) {
@@ -108,14 +108,6 @@ export const useProfilePage = () => {
     const tabFromUrl = params.get('tab');
     setActiveTab(tabFromUrl === 'settings' ? 'settings' : 'profile');
   }, [location.search]);
-
-  // Additional check for profile data availability
-  useEffect(() => {
-    if (!profileLoading && !profileData && !error) {
-      console.log("No profile data available after loading completed");
-      setError("Your profile information could not be found. Please try refreshing or contact support.");
-    }
-  }, [profileLoading, profileData, error]);
 
   return {
     userEmail,

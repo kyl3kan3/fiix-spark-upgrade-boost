@@ -8,14 +8,16 @@ import { useProfilePage } from "@/hooks/profile/useProfilePage";
 import { ProfileLoading } from "@/components/profile/page/ProfileLoading";
 import { ProfileError } from "@/components/profile/page/ProfileError";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
-import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [user, setUser] = useState(null);
   const [initialCheckDone, setInitialCheckDone] = useState(false);
+  
   const {
     loading,
     error,
@@ -27,26 +29,54 @@ const ProfilePage = () => {
     profileError
   } = useProfilePage();
 
-  // Check if user is authenticated
+  // Check if user is authenticated directly from Supabase
   useEffect(() => {
-    console.log("ProfilePage auth check - isAuthenticated:", isAuthenticated);
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Auth error in ProfilePage:", error);
+          setIsAuthenticated(false);
+          setInitialCheckDone(true);
+          return;
+        }
+        
+        setIsAuthenticated(!!data.session);
+        setUser(data.session?.user || null);
+        
+        if (!data.session) {
+          console.log("No session found, redirecting to auth");
+          toast.info("Please login to view your profile");
+          navigate("/auth", { replace: true });
+        } else {
+          console.log("User authenticated in ProfilePage:", data.session.user.id);
+        }
+        
+        setInitialCheckDone(true);
+      } catch (err) {
+        console.error("Error checking auth:", err);
+        setIsAuthenticated(false);
+        setInitialCheckDone(true);
+      }
+    };
     
-    if (isAuthenticated === false) {
-      console.log("No active session found, redirecting to auth");
-      toast.info("Please login to view your profile");
-      navigate("/auth", { replace: true });
-      return;
-    }
+    checkAuth();
     
-    if (isAuthenticated === true && user) {
-      console.log("User authenticated in ProfilePage:", user.id);
-      setInitialCheckDone(true);
-    }
+    // Set up auth change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      setUser(session?.user || null);
+      
+      if (!session && event === 'SIGNED_OUT') {
+        navigate("/auth", { replace: true });
+      }
+    });
     
-    if (isAuthenticated !== null) {
-      setInitialCheckDone(true);
-    }
-  }, [isAuthenticated, user, navigate]);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
   
   // Show loading state while checking auth
   if (!initialCheckDone || loading) {

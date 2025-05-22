@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { InfoIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ProfileInformation from "@/components/profile/ProfileInformation";
@@ -7,16 +7,17 @@ import CompanyInformation from "@/components/profile/CompanyInformation";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import SignOutButton from "./SignOutButton";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileTabContentProps {
   refreshKey: number;
 }
 
 export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey }) => {
-  const [userEmail, setUserEmail] = React.useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   // Effect to get user email from supabase for the admin section
-  React.useEffect(() => {
+  useEffect(() => {
     const loadUserEmail = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -56,6 +57,3 @@ export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey
     </div>
   );
 };
-
-// Import at the top
-import { supabase } from "@/integrations/supabase/client";

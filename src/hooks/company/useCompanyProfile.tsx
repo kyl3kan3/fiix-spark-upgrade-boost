@@ -1,29 +1,38 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
 
 export function useCompanyProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
-  const { user, isAuthenticated } = useAuth();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Directly get user from Supabase instead of using hooks
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserId(data.user?.id || null);
+    };
+    
+    checkUser();
+  }, []);
 
   // Load profile data
   const loadProfileData = useCallback(async () => {
-    if (!user || !isAuthenticated) {
-      console.log("Cannot load profile: No authenticated user");
+    if (!userId) {
+      console.log("Cannot load profile: No user ID available");
       return null;
     }
 
     try {
-      console.log("Loading profile for user ID:", user.id);
+      console.log("Loading profile for user ID:", userId);
 
       // Load profile data
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("company_id, role, email")
-        .eq("id", user.id)
+        .eq("id", userId)
         .maybeSingle();
       
       if (error) {
@@ -44,11 +53,11 @@ export function useCompanyProfile() {
       }
       return null;
     }
-  }, [user, isAuthenticated]);
+  }, [userId]);
 
   const refreshProfileStatus = useCallback(async () => {
-    if (!isAuthenticated) {
-      console.log("Cannot refresh profile: Not authenticated");
+    if (!userId) {
+      console.log("Cannot refresh profile: No user ID");
       return;
     }
 
@@ -76,14 +85,14 @@ export function useCompanyProfile() {
     } finally {
       setIsLoading(false);
     }
-  }, [loadProfileData, isAuthenticated]);
+  }, [loadProfileData, userId]);
 
-  // Initial refresh when auth state changes
+  // Initial refresh when user ID changes
   useEffect(() => {
-    if (isAuthenticated) {
+    if (userId) {
       refreshProfileStatus();
     }
-  }, [isAuthenticated, refreshProfileStatus]);
+  }, [userId, refreshProfileStatus]);
 
   return {
     isLoading,
