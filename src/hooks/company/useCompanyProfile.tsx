@@ -1,30 +1,22 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export function useCompanyProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
+  const { user, isAuthenticated } = useAuth();
 
   // Load profile data
   const loadProfileData = useCallback(async () => {
-    try {
-      // Get current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error("Auth error when getting user:", userError);
-        setProfileError(new Error("Authentication error: " + userError.message));
-        return null;
-      }
-      
-      if (!user) {
-        console.log("No authenticated user found");
-        setProfileError(new Error("No authenticated user found. Please sign in."));
-        return null;
-      }
+    if (!user || !isAuthenticated) {
+      console.log("Cannot load profile: No authenticated user");
+      return null;
+    }
 
+    try {
       console.log("Loading profile for user ID:", user.id);
 
       // Load profile data
@@ -52,9 +44,14 @@ export function useCompanyProfile() {
       }
       return null;
     }
-  }, []);
+  }, [user, isAuthenticated]);
 
   const refreshProfileStatus = useCallback(async () => {
+    if (!isAuthenticated) {
+      console.log("Cannot refresh profile: Not authenticated");
+      return;
+    }
+
     setIsLoading(true);
     setProfileError(null);
     
@@ -79,7 +76,14 @@ export function useCompanyProfile() {
     } finally {
       setIsLoading(false);
     }
-  }, [loadProfileData]);
+  }, [loadProfileData, isAuthenticated]);
+
+  // Initial refresh when auth state changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshProfileStatus();
+    }
+  }, [isAuthenticated, refreshProfileStatus]);
 
   return {
     isLoading,

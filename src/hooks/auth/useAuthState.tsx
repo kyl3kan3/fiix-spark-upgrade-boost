@@ -11,47 +11,27 @@ export const useAuthState = () => {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [authInitialized, setAuthInitialized] = useState(false);
 
   // Check authentication status on mount
   useEffect(() => {
     let mounted = true;
-    let authSubscription = null;
     
     const checkAuth = async () => {
       try {
         console.log("Checking auth status...");
         
-        // Set up auth state listener first
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
-          console.log(`Auth state change: ${event}`, currentSession?.user?.id);
-          
-          if (mounted) {
-            setSession(currentSession);
-            setUser(currentSession?.user ?? null);
-            setIsAuthenticated(!!currentSession?.user);
-          }
-          
-          if (event === 'SIGNED_IN') {
-            console.log("User signed in:", currentSession?.user.id);
-            toast.success("Successfully signed in!");
-          } else if (event === 'SIGNED_OUT') {
-            console.log("User signed out");
-            toast.info("Signed out");
-          } else if (event === 'USER_UPDATED') {
-            console.log("User updated");
-            setSession(currentSession);
-            setUser(currentSession?.user ?? null);
-          }
-        });
-        
-        authSubscription = subscription;
-        
-        // Then check for existing session
+        // First check for existing session
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error("Error checking auth session:", error);
-          throw error;
+          if (mounted) {
+            setIsAuthenticated(false);
+            setAuthError(error.message);
+            setAuthInitialized(true);
+          }
+          return;
         }
         
         if (mounted) {
@@ -59,6 +39,7 @@ export const useAuthState = () => {
           setIsAuthenticated(authenticated);
           setSession(data.session);
           setUser(data.session?.user ?? null);
+          setAuthInitialized(true);
           
           console.log(
             authenticated 
@@ -72,17 +53,41 @@ export const useAuthState = () => {
         if (mounted) {
           setIsAuthenticated(false);
           setAuthError(err instanceof Error ? err.message : "Unknown authentication error");
+          setAuthInitialized(true);
         }
       }
     };
     
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      console.log(`Auth state change: ${event}`, currentSession?.user?.id);
+      
+      if (mounted) {
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession?.user);
+        setAuthInitialized(true);
+      }
+      
+      if (event === 'SIGNED_IN') {
+        console.log("User signed in:", currentSession?.user.id);
+        toast.success("Successfully signed in!");
+      } else if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
+        toast.info("Signed out");
+      } else if (event === 'USER_UPDATED') {
+        console.log("User updated");
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+      }
+    });
+    
+    // Check auth initial state
     checkAuth();
     
     return () => {
       mounted = false;
-      if (authSubscription) {
-        authSubscription.unsubscribe();
-      }
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -91,6 +96,7 @@ export const useAuthState = () => {
     user,
     session,
     authError,
-    setAuthError
+    setAuthError,
+    authInitialized
   };
 };

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
 import { SetupRequiredDisplay } from "./company-required/SetupRequiredDisplay";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth"; // Use our refactored auth hook
 
 interface CompanyRequiredWrapperProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ interface CompanyRequiredWrapperProps {
 
 const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ children }) => {
   const navigate = useNavigate();
-  const [authChecked, setAuthChecked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkComplete, setCheckComplete] = useState(false);
+  const { isAuthenticated, user } = useAuth(); // Get auth state directly
   const {
     isLoading,
     profileError,
@@ -23,64 +23,21 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     handleCompanyFound
   } = useCompanyStatus();
 
-  // First check authentication
+  // Check authentication once on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        console.log("Auth check in CompanyRequiredWrapper:", data.session ? "Authenticated" : "Not authenticated");
-        
-        if (error || !data.session) {
-          console.log("User not authenticated, redirecting to auth page");
-          setIsAuthenticated(false);
-          navigate("/auth");
-        } else {
-          setIsAuthenticated(true);
-        }
-      } catch (err) {
-        console.error("Error checking auth:", err);
-        setIsAuthenticated(false);
-        navigate("/auth");
-      } finally {
-        setAuthChecked(true);
-      }
-    };
-    
-    checkAuth();
-    
-    // Listen for auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state change in CompanyRequiredWrapper:", event);
-      const isLoggedIn = !!session;
-      setIsAuthenticated(isLoggedIn);
-      
-      if (!isLoggedIn && event === 'SIGNED_OUT') {
-        console.log("User signed out, redirecting to auth page");
-        navigate("/auth");
-      }
-    });
-    
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [navigate]);
-
-  // Then check company status only if authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log("CompanyRequiredWrapper: Refreshing company status");
+    if (isAuthenticated === false) {
+      console.log("User not authenticated, redirecting to auth page");
+      navigate("/auth");
+    } else if (isAuthenticated === true) {
+      console.log("User is authenticated:", user?.id);
       refreshCompanyStatus();
     }
-  }, [isAuthenticated, refreshCompanyStatus]);
+    
+    setCheckComplete(isAuthenticated !== null);
+  }, [isAuthenticated, user, navigate, refreshCompanyStatus]);
 
-  // Handle profile fix
-  const handleProfileFixed = () => {
-    console.log("Profile fixed, refreshing company status");
-    refreshCompanyStatus();
-  };
-
-  // If auth check is not complete, show loading
-  if (!authChecked) {
+  // If authentication check is not complete, show loading
+  if (!checkComplete || isAuthenticated === null) {
     return <LoadingDisplay message="Checking authentication..." />;
   }
 
@@ -101,7 +58,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
       <SetupRequiredDisplay
         profileError={profileError}
         onCompanyFound={handleCompanyFound}
-        onProfileFixed={handleProfileFixed}
+        onProfileFixed={() => refreshCompanyStatus()}
       />
     );
   }

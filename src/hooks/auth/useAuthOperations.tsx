@@ -10,6 +10,7 @@ export const useAuthOperations = (setAuthError: (error: string | null) => void) 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const signIn = async (email: string, password: string) => {
+    console.log("Starting sign in process...");
     setIsSubmitting(true);
     setAuthError(null);
     try {

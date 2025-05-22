@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Loader2, RefreshCw, AlertTriangle } from "lucide-react";
@@ -8,12 +8,14 @@ import { useProfilePage } from "@/hooks/profile/useProfilePage";
 import { ProfileLoading } from "@/components/profile/page/ProfileLoading";
 import { ProfileError } from "@/components/profile/page/ProfileError";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
   const {
     loading,
     error,
@@ -27,37 +29,27 @@ const ProfilePage = () => {
 
   // Check if user is authenticated
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Auth error:", error.message);
-          toast.error("Authentication error: " + error.message);
-          navigate("/auth", { replace: true });
-          return;
-        }
-        
-        if (!data.session) {
-          console.log("No active session found, redirecting to auth");
-          toast.info("Please login to view your profile");
-          navigate("/auth", { replace: true });
-          return;
-        }
-        
-        console.log("User authenticated in ProfilePage:", data.session.user.id);
-      } catch (err) {
-        console.error("Error checking auth in ProfilePage:", err);
-        toast.error("Authentication error. Please log in again.");
-        navigate("/auth", { replace: true });
-      }
-    };
+    console.log("ProfilePage auth check - isAuthenticated:", isAuthenticated);
     
-    checkAuth();
-  }, [navigate]);
+    if (isAuthenticated === false) {
+      console.log("No active session found, redirecting to auth");
+      toast.info("Please login to view your profile");
+      navigate("/auth", { replace: true });
+      return;
+    }
+    
+    if (isAuthenticated === true && user) {
+      console.log("User authenticated in ProfilePage:", user.id);
+      setInitialCheckDone(true);
+    }
+    
+    if (isAuthenticated !== null) {
+      setInitialCheckDone(true);
+    }
+  }, [isAuthenticated, user, navigate]);
   
   // Show loading state while checking auth
-  if (loading) {
+  if (!initialCheckDone || loading) {
     return <ProfileLoading />;
   }
 
@@ -67,6 +59,7 @@ const ProfilePage = () => {
     return <ProfileError error={errorMessage} onRefresh={handleRefresh} />;
   }
 
+  // At this point we're authenticated and no errors
   return (
     <DashboardLayout>
       <BackToDashboard />
