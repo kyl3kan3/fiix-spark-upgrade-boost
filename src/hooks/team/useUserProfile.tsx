@@ -77,15 +77,22 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
       
-      // Type guard: First check if data exists and has the correct structure
+      // Type guard with proper type assertions to fix TypeScript errors
       if (typeof data === 'object' && data !== null) {
-        // Use type assertion to address the TypeScript error
+        // First convert to a generic record type that TypeScript can safely work with
         const typedData = data as Record<string, any>;
-        const companyId = 'company_id' in typedData ? typedData.company_id : null;
         
-        if (companyId !== undefined && companyId !== null) {
-          // Now we can safely cast data to our interface type
-          setProfileData(typedData as UserProfileData);
+        // Check if company_id exists 
+        if ('company_id' in typedData && typedData.company_id !== null && typedData.company_id !== undefined) {
+          setProfileData({
+            role: typedData.role || null,
+            company_id: String(typedData.company_id),
+            company_name: typedData.company_name,
+            first_name: typedData.first_name,
+            last_name: typedData.last_name,
+            ...typedData
+          });
+          setError(null);
         } else {
           // Handle case where company_id is missing
           console.warn("Invalid profile data: missing company_id", data);
@@ -97,7 +104,6 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         setProfileData(null);
       }
       
-      setError(null);
       setIsLoading(false);
       return data;
     } catch (err) {

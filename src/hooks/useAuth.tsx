@@ -13,6 +13,12 @@ export const useAuth = () => {
       try {
         const { data, error } = await supabase.auth.getSession();
         setIsAuthenticated(!!data.session && !error);
+        
+        if (data.session) {
+          console.log("Auth initialized with session for user:", data.session.user.id);
+        } else {
+          console.log("Auth initialized with no active session");
+        }
       } catch (err) {
         console.error("Error checking auth status:", err);
         setIsAuthenticated(false);
@@ -44,6 +50,12 @@ export const useAuth = () => {
       if (error) throw error;
       
       console.log("Login successful:", data.session ? "Session exists" : "No session");
+      
+      if (data.session) {
+        console.log("User ID:", data.session.user.id);
+        console.log("Session expiry:", new Date(data.session.expires_at! * 1000));
+      }
+      
       toast.success("Logged in successfully!");
       return { success: true, error: null, session: data.session };
     } catch (error: any) {
