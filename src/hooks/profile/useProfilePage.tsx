@@ -41,44 +41,47 @@ export const useProfilePage = () => {
   // Handle refreshing the profile data
   const handleRefresh = useCallback(() => {
     setRefreshKey(prev => prev + 1);
+    setError(null);
+    setLoading(true);
     refreshProfile();
     toast.info("Refreshing profile data...");
   }, [refreshProfile]);
 
   // Check authentication and load user data
   useEffect(() => {
+    let isMounted = true;
     const fetchUserData = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        if (isMounted) setLoading(true);
+        if (isMounted) setError(null);
         
         console.log("Fetching user data for profile page");
         
         // Get current user
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        const { data, error: userError } = await supabase.auth.getUser();
         
         if (userError) {
           console.error("Auth error in profile page:", userError);
-          setError("Authentication error: " + userError.message);
+          if (isMounted) setError("Authentication error: " + userError.message);
           navigate("/auth", { replace: true });
           return;
         }
         
-        if (!user) {
+        if (!data.user) {
           console.error("No authenticated user found in profile page");
-          setError("You must be logged in to view your profile");
+          if (isMounted) setError("You must be logged in to view your profile");
           navigate("/auth", { replace: true });
           return;
         }
         
-        setUserEmail(user?.email ?? null);
-        console.log("User email loaded:", user?.email);
+        if (isMounted) setUserEmail(data.user?.email ?? null);
+        console.log("User email loaded:", data.user?.email);
         
       } catch (err) {
         console.error("Error in profile page initialization:", err);
-        setError("Failed to load user information");
+        if (isMounted) setError("Failed to load user information");
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     
@@ -86,15 +89,18 @@ export const useProfilePage = () => {
     
     // Set a timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {
-      if (loading && Date.now() - loadStartTime > 5000) {
+      if (isMounted && loading && Date.now() - loadStartTime > 5000) {
         console.warn("Loading timeout in profile page");
         setLoading(false);
         setError("Loading timed out. Please try refreshing.");
       }
     }, 5000);
     
-    return () => clearTimeout(timeoutId);
-  }, [refreshKey, navigate]);
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [refreshKey, navigate, loading, loadStartTime]);
 
   // Effect to update active tab when URL changes
   useEffect(() => {
@@ -102,6 +108,14 @@ export const useProfilePage = () => {
     const tabFromUrl = params.get('tab');
     setActiveTab(tabFromUrl === 'settings' ? 'settings' : 'profile');
   }, [location.search]);
+
+  // Additional check for profile data availability
+  useEffect(() => {
+    if (!profileLoading && !profileData && !error) {
+      console.log("No profile data available after loading completed");
+      setError("Your profile information could not be found. Please try refreshing or contact support.");
+    }
+  }, [profileLoading, profileData, error]);
 
   return {
     userEmail,

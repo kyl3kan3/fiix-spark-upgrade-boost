@@ -31,12 +31,21 @@ const ProfilePage = () => {
       try {
         const { data, error } = await supabase.auth.getSession();
         
-        if (error || !data.session) {
-          console.log("User not authenticated in ProfilePage, redirecting to auth page");
+        if (error) {
+          console.error("Auth error:", error.message);
+          toast.error("Authentication error: " + error.message);
           navigate("/auth", { replace: true });
-        } else {
-          console.log("User authenticated in ProfilePage:", data.session.user.id);
+          return;
         }
+        
+        if (!data.session) {
+          console.log("No active session found, redirecting to auth");
+          toast.info("Please login to view your profile");
+          navigate("/auth", { replace: true });
+          return;
+        }
+        
+        console.log("User authenticated in ProfilePage:", data.session.user.id);
       } catch (err) {
         console.error("Error checking auth in ProfilePage:", err);
         toast.error("Authentication error. Please log in again.");
@@ -54,7 +63,8 @@ const ProfilePage = () => {
 
   // Show error state if there was a problem loading the profile
   if (error || profileError) {
-    return <ProfileError error={error || profileError || "Unknown error"} onRefresh={handleRefresh} />;
+    const errorMessage = error || profileError || "Unknown error loading profile";
+    return <ProfileError error={errorMessage} onRefresh={handleRefresh} />;
   }
 
   return (
