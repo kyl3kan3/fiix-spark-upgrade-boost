@@ -1,15 +1,19 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProfilePage } from "@/hooks/profile/useProfilePage";
 import { ProfileLoading } from "@/components/profile/page/ProfileLoading";
 import { ProfileError } from "@/components/profile/page/ProfileError";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const {
     loading,
     error,
@@ -17,15 +21,40 @@ const ProfilePage = () => {
     handleTabChange,
     handleRefresh,
     refreshKey,
-    profileLoading
+    profileLoading,
+    profileError
   } = useProfilePage();
 
+  // Check if user is authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error || !data.session) {
+          console.log("User not authenticated in ProfilePage, redirecting to auth page");
+          navigate("/auth", { replace: true });
+        } else {
+          console.log("User authenticated in ProfilePage:", data.session.user.id);
+        }
+      } catch (err) {
+        console.error("Error checking auth in ProfilePage:", err);
+        toast.error("Authentication error. Please log in again.");
+        navigate("/auth", { replace: true });
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
+  
+  // Show loading state while checking auth
   if (loading) {
     return <ProfileLoading />;
   }
 
-  if (error) {
-    return <ProfileError error={error} onRefresh={handleRefresh} />;
+  // Show error state if there was a problem loading the profile
+  if (error || profileError) {
+    return <ProfileError error={error || profileError || "Unknown error"} onRefresh={handleRefresh} />;
   }
 
   return (

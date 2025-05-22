@@ -27,9 +27,13 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fetchAttempted, setFetchAttempted] = useState(false);
   
   const fetchUserProfile = useCallback(async (): Promise<any | null> => {
     try {
+      setIsLoading(true);
+      console.log("Fetching user profile...");
+      
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
@@ -37,7 +41,6 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         console.error("Auth error when getting user:", userError);
         setError("Authentication error: " + userError.message);
         setProfileData(null); // Always set profile data to null on error
-        setIsLoading(false);
         return null;
       }
       
@@ -45,11 +48,11 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         console.log("No authenticated user found");
         setProfileData(null);
         setUserId(null);
-        setIsLoading(false);
         return null;
       }
       
       setUserId(user.id);
+      console.log("User found, ID:", user.id);
       
       // Make sure required fields are included
       const fieldsToFetch = [...new Set([...fields, 'company_id'])];
@@ -66,14 +69,13 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         console.error("Error fetching user profile:", fetchError);
         setError("Could not fetch user profile");
         setProfileData(null); // Always set to null on error
-        setIsLoading(false);
         return null;
       }
 
+      console.log("Profile data received:", data);
       if (!data) {
         console.log("No profile data found for user");
         setProfileData(null);
-        setIsLoading(false);
         return null;
       }
       
@@ -104,14 +106,15 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         setProfileData(null);
       }
       
-      setIsLoading(false);
       return data;
     } catch (err) {
       console.error("Error in useUserProfile:", err);
       setError("An unexpected error occurred");
       setProfileData(null); // Always set to null on error
-      setIsLoading(false);
       return null;
+    } finally {
+      setIsLoading(false);
+      setFetchAttempted(true);
     }
   }, [fields]);
   
@@ -124,6 +127,17 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
   // Initial fetch
   useEffect(() => {
     fetchUserProfile();
+    
+    // Set up a timeout to prevent waiting forever if something goes wrong
+    const timeout = setTimeout(() => {
+      if (isLoading && !fetchAttempted) {
+        console.warn("Profile fetch timeout - forcing loading state to complete");
+        setIsLoading(false);
+        setError("Profile loading timed out. Please try refreshing.");
+      }
+    }, 5000); // 5 second timeout
+    
+    return () => clearTimeout(timeout);
   }, [fetchUserProfile]);
 
   return { 

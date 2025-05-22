@@ -1,18 +1,26 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const useAuth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   // Check authentication status on mount
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        console.log("Checking auth status...");
         const { data, error } = await supabase.auth.getSession();
-        setIsAuthenticated(!!data.session && !error);
+        
+        if (error) {
+          throw error;
+        }
+        
+        const authenticated = !!data.session;
+        setIsAuthenticated(authenticated);
         
         if (data.session) {
           console.log("Auth initialized with session for user:", data.session.user.id);
@@ -22,6 +30,7 @@ export const useAuth = () => {
       } catch (err) {
         console.error("Error checking auth status:", err);
         setIsAuthenticated(false);
+        setAuthError(err instanceof Error ? err.message : "Unknown authentication error");
       }
     };
     
@@ -31,6 +40,12 @@ export const useAuth = () => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state change:", event, session?.user?.id ? "authenticated" : "unauthenticated");
       setIsAuthenticated(!!session?.user);
+      
+      if (event === 'SIGNED_IN') {
+        console.log("User signed in:", session?.user.id);
+      } else if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
+      }
     });
     
     return () => {
@@ -40,6 +55,7 @@ export const useAuth = () => {
 
   const signIn = async (email: string, password: string) => {
     setIsSubmitting(true);
+    setAuthError(null);
     try {
       console.log("Attempting to sign in with:", { email });
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -70,6 +86,7 @@ export const useAuth = () => {
         errorMessage = "Please confirm your email address before signing in";
       }
       
+      setAuthError(errorMessage);
       toast.error(errorMessage);
       return { success: false, error: errorMessage, session: null };
     } finally {
@@ -79,11 +96,14 @@ export const useAuth = () => {
 
   const signUp = async (email: string, password: string, name: string, companyName: string = "") => {
     setIsSubmitting(true);
+    setAuthError(null);
     try {
       // Require a company name for all new sign-ups
       if (!companyName) {
-        toast.error("Company name is required");
-        return { success: false, error: "Company name is required" };
+        const errorMsg = "Company name is required";
+        toast.error(errorMsg);
+        setAuthError(errorMsg);
+        return { success: false, error: errorMsg };
       }
 
       const { data, error } = await supabase.auth.signUp({
@@ -102,8 +122,10 @@ export const useAuth = () => {
       
       // Check if email confirmation is required
       if (data?.user?.identities?.length === 0) {
-        toast.info("This email is already registered. Please sign in instead.");
-        return { success: false, error: "This email is already registered" };
+        const msg = "This email is already registered. Please sign in instead.";
+        toast.info(msg);
+        setAuthError(msg);
+        return { success: false, error: msg };
       } else {
         // Store company name for use during onboarding
         if (companyName) {
@@ -118,6 +140,7 @@ export const useAuth = () => {
     } catch (error: any) {
       console.error("Authentication error:", error);
       const errorMessage = "Failed to create account: " + error.message;
+      setAuthError(errorMessage);
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
     } finally {
@@ -141,6 +164,7 @@ export const useAuth = () => {
   return {
     isSubmitting,
     isAuthenticated,
+    authError,
     signIn,
     signUp,
     signOut
