@@ -77,12 +77,10 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
       
-      // Fixed: First check if data exists, then check the data type and properties
-      // This ensures we're not trying to check properties on a null object
-      // Add explicit null check before accessing properties
+      // Fixed: First ensure data is not null, then validate its type and required properties
       if (data !== null && typeof data === 'object') {
-        // Check if the required property exists in the data object
-        if ('company_id' in data && data.company_id !== null) {
+        // Properly check for the company_id property with the null-safe approach
+        if ('company_id' in data && data['company_id'] !== null) {
           // Safe to cast to UserProfileData now
           const typedData = data as UserProfileData;
           setProfileData(typedData);
