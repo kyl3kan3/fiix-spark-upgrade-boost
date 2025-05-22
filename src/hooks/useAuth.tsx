@@ -13,6 +13,8 @@ export const useAuth = () => {
   // Check authentication status on mount
   useEffect(() => {
     let mounted = true;
+    let authSubscription = null;
+    
     const checkAuth = async () => {
       try {
         console.log("Checking auth status...");
@@ -33,13 +35,20 @@ export const useAuth = () => {
           } else if (event === 'SIGNED_OUT') {
             console.log("User signed out");
             toast.info("Signed out");
+          } else if (event === 'USER_UPDATED') {
+            console.log("User updated");
+            setSession(currentSession);
+            setUser(currentSession?.user ?? null);
           }
         });
+        
+        authSubscription = subscription;
         
         // Then check for existing session
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
+          console.error("Error checking auth session:", error);
           throw error;
         }
         
@@ -69,6 +78,9 @@ export const useAuth = () => {
     
     return () => {
       mounted = false;
+      if (authSubscription) {
+        authSubscription.unsubscribe();
+      }
     };
   }, []);
 
@@ -93,6 +105,12 @@ export const useAuth = () => {
         setSession(data.session);
         setUser(data.session.user);
         setIsAuthenticated(true);
+        
+        // Clear any previous auth errors in localStorage
+        localStorage.removeItem("auth_error");
+        
+        // Store email for future use
+        localStorage.setItem("last_email", email);
       }
       
       toast.success("Logged in successfully!");
@@ -108,6 +126,9 @@ export const useAuth = () => {
       } else if (error.message.includes("Email not confirmed")) {
         errorMessage = "Please confirm your email address before signing in";
       }
+      
+      // Store the error in localStorage for debugging
+      localStorage.setItem("auth_error", errorMessage);
       
       setAuthError(errorMessage);
       toast.error(errorMessage);
@@ -130,6 +151,8 @@ export const useAuth = () => {
         return { success: false, error: errorMsg };
       }
 
+      console.log("Attempting to sign up with:", { email, name, companyName });
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -157,6 +180,7 @@ export const useAuth = () => {
         }
         
         localStorage.setItem("pending_auth_email", email);
+        localStorage.setItem("last_email", email);
         
         toast.success("Account created successfully! Please check your email for verification.");
         return { success: true, error: null };
@@ -188,6 +212,22 @@ export const useAuth = () => {
     }
   };
 
+  const refreshSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
+      setIsAuthenticated(!!data.session);
+      
+      return { success: true, error: null, session: data.session };
+    } catch (error: any) {
+      console.error("Error refreshing session:", error);
+      return { success: false, error: error.message, session: null };
+    }
+  };
+
   return {
     isSubmitting,
     isAuthenticated,
@@ -196,6 +236,7 @@ export const useAuth = () => {
     session,
     signIn,
     signUp,
-    signOut
+    signOut,
+    refreshSession
   };
 };

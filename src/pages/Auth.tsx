@@ -19,6 +19,16 @@ const Auth = () => {
   const [isProcessingInvite, setIsProcessingInvite] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  // Check and clear any stored auth errors
+  useEffect(() => {
+    const storedError = localStorage.getItem("auth_error");
+    if (storedError) {
+      setAuthError(storedError);
+      // Clear after reading
+      localStorage.removeItem("auth_error");
+    }
+  }, []);
+
   useEffect(() => {
     // Check if user is already logged in
     const checkSession = async () => {
@@ -83,6 +93,9 @@ const Auth = () => {
         handleInviteToken(token);
       }
     }
+    
+    // Clear any previous errors when changing modes
+    setAuthError(null);
   }, [location]);
 
   const handleInviteToken = async (token: string) => {
@@ -179,6 +192,17 @@ const Auth = () => {
     navigate(isAuthenticated ? "/dashboard" : "/");
   };
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      toast.info("You have been signed out");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out");
+    }
+  };
+
   // Show loading state while checking auth
   if (isCheckingAuth) {
     return (
@@ -219,6 +243,30 @@ const Auth = () => {
             <p className="text-blue-700">
               You're accepting an invitation to join a company.
             </p>
+          </div>
+        )}
+        
+        {isAuthenticated && (
+          <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
+            <p className="text-green-700">
+              You are already signed in.
+            </p>
+            <div className="mt-2 flex justify-between">
+              <Button 
+                variant="outline" 
+                className="text-sm"
+                onClick={() => navigate("/dashboard")}
+              >
+                Go to Dashboard
+              </Button>
+              <Button 
+                variant="outline" 
+                className="text-sm text-red-500 border-red-200"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            </div>
           </div>
         )}
         
