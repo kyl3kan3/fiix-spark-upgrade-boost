@@ -84,7 +84,8 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         // Check if the required property exists in the data object
         if ('company_id' in data && data.company_id !== null) {
           // Safe to cast to UserProfileData now
-          setProfileData(data as UserProfileData);
+          const typedData = data as UserProfileData;
+          setProfileData(typedData);
         } else {
           // Handle case where company_id is missing
           console.warn("Invalid profile data: missing company_id", data);
