@@ -77,20 +77,21 @@ export const useUserProfile = (fields: string[] = ['role', 'company_id']): UserP
         return null;
       }
       
-      // Fixed: First ensure data is not null, then validate its type and required properties
-      if (data !== null && typeof data === 'object') {
-        // Properly check for the company_id property with the null-safe approach
-        if ('company_id' in data && data['company_id'] !== null) {
-          // Safe to cast to UserProfileData now
-          const typedData = data as UserProfileData;
-          setProfileData(typedData);
+      // Type guard: First check if data exists and has the correct structure
+      if (typeof data === 'object' && data !== null) {
+        // Safe access using optional chaining and explicit type checking
+        const companyId = data.company_id;
+        
+        if (companyId !== undefined && companyId !== null) {
+          // Now we can safely cast data to our interface type
+          setProfileData(data as UserProfileData);
         } else {
           // Handle case where company_id is missing
           console.warn("Invalid profile data: missing company_id", data);
           setProfileData(null);
         }
       } else {
-        // Safely handle both null and invalid format cases
+        // Handle invalid data format
         console.warn("Invalid profile data format:", data);
         setProfileData(null);
       }
