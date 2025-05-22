@@ -2,14 +2,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-type User = {
-  id: string;
-  email?: string;
-};
+import { User, Session } from "@supabase/supabase-js";
 
 type AuthContextType = {
   user: User | null;
+  session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null }>;
@@ -22,60 +19,42 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Initialize auth state
+  // Initialize auth state and set up listener
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // Get current session
-        const { data } = await supabase.auth.getSession();
-        
-        if (data.session?.user) {
-          setUser({
-            id: data.session.user.id,
-            email: data.session.user.email
-          });
-          setIsAuthenticated(true);
-        } else {
-          setUser(null);
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser({
-            id: session.user.id,
-            email: session.user.email
-          });
-          setIsAuthenticated(true);
-          
-          if (event === 'SIGNED_IN') {
-            toast.success("Successfully signed in!");
-          }
-        } else {
-          setUser(null);
-          setIsAuthenticated(false);
-          
-          if (event === 'SIGNED_OUT') {
-            toast.info("Signed out successfully");
-          }
+      (event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        setIsAuthenticated(!!newSession?.user);
+        
+        if (event === 'SIGNED_IN' && newSession) {
+          toast.success("Successfully signed in!");
+        } else if (event === 'SIGNED_OUT') {
+          toast.info("Signed out successfully");
         }
       }
     );
 
-    initAuth();
+    // THEN check for existing session
+    const checkSession = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        setIsAuthenticated(!!data.session);
+      } catch (error) {
+        console.error("Error checking session:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkSession();
 
     // Clean up subscription
     return () => {
@@ -143,7 +122,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session,
+      isLoading, 
+      isAuthenticated, 
+      signIn, 
+      signUp, 
+      signOut 
+    }}>
       {children}
     </AuthContext.Provider>
   );

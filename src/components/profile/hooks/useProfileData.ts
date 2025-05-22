@@ -1,8 +1,9 @@
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useProfileFetch } from "./useProfileFetch";
 import { useProfileUpdates } from "./useProfileUpdates";
 import { useProfileForm } from "./useProfileForm";
+import { toast } from "sonner";
 
 export function useProfileData() {
   const { profileData, setProfileData, isLoading, profileError, fetchProfileData } = useProfileFetch();
@@ -12,7 +13,7 @@ export function useProfileData() {
   // Update form when profile data changes
   useEffect(() => {
     updateFormFromProfile(profileData);
-  }, [profileData]);
+  }, [profileData, updateFormFromProfile]);
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,9 +29,8 @@ export function useProfileData() {
     const success = await updateProfile(toUpdate);
     
     if (success) {
-      toast({
-        title: "Profile Updated",
-        description: "Your profile changes have been saved.",
+      toast.success("Profile Updated", {
+        description: "Your profile changes have been saved."
       });
     }
     
@@ -48,6 +48,3 @@ export function useProfileData() {
     refreshProfile: fetchProfileData
   };
 }
-
-// Import toast at the top since it's used in the function
-import { toast } from "@/hooks/use-toast";

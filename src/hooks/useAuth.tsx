@@ -1,5 +1,5 @@
 
-// Re-export from new auth hooks structure for backward compatibility
-import { useAuth as useNewAuth } from "./auth/AuthContext";
+// Re-export from auth context for backward compatibility
+import { useAuth as useAuthFromContext } from "@/contexts/AuthContext";
 
-export const useAuth = useNewAuth;
+export const useAuth = useAuthFromContext;

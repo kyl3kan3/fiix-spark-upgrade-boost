@@ -2,13 +2,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "../types";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function useProfileFetch() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [profileError, setProfileError] = useState<Error | null>(null);
   const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const { user } = useAuth();
 
   // Function to create an initial profile if none exists
   const createInitialProfile = async (userId: string, email: string | undefined): Promise<ProfileData | null> => {
@@ -41,6 +43,8 @@ export function useProfileFetch() {
 
       console.log("Attempting to create profile with:", newProfile);
       
+      // When inserting data with RLS policies, we need to use the service role key or ensure the user has proper permissions
+      // Here we're inserting the user's own profile, which should be allowed with proper RLS policies
       const { data, error } = await supabase
         .from('profiles')
         .upsert(newProfile)
@@ -61,6 +65,12 @@ export function useProfileFetch() {
   };
 
   const fetchProfileData = useCallback(async () => {
+    if (!user?.id) {
+      console.log("No user ID available, cannot fetch profile");
+      setIsLoading(false);
+      return null;
+    }
+    
     try {
       setIsLoading(true);
       setProfileError(null);
@@ -74,35 +84,14 @@ export function useProfileFetch() {
       const timeout = setTimeout(() => {
         setIsLoading(false);
         setProfileError(new Error("Profile loading timed out. Please try again."));
-        toast({
-          title: "Loading timed out",
-          description: "Could not load your profile. Please refresh and try again.",
-          variant: "destructive",
+        toast.error("Loading timed out", {
+          description: "Could not load your profile. Please refresh and try again."
         });
       }, 10000); // 10 second timeout
       
       setLoadingTimeout(timeout);
       
-      console.log("Fetching profile data...");
-      
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        console.error("Auth error in useProfileFetch:", userError);
-        setProfileError(new Error("Authentication error: " + userError.message));
-        setIsLoading(false);
-        clearTimeout(timeout);
-        return null;
-      }
-      
-      if (!user) {
-        console.log("Not authenticated, cannot load profile");
-        setIsLoading(false);
-        setProfileError(new Error("Not authenticated"));
-        clearTimeout(timeout);
-        return null;
-      }
-      
-      console.log("Authenticated as:", user.id);
+      console.log("Fetching profile data for user ID:", user.id);
       
       // Using maybeSingle() instead of single() to handle case where profile doesn't exist
       const { data, error } = await supabase
@@ -142,10 +131,8 @@ export function useProfileFetch() {
     } catch (error: any) {
       console.error("Error fetching profile data:", error);
       setProfileError(error);
-      toast({
-        title: "Error loading profile",
-        description: "Please try refreshing the page",
-        variant: "destructive",
+      toast.error("Error loading profile", {
+        description: "Please try refreshing the page"
       });
       return null;
     } finally {
@@ -154,11 +141,13 @@ export function useProfileFetch() {
         clearTimeout(loadingTimeout);
       }
     }
-  }, [loadingTimeout]);
+  }, [loadingTimeout, user]);
 
   // Initial fetch on mount
   useEffect(() => {
-    fetchProfileData();
+    if (user?.id) {
+      fetchProfileData();
+    }
     
     return () => {
       // Clean up timeout on unmount
@@ -166,7 +155,7 @@ export function useProfileFetch() {
         clearTimeout(loadingTimeout);
       }
     };
-  }, [fetchProfileData]);
+  }, [fetchProfileData, user]);
 
   return {
     profileData,
