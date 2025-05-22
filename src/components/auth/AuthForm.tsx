@@ -68,8 +68,11 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
     
     try {
       if (isSignUp) {
-        // Handle sign up with company name
-        const { success, error } = await signUp(email, password, name, companyName);
+        // Handle sign up with name and company name
+        const { success, error } = await signUp(email, password, {
+          first_name: name,
+          company_name: companyName
+        });
         
         if (success) {
           console.log("Signup successful, redirecting to onboarding");

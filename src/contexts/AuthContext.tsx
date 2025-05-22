@@ -8,11 +8,13 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  isSubmitting: boolean; // Add this property
   isAuthenticated: boolean;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null; session: Session | null }>;
   signUp: (email: string, password: string, userData: { first_name?: string; last_name?: string; company_name?: string }) => 
     Promise<{ success: boolean; error: string | null }>;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<{ success: boolean; error: string | null; session: Session | null }>; // Add this method
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add isSubmitting state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Initialize auth state and set up listener
@@ -64,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Sign in function
   const signIn = async (email: string, password: string) => {
+    setIsSubmitting(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -71,13 +75,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        return { success: false, error: error.message };
+        return { success: false, error: error.message, session: null };
       }
 
-      return { success: true, error: null };
+      return { success: true, error: null, session: data.session };
     } catch (error: any) {
       console.error("Error signing in:", error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message, session: null };
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -87,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string, 
     userData: { first_name?: string; last_name?: string; company_name?: string }
   ) => {
+    setIsSubmitting(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -109,15 +116,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       console.error("Error signing up:", error);
       return { success: false, error: error.message };
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Sign out function
   const signOut = async () => {
+    setIsSubmitting(true);
     try {
       await supabase.auth.signOut();
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Refresh session function
+  const refreshSession = async () => {
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      
+      if (error) {
+        return { success: false, error: error.message, session: null };
+      }
+      
+      return { success: true, error: null, session: data.session };
+    } catch (error: any) {
+      console.error("Error refreshing session:", error);
+      return { success: false, error: error.message, session: null };
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -125,11 +156,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider value={{ 
       user, 
       session,
-      isLoading, 
+      isLoading,
+      isSubmitting,
       isAuthenticated, 
       signIn, 
       signUp, 
-      signOut 
+      signOut,
+      refreshSession
     }}>
       {children}
     </AuthContext.Provider>
