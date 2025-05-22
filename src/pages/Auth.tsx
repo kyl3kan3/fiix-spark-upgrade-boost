@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +7,7 @@ import AuthToggle from "@/components/auth/AuthToggle";
 import AuthHeader from "@/components/auth/AuthHeader";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button"; // Add this import for the Button component
 
 const Auth = () => {
   const navigate = useNavigate();
