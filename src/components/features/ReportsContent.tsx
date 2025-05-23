@@ -9,14 +9,12 @@ import CustomReportForm from "./reports/CustomReportForm";
 import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { useSetup } from "@/components/setup/SetupContext";
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
-  const { setupData } = useSetup();
   
   // Simulate loading state for better UX
   useEffect(() => {
