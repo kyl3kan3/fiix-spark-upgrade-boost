@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "sonner";
 import Index from "./pages/Index";
@@ -14,32 +15,30 @@ import AuthGuard from "./components/auth/AuthGuard";
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/auth-old" element={<Auth />} />
-          
-          {/* Protected routes */}
-          <Route path="/company-setup" element={
-            <AuthGuard>
-              <CompanySetup />
-            </AuthGuard>
-          } />
-          <Route path="/team-setup" element={
-            <AuthGuard>
-              <TeamSetup />
-            </AuthGuard>
-          } />
-          <Route path="/dashboard" element={
-            <AuthGuard>
-              <Dashboard />
-            </AuthGuard>
-          } />
-          
-          {/* Add other protected routes here */}
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth-old" element={<Auth />} />
+        
+        {/* Protected routes */}
+        <Route path="/company-setup" element={
+          <AuthGuard>
+            <CompanySetup />
+          </AuthGuard>
+        } />
+        <Route path="/team-setup" element={
+          <AuthGuard>
+            <TeamSetup />
+          </AuthGuard>
+        } />
+        <Route path="/dashboard" element={
+          <AuthGuard>
+            <Dashboard />
+          </AuthGuard>
+        } />
+        
+        {/* Add other protected routes here */}
+      </Routes>
       <Toaster position="top-right" richColors />
     </AuthProvider>
   );
