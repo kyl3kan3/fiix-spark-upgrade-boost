@@ -12,6 +12,8 @@ import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard: React.FC = () => {
+  console.log("Dashboard.tsx: Rendering Dashboard component");
+  
   const { userName, companyName, role, isLoading, loadingError } = useDashboardData();
   const isMobile = useIsMobile();
 
