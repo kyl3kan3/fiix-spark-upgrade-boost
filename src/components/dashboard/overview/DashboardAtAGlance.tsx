@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 const DashboardAtAGlance: React.FC = () => {
+  // Only call useNavigate when the component is mounted
+  // This prevents router issues during SSR or testing
   const navigate = useNavigate();
+  
+  const handleViewReportsClick = () => {
+    navigate("/reports");
+  };
   
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 shadow-sm animate-entry mb-4" style={{ animationDelay: "250ms" }}>
@@ -25,7 +31,7 @@ const DashboardAtAGlance: React.FC = () => {
           <Button 
             variant="outline" 
             className="w-full text-sm"
-            onClick={() => navigate("/reports")}
+            onClick={handleViewReportsClick}
           >
             <FileText className="mr-2 h-3 w-3 md:h-4 md:w-4" />
             View Reports
