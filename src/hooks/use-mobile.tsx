@@ -4,18 +4,21 @@ import * as React from "react"
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean>(window.innerWidth < MOBILE_BREAKPOINT)
+  const [isMobile, setIsMobile] = React.useState<boolean>(false)
 
   React.useEffect(() => {
+    // Initial check
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
     }
     
-    window.addEventListener('resize', checkIfMobile)
-    
-    // Initial check
+    // Check on mount
     checkIfMobile()
     
+    // Add event listener
+    window.addEventListener('resize', checkIfMobile)
+    
+    // Cleanup
     return () => {
       window.removeEventListener('resize', checkIfMobile)
     }
