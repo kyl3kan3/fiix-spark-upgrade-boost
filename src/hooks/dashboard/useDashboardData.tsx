@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -11,26 +11,43 @@ export function useDashboardData() {
   const [role, setRole] = useState<string>("");
   const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | null>(null);
-  const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isMounted = useRef(true);
 
+  // Clear timeout on unmount to prevent memory leaks
   useEffect(() => {
-    // Set a timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      if (isLoadingData) {
-        setIsLoadingData(false);
-        setLoadingError("Loading timed out. Please refresh the page.");
-        toast.error("Loading timed out", {
-          description: "Dashboard data couldn't be loaded. Please refresh and try again."
-        });
-      }
-    }, 8000); // Reduced from 15 seconds to 8 seconds
-
-    setLoadingTimeout(timeout);
-    
     return () => {
-      if (loadingTimeout) clearTimeout(loadingTimeout);
+      isMounted.current = false;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
+
+  // Set up timeout for data loading
+  useEffect(() => {
+    if (isLoadingData) {
+      // Clear any existing timeout
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      
+      timeoutRef.current = setTimeout(() => {
+        if (isMounted.current && isLoadingData) {
+          console.log("Dashboard data loading timeout triggered");
+          setIsLoadingData(false);
+          setLoadingError("Loading timed out. Please refresh the page.");
+          toast.error("Loading timed out", {
+            description: "Dashboard data couldn't be loaded. Please refresh and try again."
+          });
+        }
+      }, 10000); // 10 seconds timeout
+    }
+    
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [isLoadingData]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -81,11 +98,18 @@ export function useDashboardData() {
         console.error("Error in fetchUserData:", err);
         setLoadingError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
-        setIsLoadingData(false);
-        if (loadingTimeout) clearTimeout(loadingTimeout);
+        // Only update state if component is still mounted
+        if (isMounted.current) {
+          setIsLoadingData(false);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+        }
       }
     };
 
+    // Start data fetch only after authentication loading is complete
     if (!authLoading) {
       fetchUserData();
     }
