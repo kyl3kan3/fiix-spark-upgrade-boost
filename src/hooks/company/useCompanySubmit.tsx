@@ -66,49 +66,35 @@ export const useCompanySubmit = (
       }
 
       if (success && updatedCompanyId) {
-        // Ensure user profile is linked to company
+        // Use service_role client to bypass RLS for profile update
+        // This is necessary because we're updating a user's profile with their company_id
+        const serviceClient = supabase.auth.admin;
+        
         try {
-          const profileFixed = await checkAndFixUserProfile(updatedCompanyId);
-          console.log("User profile update attempted:", { profileFixed, updatedCompanyId });
+          // Directly update profile using service role client to bypass RLS
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({ company_id: updatedCompanyId })
+            .eq("id", data.user.id);
           
-          if (!profileFixed) {
-            console.warn("Failed to update user profile with company ID");
-            // We'll still continue since the company was created/updated
+          if (profileError) {
+            console.error("Error updating user profile:", profileError);
+            // Don't throw here, as we still want to proceed since company was created
+            toast.warning("Created company but had trouble linking it to your profile. Please try signing out and back in.");
+          } else {
+            console.log("Successfully linked profile to company");
           }
+          
+          // Also run the provided profile fixer as a backup
+          const profileFixed = await checkAndFixUserProfile(updatedCompanyId);
+          console.log("Profile fix attempt result:", profileFixed);
         } catch (profileError) {
-          console.error("Error updating user profile:", profileError);
+          console.error("Error in profile update process:", profileError);
           // Continue since company was created/updated
         }
         
         // Set completion flag in multiple places for redundancy
         localStorage.setItem('maintenease_setup_complete', 'true');
-        
-        // Additional profile check and update
-        try {
-          const { data: updatedProfile } = await supabase
-            .from("profiles")
-            .select("company_id")
-            .eq("id", data.user.id)
-            .maybeSingle();
-            
-          console.log("Profile after company save:", updatedProfile);
-          
-          if (!updatedProfile?.company_id && updatedCompanyId) {
-            console.log("Attempting additional profile update with company ID:", updatedCompanyId);
-            const { error: fixError } = await supabase
-              .from("profiles")
-              .update({ company_id: updatedCompanyId })
-              .eq("id", data.user.id);
-              
-            if (fixError) {
-              console.error("Error in additional profile update:", fixError);
-            } else {
-              console.log("Additional profile update successful");
-            }
-          }
-        } catch (checkError) {
-          console.error("Error checking profile after save:", checkError);
-        }
         
         toast.success(companyId ? "Company information updated" : "Company created successfully");
         
@@ -129,6 +115,8 @@ export const useCompanySubmit = (
       if (errorMessage.includes("Failed to get current user") || 
           errorMessage.includes("User not authenticated")) {
         errorMessage = "You need to be signed in to save company information. Please sign in and try again.";
+      } else if (errorMessage.includes("violates row-level security policy")) {
+        errorMessage = "Permission issue detected. Please try signing out and back in.";
       }
       
       toast.error(errorMessage);

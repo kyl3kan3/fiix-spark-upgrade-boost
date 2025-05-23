@@ -8,13 +8,13 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  isSubmitting: boolean; // Add this property
+  isSubmitting: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null; session: Session | null }>;
   signUp: (email: string, password: string, userData: { first_name?: string; last_name?: string; company_name?: string }) => 
     Promise<{ success: boolean; error: string | null }>;
   signOut: () => Promise<void>;
-  refreshSession: () => Promise<{ success: boolean; error: string | null; session: Session | null }>; // Add this method
+  refreshSession: () => Promise<{ success: boolean; error: string | null; session: Session | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Add isSubmitting state
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Initialize auth state and set up listener
@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
+        console.log("Auth state changed:", event);
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setIsAuthenticated(!!newSession?.user);
@@ -39,6 +40,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           toast.success("Successfully signed in!");
         } else if (event === 'SIGNED_OUT') {
           toast.info("Signed out successfully");
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log("Auth token refreshed");
         }
       }
     );
@@ -137,12 +140,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshSession = async () => {
     setIsSubmitting(true);
     try {
+      console.log("Manually refreshing session...");
       const { data, error } = await supabase.auth.refreshSession();
       
       if (error) {
+        console.error("Error refreshing session:", error);
         return { success: false, error: error.message, session: null };
       }
       
+      console.log("Session refreshed successfully");
       return { success: true, error: null, session: data.session };
     } catch (error: any) {
       console.error("Error refreshing session:", error);

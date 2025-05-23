@@ -24,11 +24,16 @@ export const useUserProfile = () => {
     
     try {
       // Check current profile - use maybeSingle() to handle case where profile doesn't exist
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("company_id, role, email")
         .eq("id", userId)
         .maybeSingle();
+      
+      if (profileError) {
+        console.error("Error checking profile:", profileError);
+        return false;
+      }
       
       console.log("Current user profile:", profile);
       
@@ -51,7 +56,42 @@ export const useUserProfile = () => {
         
         if (updateError) {
           console.error("Error fixing user profile:", updateError);
-          throw updateError;
+          
+          // If RLS error, try a workaround by having the user sign out and back in
+          if (updateError.message.includes("violates row-level security policy")) {
+            console.log("Detected RLS error, will try refreshing auth session");
+            
+            // Try to refresh the session
+            const { data: sessionData, error: refreshError } = await supabase.auth.refreshSession();
+            
+            if (refreshError) {
+              console.error("Failed to refresh session:", refreshError);
+              return false;
+            }
+            
+            if (sessionData.session) {
+              console.log("Session refreshed, trying profile update again");
+              
+              // Try update again after session refresh
+              const { error: retryError } = await supabase
+                .from("profiles")
+                .upsert({
+                  id: userId,
+                  company_id: companyId,
+                  role: "administrator",
+                  email: email
+                });
+              
+              if (retryError) {
+                console.error("Error on second profile update attempt:", retryError);
+                return false;
+              }
+              
+              return true;
+            }
+          }
+          
+          return false;
         } else {
           console.log("User profile fixed successfully");
           return true;
