@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
 import { createCompany, updateCompany } from "@/services/company";
 import { supabase } from "@/integrations/supabase/client";
+import { mapCompanyInfoToCompanyData } from "@/services/company/utils";
 
 export const useCompanySubmit = (
   checkAndFixUserProfile: (companyId: string) => Promise<boolean>
@@ -16,6 +17,7 @@ export const useCompanySubmit = (
     companyId: string | null,
     onUpdate: (data: any) => void
   ) => {
+    // Prepare form data with logo
     const formData = { ...values, logo: logoPreview };
     onUpdate(formData);
     

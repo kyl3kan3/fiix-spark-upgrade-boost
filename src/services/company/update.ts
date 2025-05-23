@@ -2,18 +2,22 @@
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyInfo } from "@/components/profile/company/types";
 import { CompanyData } from "./types";
+import { mapCompanyInfoToCompanyData } from "./utils";
 
 /**
  * Updates an existing company
  */
-export const updateCompany = async (companyId: string, companyData: Partial<CompanyInfo>): Promise<CompanyData> => {
+export const updateCompany = async (companyId: string, companyInfo: Partial<CompanyInfo>): Promise<CompanyData> => {
   try {
+    // Convert CompanyInfo to CompanyData format
+    const updateData = mapCompanyInfoToCompanyData(companyInfo);
+    
     // Check if company with the same name already exists (except for this company)
-    if (companyData.companyName) {
+    if (updateData.name) {
       const { data: existingCompany, error: searchError } = await supabase
         .from("companies")
         .select("id")
-        .ilike("name", companyData.companyName)
+        .ilike("name", updateData.name)
         .neq("id", companyId)
         .maybeSingle();
       
@@ -27,28 +31,20 @@ export const updateCompany = async (companyId: string, companyData: Partial<Comp
       }
     }
     
-    const updateData: Record<string, any> = {
-      name: companyData.companyName,
-      industry: companyData.industry,
-      address: companyData.address,
-      city: companyData.city,
-      state: companyData.state,
-      zip_code: companyData.zipCode,
-      phone: companyData.phone,
-      email: companyData.email,
-      website: companyData.website,
-      logo: companyData.logo,
+    // Add updated_at timestamp
+    const finalUpdateData = {
+      ...updateData,
       updated_at: new Date().toISOString()
     };
     
     // Remove undefined values
-    Object.keys(updateData).forEach(key => 
-      updateData[key] === undefined && delete updateData[key]
+    Object.keys(finalUpdateData).forEach(key => 
+      finalUpdateData[key] === undefined && delete finalUpdateData[key]
     );
     
     const { data, error } = await supabase
       .from("companies")
-      .update(updateData)
+      .update(finalUpdateData)
       .eq("id", companyId)
       .select()
       .single();

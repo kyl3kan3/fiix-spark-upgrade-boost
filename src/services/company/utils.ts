@@ -21,3 +21,21 @@ export const mapCompanyToCompanyInfo = (company: CompanyData | null): CompanyInf
     logo: company.logo
   };
 };
+
+/**
+ * Converts CompanyInfo format used in the UI to database company object
+ */
+export const mapCompanyInfoToCompanyData = (info: CompanyInfo): Partial<CompanyData> => {
+  return {
+    name: info.companyName || "",
+    industry: info.industry,
+    address: info.address,
+    city: info.city,
+    state: info.state,
+    zip_code: info.zipCode,
+    phone: info.phone,
+    email: info.email,
+    website: info.website,
+    logo: info.logo
+  };
+};

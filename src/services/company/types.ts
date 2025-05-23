@@ -2,7 +2,7 @@
 import { CompanyInfo } from "@/components/profile/company/types";
 
 export interface CompanyData {
-  id: string;
+  id?: string;
   name: string;
   industry?: string;
   address?: string;
@@ -13,6 +13,7 @@ export interface CompanyData {
   email?: string;
   website?: string;
   logo?: string;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string;
 }

@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyInfo } from "@/components/profile/company/types";
 import { CompanyData } from "./types";
+import { mapCompanyInfoToCompanyData } from "./utils";
 
 /**
  * Creates a new company and associates it with the current user
@@ -27,12 +28,15 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     // Get user email for profile updates
     const email = user.email || '';
     
+    // Convert CompanyInfo to CompanyData format
+    const dbData = mapCompanyInfoToCompanyData(companyData);
+    
     // Check if company with the same name already exists
-    if (companyData.companyName) {
+    if (dbData.name) {
       const { data: existingCompany, error: searchError } = await supabase
         .from("companies")
         .select("id")
-        .ilike("name", companyData.companyName)
+        .ilike("name", dbData.name)
         .maybeSingle();
       
       if (searchError) {
@@ -99,20 +103,11 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       }
     }
     
-    // Create company 
+    // Create company with the converted data format
     const { data: company, error: companyError } = await supabase
       .from("companies")
       .insert({
-        name: companyData.companyName,
-        industry: companyData.industry,
-        address: companyData.address,
-        city: companyData.city,
-        state: companyData.state,
-        zip_code: companyData.zipCode,
-        phone: companyData.phone,
-        email: companyData.email,
-        website: companyData.website,
-        logo: companyData.logo,
+        ...dbData,
         created_by: user.id 
       })
       .select()
