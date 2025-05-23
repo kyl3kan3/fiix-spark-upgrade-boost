@@ -9,9 +9,11 @@ import DashboardAtAGlance from "@/components/dashboard/overview/DashboardAtAGlan
 import DashboardLoadingState from "@/components/dashboard/overview/DashboardLoadingState";
 import DashboardErrorState from "@/components/dashboard/overview/DashboardErrorState";
 import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard: React.FC = () => {
   const { userName, companyName, role, isLoading, loadingError } = useDashboardData();
+  const isMobile = useIsMobile();
 
   console.log("Dashboard render state:", { isLoading, loadingError, userName });
 
@@ -27,7 +29,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 md:p-6 max-w-full">
         <DashboardWelcomeCard 
           userName={userName} 
           companyName={companyName} 
@@ -36,17 +38,20 @@ const Dashboard: React.FC = () => {
         
         <DashboardMetricCards />
         
-        <div className="mb-8">
+        <div className="mb-6">
           <DashboardQuickActions />
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        {/* Adjust grid layout based on mobile vs desktop */}
+        <div className="grid grid-cols-1 gap-4 md:gap-6">
+          <div>
             <DashboardActivityCard />
           </div>
-          <div>
-            <DashboardAtAGlance />
-          </div>
+          {!isMobile && (
+            <div>
+              <DashboardAtAGlance />
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

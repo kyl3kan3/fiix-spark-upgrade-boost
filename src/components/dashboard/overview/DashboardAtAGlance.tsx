@@ -9,25 +9,25 @@ const DashboardAtAGlance: React.FC = () => {
   const navigate = useNavigate();
   
   return (
-    <Card className="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 shadow-sm animate-entry" style={{ animationDelay: "250ms" }}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-maintenease-500" />
+    <Card className="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 shadow-sm animate-entry mb-4" style={{ animationDelay: "250ms" }}>
+      <CardHeader className="p-3 md:p-4">
+        <CardTitle className="text-base md:text-lg flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-maintenease-500" />
           At a Glance
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+      <CardContent className="p-3 md:p-4">
+        <div className="text-center py-4 md:py-6 text-gray-500 dark:text-gray-400 text-sm">
           No statistics available yet
         </div>
         
-        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+        <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
           <Button 
             variant="outline" 
-            className="w-full"
+            className="w-full text-sm"
             onClick={() => navigate("/reports")}
           >
-            <FileText className="mr-2 h-4 w-4" />
+            <FileText className="mr-2 h-3 w-3 md:h-4 md:w-4" />
             View Reports
           </Button>
         </div>

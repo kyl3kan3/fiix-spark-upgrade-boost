@@ -14,15 +14,15 @@ const DashboardWelcomeCard: React.FC<DashboardWelcomeCardProps> = ({
   companyName
 }) => {
   return (
-    <div className="mb-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 animate-entry">
-      <h1 className="text-3xl font-bold mb-2 text-gray-800 dark:text-white">
+    <div className="mb-6 bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 animate-entry overflow-hidden">
+      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-800 dark:text-white break-words">
         Welcome, <span className="text-maintenease-500">{userName}</span>
       </h1>
-      <p className="text-gray-600 dark:text-gray-300 flex items-center">
-        <span className="bg-maintenease-100 dark:bg-maintenease-900 text-maintenease-700 dark:text-maintenease-300 px-3 py-1 rounded-full text-sm font-medium mr-2">
+      <p className="text-gray-600 dark:text-gray-300 flex flex-wrap items-center gap-2">
+        <span className="bg-maintenease-100 dark:bg-maintenease-900 text-maintenease-700 dark:text-maintenease-300 px-3 py-1 rounded-full text-sm font-medium">
           {role}
         </span> 
-        at {companyName || "Your Company"}
+        <span className="break-words">at {companyName || "Your Company"}</span>
       </p>
     </div>
   );

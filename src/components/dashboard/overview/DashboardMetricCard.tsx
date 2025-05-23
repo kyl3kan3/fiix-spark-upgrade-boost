@@ -33,23 +33,23 @@ const DashboardMetricCard: React.FC<DashboardMetricCardProps> = ({
       className="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all hover-scale animate-entry" 
       style={{ animationDelay }}
     >
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Icon className={`h-5 w-5 text-${iconColor}-500`} />
+      <CardHeader className="pb-1 p-3 md:p-4">
+        <CardTitle className="text-base md:text-lg flex items-center gap-2">
+          <Icon className={`h-4 w-4 md:h-5 md:w-5 text-${iconColor}-500`} />
           {title}
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className="text-xs md:text-sm">{description}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 md:p-4 pt-0">
         <div className="flex justify-between items-center">
-          <div className={`bg-${iconColor}-100 dark:bg-${iconColor}-900/30 p-3 rounded-full`}>
-            <Icon className={`h-6 w-6 text-${iconColor}-600 dark:text-${iconColor}-400`} />
+          <div className={`bg-${iconColor}-100 dark:bg-${iconColor}-900/30 p-2 rounded-full`}>
+            <Icon className={`h-4 w-4 md:h-6 md:w-6 text-${iconColor}-600 dark:text-${iconColor}-400`} />
           </div>
           <Button 
             variant="outline" 
             size="sm" 
             onClick={() => navigate(navigateTo)}
-            className={`font-medium border-${buttonColor}-200 hover:border-${buttonColor}-300 hover:bg-${buttonColor}-50 dark:border-${buttonColor}-800 dark:hover:border-${buttonColor}-700 dark:hover:bg-${buttonColor}-900/20`}
+            className={`text-xs md:text-sm font-medium border-${buttonColor}-200 hover:border-${buttonColor}-300 hover:bg-${buttonColor}-50 dark:border-${buttonColor}-800 dark:hover:border-${buttonColor}-700 dark:hover:bg-${buttonColor}-900/20`}
           >
             View
           </Button>
