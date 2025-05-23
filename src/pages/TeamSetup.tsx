@@ -95,12 +95,48 @@ const TeamSetup: React.FC = () => {
         throw new Error("No company associated with your account");
       }
 
-      // Create an invitation
+      // Find organization record matching company_id
+      const { data: organization, error: orgError } = await supabase
+        .from("organizations")
+        .select("id")
+        .eq("id", profile.company_id)
+        .maybeSingle();
+
+      let organizationId = profile.company_id;
+      
+      // If no matching organization found, create one
+      if (!organization && !orgError) {
+        // Get company info to create organization
+        const { data: company } = await supabase
+          .from("companies")
+          .select("name")
+          .eq("id", profile.company_id)
+          .single();
+        
+        // Create a new organization with the same ID as company
+        const { data: newOrg, error: createOrgError } = await supabase
+          .from("organizations")
+          .insert({
+            id: profile.company_id,
+            name: company?.name || "Organization"
+          })
+          .select()
+          .single();
+          
+        if (createOrgError) {
+          console.error("Error creating organization:", createOrgError);
+          throw new Error("Failed to create organization");
+        }
+        
+        organizationId = newOrg.id;
+      }
+
+      // Create an invitation using the organization ID
       const { error: inviteError } = await supabase
         .from("organization_invitations")
         .insert({
           email: inviteEmail,
-          organization_id: profile.company_id,
+          organization_id: organizationId,
           invited_by: user.id,
           role: "technician", // Default role for new team members
           token: crypto.randomUUID(), // Generate a random token for the invite
@@ -110,9 +146,6 @@ const TeamSetup: React.FC = () => {
 
       toast.success(`Invitation sent to ${inviteEmail}`);
       setInviteEmail("");
-
-      // In a real app, we would send an email here with the invitation link
-
     } catch (err: any) {
       console.error("Error inviting user:", err);
       setError(err.message || "Failed to send invitation");

@@ -43,6 +43,32 @@ export const useOnboardingSubmit = (
         // Use invited company
         companyId = inviteDetails.organization_id;
         console.log("User was invited to company:", companyId);
+        
+        // Make sure organization exists in organizations table
+        const { data: org } = await supabase
+          .from("organizations")
+          .select("id")
+          .eq("id", companyId)
+          .maybeSingle();
+          
+        if (!org) {
+          // Create organization record if it doesn't exist
+          const { data: company } = await supabase
+            .from("companies")
+            .select("name")
+            .eq("id", companyId)
+            .maybeSingle();
+            
+          if (company) {
+            await supabase
+              .from("organizations")
+              .insert({
+                id: companyId,
+                name: company.name
+              });
+            console.log("Created organization record for invited company");
+          }
+        }
       } else if (state.company) {
         // Create new company since it's required
         try {
@@ -53,6 +79,17 @@ export const useOnboardingSubmit = (
           });
           
           companyId = newCompany.id;
+          
+          // Make sure there's a matching organization record
+          await supabase
+            .from("organizations")
+            .insert({
+              id: newCompany.id,
+              name: state.company
+            })
+            .onConflict('id')
+            .ignore();
+            
           toast.success("Company created successfully!");
         } catch (err: any) {
           console.error("Company creation error:", err);

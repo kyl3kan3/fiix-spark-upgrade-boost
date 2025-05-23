@@ -26,6 +26,53 @@ export const OrganizationInviteForm: React.FC<OrganizationInviteFormProps> = ({ 
     fetchUserId();
   }, []);
 
+  // Ensure organization exists by checking the organizations table
+  useEffect(() => {
+    async function checkOrCreateOrganization() {
+      if (!organizationId) return;
+      
+      try {
+        // Check if organization exists
+        const { data: org, error } = await supabase
+          .from("organizations")
+          .select("id")
+          .eq("id", organizationId)
+          .maybeSingle();
+          
+        if (error) {
+          console.error("Error checking organization:", error);
+          return;
+        }
+          
+        // If organization doesn't exist, create it
+        if (!org) {
+          // Get the company info
+          const { data: company } = await supabase
+            .from("companies")
+            .select("name")
+            .eq("id", organizationId)
+            .single();
+            
+          if (company) {
+            // Create organization with same ID as company
+            await supabase
+              .from("organizations")
+              .insert({
+                id: organizationId,
+                name: company.name
+              });
+              
+            console.log("Created missing organization record for company:", organizationId);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking/creating organization:", err);
+      }
+    }
+    
+    checkOrCreateOrganization();
+  }, [organizationId]);
+
   const { sendInvitation, loading, invitations, error } = useOrganizationInvitations(organizationId, currentUserId);
 
   // Log fetched invitations for debugging

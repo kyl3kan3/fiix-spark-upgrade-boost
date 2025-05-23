@@ -77,6 +77,44 @@ export const useInviteProcess = () => {
         throw new Error("This invitation is for a different email address");
       }
       
+      // Make sure the organization exists 
+      const { data: org, error: orgError } = await supabase
+        .from("organizations")
+        .select("id")
+        .eq("id", invitation.organization_id)
+        .maybeSingle();
+        
+      if (orgError) {
+        console.error("Error checking organization:", orgError);
+        throw new Error("Error checking organization");  
+      }
+      
+      // If organization doesn't exist, try to create it from company data
+      if (!org) {
+        try {
+          // Try to get company info
+          const { data: company } = await supabase
+            .from("companies")
+            .select("name")
+            .eq("id", invitation.organization_id)
+            .single();
+            
+          if (company) {
+            // Create organization with same ID as company
+            await supabase
+              .from("organizations")
+              .insert({
+                id: invitation.organization_id,
+                name: company.name
+              });
+            console.log("Created organization from company for invitation");
+          }
+        } catch (createOrgError) {
+          console.error("Error creating organization:", createOrgError);
+          // Continue anyway - the user might still be able to accept the invite
+        }
+      }
+      
       // Update invitation status
       localStorage.setItem("pending_invitation", JSON.stringify(invitation));
       

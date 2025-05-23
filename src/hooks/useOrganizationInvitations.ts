@@ -11,7 +11,7 @@ export interface OrganizationInvitation {
   status: string;
   created_at: string;
   accepted_at: string | null;
-  token: string | null; // <-- Added line
+  token: string | null;
 }
 
 function generateToken(length = 32) {
@@ -67,31 +67,81 @@ export const useOrganizationInvitations = (
     }
 
     setLoading(true);
-    // Generate a secure random token for invite
-    const token = generateToken();
-
-    const { data, error } = await supabase
-      .from("organization_invitations")
-      .insert([
-        {
-          organization_id: organizationId,
-          email,
-          role,
-          invited_by: currentUserId,
-          token,
+    
+    try {
+      // First ensure the organization exists in the organizations table
+      const { data: org, error: orgError } = await supabase
+        .from("organizations")
+        .select("id")
+        .eq("id", organizationId)
+        .maybeSingle();
+        
+      if (orgError) {
+        throw new Error(`Error checking organization: ${orgError.message}`);
+      }
+      
+      // If organization doesn't exist, create one from company data
+      if (!org) {
+        // Get company info
+        const { data: company, error: companyError } = await supabase
+          .from("companies")
+          .select("name")
+          .eq("id", organizationId)
+          .single();
+          
+        if (companyError) {
+          throw new Error(`Could not find company: ${companyError.message}`);
         }
-      ])
-      .select()
-      .single();
+        
+        // Create organization with same ID as company
+        const { error: createOrgError } = await supabase
+          .from("organizations")
+          .insert({
+            id: organizationId,
+            name: company.name
+          });
+          
+        if (createOrgError) {
+          throw new Error(`Error creating organization: ${createOrgError.message}`);
+        }
+        
+        console.log("Created missing organization record for company:", organizationId);
+      }
 
-    setLoading(false);
-    if (error) {
-      setError(error.message);
+      // Generate a secure random token for invite
+      const token = generateToken();
+
+      // Send the invitation
+      const { data, error } = await supabase
+        .from("organization_invitations")
+        .insert([
+          {
+            organization_id: organizationId,
+            email,
+            role,
+            invited_by: currentUserId,
+            token,
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return null;
+      }
+      
+      // Add to current list
+      setInvitations((prev) => [data as OrganizationInvitation, ...prev]);
+      setLoading(false);
+      return data as OrganizationInvitation;
+    } catch (err: any) {
+      console.error("Error sending invitation:", err);
+      setError(err.message);
+      setLoading(false);
       return null;
     }
-    // Add to current list
-    setInvitations((prev) => [data as OrganizationInvitation, ...prev]);
-    return data as OrganizationInvitation;
   };
 
   return {
@@ -101,4 +151,3 @@ export const useOrganizationInvitations = (
     sendInvitation,
   };
 };
-
