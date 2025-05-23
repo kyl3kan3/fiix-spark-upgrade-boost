@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  console.log("DashboardLayout.tsx: Rendering DashboardLayout component");
+  console.log("DashboardLayout.tsx: Rendering DashboardLayout component - should NOT contain any Router");
   
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -64,6 +64,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const handleNotificationCountChange = (count: number) => {
     setUnreadCount(count);
   };
+
+  console.log("DashboardLayout.tsx: About to render SidebarProvider (no Router here)");
 
   return (
     <SidebarProvider defaultOpen={true}>

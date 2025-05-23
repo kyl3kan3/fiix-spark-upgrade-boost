@@ -31,9 +31,12 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-console.log("App.tsx: Rendering App component with BrowserRouter");
+console.log("App.tsx: About to render App component with BrowserRouter");
+console.log("App.tsx: This should be the ONLY Router in the entire application");
 
 function App() {
+  console.log("App.tsx: Rendering App function component");
+  
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

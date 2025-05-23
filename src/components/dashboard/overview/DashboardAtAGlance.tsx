@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 const DashboardAtAGlance: React.FC = () => {
+  console.log("DashboardAtAGlance.tsx: Rendering component - using useNavigate (no Router here)");
+  
   // Only call useNavigate when the component is mounted
   // This prevents router issues during SSR or testing
   const navigate = useNavigate();
   
   const handleViewReportsClick = () => {
+    console.log("DashboardAtAGlance.tsx: Navigating to /reports using navigate function");
     navigate("/reports");
   };
   

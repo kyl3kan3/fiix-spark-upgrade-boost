@@ -12,7 +12,7 @@ import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Dashboard: React.FC = () => {
-  console.log("Dashboard.tsx: Rendering Dashboard component");
+  console.log("Dashboard.tsx: Rendering Dashboard component - should NOT contain any Router");
   
   const { userName, companyName, role, isLoading, loadingError } = useDashboardData();
   const isMobile = useIsMobile();
@@ -21,13 +21,17 @@ const Dashboard: React.FC = () => {
 
   // Show loading state
   if (isLoading) {
+    console.log("Dashboard.tsx: Rendering loading state");
     return <DashboardLoadingState />;
   }
 
   // Show error state if there's an error
   if (loadingError) {
+    console.log("Dashboard.tsx: Rendering error state");
     return <DashboardErrorState errorMessage={loadingError} />;
   }
+
+  console.log("Dashboard.tsx: Rendering main dashboard content");
 
   return (
     <DashboardLayout>

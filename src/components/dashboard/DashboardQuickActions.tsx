@@ -14,12 +14,14 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const DashboardQuickActions = () => {
+  console.log("DashboardQuickActions.tsx: Rendering component - using useNavigate (no Router here)");
+  
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const handleActionClick = (action: string, path: string) => {
     // Add debug information
-    console.log(`Attempting to navigate to: ${path} for action: ${action}`);
+    console.log(`DashboardQuickActions.tsx: Attempting to navigate to: ${path} for action: ${action}`);
     
     // Navigate directly without any conditional checks
     if (path) {
