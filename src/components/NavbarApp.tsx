@@ -85,6 +85,18 @@ const NavbarApp = () => {
             >
               Reports
             </Link>
+            <Link
+              to="/chat"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-maintenease-600"
+            >
+              Chat
+            </Link>
+            <Link
+              to="/locations"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-maintenease-600"
+            >
+              Locations
+            </Link>
           </nav>
 
           {/* User menu */}
@@ -104,6 +116,9 @@ const NavbarApp = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/help")}>
                   Help
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/setup")}>
+                  Setup
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
@@ -161,6 +176,20 @@ const NavbarApp = () => {
               >
                 Reports
               </Link>
+              <Link
+                to="/chat"
+                className="px-3 py-2 text-base font-medium text-gray-700 hover:text-maintenease-600 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsOpen(false)}
+              >
+                Chat
+              </Link>
+              <Link
+                to="/locations"
+                className="px-3 py-2 text-base font-medium text-gray-700 hover:text-maintenease-600 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsOpen(false)}
+              >
+                Locations
+              </Link>
               <div className="pt-4 border-t border-gray-200">
                 <Link
                   to="/profile"
@@ -182,6 +211,13 @@ const NavbarApp = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Help
+                </Link>
+                <Link
+                  to="/setup"
+                  className="px-3 py-2 text-base font-medium text-gray-700 hover:text-maintenease-600 hover:bg-gray-50 rounded-md"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Setup
                 </Link>
                 <button
                   onClick={() => {

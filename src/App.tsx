@@ -16,6 +16,11 @@ import AssetsPage from "./pages/AssetsPage";
 import InspectionsPage from "./pages/InspectionsPage";
 import Calendar from "./pages/Calendar";
 import ReportsPage from "./pages/ReportsPage";
+import Team from "./pages/Team";
+import Chat from "./pages/Chat";
+import Help from "./pages/Help";
+import LocationsPage from "./pages/LocationsPage";
+import SetupPage from "./pages/SetupPage";
 
 function App() {
   return (
@@ -85,6 +90,41 @@ function App() {
         <Route path="/reports" element={
           <AuthGuard>
             <ReportsPage />
+          </AuthGuard>
+        } />
+
+        {/* Team route */}
+        <Route path="/team" element={
+          <AuthGuard>
+            <Team />
+          </AuthGuard>
+        } />
+
+        {/* Chat route */}
+        <Route path="/chat" element={
+          <AuthGuard>
+            <Chat />
+          </AuthGuard>
+        } />
+
+        {/* Help route */}
+        <Route path="/help" element={
+          <AuthGuard>
+            <Help />
+          </AuthGuard>
+        } />
+
+        {/* Locations route */}
+        <Route path="/locations" element={
+          <AuthGuard>
+            <LocationsPage />
+          </AuthGuard>
+        } />
+
+        {/* Setup route */}
+        <Route path="/setup" element={
+          <AuthGuard>
+            <SetupPage />
           </AuthGuard>
         } />
       </Routes>
