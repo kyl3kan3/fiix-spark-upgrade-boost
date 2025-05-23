@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "@/components/auth/AuthForm";
 import AuthError from "@/components/auth/AuthError";
 import AuthToggle from "@/components/auth/AuthToggle";
@@ -10,9 +10,11 @@ import InviteMessage from "@/components/auth/InviteMessage";
 import AuthenticatedMessage from "@/components/auth/AuthenticatedMessage";
 import { useInviteProcess } from "@/hooks/useInviteProcess";
 import { useAuthRedirection } from "@/hooks/useAuthRedirection";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   
   const {
@@ -55,6 +57,14 @@ const Auth = () => {
     setAuthError(null);
   }, [location, extractInviteTokenFromPath, setAuthError]);
 
+  // Enhanced redirect logic to ensure authenticated users are sent to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("User is authenticated, redirecting to dashboard");
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleAuthSuccess = (email: string) => {
     setAuthError(null);
     if (isSignUp) {
@@ -66,7 +76,7 @@ const Auth = () => {
       handleInviteAccept(inviteToken, email);
     } else {
       // For existing users, redirect to dashboard
-      handleBackToDashboard();
+      navigate("/dashboard", { replace: true });
     }
   };
 
@@ -77,6 +87,21 @@ const Auth = () => {
   const handleToggleMode = () => {
     setIsSignUp(!isSignUp);
     setAuthError(null); // Clear errors on toggle
+  };
+
+  // Manual redirect to dashboard button
+  const handleManualRedirect = async () => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        navigate("/dashboard", { replace: true });
+      } else {
+        setAuthError("Please log in first");
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      setAuthError("Error checking authentication status");
+    }
   };
 
   // Show loading state while checking auth
@@ -101,18 +126,30 @@ const Auth = () => {
         <InviteMessage hasInvite={!!inviteToken} />
         
         {isAuthenticated && (
-          <AuthenticatedMessage onSignOut={handleSignOut} />
+          <>
+            <AuthenticatedMessage onSignOut={handleSignOut} />
+            <div className="mt-4">
+              <button 
+                onClick={handleManualRedirect}
+                className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+          </>
         )}
         
         <AuthError message={authError} />
         
-        <AuthForm 
-          isSignUp={isSignUp} 
-          onSuccess={handleAuthSuccess}
-          onError={handleAuthError}
-        />
+        {!isAuthenticated && (
+          <AuthForm 
+            isSignUp={isSignUp} 
+            onSuccess={handleAuthSuccess}
+            onError={handleAuthError}
+          />
+        )}
 
-        {!inviteToken && (
+        {!inviteToken && !isAuthenticated && (
           <AuthToggle 
             isSignUp={isSignUp} 
             onToggle={handleToggleMode} 

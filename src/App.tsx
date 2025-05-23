@@ -19,6 +19,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth-old" element={<Auth />} />
+        <Route path="/invite/*" element={<Auth />} />
         
         {/* Protected routes */}
         <Route path="/company-setup" element={
