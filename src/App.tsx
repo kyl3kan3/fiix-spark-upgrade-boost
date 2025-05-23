@@ -9,8 +9,13 @@ import CompanySetup from "./pages/CompanySetup";
 import TeamSetup from "./pages/TeamSetup";
 import Dashboard from "./pages/Dashboard";
 import AuthGuard from "./components/auth/AuthGuard";
-
-// Import any other components you need
+import WorkOrdersPage from "./pages/WorkOrdersPage";
+import WorkOrderFormPage from "./pages/WorkOrderFormPage";
+import WorkOrderDetailPage from "./pages/WorkOrderDetailPage";
+import AssetsPage from "./pages/AssetsPage";
+import InspectionsPage from "./pages/InspectionsPage";
+import Calendar from "./pages/Calendar";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   return (
@@ -37,8 +42,51 @@ function App() {
             <Dashboard />
           </AuthGuard>
         } />
+
+        {/* Work Orders routes */}
+        <Route path="/work-orders" element={
+          <AuthGuard>
+            <WorkOrdersPage />
+          </AuthGuard>
+        } />
+        <Route path="/work-orders/new" element={
+          <AuthGuard>
+            <WorkOrderFormPage />
+          </AuthGuard>
+        } />
+        <Route path="/work-orders/:id" element={
+          <AuthGuard>
+            <WorkOrderDetailPage />
+          </AuthGuard>
+        } />
+
+        {/* Asset routes */}
+        <Route path="/assets" element={
+          <AuthGuard>
+            <AssetsPage />
+          </AuthGuard>
+        } />
         
-        {/* Add other protected routes here */}
+        {/* Inspections routes */}
+        <Route path="/inspections" element={
+          <AuthGuard>
+            <InspectionsPage />
+          </AuthGuard>
+        } />
+        
+        {/* Calendar route */}
+        <Route path="/calendar" element={
+          <AuthGuard>
+            <Calendar />
+          </AuthGuard>
+        } />
+        
+        {/* Reports route */}
+        <Route path="/reports" element={
+          <AuthGuard>
+            <ReportsPage />
+          </AuthGuard>
+        } />
       </Routes>
       <Toaster position="top-right" richColors />
     </AuthProvider>
