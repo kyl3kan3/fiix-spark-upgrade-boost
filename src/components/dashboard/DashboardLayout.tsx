@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -15,17 +16,22 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     // Check if dark mode is enabled in localStorage when component mounts
     const storedSettings = localStorage.getItem('displaySettings');
     if (storedSettings) {
-      const settings = JSON.parse(storedSettings);
-      const darkModeSetting = settings.find((s: any) => s.id === "darkMode");
-      if (darkModeSetting && darkModeSetting.enabled) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+      try {
+        const settings = JSON.parse(storedSettings);
+        const darkModeSetting = settings.find((s: any) => s.id === "darkMode");
+        if (darkModeSetting && darkModeSetting.enabled) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        console.error("Error parsing display settings:", e);
       }
     }
     
@@ -34,12 +40,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   }, []);
   
   const fetchNotificationsCount = async () => {
+    setIsLoading(true);
     try {
       const notifications = await getUserNotifications();
       const unreadCount = notifications.filter(n => !n.read).length;
       setUnreadCount(unreadCount);
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      // Don't show toast for notification errors - non-critical
+    } finally {
+      setIsLoading(false);
     }
   };
   

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,68 +11,134 @@ import {
   CheckSquare, 
   Calendar, 
   TrendingUp, 
-  Clock 
+  Clock,
+  AlertTriangle 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions";
+import { toast } from "sonner";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [userName, setUserName] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
+  const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  // Set a timeout to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isLoadingData) {
+        setIsLoadingData(false);
+        setLoadingError("Loading timed out. Please refresh the page.");
+        toast.error("Loading timed out", {
+          description: "Dashboard data couldn't be loaded. Please refresh and try again."
+        });
+      }
+    }, 15000); // 15 second timeout
+
+    setLoadingTimeout(timeout);
+    
+    return () => {
+      if (loadingTimeout) clearTimeout(loadingTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!user) return;
+      if (!user) {
+        console.log("No user found in context, stopping data fetch");
+        setIsLoadingData(false);
+        return;
+      }
 
       try {
+        console.log("Fetching profile data for user:", user.id);
         const { data: profile, error } = await supabase
           .from("profiles")
           .select("first_name, last_name, role, company_id")
           .eq("id", user.id)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error fetching profile:", error);
+          setLoadingError(`Error loading profile: ${error.message}`);
+          setIsLoadingData(false);
+          return;
+        }
 
-        const fullName = [profile.first_name, profile.last_name]
+        const fullName = [profile?.first_name, profile?.last_name]
           .filter(Boolean)
           .join(" ");
         
         setUserName(fullName || user.email || "User");
-        setRole(profile.role || "User");
+        setRole(profile?.role || "User");
 
-        if (profile.company_id) {
+        if (profile?.company_id) {
+          console.log("Fetching company data for company_id:", profile.company_id);
           const { data: company, error: companyError } = await supabase
             .from("companies")
             .select("name")
             .eq("id", profile.company_id)
             .single();
 
-          if (!companyError && company) {
+          if (companyError) {
+            console.error("Error fetching company:", companyError);
+          } else if (company) {
             setCompanyName(company.name);
           }
         }
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.error("Error in fetchUserData:", err);
+        setLoadingError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
         setIsLoadingData(false);
+        if (loadingTimeout) clearTimeout(loadingTimeout);
       }
     };
 
-    fetchUserData();
-  }, [user]);
+    if (!authLoading) {
+      fetchUserData();
+    }
+  }, [user, authLoading]);
 
-  if (isLoading || isLoadingData) {
+  if (authLoading || isLoadingData) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-maintenease-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
         <div className="text-center glass-morphism dark:glass-morphism-dark p-10 rounded-xl">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
           <p className="mt-4 text-lg font-medium">Loading your dashboard...</p>
           <p className="text-muted-foreground text-sm mt-2">Please wait while we prepare everything for you</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadingError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-maintenease-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="text-center glass-morphism dark:glass-morphism-dark p-10 rounded-xl max-w-md">
+          <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto" />
+          <p className="mt-4 text-xl font-medium text-red-600">Dashboard Error</p>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">{loadingError}</p>
+          <div className="mt-6 flex justify-center">
+            <Button 
+              onClick={() => window.location.reload()}
+              className="mr-2"
+            >
+              Refresh Page
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/auth")}
+            >
+              Return to Login
+            </Button>
+          </div>
         </div>
       </div>
     );
