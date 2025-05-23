@@ -40,6 +40,12 @@ export function useDashboardData() {
           });
         }
       }, 10000); // 10 seconds timeout
+    } else {
+      // If we're not loading anymore, clear the timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     }
     
     return () => {
@@ -51,6 +57,11 @@ export function useDashboardData() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (authLoading) {
+        // Still waiting for auth to complete
+        return;
+      }
+      
       if (!user) {
         console.log("No user found in context, stopping data fetch");
         setIsLoadingData(false);
@@ -94,25 +105,21 @@ export function useDashboardData() {
             setCompanyName(company.name);
           }
         }
-      } catch (err) {
-        console.error("Error in fetchUserData:", err);
-        setLoadingError(err instanceof Error ? err.message : "Unknown error occurred");
-      } finally {
-        // Only update state if component is still mounted
+        
+        // Successfully loaded data
         if (isMounted.current) {
           setIsLoadingData(false);
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-          }
+        }
+      } catch (err) {
+        console.error("Error in fetchUserData:", err);
+        if (isMounted.current) {
+          setLoadingError(err instanceof Error ? err.message : "Unknown error occurred");
+          setIsLoadingData(false);
         }
       }
     };
 
-    // Start data fetch only after authentication loading is complete
-    if (!authLoading) {
-      fetchUserData();
-    }
+    fetchUserData();
   }, [user, authLoading]);
 
   return {

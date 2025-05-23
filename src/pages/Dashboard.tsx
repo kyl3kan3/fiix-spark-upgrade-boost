@@ -13,10 +13,14 @@ import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
 const Dashboard: React.FC = () => {
   const { userName, companyName, role, isLoading, loadingError } = useDashboardData();
 
+  console.log("Dashboard render state:", { isLoading, loadingError, userName });
+
+  // Show loading state
   if (isLoading) {
     return <DashboardLoadingState />;
   }
 
+  // Show error state if there's an error
   if (loadingError) {
     return <DashboardErrorState errorMessage={loadingError} />;
   }
