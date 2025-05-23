@@ -60,13 +60,28 @@ export const useOnboardingSubmit = (
             .maybeSingle();
             
           if (company) {
-            await supabase
+            // First check if org exists to avoid duplicate key violation
+            const { data: existingOrg } = await supabase
               .from("organizations")
-              .insert({
-                id: companyId,
-                name: company.name
-              });
-            console.log("Created organization record for invited company");
+              .select("id")
+              .eq("id", companyId)
+              .maybeSingle();
+              
+            if (!existingOrg) {
+              // Insert only if it doesn't exist already
+              const { error: insertError } = await supabase
+                .from("organizations")
+                .insert({
+                  id: companyId,
+                  name: company.name
+                });
+                
+              if (insertError) {
+                console.error("Error creating organization record:", insertError);
+              } else {
+                console.log("Created organization record for invited company");
+              }
+            }
           }
         }
       } else if (state.company) {
@@ -81,14 +96,28 @@ export const useOnboardingSubmit = (
           companyId = newCompany.id;
           
           // Make sure there's a matching organization record
-          await supabase
+          // First check if organization already exists
+          const { data: existingOrg } = await supabase
             .from("organizations")
-            .insert({
-              id: newCompany.id,
-              name: state.company
-            })
-            .onConflict('id')
-            .ignore();
+            .select("id")
+            .eq("id", newCompany.id)
+            .maybeSingle();
+            
+          if (!existingOrg) {
+            // Only insert if it doesn't exist
+            const { error: insertError } = await supabase
+              .from("organizations")
+              .insert({
+                id: newCompany.id,
+                name: state.company
+              });
+              
+            if (insertError) {
+              console.error("Error creating organization record:", insertError);
+            } else {
+              console.log("Created organization record for new company");
+            }
+          }
             
           toast.success("Company created successfully!");
         } catch (err: any) {

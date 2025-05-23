@@ -100,14 +100,28 @@ export const useInviteProcess = () => {
             .single();
             
           if (company) {
-            // Create organization with same ID as company
-            await supabase
+            // Check if org already exists with this ID
+            const { data: existingOrg } = await supabase
               .from("organizations")
-              .insert({
-                id: invitation.organization_id,
-                name: company.name
-              });
-            console.log("Created organization from company for invitation");
+              .select("id")
+              .eq("id", invitation.organization_id)
+              .maybeSingle();
+              
+            if (!existingOrg) {
+              // Create organization with same ID as company
+              const { error: createOrgError } = await supabase
+                .from("organizations")
+                .insert({
+                  id: invitation.organization_id,
+                  name: company.name
+                });
+                
+              if (createOrgError) {
+                console.error("Error creating organization:", createOrgError);
+              } else {
+                console.log("Created organization from company for invitation");
+              }
+            }
           }
         } catch (createOrgError) {
           console.error("Error creating organization:", createOrgError);

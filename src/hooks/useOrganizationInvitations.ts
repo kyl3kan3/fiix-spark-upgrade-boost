@@ -93,19 +93,28 @@ export const useOrganizationInvitations = (
           throw new Error(`Could not find company: ${companyError.message}`);
         }
         
-        // Create organization with same ID as company
-        const { error: createOrgError } = await supabase
+        // Check if org already exists with this ID to avoid conflicts
+        const { data: existingOrg } = await supabase
           .from("organizations")
-          .insert({
-            id: organizationId,
-            name: company.name
-          });
+          .select("id")
+          .eq("id", organizationId)
+          .maybeSingle();
           
-        if (createOrgError) {
-          throw new Error(`Error creating organization: ${createOrgError.message}`);
+        if (!existingOrg) {
+          // Create organization with same ID as company
+          const { error: createOrgError } = await supabase
+            .from("organizations")
+            .insert({
+              id: organizationId,
+              name: company.name
+            });
+            
+          if (createOrgError) {
+            throw new Error(`Error creating organization: ${createOrgError.message}`);
+          }
+          
+          console.log("Created missing organization record for company:", organizationId);
         }
-        
-        console.log("Created missing organization record for company:", organizationId);
       }
 
       // Generate a secure random token for invite
