@@ -7,7 +7,7 @@ const DashboardMetricCards: React.FC = () => {
   const metricCards = [
     {
       title: "Work Orders",
-      description: "10 pending",
+      description: "View all",
       icon: FileText,
       iconColor: "blue",
       iconBgColor: "blue",
@@ -17,7 +17,7 @@ const DashboardMetricCards: React.FC = () => {
     },
     {
       title: "Inspections",
-      description: "5 scheduled",
+      description: "View all",
       icon: CheckSquare,
       iconColor: "green",
       iconBgColor: "green",
@@ -37,7 +37,7 @@ const DashboardMetricCards: React.FC = () => {
     },
     {
       title: "Calendar",
-      description: "3 events today",
+      description: "View schedule",
       icon: Calendar,
       iconColor: "amber",
       iconBgColor: "amber",

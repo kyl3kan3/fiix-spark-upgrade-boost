@@ -23,7 +23,7 @@ export function useDashboardData() {
           description: "Dashboard data couldn't be loaded. Please refresh and try again."
         });
       }
-    }, 15000); // 15 second timeout
+    }, 8000); // Reduced from 15 seconds to 8 seconds
 
     setLoadingTimeout(timeout);
     
@@ -72,6 +72,7 @@ export function useDashboardData() {
 
           if (companyError) {
             console.error("Error fetching company:", companyError);
+            // Don't set error here, just continue with null company name
           } else if (company) {
             setCompanyName(company.name);
           }

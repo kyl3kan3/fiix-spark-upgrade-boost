@@ -17,30 +17,8 @@ const DashboardAtAGlance: React.FC = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Pending Tasks</span>
-            <span className="text-sm font-bold text-maintenease-600 dark:text-maintenease-400">8</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-            <div className="bg-maintenease-500 h-2.5 rounded-full" style={{ width: '45%' }}></div>
-          </div>
-          
-          <div className="flex justify-between items-center mt-4">
-            <span className="text-sm font-medium">Team Availability</span>
-            <span className="text-sm font-bold text-maintenease-600 dark:text-maintenease-400">75%</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-            <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '75%' }}></div>
-          </div>
-          
-          <div className="flex justify-between items-center mt-4">
-            <span className="text-sm font-medium">Asset Health</span>
-            <span className="text-sm font-bold text-maintenease-600 dark:text-maintenease-400">92%</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '92%' }}></div>
-          </div>
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          No statistics available yet
         </div>
         
         <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -50,7 +28,7 @@ const DashboardAtAGlance: React.FC = () => {
             onClick={() => navigate("/reports")}
           >
             <FileText className="mr-2 h-4 w-4" />
-            View Full Reports
+            View Reports
           </Button>
         </div>
       </CardContent>
