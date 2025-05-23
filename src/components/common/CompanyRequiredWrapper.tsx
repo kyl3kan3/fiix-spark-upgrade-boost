@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCompanyStatus } from "@/hooks/company/useCompanyStatus";
 import { LoadingDisplay } from "./company-required/LoadingDisplay";
@@ -15,6 +15,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   const [checkComplete, setCheckComplete] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const hasInitialized = useRef(false);
   
   const {
     isLoading,
@@ -27,6 +28,8 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
 
   // Direct check for authentication instead of using hooks
   useEffect(() => {
+    if (hasInitialized.current) return;
+    
     const checkAuth = async () => {
       try {
         // Get session directly without using hooks
@@ -52,10 +55,12 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
         }
         
         setCheckComplete(true);
+        hasInitialized.current = true;
       } catch (err) {
         console.error("Error in auth check:", err);
         setIsAuthenticated(false);
         setCheckComplete(true);
+        hasInitialized.current = true;
       }
     };
     
@@ -63,13 +68,15 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
     
     // Monitor authentication changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-      setUserId(session?.user?.id || null);
-      
-      if (session?.user) {
-        refreshCompanyStatus();
-      } else if (event === 'SIGNED_OUT') {
-        navigate("/auth");
+      if (hasInitialized.current) {
+        setIsAuthenticated(!!session);
+        setUserId(session?.user?.id || null);
+        
+        if (session?.user) {
+          refreshCompanyStatus();
+        } else if (event === 'SIGNED_OUT') {
+          navigate("/auth");
+        }
       }
     });
     

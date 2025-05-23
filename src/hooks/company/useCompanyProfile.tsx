@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function useCompanyProfile() {
@@ -7,6 +7,8 @@ export function useCompanyProfile() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [profileError, setProfileError] = useState<Error | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const loadingRef = useRef(false);
+  const hasLoadedRef = useRef(false);
 
   // Directly get user from Supabase instead of using hooks
   useEffect(() => {
@@ -20,10 +22,11 @@ export function useCompanyProfile() {
 
   // Load profile data
   const loadProfileData = useCallback(async () => {
-    if (!userId) {
-      console.log("Cannot load profile: No user ID available");
+    if (!userId || loadingRef.current || hasLoadedRef.current) {
       return null;
     }
+
+    loadingRef.current = true;
 
     try {
       console.log("Loading profile for user ID:", userId);
@@ -42,6 +45,7 @@ export function useCompanyProfile() {
       }
       
       console.log("Profile loaded:", profile);
+      hasLoadedRef.current = true;
       
       return profile;
     } catch (error) {
@@ -52,6 +56,8 @@ export function useCompanyProfile() {
         setProfileError(new Error('Unknown error loading profile data'));
       }
       return null;
+    } finally {
+      loadingRef.current = false;
     }
   }, [userId]);
 
@@ -61,7 +67,10 @@ export function useCompanyProfile() {
       return;
     }
 
-    setIsLoading(true);
+    // Reset loading state only if we haven't loaded data yet
+    if (!hasLoadedRef.current) {
+      setIsLoading(true);
+    }
     setProfileError(null);
     
     try {
@@ -89,8 +98,10 @@ export function useCompanyProfile() {
 
   // Initial refresh when user ID changes
   useEffect(() => {
-    if (userId) {
+    if (userId && !hasLoadedRef.current) {
       refreshProfileStatus();
+    } else if (userId && hasLoadedRef.current) {
+      setIsLoading(false);
     }
   }, [userId, refreshProfileStatus]);
 

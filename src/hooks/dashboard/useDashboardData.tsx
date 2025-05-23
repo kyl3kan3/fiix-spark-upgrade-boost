@@ -13,6 +13,7 @@ export function useDashboardData() {
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
+  const hasLoadedRef = useRef(false);
 
   // Clear timeout on unmount to prevent memory leaks
   useEffect(() => {
@@ -26,7 +27,7 @@ export function useDashboardData() {
 
   // Set up timeout for data loading
   useEffect(() => {
-    if (isLoadingData) {
+    if (isLoadingData && !hasLoadedRef.current) {
       // Clear any existing timeout
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       
@@ -57,8 +58,8 @@ export function useDashboardData() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (authLoading) {
-        // Still waiting for auth to complete
+      if (authLoading || hasLoadedRef.current) {
+        // Still waiting for auth to complete or already loaded
         return;
       }
       
@@ -107,6 +108,7 @@ export function useDashboardData() {
         }
         
         // Successfully loaded data
+        hasLoadedRef.current = true;
         if (isMounted.current) {
           setIsLoadingData(false);
         }
