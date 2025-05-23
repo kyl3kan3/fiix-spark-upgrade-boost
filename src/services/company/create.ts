@@ -103,13 +103,29 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       }
     }
     
+    // Ensure name is always provided for the insert operation
+    if (!dbData.name) {
+      throw new Error("Company name is required");
+    }
+
     // Create company with the converted data format
+    const insertData = {
+      name: dbData.name, // Ensure name is explicitly set
+      industry: dbData.industry,
+      address: dbData.address,
+      city: dbData.city,
+      state: dbData.state,
+      zip_code: dbData.zip_code,
+      phone: dbData.phone,
+      email: dbData.email,
+      website: dbData.website,
+      logo: dbData.logo,
+      created_by: user.id
+    };
+    
     const { data: company, error: companyError } = await supabase
       .from("companies")
-      .insert({
-        ...dbData,
-        created_by: user.id 
-      })
+      .insert(insertData)
       .select()
       .single();
     

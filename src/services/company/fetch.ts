@@ -3,18 +3,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { CompanyData } from "./types";
 
 /**
- * Fetches the current user's company information
+ * Fetches company information for the currently logged in user
  */
 export const fetchUserCompany = async (): Promise<CompanyData | null> => {
   try {
-    // First get the current user's profile to obtain company_id
-    const { data: { user } } = await supabase.auth.getUser();
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (!user) {
+    if (userError || !user) {
+      console.error("Error fetching user:", userError);
       throw new Error("User not authenticated");
     }
     
-    // Get the user's profile
+    // Fetch user's profile to get company ID
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("company_id")
@@ -22,31 +23,29 @@ export const fetchUserCompany = async (): Promise<CompanyData | null> => {
       .maybeSingle();
     
     if (profileError) {
-      console.error("Error fetching user profile:", profileError);
+      console.error("Error fetching profile:", profileError);
       throw profileError;
     }
     
-    // Check if profile exists and has a company_id
-    if (!profile || !profile.company_id) {
-      console.log("No company ID found in profile");
-      return null;
+    if (!profile?.company_id) {
+      return null; // User has no associated company
     }
     
-    // Fetch company data
-    const { data: company, error } = await supabase
+    // Fetch company details
+    const { data: company, error: companyError } = await supabase
       .from("companies")
       .select("*")
       .eq("id", profile.company_id)
-      .maybeSingle();
+      .single();
     
-    if (error) {
-      console.error("Error fetching company:", error);
-      throw error;
+    if (companyError) {
+      console.error("Error fetching company:", companyError);
+      throw companyError;
     }
     
     return company;
   } catch (error) {
     console.error("Error in fetchUserCompany:", error);
-    return null;
+    throw error;
   }
 };

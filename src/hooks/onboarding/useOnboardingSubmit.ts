@@ -47,8 +47,9 @@ export const useOnboardingSubmit = (
         // Create new company since it's required
         try {
           console.log("Creating new company:", state.company);
+          // Fix: Pass company name in the expected format
           const newCompany = await createCompany({
-            companyName: state.company
+            companyName: state.company // Use companyName instead of company
           });
           
           companyId = newCompany.id;

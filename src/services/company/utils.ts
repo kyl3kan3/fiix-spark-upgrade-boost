@@ -25,9 +25,12 @@ export const mapCompanyToCompanyInfo = (company: CompanyData | null): CompanyInf
 /**
  * Converts CompanyInfo format used in the UI to database company object
  */
-export const mapCompanyInfoToCompanyData = (info: CompanyInfo): Partial<CompanyData> => {
+export const mapCompanyInfoToCompanyData = (info: Partial<CompanyInfo>): Partial<CompanyData> => {
+  // Ensure name is properly set from companyName
+  const name = info.companyName || "";
+  
   return {
-    name: info.companyName || "",
+    name: name, // Always return a name value, even if empty
     industry: info.industry,
     address: info.address,
     city: info.city,
