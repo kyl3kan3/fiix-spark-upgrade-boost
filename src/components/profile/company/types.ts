@@ -9,5 +9,13 @@ export interface CompanyInfo {
   phone?: string;
   email?: string;
   website?: string;
-  logo?: string;
+  logo?: string | null;
+}
+
+export interface CompanyInfoContextType {
+  companyInfo: CompanyInfo | null;
+  isLoading: boolean;
+  error: string | null;
+  updateCompanyInfo: (data: CompanyInfo) => Promise<boolean>;
+  fetchCompanyInfo: () => Promise<void>;
 }
