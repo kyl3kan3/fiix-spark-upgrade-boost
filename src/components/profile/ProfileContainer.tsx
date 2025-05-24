@@ -11,8 +11,20 @@ const ProfileContainer: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const { profile, isLoading, saveProfile } = useProfile();
   
+  // Only initialize form when profile is loaded
   const profileForm = useProfileForm({
-    initialData: profile!,
+    initialData: profile || {
+      id: '',
+      email: '',
+      first_name: '',
+      last_name: '',
+      phone_number: '',
+      role: 'user',
+      company_id: '',
+      company_name: '',
+      created_at: '',
+      avatar_url: null
+    },
     onSave: saveProfile
   });
   

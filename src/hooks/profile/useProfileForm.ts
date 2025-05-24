@@ -5,21 +5,44 @@ import { useProfileFormValidation } from "./validation/useProfileFormValidation"
 import { toast } from "sonner";
 
 interface UseProfileFormProps {
-  initialData: ProfileData;
+  initialData: ProfileData | null;
   onSave: (data: Partial<ProfileData>) => Promise<ProfileData>;
 }
 
 export function useProfileForm({ initialData, onSave }: UseProfileFormProps) {
   const [formData, setFormData] = useState<ProfileFormData>({
-    first_name: initialData.first_name || "",
-    last_name: initialData.last_name || "",
-    phone_number: initialData.phone_number || "",
-    email: initialData.email || "",
+    first_name: initialData?.first_name || "",
+    last_name: initialData?.last_name || "",
+    phone_number: initialData?.phone_number || "",
+    email: initialData?.email || "",
   });
   
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormData, string>>>({});
   const [isSaving, setIsSaving] = useState(false);
   const { validateProfileForm } = useProfileFormValidation();
+
+  // Update form data when initialData changes
+  const resetForm = useCallback(() => {
+    setFormData({
+      first_name: initialData?.first_name || "",
+      last_name: initialData?.last_name || "",
+      phone_number: initialData?.phone_number || "",
+      email: initialData?.email || "",
+    });
+    setErrors({});
+  }, [initialData]);
+
+  // Reset form when initialData changes
+  useState(() => {
+    if (initialData) {
+      setFormData({
+        first_name: initialData.first_name || "",
+        last_name: initialData.last_name || "",
+        phone_number: initialData.phone_number || "",
+        email: initialData.email || "",
+      });
+    }
+  });
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,16 +76,6 @@ export function useProfileForm({ initialData, onSave }: UseProfileFormProps) {
       setIsSaving(false);
     }
   }, [formData, validateProfileForm, onSave]);
-
-  const resetForm = useCallback(() => {
-    setFormData({
-      first_name: initialData.first_name || "",
-      last_name: initialData.last_name || "",
-      phone_number: initialData.phone_number || "",
-      email: initialData.email || "",
-    });
-    setErrors({});
-  }, [initialData]);
 
   return {
     formData,
