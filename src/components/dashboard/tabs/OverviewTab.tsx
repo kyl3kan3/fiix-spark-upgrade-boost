@@ -6,26 +6,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import DashboardQuickActions from "../DashboardQuickActions";
 import DashboardRecentActivities from "../DashboardRecentActivities";
 import DashboardTasksOverview from "../DashboardTasksOverview";
-import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect } from "react";
+import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 
 const OverviewTab: React.FC = () => {
   const navigate = useNavigate();
-  
-  // State for dashboard data
-  const [workOrderStats, setWorkOrderStats] = useState({
-    total: 0,
-    open: 0,
-    inProgress: 0,
-    completed: 0,
-  });
-  
-  const [recentWorkOrders, setRecentWorkOrders] = useState([]);
-  
-  // Fetch real data when available
-  useEffect(() => {
-    // This will be replaced with real data fetching from Supabase
-  }, []);
+  const { workOrders, stats, isLoading } = useWorkOrdersData();
   
   return (
     <div className="space-y-6 animate-entry">
@@ -41,7 +26,7 @@ const OverviewTab: React.FC = () => {
             <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Total Work Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">{workOrderStats.total}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
           </CardContent>
         </Card>
         
@@ -50,7 +35,7 @@ const OverviewTab: React.FC = () => {
             <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Open</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-yellow-500">{workOrderStats.open}</p>
+            <p className="text-3xl font-bold text-yellow-500">{stats.open}</p>
           </CardContent>
         </Card>
         
@@ -59,7 +44,7 @@ const OverviewTab: React.FC = () => {
             <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">In Progress</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-blue-500">{workOrderStats.inProgress}</p>
+            <p className="text-3xl font-bold text-blue-500">{stats.inProgress}</p>
           </CardContent>
         </Card>
         
@@ -68,7 +53,7 @@ const OverviewTab: React.FC = () => {
             <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Completed</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-green-500">{workOrderStats.completed}</p>
+            <p className="text-3xl font-bold text-green-500">{stats.completed}</p>
           </CardContent>
         </Card>
       </div>
@@ -95,15 +80,19 @@ const OverviewTab: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentWorkOrders.length > 0 ? (
-              recentWorkOrders.map((order) => (
+            {isLoading ? (
+              <div className="text-center p-6 text-gray-500">
+                Loading work orders...
+              </div>
+            ) : workOrders.length > 0 ? (
+              workOrders.slice(0, 5).map((order) => (
                 <div 
                   key={order.id} 
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
                 >
                   <div>
                     <p className="font-medium">{order.title}</p>
-                    <p className="text-sm text-gray-500">{order.id}</p>
+                    <p className="text-sm text-gray-500">{order.description}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
@@ -114,11 +103,11 @@ const OverviewTab: React.FC = () => {
                       {order.priority}
                     </span>
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
-                      ${order.status === "open" ? "bg-blue-100 text-blue-800" : 
-                        order.status === "in-progress" ? "bg-purple-100 text-purple-800" : 
+                      ${order.status === "pending" ? "bg-blue-100 text-blue-800" : 
+                        order.status === "in_progress" ? "bg-purple-100 text-purple-800" : 
                         "bg-green-100 text-green-800"}`}
                     >
-                      {order.status}
+                      {order.status.replace('_', ' ')}
                     </span>
                   </div>
                 </div>
@@ -133,7 +122,7 @@ const OverviewTab: React.FC = () => {
         <CardFooter>
           <Button 
             variant="outline" 
-            onClick={() => navigate("/feature/Work%20Order%20Management")}
+            onClick={() => navigate("/work-orders")}
             className="w-full"
           >
             View All Work Orders

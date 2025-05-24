@@ -1,15 +1,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/profile/useProfile";
 import { toast } from "sonner";
 
 export function useDashboardData() {
   const { user, isLoading: authLoading } = useAuth();
-  const [userName, setUserName] = useState<string>("");
-  const [companyName, setCompanyName] = useState<string>("");
-  const [role, setRole] = useState<string>("");
-  const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
+  const { profileData, isLoading: profileLoading, error: profileError } = useProfile();
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
@@ -26,14 +23,15 @@ export function useDashboardData() {
 
   // Set up timeout for data loading
   useEffect(() => {
-    if (isLoadingData) {
+    const isLoading = authLoading || profileLoading;
+    
+    if (isLoading) {
       // Clear any existing timeout
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       
       timeoutRef.current = setTimeout(() => {
-        if (isMounted.current && isLoadingData) {
+        if (isMounted.current && isLoading) {
           console.log("Dashboard data loading timeout triggered");
-          setIsLoadingData(false);
           setLoadingError("Loading timed out. Please refresh the page.");
           toast.error("Loading timed out", {
             description: "Dashboard data couldn't be loaded. Please refresh and try again."
@@ -53,80 +51,30 @@ export function useDashboardData() {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [isLoadingData]);
+  }, [authLoading, profileLoading]);
 
+  // Handle profile errors
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (authLoading) {
-        // Still waiting for auth to complete
-        return;
-      }
-      
-      if (!user) {
-        console.log("No user found in context, stopping data fetch");
-        setIsLoadingData(false);
-        return;
-      }
+    if (profileError) {
+      setLoadingError(`Error loading profile: ${profileError}`);
+    } else {
+      setLoadingError(null);
+    }
+  }, [profileError]);
 
-      try {
-        console.log("Fetching profile data for user:", user.id);
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("first_name, last_name, role, company_id")
-          .eq("id", user.id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching profile:", error);
-          setLoadingError(`Error loading profile: ${error.message}`);
-          setIsLoadingData(false);
-          return;
-        }
-
-        const fullName = [profile?.first_name, profile?.last_name]
-          .filter(Boolean)
-          .join(" ");
-        
-        setUserName(fullName || user.email || "User");
-        setRole(profile?.role || "User");
-
-        if (profile?.company_id) {
-          console.log("Fetching company data for company_id:", profile.company_id);
-          const { data: company, error: companyError } = await supabase
-            .from("companies")
-            .select("name")
-            .eq("id", profile.company_id)
-            .single();
-
-          if (companyError) {
-            console.error("Error fetching company:", companyError);
-            // Don't set error here, just continue with null company name
-          } else if (company) {
-            setCompanyName(company.name);
-          }
-        }
-        
-        // Successfully loaded data
-        if (isMounted.current) {
-          setIsLoadingData(false);
-        }
-      } catch (err) {
-        console.error("Error in fetchUserData:", err);
-        if (isMounted.current) {
-          setLoadingError(err instanceof Error ? err.message : "Unknown error occurred");
-          setIsLoadingData(false);
-        }
-      }
-    };
-
-    fetchUserData();
-  }, [user, authLoading]);
+  // Extract user information from profile data
+  const userName = profileData 
+    ? [profileData.first_name, profileData.last_name].filter(Boolean).join(" ") || profileData.email || "User"
+    : user?.email || "User";
+    
+  const companyName = profileData?.company_name || "";
+  const role = profileData?.role || "User";
 
   return {
     userName,
     companyName,
     role,
-    isLoading: authLoading || isLoadingData,
-    loadingError
+    isLoading: authLoading || profileLoading,
+    loadingError: loadingError || profileError
   };
 }
