@@ -1,9 +1,8 @@
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SetupStepComponentProps } from "./SetupContainer";
+import { SetupStepComponentProps } from "./SetupContent";
 import { toast } from "sonner";
 import { useSetup } from "./SetupContext";
 import { saveSetupData } from "@/services/setup";

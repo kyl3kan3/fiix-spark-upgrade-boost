@@ -1,9 +1,8 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Plus, Trash2 } from "lucide-react";
-import { SetupStepComponentProps } from "./SetupContainer";
+import { SetupStepComponentProps } from "./SetupContent";
 
 interface Location {
   id: string;

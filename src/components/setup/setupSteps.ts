@@ -8,7 +8,7 @@ import NotificationSetup from "./NotificationSetup";
 import IntegrationsSetup from "./IntegrationsSetup";
 import DashboardCustomizationSetup from "./DashboardCustomizationSetup";
 import SetupComplete from "./SetupComplete";
-import { SetupStepComponentProps } from "./SetupContainer";
+import { SetupStepComponentProps } from "./SetupContent";
 
 // Create a type for the setup step components
 type SetupStepComponent = React.ComponentType<SetupStepComponentProps>;
