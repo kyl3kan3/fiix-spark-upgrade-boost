@@ -21,6 +21,7 @@ import Chat from "./pages/Chat";
 import Help from "./pages/Help";
 import LocationsPage from "./pages/LocationsPage";
 import SetupPage from "./pages/SetupPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -45,6 +46,13 @@ function App() {
         <Route path="/dashboard" element={
           <AuthGuard>
             <Dashboard />
+          </AuthGuard>
+        } />
+
+        {/* Profile route */}
+        <Route path="/profile" element={
+          <AuthGuard>
+            <ProfilePage />
           </AuthGuard>
         } />
 
