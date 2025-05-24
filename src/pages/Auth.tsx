@@ -24,7 +24,7 @@ const Auth = () => {
       handleError(storedError);
       localStorage.removeItem("auth_error");
     }
-  }, []);
+  }, [handleError]);
 
   // Check if we should default to signup mode
   useEffect(() => {
@@ -33,7 +33,7 @@ const Auth = () => {
       setIsSignUp(true);
     }
     clearError();
-  }, [location]);
+  }, [location, clearError]);
 
   const handleToggleMode = () => {
     setIsSignUp(!isSignUp);

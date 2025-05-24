@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 export function useAuthNavigation() {
   const navigate = useNavigate();
@@ -13,12 +13,12 @@ export function useAuthNavigation() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleAuthSuccess = (email: string, isSignUp: boolean) => {
+  const handleAuthSuccess = useCallback((email: string, isSignUp: boolean) => {
     localStorage.setItem("last_email", email);
     if (!isSignUp) {
       navigate("/dashboard", { replace: true });
     }
-  };
+  }, [navigate]);
 
   return { handleAuthSuccess };
 }
