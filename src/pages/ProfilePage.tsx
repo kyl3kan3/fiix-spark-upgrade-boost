@@ -2,19 +2,19 @@
 import React, { useState } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import { Loader2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSimpleProfile } from "@/hooks/profile/useSimpleProfile";
+import { useProfile } from "@/hooks/profile/useProfile";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const { profileData, isLoading: profileLoading, error, refreshProfile } = useSimpleProfile();
+  const { isLoading: profileLoading, error, refreshProfile } = useProfile();
   const [refreshKey, setRefreshKey] = useState(0);
   
   // Extract the tab from the URL search params
@@ -26,12 +26,10 @@ const ProfilePage = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     
-    // Update the URL without full page reload
     const newUrl = value === 'settings' 
       ? '/profile?tab=settings' 
       : '/profile';
       
-    // Use navigate with replace option to avoid adding to history
     navigate(newUrl, { replace: true });
   };
 

@@ -1,17 +1,17 @@
 
 import { useState, useEffect } from "react";
-import { useProfileFetcher } from "./useProfileFetcher";
+import { useProfile } from "@/hooks/profile/useProfile";
 
 interface AdminStatusResult {
   isAdminUser: boolean;
   companyName: string | undefined;
   isLoading: boolean;
   error: string | null;
-  refreshAdminStatus: () => Promise<any | null>;
+  refreshAdminStatus: () => Promise<void>;
 }
 
 export const useAdminStatus = (): AdminStatusResult => {
-  const { profileData, isLoading, error, refreshProfile } = useProfileFetcher(['role', 'company_name']);
+  const { profileData, isLoading, error, refreshProfile } = useProfile();
   const [isAdminUser, setIsAdminUser] = useState(false);
   
   // Update admin status when profile data changes

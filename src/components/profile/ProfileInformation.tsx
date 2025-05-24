@@ -5,15 +5,14 @@ import AvatarUploader from "./AvatarUploader";
 import { ProfileSkeleton } from "./ProfileSkeleton";
 import { ProfileForm } from "./ProfileForm";
 import { ProfileDisplay } from "./ProfileDisplay";
-import { useSimpleProfile } from "@/hooks/profile/useSimpleProfile";
+import { useProfile } from "@/hooks/profile/useProfile";
 import { ProfileFormData } from "./types";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const ProfileInformation = () => {
   const [editMode, setEditMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { profileData, isLoading, refreshProfile } = useSimpleProfile();
+  const { profileData, isLoading, updateProfile, updateAvatar } = useProfile();
   const [form, setForm] = useState<ProfileFormData>({
     first_name: "",
     last_name: "",
@@ -44,63 +43,28 @@ const ProfileInformation = () => {
     
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: form.first_name,
-          last_name: form.last_name,
-          phone_number: form.phone_number,
-          email: form.email,
-        })
-        .eq("id", profileData.id);
-        
-      if (error) {
-        toast.error("Update failed", {
-          description: error.message,
+      const success = await updateProfile({
+        first_name: form.first_name,
+        last_name: form.last_name,
+        phone_number: form.phone_number,
+        email: form.email,
+      });
+      
+      if (success) {
+        toast.success("Profile Updated", {
+          description: "Your profile changes have been saved."
         });
-        return false;
+        setEditMode(false);
       }
       
-      toast.success("Profile Updated", {
-        description: "Your profile changes have been saved."
-      });
-      
-      await refreshProfile();
-      setEditMode(false);
-      return true;
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      toast.error("Update failed", {
-        description: error.message,
-      });
-      return false;
+      return success;
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleAvatarChange = async (avatar: string | null) => {
-    if (!profileData) return;
-    
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ avatar_url: avatar })
-        .eq("id", profileData.id);
-        
-      if (error) {
-        toast.error("Avatar update failed", {
-          description: error.message,
-        });
-        return;
-      }
-      
-      toast.success("Avatar updated!");
-      await refreshProfile();
-    } catch (error: any) {
-      console.error("Error updating avatar:", error);
-      toast.error("Avatar update failed");
-    }
+    await updateAvatar(avatar);
   };
 
   if (isLoading) {
