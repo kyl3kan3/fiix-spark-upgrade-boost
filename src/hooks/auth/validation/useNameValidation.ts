@@ -9,7 +9,7 @@ interface ValidationResult {
 export function useNameValidation() {
   const validateName = useCallback((name: string): ValidationResult => {
     if (!name.trim()) {
-      return { isValid: false, error: "Full name is required" };
+      return { isValid: false, error: "Name is required" };
     }
     
     return { isValid: true };
