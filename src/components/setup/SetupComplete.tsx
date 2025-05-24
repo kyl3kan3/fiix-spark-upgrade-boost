@@ -11,15 +11,12 @@ import { setSetupComplete } from "@/hooks/onboarding/storageUtils";
 
 const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {
   const navigate = useNavigate();
-  const { setupData, setSetupComplete: markSetupComplete } = useSetup();
+  const { setupData } = useSetup();
   
   // Mark setup as complete when this component mounts
   useEffect(() => {
     const finalizeSetup = async () => {
       try {
-        // Update the context state
-        markSetupComplete(true);
-        
         // Save to localStorage and database with completed flag
         await saveSetupData(setupData, true);
         
@@ -36,13 +33,10 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
     };
     
     finalizeSetup();
-  }, [setupData, markSetupComplete]);
+  }, [setupData]);
   
   const handleGoToDashboard = async () => {
     try {
-      // Ensure setup is marked as complete both locally and in the database
-      markSetupComplete(true);
-      
       // Save setup data - don't test the return value directly
       await saveSetupData(setupData, true);
       

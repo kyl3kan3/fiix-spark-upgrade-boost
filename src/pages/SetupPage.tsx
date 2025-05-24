@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { SetupProvider } from "@/components/setup/SetupContext";
-import { SetupContainer } from "@/components/setup/SetupContainer";
+import SetupContainer from "@/components/setup/SetupContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Info } from "lucide-react";

@@ -1,11 +1,16 @@
 
 import React from "react";
 import { useSetup } from "./SetupContext";
-import { SetupHeader } from "./SetupHeader";
+import SetupHeader from "./SetupHeader";
 import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
-import { setupSteps } from "./setupSteps";
+import { steps } from "./setupSteps";
 import { Loader2 } from "lucide-react";
+
+export interface SetupStepComponentProps {
+  data: any;
+  onUpdate: (updates: any) => void;
+}
 
 const SetupContainer: React.FC = () => {
   const { 
@@ -32,16 +37,16 @@ const SetupContainer: React.FC = () => {
     return null;
   }
 
-  const CurrentStepComponent = setupSteps[currentStep]?.component;
+  const CurrentStepComponent = steps[currentStep]?.component;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <SetupHeader />
+        <SetupHeader title="Setup Your MaintenEase System" subtitle="Let's get your maintenance management system configured" />
         <SetupProgress />
         
         <div className="mt-8">
-          {CurrentStepComponent && <CurrentStepComponent />}
+          {CurrentStepComponent && <CurrentStepComponent data={{}} onUpdate={() => {}} />}
         </div>
         
         <SetupNavigation />

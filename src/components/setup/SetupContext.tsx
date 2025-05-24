@@ -26,6 +26,11 @@ interface SetupContextType {
   // Completion
   isCompleting: boolean;
   completeSetup: () => Promise<void>;
+  setupComplete: boolean;
+  setSetupComplete: (complete: boolean) => void;
+  
+  // Loading state
+  isLoading: boolean;
 }
 
 const SetupContext = createContext<SetupContextType | undefined>(undefined);
@@ -56,7 +61,12 @@ export function SetupProvider({ children }: { children: ReactNode }) {
     
     // Completion
     isCompleting: completion.isCompleting,
-    completeSetup: completion.completeSetup
+    completeSetup: completion.completeSetup,
+    setupComplete: false, // Default value - should be managed by completion hook
+    setSetupComplete: () => {}, // Default no-op - should be managed by completion hook
+    
+    // Loading state
+    isLoading: auth.isAuthLoading || data.isLoading
   };
 
   return (
