@@ -13,12 +13,21 @@ export function useAuthNavigation() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleAuthSuccess = useCallback((email: string, isSignUp: boolean) => {
-    localStorage.setItem("last_email", email);
-    if (!isSignUp) {
-      navigate("/dashboard", { replace: true });
-    }
+  const handleAuthSuccess = useCallback(() => {
+    navigate("/dashboard", { replace: true });
   }, [navigate]);
 
-  return { handleAuthSuccess };
+  const redirectToAuth = useCallback(() => {
+    navigate("/auth", { replace: true });
+  }, [navigate]);
+
+  const redirectToDashboard = useCallback(() => {
+    navigate("/dashboard", { replace: true });
+  }, [navigate]);
+
+  return { 
+    handleAuthSuccess,
+    redirectToAuth,
+    redirectToDashboard
+  };
 }

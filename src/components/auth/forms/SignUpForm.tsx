@@ -1,17 +1,16 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuthActions } from "@/hooks/auth/useAuthActions";
+import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 
 interface SignUpFormProps {
-  onSuccess: (email: string) => void;
   onError: (message: string) => void;
 }
 
-export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) => {
+export const SignUpForm: React.FC<SignUpFormProps> = ({ onError }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -19,6 +18,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
   const [showPassword, setShowPassword] = useState(false);
   
   const { signUp, isLoading } = useAuthActions();
+  const { handleAuthSuccess } = useAuthNavigation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +41,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
     
     if (result.success) {
       localStorage.setItem("pending_auth_email", email);
-      onSuccess(email);
+      handleAuthSuccess();
     } else if (result.error) {
       onError(result.error);
     }

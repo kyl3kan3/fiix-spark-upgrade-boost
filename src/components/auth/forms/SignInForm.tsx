@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,19 +5,20 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuthActions } from "@/hooks/auth/useAuthActions";
+import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 
 interface SignInFormProps {
-  onSuccess: (email: string) => void;
   onError: (message: string) => void;
 }
 
-export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) => {
+export const SignInForm: React.FC<SignInFormProps> = ({ onError }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
   const { signIn, isLoading } = useAuthActions();
+  const { handleAuthSuccess } = useAuthNavigation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) =>
       } else {
         localStorage.removeItem("auth_remember_me");
       }
-      onSuccess(email);
+      handleAuthSuccess();
     } else if (result.error) {
       onError(result.error);
     }

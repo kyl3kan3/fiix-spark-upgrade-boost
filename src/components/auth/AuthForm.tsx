@@ -4,26 +4,16 @@ import { SignUpForm } from "./forms/SignUpForm";
 
 interface AuthFormProps {
   isSignUp: boolean;
-  onSuccess: (email: string) => void;
   onError: (message: string) => void;
 }
 
-const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
-  const handleSuccess = (email: string) => {
-    localStorage.setItem("last_email", email);
-    onSuccess(email);
-  };
-
-  const handleError = (message: string) => {
-    onError(message);
-  };
-
+const AuthForm = ({ isSignUp, onError }: AuthFormProps) => {
   return (
     <div className="mt-8">
       {isSignUp ? (
-        <SignUpForm onSuccess={handleSuccess} onError={handleError} />
+        <SignUpForm onError={onError} />
       ) : (
-        <SignInForm onSuccess={handleSuccess} onError={handleError} />
+        <SignInForm onError={onError} />
       )}
     </div>
   );

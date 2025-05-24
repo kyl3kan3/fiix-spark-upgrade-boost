@@ -15,7 +15,14 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
   const { error, handleError, clearError } = useAuthErrorHandler();
-  const { handleAuthSuccess } = useAuthNavigation();
+  const { redirectToDashboard } = useAuthNavigation();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      redirectToDashboard();
+    }
+  }, [isAuthenticated, isLoading, redirectToDashboard]);
 
   // Check for stored auth errors
   useEffect(() => {
@@ -40,11 +47,6 @@ const Auth = () => {
     clearError();
   };
 
-  const onAuthSuccess = (email: string) => {
-    clearError();
-    handleAuthSuccess(email, isSignUp);
-  };
-
   // Show loading state while checking auth
   if (isLoading) {
     return (
@@ -61,19 +63,14 @@ const Auth = () => {
         <AuthHeader isSignUp={isSignUp} />
         <AuthError message={error} />
         
-        {!isAuthenticated && (
-          <>
-            <AuthForm 
-              isSignUp={isSignUp} 
-              onSuccess={onAuthSuccess}
-              onError={handleError}
-            />
-            <AuthToggle 
-              isSignUp={isSignUp} 
-              onToggle={handleToggleMode} 
-            />
-          </>
-        )}
+        <AuthForm 
+          isSignUp={isSignUp} 
+          onError={handleError}
+        />
+        <AuthToggle 
+          isSignUp={isSignUp} 
+          onToggle={handleToggleMode} 
+        />
       </div>
     </div>
   );
