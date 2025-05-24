@@ -1,17 +1,9 @@
 
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/auth";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 
 export function useAuthNavigation() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
 
   const handleAuthSuccess = useCallback(() => {
     navigate("/dashboard", { replace: true });
