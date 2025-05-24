@@ -1,25 +1,21 @@
 
-import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { getErrorMessage, isAuthError } from "@/utils/authErrors";
+import { useErrorState } from "./state/useErrorState";
 
 export function useAuthErrorHandler() {
-  const [error, setError] = useState<string | null>(null);
+  const { error, showError, clearError } = useErrorState();
 
-  const handleError = useCallback((error: any) => {
+  const handleError = (error: any) => {
     if (!isAuthError(error)) {
       console.warn("Invalid error passed to handleError:", error);
       return;
     }
 
     const message = getErrorMessage(error);
-    setError(message);
+    showError(message);
     toast.error("Authentication Error", { description: message });
-  }, []);
-
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+  };
 
   return {
     error,

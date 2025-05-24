@@ -1,11 +1,13 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuthActions } from "@/hooks/auth/useAuthActions";
+import { useSignIn } from "@/hooks/auth/actions/useSignIn";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
+import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
 
 interface SignInFormProps {
   onError: (message: string) => void;
@@ -17,14 +19,16 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onError }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  const { signIn, isLoading } = useAuthActions();
+  const { signIn, isLoading } = useSignIn();
   const { handleAuthSuccess } = useAuthNavigation();
+  const { validateSignInForm } = useFormValidation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim() || !password.trim()) {
-      onError("Please fill in all fields");
+    const validation = validateSignInForm(email, password);
+    if (!validation.isValid) {
+      onError(validation.error!);
       return;
     }
 

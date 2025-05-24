@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuthActions } from "@/hooks/auth/useAuthActions";
+import { useSignUp } from "@/hooks/auth/actions/useSignUp";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
+import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
 
 interface SignUpFormProps {
   onError: (message: string) => void;
@@ -17,19 +18,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onError }) => {
   const [companyName, setCompanyName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   
-  const { signUp, isLoading } = useAuthActions();
+  const { signUp, isLoading } = useSignUp();
   const { handleAuthSuccess } = useAuthNavigation();
+  const { validateSignUpForm } = useFormValidation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim() || !password.trim() || !name.trim() || !companyName.trim()) {
-      onError("Please fill in all fields");
-      return;
-    }
-
-    if (password.length < 6) {
-      onError("Password must be at least 6 characters long");
+    const validation = validateSignUpForm(email, password, name, companyName);
+    if (!validation.isValid) {
+      onError(validation.error!);
       return;
     }
     

@@ -3,11 +3,11 @@ import React from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useAuthActions } from "@/hooks/auth/useAuthActions";
+import { useSignOut } from "@/hooks/auth/actions/useSignOut";
 
 const SignOutButton: React.FC = () => {
   const navigate = useNavigate();
-  const { signOut, isLoading } = useAuthActions();
+  const { signOut, isLoading } = useSignOut();
   
   const handleSignOut = async () => {
     const result = await signOut();
