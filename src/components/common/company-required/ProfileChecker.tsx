@@ -2,23 +2,23 @@
 import React from "react";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCompanyChecker } from "./hooks/useCompanyChecker";
+import { useSimpleCompanyChecker } from "@/hooks/company/useSimpleCompanyChecker";
 
 interface ProfileCheckerProps {
   onCompanyFound: (companyId: string) => void;
 }
 
 export const ProfileChecker: React.FC<ProfileCheckerProps> = ({ onCompanyFound }) => {
-  const { isRefreshing, handleRefreshCompanyAssociation } = useCompanyChecker(onCompanyFound);
+  const { isChecking, checkCompanyAssociation } = useSimpleCompanyChecker(onCompanyFound);
 
   return (
     <Button 
       variant="outline"
-      onClick={handleRefreshCompanyAssociation} 
+      onClick={checkCompanyAssociation} 
       className="w-full"
-      disabled={isRefreshing}
+      disabled={isChecking}
     >
-      {isRefreshing ? (
+      {isChecking ? (
         <>
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           Checking...

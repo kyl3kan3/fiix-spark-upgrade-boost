@@ -3,24 +3,20 @@ import { useState, useEffect } from "react";
 import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany, createCompany } from "@/services/company";
 import { CompanyInfo } from "./types";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useUnifiedCompanyStatus } from "@/hooks/company/useUnifiedCompanyStatus";
 
 export const useCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [setupCompleted, setSetupCompleted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  
+  const { setupComplete, setSetupComplete } = useUnifiedCompanyStatus();
 
   const fetchCompanyInfo = async () => {
     try {
       setIsLoading(true);
       setError(null);
-
-      // Check if setup is completed
-      const isSetupComplete = localStorage.getItem('maintenease_setup_complete') === 'true';
-      setSetupCompleted(isSetupComplete);
 
       try {
         // Fetch company from Supabase
@@ -32,9 +28,8 @@ export const useCompanyInfo = () => {
           setCompanyInfo(mapCompanyToCompanyInfo(company));
           
           // Ensure setup is marked as complete if we have company data
-          if (!isSetupComplete && company.id) {
-            localStorage.setItem('maintenease_setup_complete', 'true');
-            setSetupCompleted(true);
+          if (!setupComplete && company.id) {
+            setSetupComplete(true);
           }
           return;
         }
@@ -109,8 +104,7 @@ export const useCompanyInfo = () => {
       setCompanyInfo(data);
       
       // Mark setup as complete
-      localStorage.setItem('maintenease_setup_complete', 'true');
-      setSetupCompleted(true);
+      setSetupComplete(true);
       
       toast.success("Company information saved");
       return true;
@@ -130,7 +124,7 @@ export const useCompanyInfo = () => {
     companyId,
     isLoading, 
     error,
-    setupCompleted,
+    setupCompleted: setupComplete,
     updateCompanyInfo,
     fetchCompanyInfo
   };
