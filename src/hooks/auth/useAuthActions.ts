@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/utils/authErrors";
 
 interface SignUpData {
   first_name?: string;
@@ -26,16 +27,17 @@ export function useAuthActions() {
       });
 
       if (error) {
-        toast.error("Sign in failed", { description: error.message });
-        return { success: false, error: error.message };
+        const errorMessage = getErrorMessage(error);
+        toast.error("Sign in failed", { description: errorMessage });
+        return { success: false, error: errorMessage };
       }
 
       toast.success("Welcome back!");
       return { success: true };
     } catch (error: any) {
-      const message = error.message || "An unexpected error occurred";
-      toast.error("Sign in failed", { description: message });
-      return { success: false, error: message };
+      const errorMessage = getErrorMessage(error);
+      toast.error("Sign in failed", { description: errorMessage });
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -57,16 +59,17 @@ export function useAuthActions() {
       });
 
       if (error) {
-        toast.error("Sign up failed", { description: error.message });
-        return { success: false, error: error.message };
+        const errorMessage = getErrorMessage(error);
+        toast.error("Sign up failed", { description: errorMessage });
+        return { success: false, error: errorMessage };
       }
 
       toast.success("Account created successfully!");
       return { success: true };
     } catch (error: any) {
-      const message = error.message || "An unexpected error occurred";
-      toast.error("Sign up failed", { description: message });
-      return { success: false, error: message };
+      const errorMessage = getErrorMessage(error);
+      toast.error("Sign up failed", { description: errorMessage });
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
@@ -78,16 +81,17 @@ export function useAuthActions() {
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        toast.error("Sign out failed", { description: error.message });
-        return { success: false, error: error.message };
+        const errorMessage = getErrorMessage(error);
+        toast.error("Sign out failed", { description: errorMessage });
+        return { success: false, error: errorMessage };
       }
 
       toast.info("You have been signed out");
       return { success: true };
     } catch (error: any) {
-      const message = error.message || "An unexpected error occurred";
-      toast.error("Sign out failed", { description: message });
-      return { success: false, error: message };
+      const errorMessage = getErrorMessage(error);
+      toast.error("Sign out failed", { description: errorMessage });
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }

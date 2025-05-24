@@ -23,6 +23,11 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!email.trim() || !password.trim()) {
+      onError("Please fill in all fields");
+      return;
+    }
+
     const result = await signIn(email, password);
     
     if (result.success) {
@@ -51,6 +56,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) =>
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           className="mt-1"
+          disabled={isLoading}
         />
       </div>
       
@@ -67,12 +73,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) =>
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className="mt-1"
+            disabled={isLoading}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             tabIndex={-1}
+            disabled={isLoading}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -84,6 +92,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onSuccess, onError }) =>
           id="remember-me" 
           checked={rememberMe}
           onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+          disabled={isLoading}
         />
         <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer">
           Stay logged in

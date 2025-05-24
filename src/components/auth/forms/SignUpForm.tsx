@@ -23,6 +23,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!email.trim() || !password.trim() || !name.trim() || !companyName.trim()) {
+      onError("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 6) {
+      onError("Password must be at least 6 characters long");
+      return;
+    }
+    
     const result = await signUp(email, password, {
       first_name: name.split(' ')[0],
       last_name: name.split(' ').slice(1).join(' '),
@@ -50,6 +60,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
           onChange={(e) => setName(e.target.value)}
           placeholder="John Doe"
           className="mt-1"
+          disabled={isLoading}
         />
       </div>
       
@@ -65,6 +76,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           className="mt-1"
+          disabled={isLoading}
         />
       </div>
       
@@ -79,6 +91,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
           onChange={(e) => setCompanyName(e.target.value)}
           placeholder="Acme Corp"
           className="mt-1"
+          disabled={isLoading}
         />
       </div>
       
@@ -95,12 +108,14 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onError }) =>
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className="mt-1"
+            disabled={isLoading}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
             tabIndex={-1}
+            disabled={isLoading}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
