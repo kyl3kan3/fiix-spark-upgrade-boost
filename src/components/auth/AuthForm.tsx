@@ -1,7 +1,4 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 import { SignInForm } from "./forms/SignInForm";
 import { SignUpForm } from "./forms/SignUpForm";
 
@@ -12,23 +9,9 @@ interface AuthFormProps {
 }
 
 const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-  
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log("User is already authenticated, redirecting to dashboard");
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
-  
   const handleSuccess = (email: string) => {
     localStorage.setItem("last_email", email);
     onSuccess(email);
-    if (!isSignUp) {
-      navigate("/dashboard");
-    }
   };
 
   const handleError = (message: string) => {
