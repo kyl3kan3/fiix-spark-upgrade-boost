@@ -1,88 +1,53 @@
 
 import { useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { ProfileData } from "@/components/profile/types";
+import { useProfileActions } from "./useProfileActions";
 
-export function useProfileOperations() {
-  const fetchProfile = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+interface UseProfileOperationsProps {
+  profile: ProfileData | null;
+  setSavingState: (saving: boolean) => void;
+  onProfileUpdate: (updatedProfile: ProfileData) => void;
+}
 
-    if (error && error.code !== 'PGRST116') {
-      throw new Error(`Failed to fetch profile: ${error.message}`);
-    }
+export function useProfileOperations({ 
+  profile, 
+  setSavingState, 
+  onProfileUpdate 
+}: UseProfileOperationsProps) {
+  const { saveProfile: saveProfileAction, updateAvatar: updateAvatarAction } = useProfileActions();
 
-    return data;
-  }, []);
-
-  const updateProfile = useCallback(async (userId: string, updates: any) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .update(updates)
-      .eq("id", userId)
-      .select()
-      .single();
-
-    if (error) {
-      throw new Error(`Failed to update profile: ${error.message}`);
-    }
-
-    return data;
-  }, []);
-
-  const uploadAvatar = useCallback(async (userId: string, file: File) => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}-${Math.random()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('profile-images')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data } = supabase.storage
-        .from('profile-images')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
-    } catch (error) {
-      console.error('Error uploading avatar:', error);
-      throw new Error('Failed to upload avatar');
-    }
-  }, []);
-
-  const deleteAvatar = useCallback(async (avatarUrl: string) => {
-    if (!avatarUrl) return;
+  const saveProfile = useCallback(async (updates: Partial<ProfileData>) => {
+    if (!profile) return;
 
     try {
-      const url = new URL(avatarUrl);
-      const pathParts = url.pathname.split('/');
-      const fileName = pathParts[pathParts.length - 1];
-      const filePath = `avatars/${fileName}`;
-
-      const { error } = await supabase.storage
-        .from('profile-images')
-        .remove([filePath]);
-
-      if (error) {
-        console.error('Error deleting avatar:', error);
-      }
+      setSavingState(true);
+      const updatedProfile = await saveProfileAction(profile.id, updates);
+      onProfileUpdate(updatedProfile);
+      return updatedProfile;
     } catch (error) {
-      console.error('Error deleting avatar:', error);
+      throw error;
+    } finally {
+      setSavingState(false);
     }
-  }, []);
+  }, [profile, saveProfileAction, setSavingState, onProfileUpdate]);
+
+  const updateAvatar = useCallback(async (file: File | null) => {
+    if (!profile) return;
+
+    try {
+      setSavingState(true);
+      const updatedProfile = await updateAvatarAction(profile.id, file);
+      onProfileUpdate(updatedProfile);
+      return updatedProfile;
+    } catch (error) {
+      throw error;
+    } finally {
+      setSavingState(false);
+    }
+  }, [profile, updateAvatarAction, setSavingState, onProfileUpdate]);
 
   return {
-    fetchProfile,
-    updateProfile,
-    uploadAvatar,
-    deleteAvatar
+    saveProfile,
+    updateAvatar
   };
 }

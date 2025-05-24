@@ -1,54 +1,52 @@
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
-import { toast } from "sonner";
 
-export function useProfileFetch() {
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface UseProfileFetchProps {
+  setLoadingState: (loading: boolean) => void;
+  setErrorState: (error: string) => void;
+  clearError: () => void;
+  createProfile: (userId: string, email: string | undefined) => Promise<ProfileData>;
+}
 
-  const fetchProfile = useCallback(async (userId: string) => {
+export function useProfileFetch({ 
+  setLoadingState, 
+  setErrorState, 
+  clearError, 
+  createProfile 
+}: UseProfileFetchProps) {
+  
+  const fetchProfile = useCallback(async (userId: string, userEmail: string | undefined) => {
     try {
-      setIsLoading(true);
-      setError(null);
-      
-      const { data, error: profileError } = await supabase
+      setLoadingState(true);
+      clearError();
+
+      const { data, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-        
-      if (profileError) throw profileError;
-      
-      return data;
+
+      if (fetchError) throw fetchError;
+
+      if (!data) {
+        // Create profile if it doesn't exist
+        const newProfile = await createProfile(userId, userEmail);
+        return newProfile;
+      } else {
+        return data;
+      }
     } catch (error: any) {
       console.error("Error fetching profile:", error);
-      setError(error.message);
-      toast.error("Error loading profile", {
-        description: "Please try refreshing the page"
-      });
-      return null;
+      setErrorState(error.message);
+      throw error;
     } finally {
-      setIsLoading(false);
+      setLoadingState(false);
     }
-  }, []);
-
-  const updateProfileData = (updates: Partial<ProfileData>) => {
-    if (profileData) {
-      setProfileData({ ...profileData, ...updates });
-    }
-  };
+  }, [setLoadingState, setErrorState, clearError, createProfile]);
 
   return {
-    profileData,
-    setProfileData,
-    updateProfileData,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
     fetchProfile
   };
 }

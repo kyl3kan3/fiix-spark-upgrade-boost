@@ -1,15 +1,44 @@
 
-// This hook is now a simple wrapper around the unified useProfile hook
-// Kept for backward compatibility
-import { useProfile } from "./useProfile";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { ProfileData } from "@/components/profile/types";
 
 export function useSimpleProfile() {
-  const { profile, isLoading, error, refreshProfile } = useProfile();
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        setProfile(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user?.id]);
 
   return {
-    profileData: profile, // Map profile back to profileData for backwards compatibility
+    profile,
     isLoading,
-    error,
-    refreshProfile
+    userName: profile?.first_name || profile?.email || 'User',
+    companyName: profile?.company_name || '',
+    role: profile?.role || 'user'
   };
 }

@@ -1,66 +1,48 @@
 
-import { useEffect, useCallback } from "react";
-import { ProfileData } from "@/components/profile/types";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/auth";
+import { useProfileActions } from "./useProfileActions";
+import { useProfileState } from "./useProfileState";
 import { useProfileFetch } from "./useProfileFetch";
-import { useProfileCreation } from "./useProfileCreation";
-import { useProfileUpdate } from "./useProfileUpdate";
+import { ProfileData } from "@/components/profile/types";
 
 export function useProfileData() {
   const { user } = useAuth();
-  const {
-    profileData,
-    setProfileData,
-    updateProfileData,
-    isLoading,
-    setIsLoading,
-    error,
-    fetchProfile
-  } = useProfileFetch();
-  const { createInitialProfile } = useProfileCreation();
-  const { updateProfile: updateProfileInDb } = useProfileUpdate();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const { isLoading, error, setLoadingState, setErrorState, clearError } = useProfileState();
+  const { createProfile } = useProfileActions();
+  
+  const { fetchProfile } = useProfileFetch({
+    setLoadingState,
+    setErrorState,
+    clearError,
+    createProfile
+  });
 
-  const refreshProfile = useCallback(async () => {
+  const loadProfile = useCallback(async () => {
     if (!user?.id) {
-      setIsLoading(false);
+      setLoadingState(false);
       return;
     }
-    
-    const data = await fetchProfile(user.id);
-    
-    if (!data) {
-      const createdProfile = await createInitialProfile(user.id, user.email);
-      if (createdProfile) {
-        setProfileData(createdProfile);
-      }
-    } else {
-      setProfileData(data);
-    }
-  }, [user, fetchProfile, createInitialProfile, setProfileData, setIsLoading]);
 
-  const updateProfile = async (updates: Partial<ProfileData>) => {
-    if (!profileData) return false;
-    
-    const success = await updateProfileInDb(profileData.id, updates);
-    
-    if (success) {
-      updateProfileData(updates);
+    try {
+      const profileData = await fetchProfile(user.id, user.email);
+      setProfile(profileData);
+    } catch (error) {
+      // Error handling is done in fetchProfile
     }
-    
-    return success;
-  };
+  }, [user?.id, user?.email, fetchProfile, setLoadingState]);
 
   useEffect(() => {
     if (user?.id) {
-      refreshProfile();
+      loadProfile();
     }
-  }, [refreshProfile, user]);
+  }, [loadProfile, user?.id]);
 
   return {
-    profileData,
+    profile,
     isLoading,
     error,
-    updateProfile,
-    refreshProfile
+    refreshProfile: loadProfile
   };
 }
