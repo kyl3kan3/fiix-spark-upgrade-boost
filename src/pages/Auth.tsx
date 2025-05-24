@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { AuthLayout } from "@/components/auth/AuthLayout";
 import AuthForm from "@/components/auth/AuthForm";
 import AuthError from "@/components/auth/AuthError";
 import AuthToggle from "@/components/auth/AuthToggle";
 import AuthHeader from "@/components/auth/AuthHeader";
 import AuthLoader from "@/components/auth/AuthLoader";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/auth";
 import { useAuthErrorHandler } from "@/hooks/auth/useAuthErrorHandler";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 
@@ -58,21 +59,19 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
-        <AuthHeader isSignUp={isSignUp} />
-        <AuthError message={error} />
-        
-        <AuthForm 
-          isSignUp={isSignUp} 
-          onError={handleError}
-        />
-        <AuthToggle 
-          isSignUp={isSignUp} 
-          onToggle={handleToggleMode} 
-        />
-      </div>
-    </div>
+    <AuthLayout>
+      <AuthHeader isSignUp={isSignUp} />
+      <AuthError message={error} />
+      
+      <AuthForm 
+        isSignUp={isSignUp} 
+        onError={handleError}
+      />
+      <AuthToggle 
+        isSignUp={isSignUp} 
+        onToggle={handleToggleMode} 
+      />
+    </AuthLayout>
   );
 };
 
