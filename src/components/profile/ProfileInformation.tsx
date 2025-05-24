@@ -43,21 +43,21 @@ const ProfileInformation = () => {
     
     setIsSaving(true);
     try {
-      const success = await saveProfile({
+      await saveProfile({
         first_name: form.first_name,
         last_name: form.last_name,
         phone_number: form.phone_number,
         email: form.email,
       });
       
-      if (success) {
-        toast.success("Profile Updated", {
-          description: "Your profile changes have been saved."
-        });
-        setEditMode(false);
-      }
-      
-      return success;
+      toast.success("Profile Updated", {
+        description: "Your profile changes have been saved."
+      });
+      setEditMode(false);
+      return true;
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      return false;
     } finally {
       setIsSaving(false);
     }
