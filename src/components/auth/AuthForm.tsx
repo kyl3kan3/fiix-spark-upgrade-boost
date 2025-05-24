@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { SignInFields, SignUpFields } from "./AuthFormFields";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
@@ -18,8 +18,9 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { isSubmitting, signIn, signUp, isAuthenticated, refreshSession } = useAuth();
+  const { signIn, signUp, isAuthenticated } = useAuth();
   
   // Redirect if already authenticated
   useEffect(() => {
@@ -27,36 +28,25 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
       console.log("User is already authenticated, redirecting to dashboard");
       navigate("/dashboard");
     }
-    
-    // Try refreshing session once on page load
-    const refreshAuthSession = async () => {
-      await refreshSession();
-    };
-    
-    refreshAuthSession();
-  }, [isAuthenticated, navigate, refreshSession]);
+  }, [isAuthenticated, navigate]);
   
-  // Check for email from previous screen or localStorage
+  // Load saved form data
   useEffect(() => {
-    // First check for any pending auth email
     const pendingEmail = localStorage.getItem("pending_auth_email");
     if (pendingEmail) {
       setEmail(pendingEmail);
     } else {
-      // Fallback to last used email for convenience
       const lastEmail = localStorage.getItem("last_email");
       if (lastEmail) {
         setEmail(lastEmail);
       }
     }
     
-    // Check for company name from localStorage
     const pendingCompanyName = localStorage.getItem("pending_company_name");
     if (pendingCompanyName && isSignUp) {
       setCompanyName(pendingCompanyName);
     }
 
-    // Check for remember me preference
     const remembered = localStorage.getItem("auth_remember_me");
     if (remembered === "true") {
       setRememberMe(true);
@@ -65,28 +55,28 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     try {
       if (isSignUp) {
-        // Handle sign up with name and company name
         const { success, error } = await signUp(email, password, {
-          first_name: name,
+          first_name: name.split(' ')[0],
+          last_name: name.split(' ').slice(1).join(' '),
           company_name: companyName
         });
         
         if (success) {
-          console.log("Signup successful, redirecting to onboarding");
+          console.log("Signup successful");
           localStorage.setItem("pending_auth_email", email);
           onSuccess(email);
         } else if (error) {
           onError(error);
         }
       } else {
-        // Handle sign in
         console.log("Attempting to sign in with email:", email);
-        const { success, error, session } = await signIn(email, password);
+        const { success, error } = await signIn(email, password);
         
-        if (success && session) {
+        if (success) {
           console.log("Login successful, redirecting to dashboard");
           if (rememberMe) {
             localStorage.setItem("auth_remember_me", "true");
@@ -94,7 +84,6 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
             localStorage.removeItem("auth_remember_me");
           }
           onSuccess(email);
-          // Redirect to dashboard
           navigate("/dashboard");
         } else if (error) {
           console.error("Login failed:", error);
@@ -104,6 +93,8 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
     } catch (error: any) {
       console.error("Unexpected error during authentication:", error);
       onError(`An unexpected error occurred: ${error.message || "Please try again"}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -140,15 +131,6 @@ const AuthForm = ({ isSignUp, onSuccess, onError }: AuthFormProps) => {
           {isSubmitting ? "Processing..." : isSignUp ? "Create Account" : "Sign In"}
         </Button>
       </div>
-      
-      {/* Debug section in development */}
-      {process.env.NODE_ENV === "development" && !isSignUp && (
-        <div className="text-xs text-gray-500 mt-4 p-2 border border-gray-200 rounded">
-          <p>Debug - Auth state:</p>
-          <p>Is Submitting: {isSubmitting ? "true" : "false"}</p>
-          <p>Is Authenticated: {isAuthenticated ? "true" : "false"}</p>
-        </div>
-      )}
     </form>
   );
 };

@@ -8,13 +8,11 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  isSubmitting: boolean;
   isAuthenticated: boolean;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null; session: Session | null }>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error: string | null }>;
   signUp: (email: string, password: string, userData: { first_name?: string; last_name?: string; company_name?: string }) => 
     Promise<{ success: boolean; error: string | null }>;
   signOut: () => Promise<void>;
-  refreshSession: () => Promise<{ success: boolean; error: string | null; session: Session | null }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +21,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Initialize auth state and set up listener
@@ -40,8 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           toast.success("Successfully signed in!");
         } else if (event === 'SIGNED_OUT') {
           toast.info("Signed out successfully");
-        } else if (event === 'TOKEN_REFRESHED') {
-          console.log("Auth token refreshed");
         }
       }
     );
@@ -62,15 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     checkSession();
 
-    // Clean up subscription
     return () => {
       subscription.unsubscribe();
     };
   }, []);
 
-  // Sign in function
   const signIn = async (email: string, password: string) => {
-    setIsSubmitting(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -78,25 +70,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) {
-        return { success: false, error: error.message, session: null };
+        return { success: false, error: error.message };
       }
 
-      return { success: true, error: null, session: data.session };
+      return { success: true, error: null };
     } catch (error: any) {
       console.error("Error signing in:", error);
-      return { success: false, error: error.message, session: null };
-    } finally {
-      setIsSubmitting(false);
+      return { success: false, error: error.message };
     }
   };
 
-  // Sign up function
   const signUp = async (
     email: string, 
     password: string, 
     userData: { first_name?: string; last_name?: string; company_name?: string }
   ) => {
-    setIsSubmitting(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -110,7 +98,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: error.message };
       }
 
-      // Check if email confirmation is required
       if (data.user && !data.session) {
         toast.info("Check your email for the confirmation link");
       }
@@ -119,42 +106,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       console.error("Error signing up:", error);
       return { success: false, error: error.message };
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  // Sign out function
   const signOut = async () => {
-    setIsSubmitting(true);
     try {
       await supabase.auth.signOut();
     } catch (error) {
       console.error("Error signing out:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Refresh session function
-  const refreshSession = async () => {
-    setIsSubmitting(true);
-    try {
-      console.log("Manually refreshing session...");
-      const { data, error } = await supabase.auth.refreshSession();
-      
-      if (error) {
-        console.error("Error refreshing session:", error);
-        return { success: false, error: error.message, session: null };
-      }
-      
-      console.log("Session refreshed successfully");
-      return { success: true, error: null, session: data.session };
-    } catch (error: any) {
-      console.error("Error refreshing session:", error);
-      return { success: false, error: error.message, session: null };
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -163,19 +122,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user, 
       session,
       isLoading,
-      isSubmitting,
       isAuthenticated, 
       signIn, 
       signUp, 
-      signOut,
-      refreshSession
+      signOut
     }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Custom hook for using auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

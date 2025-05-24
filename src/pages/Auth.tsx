@@ -5,59 +5,35 @@ import AuthForm from "@/components/auth/AuthForm";
 import AuthError from "@/components/auth/AuthError";
 import AuthToggle from "@/components/auth/AuthToggle";
 import AuthHeader from "@/components/auth/AuthHeader";
-import AuthLoader from "@/components/auth/AuthLoader";
-import InviteMessage from "@/components/auth/InviteMessage";
-import AuthenticatedMessage from "@/components/auth/AuthenticatedMessage";
-import { useInviteProcess } from "@/hooks/useInviteProcess";
-import { useAuthRedirection } from "@/hooks/useAuthRedirection";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   
-  const {
-    inviteToken,
-    authError,
-    setAuthError,
-    isProcessingInvite,
-    extractInviteTokenFromPath,
-    handleInviteAccept
-  } = useInviteProcess();
-  
-  const {
-    isAuthenticated,
-    isCheckingAuth,
-    handleSignOut,
-    handleBackToDashboard
-  } = useAuthRedirection(inviteToken);
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // Check and clear any stored auth errors
+  // Check for stored auth errors
   useEffect(() => {
     const storedError = localStorage.getItem("auth_error");
     if (storedError) {
       setAuthError(storedError);
-      // Clear after reading
       localStorage.removeItem("auth_error");
     }
-  }, [setAuthError]);
+  }, []);
 
-  // Check if we should default to signup mode based on URL param
+  // Check if we should default to signup mode
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get("signup") === "true") {
       setIsSignUp(true);
     }
-
-    // Check if this is an invitation link
-    extractInviteTokenFromPath(location.pathname);
-    
-    // Clear any previous errors when changing modes
     setAuthError(null);
-  }, [location, extractInviteTokenFromPath, setAuthError]);
+  }, [location]);
 
-  // Enhanced redirect logic to ensure authenticated users are sent to dashboard
+  // Redirect authenticated users
   useEffect(() => {
     if (isAuthenticated) {
       console.log("User is authenticated, redirecting to dashboard");
@@ -67,15 +43,8 @@ const Auth = () => {
 
   const handleAuthSuccess = (email: string) => {
     setAuthError(null);
-    if (isSignUp) {
-      // For new users, redirect to onboarding page
-      localStorage.setItem("pending_auth_email", email);
-      handleBackToDashboard();
-    } else if (inviteToken) {
-      // For existing users accepting an invite
-      handleInviteAccept(inviteToken, email);
-    } else {
-      // For existing users, redirect to dashboard
+    localStorage.setItem("last_email", email);
+    if (!isSignUp) {
       navigate("/dashboard", { replace: true });
     }
   };
@@ -86,74 +55,39 @@ const Auth = () => {
 
   const handleToggleMode = () => {
     setIsSignUp(!isSignUp);
-    setAuthError(null); // Clear errors on toggle
-  };
-
-  // Manual redirect to dashboard button
-  const handleManualRedirect = async () => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session) {
-        navigate("/dashboard", { replace: true });
-      } else {
-        setAuthError("Please log in first");
-      }
-    } catch (error) {
-      console.error("Error checking auth:", error);
-      setAuthError("Error checking authentication status");
-    }
+    setAuthError(null);
   };
 
   // Show loading state while checking auth
-  if (isCheckingAuth) {
-    return <AuthLoader title="Checking authentication..." message="Please wait a moment" />;
-  }
-
-  // Show loading state while processing invitation
-  if (isProcessingInvite) {
-    return <AuthLoader title="Processing Invitation" message="Please wait while we verify your invitation..." />;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4">Checking authentication...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
-        <AuthHeader 
-          isSignUp={isSignUp} 
-          onBackToDashboard={handleBackToDashboard}
-          showBackButton={isAuthenticated} 
-        />
-        
-        <InviteMessage hasInvite={!!inviteToken} />
-        
-        {isAuthenticated && (
-          <>
-            <AuthenticatedMessage onSignOut={handleSignOut} />
-            <div className="mt-4">
-              <button 
-                onClick={handleManualRedirect}
-                className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md"
-              >
-                Go to Dashboard
-              </button>
-            </div>
-          </>
-        )}
-        
+        <AuthHeader isSignUp={isSignUp} />
         <AuthError message={authError} />
         
         {!isAuthenticated && (
-          <AuthForm 
-            isSignUp={isSignUp} 
-            onSuccess={handleAuthSuccess}
-            onError={handleAuthError}
-          />
-        )}
-
-        {!inviteToken && !isAuthenticated && (
-          <AuthToggle 
-            isSignUp={isSignUp} 
-            onToggle={handleToggleMode} 
-          />
+          <>
+            <AuthForm 
+              isSignUp={isSignUp} 
+              onSuccess={handleAuthSuccess}
+              onError={handleAuthError}
+            />
+            <AuthToggle 
+              isSignUp={isSignUp} 
+              onToggle={handleToggleMode} 
+            />
+          </>
         )}
       </div>
     </div>

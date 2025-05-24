@@ -1,5 +1,3 @@
 
-// Re-export from auth context for backward compatibility
-import { useAuth as useAuthFromContext } from "@/contexts/AuthContext";
-
-export const useAuth = useAuthFromContext;
+// Simple re-export from the main AuthContext
+export { useAuth } from "@/contexts/AuthContext";
