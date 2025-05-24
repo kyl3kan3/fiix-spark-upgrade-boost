@@ -6,7 +6,7 @@ import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/auth";
 import { useProfile } from "@/hooks/profile/useProfile";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
 

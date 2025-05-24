@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/auth";
 
 export function useProfileData() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);

@@ -7,7 +7,7 @@ import CompanyInformation from "@/components/profile/CompanyInformation";
 import SetAdminUser from "@/components/admin/SetAdminUser";
 import DeleteAccountButton from "@/components/profile/DeleteAccountButton";
 import SignOutButton from "./SignOutButton";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/auth";
 
 interface ProfileTabContentProps {
   refreshKey: number;

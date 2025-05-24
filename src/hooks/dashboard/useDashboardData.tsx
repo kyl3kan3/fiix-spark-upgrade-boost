@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/auth";
 import { useProfile } from "@/hooks/profile/useProfile";
 import { toast } from "sonner";
 
