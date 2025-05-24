@@ -2,20 +2,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface FormFieldProps {
-  id: string;
-  name: string;
-  type: string;
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  autoComplete?: string;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
-}
+import { FormFieldProps } from "@/types/forms";
 
 export const FormField: React.FC<FormFieldProps> = ({
   id,

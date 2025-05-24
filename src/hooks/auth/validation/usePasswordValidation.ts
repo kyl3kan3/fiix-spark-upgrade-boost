@@ -1,11 +1,7 @@
 
 import { useCallback } from "react";
 import { AUTH_VALIDATION } from "@/constants/authConstants";
-
-interface ValidationResult {
-  isValid: boolean;
-  error?: string;
-}
+import { ValidationResult } from "@/types/forms";
 
 export function usePasswordValidation() {
   const validatePassword = useCallback((password: string, isSignUp: boolean = false): ValidationResult => {

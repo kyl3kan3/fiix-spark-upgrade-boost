@@ -6,12 +6,9 @@ import { PasswordField } from "./fields/PasswordField";
 import { RememberMeField } from "./fields/RememberMeField";
 import { useSignInForm } from "./hooks/useSignInForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS } from "@/constants/authConstants";
+import { FormSubmissionProps } from "@/types/forms";
 
-interface SignInFormProps {
-  onError: (message: string) => void;
-}
-
-export const SignInForm: React.FC<SignInFormProps> = ({ onError }) => {
+export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
   const {
     email,
     setEmail,

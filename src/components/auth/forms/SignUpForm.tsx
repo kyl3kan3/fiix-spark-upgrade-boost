@@ -7,12 +7,9 @@ import { NameField } from "./fields/NameField";
 import { CompanyNameField } from "./fields/CompanyNameField";
 import { useSignUpForm } from "./hooks/useSignUpForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
+import { FormSubmissionProps } from "@/types/forms";
 
-interface SignUpFormProps {
-  onError: (message: string) => void;
-}
-
-export const SignUpForm: React.FC<SignUpFormProps> = ({ onError }) => {
+export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
   const {
     email,
     setEmail,

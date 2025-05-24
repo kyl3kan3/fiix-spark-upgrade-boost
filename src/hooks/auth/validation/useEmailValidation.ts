@@ -1,10 +1,6 @@
 
 import { useCallback } from "react";
-
-interface ValidationResult {
-  isValid: boolean;
-  error?: string;
-}
+import { ValidationResult } from "@/types/forms";
 
 export function useEmailValidation() {
   const validateEmail = useCallback((email: string): ValidationResult => {

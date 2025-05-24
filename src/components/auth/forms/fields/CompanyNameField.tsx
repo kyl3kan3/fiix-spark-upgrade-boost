@@ -2,14 +2,9 @@
 import React from "react";
 import { FormField } from "./FormField";
 import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS } from "@/constants/authConstants";
+import { BaseFormFieldProps } from "@/types/forms";
 
-interface CompanyNameFieldProps {
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}
-
-export const CompanyNameField: React.FC<CompanyNameFieldProps> = ({ value, onChange, disabled }) => {
+export const CompanyNameField: React.FC<BaseFormFieldProps> = ({ value, onChange, disabled }) => {
   return (
     <FormField
       id="company-name"

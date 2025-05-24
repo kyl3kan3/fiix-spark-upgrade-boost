@@ -1,16 +1,9 @@
 
 import { useState } from "react";
-
-interface FormData {
-  email: string;
-  password: string;
-  name: string;
-  companyName: string;
-  rememberMe: boolean;
-}
+import { FormStateData } from "@/types/forms";
 
 export function useFormState() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormStateData>({
     email: "",
     password: "",
     name: "",

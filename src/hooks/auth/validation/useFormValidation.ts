@@ -2,11 +2,7 @@
 import { useEmailValidation } from "./useEmailValidation";
 import { usePasswordValidation } from "./usePasswordValidation";
 import { useNameValidation } from "./useNameValidation";
-
-export interface ValidationResult {
-  isValid: boolean;
-  error?: string;
-}
+import { ValidationResult } from "@/types/forms";
 
 export function useFormValidation() {
   const { validateEmail } = useEmailValidation();

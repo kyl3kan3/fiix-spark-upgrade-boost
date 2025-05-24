@@ -2,14 +2,9 @@
 import React from "react";
 import { FormField } from "./FormField";
 import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS, AUTH_AUTOCOMPLETE } from "@/constants/authConstants";
+import { BaseFormFieldProps } from "@/types/forms";
 
-interface EmailFieldProps {
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}
-
-export const EmailField: React.FC<EmailFieldProps> = ({ value, onChange, disabled }) => {
+export const EmailField: React.FC<BaseFormFieldProps> = ({ value, onChange, disabled }) => {
   return (
     <FormField
       id="email"
