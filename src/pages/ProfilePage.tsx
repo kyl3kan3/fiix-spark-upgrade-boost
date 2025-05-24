@@ -4,20 +4,18 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProfileLoading } from "@/components/profile/page/ProfileLoading";
-import { ProfileError } from "@/components/profile/page/ProfileError";
-import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSimpleProfile } from "@/hooks/profile/useSimpleProfile";
+import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { profileData, isLoading: profileLoading, error, refreshProfile } = useSimpleProfile();
   const [refreshKey, setRefreshKey] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   
   // Extract the tab from the URL search params
   const searchParams = new URLSearchParams(location.search);
@@ -38,20 +36,24 @@ const ProfilePage = () => {
   };
 
   // Handle refreshing the profile data
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshKey(prev => prev + 1);
-    setError(null);
-    setIsLoading(true);
-    toast.info("Refreshing profile data...");
-    
-    // Simulate loading and then finish
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    await refreshProfile();
+    toast.info("Profile data refreshed");
   };
 
-  if (authLoading) {
-    return <ProfileLoading />;
+  if (authLoading || profileLoading) {
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   if (!isAuthenticated) {
@@ -61,7 +63,20 @@ const ProfilePage = () => {
 
   // Show error state if there was a problem
   if (error) {
-    return <ProfileError error={error} onRefresh={handleRefresh} />;
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+          <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
+            <p className="text-red-700">{error}</p>
+          </div>
+          <Button onClick={handleRefresh}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Try Again
+          </Button>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
@@ -70,18 +85,10 @@ const ProfilePage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
-          {isLoading && (
-            <div className="flex items-center text-sm text-amber-600">
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Loading profile data...
-            </div>
-          )}
-          {!isLoading && (
-            <Button variant="ghost" size="sm" onClick={handleRefresh}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-          )}
+          <Button variant="ghost" size="sm" onClick={handleRefresh}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
         </div>
         
         <ProfileTabs 
