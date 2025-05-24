@@ -1,50 +1,24 @@
 
-import { useState } from "react";
-import { useSignUp } from "@/hooks/auth/actions/useSignUp";
-import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
-import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
+import { useFormState } from "@/hooks/auth/forms/useFormState";
+import { useAuthSubmission } from "@/hooks/auth/forms/useAuthSubmission";
 
 export function useSignUpForm(onError: (message: string) => void) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  
-  const { signUp, isLoading } = useSignUp();
-  const { handleAuthSuccess } = useAuthNavigation();
-  const { validateSignUpForm } = useFormValidation();
+  const { formData, setEmail, setPassword, setName, setCompanyName } = useFormState();
+  const { handleSignUp, isLoading } = useAuthSubmission({ onError });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const validation = validateSignUpForm(email, password, name, companyName);
-    if (!validation.isValid) {
-      onError(validation.error!);
-      return;
-    }
-    
-    const result = await signUp(email, password, {
-      first_name: name.split(' ')[0],
-      last_name: name.split(' ').slice(1).join(' '),
-      company_name: companyName
-    });
-    
-    if (result.success) {
-      localStorage.setItem("pending_auth_email", email);
-      handleAuthSuccess();
-    } else if (result.error) {
-      onError(result.error);
-    }
+    await handleSignUp(formData.email, formData.password, formData.name, formData.companyName);
   };
 
   return {
-    email,
+    email: formData.email,
     setEmail,
-    password,
+    password: formData.password,
     setPassword,
-    name,
+    name: formData.name,
     setName,
-    companyName,
+    companyName: formData.companyName,
     setCompanyName,
     isLoading,
     handleSubmit

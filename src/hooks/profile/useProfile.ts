@@ -1,31 +1,18 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/auth";
+import { useProfileActions } from "./useProfileActions";
 import { useProfileState } from "./useProfileState";
-import { useProfileOperations } from "./useProfileOperations";
-import { toast } from "sonner";
+import { ProfileData } from "@/components/profile/types";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useProfile() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const {
-    isLoading,
-    isSaving,
-    error,
-    setLoadingState,
-    setSavingState,
-    setErrorState,
-    clearError
-  } = useProfileState();
-  
-  const {
-    fetchProfile,
-    updateProfile,
-    uploadAvatar,
-    deleteAvatar
-  } = useProfileOperations();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const { isLoading, isSaving, error, setLoadingState, setSavingState, setErrorState, clearError } = useProfileState();
+  const { saveProfile: saveProfileAction, updateAvatar: updateAvatarAction, createProfile } = useProfileActions();
 
-  const loadProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async () => {
     if (!user?.id) {
       setLoadingState(false);
       return;
@@ -34,81 +21,69 @@ export function useProfile() {
     try {
       setLoadingState(true);
       clearError();
-      
-      const data = await fetchProfile(user.id);
-      setProfile(data);
-    } catch (err) {
-      console.error("Error loading profile:", err);
-      setErrorState(err instanceof Error ? err.message : "Failed to load profile");
+
+      const { data, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (fetchError) throw fetchError;
+
+      if (!data) {
+        // Create profile if it doesn't exist
+        const newProfile = await createProfile(user.id, user.email);
+        setProfile(newProfile);
+      } else {
+        setProfile(data);
+      }
+    } catch (error: any) {
+      console.error("Error fetching profile:", error);
+      setErrorState(error.message);
     } finally {
       setLoadingState(false);
     }
-  }, [user?.id, fetchProfile, setLoadingState, setErrorState, clearError]);
+  }, [user, setLoadingState, setErrorState, clearError, createProfile]);
 
-  const saveProfile = useCallback(async (updates: any) => {
-    if (!user?.id) {
-      throw new Error("No user ID available");
-    }
+  const saveProfile = useCallback(async (updates: Partial<ProfileData>) => {
+    if (!profile) return;
 
     try {
       setSavingState(true);
-      clearError();
-
-      const updatedProfile = await updateProfile(user.id, updates);
+      const updatedProfile = await saveProfileAction(profile.id, updates);
       setProfile(updatedProfile);
-      
-      toast.success("Profile updated successfully");
       return updatedProfile;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update profile";
-      setErrorState(errorMessage);
-      toast.error(errorMessage);
-      throw err;
+    } catch (error) {
+      throw error;
     } finally {
       setSavingState(false);
     }
-  }, [user?.id, updateProfile, setSavingState, setErrorState, clearError]);
+  }, [profile, saveProfileAction, setSavingState]);
 
   const updateAvatar = useCallback(async (file: File | null) => {
-    if (!user?.id) {
-      throw new Error("No user ID available");
-    }
+    if (!profile) return;
 
     try {
       setSavingState(true);
-      clearError();
-
-      let avatarUrl = null;
-
-      if (file) {
-        avatarUrl = await uploadAvatar(user.id, file);
-      } else if (profile?.avatar_url) {
-        await deleteAvatar(profile.avatar_url);
-      }
-
-      const updatedProfile = await updateProfile(user.id, { avatar_url: avatarUrl });
+      const updatedProfile = await updateAvatarAction(profile.id, file);
       setProfile(updatedProfile);
-      
-      toast.success(file ? "Avatar updated successfully" : "Avatar removed successfully");
       return updatedProfile;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update avatar";
-      setErrorState(errorMessage);
-      toast.error(errorMessage);
-      throw err;
+    } catch (error) {
+      throw error;
     } finally {
       setSavingState(false);
     }
-  }, [user?.id, profile?.avatar_url, uploadAvatar, deleteAvatar, updateProfile, setSavingState, setErrorState, clearError]);
+  }, [profile, updateAvatarAction, setSavingState]);
 
   const refreshProfile = useCallback(() => {
-    loadProfile();
-  }, [loadProfile]);
+    fetchProfile();
+  }, [fetchProfile]);
 
-  // Load profile on mount and when user changes
   useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
+    if (user?.id) {
+      fetchProfile();
+    }
+  }, [fetchProfile, user?.id]);
 
   return {
     profile,
@@ -117,7 +92,6 @@ export function useProfile() {
     error,
     saveProfile,
     updateAvatar,
-    refreshProfile,
-    clearError
+    refreshProfile
   };
 }
