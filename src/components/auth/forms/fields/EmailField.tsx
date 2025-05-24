@@ -1,7 +1,6 @@
 
 import React from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "./FormField";
 
 interface EmailFieldProps {
   value: string;
@@ -11,20 +10,17 @@ interface EmailFieldProps {
 
 export const EmailField: React.FC<EmailFieldProps> = ({ value, onChange, disabled }) => {
   return (
-    <div>
-      <Label htmlFor="email">Email</Label>
-      <Input
-        id="email"
-        name="email"
-        type="email"
-        autoComplete="email"
-        required
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="you@example.com"
-        className="mt-1"
-        disabled={disabled}
-      />
-    </div>
+    <FormField
+      id="email"
+      name="email"
+      type="email"
+      label="Email"
+      value={value}
+      onChange={onChange}
+      placeholder="you@example.com"
+      autoComplete="email"
+      required
+      disabled={disabled}
+    />
   );
 };

@@ -1,7 +1,6 @@
 
 import React from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "./FormField";
 
 interface NameFieldProps {
   value: string;
@@ -11,19 +10,16 @@ interface NameFieldProps {
 
 export const NameField: React.FC<NameFieldProps> = ({ value, onChange, disabled }) => {
   return (
-    <div>
-      <Label htmlFor="name">Full Name</Label>
-      <Input
-        id="name"
-        name="name"
-        type="text"
-        required
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="John Doe"
-        className="mt-1"
-        disabled={disabled}
-      />
-    </div>
+    <FormField
+      id="name"
+      name="name"
+      type="text"
+      label="Full Name"
+      value={value}
+      onChange={onChange}
+      placeholder="John Doe"
+      required
+      disabled={disabled}
+    />
   );
 };
