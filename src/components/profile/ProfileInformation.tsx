@@ -1,71 +1,51 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import AvatarUploader from "./AvatarUploader";
 import { ProfileSkeleton } from "./ProfileSkeleton";
-import { ProfileForm } from "./ProfileForm";
 import { ProfileDisplay } from "./ProfileDisplay";
+import { ProfileEditor } from "./ProfileEditor";
+import { AvatarSection } from "./AvatarSection";
 import { useProfile } from "@/hooks/profile/useProfile";
-import { ProfileFormData } from "./types";
-import { toast } from "sonner";
+import { useProfileForm } from "@/hooks/profile/useProfileForm";
+import { useAvatarUpload } from "@/hooks/profile/useAvatarUpload";
 
 const ProfileInformation = () => {
   const [editMode, setEditMode] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const { profile, isLoading, saveProfile, updateAvatar } = useProfile();
-  const [form, setForm] = useState<ProfileFormData>({
-    first_name: "",
-    last_name: "",
-    phone_number: "",
-    email: "",
+  const { profile, isLoading, saveProfile } = useProfile();
+  
+  const profileForm = useProfileForm({
+    initialData: profile!,
+    onSave: saveProfile
   });
+  
+  const avatarUpload = useAvatarUpload(profile?.id);
 
-  // Update form when profile data changes
+  // Update avatar preview when profile data changes
   useEffect(() => {
-    if (profile) {
-      setForm({
-        first_name: profile.first_name || "",
-        last_name: profile.last_name || "",
-        phone_number: profile.phone_number || "",
-        email: profile.email || "",
-      });
+    if (profile?.avatar_url) {
+      avatarUpload.setPreviewUrl(profile.avatar_url);
     }
-  }, [profile]);
+  }, [profile?.avatar_url, avatarUpload.setPreviewUrl]);
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleProfileUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!profile) return false;
-    
-    setIsSaving(true);
-    try {
-      await saveProfile({
-        first_name: form.first_name,
-        last_name: form.last_name,
-        phone_number: form.phone_number,
-        email: form.email,
-      });
-      
-      toast.success("Profile Updated", {
-        description: "Your profile changes have been saved."
-      });
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    const success = await profileForm.handleSubmit(e);
+    if (success) {
       setEditMode(false);
-      return true;
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      return false;
-    } finally {
-      setIsSaving(false);
     }
+    return success;
   };
 
-  const handleAvatarChange = async (avatar: string | null) => {
-    // Convert string URL to null for removal, or handle file upload differently
-    await updateAvatar(null);
+  const handleCancelEdit = () => {
+    profileForm.resetForm();
+    setEditMode(false);
+  };
+
+  const handleAvatarUpload = async (file: File | null) => {
+    try {
+      await avatarUpload.handleFileUpload(file);
+    } catch (error) {
+      console.error("Avatar upload failed:", error);
+    }
   };
 
   if (isLoading) {
@@ -96,19 +76,22 @@ const ProfileInformation = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-6">
-          <AvatarUploader 
-            currentAvatarUrl={profile.avatar_url} 
-            onAvatarChange={handleAvatarChange}
+          <AvatarSection 
+            currentAvatarUrl={profile.avatar_url}
+            preview={avatarUpload.preview}
+            isUploading={avatarUpload.isUploading}
+            onFileSelect={handleAvatarUpload}
             aria-label="Profile avatar, click to change"
           />
           <div className="w-full">
             {editMode ? (
-              <ProfileForm
-                form={form}
-                isSaving={isSaving}
-                onFormChange={handleFormChange}
-                onSubmit={handleProfileUpdate}
-                onCancel={() => setEditMode(false)}
+              <ProfileEditor
+                formData={profileForm.formData}
+                errors={profileForm.errors}
+                isSaving={profileForm.isSaving}
+                onInputChange={profileForm.handleInputChange}
+                onSubmit={handleSaveProfile}
+                onCancel={handleCancelEdit}
               />
             ) : (
               <ProfileDisplay 
