@@ -1,5 +1,8 @@
 
 import { useState, useCallback } from "react";
+import { useEmailValidation } from "./useEmailValidation";
+import { usePasswordValidation } from "./usePasswordValidation";
+import { useNameValidation } from "./useNameValidation";
 
 interface ValidationResult {
   isValid: boolean;
@@ -8,31 +11,9 @@ interface ValidationResult {
 
 export function useFormValidation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const validateEmail = useCallback((email: string): ValidationResult => {
-    if (!email.trim()) {
-      return { isValid: false, error: "Email is required" };
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return { isValid: false, error: "Please enter a valid email address" };
-    }
-    
-    return { isValid: true };
-  }, []);
-
-  const validatePassword = useCallback((password: string, isSignUp: boolean = false): ValidationResult => {
-    if (!password.trim()) {
-      return { isValid: false, error: "Password is required" };
-    }
-    
-    if (isSignUp && password.length < 6) {
-      return { isValid: false, error: "Password must be at least 6 characters long" };
-    }
-    
-    return { isValid: true };
-  }, []);
+  const { validateEmail } = useEmailValidation();
+  const { validatePassword } = usePasswordValidation();
+  const { validateName, validateCompanyName } = useNameValidation();
 
   const validateSignInForm = useCallback((email: string, password: string): ValidationResult => {
     const emailValidation = validateEmail(email);
@@ -54,12 +35,14 @@ export function useFormValidation() {
     name: string, 
     companyName: string
   ): ValidationResult => {
-    if (!name.trim()) {
-      return { isValid: false, error: "Full name is required" };
+    const nameValidation = validateName(name);
+    if (!nameValidation.isValid) {
+      return nameValidation;
     }
     
-    if (!companyName.trim()) {
-      return { isValid: false, error: "Company name is required" };
+    const companyValidation = validateCompanyName(companyName);
+    if (!companyValidation.isValid) {
+      return companyValidation;
     }
     
     const emailValidation = validateEmail(email);
@@ -73,7 +56,7 @@ export function useFormValidation() {
     }
     
     return { isValid: true };
-  }, [validateEmail, validatePassword]);
+  }, [validateEmail, validatePassword, validateName, validateCompanyName]);
 
   const clearErrors = useCallback(() => {
     setErrors({});

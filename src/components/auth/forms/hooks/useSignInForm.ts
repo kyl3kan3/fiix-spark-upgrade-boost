@@ -1,10 +1,10 @@
 
 import { useFormState } from "@/hooks/auth/forms/useFormState";
-import { useAuthSubmission } from "@/hooks/auth/forms/useAuthSubmission";
+import { useSignInSubmission } from "@/hooks/auth/forms/useSignInSubmission";
 
 export function useSignInForm(onError: (message: string) => void) {
   const { formData, setEmail, setPassword, setRememberMe } = useFormState();
-  const { handleSignIn, isLoading } = useAuthSubmission({ onError });
+  const { handleSignIn, isLoading } = useSignInSubmission({ onError });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
