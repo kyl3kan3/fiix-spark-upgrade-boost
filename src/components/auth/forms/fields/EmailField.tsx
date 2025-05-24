@@ -12,16 +12,16 @@ interface EmailFieldProps {
 export const EmailField: React.FC<EmailFieldProps> = ({ value, onChange, disabled }) => {
   return (
     <div>
-      <Label htmlFor="email-address">Email address</Label>
+      <Label htmlFor="email">Email</Label>
       <Input
-        id="email-address"
+        id="email"
         name="email"
         type="email"
         autoComplete="email"
         required
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="your@email.com"
+        placeholder="you@example.com"
         className="mt-1"
         disabled={disabled}
       />

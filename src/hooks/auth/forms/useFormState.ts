@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-interface FormState {
+interface FormData {
   email: string;
   password: string;
   name: string;
@@ -9,33 +9,36 @@ interface FormState {
   rememberMe: boolean;
 }
 
-const initialState: FormState = {
-  email: "",
-  password: "",
-  name: "",
-  companyName: "",
-  rememberMe: false
-};
-
 export function useFormState() {
-  const [formData, setFormData] = useState<FormState>(initialState);
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+    name: "",
+    companyName: "",
+    rememberMe: false
+  });
 
-  const updateField = (field: keyof FormState, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const resetForm = () => {
-    setFormData(initialState);
-  };
+  const setEmail = (email: string) => 
+    setFormData(prev => ({ ...prev, email }));
+  
+  const setPassword = (password: string) => 
+    setFormData(prev => ({ ...prev, password }));
+  
+  const setName = (name: string) => 
+    setFormData(prev => ({ ...prev, name }));
+  
+  const setCompanyName = (companyName: string) => 
+    setFormData(prev => ({ ...prev, companyName }));
+  
+  const setRememberMe = (rememberMe: boolean) => 
+    setFormData(prev => ({ ...prev, rememberMe }));
 
   return {
     formData,
-    updateField,
-    resetForm,
-    setEmail: (value: string) => updateField('email', value),
-    setPassword: (value: string) => updateField('password', value),
-    setName: (value: string) => updateField('name', value),
-    setCompanyName: (value: string) => updateField('companyName', value),
-    setRememberMe: (value: boolean) => updateField('rememberMe', value)
+    setEmail,
+    setPassword,
+    setName,
+    setCompanyName,
+    setRememberMe
   };
 }

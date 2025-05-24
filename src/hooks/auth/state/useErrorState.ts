@@ -1,16 +1,16 @@
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 export function useErrorState() {
   const [error, setError] = useState<string | null>(null);
 
-  const showError = useCallback((message: string) => {
+  const showError = (message: string) => {
     setError(message);
-  }, []);
+  };
 
-  const clearError = useCallback(() => {
+  const clearError = () => {
     setError(null);
-  }, []);
+  };
 
   return {
     error,

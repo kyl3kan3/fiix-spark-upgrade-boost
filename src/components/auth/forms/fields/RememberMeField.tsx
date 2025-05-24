@@ -9,17 +9,24 @@ interface RememberMeFieldProps {
   disabled?: boolean;
 }
 
-export const RememberMeField: React.FC<RememberMeFieldProps> = ({ checked, onChange, disabled }) => {
+export const RememberMeField: React.FC<RememberMeFieldProps> = ({ 
+  checked, 
+  onChange,
+  disabled 
+}) => {
   return (
     <div className="flex items-center space-x-2">
-      <Checkbox 
-        id="remember-me" 
+      <Checkbox
+        id="remember-me"
         checked={checked}
-        onCheckedChange={(checked) => onChange(checked as boolean)}
+        onCheckedChange={(checked) => onChange(!!checked)}
         disabled={disabled}
       />
-      <Label htmlFor="remember-me" className="text-sm font-medium cursor-pointer">
-        Stay logged in
+      <Label 
+        htmlFor="remember-me" 
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        Remember me
       </Label>
     </div>
   );
