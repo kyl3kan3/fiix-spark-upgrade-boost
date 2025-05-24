@@ -5,6 +5,7 @@ import { EmailField } from "./fields/EmailField";
 import { PasswordField } from "./fields/PasswordField";
 import { RememberMeField } from "./fields/RememberMeField";
 import { useSignInForm } from "./hooks/useSignInForm";
+import { AUTH_BUTTON_TEXT, AUTH_COLORS } from "@/constants/authConstants";
 
 interface SignInFormProps {
   onError: (message: string) => void;
@@ -44,10 +45,10 @@ export const SignInForm: React.FC<SignInFormProps> = ({ onError }) => {
 
       <Button
         type="submit"
-        className="w-full bg-maintenease-600 hover:bg-maintenease-700"
+        className={`w-full bg-${AUTH_COLORS.PRIMARY} hover:bg-${AUTH_COLORS.PRIMARY_HOVER}`}
         disabled={isLoading}
       >
-        {isLoading ? "Signing in..." : "Sign In"}
+        {isLoading ? AUTH_BUTTON_TEXT.SIGNING_IN : AUTH_BUTTON_TEXT.SIGN_IN}
       </Button>
     </form>
   );

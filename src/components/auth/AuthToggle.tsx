@@ -1,4 +1,6 @@
 
+import { AUTH_BUTTON_TEXT, AUTH_COLORS } from "@/constants/authConstants";
+
 interface AuthToggleProps {
   isSignUp: boolean;
   onToggle: () => void;
@@ -10,9 +12,9 @@ const AuthToggle = ({ isSignUp, onToggle }: AuthToggleProps) => {
       <button
         type="button"
         onClick={onToggle}
-        className="text-maintenease-600 hover:text-maintenease-800 text-sm font-medium"
+        className={`text-${AUTH_COLORS.PRIMARY_TEXT} hover:text-${AUTH_COLORS.PRIMARY_TEXT_HOVER} text-sm font-medium`}
       >
-        {isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
+        {isSignUp ? AUTH_BUTTON_TEXT.SIGN_IN_TOGGLE : AUTH_BUTTON_TEXT.SIGN_UP_TOGGLE}
       </button>
     </div>
   );

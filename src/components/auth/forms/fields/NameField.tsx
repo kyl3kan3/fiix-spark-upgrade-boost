@@ -1,6 +1,7 @@
 
 import React from "react";
 import { FormField } from "./FormField";
+import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS } from "@/constants/authConstants";
 
 interface NameFieldProps {
   value: string;
@@ -14,10 +15,10 @@ export const NameField: React.FC<NameFieldProps> = ({ value, onChange, disabled 
       id="name"
       name="name"
       type="text"
-      label="Full Name"
+      label={AUTH_FIELD_LABELS.FULL_NAME}
       value={value}
       onChange={onChange}
-      placeholder="John Doe"
+      placeholder={AUTH_PLACEHOLDERS.FULL_NAME}
       required
       disabled={disabled}
     />

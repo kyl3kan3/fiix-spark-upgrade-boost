@@ -6,6 +6,7 @@ import { PasswordField } from "./fields/PasswordField";
 import { NameField } from "./fields/NameField";
 import { CompanyNameField } from "./fields/CompanyNameField";
 import { useSignUpForm } from "./hooks/useSignUpForm";
+import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE } from "@/constants/authConstants";
 
 interface SignUpFormProps {
   onError: (message: string) => void;
@@ -48,17 +49,17 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onError }) => {
       <PasswordField
         value={password}
         onChange={setPassword}
-        label="Password"
-        autoComplete="new-password"
+        label={AUTH_BUTTON_TEXT.PASSWORD}
+        autoComplete={AUTH_AUTOCOMPLETE.NEW_PASSWORD}
         disabled={isLoading}
       />
 
       <Button
         type="submit"
-        className="w-full bg-maintenease-600 hover:bg-maintenease-700"
+        className={`w-full bg-${AUTH_COLORS.PRIMARY} hover:bg-${AUTH_COLORS.PRIMARY_HOVER}`}
         disabled={isLoading}
       >
-        {isLoading ? "Creating Account..." : "Create Account"}
+        {isLoading ? AUTH_BUTTON_TEXT.CREATING_ACCOUNT : AUTH_BUTTON_TEXT.CREATE_ACCOUNT}
       </Button>
     </form>
   );

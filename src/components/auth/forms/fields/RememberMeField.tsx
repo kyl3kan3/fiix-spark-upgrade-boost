@@ -2,6 +2,7 @@
 import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { AUTH_FIELD_LABELS } from "@/constants/authConstants";
 
 interface RememberMeFieldProps {
   checked: boolean;
@@ -26,7 +27,7 @@ export const RememberMeField: React.FC<RememberMeFieldProps> = ({
         htmlFor="remember-me" 
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
-        Remember me
+        {AUTH_FIELD_LABELS.REMEMBER_ME}
       </Label>
     </div>
   );

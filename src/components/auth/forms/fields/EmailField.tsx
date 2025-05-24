@@ -1,6 +1,7 @@
 
 import React from "react";
 import { FormField } from "./FormField";
+import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS, AUTH_AUTOCOMPLETE } from "@/constants/authConstants";
 
 interface EmailFieldProps {
   value: string;
@@ -14,11 +15,11 @@ export const EmailField: React.FC<EmailFieldProps> = ({ value, onChange, disable
       id="email"
       name="email"
       type="email"
-      label="Email"
+      label={AUTH_FIELD_LABELS.EMAIL}
       value={value}
       onChange={onChange}
-      placeholder="you@example.com"
-      autoComplete="email"
+      placeholder={AUTH_PLACEHOLDERS.EMAIL}
+      autoComplete={AUTH_AUTOCOMPLETE.EMAIL}
       required
       disabled={disabled}
     />

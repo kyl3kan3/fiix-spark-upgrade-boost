@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useSignUp } from "@/hooks/auth/actions/useSignUp";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
+import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 
 interface UseSignUpSubmissionProps {
   onError: (message: string) => void;
@@ -27,7 +28,7 @@ export function useSignUpSubmission({ onError }: UseSignUpSubmissionProps) {
     });
     
     if (result.success) {
-      localStorage.setItem("pending_auth_email", email);
+      localStorage.setItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, email);
       handleAuthSuccess();
       return true;
     } else if (result.error) {

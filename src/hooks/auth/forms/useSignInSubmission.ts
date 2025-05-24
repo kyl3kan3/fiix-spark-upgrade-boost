@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useSignIn } from "@/hooks/auth/actions/useSignIn";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
+import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 
 interface UseSignInSubmissionProps {
   onError: (message: string) => void;
@@ -24,9 +25,9 @@ export function useSignInSubmission({ onError }: UseSignInSubmissionProps) {
     
     if (result.success) {
       if (rememberMe) {
-        localStorage.setItem("auth_remember_me", "true");
+        localStorage.setItem(AUTH_STORAGE_KEYS.REMEMBER_ME, "true");
       } else {
-        localStorage.removeItem("auth_remember_me");
+        localStorage.removeItem(AUTH_STORAGE_KEYS.REMEMBER_ME);
       }
       handleAuthSuccess();
       return true;

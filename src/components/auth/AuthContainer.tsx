@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/auth";
 import { useAuthErrorHandler } from "@/hooks/auth/useAuthErrorHandler";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 import AuthLoader from "./AuthLoader";
+import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 
 export const AuthContainer: React.FC = () => {
   const location = useLocation();
@@ -24,10 +25,10 @@ export const AuthContainer: React.FC = () => {
 
   // Check for stored auth errors
   useEffect(() => {
-    const storedError = localStorage.getItem("auth_error");
+    const storedError = localStorage.getItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
     if (storedError) {
       handleError(storedError);
-      localStorage.removeItem("auth_error");
+      localStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
     }
   }, [handleError]);
 

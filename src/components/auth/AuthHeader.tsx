@@ -1,21 +1,22 @@
 
 import { Button } from "@/components/ui/button";
+import { AUTH_HEADERS } from "@/constants/authConstants";
 
 interface AuthHeaderProps {
   isSignUp: boolean;
-  onBackToDashboard?: () => void;  // Make this optional
-  showBackButton?: boolean;       // Add new prop to control visibility
+  onBackToDashboard?: () => void;
+  showBackButton?: boolean;
 }
 
 const AuthHeader = ({ 
   isSignUp, 
   onBackToDashboard,
-  showBackButton = false  // Default to false
+  showBackButton = false
 }: AuthHeaderProps) => {
   return (
     <div className="flex justify-between items-center">
       <h2 className="text-3xl font-extrabold text-gray-900">
-        {isSignUp ? "Create your account" : "Sign in to your account"}
+        {isSignUp ? AUTH_HEADERS.SIGN_UP : AUTH_HEADERS.SIGN_IN}
       </h2>
       {showBackButton && onBackToDashboard && (
         <Button 
