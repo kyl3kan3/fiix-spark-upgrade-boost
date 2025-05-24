@@ -4,10 +4,10 @@
 import { useProfile } from "./useProfile";
 
 export function useSimpleProfile() {
-  const { profileData, isLoading, error, refreshProfile } = useProfile();
+  const { profile, isLoading, error, refreshProfile } = useProfile();
 
   return {
-    profileData,
+    profileData: profile, // Map profile back to profileData for backwards compatibility
     isLoading,
     error,
     refreshProfile

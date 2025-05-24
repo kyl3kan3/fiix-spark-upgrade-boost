@@ -17,16 +17,16 @@ interface UnifiedCompanyStatus {
 
 export function useUnifiedCompanyStatus(): UnifiedCompanyStatus {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const { profileData, isLoading: profileLoading, error: profileError } = useProfile();
+  const { profile, isLoading: profileLoading, error: profileError } = useProfile();
   const { setupComplete, setSetupComplete } = useSetupStatus();
   const { error, setError, refreshStatus } = useCompanyStatusRefresh();
 
   // Update setup status when profile data changes
   useEffect(() => {
-    if (profileData?.company_id && setupComplete === false) {
+    if (profile?.company_id && setupComplete === false) {
       setSetupComplete(true);
     }
-  }, [profileData?.company_id, setupComplete, setSetupComplete]);
+  }, [profile?.company_id, setupComplete, setSetupComplete]);
 
   // Handle errors
   useEffect(() => {
@@ -38,13 +38,13 @@ export function useUnifiedCompanyStatus(): UnifiedCompanyStatus {
   }, [profileError, setError]);
 
   const isLoading = authLoading || profileLoading || setupComplete === null;
-  const actualSetupComplete = setupComplete === true && !!profileData?.company_id;
+  const actualSetupComplete = setupComplete === true && !!profile?.company_id;
 
   return {
     isLoading,
     isAuthenticated: !!isAuthenticated,
     setupComplete: actualSetupComplete,
-    companyId: profileData?.company_id || null,
+    companyId: profile?.company_id || null,
     error,
     refreshStatus,
     setSetupComplete

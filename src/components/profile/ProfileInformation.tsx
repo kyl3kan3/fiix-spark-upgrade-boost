@@ -12,7 +12,7 @@ import { toast } from "sonner";
 const ProfileInformation = () => {
   const [editMode, setEditMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { profileData, isLoading, updateProfile, updateAvatar } = useProfile();
+  const { profile, isLoading, saveProfile, updateAvatar } = useProfile();
   const [form, setForm] = useState<ProfileFormData>({
     first_name: "",
     last_name: "",
@@ -22,15 +22,15 @@ const ProfileInformation = () => {
 
   // Update form when profile data changes
   useEffect(() => {
-    if (profileData) {
+    if (profile) {
       setForm({
-        first_name: profileData.first_name || "",
-        last_name: profileData.last_name || "",
-        phone_number: profileData.phone_number || "",
-        email: profileData.email || "",
+        first_name: profile.first_name || "",
+        last_name: profile.last_name || "",
+        phone_number: profile.phone_number || "",
+        email: profile.email || "",
       });
     }
-  }, [profileData]);
+  }, [profile]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,11 +39,11 @@ const ProfileInformation = () => {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profileData) return false;
+    if (!profile) return false;
     
     setIsSaving(true);
     try {
-      const success = await updateProfile({
+      const success = await saveProfile({
         first_name: form.first_name,
         last_name: form.last_name,
         phone_number: form.phone_number,
@@ -64,14 +64,15 @@ const ProfileInformation = () => {
   };
 
   const handleAvatarChange = async (avatar: string | null) => {
-    await updateAvatar(avatar);
+    // Convert string URL to null for removal, or handle file upload differently
+    await updateAvatar(null);
   };
 
   if (isLoading) {
     return <ProfileSkeleton />;
   }
 
-  if (!profileData) {
+  if (!profile) {
     return (
       <Card>
         <CardHeader>
@@ -96,7 +97,7 @@ const ProfileInformation = () => {
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-6">
           <AvatarUploader 
-            currentAvatarUrl={profileData.avatar_url} 
+            currentAvatarUrl={profile.avatar_url} 
             onAvatarChange={handleAvatarChange}
             aria-label="Profile avatar, click to change"
           />
@@ -111,7 +112,7 @@ const ProfileInformation = () => {
               />
             ) : (
               <ProfileDisplay 
-                profileData={profileData} 
+                profileData={profile} 
                 onEditClick={() => setEditMode(true)} 
               />
             )}

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 export function useDashboardData() {
   const { user, isLoading: authLoading } = useAuth();
-  const { profileData, isLoading: profileLoading, error: profileError } = useProfile();
+  const { profile, isLoading: profileLoading, error: profileError } = useProfile();
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
@@ -63,12 +63,12 @@ export function useDashboardData() {
   }, [profileError]);
 
   // Extract user information from profile data
-  const userName = profileData 
-    ? [profileData.first_name, profileData.last_name].filter(Boolean).join(" ") || profileData.email || "User"
+  const userName = profile 
+    ? [profile.first_name, profile.last_name].filter(Boolean).join(" ") || profile.email || "User"
     : user?.email || "User";
     
-  const companyName = profileData?.company_name || "";
-  const role = profileData?.role || "User";
+  const companyName = profile?.company_name || "";
+  const role = profile?.role || "User";
 
   return {
     userName,

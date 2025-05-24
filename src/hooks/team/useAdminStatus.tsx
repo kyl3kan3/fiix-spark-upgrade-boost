@@ -12,18 +12,18 @@ interface AdminStatusResult {
 }
 
 export const useAdminStatus = (): AdminStatusResult => {
-  const { profileData, isLoading: profileLoading, error, refreshProfile } = useProfile();
+  const { profile, isLoading: profileLoading, error, refreshProfile } = useProfile();
   const { isLoading: companyLoading, refreshStatus } = useUnifiedCompanyStatus();
   const [isAdminUser, setIsAdminUser] = useState(false);
   
   // Update admin status when profile data changes
   useEffect(() => {
-    if (profileData) {
-      setIsAdminUser(profileData.role === 'administrator');
+    if (profile) {
+      setIsAdminUser(profile.role === 'administrator');
     } else if (!profileLoading) {
       setIsAdminUser(false);
     }
-  }, [profileData, profileLoading]);
+  }, [profile, profileLoading]);
   
   const refreshAdminStatus = async () => {
     await Promise.all([refreshProfile(), refreshStatus()]);
@@ -31,7 +31,7 @@ export const useAdminStatus = (): AdminStatusResult => {
   
   return {
     isAdminUser,
-    companyName: profileData?.company_name,
+    companyName: profile?.company_name,
     isLoading: profileLoading || companyLoading,
     error,
     refreshAdminStatus
