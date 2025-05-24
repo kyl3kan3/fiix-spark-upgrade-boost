@@ -7,7 +7,7 @@ import { CheckboxFieldProps } from "@/types/forms";
 
 export const RememberMeField: React.FC<CheckboxFieldProps> = ({ 
   checked, 
-  onChange,
+  onChange, 
   disabled,
   label = AUTH_FIELD_LABELS.REMEMBER_ME,
   id = "remember-me"
@@ -17,11 +17,11 @@ export const RememberMeField: React.FC<CheckboxFieldProps> = ({
       <Checkbox
         id={id}
         checked={checked}
-        onCheckedChange={(checked) => onChange(!!checked)}
+        onCheckedChange={onChange}
         disabled={disabled}
       />
-      <Label 
-        htmlFor={id} 
+      <Label
+        htmlFor={id}
         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
       >
         {label}

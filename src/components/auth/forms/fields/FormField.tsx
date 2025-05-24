@@ -15,22 +15,25 @@ export const FormField: React.FC<FormFieldProps> = ({
   autoComplete,
   required = false,
   disabled = false,
-  className = "mt-1"
+  className = ""
 }) => {
   return (
-    <div>
-      <Label htmlFor={id}>{label}</Label>
+    <div className={`space-y-2 ${className}`}>
+      <Label htmlFor={id} className="text-sm font-medium text-gray-700">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </Label>
       <Input
         id={id}
         name={name}
         type={type}
-        autoComplete={autoComplete}
-        required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={className}
+        autoComplete={autoComplete}
+        required={required}
         disabled={disabled}
+        className="w-full"
       />
     </div>
   );

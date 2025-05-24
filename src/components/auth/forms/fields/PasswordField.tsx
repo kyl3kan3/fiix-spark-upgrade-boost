@@ -2,21 +2,19 @@
 import React from "react";
 import { FormField } from "./FormField";
 import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS, AUTH_AUTOCOMPLETE } from "@/constants/authConstants";
+import { BaseFormFieldProps } from "@/types/forms";
 
-interface PasswordFieldProps {
-  value: string;
-  onChange: (value: string) => void;
+interface PasswordFieldProps extends BaseFormFieldProps {
   label?: string;
   autoComplete?: string;
-  disabled?: boolean;
 }
 
 export const PasswordField: React.FC<PasswordFieldProps> = ({ 
   value, 
   onChange, 
+  disabled,
   label = AUTH_FIELD_LABELS.PASSWORD,
-  autoComplete = AUTH_AUTOCOMPLETE.CURRENT_PASSWORD,
-  disabled 
+  autoComplete = AUTH_AUTOCOMPLETE.CURRENT_PASSWORD
 }) => {
   return (
     <FormField
