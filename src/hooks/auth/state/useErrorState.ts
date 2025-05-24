@@ -12,11 +12,8 @@ export function useErrorState() {
     setError(null);
   }, []);
 
-  const hasError = error !== null;
-
   return {
     error,
-    hasError,
     showError,
     clearError
   };
