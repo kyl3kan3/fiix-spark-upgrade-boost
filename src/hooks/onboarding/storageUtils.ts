@@ -1,22 +1,24 @@
 
+import { getStorageItem, removeStorageItem, setStorageItem } from "@/utils/storageUtils";
+
 export const getInitialEmail = (): string => {
-  return localStorage.getItem("pending_auth_email") || "";
+  return getStorageItem("pending_auth_email") || "";
 };
 
 export const getInitialCompanyName = (): string => {
-  return localStorage.getItem("pending_company_name") || "";
+  return getStorageItem("pending_company_name") || "";
 };
 
 export const clearOnboardingStorage = (): void => {
-  localStorage.removeItem("pending_auth_email");
-  localStorage.removeItem("pending_company_name");
+  removeStorageItem("pending_auth_email");
+  removeStorageItem("pending_company_name");
 };
 
 export const setSetupComplete = (): void => {
-  localStorage.setItem('maintenease_setup_complete', 'true');
+  setStorageItem('maintenease_setup_complete', 'true');
   console.log("Local storage setup complete flag set to true");
 };
 
 export const isSetupCompleteInLocalStorage = (): boolean => {
-  return localStorage.getItem('maintenease_setup_complete') === 'true';
+  return getStorageItem('maintenease_setup_complete') === 'true';
 };

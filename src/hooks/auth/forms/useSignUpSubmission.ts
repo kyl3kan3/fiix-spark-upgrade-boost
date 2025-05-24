@@ -4,6 +4,8 @@ import { useSignUp } from "@/hooks/auth/actions/useSignUp";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
 import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
+import { parseFullName } from "@/utils/formUtils";
+import { setStorageItem } from "@/utils/storageUtils";
 
 interface UseSignUpSubmissionProps {
   onError: (message: string) => void;
@@ -21,14 +23,16 @@ export function useSignUpSubmission({ onError }: UseSignUpSubmissionProps) {
       return false;
     }
     
+    const { firstName, lastName } = parseFullName(name);
+    
     const result = await signUp(email, password, {
-      first_name: name.split(' ')[0],
-      last_name: name.split(' ').slice(1).join(' '),
+      first_name: firstName,
+      last_name: lastName,
       company_name: companyName
     });
     
     if (result.success) {
-      localStorage.setItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, email);
+      setStorageItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, email);
       handleAuthSuccess();
       return true;
     } else if (result.error) {

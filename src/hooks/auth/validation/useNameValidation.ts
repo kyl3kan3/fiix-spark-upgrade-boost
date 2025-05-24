@@ -1,22 +1,15 @@
 
 import { useCallback } from "react";
 import { ValidationResult } from "@/types/forms";
+import { validateRequired } from "@/utils/validation";
 
 export function useNameValidation() {
   const validateName = useCallback((name: string): ValidationResult => {
-    if (!name.trim()) {
-      return { isValid: false, error: "Name is required" };
-    }
-    
-    return { isValid: true };
+    return validateRequired(name, "Name");
   }, []);
 
   const validateCompanyName = useCallback((companyName: string): ValidationResult => {
-    if (!companyName.trim()) {
-      return { isValid: false, error: "Company name is required" };
-    }
-    
-    return { isValid: true };
+    return validateRequired(companyName, "Company name");
   }, []);
 
   return { validateName, validateCompanyName };

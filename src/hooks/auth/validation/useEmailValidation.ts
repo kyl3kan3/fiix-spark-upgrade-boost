@@ -1,20 +1,18 @@
 
 import { useCallback } from "react";
 import { ValidationResult } from "@/types/forms";
+import { validateRequired, validateEmail, createValidationResult } from "@/utils/validation";
 
 export function useEmailValidation() {
-  const validateEmail = useCallback((email: string): ValidationResult => {
-    if (!email.trim()) {
-      return { isValid: false, error: "Email is required" };
-    }
+  const validateEmailField = useCallback((email: string): ValidationResult => {
+    const requiredCheck = validateRequired(email, "Email");
+    if (!requiredCheck.isValid) return requiredCheck;
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return { isValid: false, error: "Please enter a valid email address" };
-    }
+    const emailCheck = validateEmail(email);
+    if (!emailCheck.isValid) return emailCheck;
     
-    return { isValid: true };
+    return createValidationResult(true);
   }, []);
 
-  return { validateEmail };
+  return { validateEmail: validateEmailField };
 }

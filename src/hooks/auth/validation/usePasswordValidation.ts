@@ -2,18 +2,19 @@
 import { useCallback } from "react";
 import { AUTH_VALIDATION } from "@/constants/authConstants";
 import { ValidationResult } from "@/types/forms";
+import { validateRequired, validateMinLength, createValidationResult } from "@/utils/validation";
 
 export function usePasswordValidation() {
   const validatePassword = useCallback((password: string, isSignUp: boolean = false): ValidationResult => {
-    if (!password.trim()) {
-      return { isValid: false, error: "Password is required" };
+    const requiredCheck = validateRequired(password, "Password");
+    if (!requiredCheck.isValid) return requiredCheck;
+    
+    if (isSignUp) {
+      const lengthCheck = validateMinLength(password, AUTH_VALIDATION.MIN_PASSWORD_LENGTH, "Password");
+      if (!lengthCheck.isValid) return lengthCheck;
     }
     
-    if (isSignUp && password.length < AUTH_VALIDATION.MIN_PASSWORD_LENGTH) {
-      return { isValid: false, error: `Password must be at least ${AUTH_VALIDATION.MIN_PASSWORD_LENGTH} characters long` };
-    }
-    
-    return { isValid: true };
+    return createValidationResult(true);
   }, []);
 
   return { validatePassword };
