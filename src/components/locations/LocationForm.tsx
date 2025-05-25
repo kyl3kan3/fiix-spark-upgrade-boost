@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +28,16 @@ export const LocationForm: React.FC<LocationFormProps> = ({
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedParentId, setSelectedParentId] = useState<string>(parentId || "none");
+  const [selectedParentId, setSelectedParentId] = useState<string>("none");
+
+  // Set the parent ID when component mounts or parentId changes
+  useEffect(() => {
+    if (parentId) {
+      setSelectedParentId(parentId);
+    } else {
+      setSelectedParentId("none");
+    }
+  }, [parentId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +53,11 @@ export const LocationForm: React.FC<LocationFormProps> = ({
 
   // Filter out potential circular references (don't allow a location to be its own parent)
   const availableParents = locations.filter(loc => loc.id !== parentId);
+
+  // Find the selected parent location name for display
+  const selectedParentName = selectedParentId !== "none" 
+    ? locations.find(loc => loc.id === selectedParentId)?.name 
+    : "No parent (root location)";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +94,9 @@ export const LocationForm: React.FC<LocationFormProps> = ({
           disabled={isLoading}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select parent location (optional)" />
+            <SelectValue placeholder="Select parent location (optional)">
+              {selectedParentName}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="none">No parent (root location)</SelectItem>
