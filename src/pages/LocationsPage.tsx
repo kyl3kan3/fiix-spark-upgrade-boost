@@ -86,7 +86,7 @@ const LocationsPage: React.FC = () => {
 
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="whitespace-nowrap bg-fiix-500 hover:bg-fiix-600">
+              <Button className="whitespace-nowrap bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Location
               </Button>
@@ -120,6 +120,7 @@ const LocationsPage: React.FC = () => {
                 <Button 
                   onClick={handleAddLocation}
                   disabled={isCreating || !newLocationName.trim()}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isCreating ? "Adding..." : "Save Location"}
                 </Button>
@@ -160,7 +161,7 @@ const LocationsPage: React.FC = () => {
           {!searchQuery && (
             <div className="mt-6">
               <Button 
-                className="bg-fiix-500 hover:bg-fiix-600"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => setIsAddDialogOpen(true)}
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -174,15 +175,15 @@ const LocationsPage: React.FC = () => {
           {filteredLocations?.map((location) => (
             <Card key={location.id} className="p-4 hover:shadow-md transition-shadow h-full">
               <div className="flex items-start">
-                <div className="bg-fiix-100 p-3 rounded-lg mr-4">
-                  <MapPin className="h-5 w-5 text-fiix-600" />
+                <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                  <MapPin className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex flex-col flex-1">
                   <h3 className="font-medium text-gray-900">{location.name}</h3>
                   <div className="mt-2 flex justify-between items-center">
                     <Link 
                       to={`/assets?location=${encodeURIComponent(location.name)}`}
-                      className="text-sm text-fiix-600 hover:underline"
+                      className="text-sm text-primary hover:underline"
                     >
                       View Assets
                     </Link>
