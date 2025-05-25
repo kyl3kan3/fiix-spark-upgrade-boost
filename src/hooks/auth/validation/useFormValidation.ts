@@ -1,3 +1,11 @@
 
-// Re-export from the new consolidated hook for backward compatibility
-export { useAuthValidation as useFormValidation } from './useAuthValidation';
+// Re-export from the unified validation hook for backward compatibility
+import { useUnifiedAuthValidation } from "./useUnifiedAuthValidation";
+
+export function useFormValidation() {
+  const { validateFormField } = useUnifiedAuthValidation();
+  
+  return { 
+    validateFormField 
+  };
+}
