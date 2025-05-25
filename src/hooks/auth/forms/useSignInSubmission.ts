@@ -1,42 +1,16 @@
 
-import { useCallback } from "react";
-import { useSignIn } from "@/hooks/auth/actions/useSignIn";
-import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
-import { useAuthValidation } from "@/hooks/auth/validation/useAuthValidation";
-import { setRememberMe } from "@/utils/storageUtils";
+// Re-export from the consolidated auth submission hook for backward compatibility
+import { useAuthSubmission } from "./useAuthSubmission";
 
 interface UseSignInSubmissionProps {
   onError: (message: string) => void;
 }
 
 export function useSignInSubmission({ onError }: UseSignInSubmissionProps) {
-  const { signIn, isLoading } = useSignIn();
-  const { handleAuthSuccess } = useAuthNavigation();
-  const { validateSignInForm } = useAuthValidation();
-
-  const handleSignIn = useCallback(async (email: string, password: string, rememberMe: boolean) => {
-    const validation = validateSignInForm(email, password);
-    if (!validation.isValid) {
-      onError(validation.error!);
-      return false;
-    }
-
-    const result = await signIn(email, password);
-    
-    if (result.success) {
-      setRememberMe(rememberMe);
-      handleAuthSuccess();
-      return true;
-    } else if (result.error) {
-      onError(result.error);
-      return false;
-    }
-    
-    return false;
-  }, [signIn, validateSignInForm, onError, handleAuthSuccess]);
-
-  return {
-    handleSignIn,
-    isLoading
+  const { handleSignIn, isLoading } = useAuthSubmission({ onError });
+  
+  return { 
+    handleSignIn, 
+    isLoading 
   };
 }
