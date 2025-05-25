@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from "react";
-import { useAuthOperations } from "./useAuthOperations";
+import { useAuthOperations } from "./core/useAuthOperations";
 
 interface SignUpData {
   first_name?: string;

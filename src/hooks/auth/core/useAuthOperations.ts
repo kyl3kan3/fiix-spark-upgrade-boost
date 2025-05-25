@@ -3,8 +3,19 @@ import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+interface SignUpData {
+  first_name?: string;
+  last_name?: string;
+  company_name?: string;
+}
+
+interface AuthResult {
+  success: boolean;
+  error?: string;
+}
+
 export function useAuthOperations() {
-  const signIn = useCallback(async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string): Promise<AuthResult> => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -25,7 +36,7 @@ export function useAuthOperations() {
     }
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, userData?: any) => {
+  const signUp = useCallback(async (email: string, password: string, userData?: SignUpData): Promise<AuthResult> => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -49,7 +60,7 @@ export function useAuthOperations() {
     }
   }, []);
 
-  const signOut = useCallback(async () => {
+  const signOut = useCallback(async (): Promise<AuthResult> => {
     try {
       const { error } = await supabase.auth.signOut();
       
