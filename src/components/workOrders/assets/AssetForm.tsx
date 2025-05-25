@@ -1,167 +1,136 @@
 
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { AssetFormData } from "@/types/workOrders";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AssetFormFields } from "./AssetFormFields";
-import { assetFormSchema, AssetFormValues } from "./AssetFormSchema";
-import { createAsset, getAssetById, updateAsset, createParentAsset } from "@/services/assetService";
+import { AssetFormValues, assetFormSchema } from "./AssetFormSchema";
+import { createAsset, createParentAsset, getAssetById, updateAsset } from "@/services/assetService";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
-type AssetFormProps = {
-  initialData?: AssetFormData;
+interface AssetFormProps {
   assetId?: string;
-  onSuccess?: () => void;
-};
+}
 
-const AssetForm = ({ assetId, onSuccess }: AssetFormProps) => {
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const isEditing = !!assetId;
+export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  // Fetch asset data if editing
-  const { data: assetData, isLoading } = useQuery({
+  // Get existing asset data if editing
+  const { data: existingAsset } = useQuery({
     queryKey: ["asset", assetId],
-    queryFn: () => assetId ? getAssetById(assetId) : null,
-    enabled: !!assetId,
+    queryFn: () => getAssetById(assetId!),
+    enabled: !!assetId
   });
 
   const form = useForm<AssetFormValues>({
     resolver: zodResolver(assetFormSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      location: "",
-      model: "",
-      serial_number: "",
-      purchase_date: "",
-      status: "active",
-      parent_id: "none",
+      name: existingAsset?.name || "",
+      description: existingAsset?.description || "",
+      location_id: existingAsset?.location_id || "",
+      model: existingAsset?.model || "",
+      serial_number: existingAsset?.serial_number || "",
+      purchase_date: existingAsset?.purchase_date || "",
+      status: (existingAsset?.status as "active" | "inactive" | "maintenance" | "retired") || "active",
+      parent_id: existingAsset?.parent_id || "",
       parent_name: "",
       parent_description: "",
-      parent_location: "", // Add default value for parent location
+      parent_location_id: "",
       new_location: false,
-      new_location_name: ""
+      new_location_name: "",
     },
   });
 
-  // Update form values when asset data is loaded
-  useEffect(() => {
-    if (assetData && isEditing) {
-      form.reset({
-        name: assetData.name,
-        description: assetData.description || "",
-        location: assetData.location || "",
-        model: assetData.model || "",
-        serial_number: assetData.serial_number || "",
-        purchase_date: assetData.purchase_date 
-          ? new Date(assetData.purchase_date).toISOString().split("T")[0] 
-          : "",
-        status: assetData.status,
-        parent_id: assetData.parent_id || "none",
-        parent_name: "",
-        parent_description: "",
-        parent_location: "", // Reset parent location field
-        new_location: false,
-        new_location_name: ""
-      });
-    }
-  }, [assetData, form, isEditing]);
-
-  const onSubmit = async (values: AssetFormValues) => {
+  const onSubmit = async (data: AssetFormValues) => {
+    setIsSubmitting(true);
     try {
-      let parentId = values.parent_id;
-      
       // If creating a new parent asset
-      if (values.parent_id === "new" && values.parent_name) {
-        const parentResponse = await createParentAsset({
-          name: values.parent_name,
-          description: values.parent_description || "",
-          location: values.parent_location || "", // Use parent_location value
-          status: "active",
-        });
+      if (data.parent_id === "new" && data.parent_name) {
+        const parentAssetData = {
+          name: data.parent_name,
+          description: data.parent_description || "",
+          location_id: data.parent_location_id || null,
+          status: "active"
+        };
         
-        if (parentResponse.error) {
-          throw parentResponse.error;
+        const parentResult = await createParentAsset(parentAssetData);
+        
+        if (parentResult.error) {
+          throw new Error(parentResult.error.message);
         }
         
-        // Use the newly created parent asset's ID
-        parentId = parentResponse.data?.[0]?.id;
-      }
-      
-      // Prepare the asset data for creation/update
-      const assetData = {
-        name: values.name,
-        description: values.description,
-        location: values.location,
-        model: values.model,
-        serial_number: values.serial_number,
-        purchase_date: values.purchase_date,
-        status: values.status,
-        parent_id: parentId === "new" ? null : parentId
-      };
-      
-      let response;
-      
-      if (isEditing && assetId) {
-        response = await updateAsset(assetId, assetData);
-      } else {
-        response = await createAsset(assetData);
+        // Set the newly created parent's ID
+        data.parent_id = parentResult.data[0].id;
       }
 
-      if (response.error) {
-        throw response.error;
+      // Create or update the main asset
+      let result;
+      if (assetId) {
+        result = await updateAsset(assetId, data);
+      } else {
+        result = await createAsset(data);
       }
 
-      toast({
-        title: isEditing ? "Asset Updated" : "Asset Created",
-        description: isEditing 
-          ? "The asset has been updated successfully." 
-          : "A new asset has been created successfully."
-      });
-      
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        navigate("/assets");
+      if (result.error) {
+        throw new Error(result.error.message);
       }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Something went wrong",
-        variant: "destructive"
-      });
+
+      toast.success(assetId ? "Asset updated successfully!" : "Asset created successfully!");
+      
+      // Invalidate and refetch assets
+      queryClient.invalidateQueries({ queryKey: ["assets"] });
+      queryClient.invalidateQueries({ queryKey: ["assetHierarchy"] });
+      
+      // Reset form if creating new asset
+      if (!assetId) {
+        form.reset();
+      }
+      
+    } catch (error) {
+      console.error("Error submitting asset:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to save asset");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return <div className="text-center py-4">Loading asset data...</div>;
-  }
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <AssetFormFields form={form} currentAssetId={assetId} />
-        
-        <div className="flex justify-end space-x-2">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={() => navigate("/assets")}
-          >
-            Cancel
-          </Button>
-          <Button type="submit">
-            {isEditing ? "Update Asset" : "Create Asset"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+    <DashboardLayout>
+      <BackToDashboard />
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>{assetId ? "Edit Asset" : "Create New Asset"}</CardTitle>
+          <CardDescription>
+            {assetId ? "Update asset information" : "Add a new asset to your inventory"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <AssetFormFields form={form} currentAssetId={assetId} />
+            
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => window.history.back()}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting 
+                  ? (assetId ? "Updating..." : "Creating...") 
+                  : (assetId ? "Update Asset" : "Create Asset")
+                }
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </DashboardLayout>
   );
 };
-
-export default AssetForm;

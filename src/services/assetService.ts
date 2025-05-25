@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
-import { getAllLocations, createLocation as createLocationService } from "./locationService";
+import { getAllLocations as getLocationsFromService, createLocation as createLocationService } from "./locationService";
 
 // Define an interface for the asset with children for the hierarchy
 export interface AssetWithChildren {
@@ -66,7 +66,7 @@ export async function createAsset(assetData: Partial<AssetFormValues>) {
     model: assetData.model || null,
     serial_number: assetData.serial_number || null,
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
-    status: assetData.status,
+    status: assetData.status as "active" | "inactive" | "maintenance" | "retired",
     parent_id: assetData.parent_id || null
   };
 
@@ -100,7 +100,7 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
     model: assetData.model || null,
     serial_number: assetData.serial_number || null,
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
-    status: assetData.status,
+    status: assetData.status as "active" | "inactive" | "maintenance" | "retired",
     parent_id: assetData.parent_id || null
   };
 
@@ -115,7 +115,7 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
 
 // Function to get all unique locations (updated to use new locations table)
 export async function getAllLocations() {
-  return getAllLocations();
+  return getLocationsFromService();
 }
 
 // Function to create a new location (updated to use new location service)
