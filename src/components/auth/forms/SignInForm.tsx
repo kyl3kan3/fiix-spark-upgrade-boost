@@ -1,9 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { EmailField } from "./fields/EmailField";
-import { PasswordField } from "./fields/PasswordField";
-import { RememberMeField } from "./fields/RememberMeField";
+import { EmailField, PasswordField, CheckboxField } from "./AuthFormFields";
 import { useSignInForm } from "./hooks/useSignInForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
@@ -34,7 +32,7 @@ export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
         disabled={isLoading}
       />
       
-      <RememberMeField
+      <CheckboxField
         checked={rememberMe}
         onChange={setRememberMe}
         disabled={isLoading}

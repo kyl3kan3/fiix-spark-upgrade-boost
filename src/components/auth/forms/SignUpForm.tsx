@@ -1,10 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { EmailField } from "./fields/EmailField";
-import { PasswordField } from "./fields/PasswordField";
-import { NameField } from "./fields/NameField";
-import { CompanyNameField } from "./fields/CompanyNameField";
+import { EmailField, PasswordField, NameField, CompanyNameField } from "./AuthFormFields";
 import { useSignUpForm } from "./hooks/useSignUpForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
