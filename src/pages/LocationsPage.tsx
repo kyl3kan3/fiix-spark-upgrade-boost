@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,9 @@ const LocationsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newLocationName, setNewLocationName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  
+  const queryClient = useQueryClient();
   
   const { data: locations, isLoading, error, refetch } = useQuery({
     queryKey: ["locations"],
@@ -33,15 +36,33 @@ const LocationsPage: React.FC = () => {
       return;
     }
 
+    setIsCreating(true);
     try {
-      await createLocation(newLocationName);
-      toast.success("Location added successfully");
-      refetch();
-      setIsAddDialogOpen(false);
-      setNewLocationName("");
-    } catch (err) {
-      toast.error("Failed to add location");
-      console.error(err);
+      const result = await createLocation(newLocationName.trim());
+      
+      if (result.success) {
+        toast.success("Location added successfully");
+        // Invalidate the locations query to refetch data
+        await queryClient.invalidateQueries({ queryKey: ["locations"] });
+        setIsAddDialogOpen(false);
+        setNewLocationName("");
+      }
+    } catch (err: any) {
+      console.error("Error creating location:", err);
+      toast.error(err.message || "Failed to add location");
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setIsAddDialogOpen(false);
+    setNewLocationName("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isCreating) {
+      handleAddLocation();
     }
   };
 
@@ -82,15 +103,25 @@ const LocationsPage: React.FC = () => {
                   placeholder="Location name"
                   value={newLocationName}
                   onChange={(e) => setNewLocationName(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   className="w-full"
+                  disabled={isCreating}
+                  autoFocus
                 />
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                <Button 
+                  variant="outline" 
+                  onClick={handleDialogClose}
+                  disabled={isCreating}
+                >
                   Cancel
                 </Button>
-                <Button onClick={handleAddLocation}>
-                  Save Location
+                <Button 
+                  onClick={handleAddLocation}
+                  disabled={isCreating || !newLocationName.trim()}
+                >
+                  {isCreating ? "Adding..." : "Save Location"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -109,24 +140,34 @@ const LocationsPage: React.FC = () => {
         </div>
       ) : error ? (
         <div className="text-center py-12">
-          <p className="text-red-500">Error loading locations.</p>
+          <p className="text-red-500">Error loading locations: {error.message}</p>
+          <Button 
+            onClick={() => refetch()} 
+            className="mt-4"
+          >
+            Try Again
+          </Button>
         </div>
       ) : filteredLocations?.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
           <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No locations found</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            {searchQuery ? "No locations found matching your search" : "No locations found"}
+          </h3>
           <p className="mt-1 text-sm text-gray-500">
-            Get started by creating a new location.
+            {searchQuery ? "Try adjusting your search terms." : "Get started by creating a new location."}
           </p>
-          <div className="mt-6">
-            <Button 
-              className="bg-fiix-500 hover:bg-fiix-600"
-              onClick={() => setIsAddDialogOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              New Location
-            </Button>
-          </div>
+          {!searchQuery && (
+            <div className="mt-6">
+              <Button 
+                className="bg-fiix-500 hover:bg-fiix-600"
+                onClick={() => setIsAddDialogOpen(true)}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                New Location
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

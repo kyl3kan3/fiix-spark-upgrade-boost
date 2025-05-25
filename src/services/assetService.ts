@@ -117,34 +117,44 @@ export async function getAllLocations() {
   }));
 }
 
-// Function to create a new location (we'll store this as a new asset record to track it)
+// Improved function to create a new location
 export async function createLocation(locationName: string) {
+  if (!locationName || !locationName.trim()) {
+    throw new Error("Location name is required");
+  }
+
+  const trimmedName = locationName.trim();
+  
   // Check if location already exists
   const { data: existingLocations } = await supabase
     .from("assets")
     .select("location")
-    .eq("location", locationName)
+    .eq("location", trimmedName)
     .limit(1);
     
-  // If location doesn't exist yet, we'll add it by updating a dummy asset
-  // This is a simple way to maintain a list of locations without a separate table
-  if (!existingLocations || existingLocations.length === 0) {
-    // For simplicity, we'll create a minimal asset entry that just serves to register the location
-    const locationAsset = {
-      name: `Location: ${locationName}`,
-      description: `Location placeholder for: ${locationName}`,
-      location: locationName,
-      status: "active",
-    };
+  // If location already exists, return success without creating duplicate
+  if (existingLocations && existingLocations.length > 0) {
+    return { success: true, message: "Location already exists" };
+  }
+
+  // Create a location placeholder asset to register the location
+  const locationAsset = {
+    name: `Location: ${trimmedName}`,
+    description: `Location placeholder for: ${trimmedName}`,
+    location: trimmedName,
+    status: "active",
+  };
+  
+  const { error } = await supabase
+    .from("assets")
+    .insert(locationAsset);
     
-    const { error } = await supabase
-      .from("assets")
-      .insert(locationAsset);
-      
-    if (error) throw error;
+  if (error) {
+    console.error("Error creating location:", error);
+    throw new Error(`Failed to create location: ${error.message}`);
   }
   
-  return { success: true };
+  return { success: true, message: "Location created successfully" };
 }
 
 export async function getAssetHierarchy() {
