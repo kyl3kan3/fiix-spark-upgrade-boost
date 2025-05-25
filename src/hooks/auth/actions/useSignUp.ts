@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useAuthOperations } from "../useAuthOperations";
+// Re-export from the consolidated auth actions hook for backward compatibility
+import { useAuthActions } from "../useAuthActions";
 
 interface SignUpData {
   first_name?: string;
@@ -9,17 +9,10 @@ interface SignUpData {
 }
 
 export function useSignUp() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { signUp: performSignUp } = useAuthOperations();
-
-  const signUp = async (email: string, password: string, userData?: SignUpData) => {
-    setIsLoading(true);
-    try {
-      return await performSignUp(email, password, userData);
-    } finally {
-      setIsLoading(false);
-    }
+  const { signUp, isSigningUp } = useAuthActions();
+  
+  return { 
+    signUp, 
+    isLoading: isSigningUp 
   };
-
-  return { signUp, isLoading };
 }

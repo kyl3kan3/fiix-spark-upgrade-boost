@@ -1,19 +1,12 @@
 
-import { useState } from "react";
-import { useAuthOperations } from "../useAuthOperations";
+// Re-export from the consolidated auth actions hook for backward compatibility
+import { useAuthActions } from "../useAuthActions";
 
 export function useSignOut() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { signOut: performSignOut } = useAuthOperations();
-
-  const signOut = async () => {
-    setIsLoading(true);
-    try {
-      return await performSignOut();
-    } finally {
-      setIsLoading(false);
-    }
+  const { signOut, isSigningOut } = useAuthActions();
+  
+  return { 
+    signOut, 
+    isLoading: isSigningOut 
   };
-
-  return { signOut, isLoading };
 }
