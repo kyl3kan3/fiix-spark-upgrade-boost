@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, CheckboxField } from "./AuthFormFields";
-import { useSignInForm } from "./hooks/useSignInForm";
+import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
 
@@ -16,7 +16,7 @@ export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
     setRememberMe,
     isLoading,
     handleSubmit
-  } = useSignInForm(onError);
+  } = useAuthForm({ isSignUp: false, onError });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

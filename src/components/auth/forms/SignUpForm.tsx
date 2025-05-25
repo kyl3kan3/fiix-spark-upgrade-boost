@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, NameField, CompanyNameField } from "./AuthFormFields";
-import { useSignUpForm } from "./hooks/useSignUpForm";
+import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
 
@@ -18,7 +18,7 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
     setCompanyName,
     isLoading,
     handleSubmit
-  } = useSignUpForm(onError);
+  } = useAuthForm({ isSignUp: true, onError });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
