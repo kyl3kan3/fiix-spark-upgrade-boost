@@ -1,22 +1,10 @@
 
-import { toast } from "sonner";
-import { getErrorMessage, isAuthError } from "@/utils/authErrors";
-import { useErrorState } from "./state/useErrorState";
+// Re-export from the consolidated auth state hook for backward compatibility
+import { useAuthState } from "./useAuthState";
 
 export function useAuthErrorHandler() {
-  const { error, showError, clearError } = useErrorState();
-
-  const handleError = (error: any) => {
-    if (!isAuthError(error)) {
-      console.warn("Invalid error passed to handleError:", error);
-      return;
-    }
-
-    const message = getErrorMessage(error);
-    showError(message);
-    toast.error("Authentication Error", { description: message });
-  };
-
+  const { error, handleError, clearError } = useAuthState();
+  
   return {
     error,
     handleError,

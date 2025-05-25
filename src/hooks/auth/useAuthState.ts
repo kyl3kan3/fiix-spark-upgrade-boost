@@ -3,53 +3,53 @@ import { useState, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-interface AuthState {
-  user: User | null;
-  session: Session | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-}
-
-export function useAuthState(): AuthState {
+export function useAuthState() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Error handling functions
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
+  };
+
+  const clearError = () => {
+    setError(null);
+  };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
-        console.log("Auth state changed:", event);
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
         setIsLoading(false);
+        
+        // Clear errors on successful auth state change
+        if (session) {
+          clearError();
+        }
       }
     );
 
-    // THEN check for existing session
-    const checkSession = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
-      } catch (error) {
-        console.error("Error checking session:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    checkSession();
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   return {
     user,
     session,
+    isAuthenticated: !!user,
     isLoading,
-    isAuthenticated: !!user
+    error,
+    handleError,
+    clearError
   };
 }
