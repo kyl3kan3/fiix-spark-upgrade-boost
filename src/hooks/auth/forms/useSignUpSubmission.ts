@@ -2,7 +2,7 @@
 import { useCallback } from "react";
 import { useSignUp } from "@/hooks/auth/actions/useSignUp";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
-import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
+import { useAuthValidation } from "@/hooks/auth/validation/useAuthValidation";
 import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 import { parseFullName } from "@/utils/formUtils";
 import { setStorageItem } from "@/utils/storageUtils";
@@ -14,7 +14,7 @@ interface UseSignUpSubmissionProps {
 export function useSignUpSubmission({ onError }: UseSignUpSubmissionProps) {
   const { signUp, isLoading } = useSignUp();
   const { handleAuthSuccess } = useAuthNavigation();
-  const { validateSignUpForm } = useFormValidation();
+  const { validateSignUpForm } = useAuthValidation();
 
   const handleSignUp = useCallback(async (email: string, password: string, name: string, companyName: string) => {
     const validation = validateSignUpForm(email, password, name, companyName);

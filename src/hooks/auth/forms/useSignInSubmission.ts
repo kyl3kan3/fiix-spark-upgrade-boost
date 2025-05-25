@@ -2,7 +2,7 @@
 import { useCallback } from "react";
 import { useSignIn } from "@/hooks/auth/actions/useSignIn";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
-import { useFormValidation } from "@/hooks/auth/validation/useFormValidation";
+import { useAuthValidation } from "@/hooks/auth/validation/useAuthValidation";
 import { setRememberMe } from "@/utils/storageUtils";
 
 interface UseSignInSubmissionProps {
@@ -12,7 +12,7 @@ interface UseSignInSubmissionProps {
 export function useSignInSubmission({ onError }: UseSignInSubmissionProps) {
   const { signIn, isLoading } = useSignIn();
   const { handleAuthSuccess } = useAuthNavigation();
-  const { validateSignInForm } = useFormValidation();
+  const { validateSignInForm } = useAuthValidation();
 
   const handleSignIn = useCallback(async (email: string, password: string, rememberMe: boolean) => {
     const validation = validateSignInForm(email, password);
