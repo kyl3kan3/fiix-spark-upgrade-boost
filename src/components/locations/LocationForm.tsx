@@ -28,7 +28,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedParentId, setSelectedParentId] = useState<string>(parentId || "");
+  const [selectedParentId, setSelectedParentId] = useState<string>(parentId || "none");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
     await onSubmit({
       name: name.trim(),
       description: description.trim(),
-      parent_id: selectedParentId || null
+      parent_id: selectedParentId === "none" ? null : selectedParentId
     });
   };
 
@@ -83,7 +83,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
             <SelectValue placeholder="Select parent location (optional)" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">No parent (root location)</SelectItem>
+            <SelectItem value="none">No parent (root location)</SelectItem>
             {availableParents.map((location) => (
               <SelectItem key={location.id} value={location.id}>
                 {location.name}
