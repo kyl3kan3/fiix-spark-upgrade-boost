@@ -3,7 +3,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import AssetForm from "@/components/workOrders/assets/AssetForm";
+import { AssetForm } from "@/components/workOrders/assets/AssetForm";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
