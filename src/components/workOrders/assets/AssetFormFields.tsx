@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { AssetFormValues } from "./AssetFormSchema";
 import { useQuery } from "@tanstack/react-query";
-import { getAllAssets, getAllLocations, createLocation } from "@/services/assetService";
+import { getAllAssets } from "@/services/assetService";
+import { getAllLocations, createLocation } from "@/services/locationService";
 import { BasicAssetFields } from "./components/BasicAssetFields";
 import { ParentAssetSelector } from "./components/ParentAssetSelector";
 import { ParentAssetFields } from "./components/ParentAssetFields";
@@ -24,7 +25,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
 
   // Fetch all locations for location dropdown
   const { data: locations, isLoading: locationsLoading, refetch: refetchLocations } = useQuery({
-    queryKey: ["locations"],
+    queryKey: ["allLocations"],
     queryFn: getAllLocations
   });
 
@@ -32,8 +33,8 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
   const availableParentAssets = assets?.filter(asset => asset.id !== currentAssetId) || [];
 
   // Handle adding new location
-  const handleAddLocation = async (newLocationName: string) => {
-    await createLocation(newLocationName);
+  const handleAddLocation = async (locationName: string) => {
+    await createLocation({ name: locationName });
     // Refetch locations
     refetchLocations();
   };
@@ -47,7 +48,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
       // Reset parent fields if not creating a new parent
       form.setValue("parent_name", "");
       form.setValue("parent_description", "");
-      form.setValue("parent_location", ""); // Reset parent location
+      form.setValue("parent_location_id", ""); // Reset parent location
     }
   };
 

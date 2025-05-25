@@ -15,6 +15,7 @@ export type Database = {
           description: string | null
           id: string
           location: string | null
+          location_id: string | null
           model: string | null
           name: string
           parent_id: string | null
@@ -28,6 +29,7 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
+          location_id?: string | null
           model?: string | null
           name: string
           parent_id?: string | null
@@ -41,6 +43,7 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
+          location_id?: string | null
           model?: string | null
           name?: string
           parent_id?: string | null
@@ -50,6 +53,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "assets_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "fk_asset_parent"
             columns: ["parent_id"]
@@ -136,6 +146,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      locations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          parent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locations_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {

@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
+import { getAllLocations, createLocation as createLocationService } from "./locationService";
 
 // Define an interface for the asset with children for the hierarchy
 export interface AssetWithChildren {
@@ -8,12 +9,13 @@ export interface AssetWithChildren {
   name: string;
   description: string | null;
   location: string | null;
+  location_id: string | null;
   status: string;
   parent_id: string | null;
   children: AssetWithChildren[];
 }
 
-// Interface for the Location
+// Interface for the Location (re-export for compatibility)
 export interface Location {
   id: string;
   name: string;
@@ -22,7 +24,15 @@ export interface Location {
 export async function getAllAssets() {
   const { data, error } = await supabase
     .from("assets")
-    .select("*")
+    .select(`
+      *,
+      locations:location_id (
+        id,
+        name,
+        description,
+        parent_id
+      )
+    `)
     .order("name");
     
   if (error) throw error;
@@ -32,7 +42,15 @@ export async function getAllAssets() {
 export async function getAssetById(assetId: string) {
   const { data, error } = await supabase
     .from("assets")
-    .select("*")
+    .select(`
+      *,
+      locations:location_id (
+        id,
+        name,
+        description,
+        parent_id
+      )
+    `)
     .eq("id", assetId)
     .single();
     
@@ -44,7 +62,7 @@ export async function createAsset(assetData: Partial<AssetFormValues>) {
   const formattedData = {
     name: assetData.name,
     description: assetData.description || null,
-    location: assetData.location || null,
+    location_id: assetData.location_id || null,
     model: assetData.model || null,
     serial_number: assetData.serial_number || null,
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
@@ -63,7 +81,7 @@ export async function createAsset(assetData: Partial<AssetFormValues>) {
 export async function createParentAsset(parentData: {
   name: string;
   description: string;
-  location: string | null;
+  location_id: string | null;
   status: string;
 }) {
   const response = await supabase
@@ -78,7 +96,7 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
   const formattedData = {
     name: assetData.name,
     description: assetData.description || null,
-    location: assetData.location || null,
+    location_id: assetData.location_id || null,
     model: assetData.model || null,
     serial_number: assetData.serial_number || null,
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
@@ -95,70 +113,18 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
   return response;
 }
 
-// Function to get all unique locations
+// Function to get all unique locations (updated to use new locations table)
 export async function getAllLocations() {
-  const { data, error } = await supabase
-    .from("assets")
-    .select("location")
-    .not("location", "is", null)
-    .order("location");
-    
-  if (error) throw error;
-  
-  // Filter out null values and create a unique set of locations
-  const uniqueLocations = Array.from(
-    new Set(data?.map(item => item.location).filter(Boolean) as string[])
-  );
-  
-  // Format locations as objects with id and name
-  return uniqueLocations.map(location => ({
-    id: location,
-    name: location
-  }));
+  return getAllLocations();
 }
 
-// Improved function to create a new location
+// Function to create a new location (updated to use new location service)
 export async function createLocation(locationName: string) {
-  if (!locationName || !locationName.trim()) {
-    throw new Error("Location name is required");
-  }
-
-  const trimmedName = locationName.trim();
-  
-  // Check if location already exists
-  const { data: existingLocations } = await supabase
-    .from("assets")
-    .select("location")
-    .eq("location", trimmedName)
-    .limit(1);
-    
-  // If location already exists, return success without creating duplicate
-  if (existingLocations && existingLocations.length > 0) {
-    return { success: true, message: "Location already exists" };
-  }
-
-  // Create a location placeholder asset to register the location
-  const locationAsset = {
-    name: `Location: ${trimmedName}`,
-    description: `Location placeholder for: ${trimmedName}`,
-    location: trimmedName,
-    status: "active",
-  };
-  
-  const { error } = await supabase
-    .from("assets")
-    .insert(locationAsset);
-    
-  if (error) {
-    console.error("Error creating location:", error);
-    throw new Error(`Failed to create location: ${error.message}`);
-  }
-  
-  return { success: true, message: "Location created successfully" };
+  return createLocationService({ name: locationName });
 }
 
 export async function getAssetHierarchy() {
-  // Get all assets
+  // Get all assets with location information
   const { data: assets, error } = await supabase
     .from("assets")
     .select(`
@@ -166,8 +132,15 @@ export async function getAssetHierarchy() {
       name, 
       description,
       location,
+      location_id,
       status,
-      parent_id
+      parent_id,
+      locations:location_id (
+        id,
+        name,
+        description,
+        parent_id
+      )
     `)
     .order("name");
     
