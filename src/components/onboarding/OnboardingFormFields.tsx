@@ -22,24 +22,33 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
   return (
     <>
       <div>
-        <label className="block">Full Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Full Name <span className="text-red-500">*</span>
+        </label>
         <Input
           name="fullName"
-          placeholder="Jane Doe"
+          placeholder="Enter your full name"
           value={state.fullName}
           required
           onChange={handleChange}
+          className="w-full"
         />
+        {!state.fullName && (
+          <p className="text-red-500 text-sm mt-1">Full name is required</p>
+        )}
       </div>
       
       <div>
-        <label className="block">Role/Title</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Role/Title <span className="text-red-500">*</span>
+        </label>
         <Input
           name="role"
-          placeholder="Facilities Manager"
+          placeholder="e.g., Facilities Manager, Technician"
           value={state.role}
           required
           onChange={handleChange}
+          className="w-full"
         />
       </div>
 
@@ -54,19 +63,24 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
         </div>
       ) : (
         <div>
-          <label className="block">Company/Organization Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Company/Organization Name <span className="text-red-500">*</span>
+          </label>
           <Input
             name="company"
-            placeholder="Acme Corp"
+            placeholder="Enter your company name"
             value={state.company}
             required
             onChange={handleChange}
+            className="w-full"
           />
         </div>
       )}
       
       <div>
-        <label className="block">Contact Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Contact Email <span className="text-red-500">*</span>
+        </label>
         <Input
           name="email"
           type="email"
@@ -74,6 +88,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           value={state.email}
           onChange={handleChange}
           readOnly={!!state.email}
+          className="w-full"
         />
       </div>
       
@@ -83,7 +98,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           onCheckedChange={handleCheckbox}
           id="onboarding-notifications"
         />
-        <label htmlFor="onboarding-notifications">
+        <label htmlFor="onboarding-notifications" className="text-sm text-gray-700">
           Enable notifications about important updates
         </label>
       </div>

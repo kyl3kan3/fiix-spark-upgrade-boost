@@ -16,8 +16,12 @@ const OnboardingForm: React.FC = () => {
     handleSubmit,
   } = useOnboarding();
 
+  // Check if required fields are filled
+  const isFormValid = state.fullName.trim() && state.role.trim() && 
+    (isInvited || state.company.trim()) && state.email.trim();
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-6">
       <OnboardingFormFields
         state={state}
         isInvited={isInvited}
@@ -26,16 +30,22 @@ const OnboardingForm: React.FC = () => {
         handleCheckbox={handleCheckbox}
       />
 
-      {/* Make company field required */}
+      {/* Validation messages */}
+      {!state.fullName && (
+        <div className="text-red-500 text-sm">
+          Please enter your full name
+        </div>
+      )}
+      
       {!isInvited && !state.company && (
-        <div className="mt-2 mb-4 text-red-500 text-sm">
+        <div className="text-red-500 text-sm">
           A company name is required
         </div>
       )}
 
       <div className="mt-6">
         <Button
-          disabled={submitting || (!state.company && !isInvited)}
+          disabled={submitting || !isFormValid}
           type="submit"
           className="w-full"
         >
