@@ -2,11 +2,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/auth";
 import { useProfile } from "@/hooks/profile/useProfile";
+import { fetchUserCompany } from "@/services/company";
 import { toast } from "sonner";
 
 export function useDashboardData() {
   const { user, isLoading: authLoading } = useAuth();
   const { profile, isLoading: profileLoading, error: profileError } = useProfile();
+  const [companyName, setCompanyName] = useState<string>("");
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
@@ -20,6 +22,24 @@ export function useDashboardData() {
       }
     };
   }, []);
+
+  // Fetch company name when profile is loaded
+  useEffect(() => {
+    const getCompanyName = async () => {
+      if (profile?.company_id) {
+        try {
+          const company = await fetchUserCompany();
+          if (company) {
+            setCompanyName(company.name);
+          }
+        } catch (error) {
+          console.error("Error fetching company:", error);
+        }
+      }
+    };
+
+    getCompanyName();
+  }, [profile?.company_id]);
 
   // Set up timeout for data loading
   useEffect(() => {
@@ -67,8 +87,6 @@ export function useDashboardData() {
     ? [profile.first_name, profile.last_name].filter(Boolean).join(" ") || profile.email || "User"
     : user?.email || "User";
     
-  // Get company name from profile.company_name, with proper fallback
-  const companyName = profile?.company_name || "";
   const role = profile?.role || "User";
 
   return {
