@@ -19,6 +19,11 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
     }).format(date);
   };
 
+  const formatRole = (role: string) => {
+    // Capitalize the role for display
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -36,8 +41,8 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
           <Shield className="h-5 w-5 text-gray-500" aria-hidden="true" />
           <span>
             <span className="font-medium">Role:</span>{" "}
-            <span className={`${profileData.role === 'administrator' ? 'text-blue-600' : 'text-gray-600'} capitalize`}>
-              {profileData.role}
+            <span className={`${profileData.role === 'administrator' ? 'text-blue-600' : 'text-gray-600'}`}>
+              {formatRole(profileData.role)}
             </span>
           </span>
         </div>
