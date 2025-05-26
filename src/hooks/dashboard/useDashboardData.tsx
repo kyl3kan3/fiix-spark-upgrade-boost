@@ -67,6 +67,7 @@ export function useDashboardData() {
     ? [profile.first_name, profile.last_name].filter(Boolean).join(" ") || profile.email || "User"
     : user?.email || "User";
     
+  // Get company name from profile.company_name, with proper fallback
   const companyName = profile?.company_name || "";
   const role = profile?.role || "User";
 

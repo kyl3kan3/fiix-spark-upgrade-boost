@@ -27,7 +27,11 @@ const DashboardWelcomeCard: React.FC<DashboardWelcomeCardProps> = ({
         <span className="bg-maintenease-100 dark:bg-maintenease-900 text-maintenease-700 dark:text-maintenease-300 px-3 py-1 rounded-full text-sm font-medium">
           {formatRole(role)}
         </span> 
-        <span className="break-words">at {companyName || "Your Company"}</span>
+        {companyName ? (
+          <span className="break-words">at {companyName}</span>
+        ) : (
+          <span className="text-gray-500 break-words">No company assigned</span>
+        )}
       </p>
     </div>
   );
