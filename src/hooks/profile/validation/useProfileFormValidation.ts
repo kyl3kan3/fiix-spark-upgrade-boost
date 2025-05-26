@@ -1,5 +1,4 @@
 
-import { useCallback } from "react";
 import { ProfileFormData } from "@/components/profile/types";
 
 interface ValidationResult {
@@ -8,42 +7,34 @@ interface ValidationResult {
 }
 
 export function useProfileFormValidation() {
-  const validateProfileForm = useCallback((formData: ProfileFormData): ValidationResult => {
+  const validateProfileForm = (data: Partial<ProfileFormData>): ValidationResult => {
     const errors: Partial<Record<keyof ProfileFormData, string>> = {};
 
-    // First name validation
-    if (!formData.first_name?.trim()) {
+    // Validate first name
+    if (!data.first_name?.trim()) {
       errors.first_name = "First name is required";
     }
 
-    // Last name validation
-    if (!formData.last_name?.trim()) {
+    // Validate last name
+    if (!data.last_name?.trim()) {
       errors.last_name = "Last name is required";
     }
 
-    // Email validation
-    if (!formData.email?.trim()) {
-      errors.email = "Email is required";
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        errors.email = "Please enter a valid email address";
-      }
-    }
-
-    // Phone number validation (optional but format check if provided)
-    if (formData.phone_number?.trim()) {
-      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-      if (!phoneRegex.test(formData.phone_number.replace(/[\s\-\(\)]/g, ''))) {
+    // Validate phone number (optional but must be valid if provided)
+    if (data.phone_number && data.phone_number.trim()) {
+      const phoneRegex = /^[\d\s\-\+\(\)\.]+$/;
+      if (!phoneRegex.test(data.phone_number)) {
         errors.phone_number = "Please enter a valid phone number";
       }
     }
+
+    // Note: Email validation removed since email is read-only
 
     return {
       isValid: Object.keys(errors).length === 0,
       errors
     };
-  }, []);
+  };
 
   return { validateProfileForm };
 }

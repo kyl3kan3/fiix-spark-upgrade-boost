@@ -76,17 +76,12 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
             type="email"
             name="email"
             value={formData.email}
-            onChange={onInputChange}
-            className={`w-full border rounded py-2 px-3 ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
-            disabled={isSaving}
-            aria-required="true"
-            aria-label="Email"
+            readOnly
+            className="w-full border rounded py-2 px-3 bg-gray-100 border-gray-300 cursor-not-allowed"
+            disabled
+            aria-label="Email (read-only)"
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-          )}
+          <p className="text-gray-500 text-xs mt-1">Email cannot be changed</p>
         </div>
         
         <div>
