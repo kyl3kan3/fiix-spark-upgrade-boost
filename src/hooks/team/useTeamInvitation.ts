@@ -93,24 +93,48 @@ export function useTeamInvitation() {
         console.log("Created organization:", organizationId);
       }
 
-      // Create the invitation
-      console.log("Creating invitation for organization:", organizationId);
-      const { error: inviteError } = await supabase
+      // Check if user already has an invitation pending
+      console.log("Checking for existing invitations for:", inviteEmail, "in organization:", organizationId);
+      const { data: existingInvite } = await supabase
         .from("organization_invitations")
-        .insert({
-          email: inviteEmail,
-          organization_id: organizationId,
-          invited_by: user.id,
-          role: "technician",
-          token: crypto.randomUUID(),
-        });
+        .select("id, status")
+        .eq("email", inviteEmail)
+        .eq("organization_id", organizationId)
+        .eq("status", "pending")
+        .maybeSingle();
+
+      if (existingInvite) {
+        throw new Error("An invitation for this email is already pending");
+      }
+
+      // Create the invitation with detailed logging
+      console.log("Creating invitation with data:", {
+        email: inviteEmail,
+        organization_id: organizationId,
+        invited_by: user.id,
+        role: "technician"
+      });
+      
+      const invitationData = {
+        email: inviteEmail,
+        organization_id: organizationId,
+        invited_by: user.id,
+        role: "technician",
+        token: crypto.randomUUID(),
+      };
+
+      const { data: inviteData, error: inviteError } = await supabase
+        .from("organization_invitations")
+        .insert(invitationData)
+        .select();
 
       if (inviteError) {
         console.error("Error creating invitation:", inviteError);
-        throw inviteError;
+        console.error("Invitation data that failed:", invitationData);
+        throw new Error(`Failed to create invitation: ${inviteError.message}`);
       }
 
-      console.log("Invitation created successfully");
+      console.log("Invitation created successfully:", inviteData);
       toast.success(`Invitation sent to ${inviteEmail}`);
       return true;
     } catch (err: any) {
