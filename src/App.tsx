@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import CompanyRequiredWrapper from "@/components/common/CompanyRequiredWrapper";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -42,32 +44,190 @@ function App() {
           <Sonner />
           <BrowserRouter>
             <Routes>
+              {/* Public routes */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/setup" element={<SetupPage />} />
-              <Route path="/company-setup" element={<CompanySetup />} />
-              <Route path="/team-setup" element={<TeamSetup />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/work-orders" element={<WorkOrdersPage />} />
-              <Route path="/work-orders/new" element={<WorkOrderFormPage />} />
-              <Route path="/work-orders/edit/:workOrderId" element={<WorkOrderFormPage />} />
-              <Route path="/work-orders/:workOrderId" element={<WorkOrderDetailPage />} />
-              <Route path="/assets" element={<AssetsPage />} />
-              <Route path="/assets/new" element={<AssetFormPage />} />
-              <Route path="/assets/edit/:assetId" element={<AssetFormPage />} />
-              <Route path="/locations" element={<LocationsPage />} />
-              <Route path="/inspections" element={<InspectionsPage />} />
-              <Route path="/inspections/new" element={<NewInspectionPage />} />
-              <Route path="/inspections/:inspectionId" element={<InspectionDetailPage />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/features/:feature" element={<FeatureDemoPage />} />
+              
+              {/* Protected routes - require authentication */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <Dashboard />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/onboarding" element={
+                <ProtectedRoute>
+                  <OnboardingPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/setup" element={
+                <ProtectedRoute>
+                  <SetupPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/company-setup" element={
+                <ProtectedRoute>
+                  <CompanySetup />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/team-setup" element={
+                <ProtectedRoute>
+                  <TeamSetup />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/team" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <Team />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/work-orders" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <WorkOrdersPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/work-orders/new" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <WorkOrderFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/work-orders/edit/:workOrderId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <WorkOrderFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/work-orders/:workOrderId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <WorkOrderDetailPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/assets" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <AssetsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/assets/new" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <AssetFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/assets/edit/:assetId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <AssetFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/locations" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <LocationsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/inspections" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <InspectionsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/inspections/new" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <NewInspectionPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/inspections/:inspectionId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <InspectionDetailPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/reports" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <ReportsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/calendar" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <Calendar />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/chat" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <Chat />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/help" element={
+                <ProtectedRoute>
+                  <Help />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <Settings />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/features/:feature" element={
+                <ProtectedRoute>
+                  <FeatureDemoPage />
+                </ProtectedRoute>
+              } />
+              
+              {/* Catch all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
