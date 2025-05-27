@@ -7,14 +7,12 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/auth";
-import { useProfile } from "@/hooks/profile/useProfile";
 import { ProfileTabs } from "@/components/profile/page/ProfileTabs";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const { isLoading: profileLoading, error, refreshProfile } = useProfile();
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
   
   // Extract the tab from the URL search params
@@ -36,11 +34,11 @@ const ProfilePage = () => {
   // Handle refreshing the profile data
   const handleRefresh = async () => {
     setRefreshKey(prev => prev + 1);
-    await refreshProfile();
     toast.info("Profile data refreshed");
   };
 
-  if (authLoading || profileLoading) {
+  // Show loading while checking authentication
+  if (authLoading) {
     return (
       <DashboardLayout>
         <div className="container mx-auto px-4 py-8">
@@ -54,27 +52,10 @@ const ProfilePage = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  // Redirect to auth if not authenticated
+  if (!isAuthenticated || !user) {
     navigate("/auth", { replace: true });
     return null;
-  }
-
-  // Show error state if there was a problem
-  if (error) {
-    return (
-      <DashboardLayout>
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
-          <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
-            <p className="text-red-700">{error}</p>
-          </div>
-          <Button onClick={handleRefresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Try Again
-          </Button>
-        </div>
-      </DashboardLayout>
-    );
   }
 
   return (

@@ -7,7 +7,7 @@ import { useProfileFetch } from "./useProfileFetch";
 import { ProfileData } from "@/components/profile/types";
 
 export function useProfile() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const { isLoading, isSaving, error, setLoadingState, setSavingState, setErrorState, clearError } = useProfileState();
   const { createProfile, saveProfile: saveProfileAction, updateAvatar: updateAvatarAction } = useProfileActions();
@@ -55,24 +55,33 @@ export function useProfile() {
   }, [profile, updateAvatarAction, setSavingState, handleProfileUpdate]);
 
   const refreshProfile = useCallback(async () => {
-    if (!user?.id) {
+    // Only fetch if user is authenticated and available
+    if (!isAuthenticated || !user?.id) {
       setLoadingState(false);
+      setProfile(null);
       return;
     }
 
     try {
+      console.log("Fetching profile for user:", user.id);
       const profileData = await fetchProfile(user.id, user.email);
       setProfile(profileData);
     } catch (error) {
+      console.error("Error refreshing profile:", error);
       // Error handling is done in fetchProfile
     }
-  }, [user?.id, user?.email, fetchProfile, setLoadingState]);
+  }, [user?.id, user?.email, isAuthenticated, fetchProfile, setLoadingState]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (isAuthenticated && user?.id) {
+      console.log("useProfile: User authenticated, fetching profile");
       refreshProfile();
+    } else {
+      console.log("useProfile: User not authenticated or no user ID");
+      setLoadingState(false);
+      setProfile(null);
     }
-  }, [refreshProfile, user?.id]);
+  }, [refreshProfile, isAuthenticated, user?.id]);
 
   return {
     profile,

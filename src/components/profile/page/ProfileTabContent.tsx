@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { InfoIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ProfileInformation from "@/components/profile/ProfileInformation";
@@ -15,14 +15,18 @@ interface ProfileTabContentProps {
 
 export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey }) => {
   const { user } = useAuth();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
   
-  // Effect to get user email
-  useEffect(() => {
-    if (user?.email) {
-      setUserEmail(user.email);
-    }
-  }, [user, refreshKey]);
+  // Show loading if user is not available
+  if (!user) {
+    return (
+      <div className="space-y-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-gray-200 rounded"></div>
+          <div className="h-32 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -41,7 +45,7 @@ export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey
       </Alert>
       
       {/* Use currently logged-in user for admin section */}
-      <SetAdminUser email={userEmail ?? undefined} />
+      <SetAdminUser email={user.email ?? undefined} />
       <DeleteAccountButton />
       
       {/* Sign out button */}
