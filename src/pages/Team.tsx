@@ -4,9 +4,11 @@ import DashboardLayout from "../components/dashboard/DashboardLayout";
 import TeamHeader from "../components/team/TeamHeader";
 import TeamFilters from "../components/team/TeamFilters";
 import TeamMembersList from "../components/team/TeamMembersList";
+import PendingInvitationsSection from "../components/team/PendingInvitationsSection";
 import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
 import { TeamMember, RoleColorMap } from "../components/team/types";
 import { useTeamMembers } from "../hooks/useTeamMembers";
+import { usePendingInvitations } from "../hooks/team/usePendingInvitations";
 import { toast } from "@/components/ui/use-toast";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import AdminSetDemoCompanyButton from "@/components/team/AdminSetDemoCompanyButton";
@@ -17,12 +19,14 @@ const Team = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   const { teamMembers, loading, refreshTeamMembers, updateTeamMember } = useTeamMembers();
+  const { pendingInvitations, loading: pendingLoading, refreshPendingInvitations } = usePendingInvitations();
   
   // Force refresh when component mounts to ensure we have the latest data
   useEffect(() => {
     console.log("Team component mounted, refreshing team members data");
     refreshTeamMembers();
-  }, [refreshTeamMembers, refreshTrigger]);
+    refreshPendingInvitations();
+  }, [refreshTeamMembers, refreshPendingInvitations, refreshTrigger]);
   
   // Convert ChatUser type to TeamMember type
   const mappedMembers: TeamMember[] = teamMembers.map(member => ({
@@ -91,6 +95,16 @@ const Team = () => {
         roleFilter={roleFilter}
         setRoleFilter={setRoleFilter}
       />
+      
+      {/* Pending Invitations Section */}
+      <div className="mb-6">
+        <PendingInvitationsSection 
+          invitations={pendingInvitations}
+          roleColorMap={roleColorMap}
+          loading={pendingLoading}
+        />
+      </div>
+      
       <TeamMembersList 
         members={filteredMembers} 
         roleColorMap={roleColorMap}
@@ -103,4 +117,3 @@ const Team = () => {
 };
 
 export default Team;
-
