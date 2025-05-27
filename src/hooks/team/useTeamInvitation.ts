@@ -35,7 +35,7 @@ export function useTeamInvitation() {
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
-        throw profileError;
+        throw new Error(`Failed to fetch user profile: ${profileError.message}`);
       }
 
       if (!profile.company_id) {
@@ -53,7 +53,7 @@ export function useTeamInvitation() {
 
       if (orgCheckError) {
         console.error("Error checking organization:", orgCheckError);
-        throw orgCheckError;
+        throw new Error(`Failed to check organization: ${orgCheckError.message}`);
       }
 
       let organizationId = profile.company_id;
@@ -71,7 +71,7 @@ export function useTeamInvitation() {
         
         if (companyError) {
           console.error("Error fetching company:", companyError);
-          throw new Error("Failed to fetch company information");
+          throw new Error(`Failed to fetch company information: ${companyError.message}`);
         }
         
         // Create organization
@@ -86,7 +86,11 @@ export function useTeamInvitation() {
           
         if (createOrgError) {
           console.error("Error creating organization:", createOrgError);
-          throw new Error("Failed to create organization");
+          console.error("Organization creation data:", {
+            id: profile.company_id,
+            name: company?.name || "Organization"
+          });
+          throw new Error(`Failed to create organization: ${createOrgError.message}`);
         }
         
         organizationId = newOrg.id;
@@ -95,13 +99,18 @@ export function useTeamInvitation() {
 
       // Check if user already has an invitation pending
       console.log("Checking for existing invitations for:", inviteEmail, "in organization:", organizationId);
-      const { data: existingInvite } = await supabase
+      const { data: existingInvite, error: inviteCheckError } = await supabase
         .from("organization_invitations")
         .select("id, status")
         .eq("email", inviteEmail)
         .eq("organization_id", organizationId)
         .eq("status", "pending")
         .maybeSingle();
+
+      if (inviteCheckError) {
+        console.error("Error checking existing invitations:", inviteCheckError);
+        throw new Error(`Failed to check existing invitations: ${inviteCheckError.message}`);
+      }
 
       if (existingInvite) {
         throw new Error("An invitation for this email is already pending");
