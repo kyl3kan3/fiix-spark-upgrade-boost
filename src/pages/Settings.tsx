@@ -1,6 +1,7 @@
 
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ const Settings = () => {
   }, [navigate]);
   
   return (
-    <div className="p-8 flex justify-center items-center">
-      <p>Redirecting to settings...</p>
-    </div>
+    <DashboardLayout>
+      <div className="p-8 flex justify-center items-center">
+        <p>Redirecting to settings...</p>
+      </div>
+    </DashboardLayout>
   );
 };
 
