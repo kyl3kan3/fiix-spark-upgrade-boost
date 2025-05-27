@@ -39,9 +39,14 @@ const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
     },
   });
 
+  const handleSubmit = (data: TeamMemberFormValues) => {
+    console.log("TeamMemberForm handleSubmit called with:", data);
+    onSubmit(data);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -49,7 +54,11 @@ const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Full name" {...field} disabled={isDisabled || isSubmitting} />
+                <Input 
+                  placeholder="Full name" 
+                  {...field} 
+                  disabled={isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -63,7 +72,12 @@ const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="email@example.com" {...field} disabled={isDisabled || isSubmitting} />
+                <Input 
+                  type="email" 
+                  placeholder="email@example.com" 
+                  {...field} 
+                  disabled={isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,7 +93,7 @@ const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
               <Select 
                 onValueChange={field.onChange} 
                 defaultValue={field.value}
-                disabled={isDisabled || isSubmitting}
+                disabled={isSubmitting}
               >
                 <FormControl>
                   <SelectTrigger>
