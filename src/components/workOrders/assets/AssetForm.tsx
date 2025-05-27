@@ -20,9 +20,11 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  
+  console.log("AssetForm rendering with assetId:", assetId);
 
   // Get existing asset data if editing
-  const { data: existingAsset } = useQuery({
+  const { data: existingAsset, isLoading: assetLoading, error: assetError } = useQuery({
     queryKey: ["asset", assetId],
     queryFn: () => getAssetById(assetId!),
     enabled: !!assetId
@@ -50,6 +52,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
   // Update form with existing asset data when it loads
   useEffect(() => {
     if (existingAsset) {
+      console.log("Loading existing asset data:", existingAsset);
       form.reset({
         name: existingAsset.name || "",
         description: existingAsset.description || "",
@@ -125,6 +128,29 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
       setIsSubmitting(false);
     }
   };
+
+  if (assetError) {
+    console.error("Error loading asset:", assetError);
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardContent className="p-6">
+          <div className="text-center text-red-600">
+            Error loading asset: {assetError.message}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (assetId && assetLoading) {
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardContent className="p-6">
+          <div className="text-center">Loading asset data...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="max-w-2xl mx-auto">

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { AssetFormValues } from "./AssetFormSchema";
 import { useQuery } from "@tanstack/react-query";
-import { getAllAssets } from "@/services/assetService";
+import { getAllAssets } from "@/services/assets/assetQueries";
 import { getAllLocations, createLocation } from "@/services/locationService";
 import { BasicAssetFields } from "./components/BasicAssetFields";
 import { ParentAssetSelector } from "./components/ParentAssetSelector";
@@ -11,11 +11,13 @@ import { ParentAssetFields } from "./components/ParentAssetFields";
 
 type AssetFormFieldsProps = {
   form: UseFormReturn<AssetFormValues>;
-  currentAssetId?: string; // Optional ID of current asset when editing
+  currentAssetId?: string;
 };
 
 export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentAssetId }) => {
   const [showParentFields, setShowParentFields] = useState(false);
+  
+  console.log("AssetFormFields rendering with currentAssetId:", currentAssetId);
   
   // Fetch all assets for parent selection
   const { data: assets, isLoading: assetsLoading } = useQuery({
@@ -29,18 +31,25 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
     queryFn: getAllLocations
   });
 
+  console.log("Assets loaded:", assets?.length || 0);
+  console.log("Locations loaded:", locations?.length || 0);
+
   // Filter out the current asset (we can't set an asset as its own parent)
   const availableParentAssets = assets?.filter(asset => asset.id !== currentAssetId) || [];
 
   // Handle adding new location
   const handleAddLocation = async (locationName: string) => {
-    await createLocation({ name: locationName });
-    // Refetch locations
-    refetchLocations();
+    try {
+      await createLocation({ name: locationName });
+      refetchLocations();
+    } catch (error) {
+      console.error("Error creating location:", error);
+    }
   };
 
   // Handle parent asset selection change
   const handleParentChange = (value: string) => {
+    console.log("Parent asset selection changed to:", value);
     form.setValue("parent_id", value);
     setShowParentFields(value === "new");
     
@@ -48,9 +57,13 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
       // Reset parent fields if not creating a new parent
       form.setValue("parent_name", "");
       form.setValue("parent_description", "");
-      form.setValue("parent_location_id", ""); // Reset parent location
+      form.setValue("parent_location_id", "");
     }
   };
+
+  if (assetsLoading || locationsLoading) {
+    return <div className="text-center py-4">Loading form data...</div>;
+  }
 
   return (
     <>

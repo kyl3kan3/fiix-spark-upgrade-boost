@@ -8,6 +8,8 @@ import BackToDashboard from "@/components/dashboard/BackToDashboard";
 const AssetFormPage = () => {
   const { assetId } = useParams();
   const isEditing = !!assetId;
+  
+  console.log("AssetFormPage rendering, assetId:", assetId, "isEditing:", isEditing);
 
   return (
     <DashboardLayout>
