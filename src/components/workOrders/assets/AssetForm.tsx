@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { AssetFormFields } from "./AssetFormFields";
 import { AssetFormValues, assetFormSchema } from "./AssetFormSchema";
 import { createAsset, createParentAsset, updateAsset } from "@/services/assets/assetMutations";
@@ -161,25 +162,27 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <AssetFormFields form={form} currentAssetId={assetId} />
-          
-          <div className="flex justify-end space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate("/assets")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting 
-                ? (assetId ? "Updating..." : "Creating...") 
-                : (assetId ? "Update Asset" : "Create Asset")
-              }
-            </Button>
-          </div>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <AssetFormFields form={form} currentAssetId={assetId} />
+            
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate("/assets")}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting 
+                  ? (assetId ? "Updating..." : "Creating...") 
+                  : (assetId ? "Update Asset" : "Create Asset")
+                }
+              </Button>
+            </div>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
