@@ -116,26 +116,25 @@ export function useTeamInvitation() {
         throw new Error("An invitation for this email is already pending");
       }
 
+      console.log("No existing invitations found, creating new invitation");
+
       // Create the invitation with detailed logging
-      console.log("Creating invitation with data:", {
-        email: inviteEmail,
-        organization_id: organizationId,
-        invited_by: user.id,
-        role: "technician"
-      });
-      
       const invitationData = {
         email: inviteEmail,
         organization_id: organizationId,
         invited_by: user.id,
         role: "technician",
         token: crypto.randomUUID(),
+        status: "pending"
       };
+
+      console.log("Creating invitation with data:", invitationData);
 
       const { data: inviteData, error: inviteError } = await supabase
         .from("organization_invitations")
         .insert(invitationData)
-        .select();
+        .select()
+        .single();
 
       if (inviteError) {
         console.error("Error creating invitation:", inviteError);
