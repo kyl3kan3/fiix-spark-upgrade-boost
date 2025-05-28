@@ -35,6 +35,9 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
   const fetchUserProfile = useCallback(async (): Promise<any | null> => {
     try {
       setIsLoading(true);
+      setError(null);
+      
+      console.log("Starting profile fetch...");
       
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -43,6 +46,7 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
         console.error("Auth error when getting user:", userError);
         setError("Authentication error: " + userError.message);
         setProfileData(null);
+        setIsLoading(false);
         return null;
       }
       
@@ -50,16 +54,20 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
         console.log("No authenticated user found");
         setProfileData(null);
         setUserId(null);
+        setIsLoading(false);
         return null;
       }
       
+      console.log("User authenticated:", user.id);
       setUserId(user.id);
       
       // Make sure required fields are included
       const fieldsToFetch = [...new Set([...fields, 'company_id'])];
       const selectFields = fieldsToFetch.join(', ');
       
-      // Get profile data
+      console.log("Fetching profile with fields:", selectFields);
+      
+      // Get profile data with a shorter timeout
       const { data, error: fetchError } = await supabase
         .from('profiles')
         .select(selectFields)
@@ -68,16 +76,21 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
         
       if (fetchError) {
         console.error("Error fetching user profile:", fetchError);
-        setError("Could not fetch user profile");
+        setError("Could not fetch user profile: " + fetchError.message);
         setProfileData(null);
+        setIsLoading(false);
         return null;
       }
 
       if (!data) {
         console.log("No profile data found for user");
+        setError("No profile found for user");
         setProfileData(null);
+        setIsLoading(false);
         return null;
       }
+      
+      console.log("Profile data fetched successfully:", data);
       
       // Process and validate the profile data
       if (typeof data === 'object' && data !== null) {
@@ -94,45 +107,36 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
           };
           setProfileData(profileData);
           setError(null);
+          console.log("Profile processed successfully");
         } else {
           console.warn("Invalid profile data: missing company_id", data);
+          setError("Profile missing required company information");
           setProfileData(null);
         }
       } else {
         console.warn("Invalid profile data format:", data);
+        setError("Invalid profile data format");
         setProfileData(null);
       }
       
+      setIsLoading(false);
       return data;
     } catch (err) {
       console.error("Error in useTeamProfile:", err);
-      setError("An unexpected error occurred");
+      setError("An unexpected error occurred: " + (err as Error).message);
       setProfileData(null);
-      return null;
-    } finally {
       setIsLoading(false);
+      return null;
     }
   }, [fields]);
   
   const refreshProfile = useCallback(async () => {
-    setIsLoading(true);
     return await fetchUserProfile();
   }, [fetchUserProfile]);
 
   // Initial fetch
   useEffect(() => {
     fetchUserProfile();
-    
-    // Set up a timeout to prevent waiting forever
-    const timeout = setTimeout(() => {
-      if (isLoading) {
-        console.warn("Profile fetch timeout - forcing loading state to complete");
-        setIsLoading(false);
-        setError("Profile loading timed out. Please try refreshing.");
-      }
-    }, 5000);
-    
-    return () => clearTimeout(timeout);
   }, [fetchUserProfile]);
 
   // Computed values
