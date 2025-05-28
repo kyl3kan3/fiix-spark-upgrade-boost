@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 // Function to send an in-app notification
@@ -28,9 +29,12 @@ export const sendEmailNotification = async (
   userId: string,
   referenceId?: string
 ): Promise<void> => {
+  console.log("=== EMAIL NOTIFICATION START ===");
   console.log("sendEmailNotification called with:", { to, subject, userId, referenceId });
   
   try {
+    console.log("About to invoke send-email edge function...");
+    
     const { data, error } = await supabase.functions.invoke("send-email", {
       body: {
         to,
@@ -42,17 +46,23 @@ export const sendEmailNotification = async (
       }
     });
     
-    console.log("Edge function response:", { data, error });
+    console.log("Edge function response received:", { data, error });
     
     if (error) {
-      console.error("Edge function error:", error);
-      throw error;
+      console.error("Edge function returned error:", error);
+      throw new Error(`Email service error: ${error.message || 'Unknown error'}`);
+    }
+
+    if (!data || !data.success) {
+      console.error("Edge function returned unsuccessful response:", data);
+      throw new Error(`Email sending failed: ${data?.error || 'Unknown error'}`);
     }
 
     console.log("Email function invoked successfully:", data);
 
     // Also store in notifications table
-    await supabase
+    console.log("Storing notification in database...");
+    const { error: dbError } = await supabase
       .from('notifications')
       .insert({
         user_id: userId,
@@ -62,8 +72,16 @@ export const sendEmailNotification = async (
         reference_id: referenceId
       });
     
-    console.log("Email notification stored in database");
+    if (dbError) {
+      console.error("Database storage error:", dbError);
+      // Don't throw here, email was sent successfully
+    } else {
+      console.log("Email notification stored in database successfully");
+    }
+    
+    console.log("=== EMAIL NOTIFICATION SUCCESS ===");
   } catch (err) {
+    console.error("=== EMAIL NOTIFICATION FAILED ===");
     console.error("Error in sendEmailNotification:", err);
     throw err;
   }
