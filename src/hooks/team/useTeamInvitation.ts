@@ -24,7 +24,7 @@ export function useTeamInvitation() {
         throw new Error("User not authenticated");
       }
 
-      console.log("Sending invitation to:", inviteEmail);
+      console.log("Starting invitation process for:", inviteEmail);
 
       // Get user's company ID
       const { data: profile, error: profileError } = await supabase
@@ -86,10 +86,6 @@ export function useTeamInvitation() {
           
         if (createOrgError) {
           console.error("Error creating organization:", createOrgError);
-          console.error("Organization creation data:", {
-            id: profile.company_id,
-            name: company?.name || "Organization"
-          });
           throw new Error(`Failed to create organization: ${createOrgError.message}`);
         }
         
@@ -113,6 +109,7 @@ export function useTeamInvitation() {
       }
 
       if (existingInvite) {
+        console.log("Found existing pending invitation:", existingInvite);
         throw new Error("An invitation for this email is already pending");
       }
 
@@ -128,25 +125,40 @@ export function useTeamInvitation() {
         status: "pending"
       };
 
-      console.log("Creating invitation with data:", invitationData);
+      console.log("About to insert invitation with data:", invitationData);
 
       const { data: inviteData, error: inviteError } = await supabase
         .from("organization_invitations")
         .insert(invitationData)
         .select()
-        .single();
+        .maybeSingle();
 
       if (inviteError) {
-        console.error("Error creating invitation:", inviteError);
-        console.error("Invitation data that failed:", invitationData);
+        console.error("Database error creating invitation:", inviteError);
+        console.error("Error details:", {
+          code: inviteError.code,
+          message: inviteError.message,
+          details: inviteError.details,
+          hint: inviteError.hint
+        });
         throw new Error(`Failed to create invitation: ${inviteError.message}`);
       }
 
+      if (!inviteData) {
+        console.error("No invitation data returned from insert");
+        throw new Error("Failed to create invitation - no data returned");
+      }
+
       console.log("Invitation created successfully:", inviteData);
+      
+      // TODO: Send actual email invitation here
+      console.log("Email sending would happen here for:", inviteEmail);
+      
       toast.success(`Invitation sent to ${inviteEmail}`);
       return true;
+      
     } catch (err: any) {
-      console.error("Error sending invitation:", err);
+      console.error("Complete error in sendInvitation:", err);
       const errorMessage = err.message || "Failed to send invitation";
       setError(errorMessage);
       toast.error(errorMessage);
