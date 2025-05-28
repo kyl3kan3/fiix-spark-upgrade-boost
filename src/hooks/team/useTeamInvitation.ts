@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { sendEmailNotification } from "@/services/notifications/notificationSenders";
 
 export function useTeamInvitation() {
   const { user } = useAuth();
@@ -50,6 +51,18 @@ export function useTeamInvitation() {
 
       console.log("2. SUCCESS: User profile fetched", { companyId: profile.company_id });
 
+      // Get company name for the invitation email
+      const { data: company, error: companyError } = await supabase
+        .from("companies")
+        .select("name")
+        .eq("id", profile.company_id)
+        .single();
+      
+      if (companyError) {
+        console.error("2.5. FAILED: Error fetching company:", companyError);
+        throw new Error(`Failed to fetch company information: ${companyError.message}`);
+      }
+
       // Check if organization already exists
       console.log("3. Checking if organization exists...");
       const { data: existingOrg, error: orgCheckError } = await supabase
@@ -68,18 +81,6 @@ export function useTeamInvitation() {
       // If organization doesn't exist, create it
       if (!existingOrg) {
         console.log("3. Organization doesn't exist, creating it...");
-        
-        // Get company info
-        const { data: company, error: companyError } = await supabase
-          .from("companies")
-          .select("name")
-          .eq("id", profile.company_id)
-          .single();
-        
-        if (companyError) {
-          console.error("3. FAILED: Error fetching company:", companyError);
-          throw new Error(`Failed to fetch company information: ${companyError.message}`);
-        }
         
         // Create organization
         const { data: newOrg, error: createOrgError } = await supabase
@@ -160,10 +161,40 @@ export function useTeamInvitation() {
       }
 
       console.log("5. SUCCESS: Invitation created successfully:", inviteData);
-      console.log("=== INVITATION PROCESS COMPLETE ===");
+
+      // Send actual email invitation
+      console.log("6. Sending invitation email...");
+      try {
+        const inviteUrl = `${window.location.origin}/auth?signup=true&token=${inviteData.token}`;
+        const emailSubject = `You're invited to join ${company?.name || 'the team'} on MaintenEase`;
+        const emailBody = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>You're invited to join ${company?.name || 'the team'}!</h2>
+            <p>Hello,</p>
+            <p>You've been invited to join <strong>${company?.name || 'the team'}</strong> on MaintenEase, a maintenance management platform.</p>
+            <p>Click the link below to accept your invitation and create your account:</p>
+            <p style="margin: 20px 0;">
+              <a href="${inviteUrl}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                Accept Invitation
+              </a>
+            </p>
+            <p>Or copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: #666;">${inviteUrl}</p>
+            <p>This invitation will expire in 7 days.</p>
+            <p>Best regards,<br>The MaintenEase Team</p>
+          </div>
+        `;
+
+        await sendEmailNotification(inviteEmail, emailSubject, emailBody, user.id, inviteData.id);
+        console.log("6. SUCCESS: Email sent successfully to:", inviteEmail);
+      } catch (emailError: any) {
+        console.error("6. WARNING: Email sending failed:", emailError);
+        // Don't fail the whole process if email fails, just warn
+        toast.error("Invitation created but email failed to send. Please contact the user directly.");
+        return true;
+      }
       
-      // TODO: Send actual email invitation here
-      console.log("6. Email sending would happen here for:", inviteEmail);
+      console.log("=== INVITATION PROCESS COMPLETE ===");
       
       toast.success(`Invitation sent to ${inviteEmail}`);
       return true;
