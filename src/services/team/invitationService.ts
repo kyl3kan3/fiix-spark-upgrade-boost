@@ -24,6 +24,24 @@ export async function checkExistingInvitation(email: string, organizationId: str
   console.log("5. SUCCESS: No existing invitations found");
 }
 
+export async function getExistingInvitation(email: string, organizationId: string) {
+  console.log("3. Getting existing invitation for resend...");
+  const { data: existingInvite, error: inviteGetError } = await supabase
+    .from("organization_invitations")
+    .select("*")
+    .eq("email", email)
+    .eq("organization_id", organizationId)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (inviteGetError) {
+    console.error("3. FAILED: Error getting existing invitation:", inviteGetError);
+    throw new Error(`Failed to get existing invitation: ${inviteGetError.message}`);
+  }
+
+  return existingInvite;
+}
+
 export async function createInvitation(email: string, organizationId: string, userId: string) {
   console.log("6. Creating new invitation...");
   const invitationData = {

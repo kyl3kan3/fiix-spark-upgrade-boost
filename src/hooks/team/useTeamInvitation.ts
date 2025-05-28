@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/auth";
 import { toast } from "sonner";
 import { validateInvitationEmail } from "@/services/team/invitationValidation";
 import { getOrCreateOrganization } from "@/services/team/organizationService";
-import { checkExistingInvitation, createInvitation } from "@/services/team/invitationService";
+import { checkExistingInvitation, createInvitation, getExistingInvitation } from "@/services/team/invitationService";
 import { sendInvitationEmail } from "@/services/team/invitationEmailService";
 
 export function useTeamInvitation() {
@@ -12,11 +12,11 @@ export function useTeamInvitation() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sendInvitation = async (inviteEmail: string) => {
+  const sendInvitation = async (inviteEmail: string, isResend = false) => {
     setError(null);
     
     console.log("=== INVITATION PROCESS START ===");
-    console.log("Starting invitation process for:", inviteEmail);
+    console.log("Starting invitation process for:", inviteEmail, "isResend:", isResend);
     
     const validationError = validateInvitationEmail(inviteEmail);
     if (validationError) {
@@ -46,15 +46,28 @@ export function useTeamInvitation() {
       const { organizationId, companyName } = await getOrCreateOrganization(user.id);
       console.log("2. SUCCESS: Organization setup complete", { organizationId, companyName });
 
-      console.log("3. Checking for existing invitations...");
-      // Check for existing invitations
-      await checkExistingInvitation(inviteEmail, organizationId);
-      console.log("3. SUCCESS: No existing invitations found");
+      let inviteData;
 
-      console.log("4. Creating invitation...");
-      // Create the invitation
-      const inviteData = await createInvitation(inviteEmail, organizationId, user.id);
-      console.log("4. SUCCESS: Invitation created", { invitationId: inviteData.id });
+      if (isResend) {
+        console.log("3. RESEND: Looking for existing invitation...");
+        // For resend, get the existing invitation instead of checking for duplicates
+        inviteData = await getExistingInvitation(inviteEmail, organizationId);
+        if (!inviteData) {
+          console.error("3. FAILED: No existing invitation found for resend");
+          throw new Error("No existing invitation found to resend");
+        }
+        console.log("3. SUCCESS: Found existing invitation for resend", { invitationId: inviteData.id });
+      } else {
+        console.log("3. Checking for existing invitations...");
+        // For new invitations, check for duplicates
+        await checkExistingInvitation(inviteEmail, organizationId);
+        console.log("3. SUCCESS: No existing invitations found");
+
+        console.log("4. Creating invitation...");
+        // Create the invitation
+        inviteData = await createInvitation(inviteEmail, organizationId, user.id);
+        console.log("4. SUCCESS: Invitation created", { invitationId: inviteData.id });
+      }
 
       console.log("5. Sending email...");
       // Send email invitation
@@ -71,7 +84,11 @@ export function useTeamInvitation() {
       
       console.log("=== INVITATION PROCESS COMPLETE ===");
       
-      toast.success(`Invitation sent to ${inviteEmail}`);
+      if (isResend) {
+        toast.success(`Invitation resent to ${inviteEmail}`);
+      } else {
+        toast.success(`Invitation sent to ${inviteEmail}`);
+      }
       return true;
       
     } catch (err: any) {

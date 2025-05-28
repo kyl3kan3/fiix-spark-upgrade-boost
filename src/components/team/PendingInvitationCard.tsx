@@ -25,9 +25,10 @@ const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
 
   const handleResend = async () => {
     console.log("Resending invitation to:", invitation.email);
-    const result = await sendInvitation(invitation.email);
+    // Pass true as the second parameter to indicate this is a resend
+    const result = await sendInvitation(invitation.email, true);
     if (result) {
-      toast.success(`Invitation resent to ${invitation.email}`);
+      console.log("Resend successful for:", invitation.email);
     }
   };
 
