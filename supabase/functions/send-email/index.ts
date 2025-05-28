@@ -2,8 +2,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -25,29 +23,30 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Check if API key exists
+    const apiKey = Deno.env.get("RESEND_API_KEY");
+    if (!apiKey) {
+      console.error("RESEND_API_KEY environment variable is not set");
+      throw new Error("Email service not configured - missing API key");
+    }
+
+    console.log("RESEND_API_KEY found, initializing Resend client");
+    const resend = new Resend(apiKey);
+
     const { to, subject, body, userId, notificationType, referenceId } = await req.json() as EmailNotificationRequest;
 
     if (!to || !subject || !body || !userId) {
-      throw new Error("Missing required fields");
+      throw new Error("Missing required fields: to, subject, body, userId");
     }
+
+    console.log("Sending email to:", to, "Subject:", subject);
 
     // Send the email
     const emailResponse = await resend.emails.send({
-      from: "MaintenEase <onboarding@resend.dev>", // Updated sender
+      from: "MaintenEase <onboarding@resend.dev>",
       to: [to],
       subject: subject,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>${subject}</h2>
-          <div>${body}</div>
-          <hr style="margin: 20px 0;" />
-          <p style="color: #666; font-size: 12px;">
-            This is an automated notification from MaintenEase.
-            <br />
-            Please do not reply to this email.
-          </p>
-        </div>
-      `,
+      html: body,
     });
 
     console.log("Email sent successfully:", emailResponse);
@@ -69,4 +68,3 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
-
