@@ -39,10 +39,20 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
       
       console.log("Starting profile fetch...");
       
-      // Get current user
+      // Get current user with better error handling
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError) {
+        // Handle specific auth errors more gracefully
+        if (userError.message.includes("Auth session missing")) {
+          console.log("No active session found - user needs to log in");
+          setError("Please log in to access this feature");
+          setProfileData(null);
+          setUserId(null);
+          setIsLoading(false);
+          return null;
+        }
+        
         console.error("Auth error when getting user:", userError);
         setError("Authentication error: " + userError.message);
         setProfileData(null);
@@ -67,7 +77,7 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
       
       console.log("Fetching profile with fields:", selectFields);
       
-      // Get profile data with a shorter timeout
+      // Get profile data
       const { data, error: fetchError } = await supabase
         .from('profiles')
         .select(selectFields)
