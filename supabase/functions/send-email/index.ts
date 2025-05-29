@@ -54,7 +54,8 @@ const handler = async (req: Request): Promise<Response> => {
       to: requestData.to,
       subject: requestData.subject,
       userId: requestData.userId,
-      notificationType: requestData.notificationType
+      notificationType: requestData.notificationType,
+      bodyLength: requestData.body?.length || 0
     });
 
     const { to, subject, body, userId, notificationType, referenceId } = requestData;
@@ -72,7 +73,12 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("Sending email via Resend...");
-    console.log("Email details:", { to, subject, bodyLength: body.length });
+    console.log("Email details:", { 
+      from: "MaintenEase <noreply@admiralparkway.com>",
+      to, 
+      subject, 
+      bodyLength: body.length 
+    });
 
     // Send the email using your verified domain
     const emailResponse = await resend.emails.send({
@@ -82,13 +88,13 @@ const handler = async (req: Request): Promise<Response> => {
       html: body,
     });
 
-    console.log("Resend response:", emailResponse);
+    console.log("Resend API response received:", JSON.stringify(emailResponse, null, 2));
 
     if (emailResponse.error) {
-      console.error("Resend returned error:", emailResponse.error);
+      console.error("Resend returned error:", JSON.stringify(emailResponse.error, null, 2));
       const errorResponse = {
         success: false,
-        error: `Resend error: ${emailResponse.error.message || 'Unknown Resend error'}`
+        error: `Resend error: ${emailResponse.error.message || JSON.stringify(emailResponse.error)}`
       };
       return new Response(JSON.stringify(errorResponse), {
         status: 500,
@@ -96,12 +102,24 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    console.log("Email sent successfully via Resend!");
+    if (!emailResponse.data) {
+      console.error("No data returned from Resend API");
+      const errorResponse = {
+        success: false,
+        error: "No data returned from email service"
+      };
+      return new Response(JSON.stringify(errorResponse), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log("Email sent successfully! Message ID:", emailResponse.data.id);
     console.log("=== EDGE FUNCTION SUCCESS ===");
 
     const successResponse = {
       success: true,
-      data: emailResponse
+      data: emailResponse.data
     };
 
     return new Response(JSON.stringify(successResponse), {
@@ -110,13 +128,16 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error) {
     console.error("=== EDGE FUNCTION ERROR ===");
-    console.error("Error details:", error);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
+    console.error("Error type:", typeof error);
+    console.error("Error name:", error?.name);
+    console.error("Error message:", error?.message);
+    console.error("Error details:", JSON.stringify(error, null, 2));
+    console.error("Error stack:", error?.stack);
     
     const errorResponse = {
       success: false,
-      error: error.message || "Unknown error occurred"
+      error: `Email sending failed: ${error?.message || 'Unknown error occurred'}`,
+      details: error?.name || 'UnknownError'
     };
     
     return new Response(JSON.stringify(errorResponse), {
