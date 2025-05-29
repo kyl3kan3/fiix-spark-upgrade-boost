@@ -77,11 +77,11 @@ export function useTeamInvitation() {
       }
       addStatusUpdate("✅ User authenticated");
 
-      // Step 3: Get organization
+      // Step 3: Get organization - passing the addStatusUpdate callback
       addStatusUpdate("🏢 Setting up organization...");
       let organizationData;
       try {
-        organizationData = await getOrCreateOrganization(user.id);
+        organizationData = await getOrCreateOrganization(user.id, addStatusUpdate);
         console.log("✅ Organization data:", organizationData);
         addStatusUpdate("✅ Organization setup complete");
       } catch (orgError: any) {
