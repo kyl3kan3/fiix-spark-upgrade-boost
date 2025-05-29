@@ -82,16 +82,60 @@ export async function createInvitation(email: string, organizationId: string, us
 }
 
 export async function deleteInvitation(invitationId: string): Promise<void> {
-  console.log("Deleting invitation with ID:", invitationId);
+  console.log("Starting delete process for invitation ID:", invitationId);
   
-  const { error } = await supabase
+  // First, let's check if the invitation exists and get current user info
+  const { data: currentUser, error: userError } = await supabase.auth.getUser();
+  
+  if (userError || !currentUser?.user) {
+    console.error("Failed to get current user:", userError);
+    throw new Error("Authentication required to delete invitation");
+  }
+  
+  console.log("Current user ID:", currentUser.user.id);
+  
+  // Check if the invitation exists
+  const { data: invitation, error: checkError } = await supabase
+    .from("organization_invitations")
+    .select("*")
+    .eq("id", invitationId)
+    .maybeSingle();
+    
+  if (checkError) {
+    console.error("Error checking invitation:", checkError);
+    throw new Error(`Failed to verify invitation: ${checkError.message}`);
+  }
+  
+  if (!invitation) {
+    console.error("Invitation not found with ID:", invitationId);
+    throw new Error("Invitation not found");
+  }
+  
+  console.log("Found invitation to delete:", invitation);
+  
+  // Attempt to delete the invitation
+  const { error: deleteError, data: deleteData } = await supabase
     .from("organization_invitations")
     .delete()
-    .eq("id", invitationId);
+    .eq("id", invitationId)
+    .select();
 
-  if (error) {
-    console.error("Failed to delete invitation:", error);
-    throw new Error(`Failed to delete invitation: ${error.message}`);
+  console.log("Delete operation result:", { deleteError, deleteData });
+
+  if (deleteError) {
+    console.error("Failed to delete invitation:", deleteError);
+    console.error("Delete error details:", {
+      code: deleteError.code,
+      message: deleteError.message,
+      details: deleteError.details,
+      hint: deleteError.hint
+    });
+    throw new Error(`Failed to delete invitation: ${deleteError.message}`);
+  }
+
+  if (!deleteData || deleteData.length === 0) {
+    console.error("No rows were deleted. This might indicate a permission issue.");
+    throw new Error("Failed to delete invitation - no rows affected");
   }
 
   console.log("Successfully deleted invitation:", invitationId);
