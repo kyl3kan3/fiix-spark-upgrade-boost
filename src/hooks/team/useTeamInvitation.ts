@@ -74,7 +74,10 @@ export function useTeamInvitation() {
         console.log("✅ Organization data:", organizationData);
       } catch (orgError: any) {
         console.error("❌ Organization setup failed:", orgError);
-        throw new Error(`Organization setup failed: ${orgError.message}`);
+        const orgErrorMessage = `Organization setup failed: ${orgError.message}`;
+        setError(orgErrorMessage);
+        toast.error(orgErrorMessage);
+        return false;
       }
 
       const { organizationId, companyName } = organizationData;
@@ -90,7 +93,10 @@ export function useTeamInvitation() {
         inviteData = await getExistingInvitation(inviteEmail, organizationId);
         if (!inviteData) {
           console.error("❌ No existing invitation found for resend");
-          throw new Error("No existing invitation found to resend");
+          const resendError = "No existing invitation found to resend";
+          setError(resendError);
+          toast.error(resendError);
+          return false;
         }
         console.log("✅ Found existing invitation:", inviteData.id);
       } else {
@@ -106,7 +112,9 @@ export function useTeamInvitation() {
             toast.error(helpMessage);
             return false;
           }
-          throw existingError;
+          setError(existingError.message);
+          toast.error(existingError.message);
+          return false;
         }
 
         console.log("➕ Step 6: Creating new invitation...");
@@ -115,7 +123,10 @@ export function useTeamInvitation() {
           console.log("✅ Invitation created:", inviteData.id);
         } catch (createError: any) {
           console.error("❌ Failed to create invitation:", createError);
-          throw new Error(`Failed to create invitation: ${createError.message}`);
+          const createErrorMessage = `Failed to create invitation: ${createError.message}`;
+          setError(createErrorMessage);
+          toast.error(createErrorMessage);
+          return false;
         }
       }
 
@@ -125,7 +136,9 @@ export function useTeamInvitation() {
         console.log("✅ Email sent successfully");
       } catch (emailError: any) {
         console.error("❌ Email sending failed:", emailError);
-        toast.error("Invitation created but email failed to send. Please contact the user directly.");
+        const emailErrorMessage = "Invitation created but email failed to send. Please contact the user directly.";
+        toast.error(emailErrorMessage);
+        // Don't set error state since invitation was created successfully
         return true; // Still return success since invitation was created
       }
       
