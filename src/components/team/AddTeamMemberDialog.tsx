@@ -13,9 +13,8 @@ import { TeamMemberFormValues } from "./types";
 
 const AddTeamMemberDialog = () => {
   const { user } = useAuth();
-  const { sendInvitation, isSubmitting, error } = useTeamInvitation();
+  const { sendInvitation, isSubmitting, error, statusUpdates } = useTeamInvitation();
   const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
-  const [debugStatus, setDebugStatus] = useState<string[]>([]);
 
   const handleSubmit = async (data: TeamMemberFormValues) => {
     console.log("=== DIALOG SUBMISSION START ===");
@@ -23,25 +22,12 @@ const AddTeamMemberDialog = () => {
     console.log("Current user in dialog:", user);
     console.log("Dialog state:", { isSubmitting, error });
     
-    // Clear previous debug messages
-    setDebugStatus([]);
-    
     try {
-      setDebugStatus(prev => [...prev, "🚀 Starting invitation process..."]);
-      
       const success = await sendInvitation(data.email);
-      
-      if (success) {
-        setDebugStatus(prev => [...prev, "✅ Invitation sent successfully!"]);
-      } else {
-        setDebugStatus(prev => [...prev, "❌ Invitation failed to send"]);
-      }
-      
       console.log("Dialog submission result:", success);
       return success;
     } catch (error) {
       console.error("Error in dialog handleSubmit:", error);
-      setDebugStatus(prev => [...prev, `💥 Error: ${error.message || 'Unknown error'}`]);
       return false;
     }
   };
@@ -64,12 +50,12 @@ const AddTeamMemberDialog = () => {
         </DialogDescription>
       </DialogHeader>
       
-      {/* Debug Status Display */}
-      {debugStatus.length > 0 && (
+      {/* Real-time Status Display */}
+      {statusUpdates.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
           <h4 className="font-medium text-blue-900 mb-2">Status:</h4>
-          <div className="space-y-1">
-            {debugStatus.map((status, index) => (
+          <div className="space-y-1 max-h-32 overflow-y-auto">
+            {statusUpdates.map((status, index) => (
               <div key={index} className="text-sm text-blue-800">
                 {status}
               </div>

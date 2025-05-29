@@ -12,6 +12,16 @@ export function useTeamInvitation() {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusUpdates, setStatusUpdates] = useState<string[]>([]);
+
+  const addStatusUpdate = (message: string) => {
+    console.log(message);
+    setStatusUpdates(prev => [...prev, message]);
+  };
+
+  const clearStatusUpdates = () => {
+    setStatusUpdates([]);
+  };
 
   const debugInvitations = async (email: string, organizationId: string) => {
     console.log("=== DEBUG: ALL INVITATIONS FOR EMAIL ===");
@@ -42,10 +52,11 @@ export function useTeamInvitation() {
     
     setError(null);
     setIsSubmitting(true);
+    clearStatusUpdates();
     
     try {
       // Step 1: Validate email
-      console.log("📧 Step 1: Validating email...");
+      addStatusUpdate("📧 Validating email address...");
       const validationError = validateInvitationEmail(inviteEmail);
       if (validationError) {
         console.error("❌ Email validation failed:", validationError);
@@ -53,10 +64,10 @@ export function useTeamInvitation() {
         toast.error(validationError);
         return false;
       }
-      console.log("✅ Email validation passed");
+      addStatusUpdate("✅ Email validation passed");
 
       // Step 2: Check authentication
-      console.log("🔐 Step 2: Checking authentication...");
+      addStatusUpdate("🔐 Checking user authentication...");
       if (!user?.id) {
         console.error("❌ User not authenticated");
         const authError = "You must be logged in to send invitations.";
@@ -64,85 +75,95 @@ export function useTeamInvitation() {
         toast.error("Please log in to send invitations");
         return false;
       }
-      console.log("✅ User authenticated:", user.id);
+      addStatusUpdate("✅ User authenticated");
 
       // Step 3: Get organization
-      console.log("🏢 Step 3: Getting organization...");
+      addStatusUpdate("🏢 Setting up organization...");
       let organizationData;
       try {
         organizationData = await getOrCreateOrganization(user.id);
         console.log("✅ Organization data:", organizationData);
+        addStatusUpdate("✅ Organization setup complete");
       } catch (orgError: any) {
         console.error("❌ Organization setup failed:", orgError);
         const orgErrorMessage = `Organization setup failed: ${orgError.message}`;
         setError(orgErrorMessage);
         toast.error(orgErrorMessage);
+        addStatusUpdate(`❌ ${orgErrorMessage}`);
         return false;
       }
 
       const { organizationId, companyName } = organizationData;
 
       // Step 4: Debug existing invitations
-      console.log("🔍 Step 4: Debugging existing invitations...");
+      addStatusUpdate("🔍 Checking for existing invitations...");
       await debugInvitations(inviteEmail, organizationId);
 
       let inviteData;
 
       if (isResend) {
-        console.log("🔄 Step 5a: Getting existing invitation for resend...");
+        addStatusUpdate("🔄 Looking for existing invitation to resend...");
         inviteData = await getExistingInvitation(inviteEmail, organizationId);
         if (!inviteData) {
           console.error("❌ No existing invitation found for resend");
           const resendError = "No existing invitation found to resend";
           setError(resendError);
           toast.error(resendError);
+          addStatusUpdate(`❌ ${resendError}`);
           return false;
         }
-        console.log("✅ Found existing invitation:", inviteData.id);
+        addStatusUpdate("✅ Found existing invitation to resend");
       } else {
-        console.log("🔍 Step 5b: Checking for duplicate invitations...");
+        addStatusUpdate("🔍 Checking for duplicate invitations...");
         try {
           await checkExistingInvitation(inviteEmail, organizationId);
-          console.log("✅ No duplicate invitations found");
+          addStatusUpdate("✅ No duplicate invitations found");
         } catch (existingError: any) {
           console.error("❌ Duplicate invitation check failed:", existingError.message);
           if (existingError.message.includes("already pending")) {
             const helpMessage = "There's already a pending invitation for this email. Please delete the existing invitation first or use the resend option.";
             setError(helpMessage);
             toast.error(helpMessage);
+            addStatusUpdate(`❌ ${helpMessage}`);
             return false;
           }
           setError(existingError.message);
           toast.error(existingError.message);
+          addStatusUpdate(`❌ ${existingError.message}`);
           return false;
         }
 
-        console.log("➕ Step 6: Creating new invitation...");
+        addStatusUpdate("➕ Creating new invitation...");
         try {
           inviteData = await createInvitation(inviteEmail, organizationId, user.id);
           console.log("✅ Invitation created:", inviteData.id);
+          addStatusUpdate("✅ Invitation created successfully");
         } catch (createError: any) {
           console.error("❌ Failed to create invitation:", createError);
           const createErrorMessage = `Failed to create invitation: ${createError.message}`;
           setError(createErrorMessage);
           toast.error(createErrorMessage);
+          addStatusUpdate(`❌ ${createErrorMessage}`);
           return false;
         }
       }
 
-      console.log("📤 Step 7: Sending email...");
+      addStatusUpdate("📤 Sending email notification...");
       try {
         await sendInvitationEmail(inviteEmail, companyName, inviteData.token, user.id, inviteData.id);
         console.log("✅ Email sent successfully");
+        addStatusUpdate("✅ Email sent successfully");
       } catch (emailError: any) {
         console.error("❌ Email sending failed:", emailError);
         const emailErrorMessage = "Invitation created but email failed to send. Please contact the user directly.";
         toast.error(emailErrorMessage);
+        addStatusUpdate(`⚠️ ${emailErrorMessage}`);
         // Don't set error state since invitation was created successfully
         return true; // Still return success since invitation was created
       }
       
       console.log("🎉 INVITATION PROCESS COMPLETED SUCCESSFULLY");
+      addStatusUpdate("🎉 Invitation process completed successfully!");
       
       if (isResend) {
         toast.success(`Invitation resent to ${inviteEmail}`);
@@ -158,6 +179,7 @@ export function useTeamInvitation() {
       const errorMessage = err.message || "Failed to send invitation";
       setError(errorMessage);
       toast.error(errorMessage);
+      addStatusUpdate(`💥 Error: ${errorMessage}`);
       return false;
     } finally {
       console.log("🏁 Setting isSubmitting to false");
@@ -168,6 +190,8 @@ export function useTeamInvitation() {
   return {
     sendInvitation,
     isSubmitting,
-    error
+    error,
+    statusUpdates,
+    clearStatusUpdates
   };
 }
