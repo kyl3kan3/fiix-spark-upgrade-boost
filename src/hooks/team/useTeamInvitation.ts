@@ -22,6 +22,7 @@ export function useTeamInvitation() {
     if (validationError) {
       console.error("1. FAILED: Email validation error:", validationError);
       setError(validationError);
+      toast.error(validationError);
       return false;
     }
 

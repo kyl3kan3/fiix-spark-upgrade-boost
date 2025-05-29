@@ -2,89 +2,48 @@
 import React, { useState } from "react";
 import {
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { toast } from "sonner";
+import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
+import { useAuth } from "@/hooks/auth";
 import TeamMemberForm from "./form/TeamMemberForm";
 import { TeamMemberFormValues } from "./types";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
-import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
 
 const AddTeamMemberDialog = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const { isAdminUser, companyName, isLoading, error: statusError } = useAdminStatus();
-  const { sendInvitation } = useTeamInvitation();
+  const { user } = useAuth();
+  const { sendInvitation, isSubmitting, error } = useTeamInvitation();
+  const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
 
-  const onSubmit = async (data: TeamMemberFormValues) => {
-    console.log("Form submitted with data:", data);
-    console.log("Admin status:", { isAdminUser, isLoading });
-    
-    if (!isAdminUser && !isLoading) {
-      toast.error("Only administrators can add team members");
-      return;
-    }
-    
-    setIsSubmitting(true);
-    setError(null);
-    
-    try {
-      // Use the team invitation hook to send the invitation
-      const success = await sendInvitation(data.email);
-      
-      if (success) {
-        toast.success(`Invitation sent to ${data.email}`);
-      } else {
-        toast.error("Failed to send invitation");
-      }
-    } catch (err: any) {
-      console.error("Error sending invitation:", err);
-      setError(err.message || "Failed to send invitation");
-      toast.error("Failed to send invitation");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleSubmit = async (data: TeamMemberFormValues) => {
+    console.log("AddTeamMemberDialog handleSubmit called with:", data);
+    const success = await sendInvitation(data.email);
+    console.log("Invitation result:", success);
+    return success;
   };
 
-  // Don't show admin warning while loading
-  const showAdminWarning = !isLoading && !isAdminUser;
-  // Only disable form if we're sure the user is not an admin (not while loading)
-  const isFormDisabled = !isLoading && !isAdminUser;
+  const isDisabled = !user;
 
   return (
-    <DialogContent className="sm:max-w-md">
+    <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>Add New Team Member</DialogTitle>
+        <DialogTitle>Add Team Member</DialogTitle>
         <DialogDescription>
-          Enter the details of the new team member to invite them to the platform.
+          Send an invitation to a new team member. They'll receive an email with instructions to join your team.
         </DialogDescription>
       </DialogHeader>
       
-      {showAdminWarning && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Only administrators can add new team members
-          </AlertDescription>
-        </Alert>
+      {error && (
+        <div className="text-red-600 text-sm mb-4 p-3 bg-red-50 rounded-md">
+          {error}
+        </div>
       )}
       
-      {(error || statusError) && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error || statusError}</AlertDescription>
-        </Alert>
-      )}
-      
-      <TeamMemberForm 
-        onSubmit={onSubmit}
+      <TeamMemberForm
+        onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
-        isDisabled={isFormDisabled}
+        isDisabled={isDisabled}
         companyName={companyName}
       />
     </DialogContent>
