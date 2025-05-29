@@ -17,13 +17,29 @@ const AddTeamMemberDialog = () => {
   const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
 
   const handleSubmit = async (data: TeamMemberFormValues) => {
+    console.log("=== DIALOG SUBMISSION START ===");
     console.log("AddTeamMemberDialog handleSubmit called with:", data);
-    const success = await sendInvitation(data.email);
-    console.log("Invitation result:", success);
-    return success;
+    console.log("Current user in dialog:", user);
+    console.log("Dialog state:", { isSubmitting, error });
+    
+    try {
+      const success = await sendInvitation(data.email);
+      console.log("Dialog submission result:", success);
+      return success;
+    } catch (error) {
+      console.error("Error in dialog handleSubmit:", error);
+      return false;
+    }
   };
 
   const isDisabled = !user;
+
+  console.log("AddTeamMemberDialog render state:", { 
+    user: !!user, 
+    isSubmitting, 
+    error, 
+    isDisabled 
+  });
 
   return (
     <DialogContent className="sm:max-w-[425px]">
