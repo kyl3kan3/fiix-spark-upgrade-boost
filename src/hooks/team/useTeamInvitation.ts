@@ -18,16 +18,20 @@ export function useTeamInvitation() {
     const { data: allInvites, error } = await supabase
       .from("organization_invitations")
       .select("*")
-      .eq("email", email);
+      .eq("email", email)
+      .order('created_at', { ascending: false });
     
     console.log("All invitations for email:", allInvites);
+    console.log("Total count:", allInvites?.length || 0);
     
     const { data: orgInvites, error: orgError } = await supabase
       .from("organization_invitations")
       .select("*")
-      .eq("organization_id", organizationId);
+      .eq("organization_id", organizationId)
+      .order('created_at', { ascending: false });
     
     console.log("All invitations for organization:", orgInvites);
+    console.log("Organization invites count:", orgInvites?.length || 0);
   };
 
   const sendInvitation = async (inviteEmail: string, isResend = false) => {
@@ -82,8 +86,20 @@ export function useTeamInvitation() {
       } else {
         console.log("4. Checking for existing invitations...");
         // For new invitations, check for duplicates
-        await checkExistingInvitation(inviteEmail, organizationId);
-        console.log("4. SUCCESS: No existing invitations found");
+        try {
+          await checkExistingInvitation(inviteEmail, organizationId);
+          console.log("4. SUCCESS: No existing invitations found");
+        } catch (existingError: any) {
+          console.error("4. FAILED: Existing invitation check failed:", existingError.message);
+          // If the error is about pending invitation, show a more helpful message
+          if (existingError.message.includes("already pending")) {
+            const helpMessage = "There's already a pending invitation for this email. Please delete the existing invitation first or use the resend option.";
+            setError(helpMessage);
+            toast.error(helpMessage);
+            return false;
+          }
+          throw existingError;
+        }
 
         console.log("5. Creating invitation...");
         // Create the invitation
