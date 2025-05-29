@@ -2,30 +2,38 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export async function checkExistingInvitation(email: string, organizationId: string) {
-  console.log("5. Checking for existing invitations...");
-  const { data: existingInvite, error: inviteCheckError } = await supabase
+  console.log("=== CHECKING EXISTING INVITATIONS ===");
+  console.log("Checking for existing invitations with:", { email, organizationId });
+  
+  const { data: existingInvites, error: inviteCheckError } = await supabase
     .from("organization_invitations")
-    .select("id, status")
+    .select("id, status, created_at")
     .eq("email", email)
-    .eq("organization_id", organizationId)
-    .eq("status", "pending")
-    .maybeSingle();
+    .eq("organization_id", organizationId);
+
+  console.log("Raw query result:", { existingInvites, inviteCheckError });
 
   if (inviteCheckError) {
-    console.error("5. FAILED: Error checking existing invitations:", inviteCheckError);
+    console.error("Database error checking existing invitations:", inviteCheckError);
     throw new Error(`Failed to check existing invitations: ${inviteCheckError.message}`);
   }
 
-  if (existingInvite) {
-    console.log("5. FAILED: Found existing pending invitation:", existingInvite);
+  // Filter for pending invitations
+  const pendingInvites = existingInvites?.filter(invite => invite.status === "pending") || [];
+  console.log("Pending invitations found:", pendingInvites);
+
+  if (pendingInvites.length > 0) {
+    console.log("Found pending invitation, throwing error");
     throw new Error("An invitation for this email is already pending");
   }
 
-  console.log("5. SUCCESS: No existing invitations found");
+  console.log("No pending invitations found, proceeding");
 }
 
 export async function getExistingInvitation(email: string, organizationId: string) {
-  console.log("3. Getting existing invitation for resend...");
+  console.log("=== GETTING EXISTING INVITATION FOR RESEND ===");
+  console.log("Looking for existing invitation with:", { email, organizationId });
+  
   const { data: existingInvite, error: inviteGetError } = await supabase
     .from("organization_invitations")
     .select("*")
@@ -34,8 +42,10 @@ export async function getExistingInvitation(email: string, organizationId: strin
     .eq("status", "pending")
     .maybeSingle();
 
+  console.log("Existing invitation query result:", { existingInvite, inviteGetError });
+
   if (inviteGetError) {
-    console.error("3. FAILED: Error getting existing invitation:", inviteGetError);
+    console.error("Database error getting existing invitation:", inviteGetError);
     throw new Error(`Failed to get existing invitation: ${inviteGetError.message}`);
   }
 
@@ -43,7 +53,7 @@ export async function getExistingInvitation(email: string, organizationId: strin
 }
 
 export async function createInvitation(email: string, organizationId: string, userId: string) {
-  console.log("6. Creating new invitation...");
+  console.log("=== CREATING NEW INVITATION ===");
   const invitationData = {
     email,
     organization_id: organizationId,
@@ -53,7 +63,7 @@ export async function createInvitation(email: string, organizationId: string, us
     status: "pending"
   };
 
-  console.log("6. About to insert invitation with data:", invitationData);
+  console.log("About to insert invitation with data:", invitationData);
 
   const { data: inviteData, error: inviteError } = await supabase
     .from("organization_invitations")
@@ -62,7 +72,7 @@ export async function createInvitation(email: string, organizationId: string, us
     .single();
 
   if (inviteError) {
-    console.error("6. FAILED: Database error creating invitation:", inviteError);
+    console.error("Database error creating invitation:", inviteError);
     console.error("Error details:", {
       code: inviteError.code,
       message: inviteError.message,
@@ -73,15 +83,16 @@ export async function createInvitation(email: string, organizationId: string, us
   }
 
   if (!inviteData) {
-    console.error("6. FAILED: No invitation data returned from insert");
+    console.error("No invitation data returned from insert");
     throw new Error("Failed to create invitation - no data returned");
   }
 
-  console.log("6. SUCCESS: Invitation created successfully:", inviteData);
+  console.log("Invitation created successfully:", inviteData);
   return inviteData;
 }
 
 export async function deleteInvitation(invitationId: string): Promise<void> {
+  console.log("=== DELETING INVITATION ===");
   console.log("Deleting invitation with ID:", invitationId);
   
   const { error } = await supabase

@@ -6,11 +6,29 @@ import { validateInvitationEmail } from "@/services/team/invitationValidation";
 import { getOrCreateOrganization } from "@/services/team/organizationService";
 import { checkExistingInvitation, createInvitation, getExistingInvitation } from "@/services/team/invitationService";
 import { sendInvitationEmail } from "@/services/team/invitationEmailService";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useTeamInvitation() {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const debugInvitations = async (email: string, organizationId: string) => {
+    console.log("=== DEBUG: ALL INVITATIONS FOR EMAIL ===");
+    const { data: allInvites, error } = await supabase
+      .from("organization_invitations")
+      .select("*")
+      .eq("email", email);
+    
+    console.log("All invitations for email:", allInvites);
+    
+    const { data: orgInvites, error: orgError } = await supabase
+      .from("organization_invitations")
+      .select("*")
+      .eq("organization_id", organizationId);
+    
+    console.log("All invitations for organization:", orgInvites);
+  };
 
   const sendInvitation = async (inviteEmail: string, isResend = false) => {
     console.log("=== HOOK INVITATION PROCESS START ===");
@@ -46,6 +64,9 @@ export function useTeamInvitation() {
       // Get or create organization
       const { organizationId, companyName } = await getOrCreateOrganization(user.id);
       console.log("3. SUCCESS: Organization setup complete", { organizationId, companyName });
+
+      // Debug invitations before checking
+      await debugInvitations(inviteEmail, organizationId);
 
       let inviteData;
 
