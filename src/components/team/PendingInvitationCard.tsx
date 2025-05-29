@@ -3,19 +3,22 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Mail, Send } from "lucide-react";
+import { Clock, Mail, Send, Trash2 } from "lucide-react";
 import { PendingInvitation } from "@/hooks/team/usePendingInvitations";
 import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
+import { deleteInvitation } from "@/services/team/invitationService";
 import { toast } from "sonner";
 
 interface PendingInvitationCardProps {
   invitation: PendingInvitation;
   roleColorMap: Record<string, string>;
+  onInvitationDeleted?: () => void;
 }
 
 const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({ 
   invitation, 
-  roleColorMap 
+  roleColorMap,
+  onInvitationDeleted 
 }) => {
   const { sendInvitation, isSubmitting } = useTeamInvitation();
 
@@ -29,6 +32,17 @@ const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
     const result = await sendInvitation(invitation.email, true);
     if (result) {
       console.log("Resend successful for:", invitation.email);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteInvitation(invitation.id);
+      toast.success("Invitation deleted successfully");
+      onInvitationDeleted?.();
+    } catch (error: any) {
+      console.error("Error deleting invitation:", error);
+      toast.error("Failed to delete invitation");
     }
   };
 
@@ -64,16 +78,28 @@ const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
           <div className="text-xs text-orange-600 font-medium">
             ⏳ Waiting for acceptance
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResend}
-            disabled={isSubmitting}
-            className="flex items-center space-x-1"
-          >
-            <Send className="h-3 w-3" />
-            <span>Resend</span>
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResend}
+              disabled={isSubmitting}
+              className="flex items-center space-x-1"
+            >
+              <Send className="h-3 w-3" />
+              <span>Resend</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDelete}
+              disabled={isSubmitting}
+              className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-3 w-3" />
+              <span>Delete</span>
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

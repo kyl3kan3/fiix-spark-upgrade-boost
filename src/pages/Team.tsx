@@ -81,6 +81,11 @@ const Team = () => {
       });
   }, [updateTeamMember, refreshTeamMembers]);
 
+  const handleInvitationDeleted = useCallback(() => {
+    // Refresh the pending invitations list when an invitation is deleted
+    refreshPendingInvitations();
+  }, [refreshPendingInvitations]);
+
   return (
     <DashboardLayout>
       <BackToDashboard />
@@ -102,6 +107,7 @@ const Team = () => {
           invitations={pendingInvitations}
           roleColorMap={roleColorMap}
           loading={pendingLoading}
+          onInvitationDeleted={handleInvitationDeleted}
         />
       </div>
       

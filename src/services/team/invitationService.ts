@@ -80,3 +80,19 @@ export async function createInvitation(email: string, organizationId: string, us
   console.log("6. SUCCESS: Invitation created successfully:", inviteData);
   return inviteData;
 }
+
+export async function deleteInvitation(invitationId: string): Promise<void> {
+  console.log("Deleting invitation with ID:", invitationId);
+  
+  const { error } = await supabase
+    .from("organization_invitations")
+    .delete()
+    .eq("id", invitationId);
+
+  if (error) {
+    console.error("Failed to delete invitation:", error);
+    throw new Error(`Failed to delete invitation: ${error.message}`);
+  }
+
+  console.log("Successfully deleted invitation:", invitationId);
+}

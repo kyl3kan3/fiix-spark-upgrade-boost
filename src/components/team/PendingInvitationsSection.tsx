@@ -9,12 +9,14 @@ interface PendingInvitationsSectionProps {
   invitations: PendingInvitation[];
   roleColorMap: Record<string, string>;
   loading?: boolean;
+  onInvitationDeleted?: () => void;
 }
 
 const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({ 
   invitations, 
   roleColorMap, 
-  loading = false 
+  loading = false,
+  onInvitationDeleted 
 }) => {
   if (loading) {
     return (
@@ -72,6 +74,7 @@ const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({
               key={invitation.id} 
               invitation={invitation}
               roleColorMap={roleColorMap}
+              onInvitationDeleted={onInvitationDeleted}
             />
           ))}
         </div>
