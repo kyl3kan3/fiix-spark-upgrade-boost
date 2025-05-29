@@ -138,16 +138,28 @@ export const useTeamProfile = (fields: string[] = ['role', 'company_id', 'compan
       setIsLoading(false);
       return null;
     }
-  }, [fields]);
+  }, []); // Remove fields dependency to prevent infinite loops
   
   const refreshProfile = useCallback(async () => {
     return await fetchUserProfile();
   }, [fetchUserProfile]);
 
-  // Initial fetch
+  // Initial fetch - only run once on mount
   useEffect(() => {
-    fetchUserProfile();
-  }, [fetchUserProfile]);
+    let mounted = true;
+    
+    const doFetch = async () => {
+      if (mounted) {
+        await fetchUserProfile();
+      }
+    };
+    
+    doFetch();
+    
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array to run only once
 
   // Computed values
   const role = profileData?.role || null;
