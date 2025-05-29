@@ -8,7 +8,12 @@ export async function sendInvitationEmail(
   userId: string, 
   invitationId: string
 ) {
-  console.log("7. Sending invitation email...");
+  console.log("📤 Starting email send process...");
+  console.log("To:", inviteEmail);
+  console.log("Company:", companyName);
+  console.log("Token:", token);
+  console.log("User ID:", userId);
+  console.log("Invitation ID:", invitationId);
   
   const inviteUrl = `${window.location.origin}/auth?signup=true&token=${token}`;
   const emailSubject = `You're invited to join ${companyName} on MaintenEase`;
@@ -30,13 +35,13 @@ export async function sendInvitationEmail(
     </div>
   `;
 
-  console.log("7. Calling sendEmailNotification with:", {
-    to: inviteEmail,
-    subject: emailSubject,
-    userId,
-    invitationId
-  });
+  console.log("📧 Calling sendEmailNotification...");
 
-  await sendEmailNotification(inviteEmail, emailSubject, emailBody, userId, invitationId);
-  console.log("7. SUCCESS: Email sent successfully to:", inviteEmail);
+  try {
+    await sendEmailNotification(inviteEmail, emailSubject, emailBody, userId, invitationId);
+    console.log("✅ Email sent successfully to:", inviteEmail);
+  } catch (error) {
+    console.error("❌ Email sending failed:", error);
+    throw error;
+  }
 }
