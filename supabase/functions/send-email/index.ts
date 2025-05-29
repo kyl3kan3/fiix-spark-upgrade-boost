@@ -74,9 +74,9 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending email via Resend...");
     console.log("Email details:", { to, subject, bodyLength: body.length });
 
-    // Send the email
+    // Send the email using your verified domain
     const emailResponse = await resend.emails.send({
-      from: "MaintenEase <onboarding@resend.dev>",
+      from: "MaintenEase <noreply@admiralparkway.com>",
       to: [to],
       subject: subject,
       html: body,
