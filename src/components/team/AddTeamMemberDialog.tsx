@@ -13,7 +13,7 @@ import { TeamMemberFormValues } from "./types";
 
 const AddTeamMemberDialog = () => {
   const { user } = useAuth();
-  const { sendInvitation, isSubmitting, error, statusUpdates } = useTeamInvitation();
+  const { sendInvitation, isSubmitting, error } = useTeamInvitation();
   const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
 
   const handleSubmit = async (data: TeamMemberFormValues) => {
@@ -49,20 +49,6 @@ const AddTeamMemberDialog = () => {
           Send an invitation to a new team member. They'll receive an email with instructions to join your team.
         </DialogDescription>
       </DialogHeader>
-      
-      {/* Real-time Status Display */}
-      {statusUpdates.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
-          <h4 className="font-medium text-blue-900 mb-2">Status:</h4>
-          <div className="space-y-1 max-h-32 overflow-y-auto">
-            {statusUpdates.map((status, index) => (
-              <div key={index} className="text-sm text-blue-800">
-                {status}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
       
       {error && (
         <div className="text-red-600 text-sm mb-4 p-3 bg-red-50 rounded-md">
