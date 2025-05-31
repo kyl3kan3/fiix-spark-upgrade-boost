@@ -15,7 +15,8 @@ export async function sendInvitationEmail(
   console.log("User ID:", userId);
   console.log("Invitation ID:", invitationId);
   
-  const inviteUrl = `${window.location.origin}/auth?signup=true&token=${token}`;
+  // Use your actual domain instead of window.location.origin
+  const inviteUrl = `https://maintain.rockcitydevelopment.com/auth?signup=true&token=${token}`;
   const emailSubject = `You're invited to join ${companyName} on MaintenEase`;
   const emailBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
