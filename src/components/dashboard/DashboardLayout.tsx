@@ -19,22 +19,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
-    // Check if dark mode is enabled in localStorage when component mounts
-    const storedSettings = localStorage.getItem('displaySettings');
-    if (storedSettings) {
-      try {
-        const settings = JSON.parse(storedSettings);
-        const darkModeSetting = settings.find((s: any) => s.id === "darkMode");
-        if (darkModeSetting && darkModeSetting.enabled) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      } catch (e) {
-        console.error("Error parsing display settings:", e);
-      }
-    }
-    
     // Fetch notifications count on component mount
     fetchNotificationsCount();
   }, []);

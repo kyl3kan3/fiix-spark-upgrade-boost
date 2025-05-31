@@ -1,5 +1,6 @@
 
 import React from "react";
+import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
 
 interface DisplaySetting {
@@ -22,11 +23,31 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = ({
   onToggle,
   onLayoutChange,
 }) => {
+  const { theme, setTheme } = useTheme();
+  
+  const handleDarkModeToggle = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    onToggle('darkMode');
+  };
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium">Display Settings</h3>
       <div className="grid gap-4">
-        {settings.map((setting) => (
+        <div className="flex items-center justify-between p-3 border rounded-md dark:border-gray-700 dark:bg-gray-800/50">
+          <div>
+            <p className="font-medium">Dark Mode</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Use dark theme for the application</p>
+          </div>
+          <Switch
+            checked={theme === 'dark'}
+            onCheckedChange={handleDarkModeToggle}
+            className="cursor-pointer"
+          />
+        </div>
+        
+        {settings.filter(setting => setting.id !== 'darkMode').map((setting) => (
           <div 
             key={setting.id} 
             className="flex items-center justify-between p-3 border rounded-md dark:border-gray-700 dark:bg-gray-800/50"

@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
 
 interface NotificationPreference {
@@ -17,6 +18,8 @@ interface DisplaySetting {
 }
 
 export const useSettingsState = () => {
+  const { theme, setTheme } = useTheme();
+  
   const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreference[]>([
     { id: 1, title: "Email Notifications", description: "Receive email notifications for work orders", enabled: true },
     { id: 2, title: "Push Notifications", description: "Receive push notifications on your browser", enabled: false },
@@ -24,7 +27,7 @@ export const useSettingsState = () => {
   ]);
 
   const [displaySettings, setDisplaySettings] = useState<DisplaySetting[]>([
-    { id: "darkMode", title: "Dark Mode", description: "Use dark theme for the application", enabled: false },
+    { id: "compactMode", title: "Compact Mode", description: "Use compact layout for better space utilization", enabled: false },
   ]);
 
   const [dashboardLayout, setDashboardLayout] = useState("Default");
@@ -63,6 +66,11 @@ export const useSettingsState = () => {
   };
 
   const handleDisplaySettingToggle = (id: string) => {
+    if (id === 'darkMode') {
+      // Dark mode is handled by the theme provider
+      return;
+    }
+    
     const updatedSettings = displaySettings.map(setting => 
       setting.id === id ? { ...setting, enabled: !setting.enabled } : setting
     );
@@ -72,25 +80,9 @@ export const useSettingsState = () => {
     const setting = displaySettings.find(s => s.id === id);
     if (setting) {
       toast.success(`${setting.title} ${!setting.enabled ? 'enabled' : 'disabled'}`);
-      
-      // Apply dark mode change immediately if it's toggled
-      if (id === "darkMode") {
-        applyDarkModeChange(!setting.enabled);
-      }
-      
-      // Save display settings immediately to localStorage
       localStorage.setItem('displaySettings', JSON.stringify(updatedSettings));
     }
     setHasPendingChanges(true);
-  };
-
-  const applyDarkModeChange = (isDarkMode: boolean) => {
-    // Apply dark mode to document directly
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   };
 
   const handleLayoutChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
