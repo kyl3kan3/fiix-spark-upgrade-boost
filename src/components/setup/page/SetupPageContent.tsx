@@ -21,7 +21,7 @@ const SetupPageContent: React.FC<SetupPageContentProps> = ({
   onResetSetup
 }) => {
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
       <div className="container mx-auto px-4 py-4 max-w-5xl">
         {showWelcomeBack && !isLoading && !forceSetupMode && (
           <div className="flex flex-col gap-6 mb-6">
@@ -34,7 +34,7 @@ const SetupPageContent: React.FC<SetupPageContentProps> = ({
       <SetupProvider>
         <SetupContainer />
       </SetupProvider>
-    </>
+    </div>
   );
 };
 

@@ -26,20 +26,20 @@ const SetupHeader: React.FC<SetupHeaderProps> = ({ title, subtitle }) => {
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-2">
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h1>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={handleLogout}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <LogOut className="h-4 w-4" />
           Sign out
         </Button>
       </div>
-      {subtitle && <p className="text-gray-500">{subtitle}</p>}
+      {subtitle && <p className="text-gray-500 dark:text-gray-400">{subtitle}</p>}
     </div>
   );
 };

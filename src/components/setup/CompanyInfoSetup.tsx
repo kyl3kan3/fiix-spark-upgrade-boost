@@ -26,14 +26,14 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <Building2 className="h-6 w-6 text-maintenease-600" />
-          <h2 className="text-xl font-semibold">Company Information</h2>
+          <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Company Information</h2>
         </div>
         
-        <div className="flex items-center justify-center py-12">
+        <div className="flex items-center justify-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
-            <Loader2 className="h-6 w-6 animate-spin text-maintenease-600" />
-            <p className="text-muted-foreground">Loading company information...</p>
+            <Loader2 className="h-6 w-6 animate-spin text-maintenease-600 dark:text-maintenease-400" />
+            <p className="text-muted-foreground dark:text-gray-400">Loading company information...</p>
           </div>
         </div>
       </div>
@@ -43,11 +43,11 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Building2 className="h-6 w-6 text-maintenease-600" />
-        <h2 className="text-xl font-semibold">Company Information</h2>
+        <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Company Information</h2>
       </div>
       
-      <p className="text-muted-foreground">
+      <p className="text-muted-foreground dark:text-gray-400">
         Set up your company profile to personalize your MaintenEase experience.
       </p>
 
@@ -62,10 +62,12 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
         </div>
         
         <div className="w-full md:w-1/3">
-          <CompanyLogoUploader 
-            initialLogo={logoPreview} 
-            onLogoChange={handleLogoChange} 
-          />
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            <CompanyLogoUploader 
+              initialLogo={logoPreview} 
+              onLogoChange={handleLogoChange} 
+            />
+          </div>
         </div>
       </div>
     </div>

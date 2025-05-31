@@ -22,20 +22,26 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
   onSubmit 
 }) => {
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <BasicInfoFields form={form} />
-        <AddressFields form={form} />
-        <ContactInfoFields form={form} />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting 
-            ? "Saving..." 
-            : companyId 
-              ? "Update Company Information" 
-              : "Create Company"}
-        </Button>
-      </form>
-    </Form>
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <BasicInfoFields form={form} />
+          <AddressFields form={form} />
+          <ContactInfoFields form={form} />
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground dark:bg-primary dark:hover:bg-primary/90"
+          >
+            {isSubmitting 
+              ? "Saving..." 
+              : companyId 
+                ? "Update Company Information" 
+                : "Create Company"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 };
 
