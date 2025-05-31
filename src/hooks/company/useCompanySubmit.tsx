@@ -15,42 +15,57 @@ export const useCompanySubmit = (
     logoPreview: string | null, 
     companyId: string | null,
     onUpdate: (data: any) => void
-  ) => {
+  ): Promise<string | null> => {
     console.log("=== COMPANY SUBMIT START ===");
     console.log("Values:", values);
     console.log("Company ID:", companyId);
     console.log("Logo Preview:", logoPreview ? "Present" : "None");
     
+    // Validate required fields
+    if (!values.companyName?.trim()) {
+      toast.error("Company name is required");
+      return null;
+    }
+    
     // Prepare form data with logo
     const formData = { ...values, logo: logoPreview };
-    onUpdate(formData);
+    
+    // Update parent component state
+    if (typeof onUpdate === 'function') {
+      try {
+        onUpdate(formData);
+      } catch (error) {
+        console.error("Error updating parent state:", error);
+      }
+    }
     
     setIsSubmitting(true);
+    
     try {
-      // Check if user is logged in first
-      const { data, error: authError } = await supabase.auth.getUser();
+      // Check authentication
+      const { data: authData, error: authError } = await supabase.auth.getUser();
       
-      if (authError || !data.user) {
+      if (authError || !authData.user) {
         console.error("Authentication error:", authError || "No user found");
         toast.error("You must be signed in to save company information");
         return null;
       }
       
-      console.log("User authenticated:", data.user.id);
+      console.log("User authenticated:", authData.user.id);
       
-      let updatedCompanyId = companyId;
-      let success = false;
+      let resultCompanyId = companyId;
+      let operationSuccess = false;
       
       if (companyId) {
         // Update existing company
-        console.log("Updating existing company...");
+        console.log("Updating existing company with ID:", companyId);
         try {
           const updatedCompany = await updateCompany(companyId, formData);
           console.log("Company updated successfully:", updatedCompany);
-          success = true;
+          operationSuccess = true;
           toast.success("Company information updated successfully!");
         } catch (updateError: any) {
-          console.error("Error updating company:", updateError);
+          console.error("Update error:", updateError);
           toast.error(updateError.message || "Failed to update company information");
           return null;
         }
@@ -59,57 +74,73 @@ export const useCompanySubmit = (
         console.log("Creating new company...");
         try {
           const company = await createCompany(formData);
-          if (company) {
-            updatedCompanyId = company.id;
+          if (company?.id) {
+            resultCompanyId = company.id;
             console.log("New company created with ID:", company.id);
-            success = true;
+            operationSuccess = true;
             toast.success("Company created successfully!");
           } else {
-            console.error("Failed to create company - no data returned");
+            console.error("Failed to create company - no ID returned");
             toast.error("Failed to create company");
             return null;
           }
         } catch (createError: any) {
-          console.error("Error creating company:", createError);
+          console.error("Create error:", createError);
           toast.error(createError.message || "Failed to create company");
           return null;
         }
       }
 
-      if (success && updatedCompanyId) {
-        console.log("Linking profile to company:", updatedCompanyId);
+      // Handle post-operation tasks
+      if (operationSuccess && resultCompanyId) {
+        console.log("Linking profile to company:", resultCompanyId);
         
         try {
-          // Update profile with company_id
+          // Update user profile with company_id
           const { error: profileError } = await supabase
             .from("profiles")
-            .update({ company_id: updatedCompanyId })
-            .eq("id", data.user.id);
+            .update({ company_id: resultCompanyId })
+            .eq("id", authData.user.id);
           
           if (profileError) {
-            console.error("Error updating user profile:", profileError);
+            console.error("Profile update error:", profileError);
             toast.warning("Company saved but had trouble linking it to your profile. Please try signing out and back in.");
           } else {
-            console.log("Successfully linked profile to company");
+            console.log("Profile successfully linked to company");
           }
           
-          // Also run the provided profile fixer as a backup
-          const profileFixed = await checkAndFixUserProfile(updatedCompanyId);
-          console.log("Profile fix attempt result:", profileFixed);
+          // Run additional profile checks
+          try {
+            const profileFixed = await checkAndFixUserProfile(resultCompanyId);
+            console.log("Profile check result:", profileFixed);
+          } catch (profileCheckError) {
+            console.error("Profile check error:", profileCheckError);
+            // Don't fail the whole operation for this
+          }
         } catch (profileError) {
-          console.error("Error in profile update process:", profileError);
-          // Continue since company was created/updated
+          console.error("Error in profile linking process:", profileError);
+          // Continue since the main operation succeeded
         }
         
-        // Set completion flag in localStorage
-        localStorage.setItem('maintenease_setup_complete', 'true');
+        // Mark setup as complete
+        try {
+          localStorage.setItem('maintenease_setup_complete', 'true');
+        } catch (storageError) {
+          console.error("Error setting setup complete flag:", storageError);
+        }
         
-        // Force reload after short delay to ensure all state is updated
+        // Redirect after delay
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          try {
+            window.location.href = "/dashboard";
+          } catch (redirectError) {
+            console.error("Error redirecting:", redirectError);
+            // Fallback navigation
+            window.location.reload();
+          }
         }, 1000);
         
-        return updatedCompanyId;
+        return resultCompanyId;
       }
 
       return null;
@@ -119,8 +150,7 @@ export const useCompanySubmit = (
       
       let errorMessage = "Failed to save company information";
       
-      // Handle specific error types with user-friendly messages
-      if (error.message) {
+      if (error?.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
