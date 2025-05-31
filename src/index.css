@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -133,4 +134,28 @@
   0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
   70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
   100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+
+/* Enhanced toast swipe interactions */
+[data-sonner-toaster] [data-sonner-toast] {
+  touch-action: pan-x;
+  user-select: none;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-swiping="true"] {
+  transition: none !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-swipe-out="true"] {
+  animation: slide-out-right 200ms ease-out forwards;
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(var(--swipe-amount, 0));
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
