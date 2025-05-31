@@ -21,29 +21,50 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
     if (updateData.name) {
       console.log("Checking for name conflicts with:", updateData.name);
       
-      const { data: existingCompanies, error: searchError } = await supabase
+      // Get the current company's name first
+      const { data: currentCompany, error: currentCompanyError } = await supabase
         .from("companies")
-        .select("id, name")
-        .neq("id", companyId);
+        .select("name")
+        .eq("id", companyId)
+        .single();
       
-      if (searchError) {
-        console.error("Error checking existing companies:", searchError);
-        throw searchError;
+      if (currentCompanyError) {
+        console.error("Error fetching current company:", currentCompanyError);
+        throw currentCompanyError;
       }
       
-      console.log("Existing companies:", existingCompanies);
+      console.log("Current company name:", currentCompany?.name);
       
-      // Check for case-insensitive name conflicts
-      const nameConflict = existingCompanies?.find(
-        company => company.name.toLowerCase() === updateData.name.toLowerCase()
-      );
-      
-      if (nameConflict) {
-        console.error("Name conflict found:", nameConflict);
-        throw new Error("A company with this name already exists");
+      // Only check for conflicts if the name is actually changing
+      if (currentCompany && currentCompany.name.toLowerCase() !== updateData.name.toLowerCase()) {
+        console.log("Name is changing, checking for conflicts...");
+        
+        const { data: existingCompanies, error: searchError } = await supabase
+          .from("companies")
+          .select("id, name")
+          .neq("id", companyId);
+        
+        if (searchError) {
+          console.error("Error checking existing companies:", searchError);
+          throw searchError;
+        }
+        
+        console.log("Existing companies:", existingCompanies);
+        
+        // Check for case-insensitive name conflicts
+        const nameConflict = existingCompanies?.find(
+          company => company.name.toLowerCase() === updateData.name.toLowerCase()
+        );
+        
+        if (nameConflict) {
+          console.error("Name conflict found:", nameConflict);
+          throw new Error("A company with this name already exists");
+        }
+        
+        console.log("No name conflicts found");
+      } else {
+        console.log("Name is not changing, skipping conflict check");
       }
-      
-      console.log("No name conflicts found");
     }
     
     // Add updated_at timestamp
