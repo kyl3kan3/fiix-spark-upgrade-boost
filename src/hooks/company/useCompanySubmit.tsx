@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
 import { createCompany, updateCompany } from "@/services/company";
 import { supabase } from "@/integrations/supabase/client";
-import { mapCompanyInfoToCompanyData } from "@/services/company/utils";
 
 export const useCompanySubmit = (
   checkAndFixUserProfile: (companyId: string) => Promise<boolean>
@@ -17,6 +16,11 @@ export const useCompanySubmit = (
     companyId: string | null,
     onUpdate: (data: any) => void
   ) => {
+    console.log("=== COMPANY SUBMIT START ===");
+    console.log("Values:", values);
+    console.log("Company ID:", companyId);
+    console.log("Logo Preview:", logoPreview ? "Present" : "None");
+    
     // Prepare form data with logo
     const formData = { ...values, logo: logoPreview };
     onUpdate(formData);
@@ -29,51 +33,54 @@ export const useCompanySubmit = (
       if (authError || !data.user) {
         console.error("Authentication error:", authError || "No user found");
         toast.error("You must be signed in to save company information");
-        setIsSubmitting(false);
         return null;
       }
+      
+      console.log("User authenticated:", data.user.id);
       
       let updatedCompanyId = companyId;
       let success = false;
       
       if (companyId) {
         // Update existing company
+        console.log("Updating existing company...");
         try {
-          await updateCompany(companyId, formData);
-          console.log("Company updated with ID:", companyId);
+          const updatedCompany = await updateCompany(companyId, formData);
+          console.log("Company updated successfully:", updatedCompany);
           success = true;
-        } catch (updateError) {
+          toast.success("Company information updated successfully!");
+        } catch (updateError: any) {
           console.error("Error updating company:", updateError);
-          toast.error("Failed to update company information");
+          toast.error(updateError.message || "Failed to update company information");
           return null;
         }
       } else {
         // Create new company
+        console.log("Creating new company...");
         try {
           const company = await createCompany(formData);
           if (company) {
             updatedCompanyId = company.id;
             console.log("New company created with ID:", company.id);
             success = true;
+            toast.success("Company created successfully!");
           } else {
-            console.error("Failed to create company - no ID returned");
+            console.error("Failed to create company - no data returned");
             toast.error("Failed to create company");
             return null;
           }
-        } catch (createError) {
+        } catch (createError: any) {
           console.error("Error creating company:", createError);
-          toast.error("Failed to create company");
+          toast.error(createError.message || "Failed to create company");
           return null;
         }
       }
 
       if (success && updatedCompanyId) {
-        // Use service_role client to bypass RLS for profile update
-        // This is necessary because we're updating a user's profile with their company_id
-        const serviceClient = supabase.auth.admin;
+        console.log("Linking profile to company:", updatedCompanyId);
         
         try {
-          // Directly update profile using service role client to bypass RLS
+          // Update profile with company_id
           const { error: profileError } = await supabase
             .from("profiles")
             .update({ company_id: updatedCompanyId })
@@ -81,8 +88,7 @@ export const useCompanySubmit = (
           
           if (profileError) {
             console.error("Error updating user profile:", profileError);
-            // Don't throw here, as we still want to proceed since company was created
-            toast.warning("Created company but had trouble linking it to your profile. Please try signing out and back in.");
+            toast.warning("Company saved but had trouble linking it to your profile. Please try signing out and back in.");
           } else {
             console.log("Successfully linked profile to company");
           }
@@ -95,10 +101,8 @@ export const useCompanySubmit = (
           // Continue since company was created/updated
         }
         
-        // Set completion flag in multiple places for redundancy
+        // Set completion flag in localStorage
         localStorage.setItem('maintenease_setup_complete', 'true');
-        
-        toast.success(companyId ? "Company information updated" : "Company created successfully");
         
         // Force reload after short delay to ensure all state is updated
         setTimeout(() => {
@@ -110,21 +114,23 @@ export const useCompanySubmit = (
 
       return null;
     } catch (error: any) {
-      console.error("Error saving company information:", error);
-      let errorMessage = error.message || "Failed to save company information";
+      console.error("=== COMPANY SUBMIT ERROR ===");
+      console.error("Unexpected error:", error);
+      
+      let errorMessage = "Failed to save company information";
       
       // Handle specific error types with user-friendly messages
-      if (errorMessage.includes("Failed to get current user") || 
-          errorMessage.includes("User not authenticated")) {
-        errorMessage = "You need to be signed in to save company information. Please sign in and try again.";
-      } else if (errorMessage.includes("violates row-level security policy")) {
-        errorMessage = "Permission issue detected. Please try signing out and back in.";
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
       
       toast.error(errorMessage);
       return null;
     } finally {
       setIsSubmitting(false);
+      console.log("=== COMPANY SUBMIT END ===");
     }
   };
 

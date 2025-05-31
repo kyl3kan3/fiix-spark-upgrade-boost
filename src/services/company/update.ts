@@ -30,7 +30,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
       
       if (currentCompanyError) {
         console.error("Error fetching current company:", currentCompanyError);
-        throw currentCompanyError;
+        throw new Error(`Unable to verify company information: ${currentCompanyError.message}`);
       }
       
       console.log("Current company name:", currentCompany?.name);
@@ -46,7 +46,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
         
         if (searchError) {
           console.error("Error checking existing companies:", searchError);
-          throw searchError;
+          throw new Error(`Failed to check for duplicate company names: ${searchError.message}`);
         }
         
         console.log("Existing companies:", existingCompanies);
@@ -58,7 +58,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
         
         if (nameConflict) {
           console.error("Name conflict found:", nameConflict);
-          throw new Error("A company with this name already exists");
+          throw new Error("A company with this name already exists. Please choose a different name.");
         }
         
         console.log("No name conflicts found");
@@ -95,7 +95,19 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
         hint: error.hint,
         code: error.code
       });
-      throw error;
+      
+      // Provide more specific error messages based on error type
+      if (error.code === '23505') {
+        throw new Error("A company with this information already exists. Please check your input.");
+      } else if (error.code === '42501') {
+        throw new Error("You don't have permission to update this company information.");
+      } else {
+        throw new Error(`Failed to update company: ${error.message || 'Unknown database error'}`);
+      }
+    }
+    
+    if (!data) {
+      throw new Error("Company update completed but no data was returned. Please refresh and try again.");
     }
     
     console.log("Company updated successfully:", data);
@@ -104,10 +116,15 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
   } catch (error) {
     console.error("=== UPDATE COMPANY ERROR ===");
     console.error("Error in updateCompany:", error);
+    
     if (error instanceof Error) {
       console.error("Error message:", error.message);
       console.error("Error stack:", error.stack);
+      // Re-throw the error with its original message
+      throw error;
+    } else {
+      // Handle non-Error objects
+      throw new Error("An unexpected error occurred while updating company information");
     }
-    throw error;
   }
 };
