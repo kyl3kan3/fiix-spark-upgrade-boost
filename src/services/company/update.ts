@@ -16,8 +16,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
     if (updateData.name) {
       const { data: existingCompanies, error: searchError } = await supabase
         .from("companies")
-        .select("id")
-        .ilike("name", updateData.name)
+        .select("id, name")
         .neq("id", companyId);
       
       if (searchError) {
@@ -25,7 +24,12 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
         throw searchError;
       }
       
-      if (existingCompanies && existingCompanies.length > 0) {
+      // Check for case-insensitive name conflicts
+      const nameConflict = existingCompanies?.find(
+        company => company.name.toLowerCase() === updateData.name.toLowerCase()
+      );
+      
+      if (nameConflict) {
         throw new Error("A company with this name already exists");
       }
     }
