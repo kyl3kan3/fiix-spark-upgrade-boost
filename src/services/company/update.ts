@@ -14,19 +14,18 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
     
     // Check if company with the same name already exists (except for this company)
     if (updateData.name) {
-      const { data: existingCompany, error: searchError } = await supabase
+      const { data: existingCompanies, error: searchError } = await supabase
         .from("companies")
         .select("id")
         .ilike("name", updateData.name)
-        .neq("id", companyId)
-        .maybeSingle();
+        .neq("id", companyId);
       
       if (searchError) {
         console.error("Error checking existing companies:", searchError);
         throw searchError;
       }
       
-      if (existingCompany) {
+      if (existingCompanies && existingCompanies.length > 0) {
         throw new Error("A company with this name already exists");
       }
     }
