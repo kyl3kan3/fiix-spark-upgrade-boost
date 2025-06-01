@@ -4,21 +4,28 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useSetup } from "./SetupContext";
 import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
 import { setSetupComplete as setLocalSetupComplete } from "@/hooks/onboarding/storageUtils";
 
-export const SetupNavigation: React.FC = () => {
+interface SetupNavigationProps {
+  currentStep: number;
+  totalSteps: number;
+  onNext: () => void;
+  onPrevious: () => void;
+  setupData: any;
+  onSetCurrentStep: (step: number) => void;
+}
+
+export const SetupNavigation: React.FC<SetupNavigationProps> = ({ 
+  currentStep, 
+  totalSteps, 
+  onNext, 
+  onPrevious, 
+  setupData, 
+  onSetCurrentStep 
+}) => {
   const navigate = useNavigate();
-  const { 
-    currentStep, 
-    setCurrentStep, 
-    setupData, 
-    setupComplete,
-    setSetupComplete,
-    isLoading 
-  } = useSetup();
 
   const handleNext = async () => {
     try {
@@ -28,7 +35,7 @@ export const SetupNavigation: React.FC = () => {
         await saveSetupData(setupData, false);
         
         // Update step in state
-        setCurrentStep(currentStep + 1);
+        onNext();
         
         // Scroll to top for better UX
         window.scrollTo(0, 0);
@@ -45,7 +52,7 @@ export const SetupNavigation: React.FC = () => {
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      onPrevious();
       window.scrollTo(0, 0);
       console.log(`Moving to previous step ${currentStep - 1}: ${steps[currentStep - 1].label}`);
     }
@@ -54,17 +61,14 @@ export const SetupNavigation: React.FC = () => {
   const handleSkip = () => {
     if (currentStep < steps.length - 1) {
       toast.info(`Skipped ${steps[currentStep].label} setup. You can configure this later.`);
-      setCurrentStep(currentStep + 1);
+      onNext();
       window.scrollTo(0, 0);
     }
   };
 
   const handleComplete = async () => {
     try {
-      // Mark setup as complete in context
-      setSetupComplete(true);
-      
-      // Save setup data with completed flag to database - don't test for return value
+      // Save setup data with completed flag to database
       await saveSetupData(setupData, true);
       
       // Ensure localStorage is also updated
@@ -91,7 +95,7 @@ export const SetupNavigation: React.FC = () => {
       <Button
         variant="outline"
         onClick={handlePrevious}
-        disabled={currentStep === 0 || isLoading}
+        disabled={currentStep === 0}
         type="button"
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Previous
@@ -102,7 +106,6 @@ export const SetupNavigation: React.FC = () => {
           <Button 
             variant="ghost" 
             onClick={handleSkip} 
-            disabled={isLoading}
             type="button"
           >
             Skip for now
@@ -112,7 +115,6 @@ export const SetupNavigation: React.FC = () => {
         {currentStep === steps.length - 1 ? (
           <Button 
             onClick={handleComplete}
-            disabled={setupComplete || isLoading}
             type="button"
           >
             <CheckCircle className="mr-2 h-4 w-4" /> 
@@ -121,7 +123,6 @@ export const SetupNavigation: React.FC = () => {
         ) : (
           <Button 
             onClick={handleNext} 
-            disabled={isLoading}
             type="button"
           >
             Next <ArrowRight className="ml-2 h-4 w-4" />

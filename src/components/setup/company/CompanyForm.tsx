@@ -12,7 +12,7 @@ interface CompanyFormProps {
   form: UseFormReturn<CompanyInfoFormValues>;
   isSubmitting: boolean;
   companyId: string | null;
-  onSubmit: (values: CompanyInfoFormValues) => void;
+  onSubmit: () => void;
 }
 
 const CompanyForm: React.FC<CompanyFormProps> = ({ 
@@ -24,7 +24,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">
           <BasicInfoFields form={form} />
           <AddressFields form={form} />
           <ContactInfoFields form={form} />

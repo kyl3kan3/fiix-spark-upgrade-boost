@@ -15,7 +15,7 @@ const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({ form }) => {
     <>
       <FormField
         control={form.control}
-        name="companyName"
+        name="name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Company Name*</FormLabel>
