@@ -1,9 +1,10 @@
 
-import React from "react";
+import React, { useState } from "react";
 import SetupHeader from "./SetupHeader";
 import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
 import { steps } from "./setupSteps";
+import { useSetupNavigationSimple } from "@/hooks/setup/useSetupNavigationSimple";
 
 export interface SetupStepComponentProps {
   data: any;
@@ -11,7 +12,12 @@ export interface SetupStepComponentProps {
 }
 
 export const SetupContent: React.FC = () => {
-  const currentStep = 0; // This should come from context
+  const { currentStep, setCurrentStep, nextStep, prevStep } = useSetupNavigationSimple();
+  const [setupData, setSetupData] = useState<any>({});
+
+  const updateSetupData = (updates: any) => {
+    setSetupData((prev: any) => ({ ...prev, ...updates }));
+  };
 
   const CurrentStepComponent = steps[currentStep]?.component;
 
@@ -22,13 +28,25 @@ export const SetupContent: React.FC = () => {
           title="Setup Your MaintenEase System" 
           subtitle="Let's get your maintenance management system configured" 
         />
-        <SetupProgress />
+        <SetupProgress currentStep={currentStep} totalSteps={steps.length} />
         
         <div className="mt-8">
-          {CurrentStepComponent && <CurrentStepComponent data={{}} onUpdate={() => {}} />}
+          {CurrentStepComponent && (
+            <CurrentStepComponent 
+              data={setupData} 
+              onUpdate={updateSetupData} 
+            />
+          )}
         </div>
         
-        <SetupNavigation />
+        <SetupNavigation 
+          currentStep={currentStep}
+          totalSteps={steps.length}
+          onNext={nextStep}
+          onPrevious={prevStep}
+          setupData={setupData}
+          onSetCurrentStep={setCurrentStep}
+        />
       </div>
     </div>
   );

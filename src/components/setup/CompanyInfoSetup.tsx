@@ -4,7 +4,7 @@ import { Building2, Loader2 } from "lucide-react";
 
 import CompanyLogoUploader from "./company/CompanyLogoUploader";
 import CompanyForm from "./company/CompanyForm";
-import { useCompanyForm } from "@/hooks/company/useCompanyForm";
+import { useCompanyFormSimple } from "@/hooks/company/useCompanyFormSimple";
 
 interface CompanyInfoSetupProps {
   data: any;
@@ -20,7 +20,7 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
     isLoading,
     handleLogoChange,
     handleSubmit
-  } = useCompanyForm(data, onUpdate);
+  } = useCompanyFormSimple(data, onUpdate);
 
   if (isLoading) {
     return (
