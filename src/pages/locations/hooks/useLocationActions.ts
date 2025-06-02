@@ -1,13 +1,13 @@
-
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createLocation } from "@/services/locationService";
+import { createLocation, deleteLocation } from "@/services/locationService";
 
 export const useLocationActions = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedParentId, setSelectedParentId] = useState<string>("");
   const [isCreating, setIsCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const queryClient = useQueryClient();
 
   const handleAddLocation = async (locationData: {
@@ -34,6 +34,23 @@ export const useLocationActions = () => {
     }
   };
 
+  const handleDeleteLocation = async (locationId: string) => {
+    setIsDeleting(true);
+    try {
+      await deleteLocation(locationId);
+      toast.success("Location deleted successfully");
+      
+      // Invalidate queries to refetch data
+      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
+      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
+    } catch (err: any) {
+      console.error("Error deleting location:", err);
+      toast.error(err.message || "Failed to delete location");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleAddSubLocation = (parentId: string) => {
     setSelectedParentId(parentId);
     setIsAddDialogOpen(true);
@@ -49,7 +66,9 @@ export const useLocationActions = () => {
     setIsAddDialogOpen,
     selectedParentId,
     isCreating,
+    isDeleting,
     handleAddLocation,
+    handleDeleteLocation,
     handleAddSubLocation,
     handleDialogClose
   };

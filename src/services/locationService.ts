@@ -105,6 +105,30 @@ export async function updateLocation(locationId: string, locationData: {
 
 // Delete a location
 export async function deleteLocation(locationId: string) {
+  // First check if location has children
+  const { data: children, error: childrenError } = await supabase
+    .from("locations")
+    .select("id")
+    .eq("parent_id", locationId);
+    
+  if (childrenError) throw childrenError;
+  
+  if (children && children.length > 0) {
+    throw new Error("Cannot delete location with sub-locations. Please delete or move sub-locations first.");
+  }
+  
+  // Check if location has assets
+  const { data: assets, error: assetsError } = await supabase
+    .from("assets")
+    .select("id")
+    .eq("location_id", locationId);
+    
+  if (assetsError) throw assetsError;
+  
+  if (assets && assets.length > 0) {
+    throw new Error("Cannot delete location with assets. Please move or delete assets first.");
+  }
+  
   const { error } = await supabase
     .from("locations")
     .delete()

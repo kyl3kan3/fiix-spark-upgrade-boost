@@ -20,7 +20,9 @@ const LocationsPage: React.FC = () => {
     setIsAddDialogOpen,
     selectedParentId,
     isCreating,
+    isDeleting,
     handleAddLocation,
+    handleDeleteLocation,
     handleAddSubLocation,
     handleDialogClose
   } = useLocationActions();
@@ -51,7 +53,9 @@ const LocationsPage: React.FC = () => {
         <LocationHierarchyView
           locations={locationHierarchy || []}
           isLoading={isHierarchyLoading}
+          isDeleting={isDeleting}
           onAddSubLocation={handleAddSubLocation}
+          onDeleteLocation={handleDeleteLocation}
         />
       ) : (
         <LocationsListView

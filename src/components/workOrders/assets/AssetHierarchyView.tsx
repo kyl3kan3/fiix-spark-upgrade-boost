@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Package, MapPin } from "lucide-react";
+import { ChevronDown, ChevronRight, Package, MapPin, Trash2 } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -8,17 +8,33 @@ import {
   AccordionTrigger 
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { AssetWithChildren } from "@/services/assetService";
 import { Link } from "react-router-dom";
 
 interface AssetHierarchyViewProps {
   assets: AssetWithChildren[];
   isLoading: boolean;
+  isDeleting?: boolean;
+  onDeleteAsset?: (assetId: string) => void;
 }
 
 export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({ 
   assets,
-  isLoading
+  isLoading,
+  isDeleting = false,
+  onDeleteAsset
 }) => {
   if (isLoading) {
     return (
@@ -50,7 +66,13 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
       <h2 className="text-lg font-medium mb-4">Asset Hierarchy</h2>
       <Accordion type="multiple" className="w-full">
         {assets.map((asset) => (
-          <AssetNode key={asset.id} asset={asset} level={0} />
+          <AssetNode 
+            key={asset.id} 
+            asset={asset} 
+            level={0} 
+            isDeleting={isDeleting}
+            onDeleteAsset={onDeleteAsset}
+          />
         ))}
       </Accordion>
     </div>
@@ -60,9 +82,16 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
 interface AssetNodeProps {
   asset: AssetWithChildren;
   level: number;
+  isDeleting: boolean;
+  onDeleteAsset?: (assetId: string) => void;
 }
 
-const AssetNode: React.FC<AssetNodeProps> = ({ asset, level }) => {
+const AssetNode: React.FC<AssetNodeProps> = ({ 
+  asset, 
+  level, 
+  isDeleting,
+  onDeleteAsset 
+}) => {
   const hasChildren = asset.children && asset.children.length > 0;
   const paddingLeft = `${level * 0.5}rem`;
   
@@ -117,18 +146,63 @@ const AssetNode: React.FC<AssetNodeProps> = ({ asset, level }) => {
               </div>
             </div>
           )}
-          <Link 
-            to={`/assets/edit/${asset.id}`} 
-            className="ml-2 text-sm text-gray-500 hover:text-gray-900"
-          >
-            Edit
-          </Link>
+          <div className="flex items-center gap-2 ml-2">
+            <Link 
+              to={`/assets/edit/${asset.id}`} 
+              className="text-sm text-gray-500 hover:text-gray-900"
+            >
+              Edit
+            </Link>
+            {onDeleteAsset && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isDeleting}
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{asset.name}"? This action cannot be undone.
+                      {hasChildren && (
+                        <span className="block mt-2 text-red-600 font-medium">
+                          This asset has child assets. You must delete them first.
+                        </span>
+                      )}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => onDeleteAsset(asset.id)}
+                      disabled={hasChildren || isDeleting}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      {isDeleting ? "Deleting..." : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </div>
       </div>
       {hasChildren && (
         <AccordionContent className="pl-4">
           {asset.children.map((child) => (
-            <AssetNode key={child.id} asset={child} level={level + 1} />
+            <AssetNode 
+              key={child.id} 
+              asset={child} 
+              level={level + 1} 
+              isDeleting={isDeleting}
+              onDeleteAsset={onDeleteAsset}
+            />
           ))}
         </AccordionContent>
       )}

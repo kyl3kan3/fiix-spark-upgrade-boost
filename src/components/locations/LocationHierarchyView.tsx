@@ -1,6 +1,5 @@
-
 import React from "react";
-import { ChevronDown, ChevronRight, MapPin, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, MapPin, Plus, Trash2 } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -9,19 +8,34 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { LocationWithChildren } from "@/services/locationService";
 import { Link } from "react-router-dom";
 
 interface LocationHierarchyViewProps {
   locations: LocationWithChildren[];
   isLoading: boolean;
+  isDeleting?: boolean;
   onAddSubLocation: (parentId: string) => void;
+  onDeleteLocation: (locationId: string) => void;
 }
 
 export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({ 
   locations,
   isLoading,
-  onAddSubLocation
+  isDeleting = false,
+  onAddSubLocation,
+  onDeleteLocation
 }) => {
   if (isLoading) {
     return (
@@ -57,7 +71,9 @@ export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({
             key={location.id} 
             location={location} 
             level={0} 
+            isDeleting={isDeleting}
             onAddSubLocation={onAddSubLocation}
+            onDeleteLocation={onDeleteLocation}
           />
         ))}
       </Accordion>
@@ -68,13 +84,17 @@ export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({
 interface LocationNodeProps {
   location: LocationWithChildren;
   level: number;
+  isDeleting: boolean;
   onAddSubLocation: (parentId: string) => void;
+  onDeleteLocation: (locationId: string) => void;
 }
 
 const LocationNode: React.FC<LocationNodeProps> = ({ 
   location, 
   level, 
-  onAddSubLocation 
+  isDeleting,
+  onAddSubLocation,
+  onDeleteLocation 
 }) => {
   const hasChildren = location.children && location.children.length > 0;
   const paddingLeft = `${level * 0.5}rem`;
@@ -121,6 +141,42 @@ const LocationNode: React.FC<LocationNodeProps> = ({
               <Plus className="h-3 w-3 mr-1" />
               Add Sub
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={isDeleting}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="h-3 w-3 mr-1" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Location</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete "{location.name}"? This action cannot be undone.
+                    {hasChildren && (
+                      <span className="block mt-2 text-red-600 font-medium">
+                        This location has sub-locations. You must delete them first.
+                      </span>
+                    )}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => onDeleteLocation(location.id)}
+                    disabled={hasChildren || isDeleting}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <Link 
               to={`/assets?location_id=${location.id}`} 
               className="text-sm text-primary hover:underline"
@@ -137,7 +193,9 @@ const LocationNode: React.FC<LocationNodeProps> = ({
               key={child.id} 
               location={child} 
               level={level + 1} 
+              isDeleting={isDeleting}
               onAddSubLocation={onAddSubLocation}
+              onDeleteLocation={onDeleteLocation}
             />
           ))}
         </AccordionContent>
