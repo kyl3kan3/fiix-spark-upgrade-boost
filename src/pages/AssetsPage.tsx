@@ -12,6 +12,7 @@ import { getAllAssets, getAssetHierarchy } from "@/services/assetService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { AssetHierarchyView } from "@/components/workOrders/assets/AssetHierarchyView";
+import { useAssetActions } from "@/hooks/assets/useAssetActions";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,6 +27,8 @@ const AssetsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"grid" | "hierarchy">("grid");
   const [assetCategories, setAssetCategories] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  
+  const { isDeleting, handleDeleteAsset } = useAssetActions();
   
   // Load asset categories from setup data
   useEffect(() => {
@@ -232,7 +235,12 @@ const AssetsPage: React.FC = () => {
           </TabsContent>
           
           <TabsContent value="hierarchy" className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 mt-4">
-            <AssetHierarchyView assets={hierarchyData || []} isLoading={hierarchyLoading} />
+            <AssetHierarchyView 
+              assets={hierarchyData || []} 
+              isLoading={hierarchyLoading}
+              isDeleting={isDeleting}
+              onDeleteAsset={handleDeleteAsset}
+            />
           </TabsContent>
         </Tabs>
         
