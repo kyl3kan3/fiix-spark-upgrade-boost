@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Package, MapPin, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Package, MapPin } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -8,33 +8,17 @@ import {
   AccordionTrigger 
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { AssetWithChildren } from "@/services/assetService";
 import { Link } from "react-router-dom";
 
 interface AssetHierarchyViewProps {
   assets: AssetWithChildren[];
   isLoading: boolean;
-  isDeleting?: boolean;
-  onDeleteAsset?: (assetId: string) => void;
 }
 
 export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({ 
   assets,
-  isLoading,
-  isDeleting = false,
-  onDeleteAsset
+  isLoading
 }) => {
   if (isLoading) {
     return (
@@ -69,9 +53,7 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
           <AssetNode 
             key={asset.id} 
             asset={asset} 
-            level={0} 
-            isDeleting={isDeleting}
-            onDeleteAsset={onDeleteAsset}
+            level={0}
           />
         ))}
       </Accordion>
@@ -82,15 +64,11 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
 interface AssetNodeProps {
   asset: AssetWithChildren;
   level: number;
-  isDeleting: boolean;
-  onDeleteAsset?: (assetId: string) => void;
 }
 
 const AssetNode: React.FC<AssetNodeProps> = ({ 
   asset, 
-  level, 
-  isDeleting,
-  onDeleteAsset 
+  level
 }) => {
   const hasChildren = asset.children && asset.children.length > 0;
   const paddingLeft = `${level * 0.5}rem`;
@@ -153,43 +131,6 @@ const AssetNode: React.FC<AssetNodeProps> = ({
             >
               Edit
             </Link>
-            {onDeleteAsset && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={isDeleting}
-                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Asset</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to delete "{asset.name}"? This action cannot be undone.
-                      {hasChildren && (
-                        <span className="block mt-2 text-red-600 font-medium">
-                          This asset has child assets. You must delete them first.
-                        </span>
-                      )}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => onDeleteAsset(asset.id)}
-                      disabled={hasChildren || isDeleting}
-                      className="bg-red-600 hover:bg-red-700"
-                    >
-                      {isDeleting ? "Deleting..." : "Delete"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
           </div>
         </div>
       </div>
@@ -199,9 +140,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
             <AssetNode 
               key={child.id} 
               asset={child} 
-              level={level + 1} 
-              isDeleting={isDeleting}
-              onDeleteAsset={onDeleteAsset}
+              level={level + 1}
             />
           ))}
         </AccordionContent>
