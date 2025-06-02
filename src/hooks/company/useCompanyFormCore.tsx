@@ -12,7 +12,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
   const form = useForm<CompanyInfoFormValues>({
     resolver: zodResolver(companyInfoSchema),
     defaultValues: {
-      companyName: "",
+      name: "",
       industry: "",
       address: "",
       city: "",
@@ -30,7 +30,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
       console.log("Initializing form with data:", initialData);
       
       const formData = {
-        companyName: initialData.companyName || "",
+        name: initialData.name || "",
         industry: initialData.industry || "",
         address: initialData.address || "",
         city: initialData.city || "",

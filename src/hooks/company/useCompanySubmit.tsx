@@ -22,7 +22,7 @@ export const useCompanySubmit = (
     console.log("Logo Preview:", logoPreview ? "Present" : "None");
     
     // Validate required fields
-    if (!values.companyName?.trim()) {
+    if (!values.name?.trim()) {
       toast.error("Company name is required");
       return null;
     }
