@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AssetWithChildren } from "@/services/assetService";
 import { Link } from "react-router-dom";
+import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 
 interface AssetHierarchyViewProps {
   assets: AssetWithChildren[];
@@ -36,6 +37,9 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
   isDeleting = false,
   onDeleteAsset
 }) => {
+  const { currentUserRole } = useUserRolePermissions();
+  const canDelete = currentUserRole === 'administrator';
+
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -72,6 +76,7 @@ export const AssetHierarchyView: React.FC<AssetHierarchyViewProps> = ({
             level={0}
             isDeleting={isDeleting}
             onDeleteAsset={onDeleteAsset}
+            canDelete={canDelete}
           />
         ))}
       </Accordion>
@@ -84,13 +89,15 @@ interface AssetNodeProps {
   level: number;
   isDeleting: boolean;
   onDeleteAsset?: (assetId: string) => void;
+  canDelete: boolean;
 }
 
 const AssetNode: React.FC<AssetNodeProps> = ({ 
   asset, 
   level,
   isDeleting,
-  onDeleteAsset 
+  onDeleteAsset,
+  canDelete
 }) => {
   const hasChildren = asset.children && asset.children.length > 0;
   const paddingLeft = `${level * 0.5}rem`;
@@ -153,7 +160,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
             >
               Edit
             </Link>
-            {onDeleteAsset && (
+            {canDelete && onDeleteAsset && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
@@ -202,6 +209,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
               level={level + 1}
               isDeleting={isDeleting}
               onDeleteAsset={onDeleteAsset}
+              canDelete={canDelete}
             />
           ))}
         </AccordionContent>

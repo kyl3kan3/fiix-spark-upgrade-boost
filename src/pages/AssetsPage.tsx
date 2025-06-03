@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import AssetPageHeader from "@/components/assets/AssetPageHeader";
 import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
+import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 
 const AssetsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,6 +22,8 @@ const AssetsPage: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   
   const { isDeleting, handleDeleteAsset } = useAssetActions();
+  const { currentUserRole } = useUserRolePermissions();
+  const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
   
   // Load asset categories from setup data
   useEffect(() => {
@@ -138,14 +141,16 @@ const AssetsPage: React.FC = () => {
           </TabsContent>
         </Tabs>
         
-        {/* Fixed position Add Asset button */}
-        <div className="fixed bottom-8 right-8 z-40">
-          <Link to="/assets/new">
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 shadow-lg">
-              <Plus className="h-6 w-6" />
-            </Button>
-          </Link>
-        </div>
+        {/* Fixed position Add Asset button - only show for admins and managers */}
+        {canAdd && (
+          <div className="fixed bottom-8 right-8 z-40">
+            <Link to="/assets/new">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 shadow-lg">
+                <Plus className="h-6 w-6" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

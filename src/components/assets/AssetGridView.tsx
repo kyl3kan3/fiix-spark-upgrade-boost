@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import AssetEmptyState from "./AssetEmptyState";
+import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 
 interface Asset {
   id: string;
@@ -42,6 +43,9 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
   isDeleting,
   onDeleteAsset,
 }) => {
+  const { currentUserRole } = useUserRolePermissions();
+  const canDelete = currentUserRole === 'administrator';
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,39 +102,41 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
               </div>
             </div>
             
-            {/* Delete button */}
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={isDeleting}
-                    className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Asset</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to delete "{asset.name}"? This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => onDeleteAsset(asset.id)}
+            {/* Delete button - only show for admins */}
+            {canDelete && (
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       disabled={isDeleting}
-                      className="bg-red-600 hover:bg-red-700"
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                      {isDeleting ? "Deleting..." : "Delete"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete "{asset.name}"? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => onDeleteAsset(asset.id)}
+                        disabled={isDeleting}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        {isDeleting ? "Deleting..." : "Delete"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
           </div>
         </Card>
       ))}
