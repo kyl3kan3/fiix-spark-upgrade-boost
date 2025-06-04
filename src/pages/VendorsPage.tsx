@@ -39,7 +39,7 @@ const VendorsPage: React.FC = () => {
   } = useVendorBulkActions();
   
   const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
-  const canDelete = currentUserRole === 'administrator';
+  const canDelete = currentUserRole === 'administrator'; // Only administrators can delete
   
   // Fetch vendors
   const { data: vendors, isLoading, error } = useQuery({

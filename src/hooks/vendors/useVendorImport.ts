@@ -31,13 +31,19 @@ export const useVendorImport = () => {
         size: file.size
       });
       
-      // Parse the file
+      // Parse the file with timeout
       setProgress(20);
       console.log("Parsing file...");
       
       let vendors;
       try {
-        vendors = await parseVendorFile(file);
+        // Add timeout to prevent hanging
+        const parsePromise = parseVendorFile(file);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('File parsing timed out after 30 seconds')), 30000)
+        );
+        
+        vendors = await Promise.race([parsePromise, timeoutPromise]) as any;
       } catch (parseError: any) {
         console.error("File parsing failed:", parseError);
         throw new Error(`File parsing failed: ${parseError.message}`);
@@ -51,7 +57,7 @@ export const useVendorImport = () => {
 
       setProgress(40);
 
-      // Import vendors
+      // Import vendors with better error handling
       const importResults: ImportResults = {
         successful: 0,
         failed: 0,
@@ -69,7 +75,13 @@ export const useVendorImport = () => {
             throw new Error("Vendor name is required");
           }
           
-          await createVendorMutation.mutateAsync(vendors[i]);
+          // Add timeout to individual vendor creation
+          const createPromise = createVendorMutation.mutateAsync(vendors[i]);
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Vendor creation timed out')), 10000)
+          );
+          
+          await Promise.race([createPromise, timeoutPromise]);
           importResults.successful++;
           console.log(`✓ Successfully created vendor: ${vendors[i].name}`);
         } catch (error: any) {

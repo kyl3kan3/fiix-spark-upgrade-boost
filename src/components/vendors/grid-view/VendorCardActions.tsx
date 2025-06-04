@@ -30,8 +30,8 @@ const VendorCardActions: React.FC<VendorCardActionsProps> = ({
 }) => {
   const { currentUserRole } = useUserRolePermissions();
   
-  // Allow administrators and managers to delete vendors
-  const canDelete = currentUserRole === 'administrator' || currentUserRole === 'manager';
+  // Allow administrators to delete vendors (removed manager restriction for now)
+  const canDelete = currentUserRole === 'administrator';
 
   console.log("VendorCardActions - User role:", currentUserRole, "Can delete:", canDelete);
 
@@ -62,7 +62,7 @@ const VendorCardActions: React.FC<VendorCardActionsProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Vendor</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{vendorName}"? This action cannot be undone and will also remove all associated contracts and relationships.
+              Are you sure you want to delete "{vendorName}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
