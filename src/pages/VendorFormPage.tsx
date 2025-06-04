@@ -81,8 +81,8 @@ const VendorFormPage: React.FC = () => {
         contact_title: vendor.contact_title || "",
         website: vendor.website || "",
         description: vendor.description || "",
-        vendor_type: vendor.vendor_type,
-        status: vendor.status,
+        vendor_type: vendor.vendor_type as "service" | "supplier" | "contractor" | "consultant",
+        status: vendor.status as "active" | "inactive" | "suspended",
         rating: vendor.rating || undefined,
       });
     }
@@ -117,7 +117,7 @@ const VendorFormPage: React.FC = () => {
 
   const onSubmit = (data: VendorFormValues) => {
     const formattedData: VendorFormData = {
-      ...data,
+      name: data.name,
       email: data.email || null,
       phone: data.phone || null,
       address: data.address || null,
@@ -128,6 +128,8 @@ const VendorFormPage: React.FC = () => {
       contact_title: data.contact_title || null,
       website: data.website || null,
       description: data.description || null,
+      vendor_type: data.vendor_type,
+      status: data.status,
       rating: data.rating || null,
     };
 
@@ -181,7 +183,7 @@ const VendorFormPage: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Type</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select vendor type" />
@@ -275,7 +277,7 @@ const VendorFormPage: React.FC = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select status" />
