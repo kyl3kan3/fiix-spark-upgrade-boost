@@ -445,6 +445,164 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_assets: {
+        Row: {
+          asset_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          relationship_type: string
+          vendor_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          relationship_type?: string
+          vendor_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          relationship_type?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_assets_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_contracts: {
+        Row: {
+          contract_number: string | null
+          contract_type: string
+          contract_value: number | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          start_date: string | null
+          status: string
+          terms: string | null
+          title: string
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          contract_number?: string | null
+          contract_type?: string
+          contract_value?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          start_date?: string | null
+          status?: string
+          terms?: string | null
+          title: string
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          contract_number?: string | null
+          contract_type?: string
+          contract_value?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          start_date?: string | null
+          status?: string
+          terms?: string | null
+          title?: string
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_contracts_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_person: string | null
+          contact_title: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          rating: number | null
+          state: string | null
+          status: string
+          updated_at: string
+          vendor_type: string
+          website: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_person?: string | null
+          contact_title?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          rating?: number | null
+          state?: string | null
+          status?: string
+          updated_at?: string
+          vendor_type?: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_person?: string | null
+          contact_title?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          rating?: number | null
+          state?: string | null
+          status?: string
+          updated_at?: string
+          vendor_type?: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       work_order_comments: {
         Row: {
           comment: string
@@ -497,6 +655,7 @@ export type Database = {
           status: Database["public"]["Enums"]["work_order_status"]
           title: string
           updated_at: string
+          vendor_id: string | null
         }
         Insert: {
           asset_id?: string | null
@@ -510,6 +669,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["work_order_status"]
           title: string
           updated_at?: string
+          vendor_id?: string | null
         }
         Update: {
           asset_id?: string | null
@@ -523,6 +683,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["work_order_status"]
           title?: string
           updated_at?: string
+          vendor_id?: string | null
         }
         Relationships: [
           {
@@ -544,6 +705,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]

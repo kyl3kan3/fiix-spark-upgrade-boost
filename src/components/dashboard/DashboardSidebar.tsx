@@ -1,180 +1,141 @@
-
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
 import {
-  BarChart2,
-  Calendar,
-  FileText,
-  Home,
   LayoutDashboard,
-  LifeBuoy,
-  Settings,
-  Wrench,
+  List,
   Users,
-  CheckSquare,
-  ChevronLeft,
-  ChevronRight,
-  MessageSquare,
-  MapPin
+  Settings,
+  Package,
+  Building,
+  Building2
 } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  useSidebar,
-  SidebarRail
-} from "@/components/ui/sidebar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 
-// A wrapper hook that safely uses the sidebar context or provides fallback values
-const useSafeShidebar = () => {
-  // Fallback state in case the provider is not available
-  const [localState, setLocalState] = useState<"expanded" | "collapsed">("expanded");
-  
-  try {
-    // Try to use the actual sidebar context
-    return useSidebar();
-  } catch (error) {
-    // If context is not available, return fallback implementations
-    return {
-      state: localState,
-      open: localState === "expanded",
-      setOpen: (value: boolean) => setLocalState(value ? "expanded" : "collapsed"),
-      isMobile: false,
-      openMobile: false,
-      setOpenMobile: () => {},
-      toggleSidebar: () => setLocalState(prev => prev === "expanded" ? "collapsed" : "expanded")
-    };
-  }
-};
+interface DashboardSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-const DashboardSidebar = () => {
-  const location = useLocation();
-  const { state: sidebarState, toggleSidebar } = useSafeShidebar();
-  const isCollapsed = sidebarState === "collapsed";
-  
-  const isActive = (path: string) => location.pathname === path;
-  
-  const sidebarItems = [
+const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) => {
+  const { logout } = useAuth();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user, isLoading } = useUser();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  const menuItems = [
     {
-      name: "Dashboard",
+      icon: LayoutDashboard,
+      label: "Dashboard",
       href: "/dashboard",
-      icon: <LayoutDashboard className="h-5 w-5" />,
-      isActive: isActive("/dashboard"),
+      description: "Overview of your account"
     },
     {
-      name: "Work Orders",
+      icon: List,
+      label: "Work Orders",
       href: "/work-orders",
-      icon: <FileText className="h-5 w-5" />,
-      isActive: location.pathname.includes("/work-orders"),
+      description: "Manage maintenance tasks"
     },
     {
-      name: "Inspections",
-      href: "/inspections",
-      icon: <CheckSquare className="h-5 w-5" />,
-      isActive: location.pathname.includes("/inspections"),
-    },
-    {
-      name: "Assets",
+      icon: Package,
+      label: "Assets",
       href: "/assets",
-      icon: <Wrench className="h-5 w-5" />,
-      isActive: location.pathname.includes("/assets"),
+      description: "Track equipment and inventory"
     },
     {
-      name: "Calendar",
-      href: "/calendar",
-      icon: <Calendar className="h-5 w-5" />,
-      isActive: location.pathname.includes("/calendar"),
+      icon: Building2,
+      label: "Vendors",
+      href: "/vendors",
+      description: "Manage vendor relationships"
     },
     {
-      name: "Reports",
-      href: "/reports",
-      icon: <BarChart2 className="h-5 w-5" />,
-      isActive: isActive("/reports"),
-    },
-    {
-      name: "Team",
+      icon: Users,
+      label: "Team",
       href: "/team",
-      icon: <Users className="h-5 w-5" />,
-      isActive: isActive("/team"),
+      description: "Collaborate with your team"
     },
     {
-      name: "Chat",
-      href: "/chat",
-      icon: <MessageSquare className="h-5 w-5" />,
-      isActive: isActive("/chat"),
-    },
-    {
-      name: "Help",
-      href: "/help",
-      icon: <LifeBuoy className="h-5 w-5" />,
-      isActive: isActive("/help"),
-    },
-    {
-      name: "Locations",
+      icon: Building,
+      label: "Locations",
       href: "/locations",
-      icon: <MapPin className="h-5 w-5" />,
-      isActive: location.pathname.includes("/locations"),
-    }
+      description: "Manage locations"
+    },
+    {
+      icon: Settings,
+      label: "Settings",
+      href: "/settings",
+      description: "Customize your experience"
+    },
   ];
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Sidebar variant="inset">
-      <SidebarContent>
-        <div className="mt-6 px-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className={cn("font-semibold text-lg", isCollapsed ? 'hidden' : 'block')}>
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent side="left" className="w-64 p-0 pt-6">
+        <div className="flex flex-col h-full">
+          <div className="px-6 mb-4">
+            <Link to="/dashboard" className="flex items-center font-semibold">
+              <LayoutDashboard className="mr-2 h-5 w-5" />
               MaintenEase
-            </h2>
-            
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleSidebar} 
-              className="hover:bg-gray-100 transition-colors"
-            >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Link>
+          </div>
+
+          <Separator />
+
+          <div className="flex-grow p-2">
+            <ul className="space-y-1">
+              {menuItems.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "flex items-center space-x-2 rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
+                      pathname === item.href
+                        ? "bg-secondary text-secondary-foreground"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Separator />
+
+          <div className="p-6">
+            <div className="mb-4">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.avatar_url || ""} alt={user?.first_name || "Avatar"} />
+                <AvatarFallback>{user?.first_name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <div className="ml-2 text-sm">
+                <p className="font-medium">{user?.first_name || "User"}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full" onClick={handleLogout}>
+              Logout
             </Button>
           </div>
-          
-          <SidebarMenu>
-            {sidebarItems.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton 
-                  asChild
-                  isActive={item.isActive}
-                  tooltip={isCollapsed ? item.name : undefined}
-                >
-                  <Link to={item.href} className="flex items-center">
-                    <span>{item.icon}</span>
-                    {!isCollapsed && <span className="ml-3">{item.name}</span>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            
-            <SidebarMenuItem>
-              <SidebarMenuButton 
-                asChild
-                isActive={isActive("/setup")}
-                tooltip={isCollapsed ? "Setup" : undefined}
-              >
-                <Link to="/setup" className="flex items-center">
-                  <span><Settings className="h-5 w-5" /></span>
-                  {!isCollapsed && <span className="ml-3">Setup</span>}
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
         </div>
-      </SidebarContent>
-      
-      {/* Make sure SidebarRail is present for the toggle functionality */}
-      <SidebarRail />
-    </Sidebar>
+      </SheetContent>
+    </Sheet>
   );
 };
 

@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import CompanyRequiredWrapper from "@/components/common/CompanyRequiredWrapper";
@@ -32,6 +31,7 @@ import Help from "./pages/Help";
 import Settings from "./pages/Settings";
 import FeatureDemoPage from "./pages/FeatureDemoPage";
 import NotFound from "./pages/NotFound";
+import VendorsPage from "@/pages/VendorsPage";
 
 const queryClient = new QueryClient();
 
@@ -42,7 +42,7 @@ function App() {
         <AuthProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <Router>
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<Index />} />
@@ -227,10 +227,16 @@ function App() {
                 </ProtectedRoute>
               } />
               
+              <Route path="/vendors" element={
+                <ProtectedRoute>
+                  <VendorsPage />
+                </ProtectedRoute>
+              } />
+              
               {/* Catch all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
+          </Router>
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
