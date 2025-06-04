@@ -29,9 +29,21 @@ const VendorCardActions: React.FC<VendorCardActionsProps> = ({
   onDeleteVendor,
 }) => {
   const { currentUserRole } = useUserRolePermissions();
-  const canDelete = currentUserRole === 'administrator';
+  
+  // Allow administrators and managers to delete vendors
+  const canDelete = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
-  if (!canDelete) return null;
+  console.log("VendorCardActions - User role:", currentUserRole, "Can delete:", canDelete);
+
+  if (!canDelete) {
+    console.log("User cannot delete vendors - hiding delete button");
+    return null;
+  }
+
+  const handleDelete = () => {
+    console.log("Attempting to delete vendor:", vendorId, vendorName);
+    onDeleteVendor(vendorId);
+  };
 
   return (
     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -56,7 +68,7 @@ const VendorCardActions: React.FC<VendorCardActionsProps> = ({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => onDeleteVendor(vendorId)}
+              onClick={handleDelete}
               disabled={isDeleting}
               className="bg-red-600 hover:bg-red-700"
             >

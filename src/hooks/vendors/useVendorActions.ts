@@ -11,6 +11,7 @@ export const useVendorActions = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteVendor,
     onSuccess: () => {
+      console.log("Vendor deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["vendors"] });
       toast.success("Vendor deleted successfully");
     },
@@ -26,19 +27,23 @@ export const useVendorActions = () => {
   });
 
   const handleDeleteVendor = async (vendorId: string) => {
+    console.log("Starting vendor deletion for ID:", vendorId);
     setIsDeleting(true);
     deleteMutation.mutate(vendorId);
   };
 
   const handleBulkDeleteVendors = async (vendorIds: string[]) => {
+    console.log("Starting bulk vendor deletion for IDs:", vendorIds);
     setIsDeleting(true);
     
     try {
       // Delete vendors one by one
       for (const vendorId of vendorIds) {
+        console.log("Deleting vendor:", vendorId);
         await deleteVendor(vendorId);
       }
       
+      console.log("Bulk deletion completed successfully");
       // Refresh vendor list
       queryClient.invalidateQueries({ queryKey: ["vendors"] });
       
