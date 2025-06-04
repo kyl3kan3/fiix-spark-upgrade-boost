@@ -49,6 +49,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     setUnreadCount(count);
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full relative overflow-x-clip">
@@ -57,7 +61,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <SidebarInset className="flex flex-col flex-1">
           <DashboardHeader 
             unreadCount={unreadCount} 
-            toggleNotifications={toggleNotifications} 
+            toggleNotifications={toggleNotifications}
+            toggleSidebar={toggleSidebar}
           />
           
           <ContentContainer>
