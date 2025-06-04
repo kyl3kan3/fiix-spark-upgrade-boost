@@ -14,6 +14,7 @@ import VendorFilters from "@/components/vendors/VendorFilters";
 import VendorGridView from "@/components/vendors/VendorGridView";
 import VendorListView from "@/components/vendors/VendorListView";
 import VendorBulkActions from "@/components/vendors/VendorBulkActions";
+import VendorImportDialog from "@/components/vendors/VendorImportDialog";
 import { exportVendorsToCSV } from "@/utils/vendorExport";
 import { toast } from "sonner";
 
@@ -118,6 +119,7 @@ const VendorsPage: React.FC = () => {
           />
           
           <div className="flex gap-2">
+            <VendorImportDialog />
             <Button variant="outline" onClick={handleBulkExport}>
               <Download className="h-4 w-4 mr-2" />
               Export All
