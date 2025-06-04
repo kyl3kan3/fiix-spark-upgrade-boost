@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Grid3X3, List, Download } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -24,7 +25,7 @@ const VendorsPage: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const checkboxRef = useRef<HTMLButtonElement>(null);
+  const checkboxRef = useRef<HTMLInputElement>(null);
   
   const { isDeleting, handleDeleteVendor, handleBulkDeleteVendors } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
@@ -123,6 +124,13 @@ const VendorsPage: React.FC = () => {
   const allSelected = filteredVendors && selectedVendors.length === filteredVendors.length && filteredVendors.length > 0;
   const someSelected = selectedVendors.length > 0 && selectedVendors.length < (filteredVendors?.length || 0);
 
+  // Set indeterminate state after component mounts
+  useEffect(() => {
+    if (checkboxRef.current) {
+      checkboxRef.current.indeterminate = someSelected;
+    }
+  }, [someSelected]);
+
   return (
     <DashboardLayout>
       <div className="container mx-auto py-6 px-4">
@@ -175,13 +183,6 @@ const VendorsPage: React.FC = () => {
             )}
           </div>
         )}
-
-        {/* Set indeterminate state after component mounts */}
-        {React.useEffect(() => {
-          if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = someSelected;
-          }
-        }, [someSelected])}
 
         <VendorBulkActions
           selectedCount={selectedVendors.length}
