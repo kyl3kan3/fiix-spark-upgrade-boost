@@ -32,10 +32,13 @@ const VendorsPage: React.FC = () => {
   const canDelete = currentUserRole === 'administrator';
   
   // Fetch vendors
+  
   const { data: vendors, isLoading, error } = useQuery({
     queryKey: ["vendors"],
     queryFn: getAllVendors
   });
+  
+  // filter handlers
   
   const handleStatusToggle = (status: string) => {
     setSelectedStatus(prev => 
@@ -73,6 +76,8 @@ const VendorsPage: React.FC = () => {
     }
   };
 
+  // bulk action handlers
+
   const handleBulkDelete = async () => {
     if (selectedVendors.length === 0) return;
     
@@ -101,6 +106,8 @@ const VendorsPage: React.FC = () => {
     toast.success("Vendors exported successfully");
   };
   
+  // filtered vendors calculation
+  
   const filteredVendors = vendors?.filter(vendor => 
     (searchQuery === "" || 
       vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -123,17 +130,12 @@ const VendorsPage: React.FC = () => {
   const allSelected = filteredVendors && selectedVendors.length === filteredVendors.length && filteredVendors.length > 0;
   const someSelected = selectedVendors.length > 0 && selectedVendors.length < (filteredVendors?.length || 0);
 
-  // Set indeterminate state after component mounts
-  useEffect(() => {
-    if (checkboxRef.current) {
-      checkboxRef.current.indeterminate = someSelected;
-    }
-  }, [someSelected]);
-
   return (
     <DashboardLayout>
       <div className="container mx-auto py-6 px-4">
         <VendorPageHeader />
+        
+        // filters and actions
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <VendorFilters
@@ -183,6 +185,8 @@ const VendorsPage: React.FC = () => {
           </div>
         )}
 
+        // bulk actions, tabs, and footer
+        
         <VendorBulkActions
           selectedCount={selectedVendors.length}
           onBulkDelete={handleBulkDelete}
