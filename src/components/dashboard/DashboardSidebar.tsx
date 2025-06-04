@@ -96,7 +96,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
     return <div>Loading...</div>;
   }
 
-  const SidebarContent = () => (
+  const SidebarContentComponent = () => (
     <>
       <SidebarHeader>
         <Link to="/dashboard" className="flex items-center px-6 py-4 font-semibold">
@@ -158,7 +158,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
       <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent side="left" className="w-64 p-0">
           <div className="flex flex-col h-full">
-            <SidebarContent />
+            <SidebarContentComponent />
           </div>
         </SheetContent>
       </Sheet>
@@ -168,7 +168,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
   // On desktop, render as Shadcn Sidebar
   return (
     <Sidebar>
-      <SidebarContent />
+      <SidebarContentComponent />
     </Sidebar>
   );
 };
