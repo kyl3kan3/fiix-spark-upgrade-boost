@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -227,9 +228,36 @@ function App() {
                 </ProtectedRoute>
               } />
               
+              {/* Vendor routes */}
               <Route path="/vendors" element={
                 <ProtectedRoute>
-                  <VendorsPage />
+                  <CompanyRequiredWrapper>
+                    <VendorsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vendors/new" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <VendorFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vendors/edit/:vendorId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <VendorFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vendors/:vendorId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <VendorDetailPage />
+                  </CompanyRequiredWrapper>
                 </ProtectedRoute>
               } />
               
