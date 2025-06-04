@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Edit, Eye, Trash2, Mail, Phone, MapPin } from "lucide-react";
+import { Edit, Eye, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
