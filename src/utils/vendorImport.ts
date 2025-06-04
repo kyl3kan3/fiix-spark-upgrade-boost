@@ -21,6 +21,17 @@ interface ParsedVendor {
   rating?: number;
 }
 
+// Helper function to sanitize text for database storage
+const sanitizeText = (text: string | null | undefined): string | null => {
+  if (!text) return null;
+  
+  // Remove null characters and other problematic Unicode characters
+  return text
+    .replace(/\u0000/g, '') // Remove null characters
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove other control characters
+    .trim() || null;
+};
+
 export const parseVendorFile = async (file: File): Promise<VendorFormData[]> => {
   const fileType = file.type;
   const fileName = file.name.toLowerCase();
@@ -88,17 +99,17 @@ const parseCSVLine = (line: string): string[] => {
 
 const mapCSVToVendor = (values: string[]): VendorFormData => {
   return {
-    name: values[0] || '',
-    email: values[1] || null,
-    phone: values[2] || null,
-    address: values[3] || null,
-    city: values[4] || null,
-    state: values[5] || null,
-    zip_code: values[6] || null,
-    contact_person: values[7] || null,
-    contact_title: values[8] || null,
-    website: values[9] || null,
-    description: values[10] || null,
+    name: sanitizeText(values[0]) || 'Unknown Vendor',
+    email: sanitizeText(values[1]),
+    phone: sanitizeText(values[2]),
+    address: sanitizeText(values[3]),
+    city: sanitizeText(values[4]),
+    state: sanitizeText(values[5]),
+    zip_code: sanitizeText(values[6]),
+    contact_person: sanitizeText(values[7]),
+    contact_title: sanitizeText(values[8]),
+    website: sanitizeText(values[9]),
+    description: sanitizeText(values[10]),
     vendor_type: (values[11] as any) || 'service',
     status: (values[12] as any) || 'active',
     rating: values[13] ? parseInt(values[13]) : null,
@@ -137,22 +148,28 @@ const parseWord = async (file: File): Promise<VendorFormData[]> => {
 const extractVendorsFromText = (text: string): VendorFormData[] => {
   const vendors: VendorFormData[] = [];
   
+  // Sanitize the entire text first
+  const cleanText = sanitizeText(text) || '';
+  
   // Simple pattern matching for vendor information
   // This is a basic implementation - in production you'd want more sophisticated parsing
-  const lines = text.split('\n').filter(line => line.trim());
+  const lines = cleanText.split('\n').filter(line => line.trim());
   
   for (const line of lines) {
     // Look for lines that might contain vendor names (basic heuristic)
     if (line.length > 5 && !line.match(/^(page|document|title|header)/i)) {
       const words = line.trim().split(/\s+/);
       if (words.length >= 2) {
+        const cleanName = sanitizeText(line.substring(0, 100)) || 'Unknown Vendor';
+        const cleanDescription = sanitizeText(line.length > 50 ? line.substring(0, 200) + '...' : line);
+        
         const vendor: VendorFormData = {
-          name: line.trim().substring(0, 100), // Limit name length
+          name: cleanName,
           email: extractEmail(line),
           phone: extractPhone(line),
           vendor_type: 'service',
           status: 'active',
-          description: line.length > 50 ? line.substring(0, 200) + '...' : line,
+          description: cleanDescription,
           address: null,
           city: null,
           state: null,
@@ -174,17 +191,17 @@ const extractVendorsFromText = (text: string): VendorFormData[] => {
 const extractEmail = (text: string): string | null => {
   const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
   const match = text.match(emailRegex);
-  return match ? match[0] : null;
+  return match ? sanitizeText(match[0]) : null;
 };
 
 const extractPhone = (text: string): string | null => {
   const phoneRegex = /(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
   const match = text.match(phoneRegex);
-  return match ? match[0] : null;
+  return match ? sanitizeText(match[0]) : null;
 };
 
 const extractWebsite = (text: string): string | null => {
   const websiteRegex = /(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/[^\s]*)?/;
   const match = text.match(websiteRegex);
-  return match ? match[0] : null;
+  return match ? sanitizeText(match[0]) : null;
 };
