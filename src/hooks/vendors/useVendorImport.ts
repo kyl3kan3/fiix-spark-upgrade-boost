@@ -3,18 +3,8 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { parseVendorFile } from "@/utils/vendorImport";
-import { createVendor, type VendorFormData } from "@/services/vendorService";
-
-interface ImportError {
-  row: number;
-  message: string;
-}
-
-interface ImportResults {
-  successful: number;
-  failed: number;
-  errors: ImportError[];
-}
+import { createVendor } from "@/services/vendorService";
+import type { ImportError, ImportResults } from "@/utils/vendorImport";
 
 export const useVendorImport = () => {
   const [isProcessing, setIsProcessing] = useState(false);
