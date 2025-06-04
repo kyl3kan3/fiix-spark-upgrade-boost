@@ -22,6 +22,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   // Notification sound ref
@@ -92,7 +93,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
     <header className="border-b bg-white sticky top-0 z-30">
       <div className="px-4 sm:px-6 lg:px-8 flex h-14 items-center justify-between">
         <div className="flex items-center">
-          <Sheet>
+          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -104,7 +105,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-64">
-              <DashboardSidebar />
+              <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
             </SheetContent>
           </Sheet>
 
