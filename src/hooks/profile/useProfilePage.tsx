@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useUserProfile } from "@/hooks/team/useUserProfile";
+import { useTeamProfile } from "@/hooks/team/useTeamProfile";
 
 export const useProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -14,11 +14,11 @@ export const useProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { 
-    profileData, 
+    profile, 
     error: profileError, 
     isLoading: profileLoading, 
     refreshProfile 
-  } = useUserProfile(['role', 'company_id', 'company_name', 'first_name', 'last_name']);
+  } = useTeamProfile();
   
   // Extract the tab from the URL search params
   const searchParams = new URLSearchParams(location.search);
@@ -117,7 +117,7 @@ export const useProfilePage = () => {
     handleTabChange,
     handleRefresh,
     refreshKey,
-    profileData,
+    profileData: profile,
     profileError,
     profileLoading
   };
