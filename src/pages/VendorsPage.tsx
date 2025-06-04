@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+
+import React, { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Grid3X3, List, Download } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -24,6 +25,7 @@ const VendorsPage: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const checkboxRef = useRef<HTMLButtonElement>(null);
   
   const { isDeleting, handleDeleteVendor, handleBulkDeleteVendors } = useVendorActions();
@@ -32,14 +34,12 @@ const VendorsPage: React.FC = () => {
   const canDelete = currentUserRole === 'administrator';
   
   // Fetch vendors
-  
   const { data: vendors, isLoading, error } = useQuery({
     queryKey: ["vendors"],
     queryFn: getAllVendors
   });
   
   // filter handlers
-  
   const handleStatusToggle = (status: string) => {
     setSelectedStatus(prev => 
       prev.includes(status) 
@@ -77,37 +77,58 @@ const VendorsPage: React.FC = () => {
   };
 
   // bulk action handlers
-
   const handleBulkDelete = async () => {
-    if (selectedVendors.length === 0) return;
+    if (selectedVendors.length === 0) {
+      toast.error("No vendors selected for deletion");
+      return;
+    }
+    
+    setIsBulkDeleting(true);
     
     try {
+      console.log("Starting bulk delete for vendors:", selectedVendors);
       await handleBulkDeleteVendors(selectedVendors);
       setSelectedVendors([]);
-      toast.success(`${selectedVendors.length} vendors deleted successfully`);
-    } catch (error) {
+      toast.success(`${selectedVendors.length} vendor${selectedVendors.length !== 1 ? 's' : ''} deleted successfully`);
+    } catch (error: any) {
       console.error("Bulk delete failed:", error);
-      toast.error("Failed to delete vendors");
+      toast.error("Failed to delete vendors", {
+        description: error.message || "An unexpected error occurred"
+      });
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 
   const handleBulkStatusChange = (status: string) => {
-    if (selectedVendors.length === 0) return;
+    if (selectedVendors.length === 0) {
+      toast.error("No vendors selected");
+      return;
+    }
     // Implementation would go here
-    toast.success(`${selectedVendors.length} vendors updated to ${status}`);
+    toast.success(`${selectedVendors.length} vendor${selectedVendors.length !== 1 ? 's' : ''} updated to ${status}`);
     setSelectedVendors([]);
   };
 
   const handleBulkExport = () => {
-    if (!vendors) return;
+    if (!vendors) {
+      toast.error("No vendors available to export");
+      return;
+    }
+    
     const selectedVendorData = vendors.filter(v => selectedVendors.includes(v.id));
     const dataToExport = selectedVendorData.length > 0 ? selectedVendorData : vendors;
-    exportVendorsToCSV(dataToExport);
-    toast.success("Vendors exported successfully");
+    
+    try {
+      exportVendorsToCSV(dataToExport);
+      toast.success(`${dataToExport.length} vendor${dataToExport.length !== 1 ? 's' : ''} exported successfully`);
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error("Failed to export vendors");
+    }
   };
   
   // filtered vendors calculation
-  
   const filteredVendors = vendors?.filter(vendor => 
     (searchQuery === "" || 
       vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -119,6 +140,7 @@ const VendorsPage: React.FC = () => {
   );
 
   if (error) {
+    console.error("Error loading vendors:", error);
     toast.error("Failed to load vendors", { 
       description: "There was an error loading the vendor data."
     });
@@ -128,15 +150,13 @@ const VendorsPage: React.FC = () => {
   const statusOptions = ["active", "inactive", "suspended"];
   const typeOptions = ["service", "supplier", "contractor", "consultant"];
   const allSelected = filteredVendors && selectedVendors.length === filteredVendors.length && filteredVendors.length > 0;
-  const someSelected = selectedVendors.length > 0 && selectedVendors.length < (filteredVendors?.length || 0);
 
   return (
     <DashboardLayout>
       <div className="container mx-auto py-6 px-4">
         <VendorPageHeader />
         
-        // filters and actions
-        
+        {/* Filters and actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <VendorFilters
             searchQuery={searchQuery}
@@ -170,6 +190,11 @@ const VendorsPage: React.FC = () => {
               <span className="text-sm font-medium">
                 {allSelected ? 'Deselect All' : 'Select All'} ({filteredVendors.length} vendors)
               </span>
+              {selectedVendors.length > 0 && (
+                <span className="text-sm text-blue-600">
+                  ({selectedVendors.length} selected)
+                </span>
+              )}
             </div>
             
             {selectedVendors.length > 0 && canDelete && (
@@ -177,16 +202,15 @@ const VendorsPage: React.FC = () => {
                 variant="destructive" 
                 size="sm" 
                 onClick={handleBulkDelete}
-                disabled={isDeleting}
+                disabled={isDeleting || isBulkDeleting}
               >
-                Delete Selected ({selectedVendors.length})
+                {isBulkDeleting ? "Deleting..." : `Delete Selected (${selectedVendors.length})`}
               </Button>
             )}
           </div>
         )}
 
-        // bulk actions, tabs, and footer
-        
+        {/* Bulk actions, tabs, and footer */}
         <VendorBulkActions
           selectedCount={selectedVendors.length}
           onBulkDelete={handleBulkDelete}
@@ -219,7 +243,7 @@ const VendorsPage: React.FC = () => {
               isLoading={isLoading}
               error={error}
               hasFilters={hasFilters}
-              isDeleting={isDeleting}
+              isDeleting={isDeleting || isBulkDeleting}
               onDeleteVendor={handleDeleteVendor}
               selectedVendors={selectedVendors}
               onVendorSelection={handleVendorSelection}
@@ -232,7 +256,7 @@ const VendorsPage: React.FC = () => {
               isLoading={isLoading}
               error={error}
               hasFilters={hasFilters}
-              isDeleting={isDeleting}
+              isDeleting={isDeleting || isBulkDeleting}
               onDeleteVendor={handleDeleteVendor}
               selectedVendors={selectedVendors}
               onVendorSelection={handleVendorSelection}

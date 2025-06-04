@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Upload, FileText, AlertCircle, CheckCircle } from "lucide-react";
+import { Upload, FileText, AlertCircle, CheckCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -24,12 +24,25 @@ const VendorImportDialog: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      await importFile(file);
+      console.log("Starting file import:", file.name, file.type);
+      try {
+        await importFile(file);
+      } catch (error) {
+        console.error("File import error:", error);
+      }
     }
+    // Clear the input value to allow re-selecting the same file
+    event.target.value = '';
   };
 
   const handleClose = () => {
+    console.log("Closing import dialog and resetting state");
     setIsOpen(false);
+    resetImport();
+  };
+
+  const handleReset = () => {
+    console.log("Resetting import state");
     resetImport();
   };
 
@@ -45,11 +58,23 @@ const VendorImportDialog: React.FC = () => {
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Import Vendors</DialogTitle>
+          <DialogTitle className="flex items-center justify-between">
+            Import Vendors
+            {(results || error) && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleReset}
+                className="ml-2"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
-          {!results && (
+          {!results && !error && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="vendor-file">Choose File</Label>
@@ -91,14 +116,26 @@ const VendorImportDialog: React.FC = () => {
                 <span>Processing file...</span>
               </div>
               <Progress value={progress} className="w-full" />
+              <p className="text-sm text-gray-500">
+                Please wait while we process your file. This may take a moment.
+              </p>
             </div>
           )}
 
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="space-y-4">
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+              
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={handleReset}>
+                  Try Again
+                </Button>
+                <Button onClick={handleClose}>Close</Button>
+              </div>
+            </div>
           )}
 
           {results && (
@@ -106,7 +143,7 @@ const VendorImportDialog: React.FC = () => {
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Import completed! {results.successful} vendors imported successfully.
+                  Import completed! {results.successful} vendor{results.successful !== 1 ? 's' : ''} imported successfully.
                   {results.failed > 0 && ` ${results.failed} failed to import.`}
                 </AlertDescription>
               </Alert>
@@ -114,7 +151,7 @@ const VendorImportDialog: React.FC = () => {
               {results.errors.length > 0 && (
                 <div className="space-y-2">
                   <h4 className="font-medium text-red-600">Import Errors:</h4>
-                  <div className="max-h-40 overflow-y-auto space-y-1">
+                  <div className="max-h-40 overflow-y-auto space-y-1 bg-red-50 p-3 rounded">
                     {results.errors.map((error, index) => (
                       <p key={index} className="text-sm text-red-600">
                         Row {error.row}: {error.message}
@@ -125,6 +162,9 @@ const VendorImportDialog: React.FC = () => {
               )}
 
               <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={handleReset}>
+                  Import Another File
+                </Button>
                 <Button onClick={handleClose}>Close</Button>
               </div>
             </div>
