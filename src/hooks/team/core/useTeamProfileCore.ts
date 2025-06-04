@@ -58,7 +58,7 @@ export const useTeamProfileCore = (fields: string[] = ['*']) => {
       setError(null);
     } catch (err: any) {
       console.error("Error in fetchProfile:", err);
-      setError(err.message);
+      setError(err.message || 'An error occurred');
       setProfile(null);
     } finally {
       setIsLoading(false);
