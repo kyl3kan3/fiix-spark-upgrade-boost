@@ -1,159 +1,87 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { TeamProfileData, TeamProfileResult } from "../types";
+import type { User } from "@supabase/supabase-js";
 
-/**
- * Core hook for team profile data fetching and management
- */
-export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'company_name']): TeamProfileResult => {
-  const [profileData, setProfileData] = useState<TeamProfileData | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+interface ProfileData {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  role: string;
+  company_id: string;
+  company_name?: string;
+  phone_number?: string;
+  avatar_url?: string;
+}
+
+export const useTeamProfileCore = (fields: string[] = ['*']) => {
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const fetchUserProfile = useCallback(async (): Promise<any | null> => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchProfile = useCallback(async () => {
     try {
-      setIsLoading(true);
-      setError(null);
-      
-      console.log("Starting profile fetch...");
-      
-      // Get current user with better error handling
+      console.log("Fetching user session...");
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
       if (userError) {
-        // Handle specific auth errors more gracefully
-        if (userError.message.includes("Auth session missing")) {
-          console.log("No active session found - user needs to log in");
-          setError("Please log in to access this feature");
-          setProfileData(null);
-          setUserId(null);
-          setIsLoading(false);
-          return null;
-        }
-        
-        console.error("Auth error when getting user:", userError);
-        setError("Authentication error: " + userError.message);
-        setProfileData(null);
-        setIsLoading(false);
-        return null;
+        console.error("User session error:", userError);
+        throw userError;
       }
-      
+
       if (!user) {
         console.log("No authenticated user found");
-        setProfileData(null);
-        setUserId(null);
-        setIsLoading(false);
-        return null;
+        setProfile(null);
+        setUser(null);
+        return;
       }
-      
+
       console.log("User authenticated:", user.id);
-      setUserId(user.id);
-      
-      // Make sure required fields are included
-      const fieldsToFetch = [...new Set([...fields, 'company_id'])];
-      const selectFields = fieldsToFetch.join(', ');
-      
-      console.log("Fetching profile with fields:", selectFields);
-      
-      // Get profile data
-      const { data, error: fetchError } = await supabase
+      setUser(user);
+
+      console.log("Fetching profile with fields:", fields);
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select(selectFields)
+        .select(fields.join(', '))
         .eq('id', user.id)
-        .maybeSingle();
-        
-      if (fetchError) {
-        console.error("Error fetching user profile:", fetchError);
-        setError("Could not fetch user profile: " + fetchError.message);
-        setProfileData(null);
-        setIsLoading(false);
-        return null;
+        .single();
+
+      if (profileError) {
+        console.error("Profile fetch error:", profileError);
+        throw profileError;
       }
 
-      if (!data) {
-        console.log("No profile data found for user");
-        setError("No profile found for user");
-        setProfileData(null);
-        setIsLoading(false);
-        return null;
-      }
-      
-      console.log("Profile data fetched successfully:", data);
-      
-      // Process and validate the profile data
-      if (typeof data === 'object' && data !== null) {
-        const typedData = data as Record<string, any>;
-        
-        if ('company_id' in typedData && typedData.company_id !== null && typedData.company_id !== undefined) {
-          const profileData: TeamProfileData = {
-            role: typedData.role || null,
-            company_id: String(typedData.company_id),
-            company_name: typedData.company_name,
-            first_name: typedData.first_name,
-            last_name: typedData.last_name,
-            ...typedData
-          };
-          setProfileData(profileData);
-          setError(null);
-          console.log("Profile processed successfully");
-        } else {
-          console.warn("Invalid profile data: missing company_id", data);
-          setError("Profile missing required company information");
-          setProfileData(null);
-        }
-      } else {
-        console.warn("Invalid profile data format:", data);
-        setError("Invalid profile data format");
-        setProfileData(null);
-      }
-      
+      console.log("Profile data fetched:", profileData);
+      setProfile(profileData);
+      setError(null);
+    } catch (err: any) {
+      console.error("Error in fetchProfile:", err);
+      setError(err.message);
+      setProfile(null);
+    } finally {
       setIsLoading(false);
-      return data;
-    } catch (err) {
-      console.error("Error in useTeamProfile:", err);
-      setError("An unexpected error occurred: " + (err as Error).message);
-      setProfileData(null);
-      setIsLoading(false);
-      return null;
     }
-  }, []); // Remove fields dependency to prevent infinite loops
-  
-  const refreshProfile = useCallback(async () => {
-    return await fetchUserProfile();
-  }, [fetchUserProfile]);
+  }, [fields]);
 
-  // Initial fetch - only run once on mount
   useEffect(() => {
-    let mounted = true;
-    
-    const doFetch = async () => {
-      if (mounted) {
-        await fetchUserProfile();
-      }
-    };
-    
-    doFetch();
-    
-    return () => {
-      mounted = false;
-    };
-  }, []); // Empty dependency array to run only once
+    fetchProfile();
+  }, [fetchProfile]);
 
-  // Computed values
-  const role = profileData?.role || null;
-  const isAdmin = role === 'administrator';
-  const companyName = profileData?.company_name;
+  const refreshProfile = useCallback(async () => {
+    setIsLoading(true);
+    await fetchProfile();
+  }, [fetchProfile]);
 
-  return { 
-    profileData, 
-    isLoading, 
-    error, 
-    userId,
-    role,
-    isAdmin,
-    companyName,
+  return {
+    profile,
+    role: profile?.role || null,
+    companyId: profile?.company_id || null,
+    isAdmin: profile?.role === 'administrator',
+    user,
+    isLoading,
+    error,
     refreshProfile
   };
 };

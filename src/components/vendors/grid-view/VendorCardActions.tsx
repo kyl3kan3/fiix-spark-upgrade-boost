@@ -28,12 +28,25 @@ const VendorCardActions: React.FC<VendorCardActionsProps> = ({
   isDeleting,
   onDeleteVendor,
 }) => {
-  const { currentUserRole } = useUserRolePermissions();
+  const { currentUserRole, isLoading } = useUserRolePermissions();
   
-  // Allow administrators to delete vendors (removed manager restriction for now)
+  console.log("VendorCardActions - Debug info:", { 
+    currentUserRole, 
+    isLoading, 
+    vendorId, 
+    vendorName 
+  });
+  
+  // Allow administrators to delete vendors
   const canDelete = currentUserRole === 'administrator';
 
-  console.log("VendorCardActions - User role:", currentUserRole, "Can delete:", canDelete);
+  console.log("VendorCardActions - User role:", currentUserRole, "Can delete:", canDelete, "Is loading:", isLoading);
+
+  // Don't show anything while loading
+  if (isLoading) {
+    console.log("Still loading user permissions - hiding actions");
+    return null;
+  }
 
   if (!canDelete) {
     console.log("User cannot delete vendors - hiding delete button");

@@ -1,16 +1,39 @@
 
+import { useCallback } from "react";
 import { useTeamProfileCore } from "./core/useTeamProfileCore";
-import { useUserRoleHook } from "./convenience/useUserRoleHook";
-import { useAdminStatusHook } from "./convenience/useAdminStatusHook";
-import { useUserRolePermissionsHook } from "./convenience/useUserRolePermissionsHook";
 
-// Export types
-export type { TeamProfileData, TeamProfileResult } from "./types";
+export const useTeamProfile = () => {
+  const { 
+    profile, 
+    role, 
+    companyId, 
+    isAdmin, 
+    isLoading, 
+    error, 
+    refreshProfile 
+  } = useTeamProfileCore(['role', 'company_id']);
+  
+  console.log("useTeamProfile - Profile data:", { profile, role, companyId, isAdmin, isLoading, error });
+  
+  const refreshPermissions = useCallback(async () => {
+    await refreshProfile();
+  }, [refreshProfile]);
+  
+  return {
+    profile,
+    role,
+    companyId,
+    isAdmin,
+    isLoading,
+    error,
+    refreshProfile,
+    // Legacy exports for backward compatibility
+    currentUserRole: role,
+    checkingPermissions: isLoading,
+    refreshPermissions
+  };
+};
 
-// Main hook - alias to the core hook for backward compatibility
-export const useTeamProfile = useTeamProfileCore;
-
-// Convenience hooks for specific use cases
-export const useUserRole = useUserRoleHook;
-export const useAdminStatus = useAdminStatusHook;
-export const useUserRolePermissions = useUserRolePermissionsHook;
+export const useUserRolePermissions = () => {
+  return useTeamProfile();
+};
