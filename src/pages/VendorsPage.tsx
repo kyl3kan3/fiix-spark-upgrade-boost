@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Grid3X3, List, Download } from "lucide-react";
@@ -25,7 +24,7 @@ const VendorsPage: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLButtonElement>(null);
   
   const { isDeleting, handleDeleteVendor, handleBulkDeleteVendors } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
