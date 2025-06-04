@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Grid3X3, List, Download } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -24,6 +24,7 @@ const VendorsPage: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const checkboxRef = useRef<HTMLButtonElement>(null);
   
   const { isDeleting, handleDeleteVendor, handleBulkDeleteVendors } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
@@ -153,10 +154,8 @@ const VendorsPage: React.FC = () => {
           <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center gap-3">
               <Checkbox
+                ref={checkboxRef}
                 checked={allSelected}
-                ref={(el) => {
-                  if (el) el.indeterminate = someSelected;
-                }}
                 onCheckedChange={handleSelectAll}
               />
               <span className="text-sm font-medium">
@@ -176,6 +175,13 @@ const VendorsPage: React.FC = () => {
             )}
           </div>
         )}
+
+        {/* Set indeterminate state after component mounts */}
+        {React.useEffect(() => {
+          if (checkboxRef.current) {
+            checkboxRef.current.indeterminate = someSelected;
+          }
+        }, [someSelected])}
 
         <VendorBulkActions
           selectedCount={selectedVendors.length}
