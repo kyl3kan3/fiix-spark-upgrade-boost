@@ -1,21 +1,40 @@
 
 import { VendorFormData } from "@/services/vendorService";
 import { extractVendorsFromText } from './textParser';
+import * as mammoth from 'mammoth';
 
 export const parseWord = async (file: File): Promise<VendorFormData[]> => {
   console.log("Parsing Word document:", file.name, file.type, file.size);
   
   try {
-    // For Word documents, we need to handle different formats
+    // Handle DOCX files using mammoth
     if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
         file.name.toLowerCase().endsWith('.docx')) {
-      // For .docx files, we can't easily extract text without specialized libraries
-      throw new Error('DOCX files are not supported. Please convert to CSV format for best results.');
+      console.log("Processing DOCX file with mammoth");
+      
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      const text = result.value;
+      
+      console.log("Extracted text from DOCX, length:", text.length);
+      
+      if (!text || text.trim().length === 0) {
+        throw new Error('DOCX document appears to be empty or contains no readable text.');
+      }
+      
+      const vendors = extractVendorsFromText(text);
+      console.log("Extracted vendors from DOCX document:", vendors.length);
+      
+      if (vendors.length === 0) {
+        throw new Error('No vendor information found in the DOCX document. Please ensure the document contains vendor data in a readable format.');
+      }
+      
+      return vendors;
     }
     
+    // Handle older DOC files - these are still not easily supported
     if (file.type === 'application/msword' || file.name.toLowerCase().endsWith('.doc')) {
-      // For .doc files, we also can't easily extract text
-      throw new Error('DOC files are not supported. Please convert to CSV format for best results.');
+      throw new Error('Legacy DOC files are not supported. Please save the document as DOCX or convert to CSV format for best results.');
     }
     
     // If it's actually a text file with .doc extension, try to read it as text
@@ -36,9 +55,9 @@ export const parseWord = async (file: File): Promise<VendorFormData[]> => {
     return vendors;
   } catch (error: any) {
     console.error("Word parsing error:", error);
-    if (error.message.includes('not supported')) {
+    if (error.message.includes('not supported') || error.message.includes('No vendor information')) {
       throw error;
     }
-    throw new Error('Failed to parse Word document. Please save the document as a CSV file for better compatibility.');
+    throw new Error('Failed to parse Word document. Please ensure the document is not corrupted and contains readable text, or save it as a CSV file for better compatibility.');
   }
 };

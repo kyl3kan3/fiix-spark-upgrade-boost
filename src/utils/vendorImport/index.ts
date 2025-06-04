@@ -14,13 +14,17 @@ export const parseVendorFile = async (file: File): Promise<VendorFormData[]> => 
     return parsePDF(file);
   } else if (
     fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-    fileType === 'application/msword' ||
-    fileName.endsWith('.docx') ||
-    fileName.endsWith('.doc')
+    fileName.endsWith('.docx')
   ) {
     return parseWord(file);
+  } else if (
+    fileType === 'application/msword' ||
+    fileName.endsWith('.doc')
+  ) {
+    // Handle legacy DOC files by redirecting to Word parser which will show appropriate error
+    return parseWord(file);
   } else {
-    throw new Error('Unsupported file format. Please use CSV, PDF, or Word documents.');
+    throw new Error('Unsupported file format. Please use CSV, PDF, or Word documents (.docx). Legacy .doc files are not supported.');
   }
 };
 

@@ -46,7 +46,7 @@ const VendorImportDialog: React.FC = () => {
     resetImport();
   };
 
-  const acceptedTypes = ".csv,.pdf,.doc,.docx";
+  const acceptedTypes = ".csv,.pdf,.docx";
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -86,7 +86,7 @@ const VendorImportDialog: React.FC = () => {
                   disabled={isProcessing}
                 />
                 <p className="text-sm text-gray-500">
-                  Supported formats: CSV, PDF, Word documents (.doc, .docx)
+                  Supported formats: CSV, PDF, Word documents (.docx)
                 </p>
               </div>
 
@@ -100,7 +100,7 @@ const VendorImportDialog: React.FC = () => {
                         Name, Email, Phone, Address, City, State, ZIP, Contact Person, Contact Title, Website, Description, Vendor Type, Status, Rating
                       </p>
                       <p className="text-xs text-gray-500">
-                        For PDF/Word documents, we'll extract vendor information automatically.
+                        For PDF/Word documents, we'll extract vendor information automatically. Note: Legacy .doc files are not supported, please use .docx format.
                       </p>
                     </div>
                   </div>
