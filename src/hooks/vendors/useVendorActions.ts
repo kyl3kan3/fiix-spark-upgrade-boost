@@ -30,8 +30,29 @@ export const useVendorActions = () => {
     deleteMutation.mutate(vendorId);
   };
 
+  const handleBulkDeleteVendors = async (vendorIds: string[]) => {
+    setIsDeleting(true);
+    
+    try {
+      // Delete vendors one by one
+      for (const vendorId of vendorIds) {
+        await deleteVendor(vendorId);
+      }
+      
+      // Refresh vendor list
+      queryClient.invalidateQueries({ queryKey: ["vendors"] });
+      
+    } catch (error: any) {
+      console.error("Error bulk deleting vendors:", error);
+      throw error;
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return {
     isDeleting,
-    handleDeleteVendor
+    handleDeleteVendor,
+    handleBulkDeleteVendors
   };
 };

@@ -5,6 +5,7 @@ import { Plus, Grid3X3, List, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { getAllVendors } from "@/services/vendorService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useVendorActions } from "@/hooks/vendors/useVendorActions";
@@ -25,9 +26,10 @@ const VendorsPage: React.FC = () => {
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
-  const { isDeleting, handleDeleteVendor } = useVendorActions();
+  const { isDeleting, handleDeleteVendor, handleBulkDeleteVendors } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
   const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
+  const canDelete = currentUserRole === 'administrator';
   
   // Fetch vendors
   const { data: vendors, isLoading, error } = useQuery({
@@ -59,11 +61,29 @@ const VendorsPage: React.FC = () => {
     );
   };
 
-  const handleBulkDelete = () => {
+  const handleSelectAll = () => {
+    if (!filteredVendors) return;
+    
+    if (selectedVendors.length === filteredVendors.length) {
+      // Deselect all
+      setSelectedVendors([]);
+    } else {
+      // Select all filtered vendors
+      setSelectedVendors(filteredVendors.map(v => v.id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
     if (selectedVendors.length === 0) return;
-    // Implementation would go here
-    toast.success(`${selectedVendors.length} vendors deleted`);
-    setSelectedVendors([]);
+    
+    try {
+      await handleBulkDeleteVendors(selectedVendors);
+      setSelectedVendors([]);
+      toast.success(`${selectedVendors.length} vendors deleted successfully`);
+    } catch (error) {
+      console.error("Bulk delete failed:", error);
+      toast.error("Failed to delete vendors");
+    }
   };
 
   const handleBulkStatusChange = (status: string) => {
@@ -100,6 +120,8 @@ const VendorsPage: React.FC = () => {
   const hasFilters = searchQuery !== "" || selectedStatus.length > 0 || selectedTypes.length > 0;
   const statusOptions = ["active", "inactive", "suspended"];
   const typeOptions = ["service", "supplier", "contractor", "consultant"];
+  const allSelected = filteredVendors && selectedVendors.length === filteredVendors.length && filteredVendors.length > 0;
+  const someSelected = selectedVendors.length > 0 && selectedVendors.length < (filteredVendors?.length || 0);
 
   return (
     <DashboardLayout>
@@ -126,6 +148,35 @@ const VendorsPage: React.FC = () => {
             </Button>
           </div>
         </div>
+
+        {/* Select All and Bulk Actions */}
+        {filteredVendors && filteredVendors.length > 0 && (
+          <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Checkbox
+                checked={allSelected}
+                ref={(el) => {
+                  if (el) el.indeterminate = someSelected;
+                }}
+                onCheckedChange={handleSelectAll}
+              />
+              <span className="text-sm font-medium">
+                {allSelected ? 'Deselect All' : 'Select All'} ({filteredVendors.length} vendors)
+              </span>
+            </div>
+            
+            {selectedVendors.length > 0 && canDelete && (
+              <Button 
+                variant="destructive" 
+                size="sm" 
+                onClick={handleBulkDelete}
+                disabled={isDeleting}
+              >
+                Delete Selected ({selectedVendors.length})
+              </Button>
+            )}
+          </div>
+        )}
 
         <VendorBulkActions
           selectedCount={selectedVendors.length}
@@ -161,6 +212,8 @@ const VendorsPage: React.FC = () => {
               hasFilters={hasFilters}
               isDeleting={isDeleting}
               onDeleteVendor={handleDeleteVendor}
+              selectedVendors={selectedVendors}
+              onVendorSelection={handleVendorSelection}
             />
           </TabsContent>
           
@@ -172,6 +225,8 @@ const VendorsPage: React.FC = () => {
               hasFilters={hasFilters}
               isDeleting={isDeleting}
               onDeleteVendor={handleDeleteVendor}
+              selectedVendors={selectedVendors}
+              onVendorSelection={handleVendorSelection}
             />
           </TabsContent>
         </Tabs>

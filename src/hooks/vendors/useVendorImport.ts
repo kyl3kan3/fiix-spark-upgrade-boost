@@ -34,9 +34,12 @@ export const useVendorImport = () => {
     setResults(null);
 
     try {
+      console.log("Starting file import for:", file.name, file.type);
+      
       // Parse the file
       setProgress(20);
       const vendors = await parseVendorFile(file);
+      console.log("Parsed vendors:", vendors.length);
       
       if (vendors.length === 0) {
         throw new Error("No vendor data found in the file");
@@ -53,9 +56,12 @@ export const useVendorImport = () => {
 
       for (let i = 0; i < vendors.length; i++) {
         try {
+          console.log(`Creating vendor ${i + 1}/${vendors.length}:`, vendors[i].name);
           await createVendorMutation.mutateAsync(vendors[i]);
           importResults.successful++;
+          console.log(`Successfully created vendor: ${vendors[i].name}`);
         } catch (error: any) {
+          console.error(`Failed to create vendor ${vendors[i].name}:`, error);
           importResults.failed++;
           importResults.errors.push({
             row: i + 2, // +2 because row 1 is header and arrays are 0-indexed
@@ -64,7 +70,9 @@ export const useVendorImport = () => {
         }
         
         // Update progress
-        setProgress(40 + ((i + 1) / vendors.length) * 60);
+        const newProgress = 40 + ((i + 1) / vendors.length) * 60;
+        setProgress(newProgress);
+        console.log(`Progress: ${newProgress}%`);
       }
 
       setResults(importResults);
@@ -81,6 +89,7 @@ export const useVendorImport = () => {
       }
 
     } catch (error: any) {
+      console.error("Import failed:", error);
       setError(error.message || "Failed to process file");
       toast.error("Import failed", {
         description: error.message || "An unexpected error occurred"
@@ -88,6 +97,7 @@ export const useVendorImport = () => {
     } finally {
       setIsProcessing(false);
       setProgress(100);
+      console.log("Import process completed");
     }
   };
 

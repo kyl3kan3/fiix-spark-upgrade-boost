@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,8 @@ interface VendorGridViewProps {
   hasFilters: boolean;
   isDeleting: boolean;
   onDeleteVendor: (vendorId: string) => void;
+  selectedVendors?: string[];
+  onVendorSelection?: (vendorId: string, selected: boolean) => void;
 }
 
 const VendorGridView: React.FC<VendorGridViewProps> = ({
@@ -37,6 +40,8 @@ const VendorGridView: React.FC<VendorGridViewProps> = ({
   hasFilters,
   isDeleting,
   onDeleteVendor,
+  selectedVendors = [],
+  onVendorSelection,
 }) => {
   const { currentUserRole } = useUserRolePermissions();
   const canDelete = currentUserRole === 'administrator';
@@ -99,6 +104,15 @@ const VendorGridView: React.FC<VendorGridViewProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {vendors.map((vendor) => (
         <Card key={vendor.id} className="p-4 hover:shadow-md transition-shadow h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 relative group">
+          {onVendorSelection && (
+            <div className="absolute top-2 left-2 z-10">
+              <Checkbox
+                checked={selectedVendors.includes(vendor.id)}
+                onCheckedChange={(checked) => onVendorSelection(vendor.id, !!checked)}
+              />
+            </div>
+          )}
+          
           <div className="flex items-start">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
               <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
@@ -194,6 +208,35 @@ const VendorGridView: React.FC<VendorGridViewProps> = ({
       ))}
     </div>
   );
+};
+
+// Helper functions that were in the original file
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "active":
+      return "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100";
+    case "inactive":
+      return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100";
+    case "suspended":
+      return "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100";
+  }
+};
+
+const getTypeColor = (type: string) => {
+  switch (type) {
+    case "service":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100";
+    case "supplier":
+      return "bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100";
+    case "contractor":
+      return "bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100";
+    case "consultant":
+      return "bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100";
+    default:
+      return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100";
+  }
 };
 
 export default VendorGridView;
