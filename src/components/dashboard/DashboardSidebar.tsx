@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   LayoutDashboard,
@@ -14,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUser } from "@/hooks/useUser";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { cn } from "@/lib/utils";
 
 interface DashboardSidebarProps {
@@ -26,7 +27,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
   const { logout } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, isLoading } = useUser();
+  const { profile, isLoading } = useUserProfile();
 
   const handleLogout = async () => {
     await logout();
@@ -121,12 +122,12 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
           <div className="p-6">
             <div className="mb-4">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.avatar_url || ""} alt={user?.first_name || "Avatar"} />
-                <AvatarFallback>{user?.first_name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "Avatar"} />
+                <AvatarFallback>{profile?.first_name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div className="ml-2 text-sm">
-                <p className="font-medium">{user?.first_name || "User"}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <p className="font-medium">{profile?.first_name || "User"}</p>
+                <p className="text-xs text-muted-foreground">{profile?.email}</p>
               </div>
             </div>
             <Button variant="outline" className="w-full" onClick={handleLogout}>

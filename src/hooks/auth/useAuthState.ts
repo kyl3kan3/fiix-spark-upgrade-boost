@@ -18,6 +18,17 @@ export function useAuthState() {
     setError(null);
   };
 
+  // Logout function
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing out:', error);
+      handleError('Failed to sign out');
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -50,6 +61,7 @@ export function useAuthState() {
     isLoading,
     error,
     handleError,
-    clearError
+    clearError,
+    logout
   };
 }
