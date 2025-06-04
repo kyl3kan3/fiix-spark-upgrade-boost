@@ -2,6 +2,18 @@
 import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { type Vendor } from "@/services/vendorService";
 
 interface VendorSelectionControlsProps {
@@ -29,6 +41,11 @@ const VendorSelectionControls: React.FC<VendorSelectionControlsProps> = ({
     return null;
   }
 
+  const handleBulkDelete = () => {
+    console.log("Bulk delete triggered for vendors:", selectedVendors);
+    onBulkDelete();
+  };
+
   return (
     <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
       <div className="flex items-center gap-3">
@@ -47,14 +64,36 @@ const VendorSelectionControls: React.FC<VendorSelectionControlsProps> = ({
       </div>
       
       {selectedVendors.length > 0 && canDelete && (
-        <Button 
-          variant="destructive" 
-          size="sm" 
-          onClick={onBulkDelete}
-          disabled={isDeleting || isBulkDeleting}
-        >
-          {isBulkDeleting ? "Deleting..." : `Delete Selected (${selectedVendors.length})`}
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              disabled={isDeleting || isBulkDeleting}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isBulkDeleting ? "Deleting..." : `Delete Selected (${selectedVendors.length})`}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Selected Vendors</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete {selectedVendors.length} vendor{selectedVendors.length !== 1 ? 's' : ''}? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleBulkDelete}
+                disabled={isDeleting || isBulkDeleting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isBulkDeleting ? "Deleting..." : `Delete ${selectedVendors.length} Vendor${selectedVendors.length !== 1 ? 's' : ''}`}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );
