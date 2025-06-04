@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { SidebarProvider, SidebarInset, Sidebar } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardHeader from "./layout/DashboardHeader";
@@ -58,10 +58,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="flex min-h-screen w-full relative overflow-x-clip">
         <GradientBackground />
         
-        {/* Desktop Sidebar - Always visible on larger screens */}
-        <Sidebar className="hidden md:flex">
-          <DashboardSidebar isOpen={true} onClose={() => {}} />
-        </Sidebar>
+        {/* Single unified sidebar */}
+        <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         
         <SidebarInset className="flex flex-col flex-1">
           <DashboardHeader 
@@ -80,9 +78,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             />
           </ContentContainer>
         </SidebarInset>
-
-        {/* Mobile Sidebar Sheet - Only on mobile */}
-        <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       </div>
     </SidebarProvider>
   );
