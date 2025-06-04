@@ -22,6 +22,7 @@ export const useTeamProfile = () => {
     profile, 
     role, 
     companyId, 
+    companyName,
     isAdmin, 
     isLoading, 
     error, 
@@ -39,7 +40,7 @@ export const useTeamProfile = () => {
     profileData: profile, // Add profileData alias
     role,
     companyId,
-    companyName: profile?.company_name,
+    companyName,
     isAdmin,
     isLoading,
     error,
@@ -76,5 +77,3 @@ export const useAdminStatus = () => {
     refreshAdminStatus: refreshProfile
   };
 };
-
-export type { TeamProfileResult };

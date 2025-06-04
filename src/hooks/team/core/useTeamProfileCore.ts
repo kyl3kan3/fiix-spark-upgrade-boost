@@ -78,6 +78,7 @@ export const useTeamProfileCore = (fields: string[] = ['*']) => {
     profile,
     role: profile?.role || null,
     companyId: profile?.company_id || null,
+    companyName: profile?.company_name,
     isAdmin: profile?.role === 'administrator',
     user,
     isLoading,
