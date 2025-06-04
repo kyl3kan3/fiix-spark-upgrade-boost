@@ -8,7 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getVendorById } from "@/services/vendorService";
+import VendorContractsTab from "@/components/vendors/VendorContractsTab";
+import VendorAssetsTab from "@/components/vendors/VendorAssetsTab";
 
 const VendorDetailPage: React.FC = () => {
   const { vendorId } = useParams();
@@ -190,6 +193,24 @@ const VendorDetailPage: React.FC = () => {
                     </div>
                   </>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Tabs for Contracts and Assets */}
+            <Card className="mt-6">
+              <CardContent className="p-6">
+                <Tabs defaultValue="contracts" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="contracts">Contracts</TabsTrigger>
+                    <TabsTrigger value="assets">Assets</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="contracts" className="mt-6">
+                    <VendorContractsTab vendorId={vendor.id} />
+                  </TabsContent>
+                  <TabsContent value="assets" className="mt-6">
+                    <VendorAssetsTab vendorId={vendor.id} />
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </div>

@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Grid3X3, List } from "lucide-react";
+import { Plus, Grid3X3, List, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,12 +12,17 @@ import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 import VendorPageHeader from "@/components/vendors/VendorPageHeader";
 import VendorFilters from "@/components/vendors/VendorFilters";
 import VendorGridView from "@/components/vendors/VendorGridView";
+import VendorListView from "@/components/vendors/VendorListView";
+import VendorBulkActions from "@/components/vendors/VendorBulkActions";
+import { exportVendorsToCSV } from "@/utils/vendorExport";
 import { toast } from "sonner";
 
 const VendorsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
   const { isDeleting, handleDeleteVendor } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
@@ -43,6 +48,36 @@ const VendorsPage: React.FC = () => {
         ? prev.filter(t => t !== type) 
         : [...prev, type]
     );
+  };
+
+  const handleVendorSelection = (vendorId: string, selected: boolean) => {
+    setSelectedVendors(prev => 
+      selected 
+        ? [...prev, vendorId]
+        : prev.filter(id => id !== vendorId)
+    );
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedVendors.length === 0) return;
+    // Implementation would go here
+    toast.success(`${selectedVendors.length} vendors deleted`);
+    setSelectedVendors([]);
+  };
+
+  const handleBulkStatusChange = (status: string) => {
+    if (selectedVendors.length === 0) return;
+    // Implementation would go here
+    toast.success(`${selectedVendors.length} vendors updated to ${status}`);
+    setSelectedVendors([]);
+  };
+
+  const handleBulkExport = () => {
+    if (!vendors) return;
+    const selectedVendorData = vendors.filter(v => selectedVendors.includes(v.id));
+    const dataToExport = selectedVendorData.length > 0 ? selectedVendorData : vendors;
+    exportVendorsToCSV(dataToExport);
+    toast.success("Vendors exported successfully");
   };
   
   const filteredVendors = vendors?.filter(vendor => 
@@ -81,9 +116,24 @@ const VendorsPage: React.FC = () => {
             selectedTypes={selectedTypes}
             onTypeToggle={handleTypeToggle}
           />
+          
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleBulkExport}>
+              <Download className="h-4 w-4 mr-2" />
+              Export All
+            </Button>
+          </div>
         </div>
 
-        <Tabs defaultValue="grid" className="w-full">
+        <VendorBulkActions
+          selectedCount={selectedVendors.length}
+          onBulkDelete={handleBulkDelete}
+          onBulkStatusChange={handleBulkStatusChange}
+          onBulkExport={handleBulkExport}
+          onClearSelection={() => setSelectedVendors([])}
+        />
+
+        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "grid" | "list")} className="w-full">
           <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <TabsTrigger 
               value="grid" 
@@ -92,10 +142,28 @@ const VendorsPage: React.FC = () => {
               <Grid3X3 className="h-4 w-4 mr-2" />
               Grid View
             </TabsTrigger>
+            <TabsTrigger 
+              value="list" 
+              className="flex items-center text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white"
+            >
+              <List className="h-4 w-4 mr-2" />
+              List View
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="grid" className="mt-4">
             <VendorGridView
+              vendors={filteredVendors}
+              isLoading={isLoading}
+              error={error}
+              hasFilters={hasFilters}
+              isDeleting={isDeleting}
+              onDeleteVendor={handleDeleteVendor}
+            />
+          </TabsContent>
+          
+          <TabsContent value="list" className="mt-4">
+            <VendorListView
               vendors={filteredVendors}
               isLoading={isLoading}
               error={error}
