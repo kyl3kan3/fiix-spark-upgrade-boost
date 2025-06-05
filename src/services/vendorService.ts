@@ -1,10 +1,10 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
 export type Vendor = Database['public']['Tables']['vendors']['Row'];
 export type VendorContract = Database['public']['Tables']['vendor_contracts']['Row'];
 export type VendorAsset = Database['public']['Tables']['vendor_assets']['Row'];
-export type VendorFormData = Omit<Vendor, 'id' | 'created_at' | 'updated_at'>;
 export type VendorContractFormData = Omit<VendorContract, 'id' | 'created_at' | 'updated_at'>;
 
 export interface VendorWithContracts extends Vendor {
