@@ -12,23 +12,11 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarHeader, 
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarSeparator
-} from "@/components/ui/sidebar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DashboardSidebarProps {
   isOpen: boolean;
@@ -40,7 +28,6 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { profile, isLoading } = useUserProfile();
-  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
     await logout();
@@ -96,80 +83,60 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
     return <div>Loading...</div>;
   }
 
-  const SidebarContentComponent = () => (
-    <>
-      <SidebarHeader>
-        <Link to="/dashboard" className="flex items-center px-6 py-4 font-semibold">
-          <LayoutDashboard className="mr-2 h-5 w-5" />
-          MaintenEase
-        </Link>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton 
-                    asChild
-                    isActive={pathname === item.href}
-                  >
-                    <Link
-                      to={item.href}
-                      onClick={() => isMobile && onClose()}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarSeparator />
-
-      <SidebarFooter>
-        <div className="p-6">
-          <div className="flex items-center mb-4">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "Avatar"} />
-              <AvatarFallback>{profile?.first_name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div className="ml-2 text-sm">
-              <p className="font-medium">{profile?.first_name || "User"}</p>
-              <p className="text-xs text-muted-foreground">{profile?.email}</p>
-            </div>
-          </div>
-          <Button variant="outline" className="w-full" onClick={handleLogout}>
-            Logout
-          </Button>
-        </div>
-      </SidebarFooter>
-    </>
-  );
-
-  // On mobile, render as a Sheet
-  if (isMobile) {
-    return (
-      <Sheet open={isOpen} onOpenChange={onClose}>
-        <SheetContent side="left" className="w-64 p-0">
-          <div className="flex flex-col h-full">
-            <SidebarContentComponent />
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  // On desktop, render as Shadcn Sidebar
   return (
-    <Sidebar>
-      <SidebarContentComponent />
-    </Sidebar>
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent side="left" className="w-64 p-0 pt-6">
+        <div className="flex flex-col h-full">
+          <div className="px-6 mb-4">
+            <Link to="/dashboard" className="flex items-center font-semibold">
+              <LayoutDashboard className="mr-2 h-5 w-5" />
+              MaintenEase
+            </Link>
+          </div>
+
+          <Separator />
+
+          <div className="flex-grow p-2">
+            <ul className="space-y-1">
+              {menuItems.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "flex items-center space-x-2 rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
+                      pathname === item.href
+                        ? "bg-secondary text-secondary-foreground"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Separator />
+
+          <div className="p-6">
+            <div className="mb-4">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "Avatar"} />
+                <AvatarFallback>{profile?.first_name?.charAt(0).toUpperCase() || profile?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <div className="ml-2 text-sm">
+                <p className="font-medium">{profile?.first_name || "User"}</p>
+                <p className="text-xs text-muted-foreground">{profile?.email}</p>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

@@ -1,10 +1,10 @@
 
 import { useState, useEffect, useCallback } from "react";
-import { useTeamProfile } from "./useTeamProfile";
+import { useUserProfile } from "./useUserProfile";
 import { toast } from "sonner";
 
 export const useCurrentUserRole = () => {
-  const { profile, isLoading: isProfileLoading, error: profileError, refreshProfile } = useTeamProfile();
+  const { profileData, isLoading: isProfileLoading, error: profileError, refreshProfile } = useUserProfile(['role']);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -18,13 +18,13 @@ export const useCurrentUserRole = () => {
     try {
       if (!isProfileLoading) {
         if (profileError) {
-          console.error("Error from useTeamProfile:", profileError);
+          console.error("Error from useUserProfile:", profileError);
           setError(new Error(profileError));
           setIsLoading(false);
           return;
         }
         
-        const role = profile?.role || null;
+        const role = profileData?.role || null;
         setCurrentUserRole(role);
         
         if (role) {
@@ -48,7 +48,7 @@ export const useCurrentUserRole = () => {
       // Set a default role to prevent blocking the UI completely
       setCurrentUserRole('user');
     }
-  }, [profile, isProfileLoading, profileError]);
+  }, [profileData, isProfileLoading, profileError]);
 
   // Effect to process profile data
   useEffect(() => {

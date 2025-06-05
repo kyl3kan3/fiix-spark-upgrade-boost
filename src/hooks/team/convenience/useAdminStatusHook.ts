@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useTeamProfileCore } from "../core/useTeamProfileCore";
 
 export const useAdminStatusHook = () => {
-  const { profile, isAdmin, isLoading, error, refreshProfile } = useTeamProfileCore(['role', 'company_name']);
+  const { isAdmin, companyName, isLoading, error, refreshProfile } = useTeamProfileCore(['role', 'company_name']);
   
   const refreshAdminStatus = useCallback(async () => {
     await refreshProfile();
@@ -11,7 +11,7 @@ export const useAdminStatusHook = () => {
   
   return {
     isAdminUser: isAdmin,
-    companyName: profile?.company_name,
+    companyName,
     isLoading,
     error,
     refreshAdminStatus

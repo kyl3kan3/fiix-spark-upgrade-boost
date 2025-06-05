@@ -11,7 +11,6 @@ export const useVendorActions = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteVendor,
     onSuccess: () => {
-      console.log("Vendor deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["vendors"] });
       toast.success("Vendor deleted successfully");
     },
@@ -27,58 +26,12 @@ export const useVendorActions = () => {
   });
 
   const handleDeleteVendor = async (vendorId: string) => {
-    console.log("Starting vendor deletion for ID:", vendorId);
     setIsDeleting(true);
     deleteMutation.mutate(vendorId);
   };
 
-  const handleBulkDeleteVendors = async (vendorIds: string[]) => {
-    console.log("Starting bulk vendor deletion for IDs:", vendorIds);
-    setIsDeleting(true);
-    
-    try {
-      let successCount = 0;
-      let failureCount = 0;
-      
-      // Delete vendors one by one with better error handling
-      for (const vendorId of vendorIds) {
-        try {
-          console.log("Deleting vendor:", vendorId);
-          await deleteVendor(vendorId);
-          successCount++;
-        } catch (error: any) {
-          console.error("Failed to delete vendor:", vendorId, error);
-          failureCount++;
-        }
-      }
-      
-      console.log(`Bulk deletion completed: ${successCount} successful, ${failureCount} failed`);
-      
-      // Refresh vendor list
-      queryClient.invalidateQueries({ queryKey: ["vendors"] });
-      
-      if (successCount > 0) {
-        toast.success(`Successfully deleted ${successCount} vendor${successCount !== 1 ? 's' : ''}`);
-      }
-      
-      if (failureCount > 0) {
-        toast.error(`Failed to delete ${failureCount} vendor${failureCount !== 1 ? 's' : ''}`);
-      }
-      
-    } catch (error: any) {
-      console.error("Error bulk deleting vendors:", error);
-      toast.error("Bulk deletion failed", {
-        description: error.message || "An unexpected error occurred"
-      });
-      throw error;
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   return {
     isDeleting,
-    handleDeleteVendor,
-    handleBulkDeleteVendors
+    handleDeleteVendor
   };
 };

@@ -1,79 +1,16 @@
 
-import { useCallback } from "react";
 import { useTeamProfileCore } from "./core/useTeamProfileCore";
+import { useUserRoleHook } from "./convenience/useUserRoleHook";
+import { useAdminStatusHook } from "./convenience/useAdminStatusHook";
+import { useUserRolePermissionsHook } from "./convenience/useUserRolePermissionsHook";
 
-export interface TeamProfileResult {
-  profile: any;
-  profileData: any;
-  role: string | null;
-  companyId: string | null;
-  companyName: string | undefined;
-  isAdmin: boolean;
-  isLoading: boolean;
-  error: string | null;
-  refreshProfile: () => Promise<void>;
-  currentUserRole: string | null;
-  checkingPermissions: boolean;
-  refreshPermissions: () => Promise<void>;
-}
+// Export types
+export type { TeamProfileData, TeamProfileResult } from "./types";
 
-export const useTeamProfile = () => {
-  const { 
-    profile, 
-    role, 
-    companyId, 
-    companyName,
-    isAdmin, 
-    isLoading, 
-    error, 
-    refreshProfile 
-  } = useTeamProfileCore(['role', 'company_id', 'company_name']);
-  
-  console.log("useTeamProfile - Profile data:", { profile, role, companyId, isAdmin, isLoading, error });
-  
-  const refreshPermissions = useCallback(async () => {
-    await refreshProfile();
-  }, [refreshProfile]);
-  
-  return {
-    profile,
-    profileData: profile, // Add profileData alias
-    role,
-    companyId,
-    companyName,
-    isAdmin,
-    isLoading,
-    error,
-    refreshProfile,
-    // Legacy exports for backward compatibility
-    currentUserRole: role,
-    checkingPermissions: isLoading,
-    refreshPermissions
-  };
-};
+// Main hook - alias to the core hook for backward compatibility
+export const useTeamProfile = useTeamProfileCore;
 
-export const useUserRolePermissions = () => {
-  return useTeamProfile();
-};
-
-// Export additional hooks that other files expect
-export const useUserRole = () => {
-  const { role, isLoading, error, refreshProfile } = useTeamProfile();
-  return {
-    role,
-    isLoading,
-    error,
-    refreshRole: refreshProfile
-  };
-};
-
-export const useAdminStatus = () => {
-  const { isAdmin, companyName, isLoading, error, refreshProfile } = useTeamProfile();
-  return {
-    isAdminUser: isAdmin,
-    companyName,
-    isLoading,
-    error,
-    refreshAdminStatus: refreshProfile
-  };
-};
+// Convenience hooks for specific use cases
+export const useUserRole = useUserRoleHook;
+export const useAdminStatus = useAdminStatusHook;
+export const useUserRolePermissions = useUserRolePermissionsHook;

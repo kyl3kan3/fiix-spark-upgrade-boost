@@ -57,10 +57,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full relative overflow-x-clip">
         <GradientBackground />
-        
-        {/* Single unified sidebar */}
         <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        
         <SidebarInset className="flex flex-col flex-1">
           <DashboardHeader 
             unreadCount={unreadCount} 

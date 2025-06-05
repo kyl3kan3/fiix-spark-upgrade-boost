@@ -1,45 +1,27 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Plus, Grid3X3, List } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAllVendors } from "@/services/vendorService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useVendorActions } from "@/hooks/vendors/useVendorActions";
-import { useVendorSelection } from "@/hooks/vendors/useVendorSelection";
-import { useVendorBulkActions } from "@/hooks/vendors/useVendorBulkActions";
 import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 import VendorPageHeader from "@/components/vendors/VendorPageHeader";
 import VendorFilters from "@/components/vendors/VendorFilters";
-import VendorPageActions from "@/components/vendors/VendorPageActions";
-import VendorSelectionControls from "@/components/vendors/VendorSelectionControls";
-import VendorBulkActions from "@/components/vendors/VendorBulkActions";
-import VendorContentTabs from "@/components/vendors/VendorContentTabs";
-import AddVendorButton from "@/components/vendors/AddVendorButton";
+import VendorGridView from "@/components/vendors/VendorGridView";
 import { toast } from "sonner";
 
 const VendorsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
   const { isDeleting, handleDeleteVendor } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
-  const {
-    selectedVendors,
-    handleVendorSelection,
-    handleSelectAll,
-    clearSelection,
-    isAllSelected
-  } = useVendorSelection();
-  const {
-    isBulkDeleting,
-    handleBulkDelete,
-    handleBulkStatusChange,
-    handleBulkExport
-  } = useVendorBulkActions();
-  
   const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
-  const canDelete = currentUserRole === 'administrator'; // Only administrators can delete
   
   // Fetch vendors
   const { data: vendors, isLoading, error } = useQuery({
@@ -47,7 +29,6 @@ const VendorsPage: React.FC = () => {
     queryFn: getAllVendors
   });
   
-  // Filter handlers
   const handleStatusToggle = (status: string) => {
     setSelectedStatus(prev => 
       prev.includes(status) 
@@ -63,8 +44,7 @@ const VendorsPage: React.FC = () => {
         : [...prev, type]
     );
   };
-
-  // Filtered vendors calculation
+  
   const filteredVendors = vendors?.filter(vendor => 
     (searchQuery === "" || 
       vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,7 +56,6 @@ const VendorsPage: React.FC = () => {
   );
 
   if (error) {
-    console.error("Error loading vendors:", error);
     toast.error("Failed to load vendors", { 
       description: "There was an error loading the vendor data."
     });
@@ -85,14 +64,12 @@ const VendorsPage: React.FC = () => {
   const hasFilters = searchQuery !== "" || selectedStatus.length > 0 || selectedTypes.length > 0;
   const statusOptions = ["active", "inactive", "suspended"];
   const typeOptions = ["service", "supplier", "contractor", "consultant"];
-  const allSelected = isAllSelected(filteredVendors);
 
   return (
     <DashboardLayout>
       <div className="container mx-auto py-6 px-4">
         <VendorPageHeader />
         
-        {/* Filters and actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <VendorFilters
             searchQuery={searchQuery}
@@ -104,50 +81,41 @@ const VendorsPage: React.FC = () => {
             selectedTypes={selectedTypes}
             onTypeToggle={handleTypeToggle}
           />
-          
-          <VendorPageActions
-            onExport={() => handleBulkExport(vendors, selectedVendors)}
-          />
         </div>
 
-        {/* Select All and Bulk Actions */}
-        <VendorSelectionControls
-          filteredVendors={filteredVendors}
-          selectedVendors={selectedVendors}
-          allSelected={allSelected}
-          onSelectAll={() => handleSelectAll(filteredVendors)}
-          onBulkDelete={() => handleBulkDelete(selectedVendors, clearSelection)}
-          canDelete={canDelete}
-          isDeleting={isDeleting}
-          isBulkDeleting={isBulkDeleting}
-        />
-
-        {/* Bulk actions */}
-        <VendorBulkActions
-          selectedCount={selectedVendors.length}
-          onBulkDelete={() => handleBulkDelete(selectedVendors, clearSelection)}
-          onBulkStatusChange={(status) => handleBulkStatusChange(status, selectedVendors, clearSelection)}
-          onBulkExport={() => handleBulkExport(vendors, selectedVendors)}
-          onClearSelection={clearSelection}
-        />
-
-        {/* Content tabs */}
-        <VendorContentTabs
-          viewMode={viewMode}
-          onViewModeChange={(value) => setViewMode(value as "grid" | "list")}
-          filteredVendors={filteredVendors}
-          isLoading={isLoading}
-          error={error}
-          hasFilters={hasFilters}
-          isDeleting={isDeleting}
-          onDeleteVendor={handleDeleteVendor}
-          selectedVendors={selectedVendors}
-          onVendorSelection={handleVendorSelection}
-          isBulkDeleting={isBulkDeleting}
-        />
+        <Tabs defaultValue="grid" className="w-full">
+          <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <TabsTrigger 
+              value="grid" 
+              className="flex items-center text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-black dark:data-[state=active]:text-white"
+            >
+              <Grid3X3 className="h-4 w-4 mr-2" />
+              Grid View
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="grid" className="mt-4">
+            <VendorGridView
+              vendors={filteredVendors}
+              isLoading={isLoading}
+              error={error}
+              hasFilters={hasFilters}
+              isDeleting={isDeleting}
+              onDeleteVendor={handleDeleteVendor}
+            />
+          </TabsContent>
+        </Tabs>
         
-        {/* Fixed position Add Vendor button */}
-        <AddVendorButton canAdd={canAdd} />
+        {/* Fixed position Add Vendor button - only show for admins and managers */}
+        {canAdd && (
+          <div className="fixed bottom-8 right-8 z-40">
+            <Link to="/vendors/new">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 shadow-lg">
+                <Plus className="h-6 w-6" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
