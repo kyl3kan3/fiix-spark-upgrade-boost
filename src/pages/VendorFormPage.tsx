@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -35,8 +34,7 @@ const VendorFormPage: React.FC = () => {
     zip_code: vendor.zip_code || "",
     website: vendor.website || "",
     description: vendor.description || "",
-    rating: vendor.rating,
-    logo_url: vendor.logo_url
+    rating: vendor.rating
   } : undefined;
 
   if (isEditing && isLoadingVendor) {
