@@ -19,6 +19,9 @@ serve(async (req) => {
     const { imageData } = await req.json();
 
     console.log('Processing vendor document image with OpenAI Vision...');
+    console.log('Image data length:', imageData?.length || 0);
+    console.log('Image data type:', typeof imageData);
+    console.log('Image data starts with:', imageData?.substring(0, 50));
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -31,53 +34,52 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an expert data extraction assistant specialized in extracting vendor/company information from ANY type of document. Your job is to identify and extract ALL company, vendor, business, or service provider information from the document.
+            content: `You are an expert data extraction assistant. Your task is to extract vendor/company information from ANY document image.
 
-EXTRACTION RULES:
-1. Look for ANY text that could represent a company, business, vendor, or service provider
-2. Extract contact information (emails, phones, addresses) even if not directly associated with a company name
-3. Be VERY liberal in what you consider vendor information - include consultants, freelancers, contractors, suppliers, etc.
-4. If you see a person's name with contact info, treat it as a potential vendor (contact_person field)
-5. Extract partial information even if incomplete - don't skip entries with missing fields
-6. Look for patterns like business cards, letterheads, contact lists, invoices, contracts, or any business-related content
+CRITICAL INSTRUCTIONS:
+1. Examine the ENTIRE image carefully for ANY business-related information
+2. Look for names, email addresses, phone numbers, addresses, company names, etc.
+3. If you find ANYTHING that could be business-related, extract it
+4. Even if incomplete, create entries for partial information
+5. If you see only text but no clear structure, still extract what you can
+6. Better to include questionable entries than miss real vendor data
 
-For each vendor/company found, extract these fields (use empty string "" for missing data):
-- name: company name OR person's name if no company (REQUIRED - don't skip if you find ANY business-related entity)
-- email: email address
-- phone: phone number  
-- contact_person: contact person name
-- contact_title: contact person title/role
-- address: street address
-- city: city
-- state: state/province  
-- zip_code: postal/zip code
-- website: website URL
-- vendor_type: categorize as "service", "supplier", "contractor", or "consultant" (default: "service")
-- status: always set as "active"
-- description: brief description of services/business
+Extract these fields for each vendor/business entity found:
+- name: ANY company name or person name with business context
+- email: any email address found
+- phone: any phone number found
+- contact_person: person names if available
+- contact_title: job titles if available
+- address: any address information
+- city, state, zip_code: location details
+- website: any URLs found
+- vendor_type: "service" (default), "supplier", "contractor", or "consultant"
+- status: always "active"
+- description: what they do or any context
 
-IMPORTANT: 
-- If you find ANY business-related information, create an entry for it
-- Don't be strict about complete information - partial data is valuable
-- Even a single email address or phone number can be a vendor entry
-- Return EMPTY ARRAY [] ONLY if the document contains absolutely no business/contact information
+RETURN FORMAT: Valid JSON array only. No markdown, no extra text.
+If you find NOTHING at all, return [].
+If you find ANYTHING business-related, create entries even with minimal data.
 
-Return ONLY valid JSON array format with no additional text or markdown.
-
-Examples of what to extract:
-- Company listings, business directories
-- Contact information in any format
-- Business cards or letterheads
-- Invoice headers with vendor info
-- Email signatures with business details
-- Any person/company providing services`
+DEBUG: Also consider that this might be a screenshot, photo of a document, scanned paper, business card, contact list, directory, invoice, contract, or any other business document format.`
           },
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: 'Please carefully examine this document and extract ALL vendor, company, business, or service provider information. Look for any business entities, contact information, or service providers. Be very thorough and extract even partial information. If you see business-related content but are unsure, include it rather than exclude it.'
+                text: `Please examine this image very carefully and extract ALL business information you can find. Look for:
+- Company names or business names
+- People's names with business context
+- Email addresses
+- Phone numbers  
+- Addresses
+- Websites
+- Any other business contact information
+
+Be thorough and extract everything that could be vendor-related, even if the data is incomplete. Create an entry for each distinct business entity you find.
+
+What type of document or content do you see in this image? Describe it briefly and then extract the vendor data.`
               },
               {
                 type: 'image_url',
@@ -93,15 +95,20 @@ Examples of what to extract:
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('OpenAI API error details:', errorText);
+      throw new Error(`OpenAI API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
     console.log('OpenAI Vision response received');
+    console.log('Full OpenAI response:', JSON.stringify(data, null, 2));
 
     const extractedText = data.choices[0].message.content;
-    console.log('Extracted vendor data:', extractedText);
+    console.log('Raw extracted text:', extractedText);
 
     // Parse the JSON response, handling markdown code blocks
     let vendors;
@@ -116,19 +123,36 @@ Examples of what to extract:
         cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
       }
       
+      console.log('Cleaned text for JSON parsing:', cleanedText);
       vendors = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', parseError);
       console.error('Raw response:', extractedText);
-      throw new Error('Invalid JSON response from OpenAI Vision');
+      console.error('Cleaned text:', cleanedText);
+      
+      // Try to extract JSON from the response if it's embedded in text
+      const jsonMatch = extractedText.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        try {
+          console.log('Attempting to parse extracted JSON:', jsonMatch[0]);
+          vendors = JSON.parse(jsonMatch[0]);
+        } catch (secondParseError) {
+          console.error('Second JSON parse attempt failed:', secondParseError);
+          throw new Error('Invalid JSON response from OpenAI Vision: ' + extractedText);
+        }
+      } else {
+        throw new Error('No valid JSON found in OpenAI response: ' + extractedText);
+      }
     }
 
     // Ensure it's an array
     if (!Array.isArray(vendors)) {
+      console.error('OpenAI response is not an array:', vendors);
       throw new Error('OpenAI response is not an array');
     }
 
     console.log(`Successfully extracted ${vendors.length} vendors from image`);
+    console.log('Extracted vendors:', JSON.stringify(vendors, null, 2));
 
     return new Response(JSON.stringify({ vendors }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
