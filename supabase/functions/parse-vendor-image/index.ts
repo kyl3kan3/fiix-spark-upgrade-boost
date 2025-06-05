@@ -29,56 +29,69 @@ serve(async (req) => {
     console.log('Request received successfully');
     console.log('Image data present:', !!imageData);
     console.log('Image data length:', imageData?.length || 0);
-    console.log('Image data starts with:', imageData?.substring(0, 100));
 
     if (!imageData) {
       throw new Error('No image data provided');
     }
 
-    console.log('Calling OpenAI Vision API...');
+    console.log('Calling OpenAI Vision API for vendor document analysis...');
     
     const openAIRequest = {
       model: 'gpt-4o',
       messages: [
         {
           role: 'system',
-          content: `You are an expert data extraction assistant. Extract vendor/company information from ANY document image.
+          content: `You are an expert data extraction assistant specializing in vendor directory analysis. Extract vendor/company information from documents that may contain:
 
-CRITICAL: You MUST return ONLY a valid JSON array, nothing else. No text, no markdown, no explanations.
+- Lists of vendors/suppliers with contact details
+- Business directories or contact lists  
+- Documents with company logos and text
+- Mixed content with both text and images
+- Tables or structured vendor information
 
-Look for:
-- Company/business names
-- Contact information (email, phone, addresses)
-- Any business-related data
+CRITICAL INSTRUCTIONS:
+1. ONLY return valid JSON array - no text, explanations, or markdown
+2. Look carefully for company names, even if they appear with logos
+3. Extract contact information from any readable text
+4. If text is unclear, make reasonable interpretations
+5. Don't skip entries just because some information is missing
 
-For each vendor found, create an object with these fields:
+For EACH vendor/company found, create this exact JSON structure:
 {
-  "name": "company name",
-  "email": "email if found",
-  "phone": "phone if found", 
-  "contact_person": "person name if found",
-  "contact_title": "title if found",
-  "address": "address if found",
-  "city": "city if found",
-  "state": "state if found",
-  "zip_code": "zip if found",
-  "website": "website if found",
+  "name": "company name (REQUIRED - extract from logos, headers, or text)",
+  "email": "email@domain.com or empty string",
+  "phone": "phone number or empty string", 
+  "contact_person": "person name or empty string",
+  "contact_title": "job title or empty string",
+  "address": "street address or empty string",
+  "city": "city or empty string",
+  "state": "state or empty string",
+  "zip_code": "zip code or empty string",
+  "website": "website URL or empty string",
   "vendor_type": "service",
   "status": "active",
-  "description": "what they do"
+  "description": "brief description of services or empty string"
 }
 
-If you find NOTHING, return: []
-If you find vendor data, return an array of vendor objects.
+EXAMPLES of what to look for:
+- Company names in headers, logos, or bold text
+- Email addresses (anything@domain.com)
+- Phone numbers in various formats
+- Addresses with street, city, state
+- Contact person names and titles
+- Service descriptions
 
-RETURN ONLY JSON - NO OTHER TEXT.`
+If you find NO vendor information at all, return: []
+If you find ANY companies/vendors, return array of vendor objects.
+
+RESPOND WITH ONLY THE JSON ARRAY - NO OTHER TEXT.`
         },
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: 'Extract all vendor/business information from this image. Return ONLY valid JSON array.'
+              text: 'This is a vendor directory document that may contain company logos and contact information. Please extract ALL vendor/company information you can find, even if some details are missing. Look carefully at logos, headers, and any text content. Return ONLY the JSON array of vendors.'
             },
             {
               type: 'image_url',
@@ -105,22 +118,15 @@ RETURN ONLY JSON - NO OTHER TEXT.`
     });
 
     console.log('OpenAI response status:', response.status);
-    console.log('OpenAI response ok:', response.ok);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, response.statusText);
-      console.error('Error details:', errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     console.log('OpenAI response received');
-    console.log('Response structure:', {
-      choices: data.choices?.length || 0,
-      hasMessage: !!data.choices?.[0]?.message,
-      hasContent: !!data.choices?.[0]?.message?.content
-    });
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid OpenAI response structure:', data);
@@ -129,14 +135,13 @@ RETURN ONLY JSON - NO OTHER TEXT.`
 
     const extractedText = data.choices[0].message.content;
     console.log('Raw OpenAI content:', extractedText);
-    console.log('Content length:', extractedText?.length || 0);
 
     if (!extractedText) {
       console.error('No content in OpenAI response');
       throw new Error('Empty response from OpenAI');
     }
 
-    // Parse the JSON response
+    // Parse the JSON response with enhanced error handling
     let vendors;
     try {
       // Clean the response by removing any markdown formatting
