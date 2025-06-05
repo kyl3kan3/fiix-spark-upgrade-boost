@@ -11,7 +11,7 @@ interface ParsedVendor extends VendorFormData {
 export const parseFile = async (file: File, useImageParser: boolean = false): Promise<ParsedVendor[]> => {
   const fileExtension = file.name.toLowerCase().split('.').pop();
   
-  // If image parser is requested or file is an image, use image parsing
+  // If image parser is explicitly requested or file is an image, use image parsing
   if (useImageParser || file.type.startsWith('image/')) {
     return await parseWithImage(file);
   }
@@ -23,7 +23,12 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     case 'xls':
       throw new Error('Excel import will be available in the next update. Please use CSV format for now.');
     case 'pdf':
-      return await parseWithImage(file);
+      // Only use image parsing for PDF if AI Vision toggle is enabled
+      if (useImageParser) {
+        return await parseWithImage(file);
+      } else {
+        throw new Error('PDF text extraction is not available yet. Please enable "Use AI Vision Parser" for PDF files, or convert your PDF to a Word document or CSV format.');
+      }
     case 'doc':
     case 'docx':
       return await parseWord(file);
