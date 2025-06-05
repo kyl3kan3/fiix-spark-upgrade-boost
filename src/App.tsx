@@ -32,6 +32,7 @@ import Settings from "./pages/Settings";
 import FeatureDemoPage from "./pages/FeatureDemoPage";
 import NotFound from "./pages/NotFound";
 import VendorsPage from "@/pages/VendorsPage";
+import VendorFormPage from "@/pages/VendorFormPage";
 
 const queryClient = new QueryClient();
 
@@ -229,7 +230,25 @@ function App() {
               
               <Route path="/vendors" element={
                 <ProtectedRoute>
-                  <VendorsPage />
+                  <CompanyRequiredWrapper>
+                    <VendorsPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vendors/new" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <VendorFormPage />
+                  </CompanyRequiredWrapper>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vendors/edit/:vendorId" element={
+                <ProtectedRoute>
+                  <CompanyRequiredWrapper>
+                    <VendorFormPage />
+                  </CompanyRequiredWrapper>
                 </ProtectedRoute>
               } />
               
