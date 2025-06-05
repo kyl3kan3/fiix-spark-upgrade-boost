@@ -31,50 +31,53 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an expert data extraction assistant. Extract vendor information from document images and return it as a JSON array. 
+            content: `You are an expert data extraction assistant specialized in extracting vendor/company information from ANY type of document. Your job is to identify and extract ALL company, vendor, business, or service provider information from the document.
 
-For each vendor found, extract these fields:
-- name (company/vendor name)
-- email (email address)
-- phone (phone number)
-- contact_person (contact person name if available)
-- contact_title (contact person title if available)
-- address (street address)
-- city (city)
-- state (state/province)
-- zip_code (postal/zip code)
-- website (website URL)
-- vendor_type (categorize as: service, supplier, contractor, or consultant)
-- status (set as "active")
-- description (brief description if available)
+EXTRACTION RULES:
+1. Look for ANY text that could represent a company, business, vendor, or service provider
+2. Extract contact information (emails, phones, addresses) even if not directly associated with a company name
+3. Be VERY liberal in what you consider vendor information - include consultants, freelancers, contractors, suppliers, etc.
+4. If you see a person's name with contact info, treat it as a potential vendor (contact_person field)
+5. Extract partial information even if incomplete - don't skip entries with missing fields
+6. Look for patterns like business cards, letterheads, contact lists, invoices, contracts, or any business-related content
 
-Return ONLY a valid JSON array with no additional text. If no vendors are found, return an empty array [].
+For each vendor/company found, extract these fields (use empty string "" for missing data):
+- name: company name OR person's name if no company (REQUIRED - don't skip if you find ANY business-related entity)
+- email: email address
+- phone: phone number  
+- contact_person: contact person name
+- contact_title: contact person title/role
+- address: street address
+- city: city
+- state: state/province  
+- zip_code: postal/zip code
+- website: website URL
+- vendor_type: categorize as "service", "supplier", "contractor", or "consultant" (default: "service")
+- status: always set as "active"
+- description: brief description of services/business
 
-Example format:
-[
-  {
-    "name": "ABC Company",
-    "email": "contact@abc.com",
-    "phone": "555-123-4567",
-    "contact_person": "John Smith",
-    "contact_title": "Manager",
-    "address": "123 Main St",
-    "city": "Springfield",
-    "state": "IL",
-    "zip_code": "62701",
-    "website": "www.abc.com",
-    "vendor_type": "service",
-    "status": "active",
-    "description": "Professional services company"
-  }
-]`
+IMPORTANT: 
+- If you find ANY business-related information, create an entry for it
+- Don't be strict about complete information - partial data is valuable
+- Even a single email address or phone number can be a vendor entry
+- Return EMPTY ARRAY [] ONLY if the document contains absolutely no business/contact information
+
+Return ONLY valid JSON array format with no additional text or markdown.
+
+Examples of what to extract:
+- Company listings, business directories
+- Contact information in any format
+- Business cards or letterheads
+- Invoice headers with vendor info
+- Email signatures with business details
+- Any person/company providing services`
           },
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: 'Please extract all vendor information from this document image. Look for company names, contact details, addresses, and any other relevant vendor data. Return the data as a JSON array.'
+                text: 'Please carefully examine this document and extract ALL vendor, company, business, or service provider information. Look for any business entities, contact information, or service providers. Be very thorough and extract even partial information. If you see business-related content but are unsure, include it rather than exclude it.'
               },
               {
                 type: 'image_url',
