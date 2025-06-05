@@ -1,7 +1,8 @@
-
 import React, { useState } from "react";
-import { Upload, FileText, File, Download } from "lucide-react";
+import { Upload, FileText, File, Download, Eye, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -31,10 +32,13 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
     parsedData,
     isProcessing,
     isImporting,
+    useImageParser,
     uploadFile,
     importVendors,
     downloadTemplate,
-    clearFile
+    clearFile,
+    toggleImageParser,
+    retryWithImageParser
   } = useVendorImport();
 
   const handleDrag = (e: React.DragEvent) => {
@@ -96,13 +100,32 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Import Vendors</DialogTitle>
           <DialogDescription>
-            Upload a CSV, Excel, PDF, or Word document containing vendor information
+            Upload a CSV, Excel, PDF, Word document, or image containing vendor information
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           {!file ? (
             <>
+              {/* AI Vision Parser Toggle */}
+              <div className="flex items-center space-x-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <Eye className="h-5 w-5 text-blue-500" />
+                <div className="flex-1">
+                  <Label htmlFor="image-parser" className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                    Use AI Vision Parser
+                  </Label>
+                  <p className="text-xs text-blue-600 dark:text-blue-300">
+                    Better for complex layouts, tables, or image documents
+                  </p>
+                </div>
+                <Switch
+                  id="image-parser"
+                  checked={useImageParser}
+                  onCheckedChange={toggleImageParser}
+                />
+              </div>
+
+              {/* File Drop Zone */}
               <div
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                   dragActive
@@ -119,12 +142,12 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
                   Drop your file here, or click to browse
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  Supports CSV, Excel (.xlsx, .xls), PDF, and Word (.doc, .docx) files
+                  Supports CSV, Excel (.xlsx, .xls), PDF, Word (.doc, .docx), and image files
                 </p>
                 <input
                   type="file"
                   onChange={handleFileInput}
-                  accept={getSupportedFormats()}
+                  accept={getSupportedFormats() + ",.png,.jpg,.jpeg,.gif,.bmp,.tiff"}
                   className="hidden"
                   id="file-upload"
                 />
@@ -136,6 +159,7 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
                 </label>
               </div>
 
+              {/* Template Download */}
               <div className="flex justify-center">
                 <Button
                   variant="outline"
@@ -149,6 +173,7 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
             </>
           ) : (
             <div className="space-y-4">
+              {/* File Info */}
               <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 {getFileIcon(file.name)}
                 <div className="flex-1">
@@ -159,24 +184,39 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
                     {(file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearFile}
-                  disabled={isProcessing}
-                >
-                  Remove
-                </Button>
+                <div className="flex gap-2">
+                  {parsedData.length === 0 && !isProcessing && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={retryWithImageParser}
+                      className="flex items-center gap-1"
+                    >
+                      <Repeat className="h-3 w-3" />
+                      Try AI Vision
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearFile}
+                    disabled={isProcessing}
+                  >
+                    Remove
+                  </Button>
+                </div>
               </div>
 
+              {/* Processing State */}
               {isProcessing && (
                 <div className="text-center py-4">
                   <p className="text-gray-600 dark:text-gray-400">
-                    Processing file...
+                    {useImageParser ? 'Processing with AI Vision...' : 'Processing file...'}
                   </p>
                 </div>
               )}
 
+              {/* Preview Results */}
               {parsedData.length > 0 && (
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">Preview ({parsedData.length} vendors found)</h4>

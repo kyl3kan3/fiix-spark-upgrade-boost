@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
@@ -14,6 +13,7 @@ export const useVendorImport = () => {
   const [file, setFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<ParsedVendor[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [useImageParser, setUseImageParser] = useState(false);
   const queryClient = useQueryClient();
 
   const importMutation = useMutation({
@@ -43,14 +43,17 @@ export const useVendorImport = () => {
     }
   });
 
-  const uploadFile = async (selectedFile: File) => {
+  const uploadFile = async (selectedFile: File, forceImageParser: boolean = false) => {
     setFile(selectedFile);
     setIsProcessing(true);
     
     try {
-      const parsedVendors = await parseFile(selectedFile);
+      const useImageParsing = forceImageParser || useImageParser || selectedFile.type.startsWith('image/');
+      const parsedVendors = await parseFile(selectedFile, useImageParsing);
       setParsedData(parsedVendors);
-      toast.success(`Successfully parsed ${parsedVendors.length} vendors`);
+      
+      const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
+      toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
     } catch (error: any) {
       console.error("Error parsing file:", error);
       toast.error("Failed to parse file", {
@@ -82,14 +85,27 @@ export const useVendorImport = () => {
     setParsedData([]);
   };
 
+  const toggleImageParser = () => {
+    setUseImageParser(!useImageParser);
+  };
+
+  const retryWithImageParser = async () => {
+    if (file) {
+      await uploadFile(file, true);
+    }
+  };
+
   return {
     file,
     parsedData,
     isProcessing,
     isImporting: importMutation.isPending,
+    useImageParser,
     uploadFile,
     importVendors,
     downloadTemplate,
-    clearFile
+    clearFile,
+    toggleImageParser,
+    retryWithImageParser
   };
 };
