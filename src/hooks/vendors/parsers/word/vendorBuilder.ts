@@ -33,7 +33,8 @@ export const createVendorBuilder = () => {
   };
   
   const shouldFinalize = (line: string, nextLine: string, isLastLine: boolean): boolean => {
-    return line.match(/^[-=_]{3,}/) || // Separator line
+    const hasSeparator = !!line.match(/^[-=_]{3,}/); // Convert to boolean
+    return hasSeparator || 
            (currentVendor.name && (currentVendor.email || currentVendor.phone) && 
             (nextLine.match(/^[A-Z]/) || nextLine.includes('@') || isLastLine));
   };
@@ -46,6 +47,7 @@ export const createVendorBuilder = () => {
       email: currentVendor.email || '',
       phone: currentVendor.phone || '',
       contact_person: currentVendor.contact_person || '',
+      contact_title: currentVendor.contact_title || '',
       vendor_type: currentVendor.vendor_type || 'service',
       status: currentVendor.status || 'active',
       address: currentVendor.address || '',
@@ -53,7 +55,8 @@ export const createVendorBuilder = () => {
       state: currentVendor.state || '',
       zip_code: currentVendor.zip_code || '',
       website: currentVendor.website || '',
-      description: currentVendor.description || ''
+      description: currentVendor.description || '',
+      rating: currentVendor.rating || null
     };
     
     return vendor;
