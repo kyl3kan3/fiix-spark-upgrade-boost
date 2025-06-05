@@ -48,8 +48,8 @@ const VendorForm: React.FC<VendorFormProps> = ({
       phone: initialData?.phone || "",
       contact_person: initialData?.contact_person || "",
       contact_title: initialData?.contact_title || "",
-      vendor_type: initialData?.vendor_type || "service",
-      status: initialData?.status || "active",
+      vendor_type: (initialData?.vendor_type as "service" | "supplier" | "contractor" | "consultant") || "service",
+      status: (initialData?.status as "active" | "inactive" | "suspended") || "active",
       address: initialData?.address || "",
       city: initialData?.city || "",
       state: initialData?.state || "",
@@ -62,7 +62,9 @@ const VendorForm: React.FC<VendorFormProps> = ({
 
   const handleSubmit = (values: VendorFormValues) => {
     const formData: VendorFormData = {
-      ...values,
+      name: values.name,
+      vendor_type: values.vendor_type,
+      status: values.status,
       email: values.email || "",
       phone: values.phone || "",
       contact_person: values.contact_person || "",
