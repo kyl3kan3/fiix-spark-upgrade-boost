@@ -19,9 +19,18 @@ const VendorsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   
-  const { isDeleting, handleDeleteVendor } = useVendorActions();
+  const { 
+    isDeleting, 
+    selectedVendors,
+    handleDeleteVendor,
+    handleBulkDelete,
+    toggleVendorSelection,
+    selectAllVendors,
+    clearSelection
+  } = useVendorActions();
   const { currentUserRole } = useUserRolePermissions();
   const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
+  const canDelete = currentUserRole === 'administrator';
   
   // Fetch vendors
   const { data: vendors, isLoading, error } = useQuery({
@@ -83,6 +92,34 @@ const VendorsPage: React.FC = () => {
           />
         </div>
 
+        {/* Bulk Actions Bar */}
+        {canDelete && selectedVendors.length > 0 && (
+          <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-800 dark:text-blue-200">
+                {selectedVendors.length} vendor(s) selected
+              </span>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={clearSelection}
+                >
+                  Clear Selection
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={handleBulkDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Deleting..." : "Delete Selected"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Tabs defaultValue="grid" className="w-full">
           <TabsList className="mb-4 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <TabsTrigger 
@@ -101,7 +138,11 @@ const VendorsPage: React.FC = () => {
               error={error}
               hasFilters={hasFilters}
               isDeleting={isDeleting}
+              selectedVendors={selectedVendors}
               onDeleteVendor={handleDeleteVendor}
+              onToggleSelection={toggleVendorSelection}
+              onSelectAll={() => selectAllVendors(filteredVendors?.map(v => v.id) || [])}
+              onClearSelection={clearSelection}
             />
           </TabsContent>
         </Tabs>
