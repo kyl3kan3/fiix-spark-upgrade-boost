@@ -10,14 +10,37 @@ export const parseKeyValuePair = (line: string, vendor: any) => {
     return;
   }
 
-  // Check for phone numbers
+  // Check for phone numbers with context (cell, office, etc.)
+  const phoneWithContextMatch = trimmedLine.match(/(?:cell|mobile|office|phone|tel)?\s*:?\s*(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/i);
+  if (phoneWithContextMatch) {
+    const phoneNumber = phoneWithContextMatch[1];
+    const context = trimmedLine.toLowerCase();
+    
+    if (!vendor.phone) {
+      vendor.phone = phoneNumber;
+      console.log('[Key-Value Parser] Found phone:', phoneNumber);
+    } else {
+      // Append additional phone numbers with context
+      if (context.includes('cell') || context.includes('mobile')) {
+        vendor.phone += ' (Cell: ' + phoneNumber + ')';
+      } else if (context.includes('office')) {
+        vendor.phone += ' (Office: ' + phoneNumber + ')';
+      } else {
+        vendor.phone += ', ' + phoneNumber;
+      }
+      console.log('[Key-Value Parser] Added additional phone:', phoneNumber);
+    }
+    return;
+  }
+
+  // Check for simple phone numbers
   const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
   if (phoneMatch) {
     if (!vendor.phone) {
       vendor.phone = phoneMatch[1];
       console.log('[Key-Value Parser] Found phone:', phoneMatch[1]);
     } else {
-      // If we already have a phone, append this one (could be cell vs office)
+      // If we already have a phone, append this one
       vendor.phone += ', ' + phoneMatch[1];
       console.log('[Key-Value Parser] Added additional phone:', phoneMatch[1]);
     }
@@ -68,6 +91,7 @@ export const parseKeyValuePair = (line: string, vendor: any) => {
       case 'tel':
       case 'cell':
       case 'mobile':
+      case 'office':
         if (!vendor.phone) {
           vendor.phone = value;
         } else {

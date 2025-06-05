@@ -37,39 +37,38 @@ export const createVendorBuilder = () => {
   let currentVendor: VendorData = createEmptyVendor();
   let hasAnyData = false;
   let linesProcessed = 0;
+  let consecutiveEmptyLines = 0;
+  let hasFoundMainCompanyName = false;
 
   const addDataFromLine = (line: string) => {
     linesProcessed++;
     const trimmedLine = line.trim();
     
-    if (!trimmedLine) return;
+    if (!trimmedLine) {
+      consecutiveEmptyLines++;
+      return;
+    }
+    
+    consecutiveEmptyLines = 0;
 
-    // If we don't have a name yet and this looks like a company name, use it
-    if (!currentVendor.name && isLikelyCompanyName(trimmedLine)) {
+    // Priority 1: Look for main company name first (usually appears early and prominent)
+    if (!hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       hasAnyData = true;
-      console.log('[Vendor Builder] Set company name:', trimmedLine);
+      hasFoundMainCompanyName = true;
+      console.log('[Vendor Builder] Set main company name:', trimmedLine);
       return;
     }
 
-    // If we have a name but this looks like a better/more complete company name, update it
-    if (currentVendor.name && isLikelyCompanyName(trimmedLine) && 
-        trimmedLine.length > currentVendor.name.length && 
-        !isPersonName(trimmedLine)) {
-      console.log('[Vendor Builder] Updating company name from', currentVendor.name, 'to', trimmedLine);
-      currentVendor.name = trimmedLine;
-      return;
-    }
-
-    // If this looks like a person name and we don't have a contact person
-    if (!currentVendor.contact_person && isPersonName(trimmedLine) && !isLikelyCompanyName(trimmedLine)) {
+    // Priority 2: If we already have a main company name, look for contact person
+    if (hasFoundMainCompanyName && !currentVendor.contact_person && isPersonName(trimmedLine)) {
       currentVendor.contact_person = trimmedLine;
       hasAnyData = true;
       console.log('[Vendor Builder] Set contact person:', trimmedLine);
       return;
     }
 
-    // Check for address patterns
+    // Priority 3: Handle address information
     if (isAddressLine(trimmedLine)) {
       if (!currentVendor.address) {
         currentVendor.address = trimmedLine;
@@ -82,7 +81,45 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    hasAnyData = true;
+    // Priority 4: If no main company name yet, but this could be one
+    if (!hasFoundMainCompanyName && isLikelyCompanyName(trimmedLine)) {
+      currentVendor.name = trimmedLine;
+      hasAnyData = true;
+      hasFoundMainCompanyName = true;
+      console.log('[Vendor Builder] Set company name:', trimmedLine);
+      return;
+    }
+
+    // For any other text, mark that we have data
+    if (trimmedLine.length > 2) {
+      hasAnyData = true;
+    }
+  };
+
+  const isMainCompanyName = (line: string): boolean => {
+    if (line.length < 3 || line.length > 100) return false;
+    
+    // Strong indicators for main company names
+    const strongCompanyIndicators = /\b(hardware|electric|construction|supply|supplies|services|solutions|group|inc|llc|corp|ltd|company|companies)\b/i;
+    
+    // Check if it's in all caps (like "ACE HARDWARE")
+    const isAllCaps = line === line.toUpperCase() && line.includes(' ');
+    
+    // Check if it's a prominent business name pattern
+    const isProminentName = /^[A-Z][A-Z\s&.,'-]+$/.test(line) && line.length >= 5;
+    
+    // Avoid obvious non-company text
+    if (line.match(/^\d+\s+/) || // Starts with number (likely address)
+        line.includes('@') || // Email
+        line.match(/^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/) || // Phone
+        line.toLowerCase().includes('cell') ||
+        line.toLowerCase().includes('office') ||
+        line.toLowerCase().includes('phone')) {
+      return false;
+    }
+
+    return (strongCompanyIndicators.test(line) && (isAllCaps || isProminentName)) || 
+           (isAllCaps && line.split(' ').length <= 4);
   };
 
   const isLikelyCompanyName = (line: string): boolean => {
@@ -91,7 +128,7 @@ export const createVendorBuilder = () => {
     // Company indicators
     const companyIndicators = /\b(inc|llc|corp|ltd|company|companies|services|solutions|group|hardware|electric|construction|supply|supplies|systems|technologies|enterprises|industries|partners|associates)\b/i;
     
-    // Check if it's mostly uppercase (like "ACE HARDWARE")
+    // Check if it's mostly uppercase
     const isUpperCase = line === line.toUpperCase() && line.includes(' ');
     
     // Check if it starts with capital letters
@@ -140,20 +177,23 @@ export const createVendorBuilder = () => {
     // Always finalize on last line if we have data
     if (isLastLine && hasAnyData) return true;
 
-    // Finalize when we encounter what looks like a new company name
-    if (nextLine && isLikelyCompanyName(nextLine) && !isPersonName(nextLine)) {
-      // But not if the next line could be additional info for current vendor
-      if (nextLine.toLowerCase().includes(currentVendor.name.toLowerCase().split(' ')[0])) {
-        return false;
-      }
+    // Finalize after significant empty space (3+ empty lines) and next line looks like new vendor
+    if (consecutiveEmptyLines >= 3 && nextLine && isMainCompanyName(nextLine)) {
       return true;
     }
 
-    // Finalize after we've processed a reasonable amount of lines for one vendor
-    // and the next line looks like it could start a new vendor
-    if (linesProcessed >= 3 && nextLine && 
-        (isLikelyCompanyName(nextLine) || nextLine.match(/^[A-Z\s]+$/))) {
-      return true;
+    // Finalize when we encounter what looks like a completely new company section
+    if (nextLine && isMainCompanyName(nextLine) && 
+        !nextLine.toLowerCase().includes(currentVendor.name.toLowerCase().split(' ')[0])) {
+      // Only if we've processed enough lines to constitute a complete vendor
+      if (linesProcessed >= 5) {
+        return true;
+      }
+    }
+
+    // Don't finalize too early - give more lines to build up the vendor
+    if (linesProcessed < 8) {
+      return false;
     }
 
     return false;
@@ -169,16 +209,27 @@ export const createVendorBuilder = () => {
     
     // Parse city, state, zip from address if not separately set
     if (vendor.address && !vendor.city) {
-      const addressMatch = vendor.address.match(/^(.*?),?\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+      // Look for patterns like "City, STATE ZIP" at the end of address
+      const addressMatch = vendor.address.match(/^(.*?),?\s*([A-Za-z\s]+),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
       if (addressMatch) {
-        const [, cityPart, state, zip] = addressMatch;
-        const cityMatch = cityPart.match(/,\s*([^,]+)$/);
-        if (cityMatch) {
-          vendor.city = cityMatch[1].trim();
-          vendor.address = cityPart.replace(/,\s*[^,]+$/, '').trim();
-        }
+        const [, streetPart, cityPart, state, zip] = addressMatch;
+        vendor.address = streetPart.trim();
+        vendor.city = cityPart.trim();
         vendor.state = state;
         vendor.zip_code = zip;
+      } else {
+        // Try simpler pattern
+        const simpleMatch = vendor.address.match(/^(.*?),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+        if (simpleMatch) {
+          const [, addressPart, state, zip] = simpleMatch;
+          const parts = addressPart.split(',');
+          if (parts.length >= 2) {
+            vendor.city = parts[parts.length - 1].trim();
+            vendor.address = parts.slice(0, -1).join(',').trim();
+          }
+          vendor.state = state;
+          vendor.zip_code = zip;
+        }
       }
     }
 
@@ -190,6 +241,8 @@ export const createVendorBuilder = () => {
     currentVendor = createEmptyVendor();
     hasAnyData = false;
     linesProcessed = 0;
+    consecutiveEmptyLines = 0;
+    hasFoundMainCompanyName = false;
   };
 
   const getCurrentVendor = () => currentVendor;
