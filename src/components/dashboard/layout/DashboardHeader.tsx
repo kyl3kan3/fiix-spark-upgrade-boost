@@ -32,7 +32,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="mr-1 md:mr-2 md:hidden"
+            className="mr-1 md:mr-2"
             onClick={toggleSidebar}
           >
             <Menu className="h-5 w-5" />
