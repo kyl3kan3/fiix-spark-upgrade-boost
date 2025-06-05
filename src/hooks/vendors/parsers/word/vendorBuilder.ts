@@ -17,10 +17,6 @@ interface VendorData {
 }
 
 export const createVendorBuilder = () => {
-  let currentVendor: VendorData = createEmptyVendor();
-  let hasAnyData = false;
-  let linesProcessed = 0;
-
   const createEmptyVendor = (): VendorData => ({
     name: '',
     email: '',
@@ -37,6 +33,10 @@ export const createVendorBuilder = () => {
     description: '',
     rating: null
   });
+
+  let currentVendor: VendorData = createEmptyVendor();
+  let hasAnyData = false;
+  let linesProcessed = 0;
 
   const addDataFromLine = (line: string) => {
     linesProcessed++;
