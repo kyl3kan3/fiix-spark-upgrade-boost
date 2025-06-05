@@ -209,8 +209,8 @@ export const createVendorBuilder = () => {
         phone: result.phone,
         email: result.email,
         address: result.address,
-        website: result.website,
-        logo_url: result.logo_url
+        website: result.website
+        // Remove logo_url from logging
       });
     }
     

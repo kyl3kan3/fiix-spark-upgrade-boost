@@ -5,7 +5,7 @@ import { parseWord } from "./wordParser";
 import { parseWithImage } from "./imageParser";
 
 interface ParsedVendor extends VendorFormData {
-  // Additional fields for validation
+  // Remove logo_url field since it's not in the database schema
 }
 
 export const parseFile = async (file: File, useImageParser: boolean = false): Promise<ParsedVendor[]> => {

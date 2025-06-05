@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
@@ -6,7 +7,7 @@ import { parseFile } from "./parsers/fileParserFactory";
 import { downloadTemplate } from "./utils/templateGenerator";
 
 interface ParsedVendor extends VendorFormData {
-  logo_url?: string | null;
+  // Remove logo_url since it's not in the database schema
 }
 
 export const useVendorImport = () => {
@@ -20,7 +21,7 @@ export const useVendorImport = () => {
     mutationFn: async (vendors: ParsedVendor[]) => {
       const results = await Promise.allSettled(
         vendors.map(vendor => {
-          // Clean the vendor data before sending to avoid any issues
+          // Clean the vendor data before sending and remove logo_url
           const cleanVendor = {
             ...vendor,
             // Ensure all required fields have default values
@@ -37,8 +38,8 @@ export const useVendorImport = () => {
             zip_code: vendor.zip_code || '',
             website: vendor.website || '',
             description: vendor.description || '',
-            rating: vendor.rating || null,
-            logo_url: vendor.logo_url || null
+            rating: vendor.rating || null
+            // Remove logo_url from the data being sent to the database
           };
           return createVendor(cleanVendor);
         })

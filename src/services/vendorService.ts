@@ -25,7 +25,6 @@ export interface VendorFormData {
   website: string;
   description: string;
   rating: number | null;
-  logo_url?: string | null;
 }
 
 export const getAllVendors = async (): Promise<Vendor[]> => {

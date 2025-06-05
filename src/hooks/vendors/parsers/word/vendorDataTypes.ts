@@ -14,7 +14,7 @@ export interface VendorData {
   website: string;
   description: string;
   rating: number | null;
-  logo_url?: string | null; // Add logo URL field
+  // Remove logo_url since it's not in the database schema
 }
 
 export const createEmptyVendor = (): VendorData => ({
@@ -31,6 +31,6 @@ export const createEmptyVendor = (): VendorData => ({
   zip_code: '',
   website: '',
   description: '',
-  rating: null,
-  logo_url: null
+  rating: null
+  // Remove logo_url initialization
 });
