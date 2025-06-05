@@ -17,39 +17,34 @@ export const shouldFinalize = (
   // Always finalize on last line if we have data
   if (isLastLine && hasAnyData) return true;
 
-  // Finalize after significant empty space (4+ empty lines) and next line looks like new vendor
-  if (consecutiveEmptyLines >= 4 && nextLine && isMainCompanyName(nextLine)) {
-    return true;
+  // For page-based documents, require significant separation between vendors
+  // Only finalize after many empty lines (suggesting page break) AND next line is clearly a new vendor
+  if (consecutiveEmptyLines >= 8 && nextLine && isMainCompanyName(nextLine)) {
+    // Ensure we have enough data to constitute a complete vendor
+    if (currentVendor.name && linesProcessed >= 15) {
+      return true;
+    }
   }
 
-  // Finalize when we encounter what looks like a completely new company section
-  if (nextLine && isMainCompanyName(nextLine) && currentVendor.name) {
-    // Check if the next line is actually a different company
-    const currentCompanyBase = currentVendor.name.toLowerCase().split(' ')[0];
-    const nextCompanyBase = nextLine.toLowerCase().split(' ')[0];
-    
-    if (currentCompanyBase !== nextCompanyBase) {
-      // Only if we've processed enough lines to constitute a complete vendor
-      if (linesProcessed >= 5) {
+  // For well-structured documents, only finalize when we have:
+  // - A clear company name AND substantial contact info AND significant separation
+  if (currentVendor.name && (currentVendor.phone || currentVendor.email) && linesProcessed >= 20) {
+    // Look for very clear separation (like page breaks)
+    if (consecutiveEmptyLines >= 6 && nextLine && isMainCompanyName(nextLine)) {
+      // Double-check that the next line is actually a different company
+      const currentCompanyWords = currentVendor.name.toLowerCase().split(/\s+/);
+      const nextLineWords = nextLine.toLowerCase().split(/\s+/);
+      const hasCommonWords = currentCompanyWords.some(word => 
+        word.length > 2 && nextLineWords.includes(word)
+      );
+      
+      if (!hasCommonWords) {
         return true;
       }
     }
   }
 
-  // For well-structured documents like ACE Hardware, finalize when we have:
-  // - Company name AND contact person AND phone number
-  if (currentVendor.name && currentVendor.contact_person && currentVendor.phone && linesProcessed >= 5) {
-    // Look ahead to see if next section starts
-    if (consecutiveEmptyLines >= 2 || isMainCompanyName(nextLine)) {
-      return true;
-    }
-  }
-
-  // Don't finalize too early - give more lines to build up the vendor
-  if (linesProcessed < 8) {
-    return false;
-  }
-
+  // Be very conservative - don't finalize too early
   return false;
 };
 

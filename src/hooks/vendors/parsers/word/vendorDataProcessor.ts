@@ -6,7 +6,7 @@ import {
   isPersonName, 
   isAddressLine 
 } from './vendorValidation';
-import { isServiceLine } from './textProcessor';
+import { isServiceLine, isProductListing } from './textProcessor';
 import { PhoneNumberProcessor } from './phoneNumberProcessor';
 import { DataExtractor } from './dataExtractor';
 
@@ -14,6 +14,7 @@ export class VendorDataProcessor {
   private phoneProcessor = new PhoneNumberProcessor();
   private dataExtractor = new DataExtractor();
   private hasFoundMainCompanyName = false;
+  private productLines: string[] = [];
 
   processLine(line: string, currentVendor: VendorData): { updated: boolean; hasData: boolean } {
     const trimmedLine = line.trim();
@@ -62,14 +63,14 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Handle service lines for description
-    if (isServiceLine(trimmedLine) && !currentVendor.description) {
-      currentVendor.description = trimmedLine;
-      console.log('[Data Processor] Added services description:', trimmedLine);
-      return { updated: true, hasData: true };
+    // Handle product listings - collect them but don't treat as service description immediately
+    if (isProductListing(trimmedLine) || isServiceLine(trimmedLine)) {
+      this.productLines.push(trimmedLine);
+      console.log('[Data Processor] Added product line:', trimmedLine);
+      return { updated: false, hasData: true };
     }
 
-    // Priority 1: Look for main company name first
+    // Priority 1: Look for main company name first - be more strict
     if (!this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       this.hasFoundMainCompanyName = true;
@@ -84,15 +85,18 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Priority 3: If no main company name yet, check if this could be one
+    // Priority 3: Only if no main company name and this looks very much like a company
     if (!this.hasFoundMainCompanyName && isLikelyCompanyName(trimmedLine)) {
-      currentVendor.name = trimmedLine;
-      this.hasFoundMainCompanyName = true;
-      console.log('[Data Processor] Set company name:', trimmedLine);
-      return { updated: true, hasData: true };
+      // Be more conservative - only if we haven't collected product lines recently
+      if (this.productLines.length < 3) {
+        currentVendor.name = trimmedLine;
+        this.hasFoundMainCompanyName = true;
+        console.log('[Data Processor] Set likely company name:', trimmedLine);
+        return { updated: true, hasData: true };
+      }
     }
 
-    // For any other meaningful text, mark that we have data
+    // For any other meaningful text, mark that we have data but don't add it as company info
     if (trimmedLine.length > 2 && !trimmedLine.match(/^[^a-zA-Z]*$/)) {
       console.log('[Data Processor] Added misc data:', trimmedLine);
       return { updated: false, hasData: true };
@@ -101,9 +105,25 @@ export class VendorDataProcessor {
     return { updated, hasData };
   }
 
+  finalizeDescription(currentVendor: VendorData): void {
+    // If we have product lines and no description, create one from the product lines
+    if (this.productLines.length > 0 && !currentVendor.description) {
+      // Take the first few meaningful product lines
+      const meaningfulProducts = this.productLines
+        .filter(line => line.length > 10)
+        .slice(0, 5);
+      
+      if (meaningfulProducts.length > 0) {
+        currentVendor.description = meaningfulProducts.join('; ');
+        console.log('[Data Processor] Set description from products:', currentVendor.description);
+      }
+    }
+  }
+
   reset(): void {
     this.phoneProcessor.reset();
     this.hasFoundMainCompanyName = false;
+    this.productLines = [];
   }
 
   getHasFoundMainCompanyName(): boolean {

@@ -25,7 +25,11 @@ export const isHeaderLine = (line: string): boolean => {
     /company\s+directory/i,
     /supplier\s+list/i,
     /contractor\s+directory/i,
-    /contact\s+information/i
+    /contact\s+information/i,
+    // Page headers/footers
+    /^page\s+\d+/i,
+    /^\d+\s*$/,  // Just page numbers
+    /^(header|footer)/i
   ];
   
   return headerPatterns.some(pattern => pattern.test(line));
@@ -35,8 +39,26 @@ export const isSeparatorLine = (line: string): boolean => {
   return line.match(/^[-=_]{3,}/) !== null;
 };
 
-// Helper function to identify service/product lines
+// Enhanced service/product line detection
 export const isServiceLine = (line: string): boolean => {
-  const serviceKeywords = /\b(ball\s+valves|gate\s+valves|gasket\s+rings|welded\s+tubing|elbow|pipe|tees|head\s+plug|electric\s+actuator|services|products|solutions|equipment|supplies)\b/i;
-  return serviceKeywords.test(line);
+  const serviceKeywords = /\b(ball\s+valves|gate\s+valves|gasket\s+rings|welded\s+tubing|elbow|pipe|tees|head\s+plug|electric\s+actuator|services|products|solutions|equipment|supplies|fittings|hardware|tools|materials|components|parts)\b/i;
+  
+  // Also check for bullet points or numbered lists which often contain products
+  const listPattern = /^\s*[-•]\s*|^\s*\d+[\.)]\s*/;
+  
+  return serviceKeywords.test(line) || listPattern.test(line);
+};
+
+// New function to detect product/item listings
+export const isProductListing = (line: string): boolean => {
+  // Patterns that indicate this line is part of a product catalog rather than vendor info
+  const productPatterns = [
+    /^\s*[-•]\s*[A-Za-z]/, // Bullet points
+    /^\s*\d+[\.)]\s*[A-Za-z]/, // Numbered lists
+    /\b(item|part|model|catalog|sku)\s*[#:]?\s*[A-Z0-9]/i, // Item numbers
+    /\b\d+["']?\s*(inch|in|mm|cm|meter|ft|foot|feet)\b/i, // Measurements
+    /\b(size|diameter|length|width|height)\s*[:=]\s*\d+/i, // Specifications
+  ];
+  
+  return productPatterns.some(pattern => pattern.test(line));
 };

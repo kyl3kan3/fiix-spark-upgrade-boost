@@ -11,6 +11,27 @@ export const isWebsiteUrl = (line: string): boolean => {
   return /(https?:\/\/[^\s]+|www\.[^\s]+)/.test(line);
 };
 
+export const isProductLine = (line: string): boolean => {
+  // Enhanced product detection for items/services that vendors supply
+  const productPatterns = [
+    // Common industrial products
+    /\b(valves?|fittings?|pipes?|tubing|gaskets?|seals?|bolts?|nuts?|screws?)\b/i,
+    // Services
+    /\b(installation|maintenance|repair|service|testing|inspection)\b/i,
+    // Product categories with quantities or specifications
+    /^\s*[-•]\s*[A-Za-z]/,  // Bullet points
+    /^\s*\d+[\.)]\s*[A-Za-z]/, // Numbered lists
+    // Product codes or part numbers
+    /\b[A-Z]{2,}\d+|[A-Z]+[-/]\d+|\d+[-/][A-Z]+/,
+    // Measurements and specifications
+    /\b\d+["']?\s*(inch|in|mm|cm|meter|ft|foot|feet)\b/i,
+    // Materials
+    /\b(steel|aluminum|copper|brass|plastic|rubber|stainless)\b/i
+  ];
+  
+  return productPatterns.some(pattern => pattern.test(line));
+};
+
 export const isMainCompanyName = (line: string): boolean => {
   if (line.length < 3 || line.length > 100) return false;
   
@@ -19,18 +40,28 @@ export const isMainCompanyName = (line: string): boolean => {
     return false;
   }
   
-  // Exclude lines that start with numbers (likely addresses)
+  // Exclude product lines
+  if (isProductLine(line)) {
+    return false;
+  }
+  
+  // Exclude lines that start with numbers (likely addresses or product codes)
   if (/^\d+\s+/.test(line)) {
     return false;
   }
   
   // Exclude lines with common contact keywords
-  if (/\b(cell|mobile|office|phone|tel|email|contact)\s*[#:]?\s*\d/.test(line.toLowerCase())) {
+  if (/\b(cell|mobile|office|phone|tel|email|contact|fax)\s*[#:]?\s*\d/.test(line.toLowerCase())) {
+    return false;
+  }
+  
+  // Exclude obvious product/service listings
+  if (/^\s*[-•]\s*/.test(line) || /^\s*\d+[\.)]\s*/.test(line)) {
     return false;
   }
   
   // Strong indicators for main company names
-  const strongCompanyIndicators = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|hardware|electric|construction|supply|supplies|services|solutions|group|inc|llc|corp|ltd|company|companies|of\s+[a-z]+)\b/i;
+  const strongCompanyIndicators = /\b(technology|technologies|tech|corporation|corp|company|companies|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|supply|supplies|hardware|electric|construction|engineering|manufacturing|industrial)\b/i;
   
   // Check if it's in all caps (like "ACID PIPING TECHNOLOGY")
   const isAllCaps = line === line.toUpperCase() && line.includes(' ');
@@ -39,7 +70,7 @@ export const isMainCompanyName = (line: string): boolean => {
   const isProminentName = /^[A-Z][A-Z\s&.,'-]+$/.test(line) && line.length >= 5;
   
   // Special handling for technology companies and APT format
-  if (line.toUpperCase().includes('TECHNOLOGY') || line.toUpperCase().includes('PIPING') || line.toUpperCase() === 'APT') {
+  if (line.toUpperCase().includes('TECHNOLOGY') || line.toUpperCase().includes('PIPING')) {
     return true;
   }
   
@@ -48,15 +79,16 @@ export const isMainCompanyName = (line: string): boolean => {
     return true;
   }
   
+  // Must have strong indicators AND proper formatting to be considered main company name
   return (strongCompanyIndicators.test(line) && (isAllCaps || isProminentName)) || 
-         (isAllCaps && line.split(' ').length <= 6 && !isPhoneNumber(line));
+         (isAllCaps && line.split(' ').length <= 6 && !isPhoneNumber(line) && !isProductLine(line));
 };
 
 export const isLikelyCompanyName = (line: string): boolean => {
   if (line.length < 3 || line.length > 100) return false;
   
   // Exclude obvious non-company text
-  if (isPhoneNumber(line) || isEmailAddress(line) || isWebsiteUrl(line)) {
+  if (isPhoneNumber(line) || isEmailAddress(line) || isWebsiteUrl(line) || isProductLine(line)) {
     return false;
   }
   
@@ -66,12 +98,17 @@ export const isLikelyCompanyName = (line: string): boolean => {
   }
   
   // Exclude contact info lines
-  if (/\b(cell|mobile|office|phone|tel|email|contact)\s*[#:]?\s*\d/.test(line.toLowerCase())) {
+  if (/\b(cell|mobile|office|phone|tel|email|contact|fax)\s*[#:]?\s*\d/.test(line.toLowerCase())) {
     return false;
   }
   
-  // Company indicators - enhanced for technology companies
-  const companyIndicators = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|inc|llc|corp|ltd|company|companies|services|solutions|group|hardware|electric|construction|supply|supplies|systems|enterprises|industries|partners|associates|of\s+[a-z]+)\b/i;
+  // Exclude product listings
+  if (/^\s*[-•]\s*/.test(line) || /^\s*\d+[\.)]\s*/.test(line)) {
+    return false;
+  }
+  
+  // Company indicators - be more restrictive
+  const companyIndicators = /\b(corporation|corp|company|companies|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|supply|supplies|hardware|electric|construction|engineering|manufacturing|industrial)\b/i;
   
   // Check if it's mostly uppercase
   const isUpperCase = line === line.toUpperCase() && line.includes(' ');
@@ -79,16 +116,15 @@ export const isLikelyCompanyName = (line: string): boolean => {
   // Check if it starts with capital letters
   const startsWithCaps = /^[A-Z][A-Za-z\s&.,'-]*$/.test(line);
   
-  // Special patterns for business names
-  const businessNamePattern = /^[A-Z][A-Z\s&.,'-]*[A-Z]$/.test(line) && line.split(' ').length >= 2;
+  // Special patterns for business names - be more restrictive
+  const businessNamePattern = /^[A-Z][A-Z\s&.,'-]*[A-Z]$/.test(line) && line.split(' ').length >= 2 && line.split(' ').length <= 5;
   
   // Handle acronyms in parentheses
   const hasAcronym = /\([A-Z]{2,}\)/.test(line);
   
-  return companyIndicators.test(line) || 
-         (isUpperCase && !isPersonName(line) && line.split(' ').length <= 8) || 
-         (startsWithCaps && !isPersonName(line) && line.split(' ').length <= 6) ||
-         businessNamePattern ||
+  // Be more conservative - require strong indicators
+  return (companyIndicators.test(line) && (isUpperCase || startsWithCaps)) ||
+         (businessNamePattern && companyIndicators.test(line)) ||
          hasAcronym;
 };
 
@@ -108,7 +144,7 @@ export const isPersonName = (line: string): boolean => {
   const hasCompanyWords = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|inc|llc|corp|ltd|company|hardware|electric|construction|supply|systems|of\s+[a-z]+)\b/i.test(line);
   
   // Avoid phone numbers and emails
-  if (isPhoneNumber(line) || isEmailAddress(line)) {
+  if (isPhoneNumber(line) || isEmailAddress(line) || isProductLine(line)) {
     return false;
   }
   
@@ -130,6 +166,11 @@ export const isAddressLine = (line: string): boolean => {
     /^[A-Z\s]+,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/,  // CITY, STATE ZIP
     /^\d{4}\s+[A-Za-z].*Road/i,  // Pattern like "2890 Arnold Tenbrook Road"
   ];
+  
+  // Don't treat product lines as addresses
+  if (isProductLine(line)) {
+    return false;
+  }
   
   return addressPatterns.some(pattern => pattern.test(line));
 };

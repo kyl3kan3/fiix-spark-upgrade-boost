@@ -44,14 +44,28 @@ export const createVendorBuilder = () => {
   };
 
   const finalize = (): VendorData | null => {
+    // Let the data processor finalize the description from collected product lines
+    dataProcessor.finalizeDescription(currentVendor);
+
     // If we have data but no company name, try to construct one from collected lines
     if (hasAnyData && !currentVendor.name && vendorDataLines.length > 0) {
-      // Look for the best company name candidate
+      // Look for the best company name candidate - be more selective
       for (const line of vendorDataLines) {
-        if (isMainCompanyName(line) || isLikelyCompanyName(line)) {
+        if (isMainCompanyName(line)) {
           currentVendor.name = line;
-          console.log('[Vendor Builder] Set final company name:', line);
+          console.log('[Vendor Builder] Set final main company name:', line);
           break;
+        }
+      }
+      
+      // If still no name, try likely company names but be very selective
+      if (!currentVendor.name) {
+        for (const line of vendorDataLines.slice(0, 5)) { // Only check first few lines
+          if (isLikelyCompanyName(line)) {
+            currentVendor.name = line;
+            console.log('[Vendor Builder] Set final likely company name:', line);
+            break;
+          }
         }
       }
     }
