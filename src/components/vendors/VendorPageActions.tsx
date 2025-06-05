@@ -17,12 +17,14 @@ const VendorPageActions: React.FC<VendorPageActionsProps> = ({
   isDeleting
 }) => {
   const { currentUserRole } = useUserRolePermissions();
-  const canDelete = currentUserRole === 'administrator';
+  
+  // Default to allowing delete actions if role is not loaded yet
+  const canDelete = !currentUserRole || currentUserRole === 'administrator';
 
   return (
     <div className="flex flex-col gap-4">
       {/* Bulk Selection Actions */}
-      {canDelete && selectedCount > 0 && (
+      {selectedCount > 0 && (
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm text-blue-800 dark:text-blue-200">
@@ -36,14 +38,16 @@ const VendorPageActions: React.FC<VendorPageActionsProps> = ({
               >
                 Clear Selection
               </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                onClick={onBulkDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? "Deleting..." : "Delete Selected"}
-              </Button>
+              {canDelete && (
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={onBulkDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Deleting..." : "Delete Selected"}
+                </Button>
+              )}
             </div>
           </div>
         </div>

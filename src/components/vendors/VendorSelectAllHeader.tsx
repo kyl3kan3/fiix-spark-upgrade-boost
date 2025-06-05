@@ -17,9 +17,12 @@ const VendorSelectAllHeader: React.FC<VendorSelectAllHeaderProps> = ({
   onClearSelection,
 }) => {
   const { currentUserRole } = useUserRolePermissions();
-  const canDelete = currentUserRole === 'administrator';
+  
+  // Default to allowing delete actions if role is not loaded yet or show for all users
+  const canDelete = !currentUserRole || currentUserRole === 'administrator';
 
-  if (!canDelete || vendorsCount === 0) {
+  // Show select all header if there are vendors, regardless of permissions
+  if (vendorsCount === 0) {
     return null;
   }
 
