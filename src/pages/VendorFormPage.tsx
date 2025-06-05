@@ -3,14 +3,40 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import VendorForm from "@/components/vendors/VendorForm";
+import { useVendorForm } from "@/hooks/vendors/useVendorForm";
 
 const VendorFormPage: React.FC = () => {
   const { vendorId } = useParams();
   const navigate = useNavigate();
   const isEditing = !!vendorId;
+  
+  const {
+    vendor,
+    isLoadingVendor,
+    isSubmitting,
+    handleSubmit
+  } = useVendorForm();
+
+  if (isEditing && isLoadingVendor) {
+    return (
+      <DashboardLayout>
+        <div className="container mx-auto py-6 px-4">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+              <div className="h-10 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -41,11 +67,12 @@ const VendorFormPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Vendor form will be implemented here */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <p className="text-gray-500 dark:text-gray-400">
-              Vendor form component will be implemented here
-            </p>
+            <VendorForm
+              initialData={vendor}
+              onSubmit={handleSubmit}
+              isLoading={isSubmitting}
+            />
           </div>
         </div>
       </div>
