@@ -34,9 +34,10 @@ export const createVendorBuilder = () => {
   
   const shouldFinalize = (line: string, nextLine: string, isLastLine: boolean): boolean => {
     const hasSeparator = !!line.match(/^[-=_]{3,}/); // Convert to boolean
+    const hasCapitalizedNextLine = !!nextLine.match(/^[A-Z]/); // Convert to boolean
     return hasSeparator || 
            (currentVendor.name && (currentVendor.email || currentVendor.phone) && 
-            (nextLine.match(/^[A-Z]/) || nextLine.includes('@') || isLastLine));
+            (hasCapitalizedNextLine || nextLine.includes('@') || isLastLine));
   };
   
   const finalize = (): VendorFormData | null => {
