@@ -30,16 +30,21 @@ export const isMainCompanyName = (line: string): boolean => {
   }
   
   // Strong indicators for main company names
-  const strongCompanyIndicators = /\b(ace\s+hardware|hardware|electric|construction|supply|supplies|services|solutions|group|inc|llc|corp|ltd|company|companies|of\s+[a-z]+)\b/i;
+  const strongCompanyIndicators = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|hardware|electric|construction|supply|supplies|services|solutions|group|inc|llc|corp|ltd|company|companies|of\s+[a-z]+)\b/i;
   
-  // Check if it's in all caps (like "ACE HARDWARE OF FREEBURG")
+  // Check if it's in all caps (like "ACID PIPING TECHNOLOGY")
   const isAllCaps = line === line.toUpperCase() && line.includes(' ');
   
   // Check if it's a prominent business name pattern
   const isProminentName = /^[A-Z][A-Z\s&.,'-]+$/.test(line) && line.length >= 5;
   
-  // Special handling for ACE Hardware format
-  if (line.toUpperCase().includes('ACE HARDWARE')) {
+  // Special handling for technology companies and APT format
+  if (line.toUpperCase().includes('TECHNOLOGY') || line.toUpperCase().includes('PIPING') || line.toUpperCase() === 'APT') {
+    return true;
+  }
+  
+  // Handle parenthetical company names like "Acid Piping Technology (APT)"
+  if (/^[A-Z][A-Za-z\s&.,'-]*\([A-Z]+\)$/.test(line)) {
     return true;
   }
   
@@ -65,8 +70,8 @@ export const isLikelyCompanyName = (line: string): boolean => {
     return false;
   }
   
-  // Company indicators
-  const companyIndicators = /\b(ace\s+hardware|inc|llc|corp|ltd|company|companies|services|solutions|group|hardware|electric|construction|supply|supplies|systems|technologies|enterprises|industries|partners|associates|of\s+[a-z]+)\b/i;
+  // Company indicators - enhanced for technology companies
+  const companyIndicators = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|inc|llc|corp|ltd|company|companies|services|solutions|group|hardware|electric|construction|supply|supplies|systems|enterprises|industries|partners|associates|of\s+[a-z]+)\b/i;
   
   // Check if it's mostly uppercase
   const isUpperCase = line === line.toUpperCase() && line.includes(' ');
@@ -77,10 +82,14 @@ export const isLikelyCompanyName = (line: string): boolean => {
   // Special patterns for business names
   const businessNamePattern = /^[A-Z][A-Z\s&.,'-]*[A-Z]$/.test(line) && line.split(' ').length >= 2;
   
+  // Handle acronyms in parentheses
+  const hasAcronym = /\([A-Z]{2,}\)/.test(line);
+  
   return companyIndicators.test(line) || 
          (isUpperCase && !isPersonName(line) && line.split(' ').length <= 8) || 
          (startsWithCaps && !isPersonName(line) && line.split(' ').length <= 6) ||
-         businessNamePattern;
+         businessNamePattern ||
+         hasAcronym;
 };
 
 export const isPersonName = (line: string): boolean => {
@@ -96,7 +105,7 @@ export const isPersonName = (line: string): boolean => {
   );
   
   // Avoid obvious company words
-  const hasCompanyWords = /\b(ace\s+hardware|inc|llc|corp|ltd|company|hardware|electric|construction|supply|systems|of\s+[a-z]+)\b/i.test(line);
+  const hasCompanyWords = /\b(technology|technologies|tech|piping|acid|apt|ace\s+hardware|inc|llc|corp|ltd|company|hardware|electric|construction|supply|systems|of\s+[a-z]+)\b/i.test(line);
   
   // Avoid phone numbers and emails
   if (isPhoneNumber(line) || isEmailAddress(line)) {
@@ -119,6 +128,7 @@ export const isAddressLine = (line: string): boolean => {
     /^P\.?O\.?\s+Box\s+\d+/i,  // PO Box
     /,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/,  // City, STATE ZIP
     /^[A-Z\s]+,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/,  // CITY, STATE ZIP
+    /^\d{4}\s+[A-Za-z].*Road/i,  // Pattern like "2890 Arnold Tenbrook Road"
   ];
   
   return addressPatterns.some(pattern => pattern.test(line));

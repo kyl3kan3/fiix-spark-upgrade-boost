@@ -10,6 +10,7 @@ import {
   isAddressLine 
 } from './vendorValidation';
 import { shouldFinalize, finalizeVendor } from './vendorFinalization';
+import { isServiceLine } from './textProcessor';
 
 export const createVendorBuilder = () => {
   let currentVendor: VendorData = createEmptyVendor();
@@ -97,7 +98,7 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    // Handle address lines
+    // Handle address lines - improved to catch full addresses
     if (isAddressLine(trimmedLine)) {
       if (!currentVendor.address) {
         currentVendor.address = trimmedLine;
@@ -106,6 +107,14 @@ export const createVendorBuilder = () => {
       }
       hasAnyData = true;
       console.log('[Vendor Builder] Added address info:', trimmedLine);
+      return;
+    }
+
+    // Handle service lines for description
+    if (isServiceLine(trimmedLine) && !currentVendor.description) {
+      currentVendor.description = trimmedLine;
+      hasAnyData = true;
+      console.log('[Vendor Builder] Added services description:', trimmedLine);
       return;
     }
 
@@ -209,8 +218,8 @@ export const createVendorBuilder = () => {
         phone: result.phone,
         email: result.email,
         address: result.address,
-        website: result.website
-        // Remove logo_url from logging
+        website: result.website,
+        description: result.description
       });
     }
     
