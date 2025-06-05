@@ -23,7 +23,7 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     case 'xls':
       throw new Error('Excel import will be available in the next update. Please use CSV format for now.');
     case 'pdf':
-      throw new Error('PDF import will be available in the next update. Please use CSV format, convert to image, or try the AI Vision parser for better results.');
+      return await parseWithImage(file);
     case 'doc':
     case 'docx':
       return await parseWord(file);
