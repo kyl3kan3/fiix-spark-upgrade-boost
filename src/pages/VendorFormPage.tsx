@@ -20,6 +20,25 @@ const VendorFormPage: React.FC = () => {
     handleSubmit
   } = useVendorForm();
 
+  // Convert vendor data to form data format
+  const vendorFormData = vendor ? {
+    name: vendor.name,
+    email: vendor.email || "",
+    phone: vendor.phone || "",
+    contact_person: vendor.contact_person || "",
+    contact_title: vendor.contact_title || "",
+    vendor_type: vendor.vendor_type as "service" | "supplier" | "contractor" | "consultant",
+    status: vendor.status as "active" | "inactive" | "suspended",
+    address: vendor.address || "",
+    city: vendor.city || "",
+    state: vendor.state || "",
+    zip_code: vendor.zip_code || "",
+    website: vendor.website || "",
+    description: vendor.description || "",
+    rating: vendor.rating,
+    logo_url: vendor.logo_url
+  } : undefined;
+
   if (isEditing && isLoadingVendor) {
     return (
       <DashboardLayout>
@@ -69,7 +88,7 @@ const VendorFormPage: React.FC = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <VendorForm
-              initialData={vendor}
+              initialData={vendorFormData}
               onSubmit={handleSubmit}
               isLoading={isSubmitting}
             />
