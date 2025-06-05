@@ -17,6 +17,7 @@ export const createVendorBuilder = () => {
   let linesProcessed = 0;
   let consecutiveEmptyLines = 0;
   let hasFoundMainCompanyName = false;
+  let vendorDataLines: string[] = []; // Track all data for this vendor
 
   const addDataFromLine = (line: string) => {
     linesProcessed++;
@@ -28,17 +29,62 @@ export const createVendorBuilder = () => {
     }
     
     consecutiveEmptyLines = 0;
+    vendorDataLines.push(trimmedLine);
 
-    // Skip lines that are clearly not company names
-    if (isPhoneNumber(trimmedLine) || 
-        isEmailAddress(trimmedLine) || 
-        isAddressLine(trimmedLine) ||
-        isWebsiteUrl(trimmedLine)) {
-      console.log('[Vendor Builder] Skipping non-company line:', trimmedLine);
+    // Handle phone numbers
+    if (isPhoneNumber(trimmedLine)) {
+      const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+      if (phoneMatch) {
+        if (!currentVendor.phone) {
+          currentVendor.phone = phoneMatch[1];
+        } else {
+          currentVendor.phone += ', ' + phoneMatch[1];
+        }
+        hasAnyData = true;
+        console.log('[Vendor Builder] Added phone:', phoneMatch[1]);
+      }
       return;
     }
 
-    // Priority 1: Look for main company name first (usually appears early and prominent)
+    // Handle email addresses
+    if (isEmailAddress(trimmedLine)) {
+      const emailMatch = trimmedLine.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+      if (emailMatch && !currentVendor.email) {
+        currentVendor.email = emailMatch[1];
+        hasAnyData = true;
+        console.log('[Vendor Builder] Added email:', emailMatch[1]);
+      }
+      return;
+    }
+
+    // Handle website URLs
+    if (isWebsiteUrl(trimmedLine)) {
+      const websiteMatch = trimmedLine.match(/(https?:\/\/[^\s]+|www\.[^\s]+)/);
+      if (websiteMatch && !currentVendor.website) {
+        let website = websiteMatch[1];
+        if (!website.startsWith('http')) {
+          website = 'https://' + website;
+        }
+        currentVendor.website = website;
+        hasAnyData = true;
+        console.log('[Vendor Builder] Added website:', website);
+      }
+      return;
+    }
+
+    // Handle address lines
+    if (isAddressLine(trimmedLine)) {
+      if (!currentVendor.address) {
+        currentVendor.address = trimmedLine;
+      } else {
+        currentVendor.address += ', ' + trimmedLine;
+      }
+      hasAnyData = true;
+      console.log('[Vendor Builder] Added address info:', trimmedLine);
+      return;
+    }
+
+    // Priority 1: Look for main company name first
     if (!hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       hasAnyData = true;
@@ -47,7 +93,7 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    // Priority 2: If we already have a main company name, look for contact person
+    // Priority 2: If we have a main company name, look for contact person
     if (hasFoundMainCompanyName && !currentVendor.contact_person && isPersonName(trimmedLine)) {
       currentVendor.contact_person = trimmedLine;
       hasAnyData = true;
@@ -55,20 +101,7 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    // Priority 3: Handle address information
-    if (isAddressLine(trimmedLine)) {
-      if (!currentVendor.address) {
-        currentVendor.address = trimmedLine;
-      } else {
-        // Append to existing address
-        currentVendor.address += ', ' + trimmedLine;
-      }
-      hasAnyData = true;
-      console.log('[Vendor Builder] Added address info:', trimmedLine);
-      return;
-    }
-
-    // Priority 4: If no main company name yet, but this could be one
+    // Priority 3: If no main company name yet, check if this could be one
     if (!hasFoundMainCompanyName && isLikelyCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       hasAnyData = true;
@@ -77,8 +110,23 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    // For any other text, mark that we have data but don't treat as company name
-    if (trimmedLine.length > 2) {
+    // For lines that contain phone context (like "CELL #:")
+    if (trimmedLine.toLowerCase().includes('cell') && trimmedLine.includes(':')) {
+      const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+      if (phoneMatch) {
+        if (!currentVendor.phone) {
+          currentVendor.phone = phoneMatch[1] + ' (Cell)';
+        } else {
+          currentVendor.phone += ', ' + phoneMatch[1] + ' (Cell)';
+        }
+        hasAnyData = true;
+        console.log('[Vendor Builder] Added cell phone:', phoneMatch[1]);
+      }
+      return;
+    }
+
+    // For any other meaningful text, mark that we have data
+    if (trimmedLine.length > 2 && !trimmedLine.match(/^[^a-zA-Z]*$/)) {
       hasAnyData = true;
       console.log('[Vendor Builder] Added misc data:', trimmedLine);
     }
@@ -98,7 +146,33 @@ export const createVendorBuilder = () => {
   };
 
   const finalize = (): VendorData | null => {
-    return finalizeVendor(currentVendor, hasAnyData);
+    // If we have data but no company name, try to construct one from collected lines
+    if (hasAnyData && !currentVendor.name && vendorDataLines.length > 0) {
+      // Look for the best company name candidate
+      for (const line of vendorDataLines) {
+        if (isMainCompanyName(line) || isLikelyCompanyName(line)) {
+          currentVendor.name = line;
+          console.log('[Vendor Builder] Set final company name:', line);
+          break;
+        }
+      }
+    }
+
+    const result = finalizeVendor(currentVendor, hasAnyData);
+    
+    // Log the final vendor data for debugging
+    if (result) {
+      console.log('[Vendor Builder] Final vendor data:', {
+        name: result.name,
+        contact_person: result.contact_person,
+        phone: result.phone,
+        email: result.email,
+        address: result.address,
+        website: result.website
+      });
+    }
+    
+    return result;
   };
 
   const reset = () => {
@@ -107,6 +181,7 @@ export const createVendorBuilder = () => {
     linesProcessed = 0;
     consecutiveEmptyLines = 0;
     hasFoundMainCompanyName = false;
+    vendorDataLines = [];
   };
 
   const getCurrentVendor = () => currentVendor;
