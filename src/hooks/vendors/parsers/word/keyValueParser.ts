@@ -2,6 +2,12 @@
 export const parseKeyValuePair = (line: string, vendor: any) => {
   const trimmedLine = line.trim();
   
+  // Skip obvious non-key-value lines
+  if (isPhoneNumberOnly(trimmedLine) || isEmailOnly(trimmedLine)) {
+    console.log('[Key-Value Parser] Skipping obvious data line:', trimmedLine);
+    return;
+  }
+  
   // Check for email addresses
   const emailMatch = trimmedLine.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
   if (emailMatch && !vendor.email) {
@@ -34,7 +40,7 @@ export const parseKeyValuePair = (line: string, vendor: any) => {
   }
 
   // Check for simple phone numbers
-  const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+  const phoneMatch = trimmedLine.match(/^(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$/);
   if (phoneMatch) {
     if (!vendor.phone) {
       vendor.phone = phoneMatch[1];
@@ -146,4 +152,12 @@ export const parseKeyValuePair = (line: string, vendor: any) => {
     
     console.log('[Key-Value Parser] Parsed key-value:', key, '=', value);
   }
+};
+
+const isPhoneNumberOnly = (line: string): boolean => {
+  return /^(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$/.test(line.trim());
+};
+
+const isEmailOnly = (line: string): boolean => {
+  return /^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(line.trim());
 };

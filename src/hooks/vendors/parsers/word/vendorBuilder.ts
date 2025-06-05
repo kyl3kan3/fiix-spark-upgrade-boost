@@ -51,6 +51,15 @@ export const createVendorBuilder = () => {
     
     consecutiveEmptyLines = 0;
 
+    // Skip lines that are clearly not company names
+    if (isPhoneNumber(trimmedLine) || 
+        isEmailAddress(trimmedLine) || 
+        isAddressLine(trimmedLine) ||
+        isWebsiteUrl(trimmedLine)) {
+      console.log('[Vendor Builder] Skipping non-company line:', trimmedLine);
+      return;
+    }
+
     // Priority 1: Look for main company name first (usually appears early and prominent)
     if (!hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
@@ -90,14 +99,42 @@ export const createVendorBuilder = () => {
       return;
     }
 
-    // For any other text, mark that we have data
+    // For any other text, mark that we have data but don't treat as company name
     if (trimmedLine.length > 2) {
       hasAnyData = true;
+      console.log('[Vendor Builder] Added misc data:', trimmedLine);
     }
+  };
+
+  const isPhoneNumber = (line: string): boolean => {
+    return /(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/.test(line);
+  };
+
+  const isEmailAddress = (line: string): boolean => {
+    return /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/.test(line);
+  };
+
+  const isWebsiteUrl = (line: string): boolean => {
+    return /(https?:\/\/[^\s]+|www\.[^\s]+)/.test(line);
   };
 
   const isMainCompanyName = (line: string): boolean => {
     if (line.length < 3 || line.length > 100) return false;
+    
+    // Exclude obvious non-company text
+    if (isPhoneNumber(line) || isEmailAddress(line) || isWebsiteUrl(line)) {
+      return false;
+    }
+    
+    // Exclude lines that start with numbers (likely addresses)
+    if (/^\d+\s+/.test(line)) {
+      return false;
+    }
+    
+    // Exclude lines with common contact keywords
+    if (/\b(cell|mobile|office|phone|tel|email|contact)\b/i.test(line)) {
+      return false;
+    }
     
     // Strong indicators for main company names
     const strongCompanyIndicators = /\b(hardware|electric|construction|supply|supplies|services|solutions|group|inc|llc|corp|ltd|company|companies)\b/i;
@@ -108,22 +145,22 @@ export const createVendorBuilder = () => {
     // Check if it's a prominent business name pattern
     const isProminentName = /^[A-Z][A-Z\s&.,'-]+$/.test(line) && line.length >= 5;
     
-    // Avoid obvious non-company text
-    if (line.match(/^\d+\s+/) || // Starts with number (likely address)
-        line.includes('@') || // Email
-        line.match(/^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/) || // Phone
-        line.toLowerCase().includes('cell') ||
-        line.toLowerCase().includes('office') ||
-        line.toLowerCase().includes('phone')) {
-      return false;
-    }
-
     return (strongCompanyIndicators.test(line) && (isAllCaps || isProminentName)) || 
-           (isAllCaps && line.split(' ').length <= 4);
+           (isAllCaps && line.split(' ').length <= 4 && !isPhoneNumber(line));
   };
 
   const isLikelyCompanyName = (line: string): boolean => {
     if (line.length < 3 || line.length > 100) return false;
+    
+    // Exclude obvious non-company text
+    if (isPhoneNumber(line) || isEmailAddress(line) || isWebsiteUrl(line)) {
+      return false;
+    }
+    
+    // Exclude lines that start with numbers
+    if (/^\d+\s+/.test(line)) {
+      return false;
+    }
     
     // Company indicators
     const companyIndicators = /\b(inc|llc|corp|ltd|company|companies|services|solutions|group|hardware|electric|construction|supply|supplies|systems|technologies|enterprises|industries|partners|associates)\b/i;
@@ -134,14 +171,9 @@ export const createVendorBuilder = () => {
     // Check if it starts with capital letters
     const startsWithCaps = /^[A-Z][A-Za-z\s&.,'-]*$/.test(line);
     
-    // Avoid phone numbers, emails, and obvious addresses
-    if (line.match(/^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/) || 
-        line.includes('@') || 
-        line.match(/^\d+\s+[A-Za-z]/)) {
-      return false;
-    }
-
-    return companyIndicators.test(line) || isUpperCase || (startsWithCaps && !isPersonName(line));
+    return companyIndicators.test(line) || 
+           (isUpperCase && !isPersonName(line)) || 
+           (startsWithCaps && !isPersonName(line) && line.split(' ').length <= 6);
   };
 
   const isPersonName = (line: string): boolean => {
@@ -154,6 +186,11 @@ export const createVendorBuilder = () => {
     
     // Avoid obvious company words
     const hasCompanyWords = /\b(inc|llc|corp|ltd|company|hardware|electric|construction|supply|systems)\b/i.test(line);
+    
+    // Avoid phone numbers and emails
+    if (isPhoneNumber(line) || isEmailAddress(line)) {
+      return false;
+    }
     
     return allCapitalized && !hasCompanyWords && line.length <= 50;
   };
@@ -177,8 +214,8 @@ export const createVendorBuilder = () => {
     // Always finalize on last line if we have data
     if (isLastLine && hasAnyData) return true;
 
-    // Finalize after significant empty space (3+ empty lines) and next line looks like new vendor
-    if (consecutiveEmptyLines >= 3 && nextLine && isMainCompanyName(nextLine)) {
+    // Finalize after significant empty space (5+ empty lines) and next line looks like new vendor
+    if (consecutiveEmptyLines >= 5 && nextLine && isMainCompanyName(nextLine)) {
       return true;
     }
 
@@ -186,13 +223,13 @@ export const createVendorBuilder = () => {
     if (nextLine && isMainCompanyName(nextLine) && 
         !nextLine.toLowerCase().includes(currentVendor.name.toLowerCase().split(' ')[0])) {
       // Only if we've processed enough lines to constitute a complete vendor
-      if (linesProcessed >= 5) {
+      if (linesProcessed >= 8) {
         return true;
       }
     }
 
     // Don't finalize too early - give more lines to build up the vendor
-    if (linesProcessed < 8) {
+    if (linesProcessed < 15) {
       return false;
     }
 
