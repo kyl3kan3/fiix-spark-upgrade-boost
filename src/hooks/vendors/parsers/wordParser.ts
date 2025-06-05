@@ -17,69 +17,137 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         
         console.log("Extracted text from Word document:", text);
         
-        // Parse the extracted text - try multiple parsing strategies
+        // Clean and prepare text for parsing
         const vendors: ParsedVendor[] = [];
-        const lines = text.split('\n').filter(line => line.trim());
+        const lines = text.split(/[\n\r]+/).filter(line => line.trim()).map(line => line.trim());
         
-        // Strategy 1: Look for key-value patterns with colons
+        console.log(`Total lines to process: ${lines.length}`);
+        
+        // Strategy 1: Enhanced key-value pattern matching
         let currentVendor: any = {};
         let vendorCount = 0;
         
         for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].trim();
+          const line = lines[i];
           
-          // Skip empty lines
-          if (!line) continue;
+          // Skip very short lines or obvious headers
+          if (line.length < 2 || 
+              line.toLowerCase().includes('vendor list') || 
+              line.toLowerCase().includes('contact information') ||
+              line.toLowerCase().includes('company directory')) {
+            continue;
+          }
           
           console.log(`Processing line ${i}: "${line}"`);
           
-          // Look for key-value patterns (Name: Value)
-          if (line.includes(':')) {
-            const colonIndex = line.indexOf(':');
-            const key = line.substring(0, colonIndex).trim().toLowerCase();
-            const value = line.substring(colonIndex + 1).trim();
-            
-            console.log(`Found key-value pair: "${key}" = "${value}"`);
-            
-            // Map various field names to our schema
-            if (key.includes('name') || key.includes('company') || key.includes('vendor')) {
-              currentVendor.name = value;
-            } else if (key.includes('email') || key.includes('e-mail')) {
-              currentVendor.email = value;
-            } else if (key.includes('phone') || key.includes('telephone') || key.includes('mobile')) {
-              currentVendor.phone = value;
-            } else if (key.includes('contact') && !key.includes('email') && !key.includes('phone')) {
-              currentVendor.contact_person = value;
-            } else if (key.includes('type') || key.includes('category')) {
-              currentVendor.vendor_type = value || 'service';
-            } else if (key.includes('status')) {
-              currentVendor.status = value || 'active';
-            } else if (key.includes('address') || key.includes('street')) {
-              currentVendor.address = value;
-            } else if (key.includes('city')) {
-              currentVendor.city = value;
-            } else if (key.includes('state') || key.includes('province')) {
-              currentVendor.state = value;
-            } else if (key.includes('zip') || key.includes('postal')) {
-              currentVendor.zip_code = value;
-            } else if (key.includes('website') || key.includes('url') || key.includes('web')) {
-              currentVendor.website = value;
-            } else if (key.includes('description') || key.includes('notes') || key.includes('details')) {
-              currentVendor.description = value;
+          // Enhanced key-value detection with multiple separators
+          const separators = [':', '=', '-', '|', '\t'];
+          let keyValueFound = false;
+          
+          for (const separator of separators) {
+            if (line.includes(separator)) {
+              const parts = line.split(separator);
+              if (parts.length >= 2) {
+                const key = parts[0].trim().toLowerCase();
+                const value = parts.slice(1).join(separator).trim();
+                
+                if (value && value.length > 0) {
+                  console.log(`Found key-value pair: "${key}" = "${value}"`);
+                  
+                  // Enhanced field mapping with more variations
+                  if (key.match(/(company|business|vendor|organization|firm)\s*(name)?/)) {
+                    currentVendor.name = value;
+                  } else if (key.match(/(email|e-mail|mail)/)) {
+                    currentVendor.email = value;
+                  } else if (key.match(/(phone|tel|telephone|mobile|cell|contact\s*number)/)) {
+                    currentVendor.phone = value;
+                  } else if (key.match(/(contact|person|representative|manager)/)) {
+                    currentVendor.contact_person = value;
+                  } else if (key.match(/(type|category|service|industry)/)) {
+                    currentVendor.vendor_type = value || 'service';
+                  } else if (key.match(/(status|state|condition)/)) {
+                    currentVendor.status = value || 'active';
+                  } else if (key.match(/(address|street|location)/)) {
+                    currentVendor.address = value;
+                  } else if (key.match(/city/)) {
+                    currentVendor.city = value;
+                  } else if (key.match(/(state|province|region)/)) {
+                    currentVendor.state = value;
+                  } else if (key.match(/(zip|postal|code)/)) {
+                    currentVendor.zip_code = value;
+                  } else if (key.match(/(website|url|web|site)/)) {
+                    currentVendor.website = value;
+                  } else if (key.match(/(description|notes|details|services|about)/)) {
+                    currentVendor.description = value;
+                  }
+                  
+                  keyValueFound = true;
+                  break;
+                }
+              }
             }
           }
           
-          // Check if we should save current vendor and start a new one
-          const nextLine = i < lines.length - 1 ? lines[i + 1].trim() : '';
-          const isEndOfVendor = 
-            line.includes('---') || 
-            line.includes('===') || 
-            line.toLowerCase().includes('vendor') ||
-            nextLine.toLowerCase().includes('name:') ||
-            nextLine.toLowerCase().includes('company:') ||
-            (currentVendor.name && Object.keys(currentVendor).length >= 2);
+          // If no key-value found, try to detect patterns like "Name - Email - Phone"
+          if (!keyValueFound) {
+            const patterns = [
+              /(.+?)\s*[-–—]\s*(.+@.+)\s*[-–—]\s*(.+)/,  // Name - Email - Phone
+              /(.+?)\s*[,]\s*(.+@.+)\s*[,]\s*(.+)/,      // Name, Email, Phone
+              /(.+?)\s+(.+@.+)\s+([0-9\-\(\)\s]+)/      // Name Email Phone
+            ];
+            
+            for (const pattern of patterns) {
+              const match = line.match(pattern);
+              if (match) {
+                console.log(`Found pattern match:`, match);
+                currentVendor.name = match[1].trim();
+                currentVendor.email = match[2].trim();
+                currentVendor.phone = match[3].trim();
+                keyValueFound = true;
+                break;
+              }
+            }
+          }
           
-          if (isEndOfVendor && currentVendor.name) {
+          // Check if this line looks like a standalone company name
+          if (!keyValueFound && !currentVendor.name) {
+            const companyIndicators = /(inc|llc|corp|ltd|company|services|solutions|group|enterprises|systems)/i;
+            if (line.match(companyIndicators) || 
+                (line.length > 5 && line.length < 80 && 
+                 line.match(/^[A-Z][a-zA-Z0-9\s&.,'-]+$/))) {
+              currentVendor.name = line;
+              console.log(`Detected company name: "${line}"`);
+            }
+          }
+          
+          // Check if this line contains an email without a key
+          if (!keyValueFound && !currentVendor.email) {
+            const emailMatch = line.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+            if (emailMatch) {
+              currentVendor.email = emailMatch[1];
+              console.log(`Found standalone email: "${emailMatch[1]}"`);
+            }
+          }
+          
+          // Check if this line contains a phone number without a key
+          if (!keyValueFound && !currentVendor.phone) {
+            const phoneMatch = line.match(/(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/);
+            if (phoneMatch) {
+              currentVendor.phone = phoneMatch[0];
+              console.log(`Found standalone phone: "${phoneMatch[0]}"`);
+            }
+          }
+          
+          // Determine if we should finalize the current vendor
+          const nextLine = i < lines.length - 1 ? lines[i + 1] : '';
+          const isNewVendor = 
+            line.match(/^[-=_]{3,}/) ||  // Separator lines
+            nextLine.toLowerCase().includes('company') ||
+            nextLine.toLowerCase().includes('vendor') ||
+            (currentVendor.name && Object.keys(currentVendor).length >= 2 && 
+             (nextLine.match(/^[A-Z][a-zA-Z\s&.-]+$/) || nextLine.includes('@')));
+          
+          if (isNewVendor && currentVendor.name) {
             // Set defaults for missing fields
             if (!currentVendor.vendor_type) currentVendor.vendor_type = 'service';
             if (!currentVendor.status) currentVendor.status = 'active';
@@ -99,81 +167,101 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
           console.log(`Added final vendor:`, currentVendor);
         }
         
-        // Strategy 2: If no vendors found with key-value approach, try table-like parsing
+        // Strategy 2: Enhanced table parsing for structured data
         if (vendors.length === 0) {
-          console.log("No vendors found with key-value parsing, trying table approach...");
+          console.log("No vendors found with enhanced parsing, trying table approach...");
           
-          // Look for table-like structures or comma/tab separated values
           for (const line of lines) {
-            // Skip headers or obvious non-data lines
-            if (line.toLowerCase().includes('name') && line.toLowerCase().includes('email')) {
+            // Skip obvious headers
+            if (line.toLowerCase().includes('name') && 
+                (line.toLowerCase().includes('email') || line.toLowerCase().includes('phone'))) {
               continue;
             }
             
-            // Try splitting by tabs or multiple spaces
-            let parts = line.split('\t').map(p => p.trim()).filter(p => p);
-            if (parts.length < 2) {
-              parts = line.split(/\s{2,}/).map(p => p.trim()).filter(p => p);
-            }
-            if (parts.length < 2) {
-              parts = line.split(',').map(p => p.trim()).filter(p => p);
-            }
+            // Try multiple splitting methods
+            const splittingMethods = [
+              () => line.split('\t').map(p => p.trim()).filter(p => p),
+              () => line.split(/\s{3,}/).map(p => p.trim()).filter(p => p),
+              () => line.split('|').map(p => p.trim()).filter(p => p),
+              () => line.split(',').map(p => p.trim()).filter(p => p)
+            ];
             
-            if (parts.length >= 2) {
-              const vendor: any = {
-                name: parts[0],
-                email: parts[1] || '',
-                phone: parts[2] || '',
-                contact_person: parts[3] || '',
-                vendor_type: parts[4] || 'service',
-                status: parts[5] || 'active'
-              };
-              
-              if (vendor.name && vendor.name.length > 1) {
-                vendors.push(vendor);
-                console.log(`Added vendor from table parsing:`, vendor);
+            for (const splitter of splittingMethods) {
+              const parts = splitter();
+              if (parts.length >= 2) {
+                const vendor: any = {
+                  name: parts[0],
+                  vendor_type: 'service',
+                  status: 'active'
+                };
+                
+                // Try to identify what each part might be
+                for (let j = 1; j < parts.length; j++) {
+                  const part = parts[j];
+                  if (part.includes('@')) {
+                    vendor.email = part;
+                  } else if (part.match(/^[\d\-\(\)\s]+$/)) {
+                    vendor.phone = part;
+                  } else if (j === 1 && !part.includes('@') && !part.match(/^[\d\-\(\)\s]+$/)) {
+                    vendor.contact_person = part;
+                  }
+                }
+                
+                if (vendor.name && vendor.name.length > 1) {
+                  vendors.push(vendor);
+                  console.log(`Added vendor from table parsing:`, vendor);
+                  break; // Found a valid split, no need to try others
+                }
               }
             }
           }
         }
         
-        // Strategy 3: If still no vendors, try to extract any company-like names
+        // Strategy 3: Extract any text that looks like company names if still no results
         if (vendors.length === 0) {
-          console.log("No vendors found with table parsing, trying name extraction...");
+          console.log("Trying name extraction fallback...");
           
           for (const line of lines) {
-            // Look for lines that might be company names (contain certain keywords or patterns)
-            if (line.length > 2 && 
-                (line.includes('Inc') || line.includes('LLC') || line.includes('Corp') || 
-                 line.includes('Company') || line.includes('Services') || line.includes('Ltd') ||
-                 /^[A-Z][a-zA-Z\s&.-]+$/.test(line))) {
-              
-              const vendor: any = {
-                name: line,
-                vendor_type: 'service',
-                status: 'active'
-              };
-              
-              vendors.push(vendor);
-              console.log(`Added vendor from name extraction:`, vendor);
+            // More comprehensive company name detection
+            const companyPatterns = [
+              /^([A-Z][a-zA-Z0-9\s&.,'-]+(Inc|LLC|Corp|Ltd|Company|Services|Solutions|Group|Enterprises|Systems))/i,
+              /^([A-Z][a-zA-Z\s&.-]{3,50})$/,  // Capitalized phrases
+              /^([A-Z][a-z]+\s+[A-Z][a-z]+)/   // First Last or Company Name patterns
+            ];
+            
+            for (const pattern of companyPatterns) {
+              const match = line.match(pattern);
+              if (match) {
+                const vendor: any = {
+                  name: match[1].trim(),
+                  vendor_type: 'service',
+                  status: 'active'
+                };
+                
+                vendors.push(vendor);
+                console.log(`Added vendor from name extraction:`, vendor);
+                break;
+              }
             }
           }
         }
         
-        console.log(`Total vendors found: ${vendors.length}`);
+        console.log(`Final vendor count: ${vendors.length}`);
         
         if (vendors.length === 0) {
-          throw new Error(`No vendor data found in Word document. The document should contain vendor information in one of these formats:
-          
-1. Key-value format:
-   Name: ABC Company
+          throw new Error(`No vendor data could be extracted from the Word document. 
+
+Please ensure your document contains vendor information in one of these formats:
+
+1. Key-value format with separators (: = - |):
+   Company: ABC Services
    Email: contact@abc.com
    Phone: 555-0123
-   
-2. Table format with columns separated by tabs, spaces, or commas
-3. Company names (we'll create basic entries for recognized company names)
 
-Extracted text preview: "${text.substring(0, 200)}..."`);
+2. Structured lists or tables with vendor information
+3. Each vendor on separate lines or separated by lines/breaks
+
+Extracted text sample: "${text.substring(0, 300)}..."`);
         }
         
         resolve(vendors);
