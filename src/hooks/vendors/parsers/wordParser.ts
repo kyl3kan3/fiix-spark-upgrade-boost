@@ -5,9 +5,10 @@ import { processWordText, isHeaderLine } from "./word/textProcessor";
 import { parseKeyValuePair } from "./word/keyValueParser";
 import { createVendorBuilder } from "./word/vendorBuilder";
 import { createDebugLogger } from "./word/debugLogger";
+import { getCompanyLogoUrl } from "./word/logoExtractor";
 
 interface ParsedVendor extends VendorFormData {
-  // Additional fields for validation
+  logo_url?: string | null;
 }
 
 export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
@@ -53,6 +54,11 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
           if (vendorBuilder.shouldFinalize(line, nextLine, isLastLine)) {
             const vendor = vendorBuilder.finalize();
             if (vendor) {
+              // Add logo URL if company name is recognized
+              if (vendor.name) {
+                vendor.logo_url = getCompanyLogoUrl(vendor.name);
+              }
+              
               logger.logVendorFinalized(vendor);
               vendors.push(vendor);
             }
@@ -63,6 +69,11 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         // Don't forget the last vendor if it wasn't finalized
         const finalVendor = vendorBuilder.finalize();
         if (finalVendor) {
+          // Add logo URL if company name is recognized
+          if (finalVendor.name) {
+            finalVendor.logo_url = getCompanyLogoUrl(finalVendor.name);
+          }
+          
           logger.logVendorFinalized(finalVendor);
           vendors.push(finalVendor);
         }

@@ -14,6 +14,7 @@ export interface VendorData {
   website: string;
   description: string;
   rating: number | null;
+  logo_url?: string | null; // Add logo URL field
 }
 
 export const createEmptyVendor = (): VendorData => ({
@@ -30,5 +31,6 @@ export const createEmptyVendor = (): VendorData => ({
   zip_code: '',
   website: '',
   description: '',
-  rating: null
+  rating: null,
+  logo_url: null
 });

@@ -17,7 +17,8 @@ export const createVendorBuilder = () => {
   let linesProcessed = 0;
   let consecutiveEmptyLines = 0;
   let hasFoundMainCompanyName = false;
-  let vendorDataLines: string[] = []; // Track all data for this vendor
+  let vendorDataLines: string[] = [];
+  let processedPhoneNumbers = new Set<string>(); // Track processed phone numbers
 
   const addDataFromLine = (line: string) => {
     linesProcessed++;
@@ -31,17 +32,38 @@ export const createVendorBuilder = () => {
     consecutiveEmptyLines = 0;
     vendorDataLines.push(trimmedLine);
 
-    // Handle phone numbers
+    // Handle phone numbers with duplicate prevention
     if (isPhoneNumber(trimmedLine)) {
       const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
       if (phoneMatch) {
-        if (!currentVendor.phone) {
-          currentVendor.phone = phoneMatch[1];
+        const phoneNumber = phoneMatch[1];
+        const normalizedPhone = phoneNumber.replace(/[\s\-\.()]/g, ''); // Normalize for comparison
+        
+        if (!processedPhoneNumbers.has(normalizedPhone)) {
+          processedPhoneNumbers.add(normalizedPhone);
+          
+          // Check for context in the line
+          const context = trimmedLine.toLowerCase();
+          let phoneWithContext = phoneNumber;
+          
+          if (context.includes('cell')) {
+            phoneWithContext += ' (Cell)';
+          } else if (context.includes('office')) {
+            phoneWithContext += ' (Office)';
+          } else if (context.includes('fax')) {
+            phoneWithContext += ' (Fax)';
+          }
+          
+          if (!currentVendor.phone) {
+            currentVendor.phone = phoneWithContext;
+          } else {
+            currentVendor.phone += ', ' + phoneWithContext;
+          }
+          hasAnyData = true;
+          console.log('[Vendor Builder] Added phone:', phoneWithContext);
         } else {
-          currentVendor.phone += ', ' + phoneMatch[1];
+          console.log('[Vendor Builder] Skipped duplicate phone:', phoneNumber);
         }
-        hasAnyData = true;
-        console.log('[Vendor Builder] Added phone:', phoneMatch[1]);
       }
       return;
     }
@@ -114,13 +136,20 @@ export const createVendorBuilder = () => {
     if (trimmedLine.toLowerCase().includes('cell') && trimmedLine.includes(':')) {
       const phoneMatch = trimmedLine.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
       if (phoneMatch) {
-        if (!currentVendor.phone) {
-          currentVendor.phone = phoneMatch[1] + ' (Cell)';
-        } else {
-          currentVendor.phone += ', ' + phoneMatch[1] + ' (Cell)';
+        const phoneNumber = phoneMatch[1];
+        const normalizedPhone = phoneNumber.replace(/[\s\-\.()]/g, '');
+        
+        if (!processedPhoneNumbers.has(normalizedPhone)) {
+          processedPhoneNumbers.add(normalizedPhone);
+          
+          if (!currentVendor.phone) {
+            currentVendor.phone = phoneNumber + ' (Cell)';
+          } else {
+            currentVendor.phone += ', ' + phoneNumber + ' (Cell)';
+          }
+          hasAnyData = true;
+          console.log('[Vendor Builder] Added cell phone:', phoneNumber);
         }
-        hasAnyData = true;
-        console.log('[Vendor Builder] Added cell phone:', phoneMatch[1]);
       }
       return;
     }
@@ -182,6 +211,7 @@ export const createVendorBuilder = () => {
     consecutiveEmptyLines = 0;
     hasFoundMainCompanyName = false;
     vendorDataLines = [];
+    processedPhoneNumbers.clear(); // Reset phone number tracking
   };
 
   const getCurrentVendor = () => currentVendor;

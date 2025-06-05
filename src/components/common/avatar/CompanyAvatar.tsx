@@ -31,7 +31,13 @@ export const CompanyAvatar: React.FC<CompanyAvatarProps> = ({
 
   return (
     <Avatar className={sizeClass}>
-      {logoUrl && <AvatarImage src={logoUrl} alt={companyName} />}
+      {logoUrl && (
+        <AvatarImage 
+          src={logoUrl} 
+          alt={`${companyName} logo`}
+          className="object-contain"
+        />
+      )}
       <AvatarFallback className="bg-maintenease-100 text-maintenease-800">
         {logoUrl ? null : initials || <Building2 className="h-4 w-4" />}
       </AvatarFallback>
