@@ -114,7 +114,7 @@ const VendorGridView: React.FC<VendorGridViewProps> = ({
         <div className="flex items-center gap-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
           <Checkbox
             checked={allSelected}
-            ref={(el) => {
+            ref={(el: HTMLInputElement | null) => {
               if (el) el.indeterminate = someSelected;
             }}
             onCheckedChange={(checked) => {
