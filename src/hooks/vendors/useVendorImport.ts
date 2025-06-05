@@ -6,7 +6,7 @@ import { parseFile } from "./parsers/fileParserFactory";
 import { downloadTemplate } from "./utils/templateGenerator";
 
 interface ParsedVendor extends VendorFormData {
-  // Additional fields for validation
+  logo_url?: string | null;
 }
 
 export const useVendorImport = () => {
@@ -19,11 +19,37 @@ export const useVendorImport = () => {
   const importMutation = useMutation({
     mutationFn: async (vendors: ParsedVendor[]) => {
       const results = await Promise.allSettled(
-        vendors.map(vendor => createVendor(vendor))
+        vendors.map(vendor => {
+          // Clean the vendor data before sending to avoid any issues
+          const cleanVendor = {
+            ...vendor,
+            // Ensure all required fields have default values
+            name: vendor.name || '',
+            email: vendor.email || '',
+            phone: vendor.phone || '',
+            contact_person: vendor.contact_person || '',
+            contact_title: vendor.contact_title || '',
+            vendor_type: vendor.vendor_type || 'service',
+            status: vendor.status || 'active',
+            address: vendor.address || '',
+            city: vendor.city || '',
+            state: vendor.state || '',
+            zip_code: vendor.zip_code || '',
+            website: vendor.website || '',
+            description: vendor.description || '',
+            rating: vendor.rating || null,
+            logo_url: vendor.logo_url || null
+          };
+          return createVendor(cleanVendor);
+        })
       );
       
       const successful = results.filter(result => result.status === 'fulfilled').length;
       const failed = results.filter(result => result.status === 'rejected').length;
+      
+      if (failed > 0) {
+        console.error('Failed vendor imports:', results.filter(result => result.status === 'rejected'));
+      }
       
       return { successful, failed, total: vendors.length };
     },
@@ -33,6 +59,8 @@ export const useVendorImport = () => {
         toast.warning(`Import completed with ${results.failed} failures`, {
           description: `${results.successful}/${results.total} vendors imported successfully`
         });
+      } else {
+        toast.success(`Successfully imported ${results.successful} vendors`);
       }
     },
     onError: (error: any) => {

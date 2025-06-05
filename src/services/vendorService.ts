@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
@@ -10,6 +9,24 @@ export type VendorContractFormData = Omit<VendorContract, 'id' | 'created_at' | 
 
 export interface VendorWithContracts extends Vendor {
   contracts?: VendorContract[];
+}
+
+export interface VendorFormData {
+  name: string;
+  email: string;
+  phone: string;
+  contact_person: string;
+  contact_title: string;
+  vendor_type: "service" | "supplier" | "contractor" | "consultant";
+  status: "active" | "inactive" | "suspended";
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  website: string;
+  description: string;
+  rating: number | null;
+  logo_url?: string | null;
 }
 
 export const getAllVendors = async (): Promise<Vendor[]> => {
@@ -46,14 +63,14 @@ export const getVendorById = async (id: string): Promise<VendorWithContracts | n
 
 export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> => {
   const { data, error } = await supabase
-    .from('vendors')
-    .insert(vendorData)
+    .from("vendors")
+    .insert([vendorData])
     .select()
     .single();
 
   if (error) {
-    console.error('Error creating vendor:', error);
-    throw error;
+    console.error("Error creating vendor:", error);
+    throw new Error(error.message);
   }
 
   return data;
