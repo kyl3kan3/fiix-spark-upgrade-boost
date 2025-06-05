@@ -100,12 +100,23 @@ Example format:
     const extractedText = data.choices[0].message.content;
     console.log('Extracted vendor data:', extractedText);
 
-    // Parse the JSON response
+    // Parse the JSON response, handling markdown code blocks
     let vendors;
     try {
-      vendors = JSON.parse(extractedText);
+      // Clean the response by removing markdown code blocks if present
+      let cleanedText = extractedText.trim();
+      
+      // Remove ```json and ``` if present
+      if (cleanedText.startsWith('```json')) {
+        cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (cleanedText.startsWith('```')) {
+        cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      }
+      
+      vendors = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', parseError);
+      console.error('Raw response:', extractedText);
       throw new Error('Invalid JSON response from OpenAI Vision');
     }
 
