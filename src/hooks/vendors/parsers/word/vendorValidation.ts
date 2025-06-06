@@ -44,6 +44,11 @@ export const isMainCompanyName = (line: string): boolean => {
   if (/^(products?|services?|items?|equipment|supplies|materials|contact|phone|email|address|website)/i.test(line)) {
     return false;
   }
+
+  // Exclude clear address patterns (city, state zip)
+  if (/^[A-Z][a-z]+,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/.test(line)) {
+    return false;
+  }
   
   // Must be in proper case (not all lowercase)
   if (line === line.toLowerCase()) {
@@ -104,7 +109,7 @@ export const isAddressLine = (line: string): boolean => {
     /^\d+\s+[A-Za-z]/,  // Starts with number + street name
     /\b(street|st|avenue|ave|drive|dr|road|rd|lane|ln|boulevard|blvd)\b/i,
     /^P\.?O\.?\s+Box\s+\d+/i,  // PO Box
-    /,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/,  // City, STATE ZIP
+    /^[A-Z][a-z]+,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/,  // City, STATE ZIP
   ];
   
   return addressPatterns.some(pattern => pattern.test(line)) && !isProductLine(line);

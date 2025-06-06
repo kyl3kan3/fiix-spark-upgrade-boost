@@ -45,17 +45,25 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Handle address lines - but be more careful about vendor separation
-    if (isAddressLine(trimmedLine) && this.hasFoundMainCompanyName) {
-      currentVendor.address = this.dataExtractor.addAddressInfo(currentVendor.address, trimmedLine);
-      return { updated: true, hasData: true };
-    }
-
-    // If we don't have a company name yet and this line looks like one, use it
+    // Priority: Check for company name first, especially if we don't have one yet
     if (!this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       this.hasFoundMainCompanyName = true;
       console.log('[Data Processor] Set company name:', trimmedLine);
+      return { updated: true, hasData: true };
+    }
+
+    // If we already have a company name but encounter another clear company name, 
+    // this suggests we should finalize the current vendor
+    if (this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine) && currentVendor.name !== trimmedLine) {
+      console.log('[Data Processor] Found different company name, vendor should be finalized:', trimmedLine);
+      // Don't process this line - let the builder handle vendor separation
+      return { updated: false, hasData: false };
+    }
+
+    // Handle address lines - but be more careful about vendor separation
+    if (isAddressLine(trimmedLine) && this.hasFoundMainCompanyName) {
+      currentVendor.address = this.dataExtractor.addAddressInfo(currentVendor.address, trimmedLine);
       return { updated: true, hasData: true };
     }
     
