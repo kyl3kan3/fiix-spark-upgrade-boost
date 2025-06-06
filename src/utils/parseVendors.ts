@@ -4,6 +4,7 @@ import mammoth from 'mammoth'
 import Tesseract from 'tesseract.js'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
 import OpenAI from 'openai'
+import { groupVendorBlocks } from './groupVendorBlocks'
 
 // Set the worker source to use the CDN version
 GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
@@ -13,7 +14,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true
 })
 
-function groupVendorBlocks(text: string): string[] {
+function groupVendorBlocksFromText(text: string): string[] {
   const lines = text.split('\n')
   const blocks: string[] = []
   let currentBlock: string[] = []
@@ -121,7 +122,7 @@ export async function parseVendorsFromFile(file: File) {
   }
 
   // Group the text into vendor blocks (2+ blank lines = separator)
-  const vendorBlocks = groupVendorBlocks(fullText)
+  const vendorBlocks = groupVendorBlocksFromText(fullText)
   console.log('Found vendor blocks:', vendorBlocks.length)
 
   // Process each block with AI to extract structured data
