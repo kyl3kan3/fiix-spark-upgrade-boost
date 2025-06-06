@@ -1,5 +1,4 @@
-
-import { getOpenAI } from '../../../../utils/parsers/openaiClient';
+import { getOpenAI } from '@/utils/parsers/openaiClient';
 
 export interface VendorBlock {
   extractedData: {
