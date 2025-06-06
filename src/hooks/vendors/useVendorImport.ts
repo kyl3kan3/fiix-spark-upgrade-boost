@@ -94,14 +94,17 @@ export const useVendorImport = () => {
     }
   };
 
-  const importVendors = async (): Promise<boolean> => {
-    if (parsedData.length === 0) {
+  // Modified to accept custom vendor data or use parsed data
+  const importVendors = async (customVendors?: ParsedVendor[]): Promise<boolean> => {
+    const vendorsToImport = customVendors || parsedData;
+    
+    if (vendorsToImport.length === 0) {
       toast.error("No vendor data to import");
       return false;
     }
 
     try {
-      await importMutation.mutateAsync(parsedData);
+      await importMutation.mutateAsync(vendorsToImport);
       clearFile();
       return true;
     } catch (error) {

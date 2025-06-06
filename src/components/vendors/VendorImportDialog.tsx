@@ -12,7 +12,8 @@ import { toast } from "sonner";
 import ImportDialogHeader from "./import/ImportDialogHeader";
 import ImportFileDropZone from "./import/ImportFileDropZone";
 import ImportFilePreview from "./import/ImportFilePreview";
-import ImportDataPreview from "./import/ImportDataPreview";
+import EditableVendorPreview from "./import/EditableVendorPreview";
+import { VendorFormData } from "@/services/vendorService";
 
 interface VendorImportDialogProps {
   children: React.ReactNode;
@@ -25,6 +26,7 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [editedData, setEditedData] = useState<VendorFormData[]>([]);
   
   const {
     file,
@@ -33,12 +35,17 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
     isImporting,
     useImageParser,
     uploadFile,
-    importVendors,
+    importVendors: originalImportVendors,
     downloadTemplate,
     clearFile,
     toggleImageParser,
     retryWithImageParser
   } = useVendorImport();
+
+  // Update edited data when parsed data changes
+  React.useEffect(() => {
+    setEditedData(parsedData);
+  }, [parsedData]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -67,18 +74,37 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
   };
 
   const handleImport = async () => {
-    const success = await importVendors();
+    // Validate that all vendors have required fields
+    const validVendors = editedData.filter(vendor => vendor.name.trim() !== "");
+    
+    if (validVendors.length === 0) {
+      toast.error("Please ensure at least one vendor has a name");
+      return;
+    }
+
+    if (validVendors.length !== editedData.length) {
+      toast.warning(`${editedData.length - validVendors.length} vendors without names will be skipped`);
+    }
+
+    // Use the edited data for import
+    const success = await originalImportVendors(validVendors);
     if (success) {
       setIsOpen(false);
       onImportComplete();
-      toast.success(`Successfully imported ${parsedData.length} vendors`);
+      toast.success(`Successfully imported ${validVendors.length} vendors`);
+      setEditedData([]);
     }
+  };
+
+  const handleClearFile = () => {
+    clearFile();
+    setEditedData([]);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh]">
         <ImportDialogHeader
           useImageParser={useImageParser}
           onToggleImageParser={toggleImageParser}
@@ -98,11 +124,16 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
               <ImportFilePreview
                 file={file}
                 isProcessing={isProcessing}
-                parsedDataCount={parsedData.length}
+                parsedDataCount={editedData.length}
                 onRetryWithImageParser={retryWithImageParser}
-                onClearFile={clearFile}
+                onClearFile={handleClearFile}
               />
-              <ImportDataPreview parsedData={parsedData} />
+              {editedData.length > 0 && (
+                <EditableVendorPreview
+                  parsedData={editedData}
+                  onDataChange={setEditedData}
+                />
+              )}
             </>
           )}
         </div>
@@ -111,9 +142,9 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          {parsedData.length > 0 && (
+          {editedData.length > 0 && (
             <Button onClick={handleImport} disabled={isImporting}>
-              {isImporting ? "Importing..." : `Import ${parsedData.length} Vendors`}
+              {isImporting ? "Importing..." : `Import ${editedData.filter(v => v.name.trim()).length} Vendors`}
             </Button>
           )}
         </DialogFooter>
