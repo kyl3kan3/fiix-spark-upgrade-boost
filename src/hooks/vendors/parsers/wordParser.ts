@@ -1,9 +1,8 @@
 
 import mammoth from "mammoth";
 import { VendorFormData } from "@/services/vendorService";
-import { processWordText, isHeaderLine } from "./word/textProcessor";
-import { parseKeyValuePair } from "./word/keyValueParser";
-import { createVendorBuilder } from "./word/vendorBuilder";
+import { processWordText } from "./word/textProcessor";
+import { EnhancedVendorDataProcessor } from "./word/enhancedVendorDataProcessor";
 import { createDebugLogger } from "./word/debugLogger";
 
 interface ParsedVendor extends VendorFormData {
@@ -22,71 +21,26 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         const logger = createDebugLogger();
         logger.logTextExtraction(text);
         
-        // Enhanced text processing for better vendor extraction
+        // Enhanced text processing
         const { lines } = processWordText(text);
         logger.logProcessedLines(lines);
         
-        const vendors: ParsedVendor[] = [];
-        const vendorBuilder = createVendorBuilder();
+        console.log('[Word Parser] Starting enhanced processing of', lines.length, 'lines');
         
-        console.log('[Word Parser] Starting to process', lines.length, 'lines');
+        // Use the enhanced processor
+        const processor = new EnhancedVendorDataProcessor();
+        const processedData = await processor.processDocument(lines);
         
-        // Two-pass approach: first collect vendors with clear markers
-        let pageBreakIndices: number[] = [];
-        let lastEmptyLineCount = 0;
+        const vendors = processedData.vendors;
         
-        // First pass - identify likely page breaks
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          
-          if (!line.trim()) {
-            lastEmptyLineCount++;
-            if (lastEmptyLineCount >= 5) {
-              pageBreakIndices.push(i);
-              lastEmptyLineCount = 0;
-            }
-          } else {
-            lastEmptyLineCount = 0;
-          }
-        }
+        // Log processing results
+        console.log('[Word Parser] Enhanced processing complete:');
+        console.log('- Vendors found:', vendors.length);
+        console.log('- Overall confidence:', (processedData.confidence * 100).toFixed(0) + '%');
+        console.log('- Warnings:', processedData.warnings.length);
         
-        console.log('[Word Parser] Identified', pageBreakIndices.length, 'page breaks');
-        
-        // Process lines normally
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          logger.logLineProcessing(i, line);
-          
-          if (isHeaderLine(line)) {
-            logger.logSkippedLine("header line");
-            continue;
-          }
-          
-          // Parse key-value pairs for the current vendor
-          parseKeyValuePair(line, vendorBuilder.getCurrentVendor());
-          
-          // Add data from this line to the current vendor
-          vendorBuilder.addDataFromLine(line);
-          
-          const nextLine = i < lines.length - 1 ? lines[i + 1] : '';
-          const isLastLine = i === lines.length - 1;
-          
-          // Check if we should finalize the current vendor
-          if (vendorBuilder.shouldFinalize(line, nextLine, isLastLine)) {
-            const vendor = vendorBuilder.finalize();
-            if (vendor) {
-              logger.logVendorFinalized(vendor);
-              vendors.push(vendor);
-            }
-            vendorBuilder.reset();
-          }
-        }
-        
-        // Don't forget the last vendor if it wasn't finalized
-        const finalVendor = vendorBuilder.finalize();
-        if (finalVendor) {
-          logger.logVendorFinalized(finalVendor);
-          vendors.push(finalVendor);
+        if (processedData.warnings.length > 0) {
+          console.warn('[Word Parser] Processing warnings:', processedData.warnings);
         }
         
         logger.logParsingComplete(vendors.length, vendors);
@@ -95,24 +49,21 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
           const textSample = text.substring(0, 500);
           throw new Error(`No vendor data found in the Word document. 
 
+Enhanced parser results:
+- Text blocks identified: ${processedData.blocks.length}
+- Processing confidence: ${(processedData.confidence * 100).toFixed(0)}%
+- Warnings: ${processedData.warnings.length}
+
 Text sample from document:
 "${textSample}${text.length > 500 ? '...' : ''}"
 
-Please ensure your document contains vendor information in one of these formats:
-1. **Company names in headers or bold text** followed by contact details
-2. **List format** with clear vendor entries separated by blank lines  
-3. **Key-value format** like:
-   - Company Name: ABC Services
-   - Contact: John Doe
-   - Phone: 555-0123
-
-The parser looks for company names (especially those with keywords like "Hardware", "Electric", "Inc", etc.) and groups related contact information together.`);
+The enhanced parser uses AI-powered segmentation and regex fallbacks to identify vendors. Please ensure your document contains vendor information in recognizable formats.`);
         }
         
-        console.log('[Word Parser] Successfully extracted', vendors.length, 'vendors');
+        console.log('[Word Parser] Successfully extracted', vendors.length, 'vendors using enhanced processing');
         resolve(vendors);
       } catch (error) {
-        console.error("Word parser error:", error);
+        console.error("Enhanced word parser error:", error);
         reject(error);
       }
     };
