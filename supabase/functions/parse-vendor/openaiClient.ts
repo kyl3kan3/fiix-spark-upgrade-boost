@@ -1,8 +1,72 @@
 
 import { corsHeaders } from './corsUtils.ts';
 
+// Function to estimate token count (rough approximation: 1 token ≈ 4 characters)
+function estimateTokenCount(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
+// Function to chunk text into smaller pieces
+function chunkText(text: string, maxTokens: number = 80000): string[] {
+  const maxChars = maxTokens * 4; // Rough conversion from tokens to characters
+  const chunks: string[] = [];
+  
+  if (text.length <= maxChars) {
+    return [text];
+  }
+  
+  // Split by paragraphs first, then by sentences if needed
+  const paragraphs = text.split(/\n\s*\n/);
+  let currentChunk = '';
+  
+  for (const paragraph of paragraphs) {
+    if ((currentChunk + paragraph).length <= maxChars) {
+      currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+    } else {
+      if (currentChunk) {
+        chunks.push(currentChunk);
+        currentChunk = paragraph;
+      } else {
+        // Paragraph is too long, split by sentences
+        const sentences = paragraph.split(/[.!?]+/);
+        for (const sentence of sentences) {
+          if ((currentChunk + sentence).length <= maxChars) {
+            currentChunk += (currentChunk ? '. ' : '') + sentence;
+          } else {
+            if (currentChunk) {
+              chunks.push(currentChunk);
+              currentChunk = sentence;
+            } else {
+              // Even sentence is too long, force split
+              chunks.push(sentence.substring(0, maxChars));
+              currentChunk = sentence.substring(maxChars);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  if (currentChunk) {
+    chunks.push(currentChunk);
+  }
+  
+  return chunks;
+}
+
 export async function processVendorDataWithAI(extractedText: string, openaiApiKey: string): Promise<Response> {
-  // Enhanced prompt for better vendor extraction
+  console.log(`[Parse Vendor] Processing text with ${extractedText.length} characters`);
+  
+  // Estimate token count
+  const estimatedTokens = estimateTokenCount(extractedText);
+  console.log(`[Parse Vendor] Estimated tokens: ${estimatedTokens}`);
+  
+  // If text is too large, chunk it
+  const maxTokensPerRequest = 80000; // Conservative limit for gpt-4o
+  const chunks = chunkText(extractedText, maxTokensPerRequest);
+  
+  console.log(`[Parse Vendor] Split into ${chunks.length} chunks`);
+  
   const prompt = `You are an expert at extracting vendor/company information from business documents. 
 
 Analyze the following text and find ALL companies, vendors, or businesses mentioned. Look for:
@@ -38,31 +102,82 @@ IMPORTANT RULES:
 3. If you find contact info without a clear company name, create a descriptive name based on context
 4. Return ONLY a valid JSON array, no markdown or extra text
 5. Include vendors even if they only have a name and one piece of contact info
-6. Look for patterns like: Name + Phone, Name + Email, Name + Address
-
-Text to analyze:
-${extractedText}`;
+6. Look for patterns like: Name + Phone, Name + Email, Name + Address`;
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.1,
-        max_tokens: 4000,
-      }),
-    });
+    const allVendors: any[] = [];
+    
+    // Process each chunk
+    for (let i = 0; i < chunks.length; i++) {
+      console.log(`[Parse Vendor] Processing chunk ${i + 1}/${chunks.length}`);
+      
+      const chunkPrompt = `${prompt}
 
-    if (!response.ok) {
-      return handleOpenAIError(response);
+Text to analyze (chunk ${i + 1} of ${chunks.length}):
+${chunks[i]}`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: chunkPrompt }],
+          temperature: 0.1,
+          max_tokens: 4000,
+        }),
+      });
+
+      if (!response.ok) {
+        return handleOpenAIError(response);
+      }
+      
+      const data = await response.json();
+      const content = data.choices[0].message.content || '[]';
+      
+      // Parse the JSON response for this chunk
+      try {
+        let jsonStr = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+        const arrayStart = jsonStr.indexOf('[');
+        const arrayEnd = jsonStr.lastIndexOf(']') + 1;
+        
+        if (arrayStart >= 0 && arrayEnd > arrayStart) {
+          jsonStr = jsonStr.slice(arrayStart, arrayEnd);
+          const chunkVendors = JSON.parse(jsonStr);
+          
+          if (Array.isArray(chunkVendors)) {
+            allVendors.push(...chunkVendors);
+          }
+        }
+      } catch (parseError) {
+        console.error(`[Parse Vendor] Error parsing chunk ${i + 1}:`, parseError);
+      }
+      
+      // Add a small delay between requests to avoid rate limiting
+      if (i < chunks.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
+    
+    console.log(`[Parse Vendor] Extracted ${allVendors.length} vendors from ${chunks.length} chunks`);
+    
+    // Return the combined results
+    return new Response(
+      JSON.stringify({
+        choices: [{
+          message: {
+            content: JSON.stringify(allVendors)
+          }
+        }]
+      }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
 
-    return response;
   } catch (error) {
     console.error('[Parse Vendor] OpenAI processing error:', error);
     return new Response(
