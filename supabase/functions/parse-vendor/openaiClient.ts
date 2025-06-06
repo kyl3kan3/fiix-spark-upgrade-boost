@@ -62,7 +62,7 @@ export async function processVendorDataWithAI(extractedText: string, openaiApiKe
   console.log(`[Parse Vendor] Estimated tokens: ${estimatedTokens}`);
   
   // If text is too large, chunk it
-  const maxTokensPerRequest = 80000; // Conservative limit for gpt-4o
+  const maxTokensPerRequest = 80000; // Conservative limit for gpt-4o with vision
   const chunks = chunkText(extractedText, maxTokensPerRequest);
   
   console.log(`[Parse Vendor] Split into ${chunks.length} chunks`);
@@ -107,15 +107,10 @@ IMPORTANT RULES:
   try {
     const allVendors: any[] = [];
     
-    // Process each chunk
+    // Process each chunk using vision model
     for (let i = 0; i < chunks.length; i++) {
-      console.log(`[Parse Vendor] Processing chunk ${i + 1}/${chunks.length}`);
+      console.log(`[Parse Vendor] Processing chunk ${i + 1}/${chunks.length} with vision model`);
       
-      const chunkPrompt = `${prompt}
-
-Text to analyze (chunk ${i + 1} of ${chunks.length}):
-${chunks[i]}`;
-
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -124,7 +119,17 @@ ${chunks[i]}`;
         },
         body: JSON.stringify({
           model: 'gpt-4o',
-          messages: [{ role: 'user', content: chunkPrompt }],
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: `${prompt}\n\nText to analyze (chunk ${i + 1} of ${chunks.length}):\n${chunks[i]}`
+                }
+              ]
+            }
+          ],
           temperature: 0.1,
           max_tokens: 4000,
         }),
@@ -161,7 +166,7 @@ ${chunks[i]}`;
       }
     }
     
-    console.log(`[Parse Vendor] Extracted ${allVendors.length} vendors from ${chunks.length} chunks`);
+    console.log(`[Parse Vendor] Extracted ${allVendors.length} vendors from ${chunks.length} chunks using vision model`);
     
     // Return the combined results
     return new Response(
@@ -179,10 +184,10 @@ ${chunks[i]}`;
     );
 
   } catch (error) {
-    console.error('[Parse Vendor] OpenAI processing error:', error);
+    console.error('[Parse Vendor] OpenAI vision processing error:', error);
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to process document with AI',
+        error: 'Failed to process document with AI vision',
         details: error.message 
       }), 
       { 
