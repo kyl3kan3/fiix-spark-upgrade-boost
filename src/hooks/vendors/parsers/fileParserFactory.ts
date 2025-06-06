@@ -11,8 +11,8 @@ interface ParsedVendor extends VendorFormData {
 export const parseFile = async (file: File, useImageParser: boolean = false): Promise<ParsedVendor[]> => {
   const fileExtension = file.name.toLowerCase().split('.').pop();
   
-  // If image parser is explicitly requested or file is an image, use image parsing
-  if (useImageParser || file.type.startsWith('image/')) {
+  // Only use image parser for actual image files or PDFs when explicitly requested
+  if (file.type.startsWith('image/')) {
     return await parseWithImage(file);
   }
   
@@ -31,8 +31,10 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
       }
     case 'doc':
     case 'docx':
+      // Always use the Word parser for Word documents, regardless of the AI Vision toggle
+      // The Word parser already uses AI processing internally
       return await parseWord(file);
     default:
-      throw new Error('Unsupported file format. Please use CSV, Word document, or image files.');
+      throw new Error('Unsupported file format. Please use CSV, Word document, PDF, or image files.');
   }
 };
