@@ -1,39 +1,66 @@
 
 import mammoth from 'mammoth'
-import { isOpenAIAvailable, getOpenAIUnavailableError } from './parsers/openaiClient'
-import { processPDFWithFallbacks, renderPdfPagesToImages } from './parsers/pdfProcessor'
-import { groupVendorBlocksFromText } from './parsers/textProcessor'
-import { processVendorBlocks, VendorData } from './parsers/vendorAIProcessor'
+import OpenAI from 'openai'
+import { groupVendorBlocks } from './groupVendorBlocks'
 
-export { renderPdfPagesToImages }
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true
+})
 
-export async function parseVendorsFromFile(file: File): Promise<VendorData[]> {
-  const isPDF = file.name.endsWith('.pdf')
-  const isDOCX = file.name.endsWith('.docx')
-
-  let fullText = ''
-
-  if (isDOCX) {
+export async function parseVendorsFromFile(file: File) {
+  let text = ''
+  if (file.name.endsWith('.docx')) {
     const buffer = await file.arrayBuffer()
     const result = await mammoth.extractRawText({ arrayBuffer: buffer })
-    fullText = result.value
+    text = result.value
+  } else {
+    throw new Error('Only .docx files supported in this function')
   }
 
-  if (isPDF) {
-    fullText = await processPDFWithFallbacks(file)
+  const blocks = groupVendorBlocks(text)
+
+  // --- AI pass: parse each block to the right schema
+  const parsedVendors = []
+  for (const block of blocks) {
+    const prompt = `
+You will receive a vendor block with one company per block. Each block may contain:
+- Company name (may need to infer from context or file name if not explicitly listed)
+- Address (may be split across lines)
+- Phone number(s)
+- List of parts ordered (each as a line, or comma-separated)
+
+Extract as JSON:
+
+{
+  "company": "",
+  "address": "",
+  "phone_number": "",
+  "parts_ordered": []
+}
+
+• For company name, infer from block or use the most likely name from previous blocks if missing.
+• Address should combine street + city/state/ZIP.
+• Collect all part/product lines into parts_ordered (normalize to Title Case, remove duplicates).
+• Return only the JSON, no extra text.
+
+Block:
+${block}
+    `
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.1,
+      })
+      const text = response.choices[0].message.content ?? '{}'
+      // Safely extract JSON
+      const jsonStart = text.indexOf('{')
+      const vendor = JSON.parse(text.slice(jsonStart))
+      parsedVendors.push(vendor)
+    } catch (e) {
+      console.error('AI parsing error:', e)
+    }
   }
-
-  // Check if OpenAI is available for AI processing
-  if (!isOpenAIAvailable()) {
-    throw getOpenAIUnavailableError()
-  }
-
-  // Group the text into vendor blocks (2+ blank lines = separator)
-  const vendorBlocks = groupVendorBlocksFromText(fullText)
-  console.log('Found vendor blocks:', vendorBlocks.length)
-
-  // Process each block with AI to extract structured data
-  const vendors = await processVendorBlocks(vendorBlocks)
-  
-  return vendors
+  return parsedVendors
 }
