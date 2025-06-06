@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -36,6 +35,7 @@ import Chat from "@/pages/Chat";
 import Settings from "@/pages/Settings";
 import VendorsPage from "@/pages/VendorsPage";
 import VendorFormPage from "@/pages/VendorFormPage";
+import VendorImportPage from "@/pages/VendorImportPage";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -246,6 +246,8 @@ export const AppRoutes: React.FC = () => {
           </CompanyRequiredWrapper>
         </ProtectedRoute>
       } />
+      
+      <Route path="/vendor-import" element={<VendorImportPage />} />
       
       {/* Catch all route */}
       <Route path="*" element={<NotFound />} />
