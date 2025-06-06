@@ -1,5 +1,4 @@
-
-import { openai } from '../../openaiClient';
+import { getOpenAI } from '../../../utils/parsers/openaiClient';
 
 export interface VendorBlock {
   extractedData: {
@@ -25,6 +24,8 @@ export interface VendorBlock {
 
 export class EnhancedAIParser {
   async parseVendorBlock(blockContent: string): Promise<VendorBlock> {
+    const openai = getOpenAI();
+    
     if (!openai) {
       throw new Error('OpenAI client not available');
     }
