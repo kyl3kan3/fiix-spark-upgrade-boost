@@ -8,7 +8,7 @@ export const processWordText = (text: string): ProcessedText => {
   // Clean and split text into lines, preserving more structure
   const lines = text.split(/[\n\r]+/)
     .map(line => line.trim())
-    .filter(line => line.length > 1)
+    .filter(line => line.length > 0)  // Keep empty lines for page break detection
     // Remove excessive whitespace but preserve structure
     .map(line => line.replace(/\s+/g, ' '));
   
@@ -49,7 +49,7 @@ export const isServiceLine = (line: string): boolean => {
   return serviceKeywords.test(line) || listPattern.test(line);
 };
 
-// New function to detect product/item listings
+// Detect product/item listings
 export const isProductListing = (line: string): boolean => {
   // Patterns that indicate this line is part of a product catalog rather than vendor info
   const productPatterns = [
@@ -58,6 +58,7 @@ export const isProductListing = (line: string): boolean => {
     /\b(item|part|model|catalog|sku)\s*[#:]?\s*[A-Z0-9]/i, // Item numbers
     /\b\d+["']?\s*(inch|in|mm|cm|meter|ft|foot|feet)\b/i, // Measurements
     /\b(size|diameter|length|width|height)\s*[:=]\s*\d+/i, // Specifications
+    /\b(available|stocked|inventory)\b/i, // Inventory related terms
   ];
   
   return productPatterns.some(pattern => pattern.test(line));

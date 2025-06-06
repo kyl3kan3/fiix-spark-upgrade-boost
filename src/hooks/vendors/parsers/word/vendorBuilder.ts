@@ -22,6 +22,13 @@ export const createVendorBuilder = () => {
     
     consecutiveEmptyLines = 0;
 
+    // Detect if this is likely a new vendor name and there's already data
+    if (hasAnyData && currentVendor.name && isMainCompanyName(trimmedLine) && linesProcessed > 10) {
+      console.log("[Vendor Builder] Found likely new vendor name:", trimmedLine);
+      // Don't process this line now, it will be processed after resetting
+      return;
+    }
+
     const result = dataProcessor.processLine(trimmedLine, currentVendor);
     if (result.hasData) {
       hasAnyData = true;
@@ -29,6 +36,11 @@ export const createVendorBuilder = () => {
   };
 
   const shouldFinalizeVendor = (currentLine: string, nextLine: string, isLastLine: boolean): boolean => {
+    // Check if next line is likely a new vendor name and we already have data
+    if (nextLine && isMainCompanyName(nextLine) && hasAnyData && currentVendor.name) {
+      return true;
+    }
+
     return shouldFinalize(
       currentVendor,
       linesProcessed,

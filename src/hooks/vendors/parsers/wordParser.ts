@@ -31,6 +31,28 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         
         console.log('[Word Parser] Starting to process', lines.length, 'lines');
         
+        // Two-pass approach: first collect vendors with clear markers
+        let pageBreakIndices: number[] = [];
+        let lastEmptyLineCount = 0;
+        
+        // First pass - identify likely page breaks
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          
+          if (!line.trim()) {
+            lastEmptyLineCount++;
+            if (lastEmptyLineCount >= 5) {
+              pageBreakIndices.push(i);
+              lastEmptyLineCount = 0;
+            }
+          } else {
+            lastEmptyLineCount = 0;
+          }
+        }
+        
+        console.log('[Word Parser] Identified', pageBreakIndices.length, 'page breaks');
+        
+        // Process lines normally
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i];
           logger.logLineProcessing(i, line);
@@ -53,7 +75,6 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
           if (vendorBuilder.shouldFinalize(line, nextLine, isLastLine)) {
             const vendor = vendorBuilder.finalize();
             if (vendor) {
-              // Remove logo URL logic since it's not in the database
               logger.logVendorFinalized(vendor);
               vendors.push(vendor);
             }
@@ -64,7 +85,6 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         // Don't forget the last vendor if it wasn't finalized
         const finalVendor = vendorBuilder.finalize();
         if (finalVendor) {
-          // Remove logo URL logic since it's not in the database
           logger.logVendorFinalized(finalVendor);
           vendors.push(finalVendor);
         }

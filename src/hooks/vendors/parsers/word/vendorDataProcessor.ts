@@ -2,7 +2,6 @@
 import { VendorData } from './vendorDataTypes';
 import { 
   isMainCompanyName, 
-  isLikelyCompanyName, 
   isPersonName, 
   isAddressLine 
 } from './vendorValidation';
@@ -26,7 +25,7 @@ export class VendorDataProcessor {
     if (phoneNumber) {
       if (!currentVendor.phone) {
         currentVendor.phone = phoneNumber;
-      } else {
+      } else if (!currentVendor.phone.includes(phoneNumber)) {
         currentVendor.phone += ', ' + phoneNumber;
       }
       return { updated: true, hasData: true };
@@ -52,24 +51,24 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Collect product lines for description
-    if (isProductListing(trimmedLine) || isServiceLine(trimmedLine)) {
-      this.productLines.push(trimmedLine);
-      return { updated: false, hasData: true };
-    }
-
-    // Look for company name - be very strict
+    // If we don't have a company name yet but this line looks like one, use it
     if (!this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       this.hasFoundMainCompanyName = true;
       console.log('[Data Processor] Set company name:', trimmedLine);
       return { updated: true, hasData: true };
     }
-
+    
     // Look for contact person only after we have company name
     if (this.hasFoundMainCompanyName && !currentVendor.contact_person && isPersonName(trimmedLine)) {
       currentVendor.contact_person = trimmedLine;
       return { updated: true, hasData: true };
+    }
+
+    // Collect product lines for description
+    if (isProductListing(trimmedLine) || isServiceLine(trimmedLine)) {
+      this.productLines.push(trimmedLine);
+      return { updated: false, hasData: true };
     }
 
     // Mark as having data for any meaningful text
@@ -83,8 +82,8 @@ export class VendorDataProcessor {
   finalizeDescription(currentVendor: VendorData): void {
     if (this.productLines.length > 0 && !currentVendor.description) {
       const meaningfulProducts = this.productLines
-        .filter(line => line.length > 10)
-        .slice(0, 5);
+        .filter(line => line.length > 5)
+        .slice(0, 10);
       
       if (meaningfulProducts.length > 0) {
         currentVendor.description = meaningfulProducts.join('; ');

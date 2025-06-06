@@ -11,19 +11,15 @@ export const shouldFinalize = (
   isLastLine: boolean,
   isMainCompanyName: (line: string) => boolean
 ): boolean => {
-  // Don't finalize if we don't have any meaningful data
-  if (!hasAnyData) return false;
+  // Don't finalize if we don't have any meaningful data or company name
+  if (!hasAnyData || !currentVendor.name) return false;
 
   // Always finalize on last line if we have data
   if (isLastLine && hasAnyData) return true;
 
-  // Simple approach: finalize when we see a clear new company name after enough content
-  if (nextLine && isMainCompanyName(nextLine) && linesProcessed >= 10) {
-    return true;
-  }
-
-  // Finalize after significant empty space (likely page break) if we have a company name
-  if (consecutiveEmptyLines >= 5 && currentVendor.name && linesProcessed >= 8) {
+  // Only finalize on very clear page breaks (lots of empty lines) 
+  // This suggests we've moved to a new page/vendor
+  if (consecutiveEmptyLines >= 8 && currentVendor.name && linesProcessed >= 5) {
     return true;
   }
 
