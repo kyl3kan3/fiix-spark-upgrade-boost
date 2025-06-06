@@ -1,3 +1,4 @@
+
 import { getOpenAI } from '../../../../utils/parsers/openaiClient';
 
 export interface VendorBlock {
