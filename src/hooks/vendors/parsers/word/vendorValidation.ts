@@ -24,14 +24,15 @@ export const isProductLine = (line: string): boolean => {
 
 export const isLocationLine = (line: string): boolean => {
   // Detect lines like "Freeburg IL", "Chicago IL", etc. - these are NOT company names
-  return /^[A-Z][a-z]+\s+[A-Z]{2}$/i.test(line.trim());
+  const locationPattern = /^[A-Z][a-z]+\s+[A-Z]{2}$/i;
+  return locationPattern.test(line.trim());
 };
 
 export const isPersonName = (line: string): boolean => {
   const words = line.trim().split(/\s+/);
   
-  // Must be 2-4 words
-  if (words.length < 2 || words.length > 4) return false;
+  // Must be 2-3 words for a person name
+  if (words.length < 2 || words.length > 3) return false;
   
   // All words should be capitalized (First Last format)
   const allCapitalized = words.every(word => 
@@ -103,8 +104,8 @@ export const isMainCompanyName = (line: string): boolean => {
     return false;
   }
 
-  // Strong company indicators - look for business keywords
-  const hasCompanyWords = /\b(ace\s+hardware|hardware|electric|construction|supply|company|corp|corporation|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|manufacturing|technologies)\b/i.test(trimmedLine);
+  // Look for strong company indicators
+  const hasStrongCompanyWords = /\b(ace\s+hardware|hardware|electric|construction|supply|company|corp|corporation|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|manufacturing|technologies)\b/i.test(trimmedLine);
   
   // Check if it's in all caps with multiple words (common for company names in directories)
   const isAllCapsMultiWord = trimmedLine === trimmedLine.toUpperCase() && trimmedLine.split(' ').length >= 2;
@@ -112,8 +113,11 @@ export const isMainCompanyName = (line: string): boolean => {
   // Check if it's proper title case with at least 2 words
   const isTitleCase = /^[A-Z][A-Za-z\s&.,'-]*$/.test(trimmedLine) && trimmedLine.split(' ').length >= 2;
   
-  // Must have strong indicators to be considered a company name
-  const isValidCompany = (hasCompanyWords || isAllCapsMultiWord) && (isTitleCase || isAllCapsMultiWord);
+  // Must be either:
+  // 1. Has strong company indicators AND proper formatting
+  // 2. Is all caps with multiple words (directory style)
+  const isValidCompany = (hasStrongCompanyWords && (isTitleCase || isAllCapsMultiWord)) || 
+                         (isAllCapsMultiWord && trimmedLine.split(' ').length >= 2);
   
   if (isValidCompany) {
     console.log('[Validation] IDENTIFIED company name:', trimmedLine);

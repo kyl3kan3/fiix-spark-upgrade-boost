@@ -43,40 +43,28 @@ export const createVendorBuilder = () => {
       return false;
     }
 
-    // If we encounter a clear company name and we already have a vendor with data, finalize immediately
-    if (isMainCompanyName(trimmedCurrentLine) && hasAnyData && currentVendor.name && currentVendor.name !== trimmedCurrentLine && linesProcessed > 1) {
-      console.log("[Vendor Builder] Found new company name on current line, finalizing current vendor. Current:", currentVendor.name, "New:", trimmedCurrentLine);
+    // Always finalize at the end
+    if (isLastLine && hasAnyData && currentVendor.name) {
+      console.log("[Vendor Builder] End of document, finalizing vendor:", currentVendor.name);
       return true;
     }
 
-    // Also check next line for company names - but only if we have substantial data
-    if (trimmedNextLine && isMainCompanyName(trimmedNextLine) && hasAnyData && currentVendor.name && linesProcessed > 1) {
-      console.log("[Vendor Builder] Next line is company name, finalizing current vendor. Current:", currentVendor.name, "Next:", trimmedNextLine);
+    // Only finalize if we have a complete vendor AND encounter a new company name
+    if (hasAnyData && currentVendor.name && linesProcessed > 3) {
+      // Check if next line is a clear new company name (not current line)
+      if (trimmedNextLine && isMainCompanyName(trimmedNextLine) && trimmedNextLine !== currentVendor.name) {
+        console.log("[Vendor Builder] Next line is new company, finalizing current vendor. Current:", currentVendor.name, "Next:", trimmedNextLine);
+        return true;
+      }
+    }
+
+    // Only finalize on very large gaps (likely page breaks)
+    if (consecutiveEmptyLines >= 8 && hasAnyData && currentVendor.name && linesProcessed >= 5) {
+      console.log("[Vendor Builder] Large gap detected, finalizing vendor");
       return true;
     }
 
-    // If we have a vendor with a name and encounter a person name, finalize (person likely belongs to next vendor)
-    if (isPersonName(trimmedCurrentLine) && hasAnyData && currentVendor.name && linesProcessed > 2) {
-      console.log("[Vendor Builder] Found person name with existing vendor, finalizing. Current vendor:", currentVendor.name, "Person:", trimmedCurrentLine);
-      return true;
-    }
-
-    // Also finalize if we have a good amount of data and see multiple empty lines
-    if (consecutiveEmptyLines >= 3 && hasAnyData && currentVendor.name && linesProcessed >= 5) {
-      console.log("[Vendor Builder] Multiple empty lines with good data, finalizing");
-      return true;
-    }
-
-    return shouldFinalize(
-      currentVendor,
-      linesProcessed,
-      consecutiveEmptyLines,
-      hasAnyData,
-      currentLine,
-      nextLine,
-      isLastLine,
-      isMainCompanyName
-    );
+    return false;
   };
 
   const finalize = (): VendorData | null => {
