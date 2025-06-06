@@ -21,24 +21,13 @@ export class VendorDataProcessor {
     let updated = false;
     let hasData = false;
 
-    // Handle phone numbers
+    // Handle phone numbers first
     const phoneNumber = this.phoneProcessor.processPhoneNumber(trimmedLine);
     if (phoneNumber) {
       if (!currentVendor.phone) {
         currentVendor.phone = phoneNumber;
       } else {
         currentVendor.phone += ', ' + phoneNumber;
-      }
-      return { updated: true, hasData: true };
-    }
-
-    // Handle phone with context
-    const phoneWithContext = this.phoneProcessor.processPhoneWithContext(trimmedLine);
-    if (phoneWithContext) {
-      if (!currentVendor.phone) {
-        currentVendor.phone = phoneWithContext;
-      } else {
-        currentVendor.phone += ', ' + phoneWithContext;
       }
       return { updated: true, hasData: true };
     }
@@ -63,42 +52,28 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Handle product listings - collect them but don't treat as service description immediately
+    // Collect product lines for description
     if (isProductListing(trimmedLine) || isServiceLine(trimmedLine)) {
       this.productLines.push(trimmedLine);
-      console.log('[Data Processor] Added product line:', trimmedLine);
       return { updated: false, hasData: true };
     }
 
-    // Priority 1: Look for main company name first - be more strict
+    // Look for company name - be very strict
     if (!this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       this.hasFoundMainCompanyName = true;
-      console.log('[Data Processor] Set main company name:', trimmedLine);
+      console.log('[Data Processor] Set company name:', trimmedLine);
       return { updated: true, hasData: true };
     }
 
-    // Priority 2: If we have a main company name, look for contact person
+    // Look for contact person only after we have company name
     if (this.hasFoundMainCompanyName && !currentVendor.contact_person && isPersonName(trimmedLine)) {
       currentVendor.contact_person = trimmedLine;
-      console.log('[Data Processor] Set contact person:', trimmedLine);
       return { updated: true, hasData: true };
     }
 
-    // Priority 3: Only if no main company name and this looks very much like a company
-    if (!this.hasFoundMainCompanyName && isLikelyCompanyName(trimmedLine)) {
-      // Be more conservative - only if we haven't collected product lines recently
-      if (this.productLines.length < 3) {
-        currentVendor.name = trimmedLine;
-        this.hasFoundMainCompanyName = true;
-        console.log('[Data Processor] Set likely company name:', trimmedLine);
-        return { updated: true, hasData: true };
-      }
-    }
-
-    // For any other meaningful text, mark that we have data but don't add it as company info
+    // Mark as having data for any meaningful text
     if (trimmedLine.length > 2 && !trimmedLine.match(/^[^a-zA-Z]*$/)) {
-      console.log('[Data Processor] Added misc data:', trimmedLine);
       return { updated: false, hasData: true };
     }
 
@@ -106,16 +81,13 @@ export class VendorDataProcessor {
   }
 
   finalizeDescription(currentVendor: VendorData): void {
-    // If we have product lines and no description, create one from the product lines
     if (this.productLines.length > 0 && !currentVendor.description) {
-      // Take the first few meaningful product lines
       const meaningfulProducts = this.productLines
         .filter(line => line.length > 10)
         .slice(0, 5);
       
       if (meaningfulProducts.length > 0) {
         currentVendor.description = meaningfulProducts.join('; ');
-        console.log('[Data Processor] Set description from products:', currentVendor.description);
       }
     }
   }
