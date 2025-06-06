@@ -1,3 +1,4 @@
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -7,7 +8,7 @@ import {
 import LandingPage from "@/pages/LandingPage";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import CompanyRequiredWrapper from "@/components/auth/CompanyRequiredWrapper";
 import VendorsPage from "@/pages/VendorsPage";
 import NewVendorPage from "@/pages/NewVendorPage";
