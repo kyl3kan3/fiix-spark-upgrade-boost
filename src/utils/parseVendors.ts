@@ -1,4 +1,3 @@
-
 import mammoth from 'mammoth'
 import Tesseract from 'tesseract.js'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
@@ -8,10 +7,19 @@ import { groupVendorBlocks } from './groupVendorBlocks'
 // Set the worker source to use the CDN version
 GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-})
+// Initialize OpenAI client only if API key is available
+let openai: OpenAI | null = null
+try {
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY
+  if (apiKey) {
+    openai = new OpenAI({
+      apiKey,
+      dangerouslyAllowBrowser: true
+    })
+  }
+} catch (error) {
+  console.warn('OpenAI client initialization failed:', error)
+}
 
 function groupVendorBlocksFromText(text: string): string[] {
   const lines = text.split('\n')
@@ -107,6 +115,11 @@ export async function parseVendorsFromFile(file: File) {
       fullText = await extractTextFromPDF(file)
       
       if (!fullText || fullText.trim().length < 100) {
+        // Check if OpenAI is available for Vision fallback
+        if (!openai) {
+          throw new Error('OpenAI API key not configured. Cannot process scanned PDFs.')
+        }
+        
         // Fallback to Vision for scanned PDFs
         const imgPages = await renderPdfPagesToImages(file)
         
@@ -129,11 +142,24 @@ export async function parseVendorsFromFile(file: File) {
         }
         fullText = visionTexts.join('\n\n')
       }
-    } catch {
+    } catch (error) {
+      console.error('PDF processing error:', error)
       // Final fallback to Tesseract OCR
       const ocr = await Tesseract.recognize(file, 'eng')
       fullText = ocr.data.text
     }
+  }
+
+  // Check if OpenAI is available for AI processing
+  if (!openai) {
+    throw new Error(`OpenAI API key is required for vendor parsing. Please set up your OpenAI API key in the project settings.
+
+To fix this:
+1. Get your API key from OpenAI
+2. Add it to your Supabase project secrets
+3. Restart the application
+
+For now, you can only upload files that contain plain text that doesn't require AI processing.`)
   }
 
   // Group the text into vendor blocks (2+ blank lines = separator)
