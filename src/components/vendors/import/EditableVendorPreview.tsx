@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { VendorFormData } from "@/services/vendorService";
 import { Button } from "@/components/ui/button";
@@ -113,8 +112,8 @@ const EditableVendorPreview: React.FC<EditableVendorPreviewProps> = ({
         onAddVendor={addNewVendor}
       />
       
-      <ScrollArea className="h-96">
-        <div className="space-y-4 pr-4">
+      <ScrollArea className="h-[60vh]">
+        <div className="space-y-3 pr-4">
           {vendors.map((vendor, index) => (
             <VendorCard
               key={index}
