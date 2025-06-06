@@ -59,6 +59,9 @@ const Navbar = () => {
             <a href="#features" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Features</a>
             <a href="#testimonials" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Pricing</a>
+            {isLoggedIn && (
+              <a href="/debug-vendor" className="text-gray-700 hover:text-maintenease-600 font-medium transition-colors">Debug Vendor</a>
+            )}
           </div>
           <div className="flex items-center space-x-3">
             {isLoggedIn ? (
@@ -104,6 +107,9 @@ const Navbar = () => {
             <a href="#features" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Features</a>
             <a href="#testimonials" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
+            {isLoggedIn && (
+              <a href="/debug-vendor" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Debug Vendor</a>
+            )}
             <div className="flex flex-col space-y-3 pt-2">
               {isLoggedIn ? (
                 <>
