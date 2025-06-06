@@ -3,292 +3,158 @@ export interface DocumentBlock {
   content: string;
   startLine: number;
   endLine: number;
+  type: 'vendor' | 'header' | 'footer' | 'product_list';
   confidence: number;
-  blockType: 'vendor' | 'header' | 'footer' | 'separator' | 'unknown';
 }
 
 export class ImprovedDocumentSegmenter {
   segmentDocument(lines: string[]): DocumentBlock[] {
-    const cleanLines = this.preprocessLines(lines);
-    const rawBlocks = this.performInitialSegmentation(cleanLines);
-    const typedBlocks = this.classifyBlocks(rawBlocks);
-    const mergedBlocks = this.mergeRelatedBlocks(typedBlocks);
-    const finalBlocks = this.filterAndValidateBlocks(mergedBlocks);
+    console.log('[Improved Segmenter] Starting segmentation of', lines.length, 'lines');
     
-    console.log('[Improved Segmenter] Processed', lines.length, 'lines into', finalBlocks.length, 'vendor blocks');
-    
-    return finalBlocks;
-  }
-
-  private preprocessLines(lines: string[]): Array<{content: string, index: number}> {
-    return lines
-      .map((line, index) => ({ content: line.trim(), index }))
-      .filter(item => item.content.length > 0)
-      .filter(item => !this.isPageHeader(item.content))
-      .filter(item => !this.isPageFooter(item.content));
-  }
-
-  private performInitialSegmentation(lines: Array<{content: string, index: number}>): DocumentBlock[] {
     const blocks: DocumentBlock[] = [];
     let currentBlock: string[] = [];
-    let currentStartIndex = 0;
-    let lastIndex = -1;
-
+    let currentStartLine = 0;
+    let consecutiveEmptyLines = 0;
+    
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const gapSize = line.index - lastIndex - 1;
-
-      // Start new block on large gaps or strong vendor indicators
-      if (this.shouldStartNewBlock(line.content, gapSize, currentBlock.length > 0)) {
-        if (currentBlock.length > 0) {
+      const line = lines[i].trim();
+      
+      if (!line) {
+        consecutiveEmptyLines++;
+        continue;
+      }
+      
+      // Check if this line starts a new vendor block
+      const isNewVendorStart = this.isVendorStartLine(line, i, lines);
+      
+      // If we have accumulated content and this looks like a new vendor, save the current block
+      if (currentBlock.length > 0 && (isNewVendorStart || consecutiveEmptyLines >= 2)) {
+        const blockContent = currentBlock.join('\n').trim();
+        if (blockContent.length > 10) { // Only include substantial blocks
           blocks.push({
-            content: currentBlock.join('\n'),
-            startLine: currentStartIndex,
-            endLine: lastIndex,
-            confidence: 0.5,
-            blockType: 'unknown'
+            content: blockContent,
+            startLine: currentStartLine,
+            endLine: i - 1,
+            type: 'vendor',
+            confidence: this.calculateBlockConfidence(blockContent)
           });
         }
-        
-        currentBlock = [line.content];
-        currentStartIndex = line.index;
-      } else {
-        currentBlock.push(line.content);
+        currentBlock = [];
+        currentStartLine = i;
       }
-
-      lastIndex = line.index;
+      
+      // Reset consecutive empty lines counter
+      consecutiveEmptyLines = 0;
+      
+      // Skip obvious headers/footers
+      if (this.isHeaderOrFooter(line)) {
+        continue;
+      }
+      
+      // Add line to current block
+      currentBlock.push(line);
+      
+      // If we haven't started a block yet, mark the start
+      if (currentBlock.length === 1) {
+        currentStartLine = i;
+      }
     }
-
+    
     // Don't forget the last block
     if (currentBlock.length > 0) {
-      blocks.push({
-        content: currentBlock.join('\n'),
-        startLine: currentStartIndex,
-        endLine: lastIndex,
-        confidence: 0.5,
-        blockType: 'unknown'
-      });
-    }
-
-    return blocks;
-  }
-
-  private shouldStartNewBlock(currentLine: string, gapSize: number, hasExistingBlock: boolean): boolean {
-    // Large gap indicates new section
-    if (gapSize >= 3) {
-      return true;
-    }
-
-    // Strong company name at start of line
-    if (hasExistingBlock && this.isVeryStrongCompanyName(currentLine)) {
-      return true;
-    }
-
-    // Pattern change detection
-    if (hasExistingBlock && this.indicatesNewVendor(currentLine)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private classifyBlocks(blocks: DocumentBlock[]): DocumentBlock[] {
-    return blocks.map(block => ({
-      ...block,
-      blockType: this.determineBlockType(block.content),
-      confidence: this.calculateBlockConfidence(block.content)
-    }));
-  }
-
-  private determineBlockType(content: string): 'vendor' | 'header' | 'footer' | 'separator' | 'unknown' {
-    const lines = content.split('\n').map(line => line.trim());
-    
-    // Check for vendor indicators
-    const hasCompanyName = lines.some(line => this.isVeryStrongCompanyName(line));
-    const hasContactInfo = lines.some(line => this.hasContactInfo(line));
-    const hasAddress = lines.some(line => this.hasAddressInfo(line));
-    
-    if (hasCompanyName && (hasContactInfo || hasAddress)) {
-      return 'vendor';
-    }
-
-    // Check for headers/footers
-    if (content.length < 50 && this.isHeaderFooterContent(content)) {
-      return this.isPageHeader(content) ? 'header' : 'footer';
-    }
-
-    // Check for separators
-    if (this.isSeparatorContent(content)) {
-      return 'separator';
-    }
-
-    return 'unknown';
-  }
-
-  private mergeRelatedBlocks(blocks: DocumentBlock[]): DocumentBlock[] {
-    const merged: DocumentBlock[] = [];
-    
-    for (let i = 0; i < blocks.length; i++) {
-      const currentBlock = blocks[i];
-      const nextBlock = blocks[i + 1];
-      
-      // Merge small adjacent vendor-related blocks
-      if (nextBlock && 
-          this.shouldMergeBlocks(currentBlock, nextBlock)) {
-        
-        const mergedContent = currentBlock.content + '\n' + nextBlock.content;
-        merged.push({
-          content: mergedContent,
-          startLine: currentBlock.startLine,
-          endLine: nextBlock.endLine,
-          confidence: Math.max(currentBlock.confidence, nextBlock.confidence),
-          blockType: 'vendor'
+      const blockContent = currentBlock.join('\n').trim();
+      if (blockContent.length > 10) {
+        blocks.push({
+          content: blockContent,
+          startLine: currentStartLine,
+          endLine: lines.length - 1,
+          type: 'vendor',
+          confidence: this.calculateBlockConfidence(blockContent)
         });
-        
-        i++; // Skip the next block since we merged it
-      } else {
-        merged.push(currentBlock);
       }
     }
     
-    return merged;
+    console.log('[Improved Segmenter] Processed', lines.length, 'lines into', blocks.length, 'vendor blocks');
+    return blocks;
   }
-
-  private shouldMergeBlocks(block1: DocumentBlock, block2: DocumentBlock): boolean {
-    // Don't merge if either is too large
-    if (block1.content.length > 300 || block2.content.length > 300) {
-      return false;
-    }
-
-    // Merge if first block has company name but lacks contact info,
-    // and second block has contact info
-    const block1HasCompany = this.hasStrongCompanyName(block1.content);
-    const block1HasContact = this.hasContactInfo(block1.content);
-    const block2HasContact = this.hasContactInfo(block2.content);
+  
+  private isVendorStartLine(line: string, index: number, lines: string[]): boolean {
+    // Company name patterns - be more aggressive in detecting these
+    const companyPatterns = [
+      // Company suffixes
+      /\b(inc\.?|llc\.?|corp\.?|ltd\.?|company|co\.?)\s*$/i,
+      // Business name patterns
+      /^[A-Z][A-Z\s&\-\.]+(?:INC\.?|LLC\.?|CORP\.?|LTD\.?|COMPANY|CO\.?)?\s*$/,
+      // All caps business names (common in vendor lists)
+      /^[A-Z][A-Z\s&\-\.\,]+[A-Z]$/,
+      // Names with common business words
+      /\b(services|systems|supply|electric|fire|protection|refrigeration|hardware|quarry|sanitation|oil|burglary|insulation|masters)\b/i,
+      // Names that start with uppercase and contain business indicators
+      /^[A-Z].*(services|systems|supply|solutions|group|enterprises|industries)/i
+    ];
     
-    if (block1HasCompany && !block1HasContact && block2HasContact) {
-      return true;
-    }
-
-    // Merge if blocks are small and related
-    if (block1.content.length < 100 && block2.content.length < 100) {
-      const combinedHasVendorSignals = this.hasStrongCompanyName(block1.content + '\n' + block2.content) ||
-                                       this.hasContactInfo(block1.content + '\n' + block2.content);
-      return combinedHasVendorSignals;
-    }
-
-    return false;
-  }
-
-  private filterAndValidateBlocks(blocks: DocumentBlock[]): DocumentBlock[] {
-    return blocks
-      .filter(block => block.blockType === 'vendor')
-      .filter(block => block.confidence >= 0.3)
-      .filter(block => block.content.length >= 20)
-      .filter(block => this.hasMinimumVendorContent(block.content));
-  }
-
-  private hasMinimumVendorContent(content: string): boolean {
-    const hasCompanyName = this.hasStrongCompanyName(content);
-    const hasContactInfo = this.hasContactInfo(content);
-    const hasAddress = this.hasAddressInfo(content);
+    // Check if line matches company patterns
+    const matchesCompanyPattern = companyPatterns.some(pattern => pattern.test(line));
     
-    // Must have at least company name plus one other piece of info
-    return hasCompanyName && (hasContactInfo || hasAddress);
-  }
-
-  private isVeryStrongCompanyName(line: string): boolean {
-    if (line.length < 5 || line.length > 100) return false;
+    // Additional context checks
+    const nextLine = index < lines.length - 1 ? lines[index + 1].trim() : '';
+    const prevLine = index > 0 ? lines[index - 1].trim() : '';
     
-    const businessWords = /\b(ace\s+hardware|hardware|supply|company|corp|corporation|inc|incorporated|llc|ltd|limited|services|solutions|manufacturing|electric|construction|enterprises|industries)\b/i;
-    const isAllCaps = line === line.toUpperCase() && line.split(' ').length >= 2;
-    const isTitleCase = /^[A-Z][A-Za-z\s&.,'-]*$/.test(line);
+    // If next line looks like an address, this is likely a company name
+    const nextLooksLikeAddress = this.looksLikeAddress(nextLine);
     
-    return businessWords.test(line) && (isAllCaps || isTitleCase);
-  }
-
-  private hasStrongCompanyName(content: string): boolean {
-    return content.split('\n').some(line => this.isVeryStrongCompanyName(line.trim()));
-  }
-
-  private hasContactInfo(content: string): boolean {
-    const phonePattern = /(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/;
-    const emailPattern = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/;
-    const websitePattern = /(https?:\/\/[^\s]+|www\.[^\s]+)/;
+    // If previous line was empty or very short, this could be a new vendor
+    const goodSeparation = !prevLine || prevLine.length < 10;
     
-    return phonePattern.test(content) || emailPattern.test(content) || websitePattern.test(content);
+    return matchesCompanyPattern || (nextLooksLikeAddress && goodSeparation);
   }
-
-  private hasAddressInfo(content: string): boolean {
+  
+  private looksLikeAddress(line: string): boolean {
     const addressPatterns = [
-      /^\d+\s+[A-Za-z]/m,  // Street number + name
-      /\b[A-Z]{2}\s+\d{5}(-\d{4})?$/m,  // State + ZIP
-      /\b(street|st|avenue|ave|drive|dr|road|rd|lane|ln|boulevard|blvd)\b/i,
+      /^\d+\s+[A-Za-z]/,  // Starts with number and street name
+      /\b(street|st\.?|avenue|ave\.?|road|rd\.?|drive|dr\.?|lane|ln\.?|blvd|boulevard|way|place|pl\.?)\b/i,
+      /\b(p\.?o\.?\s*box|po\s*box)\s*\d+/i,  // PO Box
+      /^\d+\s+[A-Z]/  // Number followed by uppercase (street address)
     ];
     
-    return addressPatterns.some(pattern => pattern.test(content));
+    return addressPatterns.some(pattern => pattern.test(line));
   }
-
-  private indicatesNewVendor(line: string): boolean {
-    return this.isVeryStrongCompanyName(line) && !this.isPageHeader(line);
-  }
-
-  private isPageHeader(content: string): boolean {
-    const headerPatterns = [
+  
+  private isHeaderOrFooter(line: string): boolean {
+    const headerFooterPatterns = [
       /^page\s+\d+/i,
-      /^vendor\s+(list|directory)/i,
-      /^contact\s+information/i,
-      /^business\s+directory/i,
+      /^\d+\s*$/,  // Just page numbers
+      /vendor\s+list/i,
+      /company\s+directory/i,
+      /contact\s+information/i,
+      /^[-=_]{3,}$/  // Separator lines
     ];
     
-    return headerPatterns.some(pattern => pattern.test(content.trim()));
+    return headerFooterPatterns.some(pattern => pattern.test(line)) || line.length < 3;
   }
-
-  private isPageFooter(content: string): boolean {
-    const footerPatterns = [
-      /^page\s+\d+\s+of\s+\d+/i,
-      /^\d+$/,  // Just a number
-      /^continued/i,
-    ];
-    
-    return footerPatterns.some(pattern => pattern.test(content.trim()));
-  }
-
-  private isHeaderFooterContent(content: string): boolean {
-    return this.isPageHeader(content) || this.isPageFooter(content);
-  }
-
-  private isSeparatorContent(content: string): boolean {
-    const separatorPatterns = [
-      /^[-=_]{3,}$/,
-      /^\*{3,}$/,
-      /^\.{3,}$/,
-    ];
-    
-    return separatorPatterns.some(pattern => pattern.test(content.trim()));
-  }
-
+  
   private calculateBlockConfidence(content: string): number {
-    let score = 0;
-    let maxScore = 0;
-
-    // Company name presence
-    maxScore += 0.4;
-    if (this.hasStrongCompanyName(content)) score += 0.4;
-
-    // Contact information
-    maxScore += 0.3;
-    if (this.hasContactInfo(content)) score += 0.3;
-
-    // Address information
-    maxScore += 0.2;
-    if (this.hasAddressInfo(content)) score += 0.2;
-
-    // Content quality
-    maxScore += 0.1;
-    const lines = content.split('\n').filter(line => line.trim().length > 0);
-    if (lines.length >= 2 && lines.length <= 10) score += 0.1;
-
-    return Math.min(score / maxScore, 1.0);
+    let confidence = 0.5; // Base confidence
+    
+    // Boost confidence for company indicators
+    if (/\b(inc\.?|llc\.?|corp\.?|ltd\.?|company|co\.?)\b/i.test(content)) {
+      confidence += 0.2;
+    }
+    
+    // Boost for contact information
+    if (/\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/.test(content)) {
+      confidence += 0.15; // Phone number
+    }
+    
+    if (/@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(content)) {
+      confidence += 0.15; // Email
+    }
+    
+    // Boost for address-like content
+    if (/\b(street|st\.?|avenue|ave\.?|road|rd\.?|drive|dr\.?)\b/i.test(content)) {
+      confidence += 0.1;
+    }
+    
+    return Math.min(confidence, 1.0);
   }
 }
