@@ -5,17 +5,17 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import LandingPage from "@/pages/LandingPage";
-import AuthPage from "@/pages/AuthPage";
-import DashboardPage from "@/pages/DashboardPage";
+import LandingPage from "@/pages/Index";
+import AuthPage from "@/pages/Auth";
+import DashboardPage from "@/pages/Dashboard";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import CompanyRequiredWrapper from "@/components/auth/CompanyRequiredWrapper";
+import CompanyRequiredWrapper from "@/components/common/CompanyRequiredWrapper";
 import VendorsPage from "@/pages/VendorsPage";
-import NewVendorPage from "@/pages/NewVendorPage";
-import EditVendorPage from "@/pages/EditVendorPage";
-import TeamPage from "@/pages/TeamPage";
-import NewTeamMemberPage from "@/pages/NewTeamMemberPage";
-import EditTeamMemberPage from "@/pages/EditTeamMemberPage";
+import NewVendorPage from "@/pages/VendorFormPage";
+import EditVendorPage from "@/pages/VendorFormPage";
+import TeamPage from "@/pages/Team";
+import NewTeamMemberPage from "@/pages/TeamSetup";
+import EditTeamMemberPage from "@/pages/TeamSetup";
 import ProfilePage from "@/pages/ProfilePage";
 import DebugVendorPage from "@/pages/DebugVendorPage";
 import VendorImportPage from "@/pages/VendorImportPage";
