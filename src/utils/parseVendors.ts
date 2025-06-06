@@ -1,6 +1,6 @@
 
 import mammoth from 'mammoth'
-import { openai, isOpenAIAvailable, getOpenAIUnavailableError } from './parsers/openaiClient'
+import { getOpenAI, isOpenAIAvailable, getOpenAIUnavailableError } from './parsers/openaiClient'
 import { groupVendorBlocks } from './groupVendorBlocks'
 
 export async function parseVendorsFromFile(file: File) {
@@ -17,6 +17,8 @@ export async function parseVendorsFromFile(file: File) {
   if (!isOpenAIAvailable()) {
     throw getOpenAIUnavailableError()
   }
+
+  const openai = getOpenAI()!
 
   const blocks = groupVendorBlocks(text)
 
@@ -48,7 +50,7 @@ Block:
 ${block}
     `
     try {
-      const response = await openai!.chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.1,

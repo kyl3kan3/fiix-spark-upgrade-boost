@@ -4,30 +4,39 @@ import OpenAI from 'openai'
 // Initialize OpenAI client only if API key is available
 let openai: OpenAI | null = null
 
-try {
-  // Try to get API key from environment variables (Supabase secrets are exposed as VITE_ variables)
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY || 
-                 import.meta.env.OPENAI_API_KEY ||
-                 // Fallback: try accessing from global if available
-                 (window as any).__SUPABASE_SECRETS__?.OPENAI_API_KEY
-  
-  if (apiKey) {
-    openai = new OpenAI({
-      apiKey,
-      dangerouslyAllowBrowser: true
-    })
-    console.log('OpenAI client initialized successfully')
-  } else {
-    console.warn('No OpenAI API key found in environment variables')
+const initializeOpenAI = () => {
+  if (openai) return openai
+
+  try {
+    // Try to get API key from environment variables (Supabase secrets are exposed as VITE_ variables)
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY || 
+                   import.meta.env.OPENAI_API_KEY ||
+                   // Fallback: try accessing from global if available
+                   (window as any).__SUPABASE_SECRETS__?.OPENAI_API_KEY
+    
+    if (apiKey) {
+      openai = new OpenAI({
+        apiKey,
+        dangerouslyAllowBrowser: true
+      })
+      console.log('OpenAI client initialized successfully')
+      return openai
+    } else {
+      console.warn('No OpenAI API key found in environment variables')
+      return null
+    }
+  } catch (error) {
+    console.warn('OpenAI client initialization failed:', error)
+    return null
   }
-} catch (error) {
-  console.warn('OpenAI client initialization failed:', error)
 }
 
-export { openai }
+export function getOpenAI(): OpenAI | null {
+  return initializeOpenAI()
+}
 
 export function isOpenAIAvailable(): boolean {
-  return openai !== null
+  return getOpenAI() !== null
 }
 
 export function getOpenAIUnavailableError(): Error {
@@ -40,3 +49,6 @@ This might be a configuration issue. Please try:
 
 If the issue persists, you can only upload files that contain plain text that doesn't require AI processing.`)
 }
+
+// Export the lazy-initialized client
+export { openai }
