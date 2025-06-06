@@ -3,15 +3,45 @@ import pdf from 'pdf-parse'
 import mammoth from 'mammoth'
 import Tesseract from 'tesseract.js'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import OpenAI from 'openai'
 
-GlobalWorkerOptions.workerSrc = pdfjsWorker
+// Set the worker source to use the CDN version
+GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true
 })
+
+function groupVendorBlocks(text: string): string[] {
+  const lines = text.split('\n')
+  const blocks: string[] = []
+  let currentBlock: string[] = []
+  let blankLineCount = 0
+
+  for (const line of lines) {
+    const trimmedLine = line.trim()
+    
+    if (!trimmedLine) {
+      blankLineCount++
+      // If we hit 2+ blank lines and have content, finalize the block
+      if (blankLineCount >= 2 && currentBlock.length > 0) {
+        blocks.push(currentBlock.join('\n'))
+        currentBlock = []
+      }
+    } else {
+      blankLineCount = 0
+      currentBlock.push(trimmedLine)
+    }
+  }
+
+  // Don't forget the last block
+  if (currentBlock.length > 0) {
+    blocks.push(currentBlock.join('\n'))
+  }
+
+  return blocks.filter(block => block.trim().length > 10) // Filter out tiny blocks
+}
 
 export async function renderPdfPagesToImages(file: File): Promise<string[]> {
   const buffer = await file.arrayBuffer()
@@ -43,12 +73,12 @@ export async function parseVendorsFromFile(file: File) {
   const isPDF = file.name.endsWith('.pdf')
   const isDOCX = file.name.endsWith('.docx')
 
-  let vendorTexts: string[] = []
+  let fullText = ''
 
   if (isDOCX) {
     const buffer = await file.arrayBuffer()
     const result = await mammoth.extractRawText({ arrayBuffer: buffer })
-    vendorTexts = result.value.split('\n\n').map(b => b.trim()).filter(Boolean)
+    fullText = result.value
   }
 
   if (isPDF) {
@@ -59,11 +89,12 @@ export async function parseVendorsFromFile(file: File) {
       // Try text extraction first
       const parsed = await pdf(await blob.arrayBuffer())
       if (parsed.text && parsed.text.trim().length > 100) {
-        vendorTexts = parsed.text.split('\n\n').map(b => b.trim()).filter(Boolean)
+        fullText = parsed.text
       } else {
         // Fallback to Vision for scanned PDFs
         const imgPages = await renderPdfPagesToImages(file)
         
+        const visionTexts = []
         for (const dataUrl of imgPages) {
           const response = await openai.chat.completions.create({
             model: 'gpt-4-vision-preview',
@@ -71,71 +102,96 @@ export async function parseVendorsFromFile(file: File) {
               {
                 role: 'user',
                 content: [
-                  { type: 'text', text: 'Extract vendor name, address, phone, email, notes as JSON.' },
+                  { type: 'text', text: 'Extract all text from this image, preserving line breaks and spacing. Return only the text content.' },
                   { type: 'image_url', image_url: { url: dataUrl } }
                 ]
               }
             ],
-            temperature: 0.2,
+            temperature: 0.1,
           })
-          vendorTexts.push(response.choices[0].message.content || '')
+          visionTexts.push(response.choices[0].message.content || '')
         }
+        fullText = visionTexts.join('\n\n')
       }
     } catch {
       // Final fallback to Tesseract OCR
       const ocr = await Tesseract.recognize(blob, 'eng')
-      vendorTexts = ocr.data.text.split('\n\n').map(b => b.trim()).filter(Boolean)
+      fullText = ocr.data.text
     }
   }
 
-  // Process text into rough vendor structure
-  const roughVendors = vendorTexts.map((text) => {
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
-    const vendor: any = {
-      name: lines[0] || '',
-      address: null,
-      phone: [],
-      email: [],
-      notes: [],
-      error_flag: false
-    }
-    
-    for (const line of lines.slice(1)) {
-      const clean = line.trim()
-      if (/\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/.test(clean)) {
-        vendor.phone.push(clean)
-      } else if (/@/.test(clean)) {
-        vendor.email.push(clean)
-      } else if (!vendor.address && /\d+/.test(clean)) {
-        vendor.address = clean
-      } else {
-        vendor.notes.push(clean)
-      }
-    }
-    
-    // Set error flag if missing critical data
-    if (!vendor.name || vendor.name.length < 2) {
-      vendor.error_flag = true
-    }
-    
-    return vendor
-  }).filter(v => v.name) // Remove empty entries
+  // Group the text into vendor blocks (2+ blank lines = separator)
+  const vendorBlocks = groupVendorBlocks(fullText)
+  console.log('Found vendor blocks:', vendorBlocks.length)
 
-  // AI Cleanup Step with GPT-4
-  const prompt = `Clean and standardize this list of vendor entries. Ensure each object has: name, address, phone[], email[], notes[], error_flag (boolean). Return JSON array only:\n\n${JSON.stringify(roughVendors, null, 2)}`
+  // Process each block with AI to extract structured data
+  const vendors = []
   
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.2
-    })
-    const raw = response.choices[0].message.content || ''
-    const jsonStart = raw.indexOf('[')
-    const cleaned = JSON.parse(raw.slice(jsonStart))
-    return cleaned
-  } catch (err) {
-    console.error('AI cleanup failed:', err)
-    return roughVendors
+  for (const block of vendorBlocks) {
+    try {
+      const prompt = `You will receive a vendor block with one company per block. Each block may contain:
+- Company name (may need to infer from context if not explicitly listed)
+- Address (may be split across lines)
+- Phone number(s)
+- Email address(es)
+- Contact person name
+- List of parts/services (each as a line, or comma-separated)
+
+Extract as JSON:
+
+{
+  "name": "",
+  "address": "",
+  "phone": "",
+  "email": "",
+  "contact_person": "",
+  "description": ""
+}
+
+• For company name, use the most prominent business name in the block
+• Address should combine street + city/state/ZIP into one field
+• Phone should be the primary phone number
+• Email should be the primary email address
+• Contact person should be any person's name mentioned
+• Description should include parts/services offered
+• Return only the JSON, no extra text
+
+Block:
+${block}`
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.1
+      })
+
+      const content = response.choices[0].message.content || ''
+      const jsonStart = content.indexOf('{')
+      const jsonEnd = content.lastIndexOf('}') + 1
+      
+      if (jsonStart >= 0 && jsonEnd > jsonStart) {
+        const jsonStr = content.slice(jsonStart, jsonEnd)
+        const vendor = JSON.parse(jsonStr)
+        
+        // Add error flag if missing critical data
+        vendor.error_flag = !vendor.name || vendor.name.length < 2
+        
+        vendors.push(vendor)
+      }
+    } catch (err) {
+      console.error('Failed to parse vendor block:', err)
+      // Create a basic vendor entry for failed blocks
+      vendors.push({
+        name: 'Parse Error',
+        address: '',
+        phone: '',
+        email: '',
+        contact_person: '',
+        description: block.substring(0, 100) + '...',
+        error_flag: true
+      })
+    }
   }
+
+  return vendors.filter(v => v.name && v.name !== 'Parse Error') // Remove failed entries
 }
