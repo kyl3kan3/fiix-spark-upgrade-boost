@@ -6,20 +6,57 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FieldMapper } from "./FieldMapper";
 
 interface VendorCardFieldsProps {
   vendor: VendorFormData;
   index: number;
   onFieldChange: (field: keyof VendorFormData, value: any) => void;
+  onFieldRemap?: (fromField: keyof VendorFormData, toField: keyof VendorFormData, value: string) => void;
 }
 
 export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
   vendor,
   index,
   onFieldChange,
+  onFieldRemap,
 }) => {
+  const handleFieldRemap = (currentField: keyof VendorFormData, newField: keyof VendorFormData, value: string) => {
+    if (onFieldRemap) {
+      onFieldRemap(currentField, newField, value);
+    }
+  };
+
+  const clearField = (field: keyof VendorFormData) => {
+    onFieldChange(field, "");
+  };
+
   return (
     <CardContent className="space-y-4">
+      {/* Field Mapping Section */}
+      {onFieldRemap && (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium text-gray-700">Field Mapping</Label>
+          <div className="space-y-1">
+            {Object.entries(vendor).map(([field, value]) => {
+              if (typeof value === "string" && value.trim() && field !== "vendor_type" && field !== "status") {
+                return (
+                  <FieldMapper
+                    key={field}
+                    fieldValue={value}
+                    currentField={field as keyof VendorFormData}
+                    onFieldChange={(newField, val) => handleFieldRemap(field as keyof VendorFormData, newField, val)}
+                    onClearField={() => clearField(field as keyof VendorFormData)}
+                  />
+                );
+              }
+              return null;
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Regular Form Fields */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor={`name-${index}`}>Company Name *</Label>

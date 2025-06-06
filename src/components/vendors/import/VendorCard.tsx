@@ -11,6 +11,7 @@ interface VendorCardProps {
   index: number;
   isDragging: boolean;
   onFieldChange: (field: keyof VendorFormData, value: any) => void;
+  onFieldRemap?: (fromField: keyof VendorFormData, toField: keyof VendorFormData, value: string) => void;
   onRemoveVendor: () => void;
   onDragStart: () => void;
   onDragEnd: () => void;
@@ -22,6 +23,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({
   index,
   isDragging,
   onFieldChange,
+  onFieldRemap,
   onRemoveVendor,
   onDragStart,
   onDragEnd,
@@ -46,6 +48,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({
           vendor={vendor}
           index={index}
           onFieldChange={onFieldChange}
+          onFieldRemap={onFieldRemap}
         />
       </Card>
     </Draggable>

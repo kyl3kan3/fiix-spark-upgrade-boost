@@ -26,6 +26,23 @@ const EditableVendorPreview: React.FC<EditableVendorPreviewProps> = ({
     onDataChange(updatedVendors);
   };
 
+  const handleFieldRemap = (index: number, fromField: keyof VendorFormData, toField: keyof VendorFormData, value: string) => {
+    const updatedVendors = [...vendors];
+    const vendor = { ...updatedVendors[index] };
+    
+    // Clear the old field
+    (vendor as any)[fromField] = "";
+    
+    // Set the new field, combining with existing value if any
+    const existingValue = (vendor as any)[toField] || "";
+    const newValue = existingValue ? `${existingValue}, ${value}` : value;
+    (vendor as any)[toField] = newValue;
+    
+    updatedVendors[index] = vendor;
+    setVendors(updatedVendors);
+    onDataChange(updatedVendors);
+  };
+
   const removeVendor = (index: number) => {
     const updatedVendors = vendors.filter((_, i) => i !== index);
     setVendors(updatedVendors);
@@ -105,6 +122,7 @@ const EditableVendorPreview: React.FC<EditableVendorPreviewProps> = ({
               index={index}
               isDragging={draggedIndex === index}
               onFieldChange={(field, value) => updateVendor(index, field, value)}
+              onFieldRemap={(fromField, toField, value) => handleFieldRemap(index, fromField, toField, value)}
               onRemoveVendor={() => removeVendor(index)}
               onDragStart={() => handleDragStart(index)}
               onDragEnd={handleDragEnd}
