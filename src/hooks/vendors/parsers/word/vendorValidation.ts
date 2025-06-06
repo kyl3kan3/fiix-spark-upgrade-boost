@@ -50,17 +50,26 @@ export const isMainCompanyName = (line: string): boolean => {
     return false;
   }
 
-  // Look for strong company indicators - be very strict
+  // Strong company indicators - look for business keywords
   const hasCompanyWords = /\b(company|corp|corporation|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|supply|hardware|electric|construction|engineering|manufacturing|technologies)\b/i.test(line);
   
-  // Check if it's in all caps (common for company names in directories)
-  const isAllCaps = line === line.toUpperCase() && line.split(' ').length >= 2;
+  // Check if it's in all caps with multiple words (common for company names in directories)
+  const isAllCapsMultiWord = line === line.toUpperCase() && line.split(' ').length >= 2;
   
   // Check if it's proper title case with at least 2 words
   const isTitleCase = /^[A-Z][A-Za-z\s&.,'-]*$/.test(line) && line.split(' ').length >= 2;
   
+  // IMPORTANT: Exclude obvious person names (First Last format)
+  const isPersonNamePattern = /^[A-Z][a-z]+\s+[A-Z][a-z]+$/.test(line) && 
+    !hasCompanyWords && 
+    line.split(' ').length === 2;
+  
+  if (isPersonNamePattern) {
+    return false;
+  }
+  
   // Must have strong indicators to be considered a company name
-  return (hasCompanyWords || isAllCaps) && isTitleCase;
+  return (hasCompanyWords || isAllCapsMultiWord) && (isTitleCase || isAllCapsMultiWord);
 };
 
 export const isLikelyCompanyName = (line: string): boolean => {

@@ -22,9 +22,9 @@ export const createVendorBuilder = () => {
     
     consecutiveEmptyLines = 0;
 
-    // Detect if this is likely a new vendor name and there's already data
-    if (hasAnyData && currentVendor.name && isMainCompanyName(trimmedLine) && linesProcessed > 10) {
-      console.log("[Vendor Builder] Found likely new vendor name:", trimmedLine);
+    // More aggressive vendor separation: if we find a clear company name and already have a vendor with data
+    if (hasAnyData && currentVendor.name && isMainCompanyName(trimmedLine) && linesProcessed > 3) {
+      console.log("[Vendor Builder] Found new company name, should finalize current vendor:", trimmedLine);
       // Don't process this line now, it will be processed after resetting
       return;
     }
@@ -36,8 +36,15 @@ export const createVendorBuilder = () => {
   };
 
   const shouldFinalizeVendor = (currentLine: string, nextLine: string, isLastLine: boolean): boolean => {
-    // Check if next line is likely a new vendor name and we already have data
-    if (nextLine && isMainCompanyName(nextLine) && hasAnyData && currentVendor.name) {
+    // More aggressive finalization when we encounter a new company name
+    if (nextLine && isMainCompanyName(nextLine) && hasAnyData && currentVendor.name && linesProcessed > 3) {
+      console.log("[Vendor Builder] Next line is company name, finalizing current vendor");
+      return true;
+    }
+
+    // Also finalize if we have a good amount of data and see multiple empty lines
+    if (consecutiveEmptyLines >= 3 && hasAnyData && currentVendor.name && linesProcessed >= 5) {
+      console.log("[Vendor Builder] Multiple empty lines with good data, finalizing");
       return true;
     }
 

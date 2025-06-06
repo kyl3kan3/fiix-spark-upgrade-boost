@@ -45,13 +45,13 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
 
-    // Handle address lines
-    if (isAddressLine(trimmedLine)) {
+    // Handle address lines - but be more careful about vendor separation
+    if (isAddressLine(trimmedLine) && this.hasFoundMainCompanyName) {
       currentVendor.address = this.dataExtractor.addAddressInfo(currentVendor.address, trimmedLine);
       return { updated: true, hasData: true };
     }
 
-    // If we don't have a company name yet but this line looks like one, use it
+    // If we don't have a company name yet and this line looks like one, use it
     if (!this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine)) {
       currentVendor.name = trimmedLine;
       this.hasFoundMainCompanyName = true;
@@ -59,20 +59,21 @@ export class VendorDataProcessor {
       return { updated: true, hasData: true };
     }
     
-    // Look for contact person only after we have company name
+    // Look for contact person only after we have company name and only if it's clearly a person name
     if (this.hasFoundMainCompanyName && !currentVendor.contact_person && isPersonName(trimmedLine)) {
       currentVendor.contact_person = trimmedLine;
+      console.log('[Data Processor] Set contact person:', trimmedLine);
       return { updated: true, hasData: true };
     }
 
-    // Collect product lines for description
-    if (isProductListing(trimmedLine) || isServiceLine(trimmedLine)) {
+    // Collect product lines for description (only after we have a company name)
+    if (this.hasFoundMainCompanyName && (isProductListing(trimmedLine) || isServiceLine(trimmedLine))) {
       this.productLines.push(trimmedLine);
       return { updated: false, hasData: true };
     }
 
-    // Mark as having data for any meaningful text
-    if (trimmedLine.length > 2 && !trimmedLine.match(/^[^a-zA-Z]*$/)) {
+    // Mark as having data for any meaningful text (but only if we have a company name)
+    if (this.hasFoundMainCompanyName && trimmedLine.length > 2 && !trimmedLine.match(/^[^a-zA-Z]*$/)) {
       return { updated: false, hasData: true };
     }
 
