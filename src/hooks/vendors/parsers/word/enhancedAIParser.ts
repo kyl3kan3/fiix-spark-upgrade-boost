@@ -1,4 +1,4 @@
-import { getOpenAI } from '../../../utils/parsers/openaiClient';
+import { getOpenAI } from '../../../../utils/parsers/openaiClient';
 
 export interface VendorBlock {
   extractedData: {
@@ -149,7 +149,7 @@ Rules:
     if (data.address) confidence += 0.1;
     
     // Boost for business indicators in raw text
-    if (/\b(inc\.?|llc\.?|corp\.?|ltd\.?|company|co\.?)\b/i.test(rawText)) {
+    if (/\b(inc\.?|llc\.?|corp\.?|ltd\.?|company|co\.?|services|systems|supply)\b/i.test(rawText)) {
       confidence += 0.1;
     }
     
