@@ -41,8 +41,6 @@ serve(async (req) => {
       );
     }
 
-    // For now, let's create a simple fallback that treats the entire document as one vendor block
-    // and uses GPT-4 to extract what it can from the raw content
     console.log('[Parse Vendor] Using GPT-4 to parse document content directly...');
     
     // Read file as text (this won't work perfectly for DOCX but GPT-4 might extract some info)
@@ -87,28 +85,32 @@ serve(async (req) => {
 
     // Use GPT-4 to extract vendor information from the readable text
     const prompt = `
-You are analyzing a vendor directory document. The text below was extracted from a DOCX file and may contain vendor information mixed with formatting artifacts.
+Please analyze the following text extracted from a vendor directory document and extract ALL vendor/company information.
 
-Please extract all vendor/company information you can find and return it as a JSON array. Each vendor should have this structure:
+For each vendor you find, create a JSON object with this exact structure:
 
 {
-  "name": "company name",
-  "email": "email if found",
-  "phone": "phone if found", 
-  "contact_person": "contact person if found",
-  "address": "address if found",
-  "description": "services/products offered if found"
+  "name": "Company Name",
+  "email": "email@example.com or empty string if not found",
+  "phone": "phone number or empty string if not found",
+  "contact_person": "contact person name or empty string if not found",
+  "address": "full address or empty string if not found",
+  "description": "services/products description or empty string if not found"
 }
 
-Rules:
-- Look for company names, addresses, phone numbers, emails, contact persons
-- Ignore formatting artifacts and technical text
-- If you find multiple vendors, return multiple objects
-- If text is unclear, make reasonable inferences
-- Return only the JSON array, no other text
+IMPORTANT RULES:
+1. Look for any company names, business names, or vendor names
+2. Extract phone numbers in any format (xxx-xxx-xxxx, (xxx) xxx-xxxx, etc.)
+3. Extract email addresses
+4. Look for contact person names
+5. Combine address components (street, city, state, zip) into one address field
+6. Include any service/product descriptions you find
+7. Return ONLY a valid JSON array of vendor objects, nothing else
+8. If you find multiple vendors, include them all in the array
+9. Each vendor must have at least a name to be included
 
-Extracted text:
-${readableText.substring(0, 4000)}`;
+Text to analyze:
+${readableText.substring(0, 8000)}`;
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -121,7 +123,7 @@ ${readableText.substring(0, 4000)}`;
           model: 'gpt-4o-mini',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.1,
-          max_tokens: 2000,
+          max_tokens: 3000,
         }),
       });
 
@@ -132,33 +134,80 @@ ${readableText.substring(0, 4000)}`;
       const data = await response.json();
       const content = data.choices[0].message.content || '[]';
       
-      // Extract JSON from response
-      const jsonStart = content.indexOf('[');
-      const jsonEnd = content.lastIndexOf(']') + 1;
+      console.log('[Parse Vendor] GPT-4 raw response:', content);
+      
+      // Extract JSON from response - look for array brackets
+      let jsonStr = content.trim();
+      
+      // If response doesn't start with [, try to find JSON array in the text
+      if (!jsonStr.startsWith('[')) {
+        const arrayStart = jsonStr.indexOf('[');
+        const arrayEnd = jsonStr.lastIndexOf(']') + 1;
+        
+        if (arrayStart >= 0 && arrayEnd > arrayStart) {
+          jsonStr = jsonStr.slice(arrayStart, arrayEnd);
+        } else {
+          // Try to find individual JSON objects and wrap them in an array
+          const objectMatches = jsonStr.match(/\{[^}]+\}/g);
+          if (objectMatches) {
+            jsonStr = '[' + objectMatches.join(',') + ']';
+          } else {
+            jsonStr = '[]';
+          }
+        }
+      }
       
       let vendors = [];
-      if (jsonStart >= 0 && jsonEnd > jsonStart) {
-        const jsonStr = content.slice(jsonStart, jsonEnd);
+      try {
         vendors = JSON.parse(jsonStr);
+        if (!Array.isArray(vendors)) {
+          vendors = [vendors]; // Wrap single object in array
+        }
+      } catch (parseError) {
+        console.error('[Parse Vendor] JSON parse error:', parseError);
+        console.error('[Parse Vendor] Attempted to parse:', jsonStr);
+        
+        // Last resort: try to extract any vendor info manually
+        const lines = readableText.split(/\n|\r\n/);
+        const potentialVendor = {
+          name: 'Extracted Data',
+          email: '',
+          phone: '',
+          contact_person: '',
+          address: '',
+          description: `Raw extracted text sample: ${readableText.substring(0, 200)}...`
+        };
+        
+        // Look for email patterns
+        const emailMatch = readableText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        if (emailMatch) potentialVendor.email = emailMatch[0];
+        
+        // Look for phone patterns
+        const phoneMatch = readableText.match(/(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/);
+        if (phoneMatch) potentialVendor.phone = phoneMatch[0];
+        
+        vendors = [potentialVendor];
       }
 
-      // Convert to our expected format
-      const mappedVendors = vendors.map((vendor: any, index: number) => ({
-        name: vendor.name || `Vendor ${index + 1}`,
-        email: vendor.email || '',
-        phone: vendor.phone || '',
-        contact_person: vendor.contact_person || '',
-        contact_title: '',
-        vendor_type: 'service',
-        status: 'active',
-        address: vendor.address || '',
-        city: '',
-        state: '',
-        zip_code: '',
-        website: '',
-        description: vendor.description || '',
-        rating: null
-      }));
+      // Convert to our expected format and ensure all required fields
+      const mappedVendors = vendors
+        .filter(vendor => vendor && (vendor.name || vendor.company))
+        .map((vendor: any, index: number) => ({
+          name: vendor.name || vendor.company || `Vendor ${index + 1}`,
+          email: vendor.email || '',
+          phone: vendor.phone || vendor.phone_number || '',
+          contact_person: vendor.contact_person || vendor.contact || '',
+          contact_title: vendor.contact_title || '',
+          vendor_type: 'service',
+          status: 'active',
+          address: vendor.address || '',
+          city: '',
+          state: '',
+          zip_code: '',
+          website: vendor.website || '',
+          description: vendor.description || vendor.services || '',
+          rating: null
+        }));
 
       console.log(`[Parse Vendor] Successfully extracted ${mappedVendors.length} vendors`);
 
@@ -166,7 +215,11 @@ ${readableText.substring(0, 4000)}`;
         JSON.stringify({ 
           success: true,
           vendors: mappedVendors,
-          message: `Successfully extracted ${mappedVendors.length} vendor entries from document`
+          message: `Successfully extracted ${mappedVendors.length} vendor entries from document`,
+          debug: {
+            originalTextLength: readableText.length,
+            gptResponse: content.substring(0, 500)
+          }
         }), 
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
