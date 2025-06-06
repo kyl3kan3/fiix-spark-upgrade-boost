@@ -29,15 +29,15 @@ export const createVendorBuilder = () => {
   };
 
   const shouldFinalizeVendor = (currentLine: string, nextLine: string, isLastLine: boolean): boolean => {
-    // If we encounter a clear company name and we already have a vendor with data, finalize
-    if (isMainCompanyName(currentLine) && hasAnyData && currentVendor.name && currentVendor.name !== currentLine) {
-      console.log("[Vendor Builder] Found new company name on current line, finalizing current vendor:", currentLine);
+    // If we encounter a clear company name and we already have a vendor with data, finalize immediately
+    if (isMainCompanyName(currentLine) && hasAnyData && currentVendor.name && currentVendor.name !== currentLine && linesProcessed > 1) {
+      console.log("[Vendor Builder] Found new company name on current line, finalizing current vendor. Current:", currentVendor.name, "New:", currentLine);
       return true;
     }
 
-    // Also check next line for company names
+    // Also check next line for company names - but only if we have substantial data
     if (nextLine && isMainCompanyName(nextLine) && hasAnyData && currentVendor.name && linesProcessed > 3) {
-      console.log("[Vendor Builder] Next line is company name, finalizing current vendor");
+      console.log("[Vendor Builder] Next line is company name, finalizing current vendor. Current:", currentVendor.name, "Next:", nextLine);
       return true;
     }
 

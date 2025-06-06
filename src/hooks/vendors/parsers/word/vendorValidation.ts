@@ -23,7 +23,7 @@ export const isProductLine = (line: string): boolean => {
 };
 
 export const isMainCompanyName = (line: string): boolean => {
-  if (line.length < 5 || line.length > 100) return false;
+  if (line.length < 3 || line.length > 100) return false;
   
   // Exclude obvious non-company text
   if (isPhoneNumber(line) || isEmailAddress(line) || isWebsiteUrl(line)) {
@@ -49,6 +49,11 @@ export const isMainCompanyName = (line: string): boolean => {
   if (/^[A-Z][a-z]+,\s*[A-Z]{2}\s+\d{5}(-\d{4})?$/.test(line)) {
     return false;
   }
+
+  // Exclude location patterns like "Freeburg IL", "Chicago IL", etc.
+  if (/^[A-Z][a-z]+\s+[A-Z]{2}$/.test(line)) {
+    return false;
+  }
   
   // Must be in proper case (not all lowercase)
   if (line === line.toLowerCase()) {
@@ -56,7 +61,7 @@ export const isMainCompanyName = (line: string): boolean => {
   }
 
   // Strong company indicators - look for business keywords
-  const hasCompanyWords = /\b(company|corp|corporation|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|supply|hardware|electric|construction|engineering|manufacturing|technologies)\b/i.test(line);
+  const hasCompanyWords = /\b(ace\s+hardware|company|corp|corporation|inc|incorporated|llc|ltd|limited|group|enterprises|industries|systems|solutions|services|supply|hardware|electric|construction|engineering|manufacturing|technologies)\b/i.test(line);
   
   // Check if it's in all caps with multiple words (common for company names in directories)
   const isAllCapsMultiWord = line === line.toUpperCase() && line.split(' ').length >= 2;
@@ -94,7 +99,7 @@ export const isPersonName = (line: string): boolean => {
   );
   
   // Avoid company words
-  const hasCompanyWords = /\b(technology|tech|inc|llc|corp|ltd|company|hardware|electric|construction|supply)\b/i.test(line);
+  const hasCompanyWords = /\b(technology|tech|inc|llc|corp|ltd|company|hardware|electric|construction|supply|ace)\b/i.test(line);
   
   // Avoid all caps
   if (line === line.toUpperCase()) {
@@ -113,4 +118,9 @@ export const isAddressLine = (line: string): boolean => {
   ];
   
   return addressPatterns.some(pattern => pattern.test(line)) && !isProductLine(line);
+};
+
+export const isLocationLine = (line: string): boolean => {
+  // Detect lines like "Freeburg IL", "Chicago IL", etc.
+  return /^[A-Z][a-z]+\s+[A-Z]{2}$/.test(line);
 };

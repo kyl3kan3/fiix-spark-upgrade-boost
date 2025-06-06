@@ -3,7 +3,8 @@ import { VendorData } from './vendorDataTypes';
 import { 
   isMainCompanyName, 
   isPersonName, 
-  isAddressLine 
+  isAddressLine,
+  isLocationLine
 } from './vendorValidation';
 import { isServiceLine, isProductListing } from './textProcessor';
 import { PhoneNumberProcessor } from './phoneNumberProcessor';
@@ -56,12 +57,18 @@ export class VendorDataProcessor {
     // If we already have a company name but encounter another clear company name, 
     // this suggests we should finalize the current vendor
     if (this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine) && currentVendor.name !== trimmedLine) {
-      console.log('[Data Processor] Found different company name, vendor should be finalized:', trimmedLine);
+      console.log('[Data Processor] Found different company name, vendor should be finalized. Current:', currentVendor.name, 'New:', trimmedLine);
       // Don't process this line - let the builder handle vendor separation
       return { updated: false, hasData: false };
     }
 
-    // Handle address lines - but be more careful about vendor separation
+    // Skip location lines like "Freeburg IL" - these are not useful data
+    if (isLocationLine(trimmedLine)) {
+      console.log('[Data Processor] Skipping location line:', trimmedLine);
+      return { updated: false, hasData: false };
+    }
+
+    // Handle address lines - but only after we have a company name
     if (isAddressLine(trimmedLine) && this.hasFoundMainCompanyName) {
       currentVendor.address = this.dataExtractor.addAddressInfo(currentVendor.address, trimmedLine);
       return { updated: true, hasData: true };
