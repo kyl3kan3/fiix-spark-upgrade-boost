@@ -1,12 +1,7 @@
 
 import mammoth from 'mammoth'
-import OpenAI from 'openai'
+import { openai, isOpenAIAvailable, getOpenAIUnavailableError } from './parsers/openaiClient'
 import { groupVendorBlocks } from './groupVendorBlocks'
-
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-})
 
 export async function parseVendorsFromFile(file: File) {
   let text = ''
@@ -16,6 +11,11 @@ export async function parseVendorsFromFile(file: File) {
     text = result.value
   } else {
     throw new Error('Only .docx files supported in this function')
+  }
+
+  // Check if OpenAI is available before proceeding
+  if (!isOpenAIAvailable()) {
+    throw getOpenAIUnavailableError()
   }
 
   const blocks = groupVendorBlocks(text)
@@ -48,7 +48,7 @@ Block:
 ${block}
     `
     try {
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.1,
