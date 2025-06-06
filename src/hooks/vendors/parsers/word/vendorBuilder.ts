@@ -9,6 +9,7 @@ export const createVendorBuilder = () => {
   let hasAnyData = false;
   let linesProcessed = 0;
   let consecutiveEmptyLines = 0;
+  let linesWithData = 0;
   const dataProcessor = new VendorDataProcessor();
 
   const addDataFromLine = (line: string) => {
@@ -31,6 +32,7 @@ export const createVendorBuilder = () => {
     const result = dataProcessor.processLine(trimmedLine, currentVendor);
     if (result.hasData) {
       hasAnyData = true;
+      linesWithData++;
     }
   };
 
@@ -49,18 +51,21 @@ export const createVendorBuilder = () => {
       return true;
     }
 
-    // Only finalize if we have a complete vendor AND encounter a new company name
-    if (hasAnyData && currentVendor.name && linesProcessed > 3) {
-      // Check if next line is a clear new company name (not current line)
-      if (trimmedNextLine && isMainCompanyName(trimmedNextLine) && trimmedNextLine !== currentVendor.name) {
-        console.log("[Vendor Builder] Next line is new company, finalizing current vendor. Current:", currentVendor.name, "Next:", trimmedNextLine);
+    // MUCH more conservative finalization - only finalize on very clear boundaries
+    if (hasAnyData && currentVendor.name && linesWithData >= 3) {
+      // Only finalize if we encounter a VERY clear new company AND we have substantial data
+      if (trimmedNextLine && 
+          isMainCompanyName(trimmedNextLine) && 
+          trimmedNextLine !== currentVendor.name &&
+          linesWithData >= 4) {
+        console.log("[Vendor Builder] Strong new company detected, finalizing current vendor. Current:", currentVendor.name, "Next:", trimmedNextLine);
         return true;
       }
     }
 
-    // Only finalize on very large gaps (likely page breaks)
-    if (consecutiveEmptyLines >= 8 && hasAnyData && currentVendor.name && linesProcessed >= 5) {
-      console.log("[Vendor Builder] Large gap detected, finalizing vendor");
+    // Only finalize on extremely large gaps (likely page breaks) AND we have substantial data
+    if (consecutiveEmptyLines >= 10 && hasAnyData && currentVendor.name && linesWithData >= 5) {
+      console.log("[Vendor Builder] Very large gap detected, finalizing vendor");
       return true;
     }
 
@@ -73,7 +78,7 @@ export const createVendorBuilder = () => {
     const result = finalizeVendor(currentVendor, hasAnyData);
     
     if (result) {
-      console.log('[Vendor Builder] Finalized vendor:', result.name);
+      console.log('[Vendor Builder] Finalized vendor:', result.name, 'with', linesWithData, 'data lines');
     }
     
     return result;
@@ -84,6 +89,7 @@ export const createVendorBuilder = () => {
     hasAnyData = false;
     linesProcessed = 0;
     consecutiveEmptyLines = 0;
+    linesWithData = 0;
     dataProcessor.reset();
   };
 
