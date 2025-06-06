@@ -1,6 +1,6 @@
 
 import { VendorData, createEmptyVendor } from './vendorDataTypes';
-import { isMainCompanyName } from './vendorValidation';
+import { isMainCompanyName, isPersonName, isLocationLine } from './vendorValidation';
 import { shouldFinalize, finalizeVendor } from './vendorFinalization';
 import { VendorDataProcessor } from './vendorDataProcessor';
 
@@ -22,6 +22,12 @@ export const createVendorBuilder = () => {
     
     consecutiveEmptyLines = 0;
 
+    // Skip location lines completely - they're not vendor data
+    if (isLocationLine(trimmedLine)) {
+      console.log("[Vendor Builder] Skipping location line:", trimmedLine);
+      return;
+    }
+
     const result = dataProcessor.processLine(trimmedLine, currentVendor);
     if (result.hasData) {
       hasAnyData = true;
@@ -29,15 +35,29 @@ export const createVendorBuilder = () => {
   };
 
   const shouldFinalizeVendor = (currentLine: string, nextLine: string, isLastLine: boolean): boolean => {
+    const trimmedCurrentLine = currentLine.trim();
+    const trimmedNextLine = nextLine ? nextLine.trim() : '';
+
+    // Skip location lines when checking for finalization
+    if (isLocationLine(trimmedCurrentLine)) {
+      return false;
+    }
+
     // If we encounter a clear company name and we already have a vendor with data, finalize immediately
-    if (isMainCompanyName(currentLine) && hasAnyData && currentVendor.name && currentVendor.name !== currentLine && linesProcessed > 1) {
-      console.log("[Vendor Builder] Found new company name on current line, finalizing current vendor. Current:", currentVendor.name, "New:", currentLine);
+    if (isMainCompanyName(trimmedCurrentLine) && hasAnyData && currentVendor.name && currentVendor.name !== trimmedCurrentLine && linesProcessed > 1) {
+      console.log("[Vendor Builder] Found new company name on current line, finalizing current vendor. Current:", currentVendor.name, "New:", trimmedCurrentLine);
       return true;
     }
 
     // Also check next line for company names - but only if we have substantial data
-    if (nextLine && isMainCompanyName(nextLine) && hasAnyData && currentVendor.name && linesProcessed > 3) {
-      console.log("[Vendor Builder] Next line is company name, finalizing current vendor. Current:", currentVendor.name, "Next:", nextLine);
+    if (trimmedNextLine && isMainCompanyName(trimmedNextLine) && hasAnyData && currentVendor.name && linesProcessed > 1) {
+      console.log("[Vendor Builder] Next line is company name, finalizing current vendor. Current:", currentVendor.name, "Next:", trimmedNextLine);
+      return true;
+    }
+
+    // If we have a vendor with a name and encounter a person name, finalize (person likely belongs to next vendor)
+    if (isPersonName(trimmedCurrentLine) && hasAnyData && currentVendor.name && linesProcessed > 2) {
+      console.log("[Vendor Builder] Found person name with existing vendor, finalizing. Current vendor:", currentVendor.name, "Person:", trimmedCurrentLine);
       return true;
     }
 

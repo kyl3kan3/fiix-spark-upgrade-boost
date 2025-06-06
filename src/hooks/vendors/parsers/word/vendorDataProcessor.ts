@@ -21,6 +21,12 @@ export class VendorDataProcessor {
     let updated = false;
     let hasData = false;
 
+    // Skip location lines completely - they're not vendor data
+    if (isLocationLine(trimmedLine)) {
+      console.log('[Data Processor] Skipping location line:', trimmedLine);
+      return { updated: false, hasData: false };
+    }
+
     // Handle phone numbers first
     const phoneNumber = this.phoneProcessor.processPhoneNumber(trimmedLine);
     if (phoneNumber) {
@@ -59,12 +65,6 @@ export class VendorDataProcessor {
     if (this.hasFoundMainCompanyName && isMainCompanyName(trimmedLine) && currentVendor.name !== trimmedLine) {
       console.log('[Data Processor] Found different company name, vendor should be finalized. Current:', currentVendor.name, 'New:', trimmedLine);
       // Don't process this line - let the builder handle vendor separation
-      return { updated: false, hasData: false };
-    }
-
-    // Skip location lines like "Freeburg IL" - these are not useful data
-    if (isLocationLine(trimmedLine)) {
-      console.log('[Data Processor] Skipping location line:', trimmedLine);
       return { updated: false, hasData: false };
     }
 
