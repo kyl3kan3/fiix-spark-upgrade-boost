@@ -1,5 +1,4 @@
 
-import pdf from 'pdf-parse'
 import mammoth from 'mammoth'
 import Tesseract from 'tesseract.js'
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
@@ -70,6 +69,26 @@ export async function renderPdfPagesToImages(file: File): Promise<string[]> {
   return imageUrls
 }
 
+async function extractTextFromPDF(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer()
+  const loadingTask = getDocument({ data: buffer })
+  const pdf = await loadingTask.promise
+  const pageCount = pdf.numPages
+
+  let fullText = ''
+
+  for (let i = 1; i <= pageCount; i++) {
+    const page = await pdf.getPage(i)
+    const textContent = await page.getTextContent()
+    const pageText = textContent.items
+      .map((item: any) => item.str)
+      .join(' ')
+    fullText += pageText + '\n'
+  }
+
+  return fullText
+}
+
 export async function parseVendorsFromFile(file: File) {
   const isPDF = file.name.endsWith('.pdf')
   const isDOCX = file.name.endsWith('.docx')
@@ -83,15 +102,11 @@ export async function parseVendorsFromFile(file: File) {
   }
 
   if (isPDF) {
-    const buffer = await file.arrayBuffer()
-    const blob = new Blob([buffer], { type: 'application/pdf' })
-    
     try {
-      // Try text extraction first
-      const parsed = await pdf(await blob.arrayBuffer())
-      if (parsed.text && parsed.text.trim().length > 100) {
-        fullText = parsed.text
-      } else {
+      // Try text extraction first using pdfjs-dist
+      fullText = await extractTextFromPDF(file)
+      
+      if (!fullText || fullText.trim().length < 100) {
         // Fallback to Vision for scanned PDFs
         const imgPages = await renderPdfPagesToImages(file)
         
@@ -116,7 +131,7 @@ export async function parseVendorsFromFile(file: File) {
       }
     } catch {
       // Final fallback to Tesseract OCR
-      const ocr = await Tesseract.recognize(blob, 'eng')
+      const ocr = await Tesseract.recognize(file, 'eng')
       fullText = ocr.data.text
     }
   }
