@@ -8,11 +8,16 @@ const initializeOpenAI = () => {
   if (openai) return openai
 
   try {
-    // Try to get API key from environment variables (Supabase secrets are exposed as VITE_ variables)
+    // Try multiple ways to get the API key from Supabase secrets
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY || 
                    import.meta.env.OPENAI_API_KEY ||
-                   // Fallback: try accessing from global if available
-                   (window as any).__SUPABASE_SECRETS__?.OPENAI_API_KEY
+                   // Check if Supabase secrets are available in the global scope
+                   (globalThis as any).__SUPABASE_SECRETS__?.OPENAI_API_KEY ||
+                   // Check window object for secrets
+                   (typeof window !== 'undefined' && (window as any).__SUPABASE_SECRETS__?.OPENAI_API_KEY)
+    
+    console.log('Attempting to initialize OpenAI client...');
+    console.log('API key available:', !!apiKey);
     
     if (apiKey) {
       openai = new OpenAI({
@@ -22,7 +27,7 @@ const initializeOpenAI = () => {
       console.log('OpenAI client initialized successfully')
       return openai
     } else {
-      console.warn('No OpenAI API key found in environment variables')
+      console.warn('No OpenAI API key found in environment variables or Supabase secrets')
       return null
     }
   } catch (error) {
@@ -36,18 +41,21 @@ export function getOpenAI(): OpenAI | null {
 }
 
 export function isOpenAIAvailable(): boolean {
-  return getOpenAI() !== null
+  const client = getOpenAI()
+  const available = client !== null
+  console.log('OpenAI client availability check:', available)
+  return available
 }
 
 export function getOpenAIUnavailableError(): Error {
-  return new Error(`OpenAI API key is required for vendor parsing. The API key seems to be configured but not accessible. 
+  return new Error(`OpenAI API key is required for vendor parsing. 
 
-This might be a configuration issue. Please try:
-1. Refresh the page
-2. Check that the OPENAI_API_KEY is properly set in your Supabase project secrets
-3. Ensure the secret is named exactly "OPENAI_API_KEY"
+Please ensure you have:
+1. Added the OPENAI_API_KEY in your Supabase project secrets
+2. The secret is named exactly "OPENAI_API_KEY"
+3. Refreshed the page after adding the secret
 
-If the issue persists, you can only upload files that contain plain text that doesn't require AI processing.`)
+If the issue persists, the secret may need a moment to propagate. Try refreshing the page again.`)
 }
 
 // Export the lazy-initialized client

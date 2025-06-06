@@ -1,4 +1,4 @@
-import { getOpenAI } from '@/utils/parsers/openaiClient';
+import { getOpenAI, isOpenAIAvailable } from '@/utils/parsers/openaiClient';
 
 export interface VendorBlock {
   extractedData: {
@@ -24,13 +24,15 @@ export interface VendorBlock {
 
 export class EnhancedAIParser {
   async parseVendorBlock(blockContent: string): Promise<VendorBlock> {
-    const openai = getOpenAI();
+    console.log('[Enhanced AI Parser] Checking OpenAI availability...');
     
-    if (!openai) {
-      throw new Error('OpenAI client not available');
+    if (!isOpenAIAvailable()) {
+      console.error('[Enhanced AI Parser] OpenAI client not available - falling back to basic extraction');
+      return this.fallbackParsing(blockContent);
     }
 
-    console.log('[Enhanced AI Parser] Processing block:', blockContent.substring(0, 100) + '...');
+    const openai = getOpenAI()!;
+    console.log('[Enhanced AI Parser] Processing block with AI:', blockContent.substring(0, 100) + '...');
 
     const prompt = `You are an expert at extracting vendor/company information from business documents. Extract vendor information from the following text block, even if some information is missing or unclear.
 
@@ -81,7 +83,8 @@ Rules:
       // Extract JSON more reliably
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No JSON found in AI response');
+        console.warn('[Enhanced AI Parser] No JSON found in AI response, falling back');
+        return this.fallbackParsing(blockContent);
       }
 
       const extractedData = JSON.parse(jsonMatch[0]);
@@ -100,6 +103,8 @@ Rules:
         processingNotes.push('No contact information found');
       }
 
+      console.log('[Enhanced AI Parser] Successfully parsed with AI, confidence:', confidence);
+
       return {
         extractedData,
         confidence,
@@ -108,31 +113,72 @@ Rules:
       };
       
     } catch (error) {
-      console.error('[Enhanced AI Parser] Error parsing block:', error);
-      
-      // Return a minimal vendor entry for failed parsing
-      return {
-        extractedData: {
-          name: this.extractBasicName(blockContent) || 'Parse Error',
-          email: '',
-          phone: '',
-          contact_person: '',
-          contact_title: '',
-          vendor_type: 'service',
-          status: 'active',
-          address: '',
-          city: '',
-          state: '',
-          zip_code: '',
-          website: '',
-          description: blockContent.substring(0, 100),
-          rating: null
-        },
-        confidence: 0.1,
-        rawText: blockContent,
-        processingNotes: [`AI parsing failed: ${error.message}`]
-      };
+      console.error('[Enhanced AI Parser] Error parsing block with AI:', error);
+      console.log('[Enhanced AI Parser] Falling back to basic extraction');
+      return this.fallbackParsing(blockContent);
     }
+  }
+  
+  private fallbackParsing(blockContent: string): VendorBlock {
+    console.log('[Enhanced AI Parser] Using fallback parsing for block');
+    
+    const lines = blockContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Basic extraction logic
+    const extractedData = {
+      name: this.extractBasicName(blockContent) || 'Unknown Company',
+      email: this.extractEmail(blockContent) || '',
+      phone: this.extractPhone(blockContent) || '',
+      contact_person: '',
+      contact_title: '',
+      vendor_type: 'service' as const,
+      status: 'active' as const,
+      address: this.extractAddress(blockContent) || '',
+      city: '',
+      state: '',
+      zip_code: '',
+      website: this.extractWebsite(blockContent) || '',
+      description: blockContent.substring(0, 200),
+      rating: null
+    };
+
+    return {
+      extractedData,
+      confidence: 0.4, // Lower confidence for fallback
+      rawText: blockContent,
+      processingNotes: ['Parsed using fallback method - AI processing not available']
+    };
+  }
+
+  private extractEmail(text: string): string | null {
+    const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+    const match = text.match(emailRegex);
+    return match ? match[0] : null;
+  }
+
+  private extractPhone(text: string): string | null {
+    const phoneRegex = /(\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/;
+    const match = text.match(phoneRegex);
+    return match ? match[0] : null;
+  }
+
+  private extractWebsite(text: string): string | null {
+    const websiteRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
+    const match = text.match(websiteRegex);
+    return match ? match[0] : null;
+  }
+
+  private extractAddress(text: string): string | null {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    
+    // Look for lines that might contain addresses (contain numbers and street indicators)
+    for (const line of lines) {
+      if (/\d+.*\b(street|st|avenue|ave|road|rd|drive|dr|lane|ln|boulevard|blvd)\b/i.test(line)) {
+        return line;
+      }
+    }
+    
+    return null;
   }
   
   private calculateConfidence(data: any, rawText: string): number {
