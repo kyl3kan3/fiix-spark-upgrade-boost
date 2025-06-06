@@ -112,7 +112,7 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-5xl max-h-[90vh]">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <ImportDialogHeader
           useImageParser={useImageParser}
           onToggleImageParser={toggleImageParser}
