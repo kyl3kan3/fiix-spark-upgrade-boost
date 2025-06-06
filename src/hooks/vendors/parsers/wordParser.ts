@@ -33,11 +33,14 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
         
         const vendors = processedData.vendors;
         
-        // Log processing results
+        // Log comprehensive processing results
         console.log('[Word Parser] Enhanced processing complete:');
-        console.log('- Vendors found:', vendors.length);
+        console.log('- Total input lines:', processedData.processingStats.totalLines);
+        console.log('- Document blocks found:', processedData.processingStats.blocksFound);
+        console.log('- Vendors extracted:', processedData.processingStats.vendorsExtracted);
+        console.log('- Low confidence extractions:', processedData.processingStats.lowConfidenceCount);
         console.log('- Overall confidence:', (processedData.confidence * 100).toFixed(0) + '%');
-        console.log('- Warnings:', processedData.warnings.length);
+        console.log('- Warnings generated:', processedData.warnings.length);
         
         if (processedData.warnings.length > 0) {
           console.warn('[Word Parser] Processing warnings:', processedData.warnings);
@@ -50,17 +53,18 @@ export const parseWord = async (file: File): Promise<ParsedVendor[]> => {
           throw new Error(`No vendor data found in the Word document. 
 
 Enhanced parser results:
-- Text blocks identified: ${processedData.blocks.length}
+- Document blocks identified: ${processedData.processingStats.blocksFound}
 - Processing confidence: ${(processedData.confidence * 100).toFixed(0)}%
 - Warnings: ${processedData.warnings.length}
+- Total lines processed: ${processedData.processingStats.totalLines}
 
 Text sample from document:
 "${textSample}${text.length > 500 ? '...' : ''}"
 
-The enhanced parser uses AI-powered segmentation and regex fallbacks to identify vendors. Please ensure your document contains vendor information in recognizable formats.`);
+The enhanced parser uses AI-powered segmentation with fallback extraction and quality checks. Please ensure your document contains vendor information with clear company names and contact details.`);
         }
         
-        console.log('[Word Parser] Successfully extracted', vendors.length, 'vendors using enhanced processing');
+        console.log('[Word Parser] Successfully extracted', vendors.length, 'vendors using enhanced AI processing');
         resolve(vendors);
       } catch (error) {
         console.error("Enhanced word parser error:", error);

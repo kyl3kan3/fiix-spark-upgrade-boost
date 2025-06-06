@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import ImportDialogHeader from "./import/ImportDialogHeader";
 import ImportFileDropZone from "./import/ImportFileDropZone";
 import ImportFilePreview from "./import/ImportFilePreview";
-import EditableVendorPreview from "./import/EditableVendorPreview";
+import EnhancedVendorPreview from "./import/EnhancedVendorPreview";
 import { VendorFormData } from "@/services/vendorService";
 
 interface VendorImportDialogProps {
@@ -27,6 +27,8 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [editedData, setEditedData] = useState<VendorFormData[]>([]);
+  const [processingWarnings, setProcessingWarnings] = useState<string[]>([]);
+  const [overallConfidence, setOverallConfidence] = useState<number>(1.0);
   
   const {
     file,
@@ -45,6 +47,9 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
   // Update edited data when parsed data changes
   React.useEffect(() => {
     setEditedData(parsedData);
+    // In a real implementation, you would extract warnings and confidence from the parsing result
+    setProcessingWarnings([]);
+    setOverallConfidence(0.85); // Mock confidence for now
   }, [parsedData]);
 
   const handleDrag = (e: React.DragEvent) => {
@@ -93,18 +98,21 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
       onImportComplete();
       toast.success(`Successfully imported ${validVendors.length} vendors`);
       setEditedData([]);
+      setProcessingWarnings([]);
     }
   };
 
   const handleClearFile = () => {
     clearFile();
     setEditedData([]);
+    setProcessingWarnings([]);
+    setOverallConfidence(1.0);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
+      <DialogContent className="max-w-5xl max-h-[90vh]">
         <ImportDialogHeader
           useImageParser={useImageParser}
           onToggleImageParser={toggleImageParser}
@@ -129,9 +137,11 @@ const VendorImportDialog: React.FC<VendorImportDialogProps> = ({
                 onClearFile={handleClearFile}
               />
               {editedData.length > 0 && (
-                <EditableVendorPreview
+                <EnhancedVendorPreview
                   parsedData={editedData}
                   onDataChange={setEditedData}
+                  processingWarnings={processingWarnings}
+                  overallConfidence={overallConfidence}
                 />
               )}
             </>
