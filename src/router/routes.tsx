@@ -127,4 +127,5 @@ const routes = createBrowserRouter([
   },
 ]);
 
+export const AppRoutes = () => <RouterProvider router={routes} />;
 export default routes;
