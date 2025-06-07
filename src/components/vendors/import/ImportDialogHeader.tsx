@@ -18,7 +18,7 @@ const ImportDialogHeader: React.FC<ImportDialogHeaderProps> = ({
     <DialogHeader>
       <DialogTitle>Import Vendors</DialogTitle>
       <DialogDescription>
-        Upload vendor files and extract information using AI
+        Upload CSV or DOCX files to extract vendor information using AI
       </DialogDescription>
       
       <div className="flex items-center space-x-2 pt-4">
@@ -29,9 +29,9 @@ const ImportDialogHeader: React.FC<ImportDialogHeaderProps> = ({
         />
         <Label htmlFor="image-parser" className="flex items-center gap-2">
           {useImageParser ? <Eye className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
-          Use AI Vision Parser
+          Use AI Vision Parser for DOCX
           <span className="text-xs text-gray-500">
-            (Automatically converts documents to images for better parsing)
+            (Converts DOCX to images for better parsing - CSV files are always parsed directly)
           </span>
         </Label>
       </div>

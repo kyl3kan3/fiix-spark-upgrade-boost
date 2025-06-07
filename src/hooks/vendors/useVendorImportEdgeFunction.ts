@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { parseCSVFile } from "@/hooks/vendors/parsers/csvParser";
 
 interface ParsedVendor extends VendorFormData {}
 
@@ -77,13 +78,57 @@ export const useVendorImportEdgeFunction = () => {
 
   const uploadFile = async (selectedFile: File, forceImageParser: boolean = false) => {
     const useImageParsing = forceImageParser || useImageParser;
+    const fileName = selectedFile.name.toLowerCase();
     
-    // For non-DOCX files, show appropriate error
-    if (!selectedFile.name.toLowerCase().endsWith('.docx')) {
+    // Check if it's a CSV file
+    if (fileName.endsWith('.csv')) {
+      setFile(selectedFile);
+      setIsProcessing(true);
+      
+      try {
+        console.log('[CSV Upload] Processing CSV file:', selectedFile.name);
+        const data = await parseCSVFile(selectedFile);
+        
+        // Transform CSV data to match vendor format
+        const transformedVendors = data.map(row => ({
+          name: row.name || row.Name || '',
+          email: row.email || row.Email || '',
+          phone: row.phone || row.Phone || '',
+          contact_person: row.contact_person || row['Contact Person'] || '',
+          contact_title: row.contact_title || row['Contact Title'] || '',
+          vendor_type: (row.vendor_type || row['Vendor Type'] || 'service') as 'service' | 'supplier' | 'contractor' | 'consultant',
+          status: (row.status || row.Status || 'active') as 'active' | 'inactive' | 'suspended',
+          address: row.address || row.Address || '',
+          city: row.city || row.City || '',
+          state: row.state || row.State || '',
+          zip_code: row.zip_code || row['Zip Code'] || row.zipcode || '',
+          website: row.website || row.Website || '',
+          description: row.description || row.Description || row.notes || row.Notes || '',
+          rating: row.rating ? Number(row.rating) : null
+        }));
+        
+        setParsedData(transformedVendors);
+        toast.success(`Successfully parsed ${transformedVendors.length} vendors from CSV`);
+        
+      } catch (error: any) {
+        console.error("Error parsing CSV file:", error);
+        toast.error("Failed to parse CSV file", {
+          description: error.message || "Please check the file format and try again"
+        });
+        setFile(null);
+        setParsedData([]);
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
+    // For DOCX files, use the edge function
+    if (!fileName.endsWith('.docx')) {
       if (useImageParsing) {
-        toast.error('AI Vision parser currently only supports DOCX files. Please upload a DOCX file or disable AI Vision parser for other formats.');
+        toast.error('AI Vision parser currently supports DOCX and CSV files. Please upload a DOCX or CSV file.');
       } else {
-        toast.error('Currently only DOCX files are supported');
+        toast.error('Currently only DOCX and CSV files are supported');
       }
       return;
     }
