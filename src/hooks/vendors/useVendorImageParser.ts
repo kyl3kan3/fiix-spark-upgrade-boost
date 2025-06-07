@@ -13,9 +13,9 @@ interface VisionResponse {
 export const useVendorImageParser = () => {
   const parseImageWithVision = async (base64Image: string): Promise<VendorFormData[]> => {
     try {
-      console.log('[Image Parser] 🚀 Sending image to GPT Vision function...');
+      console.log('[Image Parser] 🚀 Starting GPT Vision processing...');
       console.log(`[Image Parser] 📊 Base64 image data size: ${(base64Image.length / 1024).toFixed(1)} KB`);
-      console.log('[Image Parser] 📝 Using gpt-vision endpoint for IMAGE ONLY processing...');
+      console.log('[Image Parser] 🎯 Routing to gpt-vision endpoint for IMAGE ONLY processing...');
       
       // Call the GPT Vision edge function with ONLY image data
       const { data, error } = await supabase.functions.invoke('gpt-vision', {

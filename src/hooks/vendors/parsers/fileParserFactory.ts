@@ -2,7 +2,6 @@
 import { VendorFormData } from "@/services/vendorService";
 import { parseCSV } from "./csvParser";
 import { parseWord } from "./wordParser";
-import { parseWithImage } from "./imageParser";
 import { convertFileToImage } from "../utils/documentConverter";
 import { useVendorImageParser } from "../useVendorImageParser";
 
@@ -16,24 +15,24 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
   
   // If AI Vision parser is enabled, convert ANY file to image and use vision parsing
   if (useImageParser) {
-    console.log('[File Parser] AI Vision mode active - converting file to image format...');
-    console.log(`[File Parser] Original file: ${file.name}, size: ${(file.size / 1024 / 1024).toFixed(2)} MB, type: ${file.type}`);
+    console.log('[File Parser] 🔄 AI Vision mode enabled - converting file to image format...');
+    console.log(`[File Parser] 📄 Original file: ${file.name}, size: ${(file.size / 1024 / 1024).toFixed(2)} MB, type: ${file.type}`);
     
     try {
       // Step 1: Convert any file type to an image representation
       const imageFile = await convertFileToImage(file);
-      console.log(`[File Parser] ✓ File converted to image successfully`);
-      console.log(`[File Parser] ✓ Image file size: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB`);
-      console.log(`[File Parser] ✓ Image type: ${imageFile.type}`);
+      console.log(`[File Parser] ✅ File successfully converted to image`);
+      console.log(`[File Parser] 🖼️ Image file size: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB`);
+      console.log(`[File Parser] 🖼️ Image type: ${imageFile.type}`);
       
       // Step 2: Convert the image to base64 for the Vision API
       const base64Image = await convertFileToBase64(imageFile);
-      console.log(`[File Parser] ✓ Image converted to base64, length: ${(base64Image.length / 1024).toFixed(1)} KB`);
+      console.log(`[File Parser] ✅ Image converted to base64, length: ${(base64Image.length / 1024).toFixed(1)} KB`);
       
       // Step 3: Process with Vision API using ONLY the image data
-      console.log('[File Parser] ✓ Sending ONLY image data to GPT Vision API...');
+      console.log('[File Parser] 🚀 Sending ONLY image data to GPT Vision API...');
       const vendors = await parseImageWithVision(base64Image);
-      console.log(`[File Parser] ✓ AI Vision successfully extracted ${vendors.length} vendors from image`);
+      console.log(`[File Parser] ✅ AI Vision successfully extracted ${vendors.length} vendors from image`);
       
       return vendors;
     } catch (error) {
@@ -42,12 +41,15 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     }
   }
   
-  // Use original file type parsers for text mode only (when AI Vision is disabled)
-  console.log('[File Parser] Text mode active - using traditional parsers...');
+  // Standard file processing (text mode) - only when AI Vision is disabled
+  console.log('[File Parser] 📝 Text mode active - using traditional parsers...');
   
   if (file.type.startsWith('image/')) {
-    console.log('[File Parser] Processing image file with image parser...');
-    return await parseWithImage(file);
+    console.log('[File Parser] Processing image file with traditional image parser...');
+    // For images in text mode, we still need to use the vision parser
+    // but we'll indicate it's not the main AI Vision mode
+    const base64Image = await convertFileToBase64(file);
+    return await parseImageWithVision(base64Image);
   }
   
   switch (fileExtension) {
