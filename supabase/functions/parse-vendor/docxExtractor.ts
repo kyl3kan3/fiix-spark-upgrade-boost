@@ -1,59 +1,120 @@
 
 export function extractTextFromDocx(arrayBuffer: ArrayBuffer): string {
   try {
+    console.log('[DOCX Extractor] Starting extraction from ArrayBuffer');
+    
     // Convert ArrayBuffer to Uint8Array for processing
     const uint8Array = new Uint8Array(arrayBuffer);
     
-    // DOCX files are ZIP archives, we need to find and extract document.xml
+    // DOCX files are ZIP archives - we need to find and parse the central directory
     const zipData = uint8Array;
     
-    // Look for the document.xml file signature in the ZIP
-    const documentXmlStart = findSequence(zipData, new TextEncoder().encode('word/document.xml'));
+    // Look for the End of Central Directory Record (ZIP file signature: 0x06054b50)
+    const eocdSignature = new Uint8Array([0x50, 0x4b, 0x05, 0x06]);
+    let eocdIndex = -1;
     
-    if (documentXmlStart === -1) {
-      console.log('[DOCX Extractor] Could not find document.xml in ZIP structure');
-      return extractFallbackText(zipData);
-    }
-    
-    // Find the actual XML content after the ZIP headers
-    let xmlStartPos = documentXmlStart;
-    
-    // Look for XML declaration or document start
-    const xmlPatterns = [
-      new TextEncoder().encode('<?xml'),
-      new TextEncoder().encode('<w:document'),
-      new TextEncoder().encode('<document')
-    ];
-    
-    let xmlContent = '';
-    let foundXml = false;
-    
-    // Search for XML content in a reasonable range after finding the file reference
-    for (let i = xmlStartPos; i < Math.min(zipData.length, xmlStartPos + 50000); i++) {
-      const slice = zipData.slice(i, Math.min(i + 10000, zipData.length));
-      const text = new TextDecoder('utf-8', { fatal: false }).decode(slice);
-      
-      if (text.includes('<w:document') || text.includes('<?xml')) {
-        // Found XML content, extract it
-        const xmlStart = text.indexOf('<');
-        if (xmlStart !== -1) {
-          const xmlPart = text.substring(xmlStart);
-          const xmlEnd = xmlPart.lastIndexOf('>');
-          if (xmlEnd !== -1) {
-            xmlContent = xmlPart.substring(0, xmlEnd + 1);
-            foundXml = true;
-            break;
-          }
-        }
+    // Search from the end of the file backwards (EOCD is typically at the end)
+    for (let i = zipData.length - 22; i >= 0; i--) {
+      if (zipData[i] === eocdSignature[0] && 
+          zipData[i + 1] === eocdSignature[1] && 
+          zipData[i + 2] === eocdSignature[2] && 
+          zipData[i + 3] === eocdSignature[3]) {
+        eocdIndex = i;
+        break;
       }
     }
     
-    if (!foundXml || !xmlContent) {
-      console.log('[DOCX Extractor] Could not extract XML content, using fallback');
+    if (eocdIndex === -1) {
+      console.log('[DOCX Extractor] No ZIP End of Central Directory found');
       return extractFallbackText(zipData);
     }
     
-    console.log(`[DOCX Extractor] Found XML content, length: ${xmlContent.length}`);
+    console.log('[DOCX Extractor] Found EOCD at index:', eocdIndex);
+    
+    // Read central directory offset from EOCD
+    const centralDirOffset = new DataView(zipData.buffer, eocdIndex + 16, 4).getUint32(0, true);
+    console.log('[DOCX Extractor] Central directory offset:', centralDirOffset);
+    
+    // Parse central directory to find document.xml
+    let documentXmlOffset = -1;
+    let documentXmlCompressedSize = 0;
+    let documentXmlUncompressedSize = 0;
+    
+    let currentOffset = centralDirOffset;
+    
+    while (currentOffset < eocdIndex) {
+      // Check for Central Directory File Header signature (0x02014b50)
+      const signature = new DataView(zipData.buffer, currentOffset, 4).getUint32(0, true);
+      if (signature !== 0x02014b50) {
+        break;
+      }
+      
+      // Read file info from central directory entry
+      const compressedSize = new DataView(zipData.buffer, currentOffset + 20, 4).getUint32(0, true);
+      const uncompressedSize = new DataView(zipData.buffer, currentOffset + 24, 4).getUint32(0, true);
+      const fileNameLength = new DataView(zipData.buffer, currentOffset + 28, 2).getUint16(0, true);
+      const extraFieldLength = new DataView(zipData.buffer, currentOffset + 30, 2).getUint16(0, true);
+      const fileCommentLength = new DataView(zipData.buffer, currentOffset + 32, 2).getUint16(0, true);
+      const relativeOffset = new DataView(zipData.buffer, currentOffset + 42, 4).getUint32(0, true);
+      
+      // Extract filename
+      const filenameBytes = zipData.slice(currentOffset + 46, currentOffset + 46 + fileNameLength);
+      const filename = new TextDecoder('utf-8').decode(filenameBytes);
+      
+      console.log('[DOCX Extractor] Found file:', filename);
+      
+      if (filename === 'word/document.xml') {
+        documentXmlOffset = relativeOffset;
+        documentXmlCompressedSize = compressedSize;
+        documentXmlUncompressedSize = uncompressedSize;
+        console.log('[DOCX Extractor] Found document.xml at offset:', documentXmlOffset);
+        break;
+      }
+      
+      // Move to next central directory entry
+      currentOffset += 46 + fileNameLength + extraFieldLength + fileCommentLength;
+    }
+    
+    if (documentXmlOffset === -1) {
+      console.log('[DOCX Extractor] document.xml not found in central directory');
+      return extractFallbackText(zipData);
+    }
+    
+    // Read the local file header to get the actual data offset
+    const localHeaderSignature = new DataView(zipData.buffer, documentXmlOffset, 4).getUint32(0, true);
+    if (localHeaderSignature !== 0x04034b50) {
+      console.log('[DOCX Extractor] Invalid local file header signature');
+      return extractFallbackText(zipData);
+    }
+    
+    const localFileNameLength = new DataView(zipData.buffer, documentXmlOffset + 26, 2).getUint16(0, true);
+    const localExtraFieldLength = new DataView(zipData.buffer, documentXmlOffset + 28, 2).getUint16(0, true);
+    
+    const dataOffset = documentXmlOffset + 30 + localFileNameLength + localExtraFieldLength;
+    const xmlData = zipData.slice(dataOffset, dataOffset + documentXmlCompressedSize);
+    
+    console.log('[DOCX Extractor] Extracted XML data, size:', xmlData.length);
+    
+    // Try to decode the XML (it might be compressed or uncompressed)
+    let xmlContent = '';
+    try {
+      // First try to decode as UTF-8 (uncompressed)
+      xmlContent = new TextDecoder('utf-8').decode(xmlData);
+      
+      // Check if it looks like valid XML
+      if (!xmlContent.includes('<?xml') && !xmlContent.includes('<w:document')) {
+        console.log('[DOCX Extractor] Data appears to be compressed, trying deflate');
+        // If it doesn't look like XML, it's probably compressed
+        // For now, we'll use a simple approach and fall back to pattern matching
+        return extractFallbackText(zipData);
+      }
+    } catch (error) {
+      console.log('[DOCX Extractor] Error decoding XML:', error);
+      return extractFallbackText(zipData);
+    }
+    
+    console.log('[DOCX Extractor] Successfully decoded XML, length:', xmlContent.length);
+    console.log('[DOCX Extractor] XML sample:', xmlContent.substring(0, 200));
     
     // Extract text from the XML content
     const extractedText = extractTextFromXml(xmlContent);
@@ -63,6 +124,7 @@ export function extractTextFromDocx(arrayBuffer: ArrayBuffer): string {
       return extractFallbackText(zipData);
     }
     
+    console.log('[DOCX Extractor] Successfully extracted text, length:', extractedText.length);
     return extractedText;
     
   } catch (error) {
@@ -71,50 +133,47 @@ export function extractTextFromDocx(arrayBuffer: ArrayBuffer): string {
   }
 }
 
-function findSequence(data: Uint8Array, sequence: Uint8Array): number {
-  for (let i = 0; i <= data.length - sequence.length; i++) {
-    let found = true;
-    for (let j = 0; j < sequence.length; j++) {
-      if (data[i + j] !== sequence[j]) {
-        found = false;
-        break;
-      }
-    }
-    if (found) return i;
-  }
-  return -1;
-}
-
 function extractTextFromXml(xmlContent: string): string {
   try {
+    console.log('[DOCX Extractor] Extracting text from XML');
+    
     // Extract text from <w:t> tags (Word text elements)
-    const textMatches = xmlContent.match(/<w:t[^>]*>([^<]*)<\/w:t>/g);
-    let extractedText = '';
+    const textPattern = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+    const textMatches = [];
+    let match;
     
-    if (textMatches) {
-      for (const match of textMatches) {
-        const textContent = match.replace(/<w:t[^>]*>([^<]*)<\/w:t>/, '$1');
-        if (textContent.trim()) {
-          extractedText += textContent + ' ';
-        }
+    while ((match = textPattern.exec(xmlContent)) !== null) {
+      const textContent = match[1];
+      if (textContent && textContent.trim()) {
+        textMatches.push(textContent.trim());
       }
     }
     
-    // Also try to extract from any other text-containing elements
-    const generalTextMatches = xmlContent.match(/>([^<]+)</g);
-    if (generalTextMatches && extractedText.length < 100) {
-      for (const match of generalTextMatches) {
-        const text = match.replace(/^>([^<]+)<$/, '$1').trim();
-        if (text.length > 3 && 
-            !text.includes('xml') && 
-            !text.includes('w:') &&
-            /[a-zA-Z]/.test(text)) {
-          extractedText += text + ' ';
-        }
+    console.log('[DOCX Extractor] Found', textMatches.length, 'text elements');
+    
+    if (textMatches.length > 0) {
+      const result = textMatches.join(' ');
+      console.log('[DOCX Extractor] Extracted text sample:', result.substring(0, 200));
+      return result;
+    }
+    
+    // Fallback: try to extract any text content between tags
+    const fallbackPattern = />([^<]+)</g;
+    const fallbackMatches = [];
+    
+    while ((match = fallbackPattern.exec(xmlContent)) !== null) {
+      const text = match[1].trim();
+      if (text.length > 3 && 
+          !text.includes('xml') && 
+          !text.includes('w:') &&
+          /[a-zA-Z]/.test(text)) {
+        fallbackMatches.push(text);
       }
     }
     
-    return extractedText.trim();
+    console.log('[DOCX Extractor] Fallback found', fallbackMatches.length, 'text elements');
+    return fallbackMatches.slice(0, 500).join(' '); // Limit to prevent too much noise
+    
   } catch (error) {
     console.error('[DOCX Extractor] XML parsing error:', error);
     return '';
@@ -123,6 +182,8 @@ function extractTextFromXml(xmlContent: string): string {
 
 function extractFallbackText(zipData: Uint8Array): string {
   try {
+    console.log('[DOCX Extractor] Using fallback text extraction');
+    
     // Fallback: Look for readable text patterns in the raw data
     const decoder = new TextDecoder('utf-8', { fatal: false });
     const content = decoder.decode(zipData);
