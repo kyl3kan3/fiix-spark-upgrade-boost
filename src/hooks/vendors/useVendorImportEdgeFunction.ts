@@ -1,10 +1,11 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { parseCSVFile } from "@/hooks/vendors/parsers/csvParser";
+import { parseWithImage } from "@/hooks/vendors/parsers/imageParser";
+import { convertToImages } from "@/hooks/vendors/utils/converters";
 
 interface ParsedVendor extends VendorFormData {}
 
@@ -80,7 +81,7 @@ export const useVendorImportEdgeFunction = () => {
     const useImageParsing = forceImageParser || useImageParser;
     const fileName = selectedFile.name.toLowerCase();
     
-    // Check if it's a CSV file
+    // Check if it's a CSV file - always parse directly
     if (fileName.endsWith('.csv')) {
       setFile(selectedFile);
       setIsProcessing(true);
@@ -123,69 +124,142 @@ export const useVendorImportEdgeFunction = () => {
       return;
     }
 
-    // For DOCX files, use the edge function
-    if (!fileName.endsWith('.docx')) {
-      if (useImageParsing) {
-        toast.error('AI Vision parser currently supports DOCX and CSV files. Please upload a DOCX or CSV file.');
-      } else {
-        toast.error('Currently only DOCX and CSV files are supported');
+    // For image files, use AI Vision parsing directly
+    if (fileName.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) {
+      setFile(selectedFile);
+      setIsProcessing(true);
+      
+      try {
+        console.log('[Image Upload] Processing image file:', selectedFile.name);
+        const vendors = await parseWithImage(selectedFile);
+        setParsedData(vendors);
+        toast.success(`Successfully parsed ${vendors.length} vendors from image using AI Vision`);
+      } catch (error: any) {
+        console.error("Error parsing image file:", error);
+        toast.error("Failed to parse image file", {
+          description: error.message || "Please try a different image or file format"
+        });
+        setFile(null);
+        setParsedData([]);
+      } finally {
+        setIsProcessing(false);
       }
       return;
     }
 
-    setFile(selectedFile);
-    setIsProcessing(true);
-    
-    try {
-      console.log('[Edge Function Upload] Starting file processing:', selectedFile.name);
-      console.log('[Edge Function Upload] Using AI Vision parser:', useImageParsing);
+    // For DOCX files, use the edge function (text extraction or image conversion)
+    if (fileName.endsWith('.docx')) {
+      setFile(selectedFile);
+      setIsProcessing(true);
       
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      
-      // Add a parameter to indicate if we want to use image parsing
-      if (useImageParsing) {
-        formData.append('useImageParser', 'true');
+      try {
+        console.log('[DOCX Upload] Processing DOCX file:', selectedFile.name);
+        console.log('[DOCX Upload] Using AI Vision parser:', useImageParsing);
+        
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        
+        if (useImageParsing) {
+          formData.append('useImageParser', 'true');
+        }
+        
+        const { data, error } = await supabase.functions.invoke('parse-vendor', {
+          body: formData,
+        });
+        
+        if (error) {
+          console.error('[DOCX Upload] Supabase function error:', error);
+          throw new Error(error.message || 'Failed to process DOCX file');
+        }
+        
+        const response = data as EdgeFunctionResponse;
+        console.log('[DOCX Upload] Response:', response);
+        
+        if (!response.success) {
+          throw new Error(response.error || 'Unknown error occurred');
+        }
+        
+        if (!response.vendors || response.vendors.length === 0) {
+          throw new Error('No vendor data found in the document');
+        }
+        
+        setParsedData(response.vendors);
+        
+        const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
+        toast.success(response.message || `Successfully parsed ${response.vendors.length} vendors using ${parsingMethod}`, {
+          description: response.totalBlocks ? `Processed ${response.totalBlocks} document blocks` : undefined
+        });
+        
+      } catch (error: any) {
+        console.error("Error parsing DOCX file:", error);
+        toast.error("Failed to parse DOCX file", {
+          description: error.message || "Please check the file format and try again"
+        });
+        setFile(null);
+        setParsedData([]);
+      } finally {
+        setIsProcessing(false);
       }
-      
-      // Call the Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('parse-vendor', {
-        body: formData,
-      });
-      
-      if (error) {
-        console.error('[Edge Function Upload] Supabase function error:', error);
-        throw new Error(error.message || 'Failed to process file');
-      }
-      
-      const response = data as EdgeFunctionResponse;
-      console.log('[Edge Function Upload] Response:', response);
-      
-      if (!response.success) {
-        throw new Error(response.error || 'Unknown error occurred');
-      }
-      
-      if (!response.vendors || response.vendors.length === 0) {
-        throw new Error('No vendor data found in the document');
-      }
-      
-      setParsedData(response.vendors);
-      
-      const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
-      toast.success(response.message || `Successfully parsed ${response.vendors.length} vendors using ${parsingMethod}`, {
-        description: response.totalBlocks ? `Processed ${response.totalBlocks} document blocks` : undefined
-      });
-      
-    } catch (error: any) {
-      console.error("Error parsing file with edge function:", error);
-      toast.error("Failed to parse file", {
-        description: error.message || "Please check the file format and try again"
-      });
-      setFile(null);
-      setParsedData([]);
-    } finally {
-      setIsProcessing(false);
+      return;
     }
+
+    // For PDF and other document types, convert to images and use AI Vision
+    if (fileName.match(/\.(pdf|doc|rtf|txt|xlsx|xls|ppt|pptx)$/)) {
+      setFile(selectedFile);
+      setIsProcessing(true);
+      
+      try {
+        console.log('[Document Upload] Converting document to images:', selectedFile.name);
+        
+        // Convert document to images
+        const imageFiles = await convertToImages(selectedFile);
+        console.log(`[Document Upload] Converted to ${imageFiles.length} image(s)`);
+        
+        // Parse each image with AI Vision
+        let allVendors: ParsedVendor[] = [];
+        for (let i = 0; i < imageFiles.length; i++) {
+          const imageFile = imageFiles[i];
+          console.log(`[Document Upload] Processing image ${i + 1}/${imageFiles.length}`);
+          
+          try {
+            const vendors = await parseWithImage(imageFile);
+            allVendors.push(...vendors);
+          } catch (pageError) {
+            console.warn(`[Document Upload] Failed to parse page ${i + 1}:`, pageError);
+            // Continue with other pages
+          }
+        }
+        
+        // Remove duplicates based on name and email
+        const uniqueVendors = allVendors.filter((vendor, index, arr) => {
+          return arr.findIndex(v => 
+            v.name.toLowerCase() === vendor.name.toLowerCase() && 
+            v.email.toLowerCase() === vendor.email.toLowerCase()
+          ) === index;
+        });
+        
+        setParsedData(uniqueVendors);
+        toast.success(`Successfully parsed ${uniqueVendors.length} vendors from ${selectedFile.type.includes('pdf') ? 'PDF' : 'document'} using AI Vision`, {
+          description: imageFiles.length > 1 ? `Processed ${imageFiles.length} pages` : undefined
+        });
+        
+      } catch (error: any) {
+        console.error("Error processing document file:", error);
+        toast.error("Failed to process document", {
+          description: error.message || "Please try a different file format or contact support"
+        });
+        setFile(null);
+        setParsedData([]);
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
+    // Unsupported file type
+    toast.error("Unsupported file type", {
+      description: "Please upload CSV, DOCX, PDF, image files, or other common document formats"
+    });
   };
 
   const importVendors = async (customVendors?: ParsedVendor[]): Promise<boolean> => {

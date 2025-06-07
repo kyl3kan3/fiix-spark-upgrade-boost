@@ -33,10 +33,10 @@ const ImportFileDropZone: React.FC<ImportFileDropZoneProps> = ({
         Drop your file here or click to browse
       </p>
       <p className="text-sm text-gray-500 mb-2">
-        Supports CSV and DOCX files - automatically processes with the best method for each format
+        Supports CSV, DOCX, PDF, images, and other document formats
       </p>
       <p className="text-xs text-gray-400 mb-4">
-        CSV files are parsed directly, DOCX files use AI-powered extraction
+        CSV files are parsed directly • Other formats use AI-powered extraction
       </p>
       
       <div className="flex items-center justify-center gap-3">
@@ -45,7 +45,7 @@ const ImportFileDropZone: React.FC<ImportFileDropZoneProps> = ({
             <input
               type="file"
               className="hidden"
-              accept=".csv,.docx"
+              accept=".csv,.docx,.pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.doc,.rtf,.txt,.xlsx,.xls,.ppt,.pptx"
               onChange={onFileInput}
             />
             Choose File
