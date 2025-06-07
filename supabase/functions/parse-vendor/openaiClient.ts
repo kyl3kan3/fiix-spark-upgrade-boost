@@ -1,4 +1,3 @@
-
 import { corsHeaders } from './corsUtils.ts';
 
 // Function to estimate token count (rough approximation: 1 token ≈ 4 characters)
@@ -6,8 +5,8 @@ function estimateTokenCount(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-// Function to chunk text into smaller pieces
-function chunkText(text: string, maxTokens: number = 80000): string[] {
+// Function to chunk text into smaller pieces for vision model
+function chunkText(text: string, maxTokens: number = 15000): string[] {
   const maxChars = maxTokens * 4; // Rough conversion from tokens to characters
   const chunks: string[] = [];
   
@@ -55,21 +54,21 @@ function chunkText(text: string, maxTokens: number = 80000): string[] {
 }
 
 export async function processVendorDataWithAI(extractedText: string, openaiApiKey: string): Promise<Response> {
-  console.log(`[Parse Vendor] Processing text with ${extractedText.length} characters`);
+  console.log(`[Parse Vendor] Processing text with ${extractedText.length} characters using AI Vision`);
   
   // Estimate token count
   const estimatedTokens = estimateTokenCount(extractedText);
   console.log(`[Parse Vendor] Estimated tokens: ${estimatedTokens}`);
   
-  // If text is too large, chunk it
-  const maxTokensPerRequest = 80000; // Conservative limit for gpt-4o with vision
+  // Use smaller chunks for vision model to avoid rate limits
+  const maxTokensPerRequest = 15000; // Much smaller limit for vision model
   const chunks = chunkText(extractedText, maxTokensPerRequest);
   
-  console.log(`[Parse Vendor] Split into ${chunks.length} chunks`);
+  console.log(`[Parse Vendor] Split into ${chunks.length} chunks for AI Vision processing`);
   
-  const prompt = `You are an expert at extracting vendor/company information from business documents. 
+  const prompt = `You are an expert at extracting vendor/company information from business documents using AI vision capabilities. 
 
-Analyze the following text and find ALL companies, vendors, or businesses mentioned. Look for:
+Analyze the following text content and find ALL companies, vendors, or businesses mentioned. Look for:
 - Company names (even partial or unclear names)
 - Contact information (emails, phone numbers, addresses)
 - Person names associated with companies
@@ -107,9 +106,9 @@ IMPORTANT RULES:
   try {
     const allVendors: any[] = [];
     
-    // Process each chunk using vision model
+    // Process each chunk using vision model with smaller chunks
     for (let i = 0; i < chunks.length; i++) {
-      console.log(`[Parse Vendor] Processing chunk ${i + 1}/${chunks.length} with vision model`);
+      console.log(`[Parse Vendor] Processing chunk ${i + 1}/${chunks.length} with AI Vision (${chunks[i].length} chars)`);
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -125,13 +124,13 @@ IMPORTANT RULES:
               content: [
                 {
                   type: 'text',
-                  text: `${prompt}\n\nText to analyze (chunk ${i + 1} of ${chunks.length}):\n${chunks[i]}`
+                  text: `${prompt}\n\nDocument text content to analyze (chunk ${i + 1} of ${chunks.length}):\n\n${chunks[i]}`
                 }
               ]
             }
           ],
           temperature: 0.1,
-          max_tokens: 4000,
+          max_tokens: 2000, // Reduced max tokens
         }),
       });
 
@@ -153,20 +152,23 @@ IMPORTANT RULES:
           const chunkVendors = JSON.parse(jsonStr);
           
           if (Array.isArray(chunkVendors)) {
+            console.log(`[Parse Vendor] Found ${chunkVendors.length} vendors in chunk ${i + 1}`);
             allVendors.push(...chunkVendors);
           }
         }
       } catch (parseError) {
         console.error(`[Parse Vendor] Error parsing chunk ${i + 1}:`, parseError);
+        console.error(`[Parse Vendor] Raw content: ${content.substring(0, 200)}...`);
       }
       
-      // Add a small delay between requests to avoid rate limiting
+      // Add delay between requests to avoid rate limiting
       if (i < chunks.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log(`[Parse Vendor] Waiting 2 seconds before next chunk...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
     
-    console.log(`[Parse Vendor] Extracted ${allVendors.length} vendors from ${chunks.length} chunks using vision model`);
+    console.log(`[Parse Vendor] Extracted ${allVendors.length} vendors from ${chunks.length} chunks using AI Vision`);
     
     // Return the combined results
     return new Response(
@@ -184,10 +186,10 @@ IMPORTANT RULES:
     );
 
   } catch (error) {
-    console.error('[Parse Vendor] OpenAI vision processing error:', error);
+    console.error('[Parse Vendor] AI Vision processing error:', error);
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to process document with AI vision',
+        error: 'Failed to process document with AI Vision',
         details: error.message 
       }), 
       { 
@@ -198,6 +200,7 @@ IMPORTANT RULES:
   }
 }
 
+// ... keep existing code (handleOpenAIError function)
 async function handleOpenAIError(response: Response): Promise<Response> {
   const errorText = await response.text();
   console.error(`[Parse Vendor] OpenAI API error: ${response.status} - ${errorText}`);
