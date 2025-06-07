@@ -20,6 +20,7 @@ export const useVendorImportEdgeFunction = () => {
   const [file, setFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<ParsedVendor[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [useImageParser, setUseImageParser] = useState(false);
   const queryClient = useQueryClient();
 
   const importMutation = useMutation({
@@ -74,9 +75,16 @@ export const useVendorImportEdgeFunction = () => {
     }
   });
 
-  const uploadFile = async (selectedFile: File) => {
-    if (!selectedFile.name.endsWith('.docx')) {
-      toast.error('Currently only DOCX files are supported');
+  const uploadFile = async (selectedFile: File, forceImageParser: boolean = false) => {
+    const useImageParsing = forceImageParser || useImageParser;
+    
+    // For non-DOCX files, show appropriate error
+    if (!selectedFile.name.toLowerCase().endsWith('.docx')) {
+      if (useImageParsing) {
+        toast.error('AI Vision parser currently only supports DOCX files. Please upload a DOCX file or disable AI Vision parser for other formats.');
+      } else {
+        toast.error('Currently only DOCX files are supported');
+      }
       return;
     }
 
@@ -85,9 +93,15 @@ export const useVendorImportEdgeFunction = () => {
     
     try {
       console.log('[Edge Function Upload] Starting file processing:', selectedFile.name);
+      console.log('[Edge Function Upload] Using AI Vision parser:', useImageParsing);
       
       const formData = new FormData();
       formData.append('file', selectedFile);
+      
+      // Add a parameter to indicate if we want to use image parsing
+      if (useImageParsing) {
+        formData.append('useImageParser', 'true');
+      }
       
       // Call the Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('parse-vendor', {
@@ -112,7 +126,8 @@ export const useVendorImportEdgeFunction = () => {
       
       setParsedData(response.vendors);
       
-      toast.success(response.message || `Successfully parsed ${response.vendors.length} vendors`, {
+      const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
+      toast.success(response.message || `Successfully parsed ${response.vendors.length} vendors using ${parsingMethod}`, {
         description: response.totalBlocks ? `Processed ${response.totalBlocks} document blocks` : undefined
       });
       
@@ -150,13 +165,26 @@ export const useVendorImportEdgeFunction = () => {
     setParsedData([]);
   };
 
+  const toggleImageParser = () => {
+    setUseImageParser(!useImageParser);
+  };
+
+  const retryWithImageParser = async () => {
+    if (file) {
+      await uploadFile(file, true);
+    }
+  };
+
   return {
     file,
     parsedData,
     isProcessing,
     isImporting: importMutation.isPending,
+    useImageParser,
     uploadFile,
     importVendors,
-    clearFile
+    clearFile,
+    toggleImageParser,
+    retryWithImageParser
   };
 };

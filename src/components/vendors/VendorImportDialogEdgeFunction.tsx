@@ -35,9 +35,12 @@ const VendorImportDialogEdgeFunction: React.FC<VendorImportDialogEdgeFunctionPro
     parsedData,
     isProcessing,
     isImporting,
+    useImageParser,
     uploadFile,
     importVendors,
-    clearFile
+    clearFile,
+    toggleImageParser,
+    retryWithImageParser
   } = useVendorImportEdgeFunction();
 
   // Update edited data when parsed data changes
@@ -114,8 +117,8 @@ const VendorImportDialogEdgeFunction: React.FC<VendorImportDialogEdgeFunctionPro
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <ImportDialogHeader
-          useImageParser={false}
-          onToggleImageParser={() => {}}
+          useImageParser={useImageParser}
+          onToggleImageParser={toggleImageParser}
         />
 
         <div className="space-y-4">
@@ -133,7 +136,7 @@ const VendorImportDialogEdgeFunction: React.FC<VendorImportDialogEdgeFunctionPro
                 file={file}
                 isProcessing={isProcessing}
                 parsedDataCount={editedData.length}
-                onRetryWithImageParser={() => {}}
+                onRetryWithImageParser={retryWithImageParser}
                 onClearFile={handleClearFile}
               />
               {editedData.length > 0 && (

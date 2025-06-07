@@ -15,6 +15,7 @@ serve(async (req) => {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
+    const useImageParser = formData.get('useImageParser') === 'true';
     
     if (!file) {
       return new Response(
@@ -27,6 +28,7 @@ serve(async (req) => {
     }
 
     console.log(`[Parse Vendor] Processing file: ${file.name}, size: ${file.size}, type: ${file.type}`);
+    console.log(`[Parse Vendor] Use Image Parser: ${useImageParser}`);
 
     // Check if OpenAI API key is available
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -70,7 +72,7 @@ serve(async (req) => {
       );
     }
 
-    // Process with OpenAI
+    // Process with OpenAI (the AI Vision processing is handled internally based on the model used)
     const response = await processVendorDataWithAI(extractedText, openaiApiKey);
     
     // If there was an error response from OpenAI processing, return it
@@ -104,11 +106,13 @@ serve(async (req) => {
       );
     }
 
+    const parsingMethod = useImageParser ? 'AI Vision' : 'enhanced text processing';
+    
     return new Response(
       JSON.stringify({ 
         success: true,
         vendors: validVendors,
-        message: `Successfully extracted ${validVendors.length} vendor entries from document`
+        message: `Successfully extracted ${validVendors.length} vendor entries using ${parsingMethod}`
       }), 
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
