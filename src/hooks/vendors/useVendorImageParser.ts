@@ -13,18 +13,20 @@ interface VisionResponse {
 export const useVendorImageParser = () => {
   const parseImageWithVision = async (base64Image: string): Promise<VendorFormData[]> => {
     try {
-      console.log('[Image Parser] Sending image to GPT Vision function...');
+      console.log('[Image Parser] 🚀 Sending image to GPT Vision function...');
+      console.log(`[Image Parser] 📊 Image data size: ${(base64Image.length / 1024).toFixed(1)} KB`);
       
+      // Call the GPT Vision edge function (NOT the text-based parse-vendor function)
       const { data, error } = await supabase.functions.invoke('gpt-vision', {
         body: { base64Image },
       });
       
       if (error) {
-        console.error('[Image Parser] Supabase function error:', error);
-        throw new Error(error.message || 'Failed to process image');
+        console.error('[Image Parser] ❌ Supabase function error:', error);
+        throw new Error(error.message || 'Failed to process image with GPT Vision');
       }
       
-      console.log('[Image Parser] Raw response:', data);
+      console.log('[Image Parser] ✅ Received response from GPT Vision');
       
       // Handle the response based on the actual structure returned by the edge function
       if (data && typeof data === 'object') {
@@ -46,11 +48,13 @@ export const useVendorImageParser = () => {
           if (!Array.isArray(data.vendors) || data.vendors.length === 0) {
             throw new Error('No vendor data found in the image');
           }
+          console.log(`[Image Parser] ✅ Successfully extracted ${data.vendors.length} vendors from image`);
           return data.vendors;
         }
         
         // If vendors are directly in the response
         if (data.vendors && Array.isArray(data.vendors)) {
+          console.log(`[Image Parser] ✅ Successfully extracted ${data.vendors.length} vendors from image`);
           return data.vendors;
         }
       }
@@ -59,7 +63,7 @@ export const useVendorImageParser = () => {
       let vendors = [];
       try {
         const content = data?.result || data?.content || JSON.stringify(data);
-        console.log('[Image Parser] Parsing content:', content);
+        console.log('[Image Parser] 🔄 Parsing fallback content...');
         
         // Clean up the response if it contains markdown formatting
         let jsonStr = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
@@ -77,18 +81,19 @@ export const useVendorImageParser = () => {
           }
         }
       } catch (parseError) {
-        console.error('[Image Parser] Error parsing response:', parseError);
-        throw new Error('Failed to parse vendor data from AI response');
+        console.error('[Image Parser] ❌ Error parsing response:', parseError);
+        throw new Error('Failed to parse vendor data from AI Vision response');
       }
       
       if (vendors.length === 0) {
-        throw new Error('No vendor data found in the image');
+        throw new Error('No vendor data found in the image. The document may not contain clear vendor information, or the image quality may be too low for AI analysis.');
       }
       
+      console.log(`[Image Parser] ✅ Successfully extracted ${vendors.length} vendors using fallback parsing`);
       return vendors;
       
     } catch (error: any) {
-      console.error("Error parsing image with GPT Vision:", error);
+      console.error("[Image Parser] ❌ Error parsing image with GPT Vision:", error);
       
       // Handle specific error types with user-friendly messages
       if (error.message?.includes('Rate limit exceeded') || error.message?.includes('rate limit')) {
@@ -111,9 +116,13 @@ export const useVendorImageParser = () => {
         const base64String = reader.result as string;
         // Remove the data:image/...;base64, prefix
         const base64Data = base64String.split(',')[1];
+        console.log(`[Image Parser] ✅ File converted to base64, size: ${(base64Data.length / 1024).toFixed(1)} KB`);
         resolve(base64Data);
       };
-      reader.onerror = reject;
+      reader.onerror = (error) => {
+        console.error('[Image Parser] ❌ Error converting file to base64:', error);
+        reject(error);
+      };
       reader.readAsDataURL(file);
     });
   };

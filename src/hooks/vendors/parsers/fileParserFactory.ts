@@ -14,36 +14,45 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
   const fileExtension = file.name.toLowerCase().split('.').pop();
   const { parseImageWithVision, convertFileToBase64 } = useVendorImageParser();
   
-  // If AI Vision parser is enabled, convert any file to image and use vision parsing
+  // If AI Vision parser is enabled, convert ANY file to image and use vision parsing
   if (useImageParser) {
-    console.log('[File Parser] Using AI Vision mode - converting file to image...');
+    console.log('[File Parser] AI Vision mode active - converting file to image format...');
+    console.log(`[File Parser] Original file: ${file.name}, size: ${(file.size / 1024 / 1024).toFixed(2)} MB, type: ${file.type}`);
     
     try {
-      // Convert file to image first (this handles all file types)
+      // Step 1: Convert any file type to an image representation
       const imageFile = await convertFileToImage(file);
-      console.log('[File Parser] File converted to image successfully, size:', imageFile.size);
+      console.log(`[File Parser] ✓ File converted to image successfully`);
+      console.log(`[File Parser] ✓ Image file size: ${(imageFile.size / 1024 / 1024).toFixed(2)} MB`);
+      console.log(`[File Parser] ✓ Image type: ${imageFile.type}`);
       
-      // Convert the image to base64 for the Vision API
+      // Step 2: Convert the image to base64 for the Vision API
       const base64Image = await convertFileToBase64(imageFile);
-      console.log('[File Parser] Image converted to base64, length:', base64Image.length);
+      console.log(`[File Parser] ✓ Image converted to base64, length: ${(base64Image.length / 1024).toFixed(1)} KB`);
       
-      // Process the image with Vision API (this should be much smaller than text)
+      // Step 3: Process with Vision API (no text processing, only image analysis)
+      console.log('[File Parser] ✓ Sending image to GPT Vision API...');
       const vendors = await parseImageWithVision(base64Image);
-      console.log(`[File Parser] Successfully parsed ${vendors.length} vendors using AI Vision`);
+      console.log(`[File Parser] ✓ AI Vision successfully extracted ${vendors.length} vendors from image`);
+      
       return vendors;
     } catch (error) {
-      console.error('[File Parser] AI Vision processing failed:', error);
+      console.error('[File Parser] ❌ AI Vision processing failed:', error);
       throw new Error(`AI Vision processing failed: ${error.message}`);
     }
   }
   
-  // Use original file type parsers for text mode only
+  // Use original file type parsers for text mode only (when AI Vision is disabled)
+  console.log('[File Parser] Text mode active - using traditional parsers...');
+  
   if (file.type.startsWith('image/')) {
+    console.log('[File Parser] Processing image file with image parser...');
     return await parseWithImage(file);
   }
   
   switch (fileExtension) {
     case 'csv':
+      console.log('[File Parser] Processing CSV file...');
       return await parseCSV(file);
     case 'xlsx':
     case 'xls':
@@ -54,6 +63,7 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     case 'docx':
       // Use Word parser for text mode, but suggest AI Vision for better results
       try {
+        console.log('[File Parser] Processing Word document with text parser...');
         return await parseWord(file);
       } catch (error) {
         throw new Error('Word document parsing failed. Try enabling "AI Vision Parser" for better results with complex document layouts.');

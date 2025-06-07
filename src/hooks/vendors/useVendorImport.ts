@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
@@ -79,23 +78,47 @@ export const useVendorImport = () => {
     try {
       const useImageParsing = forceImageParser || useImageParser;
       
-      console.log(`[Vendor Import] Processing file: ${selectedFile.name}`);
-      console.log(`[Vendor Import] Using AI Vision Parser: ${useImageParsing}`);
-      console.log(`[Vendor Import] File size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`);
-      console.log(`[Vendor Import] File type: ${selectedFile.type}`);
+      console.log(`[Vendor Import] 📄 Processing file: ${selectedFile.name}`);
+      console.log(`[Vendor Import] 🔧 Parsing mode: ${useImageParsing ? 'AI Vision (Image Conversion)' : 'Text Extraction'}`);
+      console.log(`[Vendor Import] 📊 File size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`);
+      console.log(`[Vendor Import] 📋 File type: ${selectedFile.type}`);
       
-      // The parseFile function now handles the conversion internally when useImageParsing is true
+      if (useImageParsing) {
+        console.log('[Vendor Import] 🖼️ Converting file to image for AI Vision processing...');
+        toast.info("Converting file to image format for AI analysis...", {
+          description: "This may take a moment for large files"
+        });
+      }
+      
+      // The parseFile function handles the conversion internally when useImageParsing is true
       const parsedVendors = await parseFile(selectedFile, useImageParsing);
       setParsedData(parsedVendors);
       
-      const parsingMethod = useImageParsing ? 'AI Vision (with automatic file conversion)' : 'text extraction';
-      toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
+      if (useImageParsing) {
+        toast.success(`Successfully processed image with AI Vision`, {
+          description: `Found ${parsedVendors.length} vendors by analyzing the converted image`
+        });
+      } else {
+        toast.success(`Successfully parsed ${parsedVendors.length} vendors using text extraction`);
+      }
       
     } catch (error: any) {
       console.error("Error parsing file:", error);
-      toast.error("Failed to parse file", {
-        description: error.message || "Please check the file format and try again"
-      });
+      
+      // Provide specific error messages based on the error type
+      if (error.message?.includes('Rate limit exceeded') || error.message?.includes('rate limit')) {
+        toast.error("OpenAI rate limit exceeded", {
+          description: "Try enabling 'AI Vision Parser' to process files as images instead of text"
+        });
+      } else if (error.message?.includes('AI Vision processing failed')) {
+        toast.error("AI Vision processing failed", {
+          description: "Try again or switch to text extraction mode"
+        });
+      } else {
+        toast.error("Failed to parse file", {
+          description: error.message || "Please check the file format and try again"
+        });
+      }
       setFile(null);
     } finally {
       setIsProcessing(false);
