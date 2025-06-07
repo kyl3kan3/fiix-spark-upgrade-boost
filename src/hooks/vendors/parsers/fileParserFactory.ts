@@ -3,6 +3,8 @@ import { VendorFormData } from "@/services/vendorService";
 import { parseCSV } from "./csvParser";
 import { parseWord } from "./wordParser";
 import { parseWithImage } from "./imageParser";
+import { convertFileToImage } from "../utils/documentConverter";
+import { useVendorImageParser } from "../useVendorImageParser";
 
 interface ParsedVendor extends VendorFormData {
   // Remove logo_url field since it's not in the database schema
@@ -10,8 +12,23 @@ interface ParsedVendor extends VendorFormData {
 
 export const parseFile = async (file: File, useImageParser: boolean = false): Promise<ParsedVendor[]> => {
   const fileExtension = file.name.toLowerCase().split('.').pop();
+  const { parseImageWithVision, convertFileToBase64 } = useVendorImageParser();
   
-  // Only use image parser for actual image files or PDFs when explicitly requested
+  // If AI Vision parser is enabled, convert any file to image and use vision parsing
+  if (useImageParser) {
+    console.log('[File Parser] Using AI Vision mode - converting file to image...');
+    
+    try {
+      const imageFile = await convertFileToImage(file);
+      const base64Image = await convertFileToBase64(imageFile);
+      return await parseImageWithVision(base64Image);
+    } catch (error) {
+      console.warn('[File Parser] Image conversion failed, falling back to text parsing:', error);
+      // Fall back to text parsing if image conversion fails
+    }
+  }
+  
+  // Use original file type parsers for text mode
   if (file.type.startsWith('image/')) {
     return await parseWithImage(file);
   }
@@ -21,20 +38,18 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
       return await parseCSV(file);
     case 'xlsx':
     case 'xls':
-      throw new Error('Excel import will be available in the next update. Please use CSV format for now.');
+      throw new Error('Excel files need to be converted to CSV first, or enable "AI Vision Parser" to process them automatically.');
     case 'pdf':
-      // Only use image parsing for PDF if AI Vision toggle is enabled
-      if (useImageParser) {
-        return await parseWithImage(file);
-      } else {
-        throw new Error('PDF text extraction is not available yet. Please enable "Use AI Vision Parser" for PDF files, or convert your PDF to a Word document or CSV format.');
-      }
+      throw new Error('For PDF files, please enable "AI Vision Parser" for automatic conversion and processing.');
     case 'doc':
     case 'docx':
-      // Always use the Word parser for Word documents, regardless of the AI Vision toggle
-      // The Word parser already uses AI processing internally
-      return await parseWord(file);
+      // Use Word parser for text mode, but suggest AI Vision for better results
+      try {
+        return await parseWord(file);
+      } catch (error) {
+        throw new Error('Word document parsing failed. Try enabling "AI Vision Parser" for better results with complex document layouts.');
+      }
     default:
-      throw new Error('Unsupported file format. Please use CSV, Word document, PDF, or image files.');
+      throw new Error('Unsupported file format. Please use CSV, Word document, PDF, or image files, or enable "AI Vision Parser" to automatically convert your file.');
   }
 };
