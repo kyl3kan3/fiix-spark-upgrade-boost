@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 // Set up PDF.js worker
-GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${require('pdfjs-dist/package.json').version}/build/pdf.worker.min.js`;
+GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${(await import('pdfjs-dist/package.json')).version}/build/pdf.worker.min.js`;
 
 async function parseCSV(file: File): Promise<any[]> {
   return new Promise<any[]>((resolve) => {
@@ -77,7 +77,11 @@ async function parsePDF(file: File): Promise<any[]> {
     // If Tesseract fails, try GPT-4 Vision
     if (textFromOcr.replace(/\s/g, '').length < 20) {
       const base64Image = imgData.replace(/^data:image\/png;base64,/, '');
-      textFromOcr = await callGptVision(base64Image);
+      const gptResult = await callGptVision(base64Image);
+      if (Array.isArray(gptResult)) {
+        return gptResult;
+      }
+      textFromOcr = typeof gptResult === 'string' ? gptResult : JSON.stringify(gptResult);
     }
     text = textFromOcr;
   }
@@ -90,7 +94,7 @@ async function parsePDF(file: File): Promise<any[]> {
     .map((line) => ({ name: line }));
 }
 
-async function callGptVision(base64Image: string): Promise<string> {
+async function callGptVision(base64Image: string): Promise<any[]> {
   try {
     const { data, error } = await supabase.functions.invoke('gpt-vision', {
       body: { base64Image },
