@@ -1,19 +1,19 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
-import { VendorUploader } from '@/components/vendors/VendorUploader'
-import { VendorTable } from '@/components/vendors/VendorTable'
+import VendorCsvUploader from '@/components/vendors/VendorCsvUploader'
+import VendorCsvTable from '@/components/vendors/VendorCsvTable'
+import { Button } from '@/components/ui/button'
+import { useVendorCsvImport } from '@/hooks/vendors/useVendorCsvImport'
 
 const VendorImportPage: React.FC = () => {
-  const [parsedVendors, setParsedVendors] = useState<any[]>([])
-
-  const handleVendorsParsed = (vendors: any[]) => {
-    setParsedVendors(vendors)
-  }
-
-  const handleSaveComplete = () => {
-    setParsedVendors([])
-  }
+  const {
+    vendors,
+    isImporting,
+    handleVendorsUploaded,
+    importVendors,
+    clearVendors
+  } = useVendorCsvImport();
 
   return (
     <DashboardLayout>
@@ -22,18 +22,33 @@ const VendorImportPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold">Vendor Import Tool</h1>
             <p className="text-gray-600 mt-2">
-              Upload PDF or DOCX files to automatically extract vendor information using AI
+              Upload CSV files to import vendor information
             </p>
           </div>
         </div>
 
-        <VendorUploader onVendorsParsed={handleVendorsParsed} />
+        <VendorCsvUploader onVendors={handleVendorsUploaded} />
         
-        {parsedVendors.length > 0 && (
-          <VendorTable 
-            vendors={parsedVendors} 
-            onSaveComplete={handleSaveComplete}
-          />
+        {vendors.length > 0 && (
+          <>
+            <VendorCsvTable vendors={vendors} />
+            <div className="flex gap-4">
+              <Button 
+                onClick={importVendors}
+                disabled={isImporting}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {isImporting ? 'Importing...' : `Import ${vendors.length} Vendors`}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={clearVendors}
+                disabled={isImporting}
+              >
+                Clear
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </DashboardLayout>
