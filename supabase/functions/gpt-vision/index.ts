@@ -115,7 +115,11 @@ If no clear vendor information is found, return an empty array: []`
       }
       
       return new Response(
-        JSON.stringify({ error: errorMessage, details: errorText }), 
+        JSON.stringify({ 
+          success: false,
+          error: errorMessage, 
+          details: errorText 
+        }), 
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -166,6 +170,7 @@ If no clear vendor information is found, return an empty array: []`
     console.error('[GPT Vision] Unexpected error:', error);
     return new Response(
       JSON.stringify({ 
+        success: false,
         error: 'Internal server error',
         details: error.message 
       }), 
