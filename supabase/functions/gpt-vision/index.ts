@@ -63,28 +63,31 @@ serve(async (req) => {
             content: [
               {
                 type: 'text',
-                text: `Extract vendor/company information from this image and return as JSON array. Look for company names, contact details, addresses, phone numbers, emails, and any business information. Return ONLY a valid JSON array in this format:
+                text: `Analyze this image and extract vendor/company information. Look for company names, contact details, addresses, phone numbers, emails, and business information. 
 
+Focus on extracting clear, readable vendor information. If the image contains a vendor directory or list, extract all vendors you can identify.
+
+Return ONLY a valid JSON array in this exact format:
 [
   {
-    "name": "Company name (required)",
-    "email": "email address or empty string",
-    "phone": "phone number or empty string", 
-    "contact_person": "contact person name or empty string",
-    "contact_title": "contact title or empty string",
+    "name": "Company Name",
+    "email": "email@example.com or empty string if not found",
+    "phone": "phone number or empty string if not found", 
+    "contact_person": "contact person name or empty string if not found",
+    "contact_title": "contact title or empty string if not found",
     "vendor_type": "service",
     "status": "active",
-    "address": "full address or empty string",
-    "city": "city or empty string",
-    "state": "state or empty string", 
-    "zip_code": "zip code or empty string",
-    "website": "website or empty string",
-    "description": "services/products or empty string",
+    "address": "full address or empty string if not found",
+    "city": "city or empty string if not found",
+    "state": "state or empty string if not found", 
+    "zip_code": "zip code or empty string if not found",
+    "website": "website or empty string if not found",
+    "description": "brief description of services/products or empty string if not found",
     "rating": null
   }
 ]
 
-Extract ALL vendors/companies you can identify, even with minimal information. Be aggressive in identifying business names and contact details.`
+If no clear vendor information is found, return an empty array: []`
               },
               {
                 type: 'image_url',
@@ -96,7 +99,7 @@ Extract ALL vendors/companies you can identify, even with minimal information. B
           },
         ],
         temperature: 0.1,
-        max_tokens: 2000,
+        max_tokens: 4000,
       }),
     });
 
