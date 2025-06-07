@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
@@ -5,6 +6,7 @@ import { toast } from "sonner";
 import { parseFile } from "./parsers/fileParserFactory";
 import { downloadTemplate } from "./utils/templateGenerator";
 import { useVendorImageParser } from "./useVendorImageParser";
+import { convertDocxToImage } from "./utils/documentConverter";
 
 interface ParsedVendor extends VendorFormData {
   // Remove logo_url since it's not in the database schema
@@ -79,6 +81,25 @@ export const useVendorImport = () => {
     
     try {
       const useImageParsing = forceImageParser || useImageParser || selectedFile.type.startsWith('image/');
+      
+      // Check if it's a DOCX file and we should use vision processing
+      if ((selectedFile.name.toLowerCase().endsWith('.docx') || selectedFile.name.toLowerCase().endsWith('.doc')) && useImageParsing) {
+        console.log('[Vendor Import] Converting DOCX to image for AI Vision processing...');
+        toast.info('Converting document to image for better AI processing...');
+        
+        try {
+          const imageBlob = await convertDocxToImage(selectedFile);
+          const base64Image = await convertFileToBase64(imageBlob);
+          const parsedVendors = await parseImageWithVision(base64Image);
+          setParsedData(parsedVendors);
+          toast.success(`Successfully parsed ${parsedVendors.length} vendors using AI Vision (converted from document)`);
+          return;
+        } catch (conversionError) {
+          console.warn('[Vendor Import] DOCX to image conversion failed, falling back to text parsing:', conversionError);
+          toast.warning('Document conversion failed, using text parsing instead...');
+          // Fall back to regular text parsing
+        }
+      }
       
       // Check if it's an image file and we should use vision processing
       if (selectedFile.type.startsWith('image/') || useImageParsing) {
