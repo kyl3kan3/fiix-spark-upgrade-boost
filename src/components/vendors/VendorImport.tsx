@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-// Set up PDF.js worker
-GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${(await import('pdfjs-dist/package.json')).version}/build/pdf.worker.min.js`;
+// Set up PDF.js worker with a fixed URL to avoid top-level await
+GlobalWorkerOptions.workerSrc = '//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.js';
 
 async function parseCSV(file: File): Promise<any[]> {
   return new Promise<any[]>((resolve) => {
