@@ -78,6 +78,12 @@ export const useVendorImageParser = () => {
       
     } catch (error: any) {
       console.error("Error parsing image with GPT Vision:", error);
+      
+      // Handle specific error types
+      if (error.message?.includes('Rate limit exceeded')) {
+        throw new Error("OpenAI rate limit exceeded. Please wait a few minutes and try again.");
+      }
+      
       throw new Error(error.message || "Failed to parse image with AI Vision");
     }
   };
