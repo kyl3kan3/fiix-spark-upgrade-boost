@@ -81,12 +81,14 @@ export const useVendorImport = () => {
       
       console.log(`[Vendor Import] Processing file: ${selectedFile.name}`);
       console.log(`[Vendor Import] Using AI Vision Parser: ${useImageParsing}`);
+      console.log(`[Vendor Import] File size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`);
+      console.log(`[Vendor Import] File type: ${selectedFile.type}`);
       
-      // Use the parseFile function which handles conversion internally
+      // The parseFile function now handles the conversion internally when useImageParsing is true
       const parsedVendors = await parseFile(selectedFile, useImageParsing);
       setParsedData(parsedVendors);
       
-      const parsingMethod = useImageParsing ? 'AI Vision (with automatic conversion)' : 'text extraction';
+      const parsingMethod = useImageParsing ? 'AI Vision (with automatic file conversion)' : 'text extraction';
       toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
       
     } catch (error: any) {

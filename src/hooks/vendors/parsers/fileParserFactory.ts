@@ -19,12 +19,15 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     console.log('[File Parser] Using AI Vision mode - converting file to image...');
     
     try {
-      // Convert file to image first
+      // Convert file to image first (this handles all file types)
       const imageFile = await convertFileToImage(file);
-      console.log('[File Parser] File converted to image successfully');
+      console.log('[File Parser] File converted to image successfully, size:', imageFile.size);
       
-      // Then process the image with Vision API
+      // Convert the image to base64 for the Vision API
       const base64Image = await convertFileToBase64(imageFile);
+      console.log('[File Parser] Image converted to base64, length:', base64Image.length);
+      
+      // Process the image with Vision API (this should be much smaller than text)
       const vendors = await parseImageWithVision(base64Image);
       console.log(`[File Parser] Successfully parsed ${vendors.length} vendors using AI Vision`);
       return vendors;
