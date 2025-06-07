@@ -19,16 +19,22 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
     console.log('[File Parser] Using AI Vision mode - converting file to image...');
     
     try {
+      // Convert file to image first
       const imageFile = await convertFileToImage(file);
+      console.log('[File Parser] File converted to image successfully');
+      
+      // Then process the image with Vision API
       const base64Image = await convertFileToBase64(imageFile);
-      return await parseImageWithVision(base64Image);
+      const vendors = await parseImageWithVision(base64Image);
+      console.log(`[File Parser] Successfully parsed ${vendors.length} vendors using AI Vision`);
+      return vendors;
     } catch (error) {
-      console.warn('[File Parser] Image conversion failed, falling back to text parsing:', error);
-      // Fall back to text parsing if image conversion fails
+      console.error('[File Parser] AI Vision processing failed:', error);
+      throw new Error(`AI Vision processing failed: ${error.message}`);
     }
   }
   
-  // Use original file type parsers for text mode
+  // Use original file type parsers for text mode only
   if (file.type.startsWith('image/')) {
     return await parseWithImage(file);
   }

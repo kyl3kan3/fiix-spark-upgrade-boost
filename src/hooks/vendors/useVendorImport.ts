@@ -5,8 +5,6 @@ import { createVendor, VendorFormData } from "@/services/vendorService";
 import { toast } from "sonner";
 import { parseFile } from "./parsers/fileParserFactory";
 import { downloadTemplate } from "./utils/templateGenerator";
-import { useVendorImageParser } from "./useVendorImageParser";
-import { convertDocxToImage } from "./utils/documentConverter";
 
 interface ParsedVendor extends VendorFormData {
   // Remove logo_url since it's not in the database schema
@@ -18,7 +16,6 @@ export const useVendorImport = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [useImageParser, setUseImageParser] = useState(false);
   const queryClient = useQueryClient();
-  const { parseImageWithVision, convertFileToBase64 } = useVendorImageParser();
 
   const importMutation = useMutation({
     mutationFn: async (vendors: ParsedVendor[]) => {
@@ -80,42 +77,18 @@ export const useVendorImport = () => {
     setIsProcessing(true);
     
     try {
-      const useImageParsing = forceImageParser || useImageParser || selectedFile.type.startsWith('image/');
+      const useImageParsing = forceImageParser || useImageParser;
       
-      // Check if it's a DOCX file and we should use vision processing
-      if ((selectedFile.name.toLowerCase().endsWith('.docx') || selectedFile.name.toLowerCase().endsWith('.doc')) && useImageParsing) {
-        console.log('[Vendor Import] Converting DOCX to image for AI Vision processing...');
-        toast.info('Converting document to image for better AI processing...');
-        
-        try {
-          const imageBlob = await convertDocxToImage(selectedFile);
-          const base64Image = await convertFileToBase64(imageBlob);
-          const parsedVendors = await parseImageWithVision(base64Image);
-          setParsedData(parsedVendors);
-          toast.success(`Successfully parsed ${parsedVendors.length} vendors using AI Vision (converted from document)`);
-          return;
-        } catch (conversionError) {
-          console.warn('[Vendor Import] DOCX to image conversion failed, falling back to text parsing:', conversionError);
-          toast.warning('Document conversion failed, using text parsing instead...');
-          // Fall back to regular text parsing
-        }
-      }
+      console.log(`[Vendor Import] Processing file: ${selectedFile.name}`);
+      console.log(`[Vendor Import] Using AI Vision Parser: ${useImageParsing}`);
       
-      // Check if it's an image file and we should use vision processing
-      if (selectedFile.type.startsWith('image/') || useImageParsing) {
-        console.log('[Vendor Import] Using GPT Vision for image processing...');
-        const base64Image = await convertFileToBase64(selectedFile);
-        const parsedVendors = await parseImageWithVision(base64Image);
-        setParsedData(parsedVendors);
-        toast.success(`Successfully parsed ${parsedVendors.length} vendors using GPT-4 Vision`);
-      } else {
-        // Use existing file parsing for non-image files
-        const parsedVendors = await parseFile(selectedFile, useImageParsing);
-        setParsedData(parsedVendors);
-        
-        const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
-        toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
-      }
+      // Use the parseFile function which handles conversion internally
+      const parsedVendors = await parseFile(selectedFile, useImageParsing);
+      setParsedData(parsedVendors);
+      
+      const parsingMethod = useImageParsing ? 'AI Vision (with automatic conversion)' : 'text extraction';
+      toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
+      
     } catch (error: any) {
       console.error("Error parsing file:", error);
       toast.error("Failed to parse file", {
