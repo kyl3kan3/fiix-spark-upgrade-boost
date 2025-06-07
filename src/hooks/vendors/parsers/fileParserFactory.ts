@@ -30,8 +30,8 @@ export const parseFile = async (file: File, useImageParser: boolean = false): Pr
       const base64Image = await convertFileToBase64(imageFile);
       console.log(`[File Parser] ✓ Image converted to base64, length: ${(base64Image.length / 1024).toFixed(1)} KB`);
       
-      // Step 3: Process with Vision API (no text processing, only image analysis)
-      console.log('[File Parser] ✓ Sending image to GPT Vision API...');
+      // Step 3: Process with Vision API using ONLY the image data
+      console.log('[File Parser] ✓ Sending ONLY image data to GPT Vision API...');
       const vendors = await parseImageWithVision(base64Image);
       console.log(`[File Parser] ✓ AI Vision successfully extracted ${vendors.length} vendors from image`);
       

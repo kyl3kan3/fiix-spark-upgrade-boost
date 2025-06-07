@@ -14,11 +14,14 @@ export const useVendorImageParser = () => {
   const parseImageWithVision = async (base64Image: string): Promise<VendorFormData[]> => {
     try {
       console.log('[Image Parser] 🚀 Sending image to GPT Vision function...');
-      console.log(`[Image Parser] 📊 Image data size: ${(base64Image.length / 1024).toFixed(1)} KB`);
+      console.log(`[Image Parser] 📊 Base64 image data size: ${(base64Image.length / 1024).toFixed(1)} KB`);
+      console.log('[Image Parser] 📝 Using gpt-vision endpoint for IMAGE ONLY processing...');
       
-      // Call the GPT Vision edge function (NOT the text-based parse-vendor function)
+      // Call the GPT Vision edge function with ONLY image data
       const { data, error } = await supabase.functions.invoke('gpt-vision', {
-        body: { base64Image },
+        body: { 
+          base64Image: base64Image  // Send ONLY the image, no text
+        },
       });
       
       if (error) {
@@ -114,7 +117,7 @@ export const useVendorImageParser = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const base64String = reader.result as string;
-        // Remove the data:image/...;base64, prefix
+        // Remove the data:image/...;base64, prefix to get just the base64 data
         const base64Data = base64String.split(',')[1];
         console.log(`[Image Parser] ✅ File converted to base64, size: ${(base64Data.length / 1024).toFixed(1)} KB`);
         resolve(base64Data);

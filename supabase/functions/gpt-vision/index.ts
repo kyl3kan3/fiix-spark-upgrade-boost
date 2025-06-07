@@ -47,7 +47,8 @@ serve(async (req) => {
       );
     }
 
-    console.log('[GPT Vision] Processing image with GPT-4 Vision...');
+    console.log('[GPT Vision] Processing ONLY image data with GPT-4 Vision...');
+    console.log(`[GPT Vision] Image data size: ${(base64Image.length / 1024).toFixed(1)} KB`);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
