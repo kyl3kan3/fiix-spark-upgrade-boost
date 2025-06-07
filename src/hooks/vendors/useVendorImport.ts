@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createVendor, VendorFormData } from "@/services/vendorService";
 import { toast } from "sonner";
 import { parseFile } from "./parsers/fileParserFactory";
 import { downloadTemplate } from "./utils/templateGenerator";
+import { useVendorImageParser } from "./useVendorImageParser";
 
 interface ParsedVendor extends VendorFormData {
   // Remove logo_url since it's not in the database schema
@@ -16,6 +16,7 @@ export const useVendorImport = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [useImageParser, setUseImageParser] = useState(false);
   const queryClient = useQueryClient();
+  const { parseImageWithVision, convertFileToBase64 } = useVendorImageParser();
 
   const importMutation = useMutation({
     mutationFn: async (vendors: ParsedVendor[]) => {
@@ -78,11 +79,22 @@ export const useVendorImport = () => {
     
     try {
       const useImageParsing = forceImageParser || useImageParser || selectedFile.type.startsWith('image/');
-      const parsedVendors = await parseFile(selectedFile, useImageParsing);
-      setParsedData(parsedVendors);
       
-      const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
-      toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
+      // Check if it's an image file and we should use vision processing
+      if (selectedFile.type.startsWith('image/') || useImageParsing) {
+        console.log('[Vendor Import] Using GPT Vision for image processing...');
+        const base64Image = await convertFileToBase64(selectedFile);
+        const parsedVendors = await parseImageWithVision(base64Image);
+        setParsedData(parsedVendors);
+        toast.success(`Successfully parsed ${parsedVendors.length} vendors using GPT-4 Vision`);
+      } else {
+        // Use existing file parsing for non-image files
+        const parsedVendors = await parseFile(selectedFile, useImageParsing);
+        setParsedData(parsedVendors);
+        
+        const parsingMethod = useImageParsing ? 'AI Vision' : 'text extraction';
+        toast.success(`Successfully parsed ${parsedVendors.length} vendors using ${parsingMethod}`);
+      }
     } catch (error: any) {
       console.error("Error parsing file:", error);
       toast.error("Failed to parse file", {
@@ -94,7 +106,6 @@ export const useVendorImport = () => {
     }
   };
 
-  // Modified to accept custom vendor data or use parsed data
   const importVendors = async (customVendors?: ParsedVendor[]): Promise<boolean> => {
     const vendorsToImport = customVendors || parsedData;
     

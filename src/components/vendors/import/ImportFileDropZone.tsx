@@ -33,7 +33,7 @@ const ImportFileDropZone: React.FC<ImportFileDropZoneProps> = ({
         Drop your file here or click to browse
       </p>
       <p className="text-sm text-gray-500 mb-4">
-        Supports CSV, Excel, PDF, Word documents, and images
+        Supports CSV, Excel, PDF, Word documents, and images (PNG, JPG, etc.)
       </p>
       
       <div className="flex items-center justify-center gap-3">
@@ -42,7 +42,7 @@ const ImportFileDropZone: React.FC<ImportFileDropZoneProps> = ({
             <input
               type="file"
               className="hidden"
-              accept=".csv,.xlsx,.xls,.pdf,.docx,.doc,.png,.jpg,.jpeg,.gif,.bmp,.tiff"
+              accept=".csv,.xlsx,.xls,.pdf,.docx,.doc,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.webp"
               onChange={onFileInput}
             />
             Choose File
