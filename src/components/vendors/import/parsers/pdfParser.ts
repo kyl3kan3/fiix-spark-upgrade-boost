@@ -20,7 +20,7 @@ async function renderPdfToImage(file: File): Promise<string> {
   return canvas.toDataURL('image/png');
 }
 
-export async function parsePDF(file: File): Promise<any[]> {
+export async function parsePDF(file: File, expectedCount?: number): Promise<any[]> {
   const buffer = await file.arrayBuffer();
   const loadingTask = getDocument({ data: buffer });
   const pdf = await loadingTask.promise;
@@ -51,10 +51,20 @@ export async function parsePDF(file: File): Promise<any[]> {
     text = textFromOcr;
   }
   
-  // Very basic split: adjust this for your format!
-  return text
+  // Use expected count to guide parsing
+  const lines = text
     .split('\n')
     .map(line => line.trim())
-    .filter(Boolean)
-    .map((line) => ({ name: line }));
+    .filter(Boolean);
+    
+  if (expectedCount === 1) {
+    return [{ name: lines.join(' ') }];
+  }
+  
+  if (expectedCount && Math.abs(lines.length - expectedCount) <= 2) {
+    return lines.map((line) => ({ name: line }));
+  }
+  
+  // Fallback to original logic
+  return lines.map((line) => ({ name: line }));
 }

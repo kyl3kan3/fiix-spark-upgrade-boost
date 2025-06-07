@@ -4,15 +4,17 @@ import VendorTable from '../VendorTable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, Save, ChevronDown, ChevronUp } from 'lucide-react';
+import { Eye, Save, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ImportResultsProps {
   vendors: any[];
   onSave: () => void;
+  expectedCount?: number;
 }
 
-const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave }) => {
+const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expectedCount }) => {
   const [showPreview, setShowPreview] = useState(false);
 
   if (vendors.length === 0) return null;
@@ -38,13 +40,34 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave }) => {
 
   const formattedVendors = vendors.map(formatVendorForSave);
 
+  // Check if count differs significantly from expected
+  const showCountWarning = expectedCount && vendors.length > 0 && 
+    Math.abs(vendors.length - expectedCount) > Math.max(1, expectedCount * 0.3);
+
   return (
     <div className="space-y-4">
+      {showCountWarning && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Found {vendors.length} vendors but expected {expectedCount}. 
+            You may want to adjust your file format or expected count.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Import Results</span>
-            <Badge variant="secondary">{vendors.length} vendors found</Badge>
+            <div className="flex items-center gap-2">
+              {expectedCount && (
+                <Badge variant="outline">
+                  Expected: {expectedCount}
+                </Badge>
+              )}
+              <Badge variant="secondary">{vendors.length} vendors found</Badge>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>

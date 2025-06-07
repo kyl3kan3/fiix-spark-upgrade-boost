@@ -8,7 +8,7 @@ export const useVendorImport = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, expectedCount?: number) => {
     setError('');
     setVendors([]);
     setLoading(true);
@@ -16,8 +16,18 @@ export const useVendorImport = () => {
     if (!file) return setLoading(false);
 
     try {
-      const rows = await parseFile(file);
+      const rows = await parseFile(file, expectedCount);
       setVendors(rows);
+      
+      // Show warning if parsed count differs significantly from expected
+      if (expectedCount && rows.length > 0) {
+        const difference = Math.abs(rows.length - expectedCount);
+        const percentDiff = (difference / expectedCount) * 100;
+        
+        if (percentDiff > 50) {
+          setError(`Warning: Found ${rows.length} vendors but expected ${expectedCount}. The parsing might need adjustment.`);
+        }
+      }
     } catch (e) {
       setError('Parsing failed: ' + String(e));
     }
