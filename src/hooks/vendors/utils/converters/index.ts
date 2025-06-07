@@ -1,54 +1,48 @@
+// Simplified converter exports - only keeping the working ones
+export { convertDocxToImages } from './docxConverter';
+export { convertPdfToImages } from './pdfConverter';
+export { extractTextFromCanvas } from './canvasUtils';
+export { extractTextFromFile } from './textExtractor';
 
-import { convertDocxToImage } from './docxConverter';
-import { convertPdfToImage } from './pdfConverter';
-import { convertCsvToImage } from './csvConverter';
-import { convertExcelToImage } from './excelConverter';
-import { convertTextToImage } from './textConverter';
-
-/**
- * Converts various file types to images for better AI Vision processing
- */
-export const convertFileToImage = async (file: File): Promise<File> => {
-  const fileName = file.name.toLowerCase();
-  const fileType = file.type.toLowerCase();
-
-  // If it's already an image, return as-is
-  if (fileType.startsWith('image/')) {
-    return file;
+// Simple file type detection
+export const getFileType = (file: File): string => {
+  const extension = file.name.toLowerCase().split('.').pop() || '';
+  
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension)) {
+    return 'image';
   }
-
-  // Convert DOCX/DOC files
-  if (fileName.endsWith('.docx') || fileName.endsWith('.doc') || fileType.includes('word')) {
-    return await convertDocxToImage(file);
+  
+  if (['pdf'].includes(extension)) {
+    return 'pdf';
   }
-
-  // Convert PDF files
-  if (fileName.endsWith('.pdf') || fileType === 'application/pdf') {
-    return await convertPdfToImage(file);
+  
+  if (['docx', 'doc'].includes(extension)) {
+    return 'docx';
   }
-
-  // Convert CSV files
-  if (fileName.endsWith('.csv') || fileType === 'text/csv') {
-    return await convertCsvToImage(file);
+  
+  if (['csv'].includes(extension)) {
+    return 'csv';
   }
-
-  // Convert Excel files
-  if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileType.includes('sheet')) {
-    return await convertExcelToImage(file);
+  
+  if (['xlsx', 'xls'].includes(extension)) {
+    return 'excel';
   }
-
-  // Convert plain text files
-  if (fileType.startsWith('text/') || fileName.endsWith('.txt')) {
-    return await convertTextToImage(file);
-  }
-
-  // Default: try to treat as text and convert
-  return await convertTextToImage(file);
+  
+  return 'text';
 };
 
-// Re-export individual converters for direct use if needed
-export { convertDocxToImage } from './docxConverter';
-export { convertPdfToImage } from './pdfConverter';
-export { convertCsvToImage } from './csvConverter';
-export { convertExcelToImage } from './excelConverter';
-export { convertTextToImage } from './textConverter';
+// Convert files to images for processing
+export const convertToImages = async (file: File): Promise<string[]> => {
+  const fileType = getFileType(file);
+  
+  switch (fileType) {
+    case 'pdf':
+      return convertPdfToImages(file);
+    case 'docx':
+      return convertDocxToImages(file);
+    case 'image':
+      return [URL.createObjectURL(file)];
+    default:
+      throw new Error(`Unsupported file type: ${fileType}`);
+  }
+};
