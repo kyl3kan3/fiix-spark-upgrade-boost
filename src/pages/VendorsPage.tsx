@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllVendors } from "@/services/vendorService";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const VendorsPage = () => {
@@ -49,25 +49,41 @@ const VendorsPage = () => {
               Manage your vendor relationships and contacts
             </p>
           </div>
-          <Button asChild>
-            <Link to="/vendors/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Vendor
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link to="/vendors/import">
+                <Upload className="mr-2 h-4 w-4" />
+                Import Vendors
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/vendors/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Vendor
+              </Link>
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-4">
           {vendors.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-lg font-medium text-gray-900">No vendors yet</h3>
-              <p className="text-gray-500 mt-1">Get started by creating your first vendor.</p>
-              <Button asChild className="mt-4">
-                <Link to="/vendors/new">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Vendor
-                </Link>
-              </Button>
+              <p className="text-gray-500 mt-1">Get started by creating your first vendor or importing from a file.</p>
+              <div className="mt-4 flex gap-2 justify-center">
+                <Button asChild variant="outline">
+                  <Link to="/vendors/import">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Import Vendors
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/vendors/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Vendor
+                  </Link>
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

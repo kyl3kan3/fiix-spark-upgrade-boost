@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "@/pages/Index";
@@ -6,6 +5,7 @@ import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import VendorsPage from "@/pages/VendorsPage";
 import VendorFormPage from "@/pages/VendorFormPage";
+import VendorImportPage from "@/pages/VendorImportPage";
 import AssetsPage from "@/pages/AssetsPage";
 import AssetFormPage from "@/pages/AssetFormPage";
 import WorkOrdersPage from "@/pages/WorkOrdersPage";
@@ -47,6 +47,12 @@ export const AppRoutes = () => (
     <Route path="/vendors/new" element={
       <ProtectedRoute>
         <VendorFormPage />
+      </ProtectedRoute>
+    } />
+    
+    <Route path="/vendors/import" element={
+      <ProtectedRoute>
+        <VendorImportPage />
       </ProtectedRoute>
     } />
     
