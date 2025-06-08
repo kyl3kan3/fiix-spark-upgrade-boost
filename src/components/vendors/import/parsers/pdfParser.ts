@@ -51,18 +51,72 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
     text = textFromOcr;
   }
   
-  // Use expected count to guide parsing
+  // Split into lines and paragraphs
   const lines = text
     .split('\n')
     .map(line => line.trim())
     .filter(Boolean);
     
-  if (expectedCount === 1) {
-    return [{ name: lines.join(' ') }];
-  }
+  const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
   
-  if (expectedCount && Math.abs(lines.length - expectedCount) <= 2) {
-    return lines.map((line) => ({ name: line }));
+  // Use expected count to guide parsing
+  if (expectedCount) {
+    // If expecting 1 vendor
+    if (expectedCount === 1) {
+      return [{ name: lines.join(' ') }];
+    }
+    
+    // For multiple expected vendors, try to split intelligently
+    if (expectedCount > 1) {
+      // Try paragraphs first if count is reasonable
+      if (Math.abs(paragraphs.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
+        return paragraphs
+          .map(paragraph => paragraph.replace(/\n/g, ' ').trim())
+          .filter(paragraph => paragraph.length > 3)
+          .map(paragraph => ({ name: paragraph }));
+      }
+      
+      // Try lines if they match better
+      if (Math.abs(lines.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
+        return lines.map(line => ({ name: line }));
+      }
+      
+      // If we have way more lines than expected, try to group them
+      if (lines.length > expectedCount * 2) {
+        const groupSize = Math.ceil(lines.length / expectedCount);
+        const groups = [];
+        for (let i = 0; i < lines.length; i += groupSize) {
+          const group = lines.slice(i, i + groupSize).join(' ');
+          if (group.trim()) {
+            groups.push({ name: group.trim() });
+          }
+        }
+        return groups;
+      }
+      
+      // If we have fewer items than expected, try different splitting
+      if (paragraphs.length < expectedCount && lines.length >= expectedCount) {
+        return lines.slice(0, expectedCount).map(line => ({ name: line }));
+      }
+      
+      // Try splitting by common separators
+      if (paragraphs.length < expectedCount) {
+        const allSplits = [];
+        for (const paragraph of paragraphs) {
+          // Try splitting by common patterns
+          const splits = paragraph.split(/[;,]\s+|(\d+\.)\s+|(-)\s+/).filter(s => s && s.trim().length > 3);
+          if (splits.length > 1) {
+            allSplits.push(...splits.map(s => s.trim()));
+          } else {
+            allSplits.push(paragraph.trim());
+          }
+        }
+        
+        if (Math.abs(allSplits.length - expectedCount) <= Math.max(1, expectedCount * 0.5)) {
+          return allSplits.map(split => ({ name: split }));
+        }
+      }
+    }
   }
   
   // Fallback to original logic

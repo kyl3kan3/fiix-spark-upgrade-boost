@@ -1,3 +1,4 @@
+
 import mammoth from 'mammoth';
 
 export async function parseDOCX(file: File, expectedCount?: number): Promise<any[]> {
@@ -21,22 +22,68 @@ export async function parseDOCX(file: File, expectedCount?: number): Promise<any
   
   // Use expected count to guide parsing strategy
   if (expectedCount) {
-    // If expecting 1 vendor and we have many lines/paragraphs, treat as single vendor
-    if (expectedCount === 1 && (lines.length > 5 || paragraphs.length > 2)) {
+    // If expecting 1 vendor, treat as single vendor unless very clearly structured
+    if (expectedCount === 1) {
+      // Only split if we have very clear separation (many paragraphs)
+      if (paragraphs.length > 5 && paragraphs.every(p => p.length < 300)) {
+        return paragraphs
+          .map(paragraph => paragraph.replace(/\n/g, ' ').trim())
+          .filter(paragraph => paragraph.length > 3)
+          .map(paragraph => ({ name: paragraph }));
+      }
       return [{ name: text.replace(/\n/g, ' ').trim() }];
     }
     
-    // If expected count is closer to paragraph count, use paragraphs
-    if (Math.abs(paragraphs.length - expectedCount) < Math.abs(lines.length - expectedCount)) {
-      return paragraphs
-        .map(paragraph => paragraph.replace(/\n/g, ' ').trim())
-        .filter(paragraph => paragraph.length > 3)
-        .map(paragraph => ({ name: paragraph }));
-    }
-    
-    // If expected count is closer to line count, use lines
-    if (Math.abs(lines.length - expectedCount) <= 2) {
-      return lines.map(line => ({ name: line }));
+    // For multiple expected vendors, try to split intelligently
+    if (expectedCount > 1) {
+      // Try paragraphs first if count is reasonable
+      if (Math.abs(paragraphs.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
+        return paragraphs
+          .map(paragraph => paragraph.replace(/\n/g, ' ').trim())
+          .filter(paragraph => paragraph.length > 3)
+          .map(paragraph => ({ name: paragraph }));
+      }
+      
+      // Try lines if paragraph count doesn't match but lines do
+      if (Math.abs(lines.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
+        return lines.map(line => ({ name: line }));
+      }
+      
+      // If we have way more lines than expected, try to group them
+      if (lines.length > expectedCount * 2) {
+        const groupSize = Math.ceil(lines.length / expectedCount);
+        const groups = [];
+        for (let i = 0; i < lines.length; i += groupSize) {
+          const group = lines.slice(i, i + groupSize).join(' ');
+          if (group.trim()) {
+            groups.push({ name: group.trim() });
+          }
+        }
+        return groups;
+      }
+      
+      // If we have fewer items than expected, try different splitting
+      if (paragraphs.length < expectedCount && lines.length >= expectedCount) {
+        return lines.slice(0, expectedCount).map(line => ({ name: line }));
+      }
+      
+      // Try splitting paragraphs by common separators
+      if (paragraphs.length < expectedCount) {
+        const allSplits = [];
+        for (const paragraph of paragraphs) {
+          // Try splitting by common patterns
+          const splits = paragraph.split(/[;,]\s+|(\d+\.)\s+|(-)\s+/).filter(s => s && s.trim().length > 3);
+          if (splits.length > 1) {
+            allSplits.push(...splits.map(s => s.trim()));
+          } else {
+            allSplits.push(paragraph.trim());
+          }
+        }
+        
+        if (Math.abs(allSplits.length - expectedCount) <= Math.max(1, expectedCount * 0.5)) {
+          return allSplits.map(split => ({ name: split }));
+        }
+      }
     }
   }
   
