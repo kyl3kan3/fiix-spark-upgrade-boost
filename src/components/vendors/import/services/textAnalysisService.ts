@@ -22,7 +22,8 @@ const COMPANY_INDICATORS = [
   'LLP', 'LP', 'PC', 'Professional', 'Associates', 'Group', 'Enterprises',
   'Solutions', 'Services', 'Systems', 'Technologies', 'Tech', 'Consulting',
   'Hardware', 'Supply', 'Supplies', 'Equipment', 'Store', 'Shop', 'Center',
-  'Depot', 'Mart', 'Market', 'Industries', 'Manufacturing', 'Construction'
+  'Depot', 'Mart', 'Market', 'Industries', 'Manufacturing', 'Construction',
+  'Hardware', 'Ace'
 ];
 
 // Product/service indicators
@@ -70,9 +71,9 @@ function isCompanyName(text: string): boolean {
     upperText.includes(indicator.toUpperCase())
   ) || /\b(INC|LLC|CORP|LTD|CO)\b/i.test(text);
   
-  // Check if it's a common city name
-  const isCommonCity = COMMON_CITIES.some(city => 
-    lowerText === city || lowerText.includes(city)
+  // Check if it's a common city name (only single words that are exactly city names)
+  const isExactCityMatch = COMMON_CITIES.some(city => 
+    lowerText.trim() === city
   );
   
   // Check if it has city context indicators
@@ -80,8 +81,28 @@ function isCompanyName(text: string): boolean {
     lowerText.includes(indicator)
   );
   
-  // Return true only if it has company indicators and is not a city
-  return hasCompanyIndicator && !isCommonCity && !hasCityContext;
+  // If it has company indicators, it's likely a company
+  if (hasCompanyIndicator) {
+    return true;
+  }
+  
+  // If it's an exact city match without any company context, it's not a company
+  if (isExactCityMatch && !hasCompanyIndicator) {
+    return false;
+  }
+  
+  // If it has city context, it's not a company
+  if (hasCityContext) {
+    return false;
+  }
+  
+  // For multi-word phrases, be more lenient (likely company names)
+  const words = text.trim().split(/\s+/);
+  if (words.length > 1 && text.length > 10) {
+    return true;
+  }
+  
+  return false;
 }
 
 function isPersonName(text: string): boolean {
@@ -192,7 +213,7 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
         }
       }
     }
-    // Check for company name (must have clear company indicators)
+    // Check for company name
     else if (isCompanyName(line) && !companyName) {
       companyName = line;
     }
@@ -229,7 +250,7 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
   // If no clear company name found, look for the longest substantial line that's not a city or person
   if (!companyName && lines.length > 0) {
     const potentialCompanies = lines.filter(line => 
-      line.length > 5 && 
+      line.length > 3 && 
       !isPersonName(line) && 
       !isCityName(line) &&
       !containsProductInfo(line) &&
@@ -245,6 +266,15 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
       // Remove it from notes if it was added there
       const index = notes.indexOf(companyName);
       if (index > -1) notes.splice(index, 1);
+    } else {
+      // If still no company name, take the first substantial line
+      const firstSubstantialLine = lines.find(line => line.length > 5);
+      if (firstSubstantialLine) {
+        companyName = firstSubstantialLine;
+        // Remove it from notes if it was added there
+        const index = notes.indexOf(companyName);
+        if (index > -1) notes.splice(index, 1);
+      }
     }
   }
   
