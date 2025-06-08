@@ -20,7 +20,9 @@ export interface EntityClassification {
 const COMPANY_INDICATORS = [
   'Inc', 'LLC', 'Corp', 'Corporation', 'Company', 'Co', 'Ltd', 'Limited',
   'LLP', 'LP', 'PC', 'Professional', 'Associates', 'Group', 'Enterprises',
-  'Solutions', 'Services', 'Systems', 'Technologies', 'Tech', 'Consulting'
+  'Solutions', 'Services', 'Systems', 'Technologies', 'Tech', 'Consulting',
+  'Hardware', 'Supply', 'Supplies', 'Equipment', 'Store', 'Shop', 'Center',
+  'Depot', 'Mart', 'Market', 'Industries', 'Manufacturing', 'Construction'
 ];
 
 // Product/service indicators
@@ -43,11 +45,43 @@ const CONTACT_INDICATORS = [
   'director', 'coordinator', 'specialist', 'agent', 'sales', 'account'
 ];
 
+// Common city patterns that should NOT be company names
+const CITY_INDICATORS = [
+  'of', 'in', 'at', 'located', 'city', 'town', 'village', 'township'
+];
+
+// Common US city names that should be recognized as cities, not companies
+const COMMON_CITIES = [
+  'freeburg', 'chicago', 'new york', 'los angeles', 'houston', 'phoenix',
+  'philadelphia', 'san antonio', 'san diego', 'dallas', 'san jose',
+  'austin', 'jacksonville', 'fort worth', 'columbus', 'charlotte',
+  'seattle', 'denver', 'boston', 'detroit', 'nashville', 'memphis',
+  'portland', 'oklahoma city', 'las vegas', 'baltimore', 'milwaukee',
+  'atlanta', 'colorado springs', 'raleigh', 'omaha', 'miami',
+  'cleveland', 'tulsa', 'arlington', 'new orleans', 'wichita'
+];
+
 function isCompanyName(text: string): boolean {
   const upperText = text.toUpperCase();
-  return COMPANY_INDICATORS.some(indicator => 
+  const lowerText = text.toLowerCase();
+  
+  // Check if it contains company indicators
+  const hasCompanyIndicator = COMPANY_INDICATORS.some(indicator => 
     upperText.includes(indicator.toUpperCase())
   ) || /\b(INC|LLC|CORP|LTD|CO)\b/i.test(text);
+  
+  // Check if it's a common city name
+  const isCommonCity = COMMON_CITIES.some(city => 
+    lowerText === city || lowerText.includes(city)
+  );
+  
+  // Check if it has city context indicators
+  const hasCityContext = CITY_INDICATORS.some(indicator => 
+    lowerText.includes(indicator)
+  );
+  
+  // Return true only if it has company indicators and is not a city
+  return hasCompanyIndicator && !isCommonCity && !hasCityContext;
 }
 
 function isPersonName(text: string): boolean {
@@ -69,6 +103,27 @@ function containsServiceInfo(text: string): boolean {
 function isContactReference(text: string): boolean {
   const lowerText = text.toLowerCase();
   return CONTACT_INDICATORS.some(indicator => lowerText.includes(indicator));
+}
+
+function isCityName(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  
+  // Check if it's a common city name
+  const isCommonCity = COMMON_CITIES.some(city => 
+    lowerText === city || (city.length > 3 && lowerText.includes(city))
+  );
+  
+  // Check if it has city context indicators
+  const hasCityContext = CITY_INDICATORS.some(indicator => 
+    lowerText.includes(indicator)
+  );
+  
+  // Check if it's a single word that could be a city (but not obviously a company)
+  const isSingleWordCity = /^[A-Z][a-z]+$/.test(text.trim()) && 
+    !isCompanyName(text) && 
+    !isPersonName(text);
+  
+  return isCommonCity || hasCityContext || (isSingleWordCity && text.length > 2);
 }
 
 export function analyzeAndCategorizeText(text: string): EntityClassification {
@@ -120,6 +175,7 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
   const services: string[] = [];
   let companyName = '';
   let contactPerson = '';
+  let cityName = '';
   const notes: string[] = [];
   
   for (const line of lines) {
@@ -136,9 +192,13 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
         }
       }
     }
-    // Check for company name
+    // Check for company name (must have clear company indicators)
     else if (isCompanyName(line) && !companyName) {
       companyName = line;
+    }
+    // Check for city name
+    else if (isCityName(line) && !cityName && !companyName.toLowerCase().includes(line.toLowerCase())) {
+      cityName = line;
     }
     // Check for product information
     else if (containsProductInfo(line)) {
@@ -156,28 +216,47 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
     else if (isPersonName(line) && contactPerson) {
       notes.push(line);
     }
+    // If it's a city but we already have one, add to notes
+    else if (isCityName(line) && cityName) {
+      notes.push(line);
+    }
     // Everything else goes to notes
     else {
       notes.push(line);
     }
   }
   
-  // If no clear company name found, use the first substantial line
+  // If no clear company name found, look for the longest substantial line that's not a city or person
   if (!companyName && lines.length > 0) {
-    const firstSubstantialLine = lines.find(line => line.length > 5 && !isPersonName(line));
-    if (firstSubstantialLine) {
-      companyName = firstSubstantialLine;
+    const potentialCompanies = lines.filter(line => 
+      line.length > 5 && 
+      !isPersonName(line) && 
+      !isCityName(line) &&
+      !containsProductInfo(line) &&
+      !containsServiceInfo(line)
+    );
+    
+    if (potentialCompanies.length > 0) {
+      // Take the longest one as it's likely to be the most complete company name
+      companyName = potentialCompanies.reduce((longest, current) => 
+        current.length > longest.length ? current : longest
+      );
+      
       // Remove it from notes if it was added there
-      const index = notes.indexOf(firstSubstantialLine);
+      const index = notes.indexOf(companyName);
       if (index > -1) notes.splice(index, 1);
     }
   }
   
-  // Extract city from remaining text if not found
-  if (!result.city) {
+  // Set city from our analysis or extract from remaining text if not found
+  if (cityName) {
+    result.city = cityName;
+  } else if (!result.city) {
     const cityMatch = workingText.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/);
     if (cityMatch && cityMatch[0].length > 2 && !isPersonName(cityMatch[0]) && cityMatch[0] !== companyName) {
-      result.city = cityMatch[0];
+      if (isCityName(cityMatch[0])) {
+        result.city = cityMatch[0];
+      }
     }
   }
   
