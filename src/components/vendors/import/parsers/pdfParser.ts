@@ -1,105 +1,43 @@
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import Tesseract from 'tesseract.js';
 import { callGptVision } from '../services/gptVisionService';
+import { analyzeAndCategorizeText, EntityClassification } from '../services/textAnalysisService';
 
 // Set up PDF.js worker with a fixed URL to avoid top-level await
 GlobalWorkerOptions.workerSrc = '//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.js';
 
-// Helper function to extract structured information from text while preserving order
-function extractVendorInfo(text: string): any {
-  const vendor: any = { name: '', raw_text: text };
-  let workingText = text;
+// Convert EntityClassification to vendor format
+function entityToVendor(entity: EntityClassification): any {
+  const vendor: any = {
+    name: entity.companyName || 'Unnamed Vendor',
+    email: entity.email,
+    phone: entity.phone,
+    website: entity.website,
+    address: entity.address,
+    city: entity.city,
+    state: entity.state,
+    zip_code: entity.zipCode,
+    contact_person: entity.contactPerson,
+    vendor_type: 'service',
+    status: 'active',
+    raw_text: entity.rawText
+  };
   
-  // Extract information in order of appearance, preserving context
-  const extractedInfo: string[] = [];
-  
-  // Email extraction
-  const emailMatch = workingText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
-  if (emailMatch) {
-    vendor.email = emailMatch[0];
-    extractedInfo.push(emailMatch[0]);
-    workingText = workingText.replace(emailMatch[0], '').trim();
+  // Combine products, services, and notes into a description
+  const descriptionParts = [];
+  if (entity.products && entity.products.length > 0) {
+    descriptionParts.push(`Products: ${entity.products.join(', ')}`);
+  }
+  if (entity.services && entity.services.length > 0) {
+    descriptionParts.push(`Services: ${entity.services.join(', ')}`);
+  }
+  if (entity.notes) {
+    descriptionParts.push(`Notes: ${entity.notes}`);
   }
   
-  // Phone number extraction (various formats)
-  const phoneMatch = workingText.match(/(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})|(\d{10})/);
-  if (phoneMatch) {
-    vendor.phone = phoneMatch[0];
-    extractedInfo.push(phoneMatch[0]);
-    workingText = workingText.replace(phoneMatch[0], '').trim();
+  if (descriptionParts.length > 0) {
+    vendor.description = descriptionParts.join(' | ');
   }
-  
-  // Website extraction
-  const websiteMatch = workingText.match(/(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/);
-  if (websiteMatch && !websiteMatch[0].includes('@')) {
-    vendor.website = websiteMatch[0].startsWith('http') ? websiteMatch[0] : `https://${websiteMatch[0]}`;
-    extractedInfo.push(websiteMatch[0]);
-    workingText = workingText.replace(websiteMatch[0], '').trim();
-  }
-  
-  // Address extraction (more comprehensive pattern)
-  const addressMatch = workingText.match(/\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Parkway|Pkwy)\b/i);
-  if (addressMatch) {
-    vendor.address = addressMatch[0].trim();
-    extractedInfo.push(addressMatch[0]);
-    workingText = workingText.replace(addressMatch[0], '').trim();
-  }
-  
-  // State and ZIP extraction (keep together)
-  const stateZipMatch = workingText.match(/\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/);
-  if (stateZipMatch) {
-    const parts = stateZipMatch[0].split(/\s+/);
-    vendor.state = parts[0];
-    vendor.zip_code = parts[1];
-    extractedInfo.push(stateZipMatch[0]);
-    workingText = workingText.replace(stateZipMatch[0], '').trim();
-  } else {
-    // Try separate state extraction
-    const stateMatch = workingText.match(/\b[A-Z]{2}\b/);
-    if (stateMatch) {
-      vendor.state = stateMatch[0];
-      extractedInfo.push(stateMatch[0]);
-      workingText = workingText.replace(stateMatch[0], '').trim();
-    }
-    
-    // Try separate ZIP extraction
-    const zipMatch = workingText.match(/\b\d{5}(?:-\d{4})?\b/);
-    if (zipMatch) {
-      vendor.zip_code = zipMatch[0];
-      extractedInfo.push(zipMatch[0]);
-      workingText = workingText.replace(zipMatch[0], '').trim();
-    }
-  }
-  
-  // City extraction (look for capitalized words before state)
-  const cityMatch = workingText.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/);
-  if (cityMatch && cityMatch[0].length > 2) {
-    vendor.city = cityMatch[0];
-    extractedInfo.push(cityMatch[0]);
-    workingText = workingText.replace(cityMatch[0], '').trim();
-  }
-  
-  // Contact person extraction
-  const contactMatch = workingText.match(/(?:Contact|Attn|Attention):\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i) || 
-                      workingText.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/);
-  if (contactMatch) {
-    vendor.contact_person = contactMatch[1] || contactMatch[0];
-    extractedInfo.push(vendor.contact_person);
-    workingText = workingText.replace(contactMatch[0], '').trim();
-  }
-  
-  // Clean up remaining text for company name (remove common separators and line breaks)
-  const cleanName = workingText
-    .replace(/[,;:\n\r\t]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .replace(/^\W+|\W+$/g, '')
-    .trim();
-  
-  vendor.name = cleanName || 'Unnamed Vendor';
-  
-  // Set defaults
-  vendor.vendor_type = 'service';
-  vendor.status = 'active';
   
   return vendor;
 }
@@ -155,7 +93,8 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
   
   // If expecting 1 vendor, treat entire document as single vendor
   if (expectedCount === 1) {
-    return [extractVendorInfo(text)];
+    const entity = analyzeAndCategorizeText(text);
+    return [entityToVendor(entity)];
   }
   
   // Split by double line breaks first to respect document structure
@@ -249,10 +188,13 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
     }
   }
   
-  // Filter out very short sections and extract vendor info
+  // Filter out very short sections and analyze each one
   const vendors = sections
     .filter(section => section.trim().length > 5)
-    .map(section => extractVendorInfo(section));
+    .map(section => {
+      const entity = analyzeAndCategorizeText(section);
+      return entityToVendor(entity);
+    });
   
-  return vendors.length > 0 ? vendors : [extractVendorInfo(text)];
+  return vendors.length > 0 ? vendors : [entityToVendor(analyzeAndCategorizeText(text))];
 }
