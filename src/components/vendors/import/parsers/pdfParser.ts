@@ -5,75 +5,97 @@ import { callGptVision } from '../services/gptVisionService';
 // Set up PDF.js worker with a fixed URL to avoid top-level await
 GlobalWorkerOptions.workerSrc = '//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.js';
 
-// Helper function to extract structured information from text
+// Helper function to extract structured information from text while preserving order
 function extractVendorInfo(text: string): any {
-  const vendor: any = { name: '' };
+  const vendor: any = { name: '', raw_text: text };
+  let workingText = text;
+  
+  // Extract information in order of appearance, preserving context
+  const extractedInfo: string[] = [];
   
   // Email extraction
-  const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+  const emailMatch = workingText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
   if (emailMatch) {
     vendor.email = emailMatch[0];
-    text = text.replace(emailMatch[0], '').trim();
+    extractedInfo.push(emailMatch[0]);
+    workingText = workingText.replace(emailMatch[0], '').trim();
   }
   
   // Phone number extraction (various formats)
-  const phoneMatch = text.match(/(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})|(\d{10})/);
+  const phoneMatch = workingText.match(/(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})|(\d{10})/);
   if (phoneMatch) {
     vendor.phone = phoneMatch[0];
-    text = text.replace(phoneMatch[0], '').trim();
+    extractedInfo.push(phoneMatch[0]);
+    workingText = workingText.replace(phoneMatch[0], '').trim();
   }
   
   // Website extraction
-  const websiteMatch = text.match(/(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/);
+  const websiteMatch = workingText.match(/(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/);
   if (websiteMatch && !websiteMatch[0].includes('@')) {
     vendor.website = websiteMatch[0].startsWith('http') ? websiteMatch[0] : `https://${websiteMatch[0]}`;
-    text = text.replace(websiteMatch[0], '').trim();
+    extractedInfo.push(websiteMatch[0]);
+    workingText = workingText.replace(websiteMatch[0], '').trim();
   }
   
-  // Address extraction (basic pattern - street address with numbers)
-  const addressMatch = text.match(/\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)/i);
+  // Address extraction (more comprehensive pattern)
+  const addressMatch = workingText.match(/\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Parkway|Pkwy)\b/i);
   if (addressMatch) {
-    vendor.address = addressMatch[0];
-    text = text.replace(addressMatch[0], '').trim();
+    vendor.address = addressMatch[0].trim();
+    extractedInfo.push(addressMatch[0]);
+    workingText = workingText.replace(addressMatch[0], '').trim();
   }
   
-  // State extraction (2-letter state codes)
-  const stateMatch = text.match(/\b[A-Z]{2}\b(?:\s+\d{5}(?:-\d{4})?)?/);
-  if (stateMatch) {
-    const parts = stateMatch[0].split(/\s+/);
+  // State and ZIP extraction (keep together)
+  const stateZipMatch = workingText.match(/\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/);
+  if (stateZipMatch) {
+    const parts = stateZipMatch[0].split(/\s+/);
     vendor.state = parts[0];
-    if (parts[1] && /^\d{5}(-\d{4})?$/.test(parts[1])) {
-      vendor.zip_code = parts[1];
+    vendor.zip_code = parts[1];
+    extractedInfo.push(stateZipMatch[0]);
+    workingText = workingText.replace(stateZipMatch[0], '').trim();
+  } else {
+    // Try separate state extraction
+    const stateMatch = workingText.match(/\b[A-Z]{2}\b/);
+    if (stateMatch) {
+      vendor.state = stateMatch[0];
+      extractedInfo.push(stateMatch[0]);
+      workingText = workingText.replace(stateMatch[0], '').trim();
     }
-    text = text.replace(stateMatch[0], '').trim();
-  }
-  
-  // ZIP code extraction (if not already found with state)
-  if (!vendor.zip_code) {
-    const zipMatch = text.match(/\b\d{5}(?:-\d{4})?\b/);
+    
+    // Try separate ZIP extraction
+    const zipMatch = workingText.match(/\b\d{5}(?:-\d{4})?\b/);
     if (zipMatch) {
       vendor.zip_code = zipMatch[0];
-      text = text.replace(zipMatch[0], '').trim();
+      extractedInfo.push(zipMatch[0]);
+      workingText = workingText.replace(zipMatch[0], '').trim();
     }
   }
   
-  // City extraction (capitalize each word, common city pattern)
-  const cityMatch = text.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/);
-  if (cityMatch && !vendor.state) {
+  // City extraction (look for capitalized words before state)
+  const cityMatch = workingText.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/);
+  if (cityMatch && cityMatch[0].length > 2) {
     vendor.city = cityMatch[0];
-    text = text.replace(cityMatch[0], '').trim();
+    extractedInfo.push(cityMatch[0]);
+    workingText = workingText.replace(cityMatch[0], '').trim();
   }
   
-  // Contact person extraction (look for "Contact:" or name patterns)
-  const contactMatch = text.match(/(?:Contact|Attn|Attention):\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i) || 
-                      text.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/);
+  // Contact person extraction
+  const contactMatch = workingText.match(/(?:Contact|Attn|Attention):\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i) || 
+                      workingText.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/);
   if (contactMatch) {
     vendor.contact_person = contactMatch[1] || contactMatch[0];
-    text = text.replace(contactMatch[0], '').trim();
+    extractedInfo.push(vendor.contact_person);
+    workingText = workingText.replace(contactMatch[0], '').trim();
   }
   
-  // Clean up remaining text for company name
-  vendor.name = text.replace(/[,;:\n\r]+/g, ' ').replace(/\s+/g, ' ').trim() || 'Unnamed Vendor';
+  // Clean up remaining text for company name (remove common separators and line breaks)
+  const cleanName = workingText
+    .replace(/[,;:\n\r\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/^\W+|\W+$/g, '')
+    .trim();
+  
+  vendor.name = cleanName || 'Unnamed Vendor';
   
   // Set defaults
   vendor.vendor_type = 'service';
@@ -102,10 +124,14 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
   const pdf = await loadingTask.promise;
   let text = '';
   
+  // Extract text from all pages, maintaining page structure
+  const pageTexts: string[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    text += content.items.map((item: any) => item.str).join(' ') + '\n';
+    const pageText = content.items.map((item: any) => item.str).join(' ');
+    pageTexts.push(pageText);
+    text += pageText + '\n\n';
   }
   
   // If text extraction fails, fallback to OCR
@@ -127,85 +153,106 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
     text = textFromOcr;
   }
   
-  // Split into lines and paragraphs
-  const lines = text
-    .split('\n')
-    .map(line => line.trim())
-    .filter(Boolean);
-    
-  const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+  // If expecting 1 vendor, treat entire document as single vendor
+  if (expectedCount === 1) {
+    return [extractVendorInfo(text)];
+  }
   
-  // Use expected count to guide parsing
-  if (expectedCount) {
-    // If expecting 1 vendor, extract info from entire document
-    if (expectedCount === 1) {
-      return [extractVendorInfo(lines.join(' '))];
+  // Split by double line breaks first to respect document structure
+  let sections = text.split(/\n\s*\n/).filter(s => s.trim().length > 10);
+  
+  // If no clear sections, try page breaks
+  if (sections.length <= 1 && pageTexts.length > 1) {
+    sections = pageTexts.filter(pageText => pageText.trim().length > 10);
+  }
+  
+  // If still no clear sections, try single line breaks but keep substantial content together
+  if (sections.length <= 1) {
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    
+    // Group consecutive short lines together
+    sections = [];
+    let currentGroup = '';
+    
+    for (const line of lines) {
+      if (line.length < 100 && currentGroup.length < 300) {
+        currentGroup += (currentGroup ? ' ' : '') + line;
+      } else {
+        if (currentGroup) {
+          sections.push(currentGroup);
+        }
+        currentGroup = line;
+      }
     }
     
-    // For multiple expected vendors, try to split intelligently
-    if (expectedCount > 1) {
-      let candidates = [];
-      
-      // Try paragraphs first if count is reasonable
-      if (Math.abs(paragraphs.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
-        candidates = paragraphs;
-      }
-      // Try lines if they match better
-      else if (Math.abs(lines.length - expectedCount) <= Math.max(1, expectedCount * 0.3)) {
-        candidates = lines;
-      }
-      // If we have way more content than expected, try to group
-      else if (lines.length > expectedCount * 2) {
-        const groupSize = Math.ceil(lines.length / expectedCount);
-        for (let i = 0; i < lines.length; i += groupSize) {
-          const group = lines.slice(i, i + groupSize).join(' ');
-          if (group.trim()) {
-            candidates.push(group.trim());
+    if (currentGroup) {
+      sections.push(currentGroup);
+    }
+  }
+  
+  // If we have an expected count, try to match it
+  if (expectedCount && expectedCount > 1) {
+    if (sections.length > expectedCount) {
+      // Too many sections - combine smallest ones
+      while (sections.length > expectedCount && sections.length > 1) {
+        // Find two shortest adjacent sections to combine
+        let minIndex = 0;
+        let minLength = sections[0].length + sections[1].length;
+        
+        for (let i = 0; i < sections.length - 1; i++) {
+          const combinedLength = sections[i].length + sections[i + 1].length;
+          if (combinedLength < minLength) {
+            minLength = combinedLength;
+            minIndex = i;
           }
         }
+        
+        // Combine the two sections
+        sections[minIndex] = sections[minIndex] + ' ' + sections[minIndex + 1];
+        sections.splice(minIndex + 1, 1);
       }
-      // Try splitting by common separators
-      else {
-        for (const paragraph of paragraphs) {
-          const splits = paragraph.split(/[;,]\s+|(\d+\.)\s+|(-)\s+/).filter(s => s && s.trim().length > 3);
-          if (splits.length > 1) {
-            candidates.push(...splits.map(s => s.trim()));
-          } else {
-            candidates.push(paragraph.trim());
+    } else if (sections.length < expectedCount) {
+      // Too few sections - try to split the largest ones
+      while (sections.length < expectedCount) {
+        // Find the longest section
+        let maxIndex = 0;
+        let maxLength = sections[0].length;
+        
+        for (let i = 1; i < sections.length; i++) {
+          if (sections[i].length > maxLength) {
+            maxLength = sections[i].length;
+            maxIndex = i;
           }
         }
-      }
-      
-      // Force split to match expected count if we're close
-      if (candidates.length !== expectedCount && candidates.length > 0) {
-        if (candidates.length < expectedCount) {
-          // Try to split largest items
-          const sorted = candidates.sort((a, b) => b.length - a.length);
-          while (candidates.length < expectedCount && sorted[0] && sorted[0].length > 50) {
-            const largest = sorted.shift();
-            const parts = largest.split(/[,;]\s+|\s+and\s+|\s+&\s+/i);
-            if (parts.length > 1) {
-              candidates = candidates.filter(c => c !== largest);
-              candidates.push(...parts);
-              sorted.splice(0, 0, ...parts.sort((a, b) => b.length - a.length));
-            } else {
-              break;
-            }
-          }
-        } else if (candidates.length > expectedCount) {
-          // Keep the longest/most substantial entries
-          candidates = candidates
-            .sort((a, b) => b.length - a.length)
-            .slice(0, expectedCount);
+        
+        // Try to split the longest section
+        const longest = sections[maxIndex];
+        const splitPoints = [
+          longest.indexOf('. '),
+          longest.indexOf('; '),
+          longest.indexOf(' - '),
+          longest.indexOf('\n')
+        ].filter(pos => pos > 20 && pos < longest.length - 20);
+        
+        if (splitPoints.length > 0) {
+          const splitPoint = splitPoints[0];
+          const part1 = longest.substring(0, splitPoint + 1).trim();
+          const part2 = longest.substring(splitPoint + 1).trim();
+          
+          sections[maxIndex] = part1;
+          sections.splice(maxIndex + 1, 0, part2);
+        } else {
+          // Can't split further
+          break;
         }
-      }
-      
-      if (candidates.length > 0) {
-        return candidates.map(candidate => extractVendorInfo(candidate));
       }
     }
   }
   
-  // Fallback to original logic with info extraction
-  return lines.map((line) => extractVendorInfo(line));
+  // Filter out very short sections and extract vendor info
+  const vendors = sections
+    .filter(section => section.trim().length > 5)
+    .map(section => extractVendorInfo(section));
+  
+  return vendors.length > 0 ? vendors : [extractVendorInfo(text)];
 }
