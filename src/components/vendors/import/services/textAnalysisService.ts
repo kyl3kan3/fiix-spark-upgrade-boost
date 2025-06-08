@@ -1,4 +1,3 @@
-
 import { EntityClassification } from './types';
 import {
   isCompanyName,
@@ -16,7 +15,7 @@ import {
   extractStateAndZip
 } from './textExtractors';
 
-export { EntityClassification } from './types';
+export type { EntityClassification } from './types';
 
 export function analyzeAndCategorizeText(text: string): EntityClassification {
   const result: EntityClassification = { rawText: text };
