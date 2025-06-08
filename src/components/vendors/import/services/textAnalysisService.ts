@@ -1,191 +1,62 @@
 
-// Service for analyzing and categorizing text content
-export interface EntityClassification {
-  companyName?: string;
-  contactPerson?: string;
-  products?: string[];
-  services?: string[];
-  email?: string;
-  phone?: string;
-  website?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  notes?: string;
-  rawText: string;
-}
+import { EntityClassification } from './types';
+import {
+  isCompanyName,
+  isPersonName,
+  containsProductInfo,
+  containsServiceInfo,
+  isContactReference,
+  isCityName
+} from './textClassifiers';
+import {
+  extractEmail,
+  extractPhone,
+  extractWebsite,
+  extractAddress,
+  extractStateAndZip
+} from './textExtractors';
 
-// Common company suffixes and indicators
-const COMPANY_INDICATORS = [
-  'Inc', 'LLC', 'Corp', 'Corporation', 'Company', 'Co', 'Ltd', 'Limited',
-  'LLP', 'LP', 'PC', 'Professional', 'Associates', 'Group', 'Enterprises',
-  'Solutions', 'Services', 'Systems', 'Technologies', 'Tech', 'Consulting',
-  'Hardware', 'Supply', 'Supplies', 'Equipment', 'Store', 'Shop', 'Center',
-  'Depot', 'Mart', 'Market', 'Industries', 'Manufacturing', 'Construction',
-  'Hardware', 'Ace'
-];
-
-// Product/service indicators
-const PRODUCT_INDICATORS = [
-  'supply', 'supplies', 'equipment', 'tools', 'parts', 'materials',
-  'products', 'items', 'inventory', 'stock', 'goods', 'merchandise',
-  'purchase', 'purchased', 'order', 'ordered', 'buy', 'bought'
-];
-
-// Service indicators
-const SERVICE_INDICATORS = [
-  'service', 'services', 'maintenance', 'repair', 'installation',
-  'consulting', 'support', 'management', 'cleaning', 'security',
-  'delivery', 'transportation', 'logistics', 'training', 'design'
-];
-
-// Contact person indicators
-const CONTACT_INDICATORS = [
-  'contact', 'attn', 'attention', 'rep', 'representative', 'manager',
-  'director', 'coordinator', 'specialist', 'agent', 'sales', 'account'
-];
-
-// Common city patterns that should NOT be company names
-const CITY_INDICATORS = [
-  'of', 'in', 'at', 'located', 'city', 'town', 'village', 'township'
-];
-
-// Common US city names that should be recognized as cities, not companies
-const COMMON_CITIES = [
-  'freeburg', 'chicago', 'new york', 'los angeles', 'houston', 'phoenix',
-  'philadelphia', 'san antonio', 'san diego', 'dallas', 'san jose',
-  'austin', 'jacksonville', 'fort worth', 'columbus', 'charlotte',
-  'seattle', 'denver', 'boston', 'detroit', 'nashville', 'memphis',
-  'portland', 'oklahoma city', 'las vegas', 'baltimore', 'milwaukee',
-  'atlanta', 'colorado springs', 'raleigh', 'omaha', 'miami',
-  'cleveland', 'tulsa', 'arlington', 'new orleans', 'wichita'
-];
-
-function isCompanyName(text: string): boolean {
-  const upperText = text.toUpperCase();
-  const lowerText = text.toLowerCase();
-  
-  // Check if it contains company indicators
-  const hasCompanyIndicator = COMPANY_INDICATORS.some(indicator => 
-    upperText.includes(indicator.toUpperCase())
-  ) || /\b(INC|LLC|CORP|LTD|CO)\b/i.test(text);
-  
-  // Check if it's a common city name (only single words that are exactly city names)
-  const isExactCityMatch = COMMON_CITIES.some(city => 
-    lowerText.trim() === city
-  );
-  
-  // Check if it has city context indicators
-  const hasCityContext = CITY_INDICATORS.some(indicator => 
-    lowerText.includes(indicator)
-  );
-  
-  // If it has company indicators, it's likely a company
-  if (hasCompanyIndicator) {
-    return true;
-  }
-  
-  // If it's an exact city match without any company context, it's not a company
-  if (isExactCityMatch && !hasCompanyIndicator) {
-    return false;
-  }
-  
-  // If it has city context, it's not a company
-  if (hasCityContext) {
-    return false;
-  }
-  
-  // For multi-word phrases, be more lenient (likely company names)
-  const words = text.trim().split(/\s+/);
-  if (words.length > 1 && text.length > 10) {
-    return true;
-  }
-  
-  return false;
-}
-
-function isPersonName(text: string): boolean {
-  // Check if it's a typical person name pattern (First Last or First Middle Last)
-  const namePattern = /^[A-Z][a-z]+\s+[A-Z][a-z]+(\s+[A-Z][a-z]+)?$/;
-  return namePattern.test(text.trim()) && !isCompanyName(text);
-}
-
-function containsProductInfo(text: string): boolean {
-  const lowerText = text.toLowerCase();
-  return PRODUCT_INDICATORS.some(indicator => lowerText.includes(indicator));
-}
-
-function containsServiceInfo(text: string): boolean {
-  const lowerText = text.toLowerCase();
-  return SERVICE_INDICATORS.some(indicator => lowerText.includes(indicator));
-}
-
-function isContactReference(text: string): boolean {
-  const lowerText = text.toLowerCase();
-  return CONTACT_INDICATORS.some(indicator => lowerText.includes(indicator));
-}
-
-function isCityName(text: string): boolean {
-  const lowerText = text.toLowerCase();
-  
-  // Check if it's a common city name
-  const isCommonCity = COMMON_CITIES.some(city => 
-    lowerText === city || (city.length > 3 && lowerText.includes(city))
-  );
-  
-  // Check if it has city context indicators
-  const hasCityContext = CITY_INDICATORS.some(indicator => 
-    lowerText.includes(indicator)
-  );
-  
-  // Check if it's a single word that could be a city (but not obviously a company)
-  const isSingleWordCity = /^[A-Z][a-z]+$/.test(text.trim()) && 
-    !isCompanyName(text) && 
-    !isPersonName(text);
-  
-  return isCommonCity || hasCityContext || (isSingleWordCity && text.length > 2);
-}
+export { EntityClassification } from './types';
 
 export function analyzeAndCategorizeText(text: string): EntityClassification {
   const result: EntityClassification = { rawText: text };
   let workingText = text;
   
   // Extract email
-  const emailMatch = workingText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
-  if (emailMatch) {
-    result.email = emailMatch[0];
-    workingText = workingText.replace(emailMatch[0], '').trim();
+  const email = extractEmail(workingText);
+  if (email) {
+    result.email = email;
+    workingText = workingText.replace(email, '').trim();
   }
   
   // Extract phone
-  const phoneMatch = workingText.match(/(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})|(\d{10})/);
-  if (phoneMatch) {
-    result.phone = phoneMatch[0];
-    workingText = workingText.replace(phoneMatch[0], '').trim();
+  const phone = extractPhone(workingText);
+  if (phone) {
+    result.phone = phone;
+    workingText = workingText.replace(phone, '').trim();
   }
   
   // Extract website
-  const websiteMatch = workingText.match(/(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/);
-  if (websiteMatch && !websiteMatch[0].includes('@')) {
-    result.website = websiteMatch[0].startsWith('http') ? websiteMatch[0] : `https://${websiteMatch[0]}`;
-    workingText = workingText.replace(websiteMatch[0], '').trim();
+  const website = extractWebsite(workingText);
+  if (website) {
+    result.website = website;
+    workingText = workingText.replace(website.replace('https://', ''), '').trim();
   }
   
   // Extract address
-  const addressMatch = workingText.match(/\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Parkway|Pkwy)\b/i);
-  if (addressMatch) {
-    result.address = addressMatch[0].trim();
-    workingText = workingText.replace(addressMatch[0], '').trim();
+  const address = extractAddress(workingText);
+  if (address) {
+    result.address = address;
+    workingText = workingText.replace(address, '').trim();
   }
   
   // Extract state and ZIP
-  const stateZipMatch = workingText.match(/\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/);
-  if (stateZipMatch) {
-    const parts = stateZipMatch[0].split(/\s+/);
-    result.state = parts[0];
-    result.zipCode = parts[1];
-    workingText = workingText.replace(stateZipMatch[0], '').trim();
+  const { state, zipCode } = extractStateAndZip(workingText);
+  if (state) result.state = state;
+  if (zipCode) result.zipCode = zipCode;
+  if (state || zipCode) {
+    const stateZipPattern = state && zipCode ? `${state}\\s+${zipCode}` : state || zipCode;
+    workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
   }
   
   // Split remaining text into lines for analysis
