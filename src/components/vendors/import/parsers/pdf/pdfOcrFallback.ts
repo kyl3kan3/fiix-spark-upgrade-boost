@@ -15,7 +15,7 @@ export async function handleOcrFallback(file: File, text: string, instructions?:
     // If Tesseract fails, try GPT-4 Vision
     if (textFromOcr.replace(/\s/g, '').length < 20) {
       const base64Image = imgData.replace(/^data:image\/png;base64,/, '');
-      const gptResult = await callGptVision(base64Image, instructions);
+      const gptResult = await callGptVision(base64Image);
       
       if (Array.isArray(gptResult)) {
         return { text: JSON.stringify(gptResult), isGptResult: true };

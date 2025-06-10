@@ -7,7 +7,7 @@ export async function parsePDF(file: File, expectedCount?: number, instructions?
   const { text: extractedText, pageTexts } = await extractTextFromPdf(file);
   
   // Handle OCR fallback if text extraction failed
-  const { text, isGptResult } = await handleOcrFallback(file, extractedText);
+  const { text, isGptResult } = await handleOcrFallback(file, extractedText, instructions);
   
   // If GPT Vision returned structured data, use it directly
   if (isGptResult) {

@@ -12,7 +12,7 @@ export async function parseFile(file: File, expectedCount?: number, instructions
   } else if (file.name.match(/\.(xlsx|xls)$/)) {
     rows = await parseXLSX(file);
   } else if (file.name.endsWith('.docx')) {
-    rows = await parseDOCX(file, expectedCount, instructions);
+    rows = await parseDOCX(file, expectedCount);
   } else if (file.name.endsWith('.pdf')) {
     rows = await parsePDF(file, expectedCount, instructions);
   } else {

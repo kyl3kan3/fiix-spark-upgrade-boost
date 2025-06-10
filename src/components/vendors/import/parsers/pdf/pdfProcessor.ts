@@ -1,4 +1,3 @@
-
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
@@ -18,7 +17,7 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
     console.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
     
     // Split each page into sections
-    const sections = splitTextIntoSections(pageText, [pageText], expectedCount, instructions);
+    const sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
     
     // Analyze each section and convert to vendor format
     const pageVendors = sections.map(section => {
