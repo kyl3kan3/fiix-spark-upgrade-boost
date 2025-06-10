@@ -18,20 +18,25 @@ import {
 
 export type { EntityClassification } from './types';
 
-export function analyzeAndCategorizeText(text: string): EntityClassification {
+export function analyzeAndCategorizeText(text: string, instructions?: string): EntityClassification {
   const result: EntityClassification = { rawText: text };
   
+  // If instructions are provided, log them for debugging
+  if (instructions) {
+    console.log('📝 Using import instructions:', instructions);
+  }
+  
   // First, try to extract structured data using labels
-  const structuredData = extractStructuredData(text);
+  const structuredData = extractStructuredData(text, instructions);
   if (structuredData.hasStructuredData) {
     return { ...result, ...structuredData };
   }
   
   // Fall back to the original analysis method
-  return analyzeUnstructuredText(text, result);
+  return analyzeUnstructuredText(text, result, instructions);
 }
 
-function extractStructuredData(text: string): EntityClassification & { hasStructuredData: boolean } {
+function extractStructuredData(text: string, instructions?: string): EntityClassification & { hasStructuredData: boolean } {
   const result: EntityClassification & { hasStructuredData: boolean } = { rawText: text, hasStructuredData: false };
   
   // More flexible patterns for structured data
@@ -130,7 +135,7 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
   return result;
 }
 
-function analyzeUnstructuredText(text: string, result: EntityClassification): EntityClassification {
+function analyzeUnstructuredText(text: string, result: EntityClassification, instructions?: string): EntityClassification {
   let workingText = text;
   
   // Extract email

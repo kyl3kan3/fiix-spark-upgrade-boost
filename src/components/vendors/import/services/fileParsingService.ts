@@ -4,7 +4,7 @@ import { parseXLSX } from '../parsers/xlsxParser';
 import { parseDOCX } from '../parsers/docxParser';
 import { parsePDF } from '../parsers/pdfParser';
 
-export async function parseFile(file: File, expectedCount?: number): Promise<any[]> {
+export async function parseFile(file: File, expectedCount?: number, instructions?: string): Promise<any[]> {
   let rows: any[] = [];
   
   if (file.name.endsWith('.csv')) {
@@ -12,9 +12,9 @@ export async function parseFile(file: File, expectedCount?: number): Promise<any
   } else if (file.name.match(/\.(xlsx|xls)$/)) {
     rows = await parseXLSX(file);
   } else if (file.name.endsWith('.docx')) {
-    rows = await parseDOCX(file, expectedCount);
+    rows = await parseDOCX(file, expectedCount, instructions);
   } else if (file.name.endsWith('.pdf')) {
-    rows = await parsePDF(file, expectedCount);
+    rows = await parsePDF(file, expectedCount, instructions);
   } else {
     throw new Error('Unsupported file type');
   }

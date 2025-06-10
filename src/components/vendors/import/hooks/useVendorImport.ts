@@ -8,7 +8,7 @@ export const useVendorImport = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, expectedCount?: number) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>, expectedCount?: number, instructions?: string) => {
     setError('');
     setVendors([]);
     setLoading(true);
@@ -16,7 +16,7 @@ export const useVendorImport = () => {
     if (!file) return setLoading(false);
 
     try {
-      const rows = await parseFile(file, expectedCount);
+      const rows = await parseFile(file, expectedCount, instructions);
       setVendors(rows);
       
       // Show warning if parsed count differs significantly from expected

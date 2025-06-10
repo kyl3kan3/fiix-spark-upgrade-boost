@@ -3,11 +3,11 @@ import { extractTextFromPdf } from './pdf/pdfTextExtractor';
 import { handleOcrFallback } from './pdf/pdfOcrFallback';
 import { processSingleVendor, processMultipleVendors, processGptResult } from './pdf/pdfProcessor';
 
-export async function parsePDF(file: File, expectedCount?: number): Promise<any[]> {
+export async function parsePDF(file: File, expectedCount?: number, instructions?: string): Promise<any[]> {
   const { text: extractedText, pageTexts } = await extractTextFromPdf(file);
   
   // Handle OCR fallback if text extraction failed
-  const { text, isGptResult } = await handleOcrFallback(file, extractedText);
+  const { text, isGptResult } = await handleOcrFallback(file, extractedText, instructions);
   
   // If GPT Vision returned structured data, use it directly
   if (isGptResult) {
@@ -23,5 +23,5 @@ export async function parsePDF(file: File, expectedCount?: number): Promise<any[
   }
   
   // Process multiple vendors
-  return processMultipleVendors(text, pageTexts, expectedCount);
+  return processMultipleVendors(text, pageTexts, expectedCount, instructions);
 }

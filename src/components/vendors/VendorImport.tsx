@@ -6,15 +6,17 @@ import ImportStatus from './import/ImportStatus';
 import ImportResults from './import/ImportResults';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const VendorImport: React.FC = () => {
   const [expectedCount, setExpectedCount] = useState<number | undefined>();
+  const [importInstructions, setImportInstructions] = useState('');
   const { vendors, loading, error, handleFile, saveToSupabase } = useVendorImport();
 
-  const handleFileWithCount = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFile(e, expectedCount);
+  const handleFileWithContext = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFile(e, expectedCount, importInstructions);
   };
 
   return (
@@ -41,7 +43,22 @@ const VendorImport: React.FC = () => {
                   Helps the parser better understand how to split your document
                 </p>
               </div>
-              <ImportFileInput onChange={handleFileWithCount} />
+              
+              <div className="space-y-2">
+                <Label htmlFor="import-instructions">Import Instructions (optional)</Label>
+                <Textarea
+                  id="import-instructions"
+                  placeholder="Describe the document format, vendor organization, or any special parsing instructions..."
+                  value={importInstructions}
+                  onChange={(e) => setImportInstructions(e.target.value)}
+                  className="min-h-[100px] resize-none"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Provide context about your document structure to improve parsing accuracy
+                </p>
+              </div>
+              
+              <ImportFileInput onChange={handleFileWithContext} />
             </CardContent>
           </Card>
           
