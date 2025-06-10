@@ -12,6 +12,11 @@ export function isCompanyName(text: string): boolean {
   const upperText = text.toUpperCase();
   const lowerText = text.toLowerCase();
   
+  // First check if it's clearly a product name
+  if (isProductName(text)) {
+    return false;
+  }
+  
   // Check if it contains company indicators
   const hasCompanyIndicator = COMPANY_INDICATORS.some(indicator => 
     upperText.includes(indicator.toUpperCase())
@@ -51,15 +56,45 @@ export function isCompanyName(text: string): boolean {
   return false;
 }
 
+export function isProductName(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  
+  // Common product patterns
+  const productPatterns = [
+    /\biso\s+panels?\b/i,
+    /\bpanels?\b/i,
+    /\binsulators?\b/i,
+    /\bmaterials?\b/i,
+    /\bequipment\b/i,
+    /\btools?\b/i,
+    /\bparts?\b/i,
+    /\bsupplies\b/i,
+    /\bproducts?\b/i,
+    /\bitems?\b/i,
+    /\bcomponents?\b/i,
+    /\bunits?\b/i
+  ];
+  
+  // Check if text matches product patterns
+  const matchesProductPattern = productPatterns.some(pattern => pattern.test(text));
+  
+  // Check if it contains product indicators
+  const hasProductIndicator = PRODUCT_INDICATORS.some(indicator => 
+    lowerText.includes(indicator)
+  );
+  
+  return matchesProductPattern || hasProductIndicator;
+}
+
 export function isPersonName(text: string): boolean {
   // Check if it's a typical person name pattern (First Last or First Middle Last)
   const namePattern = /^[A-Z][a-z]+\s+[A-Z][a-z]+(\s+[A-Z][a-z]+)?$/;
-  return namePattern.test(text.trim()) && !isCompanyName(text);
+  return namePattern.test(text.trim()) && !isCompanyName(text) && !isProductName(text);
 }
 
 export function containsProductInfo(text: string): boolean {
   const lowerText = text.toLowerCase();
-  return PRODUCT_INDICATORS.some(indicator => lowerText.includes(indicator));
+  return PRODUCT_INDICATORS.some(indicator => lowerText.includes(indicator)) || isProductName(text);
 }
 
 export function containsServiceInfo(text: string): boolean {
@@ -85,10 +120,11 @@ export function isCityName(text: string): boolean {
     lowerText.includes(indicator)
   );
   
-  // Check if it's a single word that could be a city (but not obviously a company)
+  // Check if it's a single word that could be a city (but not obviously a company or product)
   const isSingleWordCity = /^[A-Z][a-z]+$/.test(text.trim()) && 
     !isCompanyName(text) && 
-    !isPersonName(text);
+    !isPersonName(text) &&
+    !isProductName(text);
   
   return isCommonCity || hasCityContext || (isSingleWordCity && text.length > 2);
 }

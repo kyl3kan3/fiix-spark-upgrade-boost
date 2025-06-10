@@ -1,4 +1,3 @@
-
 import { EntityClassification } from './types';
 import {
   isCompanyName,
@@ -6,7 +5,8 @@ import {
   containsProductInfo,
   containsServiceInfo,
   isContactReference,
-  isCityName
+  isCityName,
+  isProductName
 } from './textClassifiers';
 import {
   extractEmail,
@@ -56,9 +56,15 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
                       text.match(/([A-Z][A-Z\s&]+(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS)[A-Z\s]*)/i) ||
                       text.match(/^([A-Z][A-Za-z\s&]+(?:Electric|Hardware|Systems|Panels|Materials))/i);
   if (companyMatch && companyMatch[1] && companyMatch[1].trim().length > 0) {
-    result.companyName = companyMatch[1].trim();
-    foundStructuredData = true;
-    console.log('📝 Found company:', result.companyName);
+    const potentialCompany = companyMatch[1].trim();
+    // Make sure it's not a product name
+    if (!isProductName(potentialCompany)) {
+      result.companyName = potentialCompany;
+      foundStructuredData = true;
+      console.log('📝 Found company:', result.companyName);
+    } else {
+      console.log('⚠️ Rejected company candidate (is product):', potentialCompany);
+    }
   }
   
   // Extract address
@@ -198,22 +204,41 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   const lines = workingText.split(/\n|;|,/).map(line => line.trim()).filter(line => line.length > 0);
   console.log('📄 Lines to analyze:', lines);
   
-  // Look for company name patterns - be more inclusive
+  // Look for company name patterns - be more inclusive but exclude products
   let companyName = result.companyName || '';
   if (!companyName) {
     // Look for lines with business suffixes, hardware/electric keywords, or uppercase company-like text
-    const companyLines = lines.filter(line => 
-      (/(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS|PANELS|MATERIALS)/i.test(line) ||
-       /^[A-Z][A-Z\s&]+[A-Z]$/.test(line)) &&
-      line.length > 5 &&
-      !isPersonName(line)
-    );
+    // but exclude obvious product names
+    const companyLines = lines.filter(line => {
+      const hasBusinessIndicators = /(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS|PANELS|MATERIALS)/i.test(line) ||
+                                   /^[A-Z][A-Z\s&]+[A-Z]$/.test(line);
+      const isProduct = isProductName(line);
+      const isPerson = isPersonName(line);
+      
+      console.log(`📝 Evaluating line "${line}": business=${hasBusinessIndicators}, product=${isProduct}, person=${isPerson}`);
+      
+      return hasBusinessIndicators && 
+             !isProduct && 
+             !isPerson && 
+             line.length > 5;
+    });
     
     if (companyLines.length > 0) {
       companyName = companyLines[0];
-    } else if (lines.length > 0 && lines[0].length > 3 && !isPersonName(lines[0])) {
-      // Use first substantial line if no clear business indicators
-      companyName = lines[0];
+      console.log('✅ Found company from business indicators:', companyName);
+    } else {
+      // Look for substantial lines that aren't products or people
+      const potentialCompanies = lines.filter(line => 
+        line.length > 3 && 
+        !isPersonName(line) && 
+        !isProductName(line) &&
+        !isCityName(line)
+      );
+      
+      if (potentialCompanies.length > 0) {
+        companyName = potentialCompanies[0];
+        console.log('✅ Found company from non-product lines:', companyName);
+      }
     }
   }
   
@@ -239,8 +264,9 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
       }
     }
     // Check for company name - but don't overwrite if we already have one
-    else if (isCompanyName(line) && !companyName) {
+    else if (isCompanyName(line) && !companyName && !isProductName(line)) {
       companyName = line;
+      console.log('✅ Found company from isCompanyName check:', companyName);
     }
     // Check for city name
     else if (isCityName(line) && !cityName && !companyName.toLowerCase().includes(line.toLowerCase())) {
@@ -249,6 +275,7 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     // Check for product information
     else if (containsProductInfo(line)) {
       products.push(line);
+      console.log('📦 Added to products:', line);
     }
     // Check for service information
     else if (containsServiceInfo(line)) {
@@ -265,12 +292,14 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     const potentialCompanies = lines.filter(line => 
       line.length > 3 && 
       !isPersonName(line) && 
-      !isCityName(line)
+      !isCityName(line) &&
+      !isProductName(line)
     );
     
     if (potentialCompanies.length > 0) {
       // Take the first substantial line that could be a company
       companyName = potentialCompanies[0];
+      console.log('✅ Found company from fallback search:', companyName);
       
       // Remove it from notes if it was added there
       const index = notes.indexOf(companyName);
@@ -301,7 +330,9 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     companyName: result.companyName,
     contactPerson: result.contactPerson,
     email: result.email,
-    phone: result.phone
+    phone: result.phone,
+    products: result.products,
+    services: result.services
   });
   
   return result;
