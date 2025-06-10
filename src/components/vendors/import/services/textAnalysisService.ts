@@ -34,19 +34,19 @@ export function analyzeAndCategorizeText(text: string): EntityClassification {
 function extractStructuredData(text: string): EntityClassification & { hasStructuredData: boolean } {
   const result: EntityClassification & { hasStructuredData: boolean } = { rawText: text, hasStructuredData: false };
   
-  // Common patterns for structured data
+  // More flexible patterns for structured data
   const patterns = {
     company: /(?:Company|Business|Organization|Name)\s*:?\s*(.+?)(?:\n|$)/i,
     address: /(?:Address|Location)\s*:?\s*(.+?)(?:\n|$)/i,
     contact: /(?:Contact\s*Person|Contact\s*Name|Representative)\s*:?\s*(.+?)(?:\n|$)/i,
-    phone: /(?:Phone|Contact\s*Number|Tel|Telephone)\s*:?\s*(.+?)(?:\n|$)/i,
-    email: /(?:Email|E-mail)\s*:?\s*(.+?)(?:\n|$)/i,
-    website: /(?:Website|Web|URL)\s*:?\s*(.+?)(?:\n|$)/i
+    phone: /(?:Phone|Contact\s*Number|Contact\s*#|Tel|Telephone|Number)\s*:?\s*(.+?)(?:\n|$)/i,
+    email: /(?:Email|E-mail|E\s*mail)\s*:?\s*(.+?)(?:\n|$)/i,
+    website: /(?:Website|Web|URL|Site)\s*:?\s*(.+?)(?:\n|$)/i
   };
   
   let foundStructuredData = false;
   
-  // Extract company name
+  // Extract company name - handle "Company :" format
   const companyMatch = text.match(patterns.company);
   if (companyMatch) {
     result.companyName = companyMatch[1].trim();
@@ -64,7 +64,7 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
     if (state) result.state = state;
     if (zipCode) result.zipCode = zipCode;
     
-    // Extract city (word before state or last substantial word)
+    // Extract city (word before state)
     if (state) {
       const beforeState = fullAddress.split(state)[0].trim();
       const words = beforeState.split(/\s+/);
@@ -83,7 +83,7 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
     foundStructuredData = true;
   }
   
-  // Extract phone
+  // Extract phone - now handles "Contact Number"
   const phoneMatch = text.match(patterns.phone);
   if (phoneMatch) {
     result.phone = phoneMatch[1].trim();
