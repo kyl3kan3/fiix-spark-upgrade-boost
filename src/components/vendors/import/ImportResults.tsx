@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye, Save, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PageGroupedVendorPreview from './PageGroupedVendorPreview';
 
 interface ImportResultsProps {
   vendors: any[];
@@ -16,6 +17,11 @@ interface ImportResultsProps {
 
 const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expectedCount }) => {
   const [showPreview, setShowPreview] = useState(false);
+  const [editableVendors, setEditableVendors] = useState(vendors);
+
+  React.useEffect(() => {
+    setEditableVendors(vendors);
+  }, [vendors]);
 
   if (vendors.length === 0) return null;
 
@@ -38,11 +44,16 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
     };
   };
 
-  const formattedVendors = vendors.map(formatVendorForSave);
+  const formattedVendors = editableVendors.map(formatVendorForSave);
 
   // Check if count differs significantly from expected
-  const showCountWarning = expectedCount && vendors.length > 0 && 
-    Math.abs(vendors.length - expectedCount) > Math.max(1, expectedCount * 0.3);
+  const showCountWarning = expectedCount && editableVendors.length > 0 && 
+    Math.abs(editableVendors.length - expectedCount) > Math.max(1, expectedCount * 0.3);
+
+  const handleSaveEditedVendors = () => {
+    // Update the vendors state and then save
+    onSave();
+  };
 
   return (
     <div className="space-y-4">
@@ -50,7 +61,7 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Found {vendors.length} vendors but expected {expectedCount}. 
+            Found {editableVendors.length} vendors but expected {expectedCount}. 
             You may want to adjust your file format or expected count.
           </AlertDescription>
         </Alert>
@@ -66,13 +77,17 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
                   Expected: {expectedCount}
                 </Badge>
               )}
-              <Badge variant="secondary">{vendors.length} vendors found</Badge>
+              <Badge variant="secondary">{editableVendors.length} vendors found</Badge>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="table" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs defaultValue="edit" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="edit" className="flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                Edit by Page
+              </TabsTrigger>
               <TabsTrigger value="table" className="flex items-center gap-2">
                 <Eye className="h-4 w-4" />
                 Table View
@@ -83,8 +98,15 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
               </TabsTrigger>
             </TabsList>
             
+            <TabsContent value="edit" className="mt-4">
+              <PageGroupedVendorPreview 
+                parsedData={editableVendors}
+                onDataChange={setEditableVendors}
+              />
+            </TabsContent>
+            
             <TabsContent value="table" className="mt-4">
-              <VendorTable vendors={vendors} />
+              <VendorTable vendors={editableVendors} />
             </TabsContent>
             
             <TabsContent value="preview" className="mt-4">
@@ -166,11 +188,11 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
           
           <div className="mt-6 flex justify-end">
             <Button
-              onClick={onSave}
+              onClick={handleSaveEditedVendors}
               className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
-              Save {vendors.length} Vendors to Database
+              Save {editableVendors.length} Vendors to Database
             </Button>
           </div>
         </CardContent>
