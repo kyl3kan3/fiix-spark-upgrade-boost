@@ -1,0 +1,169 @@
+
+import { EntityClassification } from './types';
+import {
+  isCompanyName,
+  isPersonName,
+  containsProductInfo,
+  containsServiceInfo,
+  isContactReference,
+  isCityName
+} from './textClassifiers';
+import {
+  extractEmail,
+  extractPhone,
+  extractWebsite,
+  extractAddress,
+  extractStateAndZip
+} from './textExtractors';
+
+export function analyzeUnstructuredText(text: string, result: EntityClassification, instructions?: string): EntityClassification {
+  let workingText = text;
+  
+  // Extract email
+  const email = extractEmail(workingText);
+  if (email) {
+    result.email = email;
+    workingText = workingText.replace(email, '').trim();
+  }
+  
+  // Extract phone
+  const phone = extractPhone(workingText);
+  if (phone) {
+    result.phone = phone;
+    workingText = workingText.replace(phone, '').trim();
+  }
+  
+  // Extract website
+  const website = extractWebsite(workingText);
+  if (website) {
+    result.website = website;
+    workingText = workingText.replace(website.replace('https://', ''), '').trim();
+  }
+  
+  // Extract address
+  const address = extractAddress(workingText);
+  if (address) {
+    result.address = address;
+    workingText = workingText.replace(address, '').trim();
+  }
+  
+  // Extract state and ZIP
+  const { state, zipCode } = extractStateAndZip(workingText);
+  if (state) result.state = state;
+  if (zipCode) result.zipCode = zipCode;
+  if (state || zipCode) {
+    const stateZipPattern = state && zipCode ? `${state}\\s+${zipCode}` : state || zipCode;
+    workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
+  }
+  
+  // Split remaining text into lines for analysis
+  const lines = workingText.split(/\n|;|,/).map(line => line.trim()).filter(line => line.length > 0);
+  
+  // Analyze each line to categorize content
+  const products: string[] = [];
+  const services: string[] = [];
+  let companyName = '';
+  let contactPerson = '';
+  let cityName = '';
+  const notes: string[] = [];
+  
+  for (const line of lines) {
+    if (line.length < 3) continue;
+    
+    // Check for contact person (with context indicators)
+    if (isContactReference(line) || (isPersonName(line) && !companyName)) {
+      if (!contactPerson) {
+        // Extract the actual name from contact references
+        const nameMatch = line.match(/(?:Contact|Attn|Attention):\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i) || 
+                         line.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/);
+        if (nameMatch) {
+          contactPerson = nameMatch[1] || nameMatch[0];
+        }
+      }
+    }
+    // Check for company name
+    else if (isCompanyName(line) && !companyName) {
+      companyName = line;
+    }
+    // Check for city name
+    else if (isCityName(line) && !cityName && !companyName.toLowerCase().includes(line.toLowerCase())) {
+      cityName = line;
+    }
+    // Check for product information
+    else if (containsProductInfo(line)) {
+      products.push(line);
+    }
+    // Check for service information
+    else if (containsServiceInfo(line)) {
+      services.push(line);
+    }
+    // If it looks like a company name but we already have one, might be a product/service
+    else if (isCompanyName(line) && companyName) {
+      notes.push(line);
+    }
+    // If it's a person name but we already have a contact, might be additional info
+    else if (isPersonName(line) && contactPerson) {
+      notes.push(line);
+    }
+    // If it's a city but we already have one, add to notes
+    else if (isCityName(line) && cityName) {
+      notes.push(line);
+    }
+    // Everything else goes to notes
+    else {
+      notes.push(line);
+    }
+  }
+  
+  // If no clear company name found, look for the longest substantial line that's not a city or person
+  if (!companyName && lines.length > 0) {
+    const potentialCompanies = lines.filter(line => 
+      line.length > 3 && 
+      !isPersonName(line) && 
+      !isCityName(line) &&
+      !containsProductInfo(line) &&
+      !containsServiceInfo(line)
+    );
+    
+    if (potentialCompanies.length > 0) {
+      // Take the longest one as it's likely to be the most complete company name
+      companyName = potentialCompanies.reduce((longest, current) => 
+        current.length > longest.length ? current : longest
+      );
+      
+      // Remove it from notes if it was added there
+      const index = notes.indexOf(companyName);
+      if (index > -1) notes.splice(index, 1);
+    } else {
+      // If still no company name, take the first substantial line
+      const firstSubstantialLine = lines.find(line => line.length > 5);
+      if (firstSubstantialLine) {
+        companyName = firstSubstantialLine;
+        // Remove it from notes if it was added there
+        const index = notes.indexOf(companyName);
+        if (index > -1) notes.splice(index, 1);
+      }
+    }
+  }
+  
+  // Set city from our analysis or extract from remaining text if not found
+  if (cityName) {
+    result.city = cityName;
+  } else if (!result.city) {
+    const cityMatch = workingText.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/);
+    if (cityMatch && cityMatch[0].length > 2 && !isPersonName(cityMatch[0]) && cityMatch[0] !== companyName) {
+      if (isCityName(cityMatch[0])) {
+        result.city = cityMatch[0];
+      }
+    }
+  }
+  
+  // Assign results
+  result.companyName = companyName || 'Unnamed Vendor';
+  result.contactPerson = contactPerson;
+  result.products = products.length > 0 ? products : undefined;
+  result.services = services.length > 0 ? services : undefined;
+  result.notes = notes.length > 0 ? notes.join('; ') : undefined;
+  
+  return result;
+}
