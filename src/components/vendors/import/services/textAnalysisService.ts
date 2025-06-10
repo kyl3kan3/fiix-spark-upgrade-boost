@@ -1,3 +1,4 @@
+
 import { EntityClassification } from './types';
 import {
   isCompanyName,
@@ -54,7 +55,7 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
   // Extract company name - look for common business suffixes or clear company indicators
   const companyMatch = text.match(patterns.company) || 
                       text.match(/([A-Z][A-Z\s&]+(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS)[A-Z\s]*)/i) ||
-                      text.match(/^([A-Z][A-Za-z\s&]+(?:Electric|Hardware|Systems|Panels|Materials))/i);
+                      text.match(/^([A-Z][A-Za-z\s&]+(?:Electric|Hardware|Systems|Construction|Depot|Supply))/im);
   if (companyMatch && companyMatch[1] && companyMatch[1].trim().length > 0) {
     const potentialCompany = companyMatch[1].trim();
     // Make sure it's not a product name
@@ -161,6 +162,7 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
 }
 
 function analyzeUnstructuredText(text: string, result: EntityClassification): EntityClassification {
+  console.log('🔄 Starting unstructured analysis on text:', text.substring(0, 100) + '...');
   let workingText = text;
   
   // Extract email
@@ -168,6 +170,7 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   if (email) {
     result.email = email;
     workingText = workingText.replace(email, '').trim();
+    console.log('📧 Extracted email:', email);
   }
   
   // Extract phone
@@ -175,6 +178,7 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   if (phone) {
     result.phone = phone;
     workingText = workingText.replace(phone, '').trim();
+    console.log('📞 Extracted phone:', phone);
   }
   
   // Extract website
@@ -182,6 +186,7 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   if (website) {
     result.website = website;
     workingText = workingText.replace(website.replace('https://', ''), '').trim();
+    console.log('🌐 Extracted website:', website);
   }
   
   // Extract address
@@ -189,12 +194,19 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   if (address) {
     result.address = address;
     workingText = workingText.replace(address, '').trim();
+    console.log('📍 Extracted address:', address);
   }
   
   // Extract state and ZIP
   const { state, zipCode } = extractStateAndZip(workingText);
-  if (state) result.state = state;
-  if (zipCode) result.zipCode = zipCode;
+  if (state) {
+    result.state = state;
+    console.log('🏛️ Extracted state:', state);
+  }
+  if (zipCode) {
+    result.zipCode = zipCode;
+    console.log('📮 Extracted zip:', zipCode);
+  }
   if (state || zipCode) {
     const stateZipPattern = state && zipCode ? `${state}\\s+${zipCode}` : state || zipCode;
     workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
@@ -204,40 +216,53 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   const lines = workingText.split(/\n|;|,/).map(line => line.trim()).filter(line => line.length > 0);
   console.log('📄 Lines to analyze:', lines);
   
-  // Look for company name patterns - be more inclusive but exclude products
+  // Look for company name - be more aggressive in finding business names
   let companyName = result.companyName || '';
   if (!companyName) {
-    // Look for lines with business suffixes, hardware/electric keywords, or uppercase company-like text
-    // but exclude obvious product names
-    const companyLines = lines.filter(line => {
-      const hasBusinessIndicators = /(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS|PANELS|MATERIALS)/i.test(line) ||
-                                   /^[A-Z][A-Z\s&]+[A-Z]$/.test(line);
-      const isProduct = isProductName(line);
-      const isPerson = isPersonName(line);
+    console.log('🔍 Searching for company name in lines...');
+    
+    // First pass: Look for obvious business names with common indicators
+    const businessLines = lines.filter(line => {
+      const isObviousBusiness = /(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|CONSTRUCTION|DEPOT|SUPPLY|MATERIALS|INSULATORS)\b/i.test(line);
+      const isNotProduct = !isProductName(line);
+      const isNotPerson = !isPersonName(line);
+      const isSubstantial = line.length > 5;
       
-      console.log(`📝 Evaluating line "${line}": business=${hasBusinessIndicators}, product=${isProduct}, person=${isPerson}`);
+      console.log(`  Evaluating "${line}": business=${isObviousBusiness}, notProduct=${isNotProduct}, notPerson=${isNotPerson}, substantial=${isSubstantial}`);
       
-      return hasBusinessIndicators && 
-             !isProduct && 
-             !isPerson && 
-             line.length > 5;
+      return isObviousBusiness && isNotProduct && isNotPerson && isSubstantial;
     });
     
-    if (companyLines.length > 0) {
-      companyName = companyLines[0];
+    if (businessLines.length > 0) {
+      companyName = businessLines[0];
       console.log('✅ Found company from business indicators:', companyName);
     } else {
-      // Look for substantial lines that aren't products or people
-      const potentialCompanies = lines.filter(line => 
-        line.length > 3 && 
-        !isPersonName(line) && 
-        !isProductName(line) &&
-        !isCityName(line)
-      );
+      // Second pass: Look for substantial lines that could be company names
+      console.log('🔍 No obvious business found, looking for substantial company candidates...');
+      const candidateLines = lines.filter(line => {
+        const isSubstantial = line.length > 3;
+        const isNotProduct = !isProductName(line);
+        const isNotPerson = !isPersonName(line);
+        const isNotCity = !isCityName(line);
+        const hasCapitalization = /^[A-Z]/.test(line);
+        
+        console.log(`  Candidate "${line}": substantial=${isSubstantial}, notProduct=${isNotProduct}, notPerson=${isNotPerson}, notCity=${isNotCity}, capitalized=${hasCapitalization}`);
+        
+        return isSubstantial && isNotProduct && isNotPerson && isNotCity && hasCapitalization;
+      });
       
-      if (potentialCompanies.length > 0) {
-        companyName = potentialCompanies[0];
-        console.log('✅ Found company from non-product lines:', companyName);
+      if (candidateLines.length > 0) {
+        // Prefer lines with multiple words or business-like terms
+        const prioritized = candidateLines.sort((a, b) => {
+          const aWords = a.split(/\s+/).length;
+          const bWords = b.split(/\s+/).length;
+          const aBusinessy = /(?:HARDWARE|ELECTRIC|SYSTEMS|CONSTRUCTION|DEPOT|SUPPLY|MATERIALS)/i.test(a) ? 10 : 0;
+          const bBusinessy = /(?:HARDWARE|ELECTRIC|SYSTEMS|CONSTRUCTION|DEPOT|SUPPLY|MATERIALS)/i.test(b) ? 10 : 0;
+          return (bWords + bBusinessy) - (aWords + aBusinessy);
+        });
+        
+        companyName = prioritized[0];
+        console.log('✅ Found company from candidates:', companyName);
       }
     }
   }
@@ -252,6 +277,8 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   for (const line of lines) {
     if (line.length < 3) continue;
     
+    console.log(`🔍 Analyzing line: "${line}"`);
+    
     // Check for contact person (with context indicators)
     if (isContactReference(line) || (isPersonName(line) && !companyName)) {
       if (!contactPerson) {
@@ -260,17 +287,14 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
                          line.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/);
         if (nameMatch) {
           contactPerson = nameMatch[1] || nameMatch[0];
+          console.log('👤 Found contact person:', contactPerson);
         }
       }
-    }
-    // Check for company name - but don't overwrite if we already have one
-    else if (isCompanyName(line) && !companyName && !isProductName(line)) {
-      companyName = line;
-      console.log('✅ Found company from isCompanyName check:', companyName);
     }
     // Check for city name
     else if (isCityName(line) && !cityName && !companyName.toLowerCase().includes(line.toLowerCase())) {
       cityName = line;
+      console.log('🏙️ Found city:', cityName);
     }
     // Check for product information
     else if (containsProductInfo(line)) {
@@ -280,30 +304,12 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     // Check for service information
     else if (containsServiceInfo(line)) {
       services.push(line);
+      console.log('🔧 Added to services:', line);
     }
     // Everything else goes to notes (less restrictive)
     else if (line !== companyName && line !== contactPerson && line !== cityName) {
       notes.push(line);
-    }
-  }
-  
-  // If no clear company name found, be more aggressive in finding one
-  if (!companyName && lines.length > 0) {
-    const potentialCompanies = lines.filter(line => 
-      line.length > 3 && 
-      !isPersonName(line) && 
-      !isCityName(line) &&
-      !isProductName(line)
-    );
-    
-    if (potentialCompanies.length > 0) {
-      // Take the first substantial line that could be a company
-      companyName = potentialCompanies[0];
-      console.log('✅ Found company from fallback search:', companyName);
-      
-      // Remove it from notes if it was added there
-      const index = notes.indexOf(companyName);
-      if (index > -1) notes.splice(index, 1);
+      console.log('📝 Added to notes:', line);
     }
   }
   
@@ -319,20 +325,37 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     }
   }
   
-  // Assign results - ensure we always have at least a company name
-  result.companyName = companyName || 'Unnamed Vendor';
+  // Assign results - ensure we ALWAYS have at least a company name from the text
+  if (!companyName && lines.length > 0) {
+    // Last resort: use the first substantial line as company name
+    const firstSubstantialLine = lines.find(line => line.length > 3 && !/^\d+$/.test(line));
+    if (firstSubstantialLine) {
+      companyName = firstSubstantialLine;
+      console.log('🚨 Using first substantial line as company name:', companyName);
+    } else {
+      companyName = 'Unknown Vendor';
+      console.log('🚨 No company name found, using fallback');
+    }
+  }
+  
+  result.companyName = companyName;
   result.contactPerson = contactPerson;
   result.products = products.length > 0 ? products : undefined;
   result.services = services.length > 0 ? services : undefined;
   result.notes = notes.length > 0 ? notes.join('; ') : undefined;
   
-  console.log('🎯 Final vendor data:', {
+  console.log('🎯 Final vendor data from unstructured analysis:', {
     companyName: result.companyName,
     contactPerson: result.contactPerson,
     email: result.email,
     phone: result.phone,
+    address: result.address,
+    city: result.city,
+    state: result.state,
+    zipCode: result.zipCode,
     products: result.products,
-    services: result.services
+    services: result.services,
+    notes: result.notes
   });
   
   return result;
