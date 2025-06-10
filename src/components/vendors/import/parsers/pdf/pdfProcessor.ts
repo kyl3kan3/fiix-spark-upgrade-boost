@@ -75,37 +75,61 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
   }
   
   const instructionsLower = instructions.toLowerCase();
+  console.log('🔍 Analyzing instructions for page handling:', instructionsLower);
   
-  // Look for explicit instructions about pages being vendors
-  const pageVendorKeywords = [
-    'each page is a vendor',
-    'each page contains one vendor',
-    'one vendor per page',
-    'page per vendor',
-    'every page is a vendor',
-    'individual vendor on each page',
-    'separate vendor per page'
+  // Look for explicit instructions about pages being vendors - more comprehensive patterns
+  const pageVendorPatterns = [
+    // Direct statements
+    /each page (is|contains|has) (a|one) vendor/,
+    /one vendor per page/,
+    /page per vendor/,
+    /every page (is|contains|has) (a|one) vendor/,
+    /(individual|separate) vendor (on|per) each page/,
+    /treat each page as (a|one) vendor/,
+    /consider each page (a|one) vendor/,
+    
+    // More natural language patterns
+    /pages? (are|is) vendors?/,
+    /vendor on each page/,
+    /vendor per page/,
+    /page equals vendor/,
+    /page = vendor/,
+    
+    // Variations with "single"
+    /single vendor per page/,
+    /one single vendor per page/,
+    
+    // Don't split variations
+    /(don't|do not|don't) split pages?/,
+    /(don't|do not|don't) break (up|down) pages?/,
+    /keep pages? (whole|intact|together)/,
+    /entire pages? (are|is) vendors?/,
+    /whole pages? (are|is) vendors?/,
+    /full pages? (are|is) vendors?/
   ];
   
-  const hasPageVendorInstruction = pageVendorKeywords.some(keyword => 
-    instructionsLower.includes(keyword)
+  const hasPageVendorInstruction = pageVendorPatterns.some(pattern => 
+    pattern.test(instructionsLower)
   );
   
   if (hasPageVendorInstruction) {
-    console.log('📋 Instructions indicate each page should be treated as a vendor');
+    console.log('✅ Instructions clearly indicate each page should be treated as a vendor');
     return true;
   }
   
   // Look for instructions that suggest splitting pages
-  const splitKeywords = [
-    'multiple vendors per page',
-    'split each page',
-    'vendors are separated by',
-    'multiple entries per page'
+  const splitPatterns = [
+    /multiple vendors per page/,
+    /split (each )?pages?/,
+    /break (up|down) pages?/,
+    /vendors? (are )?separated by/,
+    /multiple (entries|vendors) per page/,
+    /divide pages?/,
+    /parse pages? for multiple/
   ];
   
-  const hasSplitInstruction = splitKeywords.some(keyword => 
-    instructionsLower.includes(keyword)
+  const hasSplitInstruction = splitPatterns.some(pattern => 
+    pattern.test(instructionsLower)
   );
   
   if (hasSplitInstruction) {
