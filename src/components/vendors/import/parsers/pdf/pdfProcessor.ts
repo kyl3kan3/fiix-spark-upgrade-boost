@@ -14,8 +14,8 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
   console.log('📝 Instructions provided:', instructions || 'None');
   console.log('🎯 Expected count:', expectedCount || 'Not specified');
   
-  // If expected count matches page count, treat each page as one vendor
-  const shouldTreatPagesAsVendors = expectedCount === pageTexts.length;
+  // Check if instructions indicate each page is a vendor
+  const shouldTreatPagesAsVendors = shouldTreatEachPageAsVendor(instructions, expectedCount, pageTexts.length);
   
   // Group vendors by page
   const vendorsByPage = pageTexts.map((pageText, pageIndex) => {
@@ -25,7 +25,7 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
     
     if (shouldTreatPagesAsVendors) {
       // Treat the entire page as one vendor
-      console.log(`📋 Treating entire page ${pageIndex + 1} as single vendor`);
+      console.log(`📋 Treating entire page ${pageIndex + 1} as single vendor based on instructions`);
       sections = [pageText];
     } else {
       // Split the page into sections as before
@@ -66,6 +66,62 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
   });
   
   return result;
+}
+
+function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: number, pageCount?: number): boolean {
+  if (!instructions) {
+    // Fallback to count matching if no instructions
+    return expectedCount === pageCount;
+  }
+  
+  const instructionsLower = instructions.toLowerCase();
+  
+  // Look for explicit instructions about pages being vendors
+  const pageVendorKeywords = [
+    'each page is a vendor',
+    'each page contains one vendor',
+    'one vendor per page',
+    'page per vendor',
+    'every page is a vendor',
+    'individual vendor on each page',
+    'separate vendor per page'
+  ];
+  
+  const hasPageVendorInstruction = pageVendorKeywords.some(keyword => 
+    instructionsLower.includes(keyword)
+  );
+  
+  if (hasPageVendorInstruction) {
+    console.log('📋 Instructions indicate each page should be treated as a vendor');
+    return true;
+  }
+  
+  // Look for instructions that suggest splitting pages
+  const splitKeywords = [
+    'multiple vendors per page',
+    'split each page',
+    'vendors are separated by',
+    'multiple entries per page'
+  ];
+  
+  const hasSplitInstruction = splitKeywords.some(keyword => 
+    instructionsLower.includes(keyword)
+  );
+  
+  if (hasSplitInstruction) {
+    console.log('📋 Instructions indicate pages should be split into multiple vendors');
+    return false;
+  }
+  
+  // If expected count matches page count and no conflicting instructions, treat pages as vendors
+  if (expectedCount === pageCount) {
+    console.log('📋 Expected count matches page count, treating each page as vendor');
+    return true;
+  }
+  
+  // Default to splitting if unclear
+  console.log('📋 Instructions unclear, defaulting to splitting pages');
+  return false;
 }
 
 export function processGptResult(gptText: string): any[] {
