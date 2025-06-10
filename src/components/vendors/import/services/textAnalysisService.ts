@@ -1,3 +1,4 @@
+
 import { EntityClassification } from './types';
 import {
   isCompanyName,
@@ -19,6 +20,117 @@ export type { EntityClassification } from './types';
 
 export function analyzeAndCategorizeText(text: string): EntityClassification {
   const result: EntityClassification = { rawText: text };
+  
+  // First, try to extract structured data using labels
+  const structuredData = extractStructuredData(text);
+  if (structuredData.hasStructuredData) {
+    return { ...result, ...structuredData };
+  }
+  
+  // Fall back to the original analysis method
+  return analyzeUnstructuredText(text, result);
+}
+
+function extractStructuredData(text: string): EntityClassification & { hasStructuredData: boolean } {
+  const result: EntityClassification & { hasStructuredData: boolean } = { rawText: text, hasStructuredData: false };
+  
+  // Common patterns for structured data
+  const patterns = {
+    company: /(?:Company|Business|Organization|Name)\s*:?\s*(.+?)(?:\n|$)/i,
+    address: /(?:Address|Location)\s*:?\s*(.+?)(?:\n|$)/i,
+    contact: /(?:Contact\s*Person|Contact\s*Name|Representative)\s*:?\s*(.+?)(?:\n|$)/i,
+    phone: /(?:Phone|Contact\s*Number|Tel|Telephone)\s*:?\s*(.+?)(?:\n|$)/i,
+    email: /(?:Email|E-mail)\s*:?\s*(.+?)(?:\n|$)/i,
+    website: /(?:Website|Web|URL)\s*:?\s*(.+?)(?:\n|$)/i
+  };
+  
+  let foundStructuredData = false;
+  
+  // Extract company name
+  const companyMatch = text.match(patterns.company);
+  if (companyMatch) {
+    result.companyName = companyMatch[1].trim();
+    foundStructuredData = true;
+  }
+  
+  // Extract address
+  const addressMatch = text.match(patterns.address);
+  if (addressMatch) {
+    const fullAddress = addressMatch[1].trim();
+    result.address = fullAddress;
+    
+    // Try to extract city, state, zip from the address
+    const { state, zipCode } = extractStateAndZip(fullAddress);
+    if (state) result.state = state;
+    if (zipCode) result.zipCode = zipCode;
+    
+    // Extract city (word before state or last substantial word)
+    if (state) {
+      const beforeState = fullAddress.split(state)[0].trim();
+      const words = beforeState.split(/\s+/);
+      if (words.length > 0) {
+        result.city = words[words.length - 1];
+      }
+    }
+    
+    foundStructuredData = true;
+  }
+  
+  // Extract contact person
+  const contactMatch = text.match(patterns.contact);
+  if (contactMatch) {
+    result.contactPerson = contactMatch[1].trim();
+    foundStructuredData = true;
+  }
+  
+  // Extract phone
+  const phoneMatch = text.match(patterns.phone);
+  if (phoneMatch) {
+    result.phone = phoneMatch[1].trim();
+    foundStructuredData = true;
+  } else {
+    // Fall back to regex extraction
+    const phone = extractPhone(text);
+    if (phone) {
+      result.phone = phone;
+      foundStructuredData = true;
+    }
+  }
+  
+  // Extract email
+  const emailMatch = text.match(patterns.email);
+  if (emailMatch) {
+    result.email = emailMatch[1].trim();
+    foundStructuredData = true;
+  } else {
+    // Fall back to regex extraction
+    const email = extractEmail(text);
+    if (email) {
+      result.email = email;
+      foundStructuredData = true;
+    }
+  }
+  
+  // Extract website
+  const websiteMatch = text.match(patterns.website);
+  if (websiteMatch) {
+    const website = websiteMatch[1].trim();
+    result.website = website.startsWith('http') ? website : `https://${website}`;
+    foundStructuredData = true;
+  } else {
+    // Fall back to regex extraction
+    const website = extractWebsite(text);
+    if (website) {
+      result.website = website;
+      foundStructuredData = true;
+    }
+  }
+  
+  result.hasStructuredData = foundStructuredData;
+  return result;
+}
+
+function analyzeUnstructuredText(text: string, result: EntityClassification): EntityClassification {
   let workingText = text;
   
   // Extract email
