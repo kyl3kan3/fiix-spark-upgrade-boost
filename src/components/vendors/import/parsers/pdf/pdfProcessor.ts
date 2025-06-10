@@ -16,12 +16,6 @@ export function processSingleVendor(text: string): any[] {
   const entity = analyzeAndCategorizeText(cleanText);
   const vendor = entityToVendor(entity);
   
-  // Filter out invalid vendors
-  if (vendor.name === 'Product List Section' || vendor.name.length < 3) {
-    console.warn('⚠️ Invalid vendor detected, skipping:', vendor.name);
-    return [];
-  }
-  
   console.log('✅ Single vendor processed:', vendor);
   return [vendor];
 }
@@ -47,15 +41,16 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
     const entity = analyzeAndCategorizeText(section);
     return entityToVendor(entity);
   }).filter(vendor => {
-    // Filter out invalid vendors
+    // More lenient filtering - only reject if clearly not a vendor
     const isValid = vendor.name && 
                    vendor.name !== 'Unnamed Vendor' && 
-                   vendor.name !== 'Product List Section' &&
-                   vendor.name.length > 3 &&
-                   !vendor.name.startsWith('"');
+                   vendor.name.length > 2 &&
+                   !vendor.name.match(/^[\d\s"]+$/); // Only reject if it's just numbers/quotes/spaces
     
     if (!isValid) {
       console.warn('⚠️ Filtered out invalid vendor:', vendor.name);
+    } else {
+      console.log('✅ Valid vendor found:', vendor.name);
     }
     
     return isValid;

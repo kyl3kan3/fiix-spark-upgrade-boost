@@ -1,3 +1,4 @@
+
 import { EntityClassification } from './types';
 import {
   isCompanyName,
@@ -50,9 +51,10 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
   
   let foundStructuredData = false;
   
-  // Extract company name - look for common business suffixes
+  // Extract company name - look for common business suffixes or clear company indicators
   const companyMatch = text.match(patterns.company) || 
-                      text.match(/([A-Z][A-Z\s&]+(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS)[A-Z\s]*)/i);
+                      text.match(/([A-Z][A-Z\s&]+(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS)[A-Z\s]*)/i) ||
+                      text.match(/^([A-Z][A-Za-z\s&]+(?:Electric|Hardware|Systems|Panels|Materials))/i);
   if (companyMatch && companyMatch[1] && companyMatch[1].trim().length > 0) {
     result.companyName = companyMatch[1].trim();
     foundStructuredData = true;
@@ -192,30 +194,24 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
   }
   
-  // Skip sections that are clearly product/service lists (not company names)
-  const isProductSection = /^[0-9"]+\s*(PIPE|TEES|HEAD|PLUG|VALVE|GASKET|RING)/i.test(workingText);
-  if (isProductSection) {
-    console.log('⚠️ Detected product section, skipping company name extraction');
-    return { ...result, companyName: 'Product List Section' };
-  }
-  
   // Split remaining text into lines for analysis
   const lines = workingText.split(/\n|;|,/).map(line => line.trim()).filter(line => line.length > 0);
   console.log('📄 Lines to analyze:', lines);
   
-  // Look for company name patterns
+  // Look for company name patterns - be more inclusive
   let companyName = result.companyName || '';
   if (!companyName) {
-    // Look for lines with business suffixes or hardware/electric keywords
+    // Look for lines with business suffixes, hardware/electric keywords, or uppercase company-like text
     const companyLines = lines.filter(line => 
-      /(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS)/i.test(line) &&
+      (/(?:INC|LLC|CORP|COMPANY|CO|HARDWARE|ELECTRIC|SYSTEMS|INSULATORS|PANELS|MATERIALS)/i.test(line) ||
+       /^[A-Z][A-Z\s&]+[A-Z]$/.test(line)) &&
       line.length > 5 &&
       !isPersonName(line)
     );
     
     if (companyLines.length > 0) {
       companyName = companyLines[0];
-    } else if (lines.length > 0 && lines[0].length > 10 && !isPersonName(lines[0])) {
+    } else if (lines.length > 0 && lines[0].length > 3 && !isPersonName(lines[0])) {
       // Use first substantial line if no clear business indicators
       companyName = lines[0];
     }
@@ -242,7 +238,7 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
         }
       }
     }
-    // Check for company name
+    // Check for company name - but don't overwrite if we already have one
     else if (isCompanyName(line) && !companyName) {
       companyName = line;
     }
@@ -258,52 +254,27 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     else if (containsServiceInfo(line)) {
       services.push(line);
     }
-    // If it looks like a company name but we already have one, might be a product/service
-    else if (isCompanyName(line) && companyName) {
-      notes.push(line);
-    }
-    // If it's a person name but we already have a contact, might be additional info
-    else if (isPersonName(line) && contactPerson) {
-      notes.push(line);
-    }
-    // If it's a city but we already have one, add to notes
-    else if (isCityName(line) && cityName) {
-      notes.push(line);
-    }
-    // Everything else goes to notes
-    else {
+    // Everything else goes to notes (less restrictive)
+    else if (line !== companyName && line !== contactPerson && line !== cityName) {
       notes.push(line);
     }
   }
   
-  // If no clear company name found, look for the longest substantial line that's not a city or person
+  // If no clear company name found, be more aggressive in finding one
   if (!companyName && lines.length > 0) {
     const potentialCompanies = lines.filter(line => 
       line.length > 3 && 
       !isPersonName(line) && 
-      !isCityName(line) &&
-      !containsProductInfo(line) &&
-      !containsServiceInfo(line)
+      !isCityName(line)
     );
     
     if (potentialCompanies.length > 0) {
-      // Take the longest one as it's likely to be the most complete company name
-      companyName = potentialCompanies.reduce((longest, current) => 
-        current.length > longest.length ? current : longest
-      );
+      // Take the first substantial line that could be a company
+      companyName = potentialCompanies[0];
       
       // Remove it from notes if it was added there
       const index = notes.indexOf(companyName);
       if (index > -1) notes.splice(index, 1);
-    } else {
-      // If still no company name, take the first substantial line
-      const firstSubstantialLine = lines.find(line => line.length > 5);
-      if (firstSubstantialLine) {
-        companyName = firstSubstantialLine;
-        // Remove it from notes if it was added there
-        const index = notes.indexOf(companyName);
-        if (index > -1) notes.splice(index, 1);
-      }
     }
   }
   
