@@ -8,16 +8,14 @@ export const COMPANY_INDICATORS = [
   'Solutions', 'Services', 'Systems', 'Technologies', 'Tech', 'Consulting',
   'Hardware', 'Supply', 'Supplies', 'Equipment', 'Store', 'Shop', 'Center',
   'Depot', 'Mart', 'Market', 'Industries', 'Manufacturing', 'Construction',
-  'Hardware', 'Ace', 'Electric', 'Electrical'
+  'Hardware', 'Ace'
 ];
 
-// Product/service indicators - updated to be more specific
+// Product/service indicators
 export const PRODUCT_INDICATORS = [
   'supply', 'supplies', 'equipment', 'tools', 'parts', 'materials',
   'products', 'items', 'inventory', 'stock', 'goods', 'merchandise',
-  'purchase', 'purchased', 'order', 'ordered', 'buy', 'bought',
-  'panels', 'panel', 'insulators', 'insulator', 'iso panels',
-  'components', 'units', 'fixtures', 'fittings'
+  'purchase', 'purchased', 'order', 'ordered', 'buy', 'bought'
 ];
 
 // Service indicators
