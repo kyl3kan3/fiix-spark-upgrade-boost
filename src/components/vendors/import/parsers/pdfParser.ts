@@ -7,7 +7,7 @@ export async function parsePDF(file: File, expectedCount?: number, instructions?
   const { text: extractedText, pageTexts } = await extractTextFromPdf(file);
   
   // Handle OCR fallback if text extraction failed
-  const { text, isGptResult } = await handleOcrFallback(file, extractedText, instructions);
+  const { text, isGptResult } = await handleOcrFallback(file, extractedText);
   
   // If GPT Vision returned structured data, use it directly
   if (isGptResult) {
@@ -19,7 +19,7 @@ export async function parsePDF(file: File, expectedCount?: number, instructions?
   
   // If expecting 1 vendor, treat entire document as single vendor
   if (expectedCount === 1) {
-    return processSingleVendor(text);
+    return processSingleVendor(text, instructions);
   }
   
   // Process multiple vendors

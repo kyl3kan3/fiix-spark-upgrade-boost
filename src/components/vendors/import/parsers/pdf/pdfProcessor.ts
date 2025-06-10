@@ -3,8 +3,8 @@ import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
 
-export function processSingleVendor(text: string): any[] {
-  const entity = analyzeAndCategorizeText(text);
+export function processSingleVendor(text: string, instructions?: string): any[] {
+  const entity = analyzeAndCategorizeText(text, instructions);
   return [entityToVendor(entity)];
 }
 

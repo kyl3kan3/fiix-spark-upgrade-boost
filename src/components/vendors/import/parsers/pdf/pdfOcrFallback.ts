@@ -3,7 +3,7 @@ import Tesseract from 'tesseract.js';
 import { callGptVision } from '../../services/gptVisionService';
 import { renderPdfToImage } from './pdfTextExtractor';
 
-export async function handleOcrFallback(file: File, text: string): Promise<{ text: string; isGptResult: boolean }> {
+export async function handleOcrFallback(file: File, text: string, instructions?: string): Promise<{ text: string; isGptResult: boolean }> {
   // If text extraction fails, fallback to OCR
   if (text.replace(/\s/g, '').length < 20) {
     const imgData = await renderPdfToImage(file);
@@ -15,7 +15,7 @@ export async function handleOcrFallback(file: File, text: string): Promise<{ tex
     // If Tesseract fails, try GPT-4 Vision
     if (textFromOcr.replace(/\s/g, '').length < 20) {
       const base64Image = imgData.replace(/^data:image\/png;base64,/, '');
-      const gptResult = await callGptVision(base64Image);
+      const gptResult = await callGptVision(base64Image, instructions);
       
       if (Array.isArray(gptResult)) {
         return { text: JSON.stringify(gptResult), isGptResult: true };
