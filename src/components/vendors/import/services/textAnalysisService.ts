@@ -19,43 +19,49 @@ import {
 export type { EntityClassification } from './types';
 
 export function analyzeAndCategorizeText(text: string): EntityClassification {
+  console.log('🔍 Analyzing text:', text);
   const result: EntityClassification = { rawText: text };
   
   // First, try to extract structured data using labels
   const structuredData = extractStructuredData(text);
   if (structuredData.hasStructuredData) {
+    console.log('✅ Found structured data:', structuredData);
     return { ...result, ...structuredData };
   }
   
   // Fall back to the original analysis method
-  return analyzeUnstructuredText(text, result);
+  console.log('⚠️ No structured data found, falling back to unstructured analysis');
+  const unstructuredResult = analyzeUnstructuredText(text, result);
+  console.log('📊 Unstructured analysis result:', unstructuredResult);
+  return unstructuredResult;
 }
 
 function extractStructuredData(text: string): EntityClassification & { hasStructuredData: boolean } {
   const result: EntityClassification & { hasStructuredData: boolean } = { rawText: text, hasStructuredData: false };
   
-  // More flexible patterns for structured data
+  // More flexible patterns for structured data - handle various formats
   const patterns = {
-    company: /(?:Company|Business|Organization|Name)\s*:?\s*(.+?)(?:\n|$)/i,
-    address: /(?:Address|Location)\s*:?\s*(.+?)(?:\n|$)/i,
-    contact: /(?:Contact\s*Person|Contact\s*Name|Representative)\s*:?\s*(.+?)(?:\n|$)/i,
-    phone: /(?:Phone|Contact\s*Number|Contact\s*#|Tel|Telephone|Number)\s*:?\s*(.+?)(?:\n|$)/i,
-    email: /(?:Email|E-mail|E\s*mail)\s*:?\s*(.+?)(?:\n|$)/i,
-    website: /(?:Website|Web|URL|Site)\s*:?\s*(.+?)(?:\n|$)/i
+    company: /(?:Company|Business|Organization|Name|Vendor)\s*:?\s*(.+?)(?:\n|$)/i,
+    address: /(?:Address|Location|Street)\s*:?\s*(.+?)(?:\n|$)/i,
+    contact: /(?:Contact\s*Person|Contact\s*Name|Representative|Contact)\s*:?\s*(.+?)(?:\n|$)/i,
+    phone: /(?:Phone|Contact\s*Number|Contact\s*#|Tel|Telephone|Number|Mobile)\s*:?\s*(.+?)(?:\n|$)/i,
+    email: /(?:Email|E-mail|E\s*mail|Mail)\s*:?\s*(.+?)(?:\n|$)/i,
+    website: /(?:Website|Web|URL|Site|WWW)\s*:?\s*(.+?)(?:\n|$)/i
   };
   
   let foundStructuredData = false;
   
-  // Extract company name - handle "Company :" format
+  // Extract company name
   const companyMatch = text.match(patterns.company);
-  if (companyMatch) {
+  if (companyMatch && companyMatch[1].trim().length > 0) {
     result.companyName = companyMatch[1].trim();
     foundStructuredData = true;
+    console.log('📝 Found company:', result.companyName);
   }
   
   // Extract address
   const addressMatch = text.match(patterns.address);
-  if (addressMatch) {
+  if (addressMatch && addressMatch[1].trim().length > 0) {
     const fullAddress = addressMatch[1].trim();
     result.address = fullAddress;
     
@@ -74,59 +80,68 @@ function extractStructuredData(text: string): EntityClassification & { hasStruct
     }
     
     foundStructuredData = true;
+    console.log('📍 Found address:', result.address);
   }
   
   // Extract contact person
   const contactMatch = text.match(patterns.contact);
-  if (contactMatch) {
+  if (contactMatch && contactMatch[1].trim().length > 0) {
     result.contactPerson = contactMatch[1].trim();
     foundStructuredData = true;
+    console.log('👤 Found contact:', result.contactPerson);
   }
   
-  // Extract phone - now handles "Contact Number"
+  // Extract phone
   const phoneMatch = text.match(patterns.phone);
-  if (phoneMatch) {
+  if (phoneMatch && phoneMatch[1].trim().length > 0) {
     result.phone = phoneMatch[1].trim();
     foundStructuredData = true;
+    console.log('📞 Found phone:', result.phone);
   } else {
     // Fall back to regex extraction
     const phone = extractPhone(text);
     if (phone) {
       result.phone = phone;
       foundStructuredData = true;
+      console.log('📞 Found phone (regex):', result.phone);
     }
   }
   
   // Extract email
   const emailMatch = text.match(patterns.email);
-  if (emailMatch) {
+  if (emailMatch && emailMatch[1].trim().length > 0) {
     result.email = emailMatch[1].trim();
     foundStructuredData = true;
+    console.log('📧 Found email:', result.email);
   } else {
     // Fall back to regex extraction
     const email = extractEmail(text);
     if (email) {
       result.email = email;
       foundStructuredData = true;
+      console.log('📧 Found email (regex):', result.email);
     }
   }
   
   // Extract website
   const websiteMatch = text.match(patterns.website);
-  if (websiteMatch) {
+  if (websiteMatch && websiteMatch[1].trim().length > 0) {
     const website = websiteMatch[1].trim();
     result.website = website.startsWith('http') ? website : `https://${website}`;
     foundStructuredData = true;
+    console.log('🌐 Found website:', result.website);
   } else {
     // Fall back to regex extraction
     const website = extractWebsite(text);
     if (website) {
       result.website = website;
       foundStructuredData = true;
+      console.log('🌐 Found website (regex):', result.website);
     }
   }
   
   result.hasStructuredData = foundStructuredData;
+  console.log('📋 Structured data extraction complete. Found data:', foundStructuredData);
   return result;
 }
 
@@ -172,11 +187,24 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
   
   // Split remaining text into lines for analysis
   const lines = workingText.split(/\n|;|,/).map(line => line.trim()).filter(line => line.length > 0);
+  console.log('📄 Lines to analyze:', lines);
+  
+  // If we have very few lines, be more aggressive about extracting company name
+  if (lines.length <= 3 && lines.length > 0) {
+    // Take the first substantial line as company name if we don't have one
+    if (!result.companyName) {
+      const firstLine = lines.find(line => line.length > 2);
+      if (firstLine) {
+        result.companyName = firstLine;
+        console.log('🏢 Using first line as company name:', firstLine);
+      }
+    }
+  }
   
   // Analyze each line to categorize content
   const products: string[] = [];
   const services: string[] = [];
-  let companyName = '';
+  let companyName = result.companyName || '';
   let contactPerson = '';
   let cityName = '';
   const notes: string[] = [];
@@ -272,12 +300,19 @@ function analyzeUnstructuredText(text: string, result: EntityClassification): En
     }
   }
   
-  // Assign results
-  result.companyName = companyName || 'Unnamed Vendor';
+  // Assign results - ensure we always have at least a company name
+  result.companyName = companyName || (lines.length > 0 ? lines[0] : 'Unnamed Vendor');
   result.contactPerson = contactPerson;
   result.products = products.length > 0 ? products : undefined;
   result.services = services.length > 0 ? services : undefined;
   result.notes = notes.length > 0 ? notes.join('; ') : undefined;
+  
+  console.log('🎯 Final vendor data:', {
+    companyName: result.companyName,
+    contactPerson: result.contactPerson,
+    email: result.email,
+    phone: result.phone
+  });
   
   return result;
 }
