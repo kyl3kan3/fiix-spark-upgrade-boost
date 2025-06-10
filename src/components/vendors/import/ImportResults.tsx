@@ -8,9 +8,10 @@ import { Eye, Save, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import PageGroupedVendorPreview from './PageGroupedVendorPreview';
+import { VendorImportData } from '@/services/vendorService';
 
 interface ImportResultsProps {
-  vendors: any[];
+  vendors: VendorImportData[];
   onSave: () => void;
   expectedCount?: number;
 }
@@ -25,7 +26,7 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
 
   if (vendors.length === 0) return null;
 
-  const formatVendorForSave = (vendor: any) => {
+  const formatVendorForSave = (vendor: VendorImportData) => {
     return {
       name: vendor.name || 'Unnamed Vendor',
       email: vendor.email || null,

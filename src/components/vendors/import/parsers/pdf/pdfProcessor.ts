@@ -1,3 +1,4 @@
+
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
@@ -42,10 +43,16 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
   console.log('📊 Total vendors found:', allVendors.length);
   console.log('📄 Pages processed:', vendorsByPage.length);
   
-  // Store page grouping info for later use
-  allVendors.pageGrouping = vendorsByPage;
+  // Create a result object with typed properties
+  const result = allVendors.length > 0 ? allVendors : [entityToVendor(analyzeAndCategorizeText(text))];
   
-  return allVendors.length > 0 ? allVendors : [entityToVendor(analyzeAndCategorizeText(text))];
+  // Attach page grouping as a non-enumerable property
+  Object.defineProperty(result, 'pageGrouping', {
+    value: vendorsByPage,
+    enumerable: false
+  });
+  
+  return result;
 }
 
 export function processGptResult(gptText: string): any[] {

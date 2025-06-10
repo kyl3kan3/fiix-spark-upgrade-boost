@@ -12,19 +12,27 @@ export interface VendorWithContracts extends Vendor {
 
 export interface VendorFormData {
   name: string;
-  email: string;
-  phone: string;
-  contact_person: string;
-  contact_title: string;
+  email?: string;
+  phone?: string;
+  contact_person?: string;
+  contact_title?: string;
   vendor_type: "service" | "supplier" | "contractor" | "consultant";
   status: "active" | "inactive" | "suspended";
-  address: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  website: string;
-  description: string;
-  rating: number | null;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
+  website?: string;
+  description?: string;
+  rating?: number | null;
+}
+
+// Extended type for import processing
+export interface VendorImportData extends VendorFormData {
+  id?: string;
+  pageNumber?: number;
+  sourceText?: string;
+  raw_text?: string;
 }
 
 export const getAllVendors = async (): Promise<Vendor[]> => {

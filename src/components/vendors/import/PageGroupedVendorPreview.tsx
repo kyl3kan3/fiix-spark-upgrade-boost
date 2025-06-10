@@ -7,19 +7,18 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { VendorFormData } from "@/services/vendorService";
+import { VendorImportData } from "@/services/vendorService";
 import { Edit3, Save, X, ChevronDown, ChevronRight } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface PageGroupedVendorPreviewProps {
-  parsedData: VendorFormData[];
-  onDataChange: (data: VendorFormData[]) => void;
+  parsedData: VendorImportData[];
+  onDataChange: (data: VendorImportData[]) => void;
 }
 
 interface VendorGroup {
   pageNumber: number;
-  vendors: VendorFormData[];
+  vendors: VendorImportData[];
   pageText: string;
 }
 
@@ -28,15 +27,15 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
   onDataChange,
 }) => {
   const [editingVendor, setEditingVendor] = useState<string | null>(null);
-  const [editData, setEditData] = useState<VendorFormData | null>(null);
+  const [editData, setEditData] = useState<VendorImportData | null>(null);
   const [expandedPages, setExpandedPages] = useState<number[]>([1]);
 
   // Group vendors by page
   const vendorsByPage: VendorGroup[] = React.useMemo(() => {
-    const pageMap = new Map<number, VendorFormData[]>();
+    const pageMap = new Map<number, VendorImportData[]>();
     
     parsedData.forEach(vendor => {
-      const pageNum = (vendor as any).pageNumber || 1;
+      const pageNum = vendor.pageNumber || 1;
       if (!pageMap.has(pageNum)) {
         pageMap.set(pageNum, []);
       }
@@ -50,7 +49,7 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
     })).sort((a, b) => a.pageNumber - b.pageNumber);
   }, [parsedData]);
 
-  const startEdit = (vendorId: string, vendor: VendorFormData) => {
+  const startEdit = (vendorId: string, vendor: VendorImportData) => {
     setEditingVendor(vendorId);
     setEditData({ ...vendor });
   };
@@ -58,7 +57,7 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
   const saveEdit = () => {
     if (editingVendor && editData) {
       const newData = parsedData.map(vendor => 
-        (vendor as any).id === editingVendor ? editData : vendor
+        vendor.id === editingVendor ? editData : vendor
       );
       onDataChange(newData);
       setEditingVendor(null);
@@ -72,12 +71,12 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
   };
 
   const removeVendor = (vendorId: string) => {
-    const newData = parsedData.filter(vendor => (vendor as any).id !== vendorId);
+    const newData = parsedData.filter(vendor => vendor.id !== vendorId);
     onDataChange(newData);
   };
 
   const addVendor = (pageNumber: number) => {
-    const newVendor: VendorFormData = {
+    const newVendor: VendorImportData = {
       name: '',
       email: '',
       phone: '',
@@ -94,12 +93,12 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
       rating: null,
       pageNumber,
       id: `new-${Date.now()}`
-    } as any;
+    };
     
     onDataChange([...parsedData, newVendor]);
   };
 
-  const updateField = (field: keyof VendorFormData, value: any) => {
+  const updateField = (field: keyof VendorImportData, value: any) => {
     if (editData) {
       setEditData({ ...editData, [field]: value });
     }
@@ -113,8 +112,8 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
     );
   };
 
-  const getVendorId = (vendor: VendorFormData, index: number) => {
-    return (vendor as any).id || `vendor-${index}`;
+  const getVendorId = (vendor: VendorImportData, index: number) => {
+    return vendor.id || `vendor-${index}`;
   };
 
   return (
@@ -308,7 +307,7 @@ const PageGroupedVendorPreview: React.FC<PageGroupedVendorPreviewProps> = ({
                               </CollapsibleTrigger>
                               <CollapsibleContent>
                                 <div className="mt-2 p-3 bg-muted rounded text-sm font-mono">
-                                  {(vendor as any).sourceText || 'No source text available'}
+                                  {vendor.sourceText || 'No source text available'}
                                 </div>
                               </CollapsibleContent>
                             </Collapsible>

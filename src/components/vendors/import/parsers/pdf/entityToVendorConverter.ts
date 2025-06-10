@@ -1,8 +1,9 @@
 
 import { EntityClassification } from '../../services/types';
+import { VendorImportData } from '@/services/vendorService';
 
-export function entityToVendor(entity: EntityClassification): any {
-  const vendor: any = {
+export function entityToVendor(entity: EntityClassification): VendorImportData {
+  const vendor: VendorImportData = {
     id: `vendor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     name: entity.companyName || 'Unnamed Vendor',
     email: entity.email,
@@ -15,6 +16,7 @@ export function entityToVendor(entity: EntityClassification): any {
     contact_person: entity.contactPerson,
     vendor_type: 'service',
     status: 'active',
+    sourceText: entity.rawText,
     raw_text: entity.rawText
   };
   
