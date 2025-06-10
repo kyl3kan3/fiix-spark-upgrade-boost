@@ -16,6 +16,12 @@ export function processSingleVendor(text: string): any[] {
   const entity = analyzeAndCategorizeText(cleanText);
   const vendor = entityToVendor(entity);
   
+  // Filter out invalid vendors
+  if (vendor.name === 'Product List Section' || vendor.name.length < 3) {
+    console.warn('⚠️ Invalid vendor detected, skipping:', vendor.name);
+    return [];
+  }
+  
   console.log('✅ Single vendor processed:', vendor);
   return [vendor];
 }
@@ -40,7 +46,20 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
     console.log(`🔍 Processing section ${index + 1}:`, section.substring(0, 100) + '...');
     const entity = analyzeAndCategorizeText(section);
     return entityToVendor(entity);
-  }).filter(vendor => vendor.name && vendor.name !== 'Unnamed Vendor');
+  }).filter(vendor => {
+    // Filter out invalid vendors
+    const isValid = vendor.name && 
+                   vendor.name !== 'Unnamed Vendor' && 
+                   vendor.name !== 'Product List Section' &&
+                   vendor.name.length > 3 &&
+                   !vendor.name.startsWith('"');
+    
+    if (!isValid) {
+      console.warn('⚠️ Filtered out invalid vendor:', vendor.name);
+    }
+    
+    return isValid;
+  });
   
   console.log('✅ Processed vendors:', vendors.length);
   

@@ -13,8 +13,8 @@ export function entityToVendor(entity: EntityClassification): any {
     zip_code: entity.zipCode,
     contact_person: entity.contactPerson,
     vendor_type: 'service',
-    status: 'active',
-    raw_text: entity.rawText
+    status: 'active'
+    // Removed raw_text field as it doesn't exist in the database schema
   };
   
   // Combine products, services, and notes into a description
