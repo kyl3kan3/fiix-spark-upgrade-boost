@@ -3,17 +3,30 @@ export function splitTextIntoSections(
   pageTexts: string[], 
   expectedCount?: number
 ): string[] {
+  console.log('🔄 Splitting text into sections');
+  console.log('📝 Text length:', text.length);
+  console.log('🎯 Expected count:', expectedCount || 'Not specified');
+  
+  // If the text is very short, don't split it
+  if (text.trim().length < 50) {
+    console.log('📋 Text too short, returning as single section');
+    return [text];
+  }
+  
   // Split by double line breaks first to respect document structure
   let sections = text.split(/\n\s*\n/).filter(s => s.trim().length > 10);
+  console.log('📄 Initial sections from double line breaks:', sections.length);
   
   // If no clear sections, try page breaks
   if (sections.length <= 1 && pageTexts.length > 1) {
     sections = pageTexts.filter(pageText => pageText.trim().length > 10);
+    console.log('📄 Using page breaks as sections:', sections.length);
   }
   
   // If still no clear sections, try single line breaks but keep substantial content together
   if (sections.length <= 1) {
     const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    console.log('📝 Total lines found:', lines.length);
     
     // Group consecutive short lines together
     sections = [];
@@ -33,17 +46,25 @@ export function splitTextIntoSections(
     if (currentGroup) {
       sections.push(currentGroup);
     }
+    
+    console.log('📋 Grouped sections from lines:', sections.length);
   }
   
   // If we have an expected count, try to match it
   if (expectedCount && expectedCount > 1) {
+    console.log('🎯 Adjusting sections to match expected count');
     sections = adjustSectionsToExpectedCount(sections, expectedCount);
   }
   
-  return sections.filter(section => section.trim().length > 5);
+  const finalSections = sections.filter(section => section.trim().length > 5);
+  console.log('✅ Final sections count:', finalSections.length);
+  
+  return finalSections;
 }
 
 function adjustSectionsToExpectedCount(sections: string[], expectedCount: number): string[] {
+  console.log('⚖️ Adjusting sections:', sections.length, '→', expectedCount);
+  
   if (sections.length > expectedCount) {
     // Too many sections - combine smallest ones
     while (sections.length > expectedCount && sections.length > 1) {
@@ -62,6 +83,7 @@ function adjustSectionsToExpectedCount(sections: string[], expectedCount: number
       // Combine the two sections
       sections[minIndex] = sections[minIndex] + ' ' + sections[minIndex + 1];
       sections.splice(minIndex + 1, 1);
+      console.log('🔗 Combined sections, now have:', sections.length);
     }
   } else if (sections.length < expectedCount) {
     // Too few sections - try to split the largest ones
@@ -93,8 +115,10 @@ function adjustSectionsToExpectedCount(sections: string[], expectedCount: number
         
         sections[maxIndex] = part1;
         sections.splice(maxIndex + 1, 0, part2);
+        console.log('✂️ Split section, now have:', sections.length);
       } else {
         // Can't split further
+        console.log('🚫 Cannot split further');
         break;
       }
     }

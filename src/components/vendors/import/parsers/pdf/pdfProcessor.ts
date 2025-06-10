@@ -1,3 +1,4 @@
+
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
@@ -11,13 +12,25 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
   console.log('🔍 Processing multiple vendors with page grouping');
   console.log('📄 Page texts:', pageTexts.length, 'pages');
   console.log('📝 Instructions provided:', instructions || 'None');
+  console.log('🎯 Expected count:', expectedCount || 'Not specified');
+  
+  // If expected count matches page count, treat each page as one vendor
+  const shouldTreatPagesAsVendors = expectedCount === pageTexts.length;
   
   // Group vendors by page
   const vendorsByPage = pageTexts.map((pageText, pageIndex) => {
     console.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
     
-    // Split each page into sections
-    const sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
+    let sections: string[];
+    
+    if (shouldTreatPagesAsVendors) {
+      // Treat the entire page as one vendor
+      console.log(`📋 Treating entire page ${pageIndex + 1} as single vendor`);
+      sections = [pageText];
+    } else {
+      // Split the page into sections as before
+      sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
+    }
     
     // Analyze each section and convert to vendor format
     const pageVendors = sections.map(section => {
