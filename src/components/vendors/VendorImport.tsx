@@ -13,10 +13,25 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 const VendorImport: React.FC = () => {
   const [expectedCount, setExpectedCount] = useState<number | undefined>();
   const [importInstructions, setImportInstructions] = useState('');
-  const { vendors, loading, error, handleFile, saveToSupabase } = useVendorImport();
+  const [fileKey, setFileKey] = useState(Date.now()); // Force re-render of file input
+  const { vendors, loading, error, handleFile, saveToSupabase, clearResults } = useVendorImport();
 
   const handleFileWithContext = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFile(e, expectedCount, importInstructions);
+    // Clear previous results immediately when new file is selected
+    console.log('🔄 NEW FILE SELECTED - Clearing previous results');
+    clearResults();
+    
+    // Add timestamp to ensure fresh processing
+    const timestamp = Date.now();
+    console.log('⏰ Processing timestamp:', timestamp);
+    
+    handleFile(e, expectedCount, importInstructions, timestamp);
+  };
+
+  const handleClearFile = () => {
+    console.log('🧹 CLEARING FILE INPUT AND RESULTS');
+    clearResults();
+    setFileKey(Date.now()); // Force file input to reset
   };
 
   return (
@@ -58,7 +73,12 @@ const VendorImport: React.FC = () => {
                 </p>
               </div>
               
-              <ImportFileInput onChange={handleFileWithContext} />
+              <ImportFileInput 
+                key={fileKey} 
+                onChange={handleFileWithContext} 
+                onClear={handleClearFile}
+                loading={loading}
+              />
             </CardContent>
           </Card>
           
