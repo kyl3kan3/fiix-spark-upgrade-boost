@@ -1,19 +1,18 @@
 
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 
 const Settings = () => {
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Redirect to the profile page with settings tab selected without page reload
-    navigate("/profile?tab=settings", { replace: true });
-  }, [navigate]);
-  
   return (
-    <div className="p-8 flex justify-center items-center">
-      <p>Redirecting to settings...</p>
-    </div>
+    <DashboardLayout>
+      <BackToDashboard />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <SettingsTab />
+      </div>
+    </DashboardLayout>
   );
 };
 

@@ -17,6 +17,10 @@ import AssetFormPage from "./pages/AssetFormPage";
 import WorkOrdersPage from "./pages/WorkOrdersPage";
 import WorkOrderFormPage from "./pages/WorkOrderFormPage";
 import VendorImportPage from "./pages/VendorImportPage";
+import Team from "./pages/Team";
+import LocationsPage from "./pages/LocationsPage";
+import Settings from "./pages/Settings";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +90,26 @@ const App = () => (
               <Route path="/work-orders/:workOrderId/edit" element={
                 <ProtectedRoute>
                   <WorkOrderFormPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/team" element={
+                <ProtectedRoute>
+                  <Team />
+                </ProtectedRoute>
+              } />
+              <Route path="/locations" element={
+                <ProtectedRoute>
+                  <LocationsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<Navigate to="/" replace />} />
