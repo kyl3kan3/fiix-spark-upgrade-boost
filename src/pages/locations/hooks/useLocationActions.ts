@@ -40,6 +40,14 @@ export const useLocationActions = () => {
 
   const handleDeleteLocation = async (locationId: string) => {
     console.log('🗑️ Delete location requested for ID:', locationId);
+    
+    // Show confirmation first
+    const confirmDelete = window.confirm("Are you sure you want to delete this location? This action cannot be undone.");
+    if (!confirmDelete) {
+      console.log('❌ User cancelled deletion');
+      return;
+    }
+    
     setIsDeleting(true);
     
     try {

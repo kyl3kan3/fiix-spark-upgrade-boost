@@ -119,11 +119,11 @@ export async function deleteLocation(locationId: string) {
   }
   
   if (children && children.length > 0) {
-    console.log('❌ Location has children, cannot delete');
+    console.log('❌ Location has children, cannot delete. Children count:', children.length);
     throw new Error("Cannot delete location with sub-locations. Please delete or move sub-locations first.");
   }
   
-  // Check if location has assets
+  // Check if location has assets - using proper table name and column
   const { data: assets, error: assetsError } = await supabase
     .from("assets")
     .select("id")
@@ -135,12 +135,13 @@ export async function deleteLocation(locationId: string) {
   }
   
   if (assets && assets.length > 0) {
-    console.log('❌ Location has assets, cannot delete');
+    console.log('❌ Location has assets, cannot delete. Assets count:', assets.length);
     throw new Error("Cannot delete location with assets. Please move or delete assets first.");
   }
   
   console.log('✅ Pre-checks passed, proceeding with deletion');
   
+  // Perform the actual deletion
   const { error } = await supabase
     .from("locations")
     .delete()
