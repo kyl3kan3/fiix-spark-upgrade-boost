@@ -51,19 +51,28 @@ export const useLocationActions = () => {
     setIsDeleting(true);
     
     try {
+      console.log('🔄 Starting location deletion process...');
       await deleteLocation(locationId);
+      console.log('✅ Location deletion API call completed');
+      
+      // Force refresh the queries immediately
+      console.log('🔄 Invalidating location queries...');
+      queryClient.removeQueries({ queryKey: ["locationHierarchy"] });
+      queryClient.removeQueries({ queryKey: ["allLocations"] });
+      
+      // Force refetch
+      await queryClient.refetchQueries({ queryKey: ["locationHierarchy"] });
+      await queryClient.refetchQueries({ queryKey: ["allLocations"] });
+      
+      console.log('✅ Queries refreshed, location should be removed from UI');
       toast.success("Location deleted successfully");
       
-      // Invalidate queries to refetch data
-      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
-      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
-      
-      console.log('✅ Location deletion completed successfully');
     } catch (err: any) {
       console.error("❌ Error deleting location:", err);
       toast.error(err.message || "Failed to delete location");
     } finally {
       setIsDeleting(false);
+      console.log('🏁 Delete operation completed');
     }
   };
 
