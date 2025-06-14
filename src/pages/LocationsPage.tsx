@@ -28,17 +28,24 @@ const LocationsPage = () => {
     handleDialogClose
   } = useLocationActions();
 
-  // Fetch location hierarchy for hierarchy view
+  // Fetch location hierarchy for hierarchy view - disable cache for debugging
   const { data: hierarchyLocations = [], isLoading: isHierarchyLoading } = useQuery({
     queryKey: ["locationHierarchy"],
     queryFn: getLocationHierarchy,
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache the data
   });
 
-  // Fetch all locations for list view and form options
+  // Fetch all locations for list view and form options - disable cache for debugging
   const { data: allLocations = [], isLoading: isAllLocationsLoading } = useQuery({
     queryKey: ["allLocations"],
     queryFn: getAllLocations,
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache the data
   });
+
+  console.log('🔍 LocationsPage render - hierarchyLocations:', hierarchyLocations);
+  console.log('🔍 LocationsPage render - allLocations:', allLocations);
 
   const isLoading = viewMode === "hierarchy" ? isHierarchyLoading : isAllLocationsLoading;
 

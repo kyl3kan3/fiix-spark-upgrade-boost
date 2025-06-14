@@ -52,17 +52,33 @@ export const useLocationActions = () => {
     
     try {
       console.log('🔄 Starting location deletion process...');
+      
+      // Check current cache state before deletion
+      const hierarchyData = queryClient.getQueryData(["locationHierarchy"]);
+      const allLocationsData = queryClient.getQueryData(["allLocations"]);
+      console.log('📊 Current cache - hierarchy:', hierarchyData);
+      console.log('📊 Current cache - allLocations:', allLocationsData);
+      
       await deleteLocation(locationId);
       console.log('✅ Location deletion API call completed');
       
-      // Force refresh the queries immediately
-      console.log('🔄 Invalidating location queries...');
+      // Completely clear the cache and force new requests
+      console.log('🗑️ Clearing all location cache...');
       queryClient.removeQueries({ queryKey: ["locationHierarchy"] });
       queryClient.removeQueries({ queryKey: ["allLocations"] });
       
-      // Force refetch
-      await queryClient.refetchQueries({ queryKey: ["locationHierarchy"] });
-      await queryClient.refetchQueries({ queryKey: ["allLocations"] });
+      // Wait a moment then force fresh data
+      setTimeout(async () => {
+        console.log('🔄 Forcing fresh data fetch...');
+        await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
+        await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
+        
+        // Double check the new data
+        const newHierarchyData = queryClient.getQueryData(["locationHierarchy"]);
+        const newAllLocationsData = queryClient.getQueryData(["allLocations"]);
+        console.log('📊 After refresh - hierarchy:', newHierarchyData);
+        console.log('📊 After refresh - allLocations:', newAllLocationsData);
+      }, 100);
       
       console.log('✅ Queries refreshed, location should be removed from UI');
       toast.success("Location deleted successfully");
