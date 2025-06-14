@@ -105,15 +105,21 @@ export async function updateLocation(locationId: string, locationData: {
 
 // Delete a location
 export async function deleteLocation(locationId: string) {
+  console.log('🗑️ Starting location deletion for ID:', locationId);
+  
   // First check if location has children
   const { data: children, error: childrenError } = await supabase
     .from("locations")
     .select("id")
     .eq("parent_id", locationId);
     
-  if (childrenError) throw childrenError;
+  if (childrenError) {
+    console.error('❌ Error checking children:', childrenError);
+    throw childrenError;
+  }
   
   if (children && children.length > 0) {
+    console.log('❌ Location has children, cannot delete');
     throw new Error("Cannot delete location with sub-locations. Please delete or move sub-locations first.");
   }
   
@@ -123,18 +129,29 @@ export async function deleteLocation(locationId: string) {
     .select("id")
     .eq("location_id", locationId);
     
-  if (assetsError) throw assetsError;
+  if (assetsError) {
+    console.error('❌ Error checking assets:', assetsError);
+    throw assetsError;
+  }
   
   if (assets && assets.length > 0) {
+    console.log('❌ Location has assets, cannot delete');
     throw new Error("Cannot delete location with assets. Please move or delete assets first.");
   }
+  
+  console.log('✅ Pre-checks passed, proceeding with deletion');
   
   const { error } = await supabase
     .from("locations")
     .delete()
     .eq("id", locationId);
     
-  if (error) throw error;
+  if (error) {
+    console.error('❌ Delete operation failed:', error);
+    throw error;
+  }
+  
+  console.log('✅ Location deleted successfully');
 }
 
 // Get location by ID
