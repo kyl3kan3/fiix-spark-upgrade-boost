@@ -17,21 +17,17 @@ export const useLocationActions = () => {
     parent_id: string | null;
   }) => {
     setIsCreating(true);
-    console.log('🏗️ Creating location:', locationData);
-    
     try {
       await createLocation(locationData);
       toast.success("Location added successfully");
       
-      // Invalidate queries to refetch data
       await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
       await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
       
       setIsAddDialogOpen(false);
       setSelectedParentId("");
-      console.log('✅ Location created successfully');
     } catch (err: any) {
-      console.error("❌ Error creating location:", err);
+      console.error("Error creating location:", err);
       toast.error(err.message || "Failed to add location");
     } finally {
       setIsCreating(false);
@@ -39,67 +35,27 @@ export const useLocationActions = () => {
   };
 
   const handleDeleteLocation = async (locationId: string) => {
-    console.log('🗑️ Delete location requested for ID:', locationId);
-    
-    // Show confirmation first
-    const confirmDelete = window.confirm("Are you sure you want to delete this location? This action cannot be undone.");
-    if (!confirmDelete) {
-      console.log('❌ User cancelled deletion');
-      return;
-    }
-    
     setIsDeleting(true);
-    
     try {
-      console.log('🔄 Starting location deletion process...');
-      
-      // Check current cache state before deletion
-      const hierarchyData = queryClient.getQueryData(["locationHierarchy"]);
-      const allLocationsData = queryClient.getQueryData(["allLocations"]);
-      console.log('📊 Current cache - hierarchy:', hierarchyData);
-      console.log('📊 Current cache - allLocations:', allLocationsData);
-      
       await deleteLocation(locationId);
-      console.log('✅ Location deletion API call completed');
-      
-      // Completely clear the cache and force new requests
-      console.log('🗑️ Clearing all location cache...');
-      queryClient.removeQueries({ queryKey: ["locationHierarchy"] });
-      queryClient.removeQueries({ queryKey: ["allLocations"] });
-      
-      // Wait a moment then force fresh data
-      setTimeout(async () => {
-        console.log('🔄 Forcing fresh data fetch...');
-        await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
-        await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
-        
-        // Double check the new data
-        const newHierarchyData = queryClient.getQueryData(["locationHierarchy"]);
-        const newAllLocationsData = queryClient.getQueryData(["allLocations"]);
-        console.log('📊 After refresh - hierarchy:', newHierarchyData);
-        console.log('📊 After refresh - allLocations:', newAllLocationsData);
-      }, 100);
-      
-      console.log('✅ Queries refreshed, location should be removed from UI');
       toast.success("Location deleted successfully");
-      
+
+      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
+      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
     } catch (err: any) {
-      console.error("❌ Error deleting location:", err);
+      console.error("Error deleting location:", err);
       toast.error(err.message || "Failed to delete location");
     } finally {
       setIsDeleting(false);
-      console.log('🏁 Delete operation completed');
     }
   };
 
   const handleAddSubLocation = (parentId: string) => {
-    console.log('➕ Add sub-location for parent:', parentId);
     setSelectedParentId(parentId);
     setIsAddDialogOpen(true);
   };
 
   const handleDialogClose = () => {
-    console.log('❌ Dialog closed');
     setIsAddDialogOpen(false);
     setSelectedParentId("");
   };

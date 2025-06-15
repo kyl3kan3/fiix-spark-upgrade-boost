@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -41,20 +40,16 @@ const AssetsPage: React.FC = () => {
     }
   }, []);
   
-  // Fetch flat list of assets - disable cache for debugging
+  // Fetch flat list of assets
   const { data: assets, isLoading: assetsLoading, error: assetsError } = useQuery({
     queryKey: ["assets"],
     queryFn: getAllAssets,
-    staleTime: 0, // Always consider data stale
-    gcTime: 0, // Don't cache the data (formerly cacheTime)
   });
 
-  // Fetch hierarchical data - disable cache for debugging
+  // Fetch hierarchical data
   const { data: hierarchyData, isLoading: hierarchyLoading, error: hierarchyError } = useQuery({
     queryKey: ["assetHierarchy"],
     queryFn: getAssetHierarchy,
-    staleTime: 0, // Always consider data stale
-    gcTime: 0, // Don't cache the data (formerly cacheTime)
   });
 
   console.log('🔍 AssetsPage render - assets:', assets);
