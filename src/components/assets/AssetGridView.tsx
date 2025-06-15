@@ -45,6 +45,12 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
 }) => {
   const { currentUserRole } = useUserRolePermissions();
   const canDelete = currentUserRole === 'administrator';
+  const canEdit = currentUserRole === 'administrator' || currentUserRole === 'manager';
+
+  // Debug logging
+  console.log('🔍 AssetGridView - Current user role:', currentUserRole);
+  console.log('🔍 AssetGridView - Can delete:', canDelete);
+  console.log('🔍 AssetGridView - Can edit:', canEdit);
 
   if (isLoading) {
     return (
@@ -81,9 +87,13 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
               <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
             </div>
             <div className="flex-grow">
-              <Link to={`/assets/edit/${asset.id}`} className="block">
-                <h3 className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">{asset.name}</h3>
-              </Link>
+              {canEdit ? (
+                <Link to={`/assets/edit/${asset.id}`} className="block">
+                  <h3 className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">{asset.name}</h3>
+                </Link>
+              ) : (
+                <h3 className="font-medium text-gray-900 dark:text-white">{asset.name}</h3>
+              )}
               {asset.location && (
                 <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1">
                   <MapPin className="h-3 w-3 mr-1" />
@@ -126,7 +136,10 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => onDeleteAsset(asset.id)}
+                        onClick={() => {
+                          console.log('🗑️ Deleting asset:', asset.id);
+                          onDeleteAsset(asset.id);
+                        }}
                         disabled={isDeleting}
                         className="bg-red-600 hover:bg-red-700"
                       >
