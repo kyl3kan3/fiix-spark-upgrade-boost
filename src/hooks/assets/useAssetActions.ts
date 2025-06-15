@@ -17,10 +17,36 @@ export const useAssetActions = () => {
       console.log('🗑️ Asset deleted successfully, showing toast...');
       toast.success("Asset deleted successfully");
 
-      console.log('🗑️ Invalidating queries...');
-      await queryClient.invalidateQueries({ queryKey: ["assets"] });
-      await queryClient.invalidateQueries({ queryKey: ["assetHierarchy"] });
-      console.log('🗑️ Queries invalidated successfully');
+      console.log('🗑️ Invalidating and refetching queries...');
+      // More aggressive cache invalidation
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["assets"] }),
+        queryClient.invalidateQueries({ queryKey: ["assetHierarchy"] }),
+        queryClient.refetchQueries({ queryKey: ["assets"] }),
+        queryClient.refetchQueries({ queryKey: ["assetHierarchy"] })
+      ]);
+      
+      // Also remove the specific asset from cache immediately
+      queryClient.setQueryData(["assets"], (oldData: any) => {
+        if (!oldData) return oldData;
+        return oldData.filter((asset: any) => asset.id !== assetId);
+      });
+      
+      queryClient.setQueryData(["assetHierarchy"], (oldData: any) => {
+        if (!oldData) return oldData;
+        // Remove from hierarchy - this is more complex but ensures UI updates
+        const removeAssetFromHierarchy = (assets: any[]): any[] => {
+          return assets
+            .filter(asset => asset.id !== assetId)
+            .map(asset => ({
+              ...asset,
+              children: asset.children ? removeAssetFromHierarchy(asset.children) : []
+            }));
+        };
+        return removeAssetFromHierarchy(oldData);
+      });
+      
+      console.log('🗑️ Cache updated and queries refetched successfully');
     } catch (err: any) {
       console.error("❌ Error deleting asset:", err);
       toast.error(err.message || "Failed to delete asset");
