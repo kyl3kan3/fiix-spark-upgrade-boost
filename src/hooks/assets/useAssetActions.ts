@@ -16,8 +16,14 @@ export const useAssetActions = () => {
       await deleteAsset(assetId);
       console.log('🗑️ Asset deleted successfully from database');
 
-      // Remove the asset from cache immediately before invalidating
-      console.log('🗑️ Removing asset from cache...');
+      // Immediately remove from all caches and cancel any ongoing queries
+      console.log('🗑️ Cancelling ongoing queries and removing from cache...');
+      
+      // Cancel any outgoing queries that might overwrite our cache changes
+      await queryClient.cancelQueries({ queryKey: ["assets"] });
+      await queryClient.cancelQueries({ queryKey: ["assetHierarchy"] });
+
+      // Remove the asset from cache immediately
       queryClient.setQueryData(["assets"], (oldData: any) => {
         if (!oldData) return oldData;
         const filteredData = oldData.filter((asset: any) => asset.id !== assetId);
@@ -40,10 +46,18 @@ export const useAssetActions = () => {
         return filteredHierarchy;
       });
 
-      // Only invalidate, don't refetch to avoid overwriting our manual updates
-      console.log('🗑️ Invalidating queries without refetch...');
-      queryClient.invalidateQueries({ queryKey: ["assets"] });
-      queryClient.invalidateQueries({ queryKey: ["assetHierarchy"] });
+      // Remove the specific asset from cache if it exists
+      queryClient.removeQueries({ queryKey: ["assets", assetId] });
+      
+      // Invalidate but prevent automatic refetch to avoid race conditions
+      queryClient.invalidateQueries({ 
+        queryKey: ["assets"],
+        refetchType: 'none'
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ["assetHierarchy"],
+        refetchType: 'none'
+      });
       
       console.log('🗑️ Asset deletion process completed successfully');
       toast.success("Asset deleted successfully");
