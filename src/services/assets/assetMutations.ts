@@ -88,9 +88,7 @@ export async function deleteAsset(assetId: string) {
     throw childrenError;
   }
   
-  console.log('🗑️ deleteAsset service - Raw children query result:', children);
-  console.log('🗑️ deleteAsset service - Children array length:', children?.length || 0);
-  console.log('🗑️ deleteAsset service - Individual children:', children?.map(c => ({ id: c.id, name: c.name, parent_id: c.parent_id })));
+  console.log('🗑️ deleteAsset service - Children found:', children?.length || 0);
   
   if (children && children.length > 0) {
     console.error('❌ deleteAsset service - Cannot delete asset with children. Children found:', children.map(c => `${c.name} (${c.id})`));
@@ -117,9 +115,9 @@ export async function deleteAsset(assetId: string) {
   }
   
   console.log('🗑️ deleteAsset service - All checks passed. Attempting to delete asset from database...');
-  const { error } = await supabase
+  const { error, count } = await supabase
     .from("assets")
-    .delete()
+    .delete({ count: 'exact' })
     .eq("id", assetId);
     
   if (error) {
@@ -127,5 +125,21 @@ export async function deleteAsset(assetId: string) {
     throw error;
   }
   
-  console.log('✅ deleteAsset service - Asset successfully deleted from database');
+  console.log('✅ deleteAsset service - Asset successfully deleted from database. Rows affected:', count);
+  
+  // Verify deletion by checking if asset still exists
+  const { data: verifyData, error: verifyError } = await supabase
+    .from("assets")
+    .select("id")
+    .eq("id", assetId)
+    .single();
+    
+  if (verifyError && verifyError.code !== 'PGRST116') { // PGRST116 is "not found" which is what we want
+    console.error('❌ deleteAsset service - Error verifying deletion:', verifyError);
+  } else if (verifyData) {
+    console.error('❌ deleteAsset service - Asset still exists after deletion!', verifyData);
+    throw new Error("Asset deletion failed - asset still exists in database");
+  } else {
+    console.log('✅ deleteAsset service - Deletion verified - asset no longer exists in database');
+  }
 }

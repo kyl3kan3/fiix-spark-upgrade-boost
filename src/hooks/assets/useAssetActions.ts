@@ -16,25 +16,23 @@ export const useAssetActions = () => {
       await deleteAsset(assetId);
       console.log('🗑️ Asset deleted successfully from database');
 
-      // Force refresh all asset-related queries to ensure we have fresh data
-      console.log('🗑️ Invalidating and refetching all asset queries...');
+      // Invalidate queries first, then refetch to ensure fresh data
+      console.log('🗑️ Invalidating asset queries...');
+      await queryClient.invalidateQueries({ 
+        queryKey: ["assets"]
+      });
+      await queryClient.invalidateQueries({ 
+        queryKey: ["assetHierarchy"]
+      });
       
-      // Remove all cached queries and force fresh fetch
-      queryClient.removeQueries({ queryKey: ["assets"] });
-      queryClient.removeQueries({ queryKey: ["assetHierarchy"] });
-      queryClient.removeQueries({ queryKey: ["assets", assetId] });
-      
-      // Force immediate refetch of both queries to get fresh data
-      await Promise.all([
-        queryClient.invalidateQueries({ 
-          queryKey: ["assets"],
-          refetchType: 'active'
-        }),
-        queryClient.invalidateQueries({ 
-          queryKey: ["assetHierarchy"],
-          refetchType: 'active'
-        })
-      ]);
+      // Force immediate refetch to ensure UI updates
+      console.log('🗑️ Forcing refetch of asset data...');
+      await queryClient.refetchQueries({ 
+        queryKey: ["assets"]
+      });
+      await queryClient.refetchQueries({ 
+        queryKey: ["assetHierarchy"]
+      });
       
       console.log('🗑️ Asset deletion process completed successfully');
       toast.success("Asset deleted successfully");
