@@ -65,7 +65,7 @@ export async function deleteAsset(assetId: string) {
   console.log('🗑️ deleteAsset service - Checking for child assets...');
   const { data: children, error: childrenError } = await supabase
     .from("assets")
-    .select("id")
+    .select("id, name, parent_id")
     .eq("parent_id", assetId);
     
   if (childrenError) {
@@ -73,10 +73,11 @@ export async function deleteAsset(assetId: string) {
     throw childrenError;
   }
   
-  console.log('🗑️ deleteAsset service - Found children:', children?.length || 0);
+  console.log('🗑️ deleteAsset service - Children query result:', children);
+  console.log('🗑️ deleteAsset service - Found children count:', children?.length || 0);
   
   if (children && children.length > 0) {
-    console.error('❌ deleteAsset service - Cannot delete asset with children');
+    console.error('❌ deleteAsset service - Cannot delete asset with children:', children);
     throw new Error("Cannot delete asset with child assets. Please delete or move child assets first.");
   }
   
