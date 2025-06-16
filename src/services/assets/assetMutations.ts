@@ -80,67 +80,76 @@ export async function deleteAsset(assetId: string) {
   
   console.log('🗑️ deleteAsset service - Asset details:', assetDetails);
 
-  // Comprehensive check for ALL possible references
-  const referencesToCheck = [
-    {
-      table: 'assets',
-      column: 'parent_id',
-      description: 'child assets'
-    },
-    {
-      table: 'work_orders',
-      column: 'asset_id',
-      description: 'work orders'
-    },
-    {
-      table: 'vendor_assets',
-      column: 'asset_id',
-      description: 'vendor relationships'
-    }
-  ];
-
-  // Check each possible reference
-  for (const ref of referencesToCheck) {
-    console.log(`🗑️ deleteAsset service - Checking ${ref.table} for references...`);
+  // Check for child assets
+  console.log('🗑️ deleteAsset service - Checking for child assets...');
+  const { data: childAssets, error: childError } = await supabase
+    .from('assets')
+    .select('id, name')
+    .eq('parent_id', assetId);
     
-    const { data: references, error: refError } = await supabase
-      .from(ref.table)
-      .select('id, name')
-      .eq(ref.column, assetId);
-      
-    if (refError) {
-      console.error(`❌ deleteAsset service - Error checking ${ref.table}:`, refError);
-      throw new Error(`Failed to check ${ref.description}: ${refError.message}`);
-    }
-    
-    console.log(`🗑️ deleteAsset service - Found ${references?.length || 0} references in ${ref.table}`);
-    
-    if (references && references.length > 0) {
-      if (ref.table === 'vendor_assets') {
-        // Auto-delete vendor asset relationships
-        console.log('🗑️ deleteAsset service - Auto-deleting vendor asset relationships...');
-        const { error: vendorDeleteError } = await supabase
-          .from("vendor_assets")
-          .delete()
-          .eq("asset_id", assetId);
-          
-        if (vendorDeleteError) {
-          console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
-          throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
-        }
-        console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
-      } else {
-        // Block deletion for other types of references
-        const referenceNames = references.map(r => r.name || r.id).join(', ');
-        throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${references.length} associated ${ref.description}: ${referenceNames}. Please resolve these references first.`);
-      }
-    }
+  if (childError) {
+    console.error('❌ deleteAsset service - Error checking child assets:', childError);
+    throw new Error(`Failed to check child assets: ${childError.message}`);
+  }
+  
+  console.log(`🗑️ deleteAsset service - Found ${childAssets?.length || 0} child assets`);
+  
+  if (childAssets && childAssets.length > 0) {
+    const childNames = childAssets.map(child => child.name || child.id).join(', ');
+    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${childAssets.length} child assets: ${childNames}. Please delete the child assets first.`);
   }
 
-  // Additional check: Look for any other potential foreign key references by trying the delete first
-  console.log('🗑️ deleteAsset service - All known checks passed. Attempting deletion...');
+  // Check for work orders
+  console.log('🗑️ deleteAsset service - Checking for work orders...');
+  const { data: workOrders, error: workOrderError } = await supabase
+    .from('work_orders')
+    .select('id, title')
+    .eq('asset_id', assetId);
+    
+  if (workOrderError) {
+    console.error('❌ deleteAsset service - Error checking work orders:', workOrderError);
+    throw new Error(`Failed to check work orders: ${workOrderError.message}`);
+  }
   
+  console.log(`🗑️ deleteAsset service - Found ${workOrders?.length || 0} work orders`);
+  
+  if (workOrders && workOrders.length > 0) {
+    const workOrderTitles = workOrders.map(wo => wo.title || wo.id).join(', ');
+    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${workOrders.length} associated work orders: ${workOrderTitles}. Please resolve these work orders first.`);
+  }
+
+  // Check and auto-delete vendor asset relationships
+  console.log('🗑️ deleteAsset service - Checking for vendor asset relationships...');
+  const { data: vendorAssets, error: vendorError } = await supabase
+    .from('vendor_assets')
+    .select('id')
+    .eq('asset_id', assetId);
+    
+  if (vendorError) {
+    console.error('❌ deleteAsset service - Error checking vendor relationships:', vendorError);
+    throw new Error(`Failed to check vendor relationships: ${vendorError.message}`);
+  }
+  
+  console.log(`🗑️ deleteAsset service - Found ${vendorAssets?.length || 0} vendor relationships`);
+  
+  if (vendorAssets && vendorAssets.length > 0) {
+    // Auto-delete vendor asset relationships
+    console.log('🗑️ deleteAsset service - Auto-deleting vendor asset relationships...');
+    const { error: vendorDeleteError } = await supabase
+      .from("vendor_assets")
+      .delete()
+      .eq("asset_id", assetId);
+      
+    if (vendorDeleteError) {
+      console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
+      throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
+    }
+    console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
+  }
+
   // Perform the deletion with detailed error handling
+  console.log('🗑️ deleteAsset service - All checks passed. Attempting deletion...');
+  
   const { error: deleteError, count } = await supabase
     .from("assets")
     .delete({ count: 'exact' })
