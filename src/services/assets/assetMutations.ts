@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
 
@@ -127,19 +126,11 @@ export async function deleteAsset(assetId: string) {
   
   console.log('✅ deleteAsset service - Asset successfully deleted from database. Rows affected:', count);
   
-  // Verify deletion by checking if asset still exists
-  const { data: verifyData, error: verifyError } = await supabase
-    .from("assets")
-    .select("id")
-    .eq("id", assetId)
-    .single();
-    
-  if (verifyError && verifyError.code !== 'PGRST116') { // PGRST116 is "not found" which is what we want
-    console.error('❌ deleteAsset service - Error verifying deletion:', verifyError);
-  } else if (verifyData) {
-    console.error('❌ deleteAsset service - Asset still exists after deletion!', verifyData);
-    throw new Error("Asset deletion failed - asset still exists in database");
-  } else {
-    console.log('✅ deleteAsset service - Deletion verified - asset no longer exists in database');
+  // Verify deletion was successful by checking the count
+  if (count === 0) {
+    console.error('❌ deleteAsset service - No rows were deleted - asset may not exist');
+    throw new Error("Asset deletion failed - no rows were affected");
   }
+  
+  console.log('✅ deleteAsset service - Deletion completed successfully');
 }
