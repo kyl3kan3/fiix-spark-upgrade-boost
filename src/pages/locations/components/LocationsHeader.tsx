@@ -8,8 +8,8 @@ import { LocationImportExport } from "@/components/locations/LocationImportExpor
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface LocationsHeaderProps {
-  viewMode: "hierarchy" | "list";
-  setViewMode: (mode: "hierarchy" | "list") => void;
+  viewMode: "hierarchy" | "list" | "analytics" | "bulk";
+  setViewMode: (mode: "hierarchy" | "list" | "analytics" | "bulk") => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   setIsAddDialogOpen: (open: boolean) => void;
@@ -70,7 +70,7 @@ export const LocationsHeader: React.FC<LocationsHeaderProps> = ({
           className="w-full sm:max-w-sm"
         />
         
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "hierarchy" | "list")}>
+        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "hierarchy" | "list" | "analytics" | "bulk")}>
           <TabsList>
             <TabsTrigger value="hierarchy" className="flex items-center gap-2">
               <TreePine className="h-4 w-4" />
