@@ -9,12 +9,16 @@ import { LocationsHeader } from "@/pages/locations/components/LocationsHeader";
 import { LocationFilters } from "@/components/locations/LocationFilters";
 import { LocationForm } from "@/components/locations/LocationForm";
 import { LocationEditDialog } from "@/components/locations/LocationEditDialog";
+import { LocationAnalytics } from "@/components/locations/LocationAnalytics";
+import { LocationBulkOperations } from "@/components/locations/LocationBulkOperations";
 import { useLocationActions } from "@/pages/locations/hooks/useLocationActions";
 import { getLocationHierarchy, getAllLocations } from "@/services/locationService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3, List, TreePine, Settings } from "lucide-react";
 
 const LocationsPage = () => {
-  const [viewMode, setViewMode] = useState<"hierarchy" | "list">("hierarchy");
+  const [viewMode, setViewMode] = useState<"hierarchy" | "list" | "analytics" | "bulk">("hierarchy");
   const [searchQuery, setSearchQuery] = useState("");
   const [parentFilter, setParentFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
@@ -109,6 +113,11 @@ const LocationsPage = () => {
     refetchAll();
   };
 
+  const handleOperationComplete = () => {
+    refetchHierarchy();
+    refetchAll();
+  };
+
   return (
     <DashboardLayout>
       <BackToDashboard />
@@ -122,35 +131,73 @@ const LocationsPage = () => {
           onImportComplete={handleImportComplete}
         />
 
-        <LocationFilters
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          parentFilter={parentFilter}
-          setParentFilter={setParentFilter}
-          dateFilter={dateFilter}
-          setDateFilter={setDateFilter}
-          locations={allLocations}
-          onClearFilters={handleClearFilters}
-        />
+        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="hierarchy" className="flex items-center gap-2">
+              <TreePine className="h-4 w-4" />
+              Hierarchy
+            </TabsTrigger>
+            <TabsTrigger value="list" className="flex items-center gap-2">
+              <List className="h-4 w-4" />
+              List
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="bulk" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Bulk Operations
+            </TabsTrigger>
+          </TabsList>
 
-        {viewMode === "hierarchy" ? (
-          <LocationHierarchyView 
-            locations={hierarchyLocations}
-            isLoading={isLoading}
-            isDeleting={isDeleting}
-            onAddSubLocation={handleAddSubLocation}
-            onDeleteLocation={handleDeleteLocation}
-            onEditLocation={handleEditLocationClick}
-          />
-        ) : (
-          <LocationsListView
-            locations={filteredLocations}
-            isLoading={isLoading}
-            searchQuery={searchQuery}
-            onAddSubLocation={handleAddSubLocation}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        )}
+          <div className="mt-6">
+            {(viewMode === "hierarchy" || viewMode === "list") && (
+              <LocationFilters
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                parentFilter={parentFilter}
+                setParentFilter={setParentFilter}
+                dateFilter={dateFilter}
+                setDateFilter={setDateFilter}
+                locations={allLocations}
+                onClearFilters={handleClearFilters}
+              />
+            )}
+
+            <TabsContent value="hierarchy" className="mt-6">
+              <LocationHierarchyView 
+                locations={hierarchyLocations}
+                isLoading={isLoading}
+                isDeleting={isDeleting}
+                onAddSubLocation={handleAddSubLocation}
+                onDeleteLocation={handleDeleteLocation}
+                onEditLocation={handleEditLocationClick}
+              />
+            </TabsContent>
+
+            <TabsContent value="list" className="mt-6">
+              <LocationsListView
+                locations={filteredLocations}
+                isLoading={isLoading}
+                searchQuery={searchQuery}
+                onAddSubLocation={handleAddSubLocation}
+                setIsAddDialogOpen={setIsAddDialogOpen}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="mt-6">
+              <LocationAnalytics />
+            </TabsContent>
+
+            <TabsContent value="bulk" className="mt-6">
+              <LocationBulkOperations
+                locations={allLocations}
+                onOperationComplete={handleOperationComplete}
+              />
+            </TabsContent>
+          </div>
+        </Tabs>
 
         <Dialog open={isAddDialogOpen} onOpenChange={handleDialogClose}>
           <DialogContent className="sm:max-w-md">

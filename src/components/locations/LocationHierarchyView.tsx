@@ -1,6 +1,5 @@
-
 import React from "react";
-import { ChevronDown, ChevronRight, MapPin, Plus, Trash2, Edit } from "lucide-react";
+import { ChevronDown, ChevronRight, MapPin, Plus, Trash2, Edit, ExternalLink } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -138,6 +137,17 @@ const LocationNode: React.FC<LocationNodeProps> = ({
             </div>
           )}
           <div className="flex items-center gap-2 ml-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-gray-600 hover:text-gray-700 hover:bg-gray-50"
+            >
+              <Link to={`/locations/${location.id}`}>
+                <ExternalLink className="h-3 w-3 mr-1" />
+                View
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="sm"

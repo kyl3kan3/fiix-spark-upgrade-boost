@@ -24,6 +24,7 @@ import SetupPage from "@/pages/SetupPage";
 import TeamSetup from "@/pages/TeamSetup";
 import CompanySetup from "@/pages/CompanySetup";
 import OnboardingPage from "@/pages/OnboardingPage";
+import LocationDetailPage from "@/pages/LocationDetailPage";
 
 export const AppRoutes = () => (
   <Routes>
@@ -151,6 +152,8 @@ export const AppRoutes = () => (
         <LocationsPage />
       </ProtectedRoute>
     } />
+    
+    <Route path="/locations/:id" element={<LocationDetailPage />} />
     
     <Route path="/reports" element={
       <ProtectedRoute>
