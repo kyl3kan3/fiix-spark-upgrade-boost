@@ -1,0 +1,109 @@
+
+import { supabase } from "@/integrations/supabase/client";
+
+// Delete an asset with comprehensive constraint checking
+export async function deleteAsset(assetId: string) {
+  console.log('🗑️ deleteAsset service - Starting deletion for asset ID:', assetId);
+  
+  // First check if asset exists
+  const { data: assetDetails, error: assetError } = await supabase
+    .from("assets")
+    .select("id, name, parent_id, location_id")
+    .eq("id", assetId)
+    .single();
+    
+  if (assetError) {
+    if (assetError.code === 'PGRST116') {
+      console.log('🗑️ deleteAsset service - Asset not found (already deleted)');
+      throw new Error("Asset not found - it may have already been deleted");
+    }
+    console.error('❌ deleteAsset service - Error fetching asset details:', assetError);
+    throw assetError;
+  }
+  
+  console.log('🗑️ deleteAsset service - Asset details:', assetDetails);
+
+  // Check for child assets
+  const { data: childAssets, error: childError } = await supabase
+    .from('assets')
+    .select('id, name')
+    .eq('parent_id', assetId);
+    
+  if (childError) {
+    console.error('❌ deleteAsset service - Error checking child assets:', childError);
+    throw new Error(`Failed to check child assets: ${childError.message}`);
+  }
+  
+  if (childAssets && childAssets.length > 0) {
+    const childNames = childAssets.map(child => child.name || child.id).join(', ');
+    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${childAssets.length} child assets: ${childNames}. Please delete the child assets first.`);
+  }
+
+  // Check for work orders
+  const { data: workOrders, error: workOrderError } = await supabase
+    .from('work_orders')
+    .select('id, title')
+    .eq('asset_id', assetId);
+    
+  if (workOrderError) {
+    console.error('❌ deleteAsset service - Error checking work orders:', workOrderError);
+    throw new Error(`Failed to check work orders: ${workOrderError.message}`);
+  }
+  
+  if (workOrders && workOrders.length > 0) {
+    const workOrderTitles = workOrders.map(wo => wo.title || wo.id).join(', ');
+    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${workOrders.length} associated work orders: ${workOrderTitles}. Please resolve these work orders first.`);
+  }
+
+  // Auto-delete vendor asset relationships
+  const { data: vendorAssets, error: vendorError } = await supabase
+    .from('vendor_assets')
+    .select('id')
+    .eq('asset_id', assetId);
+    
+  if (vendorError) {
+    console.error('❌ deleteAsset service - Error checking vendor relationships:', vendorError);
+    throw new Error(`Failed to check vendor relationships: ${vendorError.message}`);
+  }
+  
+  if (vendorAssets && vendorAssets.length > 0) {
+    console.log('🗑️ deleteAsset service - Auto-deleting vendor asset relationships...');
+    const { error: vendorDeleteError } = await supabase
+      .from("vendor_assets")
+      .delete()
+      .eq("asset_id", assetId);
+      
+    if (vendorDeleteError) {
+      console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
+      throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
+    }
+    console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
+  }
+
+  // Attempt deletion
+  console.log('🗑️ deleteAsset service - Attempting deletion...');
+  
+  const { error: deleteError } = await supabase
+    .from("assets")
+    .delete()
+    .eq("id", assetId);
+    
+  if (deleteError) {
+    console.error('❌ deleteAsset service - Database deletion failed:', deleteError);
+    throw new Error(`Failed to delete asset "${assetDetails.name}": ${deleteError.message}`);
+  }
+  
+  // Verify the asset is actually gone
+  const { data: verifyGone } = await supabase
+    .from("assets")
+    .select("id")
+    .eq("id", assetId)
+    .maybeSingle();
+    
+  if (verifyGone) {
+    console.error('❌ deleteAsset service - Asset still exists after deletion attempt');
+    throw new Error(`Asset deletion failed - "${assetDetails.name}" could not be deleted. This may be due to database constraints or permissions.`);
+  }
+  
+  console.log('✅ deleteAsset service - Deletion completed successfully');
+}
