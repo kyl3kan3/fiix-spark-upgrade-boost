@@ -1,27 +1,33 @@
 
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import { LocationHierarchyView } from "@/components/locations/LocationHierarchyView";
-import { LocationsListView } from "@/pages/locations/components/LocationsListView";
 import { LocationsHeader } from "@/pages/locations/components/LocationsHeader";
-import { LocationFilters } from "@/components/locations/LocationFilters";
-import { LocationForm } from "@/components/locations/LocationForm";
-import { LocationEditDialog } from "@/components/locations/LocationEditDialog";
-import { LocationAnalytics } from "@/components/locations/LocationAnalytics";
-import { LocationBulkOperations } from "@/components/locations/LocationBulkOperations";
+import { LocationsTabContent } from "@/pages/locations/components/LocationsTabContent";
+import { LocationDialogs } from "@/pages/locations/components/LocationDialogs";
 import { useLocationActions } from "@/pages/locations/hooks/useLocationActions";
-import { getLocationHierarchy, getAllLocations } from "@/services/locationService";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocationPage } from "@/pages/locations/hooks/useLocationPage";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, List, TreePine, Settings } from "lucide-react";
 
 const LocationsPage = () => {
-  const [viewMode, setViewMode] = useState<"hierarchy" | "list" | "analytics" | "bulk">("hierarchy");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [parentFilter, setParentFilter] = useState("all");
-  const [dateFilter, setDateFilter] = useState("all");
+  const {
+    viewMode,
+    setViewMode,
+    searchQuery,
+    setSearchQuery,
+    parentFilter,
+    setParentFilter,
+    dateFilter,
+    setDateFilter,
+    hierarchyLocations,
+    allLocations,
+    filteredLocations,
+    isLoading,
+    handleClearFilters,
+    handleImportComplete,
+    handleOperationComplete,
+  } = useLocationPage();
 
   const {
     isAddDialogOpen,
@@ -40,83 +46,6 @@ const LocationsPage = () => {
     handleDialogClose,
     handleEditDialogClose
   } = useLocationActions();
-
-  // Fetch location hierarchy for hierarchy view
-  const { data: hierarchyLocations = [], isLoading: isHierarchyLoading, refetch: refetchHierarchy } = useQuery({
-    queryKey: ["locationHierarchy"],
-    queryFn: getLocationHierarchy,
-  });
-
-  // Fetch all locations for list view and form options
-  const { data: allLocations = [], isLoading: isAllLocationsLoading, refetch: refetchAll } = useQuery({
-    queryKey: ["allLocations"],
-    queryFn: getAllLocations,
-  });
-
-  const isLoading = viewMode === "hierarchy" ? isHierarchyLoading : isAllLocationsLoading;
-
-  // Filter locations based on search and filters
-  const filteredLocations = React.useMemo(() => {
-    let filtered = allLocations;
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(location =>
-        location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (location.description && location.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-
-    // Apply parent filter
-    if (parentFilter !== "all") {
-      if (parentFilter === "root") {
-        filtered = filtered.filter(location => !location.parent_id);
-      } else {
-        filtered = filtered.filter(location => location.parent_id === parentFilter);
-      }
-    }
-
-    // Apply date filter
-    if (dateFilter !== "all") {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      
-      filtered = filtered.filter(location => {
-        const createdDate = new Date(location.created_at);
-        
-        switch (dateFilter) {
-          case "today":
-            return createdDate >= today;
-          case "week":
-            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return createdDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            return createdDate >= monthAgo;
-          default:
-            return true;
-        }
-      });
-    }
-
-    return filtered;
-  }, [allLocations, searchQuery, parentFilter, dateFilter]);
-
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setParentFilter("all");
-    setDateFilter("all");
-  };
-
-  const handleImportComplete = () => {
-    refetchHierarchy();
-    refetchAll();
-  };
-
-  const handleOperationComplete = () => {
-    refetchHierarchy();
-    refetchAll();
-  };
 
   return (
     <DashboardLayout>
@@ -151,78 +80,40 @@ const LocationsPage = () => {
             </TabsTrigger>
           </TabsList>
 
-          <div className="mt-6">
-            {(viewMode === "hierarchy" || viewMode === "list") && (
-              <LocationFilters
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                parentFilter={parentFilter}
-                setParentFilter={setParentFilter}
-                dateFilter={dateFilter}
-                setDateFilter={setDateFilter}
-                locations={allLocations}
-                onClearFilters={handleClearFilters}
-              />
-            )}
-
-            <TabsContent value="hierarchy" className="mt-6">
-              <LocationHierarchyView 
-                locations={hierarchyLocations}
-                isLoading={isLoading}
-                isDeleting={isDeleting}
-                onAddSubLocation={handleAddSubLocation}
-                onDeleteLocation={handleDeleteLocation}
-                onEditLocation={handleEditLocationClick}
-              />
-            </TabsContent>
-
-            <TabsContent value="list" className="mt-6">
-              <LocationsListView
-                locations={filteredLocations}
-                isLoading={isLoading}
-                searchQuery={searchQuery}
-                onAddSubLocation={handleAddSubLocation}
-                setIsAddDialogOpen={setIsAddDialogOpen}
-              />
-            </TabsContent>
-
-            <TabsContent value="analytics" className="mt-6">
-              <LocationAnalytics />
-            </TabsContent>
-
-            <TabsContent value="bulk" className="mt-6">
-              <LocationBulkOperations
-                locations={allLocations}
-                onOperationComplete={handleOperationComplete}
-              />
-            </TabsContent>
-          </div>
+          <LocationsTabContent
+            viewMode={viewMode}
+            hierarchyLocations={hierarchyLocations}
+            allLocations={allLocations}
+            filteredLocations={filteredLocations}
+            isLoading={isLoading}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            parentFilter={parentFilter}
+            setParentFilter={setParentFilter}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+            onClearFilters={handleClearFilters}
+            onAddSubLocation={handleAddSubLocation}
+            setIsAddDialogOpen={setIsAddDialogOpen}
+            onDeleteLocation={handleDeleteLocation}
+            onEditLocationClick={handleEditLocationClick}
+            onOperationComplete={handleOperationComplete}
+            isDeleting={isDeleting}
+          />
         </Tabs>
 
-        <Dialog open={isAddDialogOpen} onOpenChange={handleDialogClose}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedParentId ? "Add Sub-Location" : "Add Location"}
-              </DialogTitle>
-            </DialogHeader>
-            <LocationForm
-              locations={allLocations}
-              parentId={selectedParentId}
-              onSubmit={handleAddLocation}
-              onCancel={handleDialogClose}
-              isLoading={isCreating}
-            />
-          </DialogContent>
-        </Dialog>
-
-        <LocationEditDialog
-          location={editingLocation}
+        <LocationDialogs
+          isAddDialogOpen={isAddDialogOpen}
+          isEditDialogOpen={isEditDialogOpen}
+          selectedParentId={selectedParentId}
+          editingLocation={editingLocation}
           allLocations={allLocations}
-          isOpen={isEditDialogOpen}
-          onClose={handleEditDialogClose}
-          onSubmit={handleEditLocation}
-          isLoading={isUpdating}
+          isCreating={isCreating}
+          isUpdating={isUpdating}
+          onAddLocation={handleAddLocation}
+          onEditLocation={handleEditLocation}
+          onDialogClose={handleDialogClose}
+          onEditDialogClose={handleEditDialogClose}
         />
       </div>
     </DashboardLayout>
