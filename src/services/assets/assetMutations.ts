@@ -57,7 +57,7 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
   return response;
 }
 
-// Delete an asset
+// Delete an asset with comprehensive constraint checking
 export async function deleteAsset(assetId: string) {
   console.log('🗑️ deleteAsset service - Starting deletion for asset ID:', assetId);
   
@@ -118,7 +118,7 @@ export async function deleteAsset(assetId: string) {
     throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${workOrders.length} associated work order(s). Please resolve or reassign work orders first.`);
   }
   
-  // Check for vendor asset relationships
+  // Check for vendor asset relationships and remove them
   console.log('🗑️ deleteAsset service - Checking for vendor relationships...');
   const { data: vendorAssets, error: vendorAssetsError } = await supabase
     .from("vendor_assets")
@@ -148,7 +148,7 @@ export async function deleteAsset(assetId: string) {
   
   console.log('🗑️ deleteAsset service - All checks passed. Attempting to delete asset from database...');
   
-  // Perform the deletion with more detailed error handling
+  // Perform the deletion with detailed error handling
   const { error: deleteError, count } = await supabase
     .from("assets")
     .delete({ count: 'exact' })
@@ -156,6 +156,22 @@ export async function deleteAsset(assetId: string) {
     
   if (deleteError) {
     console.error('❌ deleteAsset service - Database deletion failed:', deleteError);
+    
+    // Check for specific constraint violations
+    if (deleteError.message.includes('foreign key constraint') || deleteError.code === '23503') {
+      // Try to identify which table is causing the constraint violation
+      let constraintDetails = 'unknown constraint';
+      if (deleteError.message.includes('work_orders')) {
+        constraintDetails = 'work orders table';
+      } else if (deleteError.message.includes('vendor_assets')) {
+        constraintDetails = 'vendor assets table';
+      } else if (deleteError.message.includes('assets')) {
+        constraintDetails = 'child assets (parent_id reference)';
+      }
+      
+      throw new Error(`Cannot delete asset "${assetDetails.name}" due to foreign key constraint from ${constraintDetails}. Error: ${deleteError.message}`);
+    }
+    
     throw new Error(`Failed to delete asset: ${deleteError.message}`);
   }
   
@@ -164,7 +180,7 @@ export async function deleteAsset(assetId: string) {
   // Check if any rows were actually deleted
   if (count === 0) {
     console.error('❌ deleteAsset service - No rows were deleted despite asset existing');
-    throw new Error(`Asset deletion failed - asset "${assetDetails.name}" could not be deleted. This may be due to database constraints or the asset being referenced by other records.`);
+    throw new Error(`Asset deletion failed - asset "${assetDetails.name}" could not be deleted. This indicates the asset may have been deleted by another process or there are database constraints we haven't detected.`);
   }
   
   console.log('✅ deleteAsset service - Deletion completed successfully');
