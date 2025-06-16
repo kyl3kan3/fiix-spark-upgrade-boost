@@ -65,7 +65,7 @@ export async function deleteAsset(assetId: string) {
   console.log('🗑️ deleteAsset service - Fetching asset details...');
   const { data: assetDetails, error: assetError } = await supabase
     .from("assets")
-    .select("id, name, parent_id")
+    .select("id, name, parent_id, location_id")
     .eq("id", assetId)
     .single();
     
@@ -147,13 +147,33 @@ export async function deleteAsset(assetId: string) {
     console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
   }
 
+  // Double check the asset still exists before attempting deletion
+  console.log('🗑️ deleteAsset service - Double-checking asset exists before deletion...');
+  const { data: finalCheck, error: finalCheckError } = await supabase
+    .from("assets")
+    .select("id, name")
+    .eq("id", assetId)
+    .single();
+    
+  if (finalCheckError) {
+    if (finalCheckError.code === 'PGRST116') {
+      console.log('🗑️ deleteAsset service - Asset no longer exists (may have been deleted by another process)');
+      throw new Error("Asset not found - it may have been deleted by another process");
+    }
+    console.error('❌ deleteAsset service - Error in final check:', finalCheckError);
+    throw new Error(`Failed to verify asset existence: ${finalCheckError.message}`);
+  }
+
   // Perform the deletion with detailed error handling
   console.log('🗑️ deleteAsset service - All checks passed. Attempting deletion...');
   
-  const { error: deleteError, count } = await supabase
+  const { data: deletedData, error: deleteError, count } = await supabase
     .from("assets")
     .delete({ count: 'exact' })
-    .eq("id", assetId);
+    .eq("id", assetId)
+    .select();
+    
+  console.log('🗑️ deleteAsset service - Delete response:', { data: deletedData, error: deleteError, count });
     
   if (deleteError) {
     console.error('❌ deleteAsset service - Database deletion failed:', deleteError);
@@ -166,21 +186,11 @@ export async function deleteAsset(assetId: string) {
     
     // Check for specific constraint violations
     if (deleteError.message.includes('foreign key constraint') || deleteError.code === '23503') {
-      // Try to extract table name from error message
-      let constraintDetails = 'unknown table';
-      const errorMsg = deleteError.message.toLowerCase();
+      // Try to extract more details about the constraint
+      const constraintMatch = deleteError.message.match(/violates foreign key constraint "([^"]+)"/);
+      const constraintName = constraintMatch ? constraintMatch[1] : 'unknown constraint';
       
-      if (errorMsg.includes('work_order')) {
-        constraintDetails = 'work_orders table';
-      } else if (errorMsg.includes('vendor_asset')) {
-        constraintDetails = 'vendor_assets table';
-      } else if (errorMsg.includes('asset')) {
-        constraintDetails = 'assets table (parent-child relationship)';
-      } else if (errorMsg.includes('location')) {
-        constraintDetails = 'locations table';
-      }
-      
-      throw new Error(`Cannot delete asset "${assetDetails.name}" due to foreign key constraint from ${constraintDetails}. The asset is still being referenced by records in another table. Full error: ${deleteError.message}`);
+      throw new Error(`Cannot delete asset "${assetDetails.name}" due to foreign key constraint "${constraintName}". The asset is still being referenced by records in another table. Please check all related records and remove them first.`);
     }
     
     throw new Error(`Failed to delete asset "${assetDetails.name}": ${deleteError.message}`);
@@ -191,7 +201,20 @@ export async function deleteAsset(assetId: string) {
   // Check if any rows were actually deleted
   if (count === 0) {
     console.error('❌ deleteAsset service - No rows were deleted despite asset existing');
-    throw new Error(`Asset deletion failed - asset "${assetDetails.name}" could not be deleted. This indicates the asset may have been deleted by another process or there are database constraints we haven't detected.`);
+    
+    // One more check to see if the asset is gone
+    const { data: postDeleteCheck } = await supabase
+      .from("assets")
+      .select("id")
+      .eq("id", assetId)
+      .single();
+      
+    if (!postDeleteCheck) {
+      console.log('✅ deleteAsset service - Asset is actually deleted (count was incorrect)');
+      return; // Asset is actually deleted, the count was just wrong
+    }
+    
+    throw new Error(`Asset deletion failed - asset "${assetDetails.name}" could not be deleted. This may indicate a database constraint, trigger, or RLS policy preventing deletion. Please check database logs or contact support.`);
   }
   
   console.log('✅ deleteAsset service - Deletion completed successfully');
