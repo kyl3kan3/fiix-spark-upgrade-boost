@@ -1,5 +1,6 @@
+
 import React from "react";
-import { ChevronDown, ChevronRight, MapPin, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, MapPin, Plus, Trash2, Edit } from "lucide-react";
 import { 
   Accordion,
   AccordionContent,
@@ -28,6 +29,7 @@ interface LocationHierarchyViewProps {
   isDeleting?: boolean;
   onAddSubLocation: (parentId: string) => void;
   onDeleteLocation: (locationId: string) => void;
+  onEditLocation: (location: LocationWithChildren) => void;
 }
 
 export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({ 
@@ -35,7 +37,8 @@ export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({
   isLoading,
   isDeleting = false,
   onAddSubLocation,
-  onDeleteLocation
+  onDeleteLocation,
+  onEditLocation
 }) => {
   if (isLoading) {
     return (
@@ -74,6 +77,7 @@ export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({
             isDeleting={isDeleting}
             onAddSubLocation={onAddSubLocation}
             onDeleteLocation={onDeleteLocation}
+            onEditLocation={onEditLocation}
           />
         ))}
       </Accordion>
@@ -87,6 +91,7 @@ interface LocationNodeProps {
   isDeleting: boolean;
   onAddSubLocation: (parentId: string) => void;
   onDeleteLocation: (locationId: string) => void;
+  onEditLocation: (location: LocationWithChildren) => void;
 }
 
 const LocationNode: React.FC<LocationNodeProps> = ({ 
@@ -94,7 +99,8 @@ const LocationNode: React.FC<LocationNodeProps> = ({
   level, 
   isDeleting,
   onAddSubLocation,
-  onDeleteLocation 
+  onDeleteLocation,
+  onEditLocation 
 }) => {
   const hasChildren = location.children && location.children.length > 0;
   const paddingLeft = `${level * 0.5}rem`;
@@ -132,6 +138,15 @@ const LocationNode: React.FC<LocationNodeProps> = ({
             </div>
           )}
           <div className="flex items-center gap-2 ml-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEditLocation(location)}
+              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            >
+              <Edit className="h-3 w-3 mr-1" />
+              Edit
+            </Button>
             <Button
               variant="ghost"
               size="sm"
@@ -196,6 +211,7 @@ const LocationNode: React.FC<LocationNodeProps> = ({
               isDeleting={isDeleting}
               onAddSubLocation={onAddSubLocation}
               onDeleteLocation={onDeleteLocation}
+              onEditLocation={onEditLocation}
             />
           ))}
         </AccordionContent>

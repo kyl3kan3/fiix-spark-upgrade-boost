@@ -6,8 +6,8 @@ import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { LocationHierarchyView } from "@/components/locations/LocationHierarchyView";
 import { LocationsListView } from "@/pages/locations/components/LocationsListView";
 import { LocationsHeader } from "@/pages/locations/components/LocationsHeader";
-import { LocationsDialog } from "@/pages/locations/components/LocationsDialog";
 import { LocationForm } from "@/components/locations/LocationForm";
+import { LocationEditDialog } from "@/components/locations/LocationEditDialog";
 import { useLocationActions } from "@/pages/locations/hooks/useLocationActions";
 import { getLocationHierarchy, getAllLocations } from "@/services/locationService";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -19,13 +19,19 @@ const LocationsPage = () => {
   const {
     isAddDialogOpen,
     setIsAddDialogOpen,
+    isEditDialogOpen,
     selectedParentId,
+    editingLocation,
     isCreating,
+    isUpdating,
     isDeleting,
     handleAddLocation,
+    handleEditLocation,
     handleDeleteLocation,
     handleAddSubLocation,
-    handleDialogClose
+    handleEditLocationClick,
+    handleDialogClose,
+    handleEditDialogClose
   } = useLocationActions();
 
   // Fetch location hierarchy for hierarchy view
@@ -61,6 +67,7 @@ const LocationsPage = () => {
             isDeleting={isDeleting}
             onAddSubLocation={handleAddSubLocation}
             onDeleteLocation={handleDeleteLocation}
+            onEditLocation={handleEditLocationClick}
           />
         ) : (
           <LocationsListView
@@ -88,6 +95,15 @@ const LocationsPage = () => {
             />
           </DialogContent>
         </Dialog>
+
+        <LocationEditDialog
+          location={editingLocation}
+          allLocations={allLocations}
+          isOpen={isEditDialogOpen}
+          onClose={handleEditDialogClose}
+          onSubmit={handleEditLocation}
+          isLoading={isUpdating}
+        />
       </div>
     </DashboardLayout>
   );

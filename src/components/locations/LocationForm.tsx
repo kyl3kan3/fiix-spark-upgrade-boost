@@ -10,6 +10,11 @@ import { Location } from "@/services/locationService";
 interface LocationFormProps {
   locations: Location[];
   parentId?: string;
+  initialData?: {
+    name: string;
+    description: string;
+    parent_id: string | null;
+  };
   onSubmit: (data: {
     name: string;
     description: string;
@@ -17,27 +22,32 @@ interface LocationFormProps {
   }) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  mode?: "create" | "edit";
 }
 
 export const LocationForm: React.FC<LocationFormProps> = ({
   locations,
   parentId,
+  initialData,
   onSubmit,
   onCancel,
-  isLoading = false
+  isLoading = false,
+  mode = "create"
 }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
   const [selectedParentId, setSelectedParentId] = useState<string>("none");
 
   // Set the parent ID when component mounts or parentId changes
   useEffect(() => {
-    if (parentId) {
+    if (initialData?.parent_id) {
+      setSelectedParentId(initialData.parent_id);
+    } else if (parentId) {
       setSelectedParentId(parentId);
     } else {
       setSelectedParentId("none");
     }
-  }, [parentId]);
+  }, [parentId, initialData?.parent_id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +69,8 @@ export const LocationForm: React.FC<LocationFormProps> = ({
   const selectedParentName = selectedParentId !== "none" 
     ? locations.find(loc => loc.id === selectedParentId)?.name 
     : "No parent (root location)";
+
+  const isEditMode = mode === "edit";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,7 +104,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
         <Select 
           value={selectedParentId} 
           onValueChange={setSelectedParentId}
-          disabled={isLoading || !!parentId}
+          disabled={isLoading || (!!parentId && !isEditMode)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select parent location (optional)">
@@ -124,7 +136,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
           disabled={isLoading || !name.trim()}
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          {isLoading ? "Adding..." : "Add Location"}
+          {isLoading ? (isEditMode ? "Updating..." : "Adding...") : (isEditMode ? "Update Location" : "Add Location")}
         </Button>
       </div>
     </form>
