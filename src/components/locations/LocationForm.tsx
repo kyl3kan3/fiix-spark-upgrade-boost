@@ -51,8 +51,9 @@ export const LocationForm: React.FC<LocationFormProps> = ({
     });
   };
 
-  // Filter out potential circular references (don't allow a location to be its own parent)
-  const availableParents = locations.filter(loc => loc.id !== parentId);
+  // Only filter out locations that would create circular references
+  // Don't filter out the intended parent location
+  const availableParents = locations;
 
   // Find the selected parent location name for display
   const selectedParentName = selectedParentId !== "none" 
@@ -91,7 +92,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
         <Select 
           value={selectedParentId} 
           onValueChange={setSelectedParentId}
-          disabled={isLoading}
+          disabled={isLoading || !!parentId}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select parent location (optional)">
