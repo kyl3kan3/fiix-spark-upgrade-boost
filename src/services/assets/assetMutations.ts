@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
 
@@ -69,6 +70,10 @@ export async function deleteAsset(assetId: string) {
     .single();
     
   if (assetError) {
+    if (assetError.code === 'PGRST116') {
+      console.log('🗑️ deleteAsset service - Asset not found (already deleted)');
+      throw new Error("Asset not found - it may have already been deleted");
+    }
     console.error('❌ deleteAsset service - Error fetching asset details:', assetError);
     throw assetError;
   }
@@ -114,22 +119,36 @@ export async function deleteAsset(assetId: string) {
   }
   
   console.log('🗑️ deleteAsset service - All checks passed. Attempting to delete asset from database...');
-  const { error, count } = await supabase
+  
+  // Perform the deletion with more detailed error handling
+  const { error: deleteError, count } = await supabase
     .from("assets")
     .delete({ count: 'exact' })
     .eq("id", assetId);
     
-  if (error) {
-    console.error('❌ deleteAsset service - Database deletion failed:', error);
-    throw error;
+  if (deleteError) {
+    console.error('❌ deleteAsset service - Database deletion failed:', deleteError);
+    throw new Error(`Failed to delete asset: ${deleteError.message}`);
   }
   
-  console.log('✅ deleteAsset service - Asset successfully deleted from database. Rows affected:', count);
+  console.log('✅ deleteAsset service - Delete operation completed. Rows affected:', count);
   
-  // Verify deletion was successful by checking the count
+  // Check if any rows were actually deleted
   if (count === 0) {
-    console.error('❌ deleteAsset service - No rows were deleted - asset may not exist');
-    throw new Error("Asset deletion failed - no rows were affected");
+    console.error('❌ deleteAsset service - No rows were deleted despite asset existing');
+    // Double-check if asset still exists
+    const { data: stillExists } = await supabase
+      .from("assets")
+      .select("id")
+      .eq("id", assetId)
+      .single();
+    
+    if (stillExists) {
+      throw new Error(`Asset deletion failed - asset "${assetDetails.name}" still exists in database. There may be database constraints preventing deletion.`);
+    } else {
+      console.log('✅ deleteAsset service - Asset was actually deleted (race condition detected)');
+      return; // Asset is gone, deletion was successful
+    }
   }
   
   console.log('✅ deleteAsset service - Deletion completed successfully');
