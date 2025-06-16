@@ -79,74 +79,66 @@ export async function deleteAsset(assetId: string) {
   }
   
   console.log('🗑️ deleteAsset service - Asset details:', assetDetails);
-  
-  // Check if asset has children - with detailed logging
-  console.log('🗑️ deleteAsset service - Checking for child assets...');
-  const { data: children, error: childrenError } = await supabase
-    .from("assets")
-    .select("id, name, parent_id")
-    .eq("parent_id", assetId);
-    
-  if (childrenError) {
-    console.error('❌ deleteAsset service - Error checking children:', childrenError);
-    throw childrenError;
-  }
-  
-  console.log('🗑️ deleteAsset service - Children found:', children?.length || 0);
-  
-  if (children && children.length > 0) {
-    console.error('❌ deleteAsset service - Cannot delete asset with children. Children found:', children.map(c => `${c.name} (${c.id})`));
-    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${children.length} child asset(s): ${children.map(c => c.name).join(', ')}. Please delete or move child assets first.`);
-  }
-  
-  // Check if asset has work orders
-  console.log('🗑️ deleteAsset service - Checking for work orders...');
-  const { data: workOrders, error: workOrdersError } = await supabase
-    .from("work_orders")
-    .select("id, title")
-    .eq("asset_id", assetId);
-    
-  if (workOrdersError) {
-    console.error('❌ deleteAsset service - Error checking work orders:', workOrdersError);
-    throw workOrdersError;
-  }
-  
-  console.log('🗑️ deleteAsset service - Found work orders:', workOrders?.length || 0);
-  
-  if (workOrders && workOrders.length > 0) {
-    console.error('❌ deleteAsset service - Cannot delete asset with work orders');
-    throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${workOrders.length} associated work order(s). Please resolve or reassign work orders first.`);
-  }
-  
-  // Check for vendor asset relationships and remove them
-  console.log('🗑️ deleteAsset service - Checking for vendor relationships...');
-  const { data: vendorAssets, error: vendorAssetsError } = await supabase
-    .from("vendor_assets")
-    .select("id, vendor_id")
-    .eq("asset_id", assetId);
-    
-  if (vendorAssetsError) {
-    console.error('❌ deleteAsset service - Error checking vendor assets:', vendorAssetsError);
-    throw vendorAssetsError;
-  }
-  
-  console.log('🗑️ deleteAsset service - Found vendor relationships:', vendorAssets?.length || 0);
-  
-  if (vendorAssets && vendorAssets.length > 0) {
-    console.log('🗑️ deleteAsset service - Deleting vendor asset relationships first...');
-    const { error: vendorDeleteError } = await supabase
-      .from("vendor_assets")
-      .delete()
-      .eq("asset_id", assetId);
-      
-    if (vendorDeleteError) {
-      console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
-      throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
+
+  // Comprehensive check for ALL possible references
+  const referencesToCheck = [
+    {
+      table: 'assets',
+      column: 'parent_id',
+      description: 'child assets'
+    },
+    {
+      table: 'work_orders',
+      column: 'asset_id',
+      description: 'work orders'
+    },
+    {
+      table: 'vendor_assets',
+      column: 'asset_id',
+      description: 'vendor relationships'
     }
-    console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
+  ];
+
+  // Check each possible reference
+  for (const ref of referencesToCheck) {
+    console.log(`🗑️ deleteAsset service - Checking ${ref.table} for references...`);
+    
+    const { data: references, error: refError } = await supabase
+      .from(ref.table)
+      .select('id, name')
+      .eq(ref.column, assetId);
+      
+    if (refError) {
+      console.error(`❌ deleteAsset service - Error checking ${ref.table}:`, refError);
+      throw new Error(`Failed to check ${ref.description}: ${refError.message}`);
+    }
+    
+    console.log(`🗑️ deleteAsset service - Found ${references?.length || 0} references in ${ref.table}`);
+    
+    if (references && references.length > 0) {
+      if (ref.table === 'vendor_assets') {
+        // Auto-delete vendor asset relationships
+        console.log('🗑️ deleteAsset service - Auto-deleting vendor asset relationships...');
+        const { error: vendorDeleteError } = await supabase
+          .from("vendor_assets")
+          .delete()
+          .eq("asset_id", assetId);
+          
+        if (vendorDeleteError) {
+          console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
+          throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
+        }
+        console.log('✅ deleteAsset service - Vendor relationships deleted successfully');
+      } else {
+        // Block deletion for other types of references
+        const referenceNames = references.map(r => r.name || r.id).join(', ');
+        throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${references.length} associated ${ref.description}: ${referenceNames}. Please resolve these references first.`);
+      }
+    }
   }
-  
-  console.log('🗑️ deleteAsset service - All checks passed. Attempting to delete asset from database...');
+
+  // Additional check: Look for any other potential foreign key references by trying the delete first
+  console.log('🗑️ deleteAsset service - All known checks passed. Attempting deletion...');
   
   // Perform the deletion with detailed error handling
   const { error: deleteError, count } = await supabase
@@ -156,23 +148,33 @@ export async function deleteAsset(assetId: string) {
     
   if (deleteError) {
     console.error('❌ deleteAsset service - Database deletion failed:', deleteError);
+    console.error('❌ deleteAsset service - Error details:', {
+      message: deleteError.message,
+      code: deleteError.code,
+      details: deleteError.details,
+      hint: deleteError.hint
+    });
     
     // Check for specific constraint violations
     if (deleteError.message.includes('foreign key constraint') || deleteError.code === '23503') {
-      // Try to identify which table is causing the constraint violation
-      let constraintDetails = 'unknown constraint';
-      if (deleteError.message.includes('work_orders')) {
-        constraintDetails = 'work orders table';
-      } else if (deleteError.message.includes('vendor_assets')) {
-        constraintDetails = 'vendor assets table';
-      } else if (deleteError.message.includes('assets')) {
-        constraintDetails = 'child assets (parent_id reference)';
+      // Try to extract table name from error message
+      let constraintDetails = 'unknown table';
+      const errorMsg = deleteError.message.toLowerCase();
+      
+      if (errorMsg.includes('work_order')) {
+        constraintDetails = 'work_orders table';
+      } else if (errorMsg.includes('vendor_asset')) {
+        constraintDetails = 'vendor_assets table';
+      } else if (errorMsg.includes('asset')) {
+        constraintDetails = 'assets table (parent-child relationship)';
+      } else if (errorMsg.includes('location')) {
+        constraintDetails = 'locations table';
       }
       
-      throw new Error(`Cannot delete asset "${assetDetails.name}" due to foreign key constraint from ${constraintDetails}. Error: ${deleteError.message}`);
+      throw new Error(`Cannot delete asset "${assetDetails.name}" due to foreign key constraint from ${constraintDetails}. The asset is still being referenced by records in another table. Full error: ${deleteError.message}`);
     }
     
-    throw new Error(`Failed to delete asset: ${deleteError.message}`);
+    throw new Error(`Failed to delete asset "${assetDetails.name}": ${deleteError.message}`);
   }
   
   console.log('✅ deleteAsset service - Delete operation completed. Rows affected:', count);
