@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import InspectionsList from "@/components/inspections/InspectionsList";
+import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import { useInspections } from "@/hooks/useInspections";
 
 const InspectionsPage = () => {
@@ -29,6 +30,14 @@ const InspectionsPage = () => {
     
     return matchesSearch && matchesStatus && matchesAssignee;
   });
+
+  // Calendar filters with date range for the calendar view
+  const calendarFilters = {
+    status: filters.status,
+    priority: "all", // Default priority filter
+    assignedTo: filters.assignee,
+    dateRange: { from: undefined, to: undefined } // Default date range
+  };
 
   return (
     <DashboardLayout>
@@ -68,9 +77,7 @@ const InspectionsPage = () => {
           </TabsContent>
           
           <TabsContent value="calendar" className="mt-0">
-            <div className="text-center py-12">
-              <p className="text-sm sm:text-base text-gray-500">Calendar view coming soon...</p>
-            </div>
+            <InspectionsCalendarView filters={calendarFilters} />
           </TabsContent>
         </Tabs>
       </div>
