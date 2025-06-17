@@ -82,17 +82,21 @@ export class DailyLogService {
       throw new Error('User not authenticated');
     }
 
+    // Clean up time fields - if empty, set to null
+    const cleanShiftStart = logEntry.shift_start?.trim() || null;
+    const cleanShiftEnd = logEntry.shift_end?.trim() || null;
+
     const logData = {
       user_id: user.id,
       date: logEntry.date,
-      technician: logEntry.technician,
-      shift_start: logEntry.shift_start,
-      shift_end: logEntry.shift_end,
+      technician: logEntry.technician?.trim() || null,
+      shift_start: cleanShiftStart,
+      shift_end: cleanShiftEnd,
       equipment_readings: JSON.parse(JSON.stringify(logEntry.equipment_readings)) as Json,
       tasks: JSON.parse(JSON.stringify(logEntry.tasks)) as Json,
       incidents: JSON.parse(JSON.stringify(logEntry.incidents)) as Json,
-      notes: logEntry.notes,
-      weather_conditions: logEntry.weather_conditions,
+      notes: logEntry.notes?.trim() || null,
+      weather_conditions: logEntry.weather_conditions?.trim() || null,
     };
 
     const { data, error } = await supabase
