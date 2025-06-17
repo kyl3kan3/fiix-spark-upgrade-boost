@@ -7,30 +7,23 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import WorkOrderFilters from "@/components/workOrders/WorkOrderFilters";
 import WorkOrderList from "@/components/workOrders/WorkOrderList";
+import WorkOrderBoardView from "@/components/workOrders/WorkOrderBoardView";
 import EmptyWorkOrdersState from "@/components/workOrders/EmptyWorkOrdersState";
 import { useWorkOrders } from "@/components/workOrders/useWorkOrders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const WorkOrdersPage = () => {
-  const [filters, setFilters] = useState({
-    search: "",
-    status: "all",
-    priority: "all",
-    assignee: "all",
-  });
-
-  const { workOrders, isLoading } = useWorkOrders();
+  const { workOrders, isLoading, filters, updateFilters } = useWorkOrders();
 
   const filteredWorkOrders = workOrders.filter((wo) => {
-    const matchesSearch = !filters.search || 
-      wo.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-      wo.description?.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesSearch = !filters.searchQuery || 
+      wo.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+      wo.description?.toLowerCase().includes(filters.searchQuery.toLowerCase());
     
-    const matchesStatus = filters.status === "all" || wo.status === filters.status;
-    const matchesPriority = filters.priority === "all" || wo.priority === filters.priority;
-    const matchesAssignee = filters.assignee === "all" || wo.assigned_to === filters.assignee;
+    const matchesStatus = filters.statusFilter === "all" || wo.status === filters.statusFilter;
+    const matchesPriority = filters.priorityFilter === "all" || wo.priority === filters.priorityFilter;
     
-    return matchesSearch && matchesStatus && matchesPriority && matchesAssignee;
+    return matchesSearch && matchesStatus && matchesPriority;
   });
 
   if (isLoading) {
@@ -73,19 +66,23 @@ const WorkOrdersPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <WorkOrderFilters filters={filters} setFilters={setFilters} />
+            <WorkOrderFilters filters={filters} updateFilters={updateFilters} />
             
             {filteredWorkOrders.length === 0 ? (
-              <EmptyWorkOrdersState hasWorkOrders={workOrders.length > 0} />
+              <EmptyWorkOrdersState />
             ) : (
               <WorkOrderList workOrders={filteredWorkOrders} />
             )}
           </TabsContent>
           
-          <TabsContent value="board" className="mt-0">
-            <div className="text-center py-12">
-              <p className="text-sm sm:text-base text-gray-500">Board view coming soon...</p>
-            </div>
+          <TabsContent value="board" className="mt-0 space-y-4 sm:space-y-6">
+            <WorkOrderFilters filters={filters} updateFilters={updateFilters} />
+            
+            {filteredWorkOrders.length === 0 ? (
+              <EmptyWorkOrdersState />
+            ) : (
+              <WorkOrderBoardView workOrders={filteredWorkOrders} />
+            )}
           </TabsContent>
         </Tabs>
       </div>

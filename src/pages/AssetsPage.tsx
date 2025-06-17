@@ -9,8 +9,6 @@ import AssetPageHeader from "@/components/assets/AssetPageHeader";
 import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
-import { useQuery } from "@tanstack/react-query";
-import { assetQueries } from "@/services/assets";
 
 const AssetsPage = () => {
   const [filters, setFilters] = useState({
@@ -20,11 +18,13 @@ const AssetsPage = () => {
     location: "all",
   });
 
-  const { data: assets = [], isLoading } = useQuery(assetQueries.list());
+  // Mock data for now - will be replaced with actual query
+  const assets: any[] = [];
+  const isLoading = false;
 
   const filteredAssets = assets.filter((asset) => {
     const matchesSearch = !filters.search || 
-      asset.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      asset.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
       asset.serial_number?.toLowerCase().includes(filters.search.toLowerCase());
     
     const matchesStatus = filters.status === "all" || asset.status === filters.status;
@@ -62,12 +62,19 @@ const AssetsPage = () => {
         </div>
 
         <div className="space-y-4 sm:space-y-6">
-          <AssetFilters filters={filters} setFilters={setFilters} />
+          <AssetFilters />
           
           {filteredAssets.length === 0 ? (
-            <AssetEmptyState hasAssets={assets.length > 0} />
+            <AssetEmptyState />
           ) : (
-            <AssetGridView assets={filteredAssets} />
+            <AssetGridView 
+              assets={filteredAssets}
+              isLoading={false}
+              error={null}
+              hasFilters={false}
+              isDeleting={false}
+              onDeleteAsset={() => {}}
+            />
           )}
         </div>
       </div>

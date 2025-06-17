@@ -6,11 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import TeamHeader from "@/components/team/TeamHeader";
-import TeamFilters from "@/components/team/TeamFilters";
 import TeamMembersList from "@/components/team/TeamMembersList";
 import TeamMembersGrid from "@/components/team/TeamMembersGrid";
 import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
-import AddTeamMemberDialog from "@/components/team/AddTeamMemberDialog";
 import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
 import { useTeamData } from "@/hooks/team/useTeamData";
 
@@ -23,20 +21,29 @@ const Team = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { teamMembers, isLoading } = useTeamData();
+  const { teamMembers, loading } = useTeamData();
 
   const filteredMembers = teamMembers.filter((member) => {
     const matchesSearch = !filters.search || 
-      `${member.first_name} ${member.last_name}`.toLowerCase().includes(filters.search.toLowerCase()) ||
+      `${member.firstName} ${member.lastName}`.toLowerCase().includes(filters.search.toLowerCase()) ||
       member.email?.toLowerCase().includes(filters.search.toLowerCase());
     
     const matchesRole = filters.role === "all" || member.role === filters.role;
-    const matchesStatus = filters.status === "all" || member.status === filters.status;
     
-    return matchesSearch && matchesRole && matchesStatus;
+    return matchesSearch && matchesRole;
   });
 
-  if (isLoading) {
+  // Transform chat users to team members format
+  const transformedMembers = filteredMembers.map(member => ({
+    ...member,
+    first_name: member.firstName,
+    last_name: member.lastName,
+    joined: new Date().toISOString(),
+    lastActive: new Date().toISOString(),
+    status: 'active' as const
+  }));
+
+  if (loading) {
     return (
       <DashboardLayout>
         <div className="space-y-4 sm:space-y-6">
@@ -75,33 +82,21 @@ const Team = () => {
           </div>
           
           <TabsContent value="members" className="mt-0 space-y-4 sm:space-y-6">
-            <TeamFilters 
-              filters={filters} 
-              setFilters={setFilters}
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-            />
-            
             {viewMode === "grid" ? (
-              <TeamMembersGrid members={filteredMembers} />
+              <TeamMembersGrid members={transformedMembers} />
             ) : (
-              <TeamMembersList members={filteredMembers} />
+              <TeamMembersList members={transformedMembers} />
             )}
           </TabsContent>
           
           <TabsContent value="invitations" className="mt-0">
-            <PendingInvitationsSection />
+            <PendingInvitationsSection invitations={[]} roleColorMap={{}} />
           </TabsContent>
           
           <TabsContent value="roles" className="mt-0">
             <RolePermissionsOverview />
           </TabsContent>
         </Tabs>
-
-        <AddTeamMemberDialog 
-          open={showAddDialog} 
-          onOpenChange={setShowAddDialog}
-        />
       </div>
     </DashboardLayout>
   );

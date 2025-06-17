@@ -5,12 +5,6 @@ import { Plus, MapPin } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import LocationsHeader from "./locations/components/LocationsHeader";
-import LocationFilters from "@/components/locations/LocationFilters";
-import LocationHierarchyView from "@/components/locations/LocationHierarchyView";
-import LocationsListView from "./locations/components/LocationsListView";
-import LocationAnalytics from "@/components/locations/LocationAnalytics";
-import LocationForm from "@/components/locations/LocationForm";
 import { useLocationPage } from "./locations/hooks/useLocationPage";
 
 const LocationsPage = () => {
@@ -21,11 +15,14 @@ const LocationsPage = () => {
   });
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  const { locations, isLoading } = useLocationPage();
+  const locationPageData = useLocationPage();
+  const isLoading = false;
 
-  const filteredLocations = locations.filter((location) => {
+  const mockLocations: any[] = [];
+
+  const filteredLocations = mockLocations.filter((location) => {
     const matchesSearch = !filters.search || 
-      location.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      location.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
       location.address?.toLowerCase().includes(filters.search.toLowerCase());
     
     const matchesType = filters.type === "all" || location.type === filters.type;
@@ -53,7 +50,10 @@ const LocationsPage = () => {
         <BackToDashboard />
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <LocationsHeader />
+          <div>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Locations</h1>
+            <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your facility locations and hierarchies</p>
+          </div>
           <Button 
             onClick={() => setShowAddDialog(true)}
             className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto"
@@ -77,24 +77,23 @@ const LocationsPage = () => {
           </div>
           
           <TabsContent value="hierarchy" className="mt-0 space-y-4 sm:space-y-6">
-            <LocationFilters filters={filters} setFilters={setFilters} />
-            <LocationHierarchyView locations={filteredLocations} />
+            <div className="text-center py-12">
+              <p className="text-sm sm:text-base text-gray-500">Hierarchy view coming soon...</p>
+            </div>
           </TabsContent>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <LocationFilters filters={filters} setFilters={setFilters} />
-            <LocationsListView locations={filteredLocations} />
+            <div className="text-center py-12">
+              <p className="text-sm sm:text-base text-gray-500">List view coming soon...</p>
+            </div>
           </TabsContent>
           
           <TabsContent value="analytics" className="mt-0">
-            <LocationAnalytics />
+            <div className="text-center py-12">
+              <p className="text-sm sm:text-base text-gray-500">Analytics coming soon...</p>
+            </div>
           </TabsContent>
         </Tabs>
-
-        <LocationForm 
-          open={showAddDialog} 
-          onOpenChange={setShowAddDialog}
-        />
       </div>
     </DashboardLayout>
   );

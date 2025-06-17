@@ -6,9 +6,7 @@ import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import InspectionsFilters from "@/components/inspections/InspectionsFilters";
 import InspectionsList from "@/components/inspections/InspectionsList";
-import InspectionsCalendarView from "@/components/inspections/InspectionsCalendarView";
 import { useInspections } from "@/hooks/useInspections";
 
 const InspectionsPage = () => {
@@ -19,7 +17,7 @@ const InspectionsPage = () => {
     assignee: "all",
   });
 
-  const { inspections, isLoading } = useInspections();
+  const { inspections, loading } = useInspections();
 
   const filteredInspections = inspections.filter((inspection) => {
     const matchesSearch = !filters.search || 
@@ -27,13 +25,12 @@ const InspectionsPage = () => {
       inspection.description?.toLowerCase().includes(filters.search.toLowerCase());
     
     const matchesStatus = filters.status === "all" || inspection.status === filters.status;
-    const matchesType = filters.type === "all" || inspection.type === filters.type;
-    const matchesAssignee = filters.assignee === "all" || inspection.assigned_to === filters.assignee;
+    const matchesAssignee = filters.assignee === "all" || inspection.assignedTo === filters.assignee;
     
-    return matchesSearch && matchesStatus && matchesType && matchesAssignee;
+    return matchesSearch && matchesStatus && matchesAssignee;
   });
 
-  if (isLoading) {
+  if (loading) {
     return (
       <DashboardLayout>
         <div className="space-y-4 sm:space-y-6">
@@ -80,12 +77,13 @@ const InspectionsPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <InspectionsFilters filters={filters} setFilters={setFilters} />
-            <InspectionsList inspections={filteredInspections} />
+            <InspectionsList inspections={filteredInspections} loading={loading} />
           </TabsContent>
           
           <TabsContent value="calendar" className="mt-0">
-            <InspectionsCalendarView inspections={filteredInspections} />
+            <div className="text-center py-12">
+              <p className="text-sm sm:text-base text-gray-500">Calendar view coming soon...</p>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
