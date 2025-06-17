@@ -7,7 +7,9 @@ import {
   Settings,
   Package,
   Building,
-  Building2
+  Building2,
+  ClipboardCheck,
+  Wrench
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -52,6 +54,18 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
       label: "Assets",
       href: "/assets",
       description: "Track equipment and inventory"
+    },
+    {
+      icon: ClipboardCheck,
+      label: "Inspections",
+      href: "/inspections",
+      description: "Schedule and manage inspections"
+    },
+    {
+      icon: Wrench,
+      label: "Maintenance",
+      href: "/calendar",
+      description: "Preventive maintenance scheduling"
     },
     {
       icon: Building2,
