@@ -22,6 +22,7 @@ import LocationsPage from "./pages/LocationsPage";
 import Settings from "./pages/Settings";
 import ProfilePage from "./pages/ProfilePage";
 import Calendar from "./pages/Calendar";
+import MaintenancePage from "./pages/MaintenancePage";
 import InspectionsPage from "./pages/InspectionsPage";
 import NewInspectionPage from "./pages/NewInspectionPage";
 import InspectionDetailPage from "./pages/InspectionDetailPage";
@@ -137,6 +138,12 @@ const App = () => (
               <Route path="/calendar" element={
                 <ProtectedRoute>
                   <Calendar />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/maintenance" element={
+                <ProtectedRoute>
+                  <MaintenancePage />
                 </ProtectedRoute>
               } />
               

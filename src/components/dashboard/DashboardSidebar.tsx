@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   LayoutDashboard,
@@ -9,7 +8,8 @@ import {
   Building,
   Building2,
   ClipboardCheck,
-  Wrench
+  Wrench,
+  Calendar
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -62,9 +62,15 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
       description: "Schedule and manage inspections"
     },
     {
+      icon: Calendar,
+      label: "Calendar",
+      href: "/calendar",
+      description: "View scheduled events"
+    },
+    {
       icon: Wrench,
       label: "Maintenance",
-      href: "/calendar",
+      href: "/maintenance",
       description: "Preventive maintenance scheduling"
     },
     {
