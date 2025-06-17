@@ -45,61 +45,67 @@ const CalendarPage = () => {
   return (
     <DashboardLayout>
       <BackToDashboard />
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Maintenance Calendar</h1>
-          <p className="text-gray-500">Schedule and manage maintenance events</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Maintenance Calendar</h1>
+          <p className="text-sm sm:text-base text-gray-500">Schedule and manage maintenance events</p>
         </div>
-        <Button className="bg-maintenease-600 hover:bg-maintenease-700">
+        <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
           <CalendarIcon className="h-4 w-4 mr-2" />
           Schedule Event
         </Button>
       </div>
 
       <Tabs defaultValue="calendar" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="calendar">Calendar View</TabsTrigger>
-          <TabsTrigger value="daily-log">Daily Log</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+          <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar View</TabsTrigger>
+          <TabsTrigger value="daily-log" className="text-xs sm:text-sm">Daily Log</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="calendar" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <CalendarSidebar
-              date={date}
-              setDate={setDate}
-              technicianFilter={technicianFilter}
-              setTechnicianFilter={setTechnicianFilter}
-              technicians={technicians}
-              hasEvents={hasEvents}
-            />
+        <TabsContent value="calendar" className="mt-0">
+          <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <CalendarSidebar
+                date={date}
+                setDate={setDate}
+                technicianFilter={technicianFilter}
+                setTechnicianFilter={setTechnicianFilter}
+                technicians={technicians}
+                hasEvents={hasEvents}
+              />
+            </div>
 
-            <CalendarContent
-              date={date}
-              activeView={activeView}
-              setActiveView={setActiveView}
-              technicianFilter={technicianFilter}
-              filteredEvents={filteredEvents}
-            />
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              <CalendarContent
+                date={date}
+                activeView={activeView}
+                setActiveView={setActiveView}
+                technicianFilter={technicianFilter}
+                filteredEvents={filteredEvents}
+              />
+            </div>
           </div>
         </TabsContent>
         
-        <TabsContent value="daily-log" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <CalendarSidebar
-              date={date}
-              setDate={setDate}
-              technicianFilter={technicianFilter}
-              setTechnicianFilter={setTechnicianFilter}
-              technicians={technicians}
-              hasEvents={hasEvents}
-            />
+        <TabsContent value="daily-log" className="mt-0">
+          <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <CalendarSidebar
+                date={date}
+                setDate={setDate}
+                technicianFilter={technicianFilter}
+                setTechnicianFilter={setTechnicianFilter}
+                technicians={technicians}
+                hasEvents={hasEvents}
+              />
+            </div>
             
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 order-1 lg:order-2">
               {date ? (
                 <DailyLog selectedDate={date} />
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  Please select a date to view or create a daily log entry.
+                  <p className="text-sm sm:text-base">Please select a date to view or create a daily log entry.</p>
                 </div>
               )}
             </div>

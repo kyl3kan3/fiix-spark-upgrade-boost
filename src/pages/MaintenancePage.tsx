@@ -7,8 +7,10 @@ import PreventiveMaintenanceContent from "@/components/features/PreventiveMainte
 const MaintenancePage = () => {
   return (
     <DashboardLayout>
-      <BackToDashboard />
-      <PreventiveMaintenanceContent />
+      <div className="space-y-4 sm:space-y-6">
+        <BackToDashboard />
+        <PreventiveMaintenanceContent />
+      </div>
     </DashboardLayout>
   );
 };

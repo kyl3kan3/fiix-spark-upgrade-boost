@@ -27,28 +27,28 @@ const MonthView: React.FC<MonthViewProps> = ({ events }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
       {events.map((event) => (
         <Card key={event.id} className="overflow-hidden">
-          <CardHeader className={`p-4 pb-2 ${typeColors[event.type].split(' ')[0]} ${typeColors[event.type].split(' ')[1]}`}>
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg">{event.title}</CardTitle>
-              <Badge className={statusColors[event.status]}>
+          <CardHeader className={`p-3 sm:p-4 pb-2 ${typeColors[event.type].split(' ')[0]} ${typeColors[event.type].split(' ')[1]}`}>
+            <div className="flex justify-between items-start gap-2">
+              <CardTitle className="text-sm sm:text-base lg:text-lg line-clamp-2">{event.title}</CardTitle>
+              <Badge className={`${statusColors[event.status]} text-xs flex-shrink-0`}>
                 {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
               </Badge>
             </div>
-            <CardDescription className="mt-1 font-medium">
-              {format(event.date, "MMMM d, yyyy")} at {format(event.date, "h:mm a")}
+            <CardDescription className="mt-1 font-medium text-xs sm:text-sm">
+              {format(event.date, "MMM d, yyyy")} at {format(event.date, "h:mm a")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4">
-            <p className="text-sm mb-3">{event.description}</p>
-            <div className="flex justify-between items-center text-sm">
-              <div className="flex items-center">
-                <Users className="h-4 w-4 mr-1" />
-                <span>{event.technician}</span>
+          <CardContent className="p-3 sm:p-4">
+            <p className="text-xs sm:text-sm mb-3 line-clamp-2">{event.description}</p>
+            <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
+              <div className="flex items-center min-w-0">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                <span className="truncate">{event.technician}</span>
               </div>
-              <span>{event.duration}</span>
+              <span className="flex-shrink-0">{event.duration}</span>
             </div>
           </CardContent>
         </Card>
