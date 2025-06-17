@@ -45,6 +45,27 @@ const Team = () => {
     companyName: member.companyName || ''
   }));
 
+  // Role color mapping
+  const roleColorMap = {
+    admin: 'bg-red-100 text-red-800',
+    manager: 'bg-blue-100 text-blue-800',
+    technician: 'bg-green-100 text-green-800',
+    viewer: 'bg-gray-100 text-gray-800'
+  };
+
+  // Handle member updates
+  const handleMemberUpdated = (userId: string, updates: {
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    email?: string;
+    phone?: string;
+    companyName?: string;
+  }) => {
+    console.log('Member updated:', userId, updates);
+    // This would typically update the member data
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -85,19 +106,23 @@ const Team = () => {
           
           <TabsContent value="members" className="mt-0 space-y-4 sm:space-y-6">
             {viewMode === "grid" ? (
-              <TeamMembersGrid members={transformedMembers} />
+              <TeamMembersGrid 
+                members={transformedMembers}
+                roleColorMap={roleColorMap}
+                onMemberUpdated={handleMemberUpdated}
+              />
             ) : (
               <TeamMembersList 
                 members={transformedMembers} 
-                roleColorMap={{}}
+                roleColorMap={roleColorMap}
                 loading={loading}
-                onMemberUpdated={() => {}}
+                onMemberUpdated={handleMemberUpdated}
               />
             )}
           </TabsContent>
           
           <TabsContent value="invitations" className="mt-0">
-            <PendingInvitationsSection invitations={[]} roleColorMap={{}} />
+            <PendingInvitationsSection invitations={[]} roleColorMap={roleColorMap} />
           </TabsContent>
           
           <TabsContent value="roles" className="mt-0">
