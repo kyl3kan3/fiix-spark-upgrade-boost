@@ -1,39 +1,33 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import WorkOrderFilters from "@/components/workOrders/WorkOrderFilters";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WorkOrderList from "@/components/workOrders/WorkOrderList";
 import WorkOrderBoardView from "@/components/workOrders/WorkOrderBoardView";
-import EmptyWorkOrdersState from "@/components/workOrders/EmptyWorkOrdersState";
-import { useWorkOrders } from "@/components/workOrders/useWorkOrders";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
+import { Loader2 } from "lucide-react";
+import { Helmet } from "react-helmet";
 
-const WorkOrdersPage = () => {
-  const { workOrders, isLoading, filters, updateFilters, resetFilters } = useWorkOrders();
-
-  const filteredWorkOrders = workOrders.filter((wo) => {
-    const matchesSearch = !filters.searchQuery || 
-      wo.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-      wo.description?.toLowerCase().includes(filters.searchQuery.toLowerCase());
-    
-    const matchesStatus = filters.statusFilter === "all" || wo.status === filters.statusFilter;
-    const matchesPriority = filters.priorityFilter === "all" || wo.priority === filters.priorityFilter;
-    
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+const WorkOrdersPage: React.FC = () => {
+  const [currentView, setCurrentView] = useState<"list" | "board">("list");
+  const { workOrders, isLoading, error } = useWorkOrdersData();
 
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="space-y-4 sm:space-y-6">
-          <BackToDashboard />
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
-          </div>
+        <div className="flex justify-center items-center h-60">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <DashboardLayout>
+        <div className="text-center py-8 text-red-500">
+          Error loading work orders. Please try again.
         </div>
       </DashboardLayout>
     );
@@ -41,56 +35,30 @@ const WorkOrdersPage = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Work Orders | MaintenEase</title>
+      </Helmet>
       <div className="space-y-4 sm:space-y-6">
         <BackToDashboard />
         
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Work Orders</h1>
-            <p className="text-sm sm:text-base text-gray-500 mt-1">Create and manage maintenance work orders</p>
-          </div>
-          <Link to="/work-orders/new">
-            <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              <span className="text-sm sm:text-base">Create Work Order</span>
-            </Button>
-          </Link>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Work Orders</h1>
+          
+          <Tabs value={currentView} onValueChange={(value: string) => setCurrentView(value as "list" | "board")}>
+            <TabsList>
+              <TabsTrigger value="list">List View</TabsTrigger>
+              <TabsTrigger value="board">Board View</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
-        <Tabs defaultValue="list" className="w-full">
-          <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 min-w-[200px]">
-              <TabsTrigger value="list" className="text-xs sm:text-sm">List View</TabsTrigger>
-              <TabsTrigger value="board" className="text-xs sm:text-sm">Board View</TabsTrigger>
-            </TabsList>
-          </div>
-          
-          <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <WorkOrderFilters 
-              filters={filters} 
-              updateFilters={updateFilters}
-              resetFilters={resetFilters}
-            />
-            
-            {filteredWorkOrders.length === 0 ? (
-              <EmptyWorkOrdersState />
-            ) : (
-              <WorkOrderList workOrders={filteredWorkOrders} />
-            )}
+        <Tabs value={currentView} className="w-full">
+          <TabsContent value="list" className="mt-0">
+            <WorkOrderList />
           </TabsContent>
           
-          <TabsContent value="board" className="mt-0 space-y-4 sm:space-y-6">
-            <WorkOrderFilters 
-              filters={filters} 
-              updateFilters={updateFilters}
-              resetFilters={resetFilters}
-            />
-            
-            {filteredWorkOrders.length === 0 ? (
-              <EmptyWorkOrdersState />
-            ) : (
-              <WorkOrderBoardView workOrders={filteredWorkOrders} />
-            )}
+          <TabsContent value="board" className="mt-0">
+            <WorkOrderBoardView workOrders={workOrders} />
           </TabsContent>
         </Tabs>
       </div>
