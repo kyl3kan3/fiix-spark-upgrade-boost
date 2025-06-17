@@ -17,10 +17,12 @@ const AssetsPage = () => {
     category: "all",
     location: "all",
   });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   // Mock data for now - will be replaced with actual query
   const assets: any[] = [];
   const isLoading = false;
+  const assetCategories = ["Equipment", "Vehicles", "Facilities", "Tools"];
 
   const filteredAssets = assets.filter((asset) => {
     const matchesSearch = !filters.search || 
@@ -32,6 +34,18 @@ const AssetsPage = () => {
     
     return matchesSearch && matchesStatus && matchesCategory;
   });
+
+  const handleSearchChange = (value: string) => {
+    setFilters(prev => ({ ...prev, search: value }));
+  };
+
+  const handleCategoryToggle = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
 
   if (isLoading) {
     return (
@@ -62,16 +76,22 @@ const AssetsPage = () => {
         </div>
 
         <div className="space-y-4 sm:space-y-6">
-          <AssetFilters />
+          <AssetFilters 
+            searchQuery={filters.search}
+            onSearchChange={handleSearchChange}
+            assetCategories={assetCategories}
+            selectedCategories={selectedCategories}
+            onCategoryToggle={handleCategoryToggle}
+          />
           
           {filteredAssets.length === 0 ? (
-            <AssetEmptyState />
+            <AssetEmptyState hasFilters={!!filters.search || selectedCategories.length > 0} />
           ) : (
             <AssetGridView 
               assets={filteredAssets}
               isLoading={false}
               error={null}
-              hasFilters={false}
+              hasFilters={!!filters.search || selectedCategories.length > 0}
               isDeleting={false}
               onDeleteAsset={() => {}}
             />

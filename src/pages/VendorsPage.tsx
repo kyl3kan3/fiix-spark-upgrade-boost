@@ -16,10 +16,15 @@ const VendorsPage = () => {
     category: "all",
     status: "all",
   });
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
 
   // Mock data for now
   const vendors: any[] = [];
   const isLoading = false;
+  const statusOptions = ["active", "inactive", "pending"];
+  const typeOptions = ["supplier", "contractor", "service", "maintenance"];
 
   const filteredVendors = vendors.filter((vendor) => {
     const matchesSearch = !filters.search || 
@@ -31,6 +36,42 @@ const VendorsPage = () => {
     
     return matchesSearch && matchesCategory && matchesStatus;
   });
+
+  const handleSearchChange = (value: string) => {
+    setFilters(prev => ({ ...prev, search: value }));
+  };
+
+  const handleStatusToggle = (status: string) => {
+    setSelectedStatus(prev => 
+      prev.includes(status) 
+        ? prev.filter(s => s !== status)
+        : [...prev, status]
+    );
+  };
+
+  const handleTypeToggle = (type: string) => {
+    setSelectedTypes(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
+  };
+
+  const handleToggleSelection = (vendorId: string) => {
+    setSelectedVendors(prev => 
+      prev.includes(vendorId) 
+        ? prev.filter(id => id !== vendorId)
+        : [...prev, vendorId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    setSelectedVendors(vendors.map(v => v.id));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedVendors([]);
+  };
 
   if (isLoading) {
     return (
@@ -69,21 +110,31 @@ const VendorsPage = () => {
         </div>
 
         <div className="space-y-4 sm:space-y-6">
-          <VendorFilters />
+          <VendorFilters 
+            searchQuery={filters.search}
+            onSearchChange={handleSearchChange}
+            statusOptions={statusOptions}
+            selectedStatus={selectedStatus}
+            onStatusToggle={handleStatusToggle}
+            typeOptions={typeOptions}
+            selectedTypes={selectedTypes}
+            onTypeToggle={handleTypeToggle}
+          />
           
           {filteredVendors.length === 0 ? (
-            <VendorEmptyState />
+            <VendorEmptyState hasFilters={!!filters.search || selectedStatus.length > 0 || selectedTypes.length > 0} />
           ) : (
             <VendorGridView 
               vendors={filteredVendors}
               isLoading={false}
               error={null}
-              hasFilters={false}
+              hasFilters={!!filters.search || selectedStatus.length > 0 || selectedTypes.length > 0}
               isDeleting={false}
+              selectedVendors={selectedVendors}
               onDeleteVendor={() => {}}
-              selectedVendors={[]}
-              onVendorSelect={() => {}}
-              onVendorDeselect={() => {}}
+              onToggleSelection={handleToggleSelection}
+              onSelectAll={handleSelectAll}
+              onClearSelection={handleClearSelection}
             />
           )}
         </div>

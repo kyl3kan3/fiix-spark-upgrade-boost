@@ -15,6 +15,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const WorkOrdersPage = () => {
   const { workOrders, isLoading, filters, updateFilters } = useWorkOrders();
 
+  const resetFilters = () => {
+    updateFilters({
+      searchQuery: "",
+      statusFilter: "all",
+      priorityFilter: "all"
+    });
+  };
+
   const filteredWorkOrders = workOrders.filter((wo) => {
     const matchesSearch = !filters.searchQuery || 
       wo.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -66,7 +74,11 @@ const WorkOrdersPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <WorkOrderFilters filters={filters} updateFilters={updateFilters} />
+            <WorkOrderFilters 
+              filters={filters} 
+              updateFilters={updateFilters}
+              resetFilters={resetFilters}
+            />
             
             {filteredWorkOrders.length === 0 ? (
               <EmptyWorkOrdersState />
@@ -76,7 +88,11 @@ const WorkOrdersPage = () => {
           </TabsContent>
           
           <TabsContent value="board" className="mt-0 space-y-4 sm:space-y-6">
-            <WorkOrderFilters filters={filters} updateFilters={updateFilters} />
+            <WorkOrderFilters 
+              filters={filters} 
+              updateFilters={updateFilters}
+              resetFilters={resetFilters}
+            />
             
             {filteredWorkOrders.length === 0 ? (
               <EmptyWorkOrdersState />

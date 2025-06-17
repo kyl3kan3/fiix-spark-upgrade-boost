@@ -21,7 +21,7 @@ const Team = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { teamMembers, loading } = useTeamData();
+  const { teamMembers, loading } = useTeamData({});
 
   const filteredMembers = teamMembers.filter((member) => {
     const matchesSearch = !filters.search || 
@@ -40,7 +40,9 @@ const Team = () => {
     last_name: member.lastName,
     joined: new Date().toISOString(),
     lastActive: new Date().toISOString(),
-    status: 'active' as const
+    status: 'active' as const,
+    phone: member.phone || '',
+    companyName: member.companyName || ''
   }));
 
   if (loading) {
@@ -85,7 +87,12 @@ const Team = () => {
             {viewMode === "grid" ? (
               <TeamMembersGrid members={transformedMembers} />
             ) : (
-              <TeamMembersList members={transformedMembers} />
+              <TeamMembersList 
+                members={transformedMembers} 
+                roleColorMap={{}}
+                loading={loading}
+                onMemberUpdated={() => {}}
+              />
             )}
           </TabsContent>
           
