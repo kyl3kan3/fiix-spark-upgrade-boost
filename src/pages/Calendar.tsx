@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -11,6 +10,7 @@ import DailyLog from "@/components/calendar/DailyLog";
 import DailyLogsList from "@/components/calendar/DailyLogsList";
 import { events, technicians } from "@/components/calendar/mockData";
 import { MaintenanceEvent } from "@/components/calendar/types";
+import { toast } from "sonner";
 
 const CalendarPage = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -52,6 +52,10 @@ const CalendarPage = () => {
     }
   };
 
+  const handleScheduleEvent = () => {
+    toast.info("Schedule Event dialog will open here");
+  };
+
   return (
     <DashboardLayout>
       <BackToDashboard />
@@ -60,7 +64,7 @@ const CalendarPage = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Maintenance Calendar</h1>
           <p className="text-sm sm:text-base text-gray-500">Schedule and manage maintenance events</p>
         </div>
-        <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+        <Button onClick={handleScheduleEvent} className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
           <CalendarIcon className="h-4 w-4 mr-2" />
           Schedule Event
         </Button>

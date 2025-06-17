@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +5,10 @@ import { Package, Plus } from "lucide-react";
 
 const AssetManagementContent: React.FC = () => {
   const navigate = useNavigate();
+
+  const handleScheduleMaintenance = () => {
+    navigate('/calendar');
+  };
 
   return (
     <div className="space-y-6">
@@ -113,7 +116,7 @@ const AssetManagementContent: React.FC = () => {
           </div>
           
           <div className="flex space-x-2">
-            <Button className="bg-fiix-500 hover:bg-fiix-600">Schedule Maintenance</Button>
+            <Button onClick={handleScheduleMaintenance} className="bg-fiix-500 hover:bg-fiix-600">Schedule Maintenance</Button>
             <Button variant="outline" className="border-fiix-300 text-fiix-600 hover:bg-fiix-50">View Documents</Button>
           </div>
         </div>
