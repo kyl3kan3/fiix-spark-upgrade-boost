@@ -57,7 +57,7 @@ export const featureItems: FeatureItem[] = [
     icon: <Users className="h-12 w-12 p-2 bg-maintenease-100 text-maintenease-600 rounded-lg" />,
     category: "advanced",
     benefits: ["Streamlined communication", "Task assignment", "Mobile notifications"],
-    demoEnabled: false,
+    demoEnabled: true,
   },
   {
     title: "Performance Analytics",
@@ -65,7 +65,7 @@ export const featureItems: FeatureItem[] = [
     icon: <BarChart2 className="h-12 w-12 p-2 bg-maintenease-100 text-maintenease-600 rounded-lg" />,
     category: "reporting",
     benefits: ["Customizable dashboards", "Exportable reports", "Key metric tracking"],
-    demoEnabled: false,
+    demoEnabled: true,
   },
   {
     title: "Downtime Tracking",
@@ -73,6 +73,6 @@ export const featureItems: FeatureItem[] = [
     icon: <Clock className="h-12 w-12 p-2 bg-maintenease-100 text-maintenease-600 rounded-lg" />,
     category: "reporting",
     benefits: ["Minimize production losses", "Identify problem areas", "Calculate true maintenance costs"],
-    demoEnabled: false,
+    demoEnabled: true,
   },
 ];

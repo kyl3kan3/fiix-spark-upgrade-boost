@@ -4,6 +4,9 @@ import WorkOrderContent from "./WorkOrderContent";
 import PreventiveMaintenanceContent from "./PreventiveMaintenanceContent";
 import AssetManagementContent from "./AssetManagementContent";
 import ReportsContent from "./ReportsContent";
+import TeamCollaborationContent from "./TeamCollaborationContent";
+import PerformanceAnalyticsContent from "./PerformanceAnalyticsContent";
+import DowntimeTrackingContent from "./DowntimeTrackingContent";
 
 export interface FeatureContent {
   title: string;
@@ -31,6 +34,21 @@ export const featureContentMap: FeatureContentMap = {
     title: "Asset Management",
     description: "Track and manage all your equipment and assets",
     content: <AssetManagementContent />
+  },
+  "Team Collaboration": {
+    title: "Team Collaboration",
+    description: "Improve communication and coordination between team members",
+    content: <TeamCollaborationContent />
+  },
+  "Performance Analytics": {
+    title: "Performance Analytics",
+    description: "Gain insights into your maintenance operations with detailed analytics",
+    content: <PerformanceAnalyticsContent />
+  },
+  "Downtime Tracking": {
+    title: "Downtime Tracking",
+    description: "Monitor equipment downtime and identify improvement opportunities",
+    content: <DowntimeTrackingContent />
   },
   "Reports": {
     title: "Reports",
