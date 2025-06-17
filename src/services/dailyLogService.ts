@@ -88,9 +88,9 @@ export class DailyLogService {
       technician: logEntry.technician,
       shift_start: logEntry.shift_start,
       shift_end: logEntry.shift_end,
-      equipment_readings: logEntry.equipment_readings as Json,
-      tasks: logEntry.tasks as Json,
-      incidents: logEntry.incidents as Json,
+      equipment_readings: JSON.parse(JSON.stringify(logEntry.equipment_readings)) as Json,
+      tasks: JSON.parse(JSON.stringify(logEntry.tasks)) as Json,
+      incidents: JSON.parse(JSON.stringify(logEntry.incidents)) as Json,
       notes: logEntry.notes,
       weather_conditions: logEntry.weather_conditions,
     };

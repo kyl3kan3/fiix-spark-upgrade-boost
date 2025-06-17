@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import { useUserSettings } from "@/hooks/useUserSettings";
 
 interface NotificationPreference {
   id: number;
@@ -19,6 +20,14 @@ interface DisplaySetting {
 
 export const useSettingsState = () => {
   const { theme, setTheme } = useTheme();
+  const { 
+    settings, 
+    isLoading, 
+    isSaving, 
+    updateNotificationPreferences, 
+    updateDisplaySettings, 
+    updateDashboardLayout 
+  } = useUserSettings();
   
   const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreference[]>([
     { id: 1, title: "Email Notifications", description: "Receive email notifications for work orders", enabled: true },
@@ -33,39 +42,62 @@ export const useSettingsState = () => {
   const [dashboardLayout, setDashboardLayout] = useState("Default");
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
-  // Load saved preferences on mount
+  // Load settings from database when available
   useEffect(() => {
-    const storedPreferences = localStorage.getItem('notificationPreferences');
-    if (storedPreferences) {
-      setNotificationPreferences(JSON.parse(storedPreferences));
-    }
+    if (settings) {
+      // Update notification preferences from database
+      const updatedNotiPrefs = notificationPreferences.map(pref => {
+        switch (pref.id) {
+          case 1:
+            return { ...pref, enabled: settings.notification_preferences.email_notifications };
+          case 2:
+            return { ...pref, enabled: settings.notification_preferences.push_notifications };
+          case 3:
+            return { ...pref, enabled: settings.notification_preferences.sms_notifications };
+          default:
+            return pref;
+        }
+      });
+      setNotificationPreferences(updatedNotiPrefs);
 
-    const storedDisplaySettings = localStorage.getItem('displaySettings');
-    if (storedDisplaySettings) {
-      setDisplaySettings(JSON.parse(storedDisplaySettings));
-    }
+      // Update display settings from database
+      const updatedDisplaySettings = displaySettings.map(setting => {
+        if (setting.id === "compactMode") {
+          return { ...setting, enabled: settings.display_settings.compact_mode };
+        }
+        return setting;
+      });
+      setDisplaySettings(updatedDisplaySettings);
 
-    const storedLayout = localStorage.getItem('dashboardLayout');
-    if (storedLayout) {
-      setDashboardLayout(storedLayout);
+      // Update dashboard layout
+      setDashboardLayout(settings.dashboard_layout);
     }
-  }, []);
+  }, [settings]);
 
-  const handleNotificationToggle = (id: number) => {
-    setNotificationPreferences(prev => 
-      prev.map(pref => 
-        pref.id === id ? { ...pref, enabled: !pref.enabled } : pref
-      )
+  const handleNotificationToggle = async (id: number) => {
+    const updatedPrefs = notificationPreferences.map(pref => 
+      pref.id === id ? { ...pref, enabled: !pref.enabled } : pref
     );
+    setNotificationPreferences(updatedPrefs);
     
-    const preference = notificationPreferences.find(p => p.id === id);
+    // Save to database
+    const preference = updatedPrefs.find(p => p.id === id);
     if (preference) {
-      toast.success(`${preference.title} ${!preference.enabled ? 'enabled' : 'disabled'}`);
+      try {
+        const dbPrefs = {
+          email_notifications: updatedPrefs.find(p => p.id === 1)?.enabled || false,
+          push_notifications: updatedPrefs.find(p => p.id === 2)?.enabled || false,
+          sms_notifications: updatedPrefs.find(p => p.id === 3)?.enabled || false,
+        };
+        await updateNotificationPreferences(dbPrefs);
+      } catch (error) {
+        // Revert on error
+        setNotificationPreferences(notificationPreferences);
+      }
     }
-    setHasPendingChanges(true);
   };
 
-  const handleDisplaySettingToggle = (id: string) => {
+  const handleDisplaySettingToggle = async (id: string) => {
     if (id === 'darkMode') {
       // Dark mode is handled by the theme provider
       return;
@@ -74,30 +106,39 @@ export const useSettingsState = () => {
     const updatedSettings = displaySettings.map(setting => 
       setting.id === id ? { ...setting, enabled: !setting.enabled } : setting
     );
-    
     setDisplaySettings(updatedSettings);
     
-    const setting = displaySettings.find(s => s.id === id);
+    // Save to database
+    const setting = updatedSettings.find(s => s.id === id);
     if (setting) {
-      toast.success(`${setting.title} ${!setting.enabled ? 'enabled' : 'disabled'}`);
-      localStorage.setItem('displaySettings', JSON.stringify(updatedSettings));
+      try {
+        const dbSettings = {
+          compact_mode: updatedSettings.find(s => s.id === "compactMode")?.enabled || false,
+          dark_mode: false, // This is handled by theme provider
+        };
+        await updateDisplaySettings(dbSettings);
+      } catch (error) {
+        // Revert on error
+        setDisplaySettings(displaySettings);
+      }
     }
-    setHasPendingChanges(true);
   };
 
-  const handleLayoutChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDashboardLayout(e.target.value);
-    toast.success(`Dashboard layout changed to ${e.target.value}`);
-    setHasPendingChanges(true);
+  const handleLayoutChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLayout = e.target.value;
+    setDashboardLayout(newLayout);
+    
+    try {
+      await updateDashboardLayout(newLayout);
+    } catch (error) {
+      // Revert on error
+      setDashboardLayout(dashboardLayout);
+    }
   };
 
   const handleSaveSettings = () => {
-    // Save all settings to localStorage
-    localStorage.setItem('notificationPreferences', JSON.stringify(notificationPreferences));
-    localStorage.setItem('displaySettings', JSON.stringify(displaySettings));
-    localStorage.setItem('dashboardLayout', dashboardLayout);
-    
-    toast.success("Settings saved successfully");
+    // Settings are now saved automatically when changed
+    toast.success("Settings are automatically saved");
     setHasPendingChanges(false);
   };
 
@@ -113,7 +154,7 @@ export const useSettingsState = () => {
     notificationPreferences,
     displaySettings,
     dashboardLayout,
-    hasPendingChanges,
+    hasPendingChanges: isSaving,
     handleNotificationToggle,
     handleDisplaySettingToggle,
     handleLayoutChange,

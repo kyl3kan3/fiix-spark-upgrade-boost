@@ -461,6 +461,7 @@ export type Database = {
           notifications: Json | null
           setup_completed: boolean | null
           updated_at: string | null
+          user_id: string | null
           user_roles: Json | null
         }
         Insert: {
@@ -475,6 +476,7 @@ export type Database = {
           notifications?: Json | null
           setup_completed?: boolean | null
           updated_at?: string | null
+          user_id?: string | null
           user_roles?: Json | null
         }
         Update: {
@@ -489,7 +491,68 @@ export type Database = {
           notifications?: Json | null
           setup_completed?: boolean | null
           updated_at?: string | null
+          user_id?: string | null
           user_roles?: Json | null
+        }
+        Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          session_data: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          session_data?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          session_data?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string
+          dashboard_layout: string | null
+          display_settings: Json | null
+          id: string
+          notification_preferences: Json | null
+          setup_completed: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dashboard_layout?: string | null
+          display_settings?: Json | null
+          id?: string
+          notification_preferences?: Json | null
+          setup_completed?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dashboard_layout?: string | null
+          display_settings?: Json | null
+          id?: string
+          notification_preferences?: Json | null
+          setup_completed?: boolean | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
