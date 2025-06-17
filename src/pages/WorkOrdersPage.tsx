@@ -13,15 +13,7 @@ import { useWorkOrders } from "@/components/workOrders/useWorkOrders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const WorkOrdersPage = () => {
-  const { workOrders, isLoading, filters, updateFilters } = useWorkOrders();
-
-  const resetFilters = () => {
-    updateFilters({
-      searchQuery: "",
-      statusFilter: "all",
-      priorityFilter: "all"
-    });
-  };
+  const { workOrders, isLoading, filters, updateFilters, resetFilters } = useWorkOrders();
 
   const filteredWorkOrders = workOrders.filter((wo) => {
     const matchesSearch = !filters.searchQuery || 
