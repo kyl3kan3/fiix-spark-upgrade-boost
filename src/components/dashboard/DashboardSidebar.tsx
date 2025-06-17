@@ -9,7 +9,8 @@ import {
   Building2,
   ClipboardCheck,
   Wrench,
-  Calendar
+  Calendar,
+  BarChart3
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -72,6 +73,12 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
       label: "Maintenance",
       href: "/maintenance",
       description: "Preventive maintenance scheduling"
+    },
+    {
+      icon: BarChart3,
+      label: "Reports",
+      href: "/reports",
+      description: "Analytics and reporting"
     },
     {
       icon: Building2,
