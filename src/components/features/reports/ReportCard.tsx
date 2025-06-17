@@ -25,7 +25,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ title, description, icon, onGen
         </div>
         <p className="text-sm text-gray-600 mb-4">{description}</p>
         <Button 
-          className="w-full bg-fiix-500 hover:bg-fiix-600"
+          className="w-full bg-maintenease-500 hover:bg-maintenease-600"
           onClick={onGenerate}
         >
           Generate Report

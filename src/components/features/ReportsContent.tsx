@@ -26,18 +26,23 @@ const ReportsContent: React.FC = () => {
   }, []);
   
   const handleGenerateReport = (reportType: string) => {
+    console.log("Generating report:", reportType);
     setSelectedReport(reportType);
     toast.success(`${reportType} report generated successfully`);
   };
 
   const handleGenerateCustomReport = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Custom report generated successfully");
+    console.log("Generating custom report");
     setSelectedReport("Custom Report");
+    toast.success("Custom report generated successfully");
   };
 
   const handleExportPdf = async () => {
-    if (!selectedReport) return;
+    if (!selectedReport) {
+      toast.error("No report selected to export");
+      return;
+    }
     
     setIsExporting(true);
     try {
@@ -71,7 +76,7 @@ const ReportsContent: React.FC = () => {
   if (isLoading) {
     return (
       <Card className="w-full h-64 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-fiix-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-maintenease-500" />
       </Card>
     );
   }

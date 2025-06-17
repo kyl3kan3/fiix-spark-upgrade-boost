@@ -75,7 +75,7 @@ const ReportChart: React.FC<ReportChartProps> = ({
             size="sm"
             onClick={onExport}
             disabled={isExporting}
-            className="bg-fiix-500 hover:bg-fiix-600 text-white"
+            className="bg-maintenease-500 hover:bg-maintenease-600 text-white"
           >
             <Download className="h-4 w-4 mr-2" />
             {isExporting ? "Exporting..." : "Export PDF"}
