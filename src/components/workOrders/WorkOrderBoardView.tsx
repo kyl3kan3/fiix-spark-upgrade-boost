@@ -9,7 +9,7 @@ interface WorkOrderBoardViewProps {
   workOrders: WorkOrderWithRelations[];
 }
 
-const WorkOrderBoardView = ({ workOrders }: WorkOrderBoardViewProps) => {
+const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ workOrders }) => {
   const statusColumns = [
     { key: 'pending', label: 'Pending', color: 'bg-yellow-50 border-yellow-200' },
     { key: 'in_progress', label: 'In Progress', color: 'bg-blue-50 border-blue-200' },
