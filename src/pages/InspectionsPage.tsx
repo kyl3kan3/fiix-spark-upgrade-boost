@@ -64,13 +64,7 @@ const InspectionsPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
-              </div>
-            ) : (
-              <InspectionsList inspections={filteredInspections} loading={false} />
-            )}
+            <InspectionsList inspections={filteredInspections} loading={loading} />
           </TabsContent>
           
           <TabsContent value="calendar" className="mt-0">
