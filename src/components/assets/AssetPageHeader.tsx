@@ -1,9 +1,5 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 
 const AssetPageHeader: React.FC = () => {
@@ -11,23 +7,10 @@ const AssetPageHeader: React.FC = () => {
   const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
   return (
-    <>
-      <BackToDashboard />
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assets</h1>
-        
-        {canAdd && (
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Link to="/assets/new">
-              <Button className="whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white font-medium">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Asset
-              </Button>
-            </Link>
-          </div>
-        )}
-      </div>
-    </>
+    <div>
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Assets</h1>
+      <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your equipment and facility assets</p>
+    </div>
   );
 };
 

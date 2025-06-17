@@ -53,7 +53,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {loading || checkingPermissions ? (
+        {loading ? (
           <TeamMembersLoading />
         ) : members.length > 0 ? (
           <TeamMembersGrid 
@@ -66,7 +66,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
         )}
       </CardContent>
       
-      <TeamMembersPermissionFooter currentUserRole={currentUserRole} />
+      <TeamMembersPermissionFooter currentUserRole={currentUserRole || 'viewer'} />
     </Card>
   );
 };

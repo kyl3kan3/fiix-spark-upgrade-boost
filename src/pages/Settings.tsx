@@ -1,11 +1,20 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings as SettingsIcon, User, Bell, Shield, Palette } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 const Settings = () => {
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <DashboardLayout>
       <div className="space-y-4 sm:space-y-6">
@@ -48,43 +57,110 @@ const Settings = () => {
           </div>
           
           <TabsContent value="profile" className="mt-0">
-            <div className="bg-white rounded-lg border p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Profile Settings</h3>
-              <p className="text-sm sm:text-base text-gray-500">Manage your personal information and preferences.</p>
-              <div className="mt-6 text-center text-gray-400">
-                <p className="text-sm sm:text-base">Profile settings coming soon...</p>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile Settings</CardTitle>
+                <CardDescription>Manage your personal information and preferences.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input id="firstName" placeholder="Enter your first name" />
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input id="lastName" placeholder="Enter your last name" />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" placeholder="Enter your email" />
+                </div>
+                <Button>Save Changes</Button>
+              </CardContent>
+            </Card>
           </TabsContent>
           
           <TabsContent value="notifications" className="mt-0">
-            <div className="bg-white rounded-lg border p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Notification Preferences</h3>
-              <p className="text-sm sm:text-base text-gray-500">Control how and when you receive notifications.</p>
-              <div className="mt-6 text-center text-gray-400">
-                <p className="text-sm sm:text-base">Notification settings coming soon...</p>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification Preferences</CardTitle>
+                <CardDescription>Control how and when you receive notifications.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="emailNotifications">Email Notifications</Label>
+                    <p className="text-sm text-gray-500">Receive updates via email</p>
+                  </div>
+                  <Switch 
+                    id="emailNotifications"
+                    checked={emailNotifications}
+                    onCheckedChange={setEmailNotifications}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="pushNotifications">Push Notifications</Label>
+                    <p className="text-sm text-gray-500">Receive browser notifications</p>
+                  </div>
+                  <Switch 
+                    id="pushNotifications"
+                    checked={pushNotifications}
+                    onCheckedChange={setPushNotifications}
+                  />
+                </div>
+                <Button>Save Preferences</Button>
+              </CardContent>
+            </Card>
           </TabsContent>
           
           <TabsContent value="security" className="mt-0">
-            <div className="bg-white rounded-lg border p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Security Settings</h3>
-              <p className="text-sm sm:text-base text-gray-500">Manage your account security and privacy settings.</p>
-              <div className="mt-6 text-center text-gray-400">
-                <p className="text-sm sm:text-base">Security settings coming soon...</p>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Settings</CardTitle>
+                <CardDescription>Manage your account security and privacy settings.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="currentPassword">Current Password</Label>
+                  <Input id="currentPassword" type="password" placeholder="Enter current password" />
+                </div>
+                <div>
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input id="newPassword" type="password" placeholder="Enter new password" />
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <Input id="confirmPassword" type="password" placeholder="Confirm new password" />
+                </div>
+                <Button>Update Password</Button>
+              </CardContent>
+            </Card>
           </TabsContent>
           
           <TabsContent value="appearance" className="mt-0">
-            <div className="bg-white rounded-lg border p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Appearance Settings</h3>
-              <p className="text-sm sm:text-base text-gray-500">Customize the look and feel of your dashboard.</p>
-              <div className="mt-6 text-center text-gray-400">
-                <p className="text-sm sm:text-base">Appearance settings coming soon...</p>
-              </div>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Appearance Settings</CardTitle>
+                <CardDescription>Customize the look and feel of your dashboard.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="darkMode">Dark Mode</Label>
+                    <p className="text-sm text-gray-500">Switch to dark theme</p>
+                  </div>
+                  <Switch 
+                    id="darkMode"
+                    checked={darkMode}
+                    onCheckedChange={setDarkMode}
+                  />
+                </div>
+                <Button>Save Appearance</Button>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

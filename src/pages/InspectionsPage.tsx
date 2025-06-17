@@ -30,19 +30,6 @@ const InspectionsPage = () => {
     return matchesSearch && matchesStatus && matchesAssignee;
   });
 
-  if (loading) {
-    return (
-      <DashboardLayout>
-        <div className="space-y-4 sm:space-y-6">
-          <BackToDashboard />
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
     <DashboardLayout>
       <div className="space-y-4 sm:space-y-6">
@@ -77,7 +64,13 @@ const InspectionsPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <InspectionsList inspections={filteredInspections} loading={loading} />
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+              </div>
+            ) : (
+              <InspectionsList inspections={filteredInspections} loading={false} />
+            )}
           </TabsContent>
           
           <TabsContent value="calendar" className="mt-0">
