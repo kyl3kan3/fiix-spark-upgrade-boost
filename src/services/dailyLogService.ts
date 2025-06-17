@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 export interface DailyLogEntry {
   id?: string;
@@ -40,6 +41,22 @@ export interface Incident {
   resolved: boolean;
 }
 
+// Helper functions to convert between Json and our types
+const parseJsonArray = <T>(jsonData: Json | null, fallback: T[] = []): T[] => {
+  if (!jsonData) return fallback;
+  if (Array.isArray(jsonData)) return jsonData as T[];
+  return fallback;
+};
+
+const convertDbRowToLogEntry = (data: any): DailyLogEntry => {
+  return {
+    ...data,
+    equipment_readings: parseJsonArray<EquipmentReading>(data.equipment_readings, []),
+    tasks: parseJsonArray<DailyTask>(data.tasks, []),
+    incidents: parseJsonArray<Incident>(data.incidents, []),
+  };
+};
+
 export class DailyLogService {
   static async getDailyLog(date: Date): Promise<DailyLogEntry | null> {
     const dateString = date.toISOString().split('T')[0];
@@ -55,7 +72,7 @@ export class DailyLogService {
       throw error;
     }
 
-    return data;
+    return data ? convertDbRowToLogEntry(data) : null;
   }
 
   static async saveDailyLog(logEntry: DailyLogEntry): Promise<DailyLogEntry> {
@@ -71,9 +88,9 @@ export class DailyLogService {
       technician: logEntry.technician,
       shift_start: logEntry.shift_start,
       shift_end: logEntry.shift_end,
-      equipment_readings: logEntry.equipment_readings,
-      tasks: logEntry.tasks,
-      incidents: logEntry.incidents,
+      equipment_readings: logEntry.equipment_readings as Json,
+      tasks: logEntry.tasks as Json,
+      incidents: logEntry.incidents as Json,
       notes: logEntry.notes,
       weather_conditions: logEntry.weather_conditions,
     };
@@ -91,7 +108,7 @@ export class DailyLogService {
       throw error;
     }
 
-    return data;
+    return convertDbRowToLogEntry(data);
   }
 
   static async getAllDailyLogs(): Promise<DailyLogEntry[]> {
@@ -105,7 +122,7 @@ export class DailyLogService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(convertDbRowToLogEntry);
   }
 
   static async deleteDailyLog(id: string): Promise<void> {
