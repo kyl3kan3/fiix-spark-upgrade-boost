@@ -21,6 +21,18 @@ import Team from "./pages/Team";
 import LocationsPage from "./pages/LocationsPage";
 import Settings from "./pages/Settings";
 import ProfilePage from "./pages/ProfilePage";
+import Calendar from "./pages/Calendar";
+import InspectionsPage from "./pages/InspectionsPage";
+import NewInspectionPage from "./pages/NewInspectionPage";
+import InspectionDetailPage from "./pages/InspectionDetailPage";
+import Help from "./pages/Help";
+import Chat from "./pages/Chat";
+import ReportsPage from "./pages/ReportsPage";
+import SetupPage from "./pages/SetupPage";
+import TeamSetup from "./pages/TeamSetup";
+import CompanySetup from "./pages/CompanySetup";
+import OnboardingPage from "./pages/OnboardingPage";
+import LocationDetailPage from "./pages/LocationDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -37,81 +49,165 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/login" element={<Navigate to="/auth" replace />} />
               <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
+              
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
               } />
+              
               <Route path="/vendors" element={
                 <ProtectedRoute>
                   <VendorsPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/vendors/new" element={
                 <ProtectedRoute>
                   <VendorFormPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/vendors/import" element={
                 <ProtectedRoute>
                   <VendorImportPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/vendors/:vendorId/edit" element={
                 <ProtectedRoute>
                   <VendorFormPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/assets" element={
                 <ProtectedRoute>
                   <AssetsPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/assets/new" element={
                 <ProtectedRoute>
                   <AssetFormPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/assets/:assetId/edit" element={
                 <ProtectedRoute>
                   <AssetFormPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/work-orders" element={
                 <ProtectedRoute>
                   <WorkOrdersPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/work-orders/new" element={
                 <ProtectedRoute>
                   <WorkOrderFormPage />
                 </ProtectedRoute>
               } />
+              
               <Route path="/work-orders/:workOrderId/edit" element={
                 <ProtectedRoute>
                   <WorkOrderFormPage />
                 </ProtectedRoute>
               } />
+              
+              <Route path="/inspections" element={
+                <ProtectedRoute>
+                  <InspectionsPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/inspections/new" element={
+                <ProtectedRoute>
+                  <NewInspectionPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/inspections/:id" element={
+                <ProtectedRoute>
+                  <InspectionDetailPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/calendar" element={
+                <ProtectedRoute>
+                  <Calendar />
+                </ProtectedRoute>
+              } />
+              
               <Route path="/team" element={
                 <ProtectedRoute>
                   <Team />
                 </ProtectedRoute>
               } />
+              
               <Route path="/locations" element={
                 <ProtectedRoute>
                   <LocationsPage />
                 </ProtectedRoute>
               } />
+              
+              <Route path="/locations/:id" element={<LocationDetailPage />} />
+              
               <Route path="/settings" element={
                 <ProtectedRoute>
                   <Settings />
                 </ProtectedRoute>
               } />
+              
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <ProfilePage />
                 </ProtectedRoute>
               } />
+              
+              <Route path="/help" element={
+                <ProtectedRoute>
+                  <Help />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/chat" element={
+                <ProtectedRoute>
+                  <Chat />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/reports" element={
+                <ProtectedRoute>
+                  <ReportsPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/setup" element={
+                <ProtectedRoute>
+                  <SetupPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/team-setup" element={
+                <ProtectedRoute>
+                  <TeamSetup />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/company-setup" element={
+                <ProtectedRoute>
+                  <CompanySetup />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/onboarding" element={
+                <ProtectedRoute>
+                  <OnboardingPage />
+                </ProtectedRoute>
+              } />
+              
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </AuthProvider>
