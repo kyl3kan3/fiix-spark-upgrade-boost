@@ -1,83 +1,93 @@
 
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
+import { Plus, CalendarIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import InspectionsList from "@/components/inspections/InspectionsList";
-import { InspectionsFilters } from "@/components/inspections/InspectionsFilters";
-import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
-import DailyChecklist from "@/components/inspections/DailyChecklist";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import InspectionsFilters from "@/components/inspections/InspectionsFilters";
+import InspectionsList from "@/components/inspections/InspectionsList";
+import InspectionsCalendarView from "@/components/inspections/InspectionsCalendarView";
 import { useInspections } from "@/hooks/useInspections";
 
 const InspectionsPage = () => {
-  const navigate = useNavigate();
-  const [activeView, setActiveView] = useState<string>("list");
   const [filters, setFilters] = useState({
+    search: "",
     status: "all",
-    priority: "all",
-    assignedTo: "all",
-    dateRange: {
-      from: undefined,
-      to: undefined,
-    },
+    type: "all",
+    assignee: "all",
   });
 
-  // Use our custom hook to fetch inspections
-  const { inspections, loading, refreshInspections } = useInspections(filters);
+  const { inspections, isLoading } = useInspections();
 
-  const handleCreateNew = () => {
-    navigate("/inspections/new");
-  };
+  const filteredInspections = inspections.filter((inspection) => {
+    const matchesSearch = !filters.search || 
+      inspection.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+      inspection.description?.toLowerCase().includes(filters.search.toLowerCase());
+    
+    const matchesStatus = filters.status === "all" || inspection.status === filters.status;
+    const matchesType = filters.type === "all" || inspection.type === filters.type;
+    const matchesAssignee = filters.assignee === "all" || inspection.assigned_to === filters.assignee;
+    
+    return matchesSearch && matchesStatus && matchesType && matchesAssignee;
+  });
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-4 sm:space-y-6">
+          <BackToDashboard />
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>Inspections | MaintenEase</title>
-      </Helmet>
-
-      <BackToDashboard />
-      
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:flex-1 space-y-6">
-          {/* Floating top bar with filters - adding proper sticky positioning */}
-          <div className="sticky top-0 z-40 pt-4 pb-2 bg-background/95 backdrop-blur-lg border-b border-gray-200/50 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold">Inspections</h1>
-              <Button onClick={handleCreateNew}>
-                <Plus className="h-4 w-4 mr-1" /> New Inspection
-              </Button>
-            </div>
-
-            <InspectionsFilters filters={filters} setFilters={setFilters} />
-
-            <Tabs value={activeView} onValueChange={setActiveView} className="mt-4">
-              <div className="flex items-center justify-between">
-                <TabsList>
-                  <TabsTrigger value="list">List View</TabsTrigger>
-                  <TabsTrigger value="calendar">Calendar</TabsTrigger>
-                </TabsList>
-              </div>
-              
-              <TabsContent value="list" className="mt-4 pt-4">
-                <InspectionsList inspections={inspections} loading={loading} />
-              </TabsContent>
-
-              <TabsContent value="calendar" className="mt-4 pt-4">
-                <InspectionsCalendarView filters={filters} />
-              </TabsContent>
-            </Tabs>
+      <div className="space-y-4 sm:space-y-6">
+        <BackToDashboard />
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
+            <p className="text-sm sm:text-base text-gray-500 mt-1">Schedule and manage equipment inspections</p>
           </div>
+          <Link to="/inspections/new">
+            <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              <span className="text-sm sm:text-base">New Inspection</span>
+            </Button>
+          </Link>
         </div>
 
-        {/* Daily Checklist Sidebar */}
-        <div className="md:w-80 flex-shrink-0">
-          <DailyChecklist />
-        </div>
+        <Tabs defaultValue="list" className="w-full">
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 min-w-[200px]">
+              <TabsTrigger value="list" className="text-xs sm:text-sm">
+                <span className="hidden sm:inline">List View</span>
+                <span className="sm:hidden">List</span>
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="text-xs sm:text-sm">
+                <CalendarIcon className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Calendar</span>
+                <span className="sm:hidden">Cal</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
+            <InspectionsFilters filters={filters} setFilters={setFilters} />
+            <InspectionsList inspections={filteredInspections} />
+          </TabsContent>
+          
+          <TabsContent value="calendar" className="mt-0">
+            <InspectionsCalendarView inspections={filteredInspections} />
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );

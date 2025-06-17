@@ -1,119 +1,99 @@
 
-import React from "react";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, MapPin } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import { LocationsHeader } from "@/pages/locations/components/LocationsHeader";
-import { LocationsTabContent } from "@/pages/locations/components/LocationsTabContent";
-import { LocationDialogs } from "@/pages/locations/components/LocationDialogs";
-import { useLocationActions } from "@/pages/locations/hooks/useLocationActions";
-import { useLocationPage } from "@/pages/locations/hooks/useLocationPage";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, List, TreePine, Settings } from "lucide-react";
+import LocationsHeader from "./locations/components/LocationsHeader";
+import LocationFilters from "@/components/locations/LocationFilters";
+import LocationHierarchyView from "@/components/locations/LocationHierarchyView";
+import LocationsListView from "./locations/components/LocationsListView";
+import LocationAnalytics from "@/components/locations/LocationAnalytics";
+import LocationForm from "@/components/locations/LocationForm";
+import { useLocationPage } from "./locations/hooks/useLocationPage";
 
 const LocationsPage = () => {
-  const {
-    viewMode,
-    setViewMode,
-    searchQuery,
-    setSearchQuery,
-    parentFilter,
-    setParentFilter,
-    dateFilter,
-    setDateFilter,
-    hierarchyLocations,
-    allLocations,
-    filteredLocations,
-    isLoading,
-    handleClearFilters,
-    handleImportComplete,
-    handleOperationComplete,
-  } = useLocationPage();
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "all",
+    status: "all",
+  });
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
-  const {
-    isAddDialogOpen,
-    setIsAddDialogOpen,
-    isEditDialogOpen,
-    selectedParentId,
-    editingLocation,
-    isCreating,
-    isUpdating,
-    isDeleting,
-    handleAddLocation,
-    handleEditLocation,
-    handleDeleteLocation,
-    handleAddSubLocation,
-    handleEditLocationClick,
-    handleDialogClose,
-    handleEditDialogClose
-  } = useLocationActions();
+  const { locations, isLoading } = useLocationPage();
+
+  const filteredLocations = locations.filter((location) => {
+    const matchesSearch = !filters.search || 
+      location.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      location.address?.toLowerCase().includes(filters.search.toLowerCase());
+    
+    const matchesType = filters.type === "all" || location.type === filters.type;
+    const matchesStatus = filters.status === "all" || location.status === filters.status;
+    
+    return matchesSearch && matchesType && matchesStatus;
+  });
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-4 sm:space-y-6">
+          <BackToDashboard />
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <BackToDashboard />
-      <div className="container mx-auto px-4 py-8">
-        <LocationsHeader
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          setIsAddDialogOpen={setIsAddDialogOpen}
-          onImportComplete={handleImportComplete}
-        />
+      <div className="space-y-4 sm:space-y-6">
+        <BackToDashboard />
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <LocationsHeader />
+          <Button 
+            onClick={() => setShowAddDialog(true)}
+            className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            <span className="text-sm sm:text-base">Add Location</span>
+          </Button>
+        </div>
 
-        <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="hierarchy" className="flex items-center gap-2">
-              <TreePine className="h-4 w-4" />
-              Hierarchy
-            </TabsTrigger>
-            <TabsTrigger value="list" className="flex items-center gap-2">
-              <List className="h-4 w-4" />
-              List
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="bulk" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Bulk Operations
-            </TabsTrigger>
-          </TabsList>
-
-          <LocationsTabContent
-            viewMode={viewMode}
-            hierarchyLocations={hierarchyLocations}
-            allLocations={allLocations}
-            filteredLocations={filteredLocations}
-            isLoading={isLoading}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            parentFilter={parentFilter}
-            setParentFilter={setParentFilter}
-            dateFilter={dateFilter}
-            setDateFilter={setDateFilter}
-            onClearFilters={handleClearFilters}
-            onAddSubLocation={handleAddSubLocation}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-            onDeleteLocation={handleDeleteLocation}
-            onEditLocationClick={handleEditLocationClick}
-            onOperationComplete={handleOperationComplete}
-            isDeleting={isDeleting}
-          />
+        <Tabs defaultValue="hierarchy" className="w-full">
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 min-w-[300px]">
+              <TabsTrigger value="hierarchy" className="text-xs sm:text-sm">
+                <MapPin className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Hierarchy</span>
+                <span className="sm:hidden">Tree</span>
+              </TabsTrigger>
+              <TabsTrigger value="list" className="text-xs sm:text-sm">List View</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="hierarchy" className="mt-0 space-y-4 sm:space-y-6">
+            <LocationFilters filters={filters} setFilters={setFilters} />
+            <LocationHierarchyView locations={filteredLocations} />
+          </TabsContent>
+          
+          <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
+            <LocationFilters filters={filters} setFilters={setFilters} />
+            <LocationsListView locations={filteredLocations} />
+          </TabsContent>
+          
+          <TabsContent value="analytics" className="mt-0">
+            <LocationAnalytics />
+          </TabsContent>
         </Tabs>
 
-        <LocationDialogs
-          isAddDialogOpen={isAddDialogOpen}
-          isEditDialogOpen={isEditDialogOpen}
-          selectedParentId={selectedParentId}
-          editingLocation={editingLocation}
-          allLocations={allLocations}
-          isCreating={isCreating}
-          isUpdating={isUpdating}
-          onAddLocation={handleAddLocation}
-          onEditLocation={handleEditLocation}
-          onDialogClose={handleDialogClose}
-          onEditDialogClose={handleEditDialogClose}
+        <LocationForm 
+          open={showAddDialog} 
+          onOpenChange={setShowAddDialog}
         />
       </div>
     </DashboardLayout>

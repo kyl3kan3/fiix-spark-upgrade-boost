@@ -1,123 +1,108 @@
 
-import React, { useState, useCallback, useEffect } from "react";
-import DashboardLayout from "../components/dashboard/DashboardLayout";
-import TeamHeader from "../components/team/TeamHeader";
-import TeamFilters from "../components/team/TeamFilters";
-import TeamMembersList from "../components/team/TeamMembersList";
-import PendingInvitationsSection from "../components/team/PendingInvitationsSection";
-import RolePermissionsOverview from "../components/team/RolePermissionsOverview";
-import { TeamMember, RoleColorMap } from "../components/team/types";
-import { useTeamMembers } from "../hooks/useTeamMembers";
-import { usePendingInvitations } from "../hooks/team/usePendingInvitations";
-import { toast } from "@/components/ui/use-toast";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { UserPlus } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import AdminSetDemoCompanyButton from "@/components/team/AdminSetDemoCompanyButton";
+import TeamHeader from "@/components/team/TeamHeader";
+import TeamFilters from "@/components/team/TeamFilters";
+import TeamMembersList from "@/components/team/TeamMembersList";
+import TeamMembersGrid from "@/components/team/TeamMembersGrid";
+import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
+import AddTeamMemberDialog from "@/components/team/AddTeamMemberDialog";
+import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
+import { useTeamData } from "@/hooks/team/useTeamData";
 
 const Team = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  
-  const { teamMembers, loading, refreshTeamMembers, updateTeamMember } = useTeamMembers();
-  const { pendingInvitations, loading: pendingLoading, refreshPendingInvitations } = usePendingInvitations();
-  
-  // Force refresh when component mounts to ensure we have the latest data
-  useEffect(() => {
-    console.log("Team component mounted, refreshing team members data");
-    refreshTeamMembers();
-    refreshPendingInvitations();
-  }, [refreshTeamMembers, refreshPendingInvitations, refreshTrigger]);
-  
-  // Convert ChatUser type to TeamMember type
-  const mappedMembers: TeamMember[] = teamMembers.map(member => ({
-    id: member.id, // Keep original string id
-    name: member.name,
-    role: member.role || "viewer",
-    email: member.email,
-    phone: member.phone || "+1 (555) 123-4567", // Use member phone if available
-    avatar: member.avatar || member.name.substring(0, 2).toUpperCase(),
-    joined: "Recently", // This info isn't available in ChatUser
-    lastActive: member.online ? "Just now" : "Recently",
-    firstName: member.firstName,
-    lastName: member.lastName,
-    companyName: member.companyName,
-    online: member.online
-  }));
+  const [filters, setFilters] = useState({
+    search: "",
+    role: "all",
+    status: "all",
+  });
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const roleColorMap: RoleColorMap = {
-    administrator: "bg-red-100 text-red-800",
-    manager: "bg-blue-100 text-blue-800",
-    technician: "bg-green-100 text-green-800",
-    viewer: "bg-gray-100 text-gray-800"
-  };
+  const { teamMembers, isLoading } = useTeamData();
 
-  const filteredMembers = mappedMembers.filter(member => {
-    const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          member.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === "all" || member.role === roleFilter;
+  const filteredMembers = teamMembers.filter((member) => {
+    const matchesSearch = !filters.search || 
+      `${member.first_name} ${member.last_name}`.toLowerCase().includes(filters.search.toLowerCase()) ||
+      member.email?.toLowerCase().includes(filters.search.toLowerCase());
     
-    return matchesSearch && matchesRole;
+    const matchesRole = filters.role === "all" || member.role === filters.role;
+    const matchesStatus = filters.status === "all" || member.status === filters.status;
+    
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
-  const handleMemberUpdated = useCallback((userId: string, updates: {
-    firstName?: string;
-    lastName?: string;
-    role?: string;
-    email?: string;
-    phone?: string;
-    companyName?: string;
-  }) => {
-    console.log("Member update in Team.tsx:", userId, updates);
-    updateTeamMember(userId, updates)
-      .then((result) => {
-        if (result.success) {
-          toast("Team member information updated");
-          setRefreshTrigger(prev => prev + 1);
-          refreshTeamMembers();
-        } else {
-          console.error("Update failed:", result.error);
-          toast("Failed to update team member");
-        }
-      });
-  }, [updateTeamMember, refreshTeamMembers]);
-
-  const handleInvitationDeleted = useCallback(() => {
-    // Refresh the pending invitations list when an invitation is deleted
-    refreshPendingInvitations();
-  }, [refreshPendingInvitations]);
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-4 sm:space-y-6">
+          <BackToDashboard />
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <BackToDashboard />
-      {/* Add the demo company admin button at the top */}
-      <div className="mb-4">
-        <AdminSetDemoCompanyButton />
-      </div>
-      <TeamHeader />
-      <TeamFilters 
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        roleFilter={roleFilter}
-        setRoleFilter={setRoleFilter}
-      />
-      
-      {/* Pending Invitations Section */}
-      <div className="mb-6">
-        <PendingInvitationsSection 
-          invitations={pendingInvitations}
-          roleColorMap={roleColorMap}
-          loading={pendingLoading}
-          onInvitationDeleted={handleInvitationDeleted}
+      <div className="space-y-4 sm:space-y-6">
+        <BackToDashboard />
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <TeamHeader />
+          <Button 
+            onClick={() => setShowAddDialog(true)}
+            className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto"
+          >
+            <UserPlus className="h-4 w-4 mr-2" />
+            <span className="text-sm sm:text-base">Add Member</span>
+          </Button>
+        </div>
+
+        <Tabs defaultValue="members" className="w-full">
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 min-w-[300px]">
+              <TabsTrigger value="members" className="text-xs sm:text-sm">Members</TabsTrigger>
+              <TabsTrigger value="invitations" className="text-xs sm:text-sm">Invitations</TabsTrigger>
+              <TabsTrigger value="roles" className="text-xs sm:text-sm">Roles</TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="members" className="mt-0 space-y-4 sm:space-y-6">
+            <TeamFilters 
+              filters={filters} 
+              setFilters={setFilters}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+            
+            {viewMode === "grid" ? (
+              <TeamMembersGrid members={filteredMembers} />
+            ) : (
+              <TeamMembersList members={filteredMembers} />
+            )}
+          </TabsContent>
+          
+          <TabsContent value="invitations" className="mt-0">
+            <PendingInvitationsSection />
+          </TabsContent>
+          
+          <TabsContent value="roles" className="mt-0">
+            <RolePermissionsOverview />
+          </TabsContent>
+        </Tabs>
+
+        <AddTeamMemberDialog 
+          open={showAddDialog} 
+          onOpenChange={setShowAddDialog}
         />
       </div>
-      
-      <TeamMembersList 
-        members={filteredMembers} 
-        roleColorMap={roleColorMap}
-        loading={loading}
-        onMemberUpdated={handleMemberUpdated}
-      />
-      <RolePermissionsOverview />
     </DashboardLayout>
   );
 };

@@ -1,38 +1,47 @@
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllVendors } from "@/services/vendorService";
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import VendorPageHeader from "@/components/vendors/VendorPageHeader";
+import VendorFilters from "@/components/vendors/VendorFilters";
+import VendorGridView from "@/components/vendors/VendorGridView";
+import VendorEmptyState from "@/components/vendors/VendorEmptyState";
+import { useQuery } from "@tanstack/react-query";
+import { vendorService } from "@/services/vendorService";
 
 const VendorsPage = () => {
-  const {
-    data: vendors = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["vendors"],
-    queryFn: getAllVendors,
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "all",
+    status: "all",
+  });
+
+  const { data: vendors = [], isLoading } = useQuery({
+    queryKey: ['vendors'],
+    queryFn: vendorService.getVendors,
+  });
+
+  const filteredVendors = vendors.filter((vendor) => {
+    const matchesSearch = !filters.search || 
+      vendor.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      vendor.email?.toLowerCase().includes(filters.search.toLowerCase());
+    
+    const matchesCategory = filters.category === "all" || vendor.category === filters.category;
+    const matchesStatus = filters.status === "all" || vendor.status === filters.status;
+    
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading vendors...</div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-red-600">
-            Error loading vendors: {error.message}
+        <div className="space-y-4 sm:space-y-6">
+          <BackToDashboard />
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
           </div>
         </div>
       </DashboardLayout>
@@ -41,65 +50,34 @@ const VendorsPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Vendors</h1>
-            <p className="text-muted-foreground">
-              Manage your vendor relationships and contacts
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link to="/vendors/import">
-                <Upload className="mr-2 h-4 w-4" />
-                Import Vendors
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link to="/vendors/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Vendor
-              </Link>
-            </Button>
+      <div className="space-y-4 sm:space-y-6">
+        <BackToDashboard />
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <VendorPageHeader />
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Link to="/vendors/import" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
+                <Upload className="h-4 w-4 mr-2" />
+                <span className="text-sm sm:text-base">Import</span>
+              </Button>
+            </Link>
+            <Link to="/vendors/new" className="w-full sm:w-auto">
+              <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="text-sm sm:text-base">Add Vendor</span>
+              </Button>
+            </Link>
           </div>
         </div>
 
-        <div className="grid gap-4">
-          {vendors.length === 0 ? (
-            <div className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900">No vendors yet</h3>
-              <p className="text-gray-500 mt-1">Get started by creating your first vendor or importing from a file.</p>
-              <div className="mt-4 flex gap-2 justify-center">
-                <Button asChild variant="outline">
-                  <Link to="/vendors/import">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Import Vendors
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/vendors/new">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Vendor
-                  </Link>
-                </Button>
-              </div>
-            </div>
+        <div className="space-y-4 sm:space-y-6">
+          <VendorFilters filters={filters} setFilters={setFilters} />
+          
+          {filteredVendors.length === 0 ? (
+            <VendorEmptyState hasVendors={vendors.length > 0} />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vendors.map((vendor) => (
-                <div key={vendor.id} className="bg-white p-6 rounded-lg border shadow-sm">
-                  <h3 className="font-semibold text-lg">{vendor.name}</h3>
-                  <p className="text-gray-600 text-sm">{vendor.vendor_type}</p>
-                  <p className="text-gray-500 text-sm mt-2">{vendor.email}</p>
-                  <div className="mt-4 flex gap-2">
-                    <Button asChild size="sm" variant="outline">
-                      <Link to={`/vendors/${vendor.id}/edit`}>Edit</Link>
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <VendorGridView vendors={filteredVendors} />
           )}
         </div>
       </div>
