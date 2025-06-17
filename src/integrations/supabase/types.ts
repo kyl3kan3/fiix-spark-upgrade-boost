@@ -120,6 +120,54 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_logs: {
+        Row: {
+          created_at: string
+          date: string
+          equipment_readings: Json | null
+          id: string
+          incidents: Json | null
+          notes: string | null
+          shift_end: string | null
+          shift_start: string | null
+          tasks: Json | null
+          technician: string | null
+          updated_at: string
+          user_id: string
+          weather_conditions: string | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          equipment_readings?: Json | null
+          id?: string
+          incidents?: Json | null
+          notes?: string | null
+          shift_end?: string | null
+          shift_start?: string | null
+          tasks?: Json | null
+          technician?: string | null
+          updated_at?: string
+          user_id: string
+          weather_conditions?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          equipment_readings?: Json | null
+          id?: string
+          incidents?: Json | null
+          notes?: string | null
+          shift_end?: string | null
+          shift_start?: string | null
+          tasks?: Json | null
+          technician?: string | null
+          updated_at?: string
+          user_id?: string
+          weather_conditions?: string | null
+        }
+        Relationships: []
+      }
       device_tokens: {
         Row: {
           created_at: string

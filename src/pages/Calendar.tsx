@@ -8,6 +8,7 @@ import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import CalendarSidebar from "@/components/calendar/CalendarSidebar";
 import CalendarContent from "@/components/calendar/CalendarContent";
 import DailyLog from "@/components/calendar/DailyLog";
+import DailyLogsList from "@/components/calendar/DailyLogsList";
 import { events, technicians } from "@/components/calendar/mockData";
 import { MaintenanceEvent } from "@/components/calendar/types";
 
@@ -42,6 +43,15 @@ const CalendarPage = () => {
     );
   };
 
+  const handleViewLogFromList = (logDate: Date) => {
+    setDate(logDate);
+    // Switch to daily log tab when viewing a log
+    const dailyLogTab = document.querySelector('[value="daily-log"]') as HTMLElement;
+    if (dailyLogTab) {
+      dailyLogTab.click();
+    }
+  };
+
   return (
     <DashboardLayout>
       <BackToDashboard />
@@ -57,9 +67,10 @@ const CalendarPage = () => {
       </div>
 
       <Tabs defaultValue="calendar" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+        <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
           <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar View</TabsTrigger>
           <TabsTrigger value="daily-log" className="text-xs sm:text-sm">Daily Log</TabsTrigger>
+          <TabsTrigger value="logs-list" className="text-xs sm:text-sm">All Logs</TabsTrigger>
         </TabsList>
         
         <TabsContent value="calendar" className="mt-0">
@@ -110,6 +121,10 @@ const CalendarPage = () => {
               )}
             </div>
           </div>
+        </TabsContent>
+        
+        <TabsContent value="logs-list" className="mt-0">
+          <DailyLogsList onViewLog={handleViewLogFromList} />
         </TabsContent>
       </Tabs>
     </DashboardLayout>

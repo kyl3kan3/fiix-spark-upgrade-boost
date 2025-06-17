@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,61 +8,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Save, Thermometer, Gauge, Droplets, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
-
-interface DailyLogEntry {
-  id: string;
-  date: Date;
-  technician: string;
-  shiftStart: string;
-  shiftEnd: string;
-  equipmentReadings: EquipmentReading[];
-  tasks: DailyTask[];
-  incidents: Incident[];
-  notes: string;
-  weatherConditions: string;
-}
-
-interface EquipmentReading {
-  id: string;
-  equipment: string;
-  type: "temperature" | "pressure" | "fluid_level" | "status";
-  value: string;
-  unit: string;
-  status: "normal" | "warning" | "critical";
-}
-
-interface DailyTask {
-  id: string;
-  description: string;
-  completed: boolean;
-  assetId?: string;
-}
-
-interface Incident {
-  id: string;
-  description: string;
-  severity: "low" | "medium" | "high";
-  resolved: boolean;
-}
+import { Plus, Save, Thermometer, Gauge, Droplets, AlertTriangle, Loader2 } from "lucide-react";
+import { useDailyLogs } from "@/hooks/useDailyLogs";
+import { DailyLogEntry, EquipmentReading, DailyTask, Incident } from "@/services/dailyLogService";
 
 interface DailyLogProps {
   selectedDate: Date;
 }
 
 const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
+  const { dailyLog, isLoading, isSaving, saveDailyLog } = useDailyLogs(selectedDate);
+  
   const [logEntry, setLogEntry] = useState<DailyLogEntry>({
-    id: "",
-    date: selectedDate,
+    date: selectedDate.toISOString().split('T')[0],
     technician: "",
-    shiftStart: "",
-    shiftEnd: "",
-    equipmentReadings: [],
+    shift_start: "",
+    shift_end: "",
+    equipment_readings: [],
     tasks: [],
     incidents: [],
     notes: "",
-    weatherConditions: ""
+    weather_conditions: ""
   });
 
   const [newReading, setNewReading] = useState({
@@ -79,6 +45,25 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
     severity: "medium" as const
   });
 
+  // Update logEntry when dailyLog changes or selectedDate changes
+  useEffect(() => {
+    if (dailyLog) {
+      setLogEntry(dailyLog);
+    } else {
+      setLogEntry({
+        date: selectedDate.toISOString().split('T')[0],
+        technician: "",
+        shift_start: "",
+        shift_end: "",
+        equipment_readings: [],
+        tasks: [],
+        incidents: [],
+        notes: "",
+        weather_conditions: ""
+      });
+    }
+  }, [dailyLog, selectedDate]);
+
   const addEquipmentReading = () => {
     if (!newReading.equipment || !newReading.value) return;
     
@@ -89,7 +74,7 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
     
     setLogEntry(prev => ({
       ...prev,
-      equipmentReadings: [...prev.equipmentReadings, reading]
+      equipment_readings: [...prev.equipment_readings, reading]
     }));
     
     setNewReading({
@@ -99,8 +84,6 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
       unit: "",
       status: "normal"
     });
-    
-    toast.success("Equipment reading added");
   };
 
   const addTask = () => {
@@ -118,7 +101,6 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
     }));
     
     setNewTask("");
-    toast.success("Task added");
   };
 
   const addIncident = () => {
@@ -140,8 +122,6 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
       description: "",
       severity: "medium"
     });
-    
-    toast.success("Incident logged");
   };
 
   const toggleTaskComplete = (taskId: string) => {
@@ -153,9 +133,12 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
     }));
   };
 
-  const saveLogEntry = () => {
-    // In a real app, this would save to the database
-    toast.success("Daily log saved successfully");
+  const saveLogEntry = async () => {
+    try {
+      await saveDailyLog(logEntry);
+    } catch (error) {
+      // Error handling is done in the hook
+    }
   };
 
   const getStatusIcon = (type: string) => {
@@ -185,13 +168,23 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardContent className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Daily Log - {format(selectedDate, "MMMM d, yyyy")}</span>
-          <Button onClick={saveLogEntry} className="flex items-center gap-2">
-            <Save className="h-4 w-4" />
+          <Button onClick={saveLogEntry} disabled={isSaving} className="flex items-center gap-2">
+            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save Log
           </Button>
         </CardTitle>
@@ -204,7 +197,7 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
             <Label htmlFor="technician">Technician on Duty</Label>
             <Input
               id="technician"
-              value={logEntry.technician}
+              value={logEntry.technician || ""}
               onChange={(e) => setLogEntry(prev => ({ ...prev, technician: e.target.value }))}
               placeholder="Enter technician name"
             />
@@ -214,8 +207,8 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
             <Input
               id="shiftStart"
               type="time"
-              value={logEntry.shiftStart}
-              onChange={(e) => setLogEntry(prev => ({ ...prev, shiftStart: e.target.value }))}
+              value={logEntry.shift_start || ""}
+              onChange={(e) => setLogEntry(prev => ({ ...prev, shift_start: e.target.value }))}
             />
           </div>
           <div>
@@ -223,8 +216,8 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
             <Input
               id="shiftEnd"
               type="time"
-              value={logEntry.shiftEnd}
-              onChange={(e) => setLogEntry(prev => ({ ...prev, shiftEnd: e.target.value }))}
+              value={logEntry.shift_end || ""}
+              onChange={(e) => setLogEntry(prev => ({ ...prev, shift_end: e.target.value }))}
             />
           </div>
         </div>
@@ -268,7 +261,7 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
           </div>
 
           <div className="space-y-2">
-            {logEntry.equipmentReadings.map(reading => (
+            {logEntry.equipment_readings.map(reading => (
               <div key={reading.id} className="flex items-center justify-between p-3 border rounded-md">
                 <div className="flex items-center gap-3">
                   {getStatusIcon(reading.type)}
@@ -367,8 +360,8 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
             <Label htmlFor="weather">Weather Conditions</Label>
             <Input
               id="weather"
-              value={logEntry.weatherConditions}
-              onChange={(e) => setLogEntry(prev => ({ ...prev, weatherConditions: e.target.value }))}
+              value={logEntry.weather_conditions || ""}
+              onChange={(e) => setLogEntry(prev => ({ ...prev, weather_conditions: e.target.value }))}
               placeholder="e.g., Clear, 75°F, Light wind"
             />
           </div>
@@ -378,7 +371,7 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
           <Label htmlFor="notes">General Notes & Observations</Label>
           <Textarea
             id="notes"
-            value={logEntry.notes}
+            value={logEntry.notes || ""}
             onChange={(e) => setLogEntry(prev => ({ ...prev, notes: e.target.value }))}
             placeholder="Any additional observations, recommendations, or notes..."
             rows={4}
