@@ -49,7 +49,26 @@ const getPriorityColor = (priority: string) => {
 const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading }) => {
   const navigate = useNavigate();
   
-  // Loading skeleton
+  // Show empty state immediately if not loading and no inspections
+  if (!loading && inspections.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No inspections found</h3>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
+          Start by creating your first inspection checklist
+        </p>
+        <Button
+          onClick={() => navigate("/inspections/new")}
+          className="bg-maintenease-600 hover:bg-maintenease-700"
+        >
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Create New Inspection
+        </Button>
+      </div>
+    );
+  }
+
+  // Show loading skeleton only when actually loading
   if (loading) {
     return (
       <div className="space-y-4">
@@ -70,25 +89,6 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
             </div>
           </Card>
         ))}
-      </div>
-    );
-  }
-
-  // Empty state
-  if (inspections.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No inspections found</h3>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">
-          Start by creating your first inspection checklist
-        </p>
-        <Button
-          onClick={() => navigate("/inspections/new")}
-          className="bg-maintenease-600 hover:bg-maintenease-700"
-        >
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Create New Inspection
-        </Button>
       </div>
     );
   }
