@@ -17,6 +17,9 @@ export const useInspections = (filters: any = {}) => {
     
     const { data, error } = await fetchInspections(filters);
     
+    // Add a small delay to prevent flashing when switching between states
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     setInspections(data);
     setError(error);
     setLoading(false);
