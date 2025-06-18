@@ -33,8 +33,8 @@ export const checklistService = {
     return data as Checklist;
   },
 
-  // Create checklist
-  async createChecklist(checklist: Omit<Checklist, 'id' | 'created_at' | 'updated_at'>): Promise<Checklist> {
+  // Create checklist - only requires name, description, type, and is_active
+  async createChecklist(checklist: Pick<Checklist, 'name' | 'description' | 'type' | 'is_active'>): Promise<Checklist> {
     const { data: { user } } = await supabase.auth.getUser();
     const { data: profile } = await supabase
       .from('profiles')
