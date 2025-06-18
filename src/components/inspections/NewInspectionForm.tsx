@@ -1,6 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,9 +10,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { InspectionPriority, InspectionStatus } from "@/types/inspections";
+import { getAllAssets } from "@/services/assets/assetQueries";
+import { supabase } from "@/integrations/supabase/client";
 
 const NewInspectionForm = () => {
   const navigate = useNavigate();
+  
+  // Fetch assets from database
+  const { data: assets, isLoading: assetsLoading } = useQuery({
+    queryKey: ["assets"],
+    queryFn: getAllAssets
+  });
+
+  // Fetch technicians from profiles
+  const { data: technicians, isLoading: techniciansLoading } = useQuery({
+    queryKey: ["technicians"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name")
+        .order("first_name");
+      if (error) throw error;
+      return data || [];
+    }
+  });
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +41,14 @@ const NewInspectionForm = () => {
     toast.success("New inspection created successfully");
     navigate("/inspections");
   };
+  
+  if (assetsLoading || techniciansLoading) {
+    return (
+      <Card className="p-6 dark:border-gray-700">
+        <div className="text-center py-4">Loading form data...</div>
+      </Card>
+    );
+  }
   
   return (
     <Card className="p-6 dark:border-gray-700">
@@ -42,9 +72,17 @@ const NewInspectionForm = () => {
                   <SelectValue placeholder="Select asset" />
                 </SelectTrigger>
                 <SelectContent className="dark:border-gray-700 dark:bg-gray-800">
-                  <SelectItem value="asset-001">Main Building HVAC</SelectItem>
-                  <SelectItem value="asset-002">Building Safety Systems</SelectItem>
-                  <SelectItem value="asset-003">Backup Generator #2</SelectItem>
+                  {assets && assets.length > 0 ? (
+                    assets.map((asset) => (
+                      <SelectItem key={asset.id} value={asset.id}>
+                        {asset.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-assets" disabled>
+                      No assets available
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -56,9 +94,17 @@ const NewInspectionForm = () => {
                   <SelectValue placeholder="Select technician" />
                 </SelectTrigger>
                 <SelectContent className="dark:border-gray-700 dark:bg-gray-800">
-                  <SelectItem value="john">John Doe</SelectItem>
-                  <SelectItem value="sarah">Sarah Johnson</SelectItem>
-                  <SelectItem value="mike">Mike Smith</SelectItem>
+                  {technicians && technicians.length > 0 ? (
+                    technicians.map((technician) => (
+                      <SelectItem key={technician.id} value={technician.id}>
+                        {technician.first_name} {technician.last_name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-technicians" disabled>
+                      No technicians available
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
