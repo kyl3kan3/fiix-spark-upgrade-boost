@@ -10,29 +10,36 @@ export const useInspections = (filters: any = {}) => {
   const [inspections, setInspections] = useState<Inspection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [lastRefreshed, setLastRefreshed] = useState(Date.now());
 
   const loadInspections = useCallback(async () => {
-    // Don't set loading to true if we already have data (for refreshes)
-    if (inspections.length === 0) {
+    try {
       setLoading(true);
+      setError(null);
+      
+      const { data, error } = await fetchInspections(filters);
+      
+      if (error) {
+        setError(error);
+        setInspections([]);
+      } else {
+        setInspections(data);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to load inspections'));
+      setInspections([]);
+    } finally {
+      setLoading(false);
     }
-    
-    const { data, error } = await fetchInspections(filters);
-    
-    setInspections(data);
-    setError(error);
-    setLoading(false);
-  }, [filters, inspections.length]);
+  }, [filters]);
 
   // Function to force refresh the data
   const refreshInspections = useCallback(() => {
-    setLastRefreshed(Date.now());
-  }, []);
+    loadInspections();
+  }, [loadInspections]);
 
   useEffect(() => {
     loadInspections();
-  }, [loadInspections, lastRefreshed]);
+  }, [loadInspections]);
 
   return {
     inspections,
