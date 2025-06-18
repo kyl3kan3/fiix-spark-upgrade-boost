@@ -49,8 +49,8 @@ const getPriorityColor = (priority: string) => {
 const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading }) => {
   const navigate = useNavigate();
   
-  // Only show loading state when loading AND we have no inspections data
-  if (loading && inspections.length === 0) {
+  // Show loading state only when initially loading
+  if (loading) {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((index) => (
@@ -74,8 +74,8 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
     );
   }
 
-  // Show empty state only when not loading and no inspections
-  if (!loading && inspections.length === 0) {
+  // Show empty state when no inspections and not loading
+  if (inspections.length === 0) {
     return (
       <div className="text-center py-12">
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No inspections found</h3>

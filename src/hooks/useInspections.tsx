@@ -13,7 +13,6 @@ export const useInspections = (filters: any = {}) => {
 
   const loadInspections = useCallback(async () => {
     try {
-      setLoading(true);
       setError(null);
       
       const { data, error } = await fetchInspections(filters);
@@ -34,6 +33,7 @@ export const useInspections = (filters: any = {}) => {
 
   // Function to force refresh the data
   const refreshInspections = useCallback(() => {
+    setLoading(true);
     loadInspections();
   }, [loadInspections]);
 
