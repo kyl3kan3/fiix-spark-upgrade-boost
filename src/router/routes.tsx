@@ -13,6 +13,7 @@ import WorkOrdersPage from "@/pages/WorkOrdersPage";
 import ChecklistsPage from "@/pages/ChecklistsPage";
 import NewChecklistPage from "@/pages/NewChecklistPage";
 import EditChecklistPage from "@/pages/EditChecklistPage";
+import ChecklistDetailPage from "@/pages/ChecklistDetailPage";
 import ChecklistSubmitPage from "@/pages/ChecklistSubmitPage";
 import ChecklistSubmissionsPage from "@/pages/ChecklistSubmissionsPage";
 
@@ -86,6 +87,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <NewChecklistPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/checklists/:id",
+    element: (
+      <ProtectedRoute>
+        <ChecklistDetailPage />
       </ProtectedRoute>
     ),
   },
