@@ -34,6 +34,12 @@ import TeamSetup from "./pages/TeamSetup";
 import CompanySetup from "./pages/CompanySetup";
 import OnboardingPage from "./pages/OnboardingPage";
 import LocationDetailPage from "./pages/LocationDetailPage";
+import ChecklistsPage from "./pages/ChecklistsPage";
+import NewChecklistPage from "./pages/NewChecklistPage";
+import EditChecklistPage from "./pages/EditChecklistPage";
+import ChecklistDetailPage from "./pages/ChecklistDetailPage";
+import ChecklistSubmitPage from "./pages/ChecklistSubmitPage";
+import ChecklistSubmissionsPage from "./pages/ChecklistSubmissionsPage";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +138,42 @@ const App = () => (
               <Route path="/inspections/:id" element={
                 <ProtectedRoute>
                   <InspectionDetailPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists" element={
+                <ProtectedRoute>
+                  <ChecklistsPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists/new" element={
+                <ProtectedRoute>
+                  <NewChecklistPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists/:id" element={
+                <ProtectedRoute>
+                  <ChecklistDetailPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists/:id/edit" element={
+                <ProtectedRoute>
+                  <EditChecklistPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists/:id/submit" element={
+                <ProtectedRoute>
+                  <ChecklistSubmitPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checklists/submissions" element={
+                <ProtectedRoute>
+                  <ChecklistSubmissionsPage />
                 </ProtectedRoute>
               } />
               
