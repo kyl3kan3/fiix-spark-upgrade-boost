@@ -10,7 +10,8 @@ import {
   ClipboardCheck,
   Wrench,
   Calendar,
-  BarChart3
+  BarChart3,
+  ListChecks
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,7 +38,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
     navigate("/login");
   };
 
-  const menuItems = [
+  const sidebarItems = [
     {
       icon: LayoutDashboard,
       label: "Dashboard",
@@ -104,6 +105,11 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
       href: "/settings",
       description: "Customize your experience"
     },
+    {
+      icon: ListChecks,
+      label: "Checklists",
+      href: "/checklists",
+    },
   ];
 
   if (isLoading) {
@@ -125,7 +131,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
 
           <div className="flex-grow p-2">
             <ul className="space-y-1">
-              {menuItems.map((item) => (
+              {sidebarItems.map((item) => (
                 <li key={item.label}>
                   <Link
                     to={item.href}

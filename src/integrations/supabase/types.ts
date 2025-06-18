@@ -69,6 +69,163 @@ export type Database = {
           },
         ]
       }
+      checklist_items: {
+        Row: {
+          checklist_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_required: boolean
+          item_type: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          checklist_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_required?: boolean
+          item_type?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          checklist_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_required?: boolean
+          item_type?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_items_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_submission_items: {
+        Row: {
+          checklist_item_id: string
+          created_at: string
+          id: string
+          is_checked: boolean | null
+          notes: string | null
+          response_value: string | null
+          submission_id: string
+        }
+        Insert: {
+          checklist_item_id: string
+          created_at?: string
+          id?: string
+          is_checked?: boolean | null
+          notes?: string | null
+          response_value?: string | null
+          submission_id: string
+        }
+        Update: {
+          checklist_item_id?: string
+          created_at?: string
+          id?: string
+          is_checked?: boolean | null
+          notes?: string | null
+          response_value?: string | null
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_submission_items_checklist_item_id_fkey"
+            columns: ["checklist_item_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_submission_items_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_submissions: {
+        Row: {
+          checklist_id: string
+          id: string
+          notes: string | null
+          status: string
+          submitted_at: string
+          submitted_by: string
+        }
+        Insert: {
+          checklist_id: string
+          id?: string
+          notes?: string | null
+          status?: string
+          submitted_at?: string
+          submitted_by: string
+        }
+        Update: {
+          checklist_id?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          submitted_at?: string
+          submitted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_submissions_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklists: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null
