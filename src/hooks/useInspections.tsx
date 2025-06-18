@@ -13,25 +13,17 @@ export const useInspections = (filters: any = {}) => {
   const [lastRefreshed, setLastRefreshed] = useState(Date.now());
 
   const loadInspections = useCallback(async () => {
-    setLoading(true);
-    
-    // Start timing for minimum load duration
-    const startTime = Date.now();
+    // Don't set loading to true if we already have data (for refreshes)
+    if (inspections.length === 0) {
+      setLoading(true);
+    }
     
     const { data, error } = await fetchInspections(filters);
-    
-    // Ensure minimum loading time to prevent flash
-    const elapsedTime = Date.now() - startTime;
-    const minLoadTime = 500; // 500ms minimum
-    
-    if (elapsedTime < minLoadTime) {
-      await new Promise(resolve => setTimeout(resolve, minLoadTime - elapsedTime));
-    }
     
     setInspections(data);
     setError(error);
     setLoading(false);
-  }, [filters]);
+  }, [filters, inspections.length]);
 
   // Function to force refresh the data
   const refreshInspections = useCallback(() => {
