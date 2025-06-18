@@ -1,6 +1,6 @@
 
 import React from "react";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import ChecklistForm from "@/components/checklists/ChecklistForm";
 
 const EditChecklistPage = () => {

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { PlusCircle, Search, ListChecks, Calendar, User } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistTypes } from "@/types/checklists";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { format } from "date-fns";
 
 const ChecklistsPage = () => {

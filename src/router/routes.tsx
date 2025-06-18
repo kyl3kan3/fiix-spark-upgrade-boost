@@ -1,22 +1,15 @@
+
 import { createBrowserRouter } from "react-router-dom";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import CompanyRequiredWrapper from "@/components/auth/CompanyRequiredWrapper";
 import InspectionsPage from "@/pages/InspectionsPage";
 import NewInspectionPage from "@/pages/NewInspectionPage";
-import InspectionDetailsPage from "@/pages/InspectionDetailsPage";
 import AssetsPage from "@/pages/AssetsPage";
-import NewAssetPage from "@/pages/NewAssetPage";
-import EditAssetPage from "@/pages/EditAssetPage";
 import VendorsPage from "@/pages/VendorsPage";
-import NewVendorPage from "@/pages/NewVendorPage";
-import EditVendorPage from "@/pages/EditVendorPage";
 import WorkOrdersPage from "@/pages/WorkOrdersPage";
-import NewWorkOrderPage from "@/pages/NewWorkOrderPage";
-import EditWorkOrderPage from "@/pages/EditWorkOrderPage";
 import ChecklistsPage from "@/pages/ChecklistsPage";
 import NewChecklistPage from "@/pages/NewChecklistPage";
 import EditChecklistPage from "@/pages/EditChecklistPage";
@@ -36,9 +29,7 @@ export const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <Dashboard />
-        </CompanyRequiredWrapper>
+        <Dashboard />
       </ProtectedRoute>
     ),
   },
@@ -46,9 +37,7 @@ export const router = createBrowserRouter([
     path: "/inspections",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <InspectionsPage />
-        </CompanyRequiredWrapper>
+        <InspectionsPage />
       </ProtectedRoute>
     ),
   },
@@ -56,19 +45,7 @@ export const router = createBrowserRouter([
     path: "/inspections/new",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <NewInspectionPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/inspections/:id",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <InspectionDetailsPage />
-        </CompanyRequiredWrapper>
+        <NewInspectionPage />
       </ProtectedRoute>
     ),
   },
@@ -76,29 +53,7 @@ export const router = createBrowserRouter([
     path: "/assets",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <AssetsPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/assets/new",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <NewAssetPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/assets/:id/edit",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <EditAssetPage />
-        </CompanyRequiredWrapper>
+        <AssetsPage />
       </ProtectedRoute>
     ),
   },
@@ -106,29 +61,7 @@ export const router = createBrowserRouter([
     path: "/vendors",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <VendorsPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/vendors/new",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <NewVendorPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/vendors/:id/edit",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <EditVendorPage />
-        </CompanyRequiredWrapper>
+        <VendorsPage />
       </ProtectedRoute>
     ),
   },
@@ -136,29 +69,7 @@ export const router = createBrowserRouter([
     path: "/work-orders",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <WorkOrdersPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/work-orders/new",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <NewWorkOrderPage />
-        </CompanyRequiredWrapper>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/work-orders/:id/edit",
-    element: (
-      <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <EditWorkOrderPage />
-        </CompanyRequiredWrapper>
+        <WorkOrdersPage />
       </ProtectedRoute>
     ),
   },
@@ -166,9 +77,7 @@ export const router = createBrowserRouter([
     path: "/checklists",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <ChecklistsPage />
-        </CompanyRequiredWrapper>
+        <ChecklistsPage />
       </ProtectedRoute>
     ),
   },
@@ -176,9 +85,7 @@ export const router = createBrowserRouter([
     path: "/checklists/new",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <NewChecklistPage />
-        </CompanyRequiredWrapper>
+        <NewChecklistPage />
       </ProtectedRoute>
     ),
   },
@@ -186,9 +93,7 @@ export const router = createBrowserRouter([
     path: "/checklists/:id/edit",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <EditChecklistPage />
-        </CompanyRequiredWrapper>
+        <EditChecklistPage />
       </ProtectedRoute>
     ),
   },
@@ -196,9 +101,7 @@ export const router = createBrowserRouter([
     path: "/checklists/:id/submit",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <ChecklistSubmitPage />
-        </CompanyRequiredWrapper>
+        <ChecklistSubmitPage />
       </ProtectedRoute>
     ),
   },
@@ -206,9 +109,7 @@ export const router = createBrowserRouter([
     path: "/checklists/submissions",
     element: (
       <ProtectedRoute>
-        <CompanyRequiredWrapper>
-          <ChecklistSubmissionsPage />
-        </CompanyRequiredWrapper>
+        <ChecklistSubmissionsPage />
       </ProtectedRoute>
     ),
   },

@@ -15,7 +15,7 @@ export const checklistService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return (data || []) as Checklist[];
   },
 
   // Get checklist by ID
@@ -30,7 +30,7 @@ export const checklistService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Checklist;
   },
 
   // Create checklist
@@ -53,7 +53,7 @@ export const checklistService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Checklist;
   },
 
   // Update checklist
@@ -66,7 +66,7 @@ export const checklistService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Checklist;
   },
 
   // Delete checklist
@@ -88,7 +88,7 @@ export const checklistService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as ChecklistItem;
   },
 
   // Update checklist item
@@ -101,7 +101,7 @@ export const checklistService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as ChecklistItem;
   },
 
   // Delete checklist item
@@ -150,7 +150,7 @@ export const checklistService = {
 
     if (itemsError) throw itemsError;
 
-    return submission;
+    return submission as ChecklistSubmission;
   },
 
   // Get submissions
@@ -168,6 +168,6 @@ export const checklistService = {
       .order('submitted_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return (data || []) as ChecklistSubmission[];
   },
 };

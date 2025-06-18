@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Search, Calendar, User, FileText } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistTypes } from "@/types/checklists";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { format } from "date-fns";
 
 const ChecklistSubmissionsPage = () => {
