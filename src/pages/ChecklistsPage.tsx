@@ -16,7 +16,7 @@ import { format } from "date-fns";
 const ChecklistsPage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: checklists = [], isLoading } = useQuery({
     queryKey: ["checklists"],
@@ -26,7 +26,7 @@ const ChecklistsPage = () => {
   const filteredChecklists = checklists.filter(checklist => {
     const matchesSearch = checklist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       checklist.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = !typeFilter || checklist.type === typeFilter;
+    const matchesType = typeFilter === "all" || checklist.type === typeFilter;
     return matchesSearch && matchesType;
   });
 
@@ -89,7 +89,7 @@ const ChecklistsPage = () => {
               <SelectValue placeholder="Filter by type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               {ChecklistTypes.map(type => (
                 <SelectItem key={type.value} value={type.value}>
                   {type.label}
