@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSubmissionItem } from "@/types/checklists";
 
@@ -33,8 +32,8 @@ export const checklistService = {
     return data as Checklist;
   },
 
-  // Create checklist - only requires name, description, type, and is_active
-  async createChecklist(checklist: Pick<Checklist, 'name' | 'description' | 'type' | 'is_active'>): Promise<Checklist> {
+  // Create checklist - now includes frequency
+  async createChecklist(checklist: Pick<Checklist, 'name' | 'description' | 'type' | 'frequency' | 'is_active'>): Promise<Checklist> {
     const { data: { user } } = await supabase.auth.getUser();
     const { data: profile } = await supabase
       .from('profiles')

@@ -1,13 +1,12 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Edit, Play, Calendar, ListChecks } from "lucide-react";
+import { ArrowLeft, Edit, Play, Calendar, ListChecks, Clock } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
-import { ChecklistTypes } from "@/types/checklists";
+import { ChecklistTypes, ChecklistFrequencies } from "@/types/checklists";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { format } from "date-fns";
 
@@ -27,6 +26,17 @@ const ChecklistDetailPage = () => {
       case 'equipment': return 'bg-blue-100 text-blue-800';
       case 'maintenance': return 'bg-yellow-100 text-yellow-800';
       case 'quality': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getFrequencyColor = (frequency: string) => {
+    switch(frequency) {
+      case 'daily': return 'bg-blue-100 text-blue-800';
+      case 'weekly': return 'bg-green-100 text-green-800';
+      case 'monthly': return 'bg-purple-100 text-purple-800';
+      case 'quarterly': return 'bg-orange-100 text-orange-800';
+      case 'annually': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -84,6 +94,9 @@ const ChecklistDetailPage = () => {
                   <Badge className={getTypeColor(checklist.type)}>
                     {ChecklistTypes.find(t => t.value === checklist.type)?.label || checklist.type}
                   </Badge>
+                  <Badge className={getFrequencyColor(checklist.frequency)}>
+                    {ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label || checklist.frequency}
+                  </Badge>
                 </div>
                 
                 {checklist.description && (
@@ -96,6 +109,10 @@ const ChecklistDetailPage = () => {
                   <div className="flex items-center gap-2">
                     <ListChecks className="h-4 w-4" />
                     <span>{checklist.items?.length || 0} items</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    <span>{ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />

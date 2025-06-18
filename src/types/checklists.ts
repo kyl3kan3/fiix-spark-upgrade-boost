@@ -4,6 +4,7 @@ export interface Checklist {
   name: string;
   description?: string;
   type: string;
+  frequency: string;
   company_id: string;
   created_by: string;
   created_at: string;
@@ -51,4 +52,13 @@ export const ChecklistTypes = [
   { value: 'maintenance', label: 'Maintenance' },
   { value: 'quality', label: 'Quality' },
   { value: 'general', label: 'General' },
+] as const;
+
+export const ChecklistFrequencies = [
+  { value: 'one-time', label: 'One-time' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'quarterly', label: 'Quarterly' },
+  { value: 'annually', label: 'Annually' },
 ] as const;

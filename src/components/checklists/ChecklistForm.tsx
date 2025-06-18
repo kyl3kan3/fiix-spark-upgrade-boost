@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Plus, Trash2, GripVertical } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
-import { ChecklistTypes, ChecklistItem } from "@/types/checklists";
+import { ChecklistTypes, ChecklistFrequencies, ChecklistItem } from "@/types/checklists";
 import { toast } from "sonner";
 
 interface ChecklistFormProps {
@@ -26,6 +26,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
+  const [frequency, setFrequency] = useState("one-time");
   const [items, setItems] = useState<Omit<ChecklistItem, "id" | "created_at" | "checklist_id">[]>([]);
 
   // Fetch existing checklist if editing
@@ -41,6 +42,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
       setName(checklist.name);
       setDescription(checklist.description || "");
       setType(checklist.type);
+      setFrequency(checklist.frequency || "one-time");
       if (checklist.items) {
         setItems(checklist.items.map(item => ({
           title: item.title,
@@ -87,7 +89,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !type) {
+    if (!name.trim() || !type || !frequency) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -96,6 +98,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
       name: name.trim(),
       description: description.trim(),
       type,
+      frequency,
       is_active: true,
     };
 
@@ -155,7 +158,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="name">Name *</Label>
                 <Input
@@ -177,6 +180,22 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
                     {ChecklistTypes.map(checklistType => (
                       <SelectItem key={checklistType.value} value={checklistType.value}>
                         {checklistType.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="frequency">Frequency *</Label>
+                <Select value={frequency} onValueChange={setFrequency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select frequency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ChecklistFrequencies.map(freq => (
+                      <SelectItem key={freq.value} value={freq.value}>
+                        {freq.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
