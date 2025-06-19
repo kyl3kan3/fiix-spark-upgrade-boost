@@ -45,7 +45,10 @@ export const fetchAssets = async (): Promise<Asset[]> => {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(asset => ({
+      ...asset,
+      status: asset.status as 'active' | 'inactive' | 'maintenance' | 'retired'
+    }));
   } catch (error) {
     console.error('Error in fetchAssets:', error);
     throw error;
@@ -67,7 +70,12 @@ export const getAssetById = async (id: string): Promise<Asset | null> => {
       throw error;
     }
 
-    return data;
+    if (!data) return null;
+
+    return {
+      ...data,
+      status: data.status as 'active' | 'inactive' | 'maintenance' | 'retired'
+    };
   } catch (error) {
     console.error('Error in getAssetById:', error);
     throw error;
@@ -92,7 +100,10 @@ export const createAsset = async (assetData: CreateAssetData): Promise<Asset> =>
     }
 
     toast.success('Asset created successfully');
-    return data;
+    return {
+      ...data,
+      status: data.status as 'active' | 'inactive' | 'maintenance' | 'retired'
+    };
   } catch (error) {
     console.error('Error in createAsset:', error);
     throw error;
@@ -115,7 +126,10 @@ export const updateAsset = async (id: string, updates: Partial<CreateAssetData>)
     }
 
     toast.success('Asset updated successfully');
-    return data;
+    return {
+      ...data,
+      status: data.status as 'active' | 'inactive' | 'maintenance' | 'retired'
+    };
   } catch (error) {
     console.error('Error in updateAsset:', error);
     throw error;

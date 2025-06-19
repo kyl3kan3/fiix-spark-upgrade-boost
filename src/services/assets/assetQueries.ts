@@ -1,10 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { fetchAssets, getAllAssets, getAssetById } from "@/services/assetService";
 
-// Re-export the main functions for compatibility
-export { fetchAssets, getAllAssets, getAssetById };
-
-export async function getAllAssets() {
+export async function getAssetsWithLocations() {
   const { data, error } = await supabase
     .from("assets")
     .select(`
@@ -22,7 +19,7 @@ export async function getAllAssets() {
   return data || [];
 }
 
-export async function getAssetById(assetId: string) {
+export async function getAssetWithLocationById(assetId: string) {
   const { data, error } = await supabase
     .from("assets")
     .select(`
