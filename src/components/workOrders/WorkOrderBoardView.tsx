@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon, UserIcon, AlertCircle, Eye, Edit, Trash2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { format } from "date-fns";
-import { getPriorityColor } from "../workOrderUtils";
+import { getPriorityColor } from "./workOrderUtils";
 
 interface WorkOrderBoardViewProps {
   workOrders: WorkOrderWithRelations[];

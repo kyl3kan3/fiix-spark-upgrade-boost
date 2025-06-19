@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { format } from "date-fns";
-import { getStatusColor, getPriorityColor } from "../workOrderUtils";
+import { getStatusColor, getPriorityColor } from "./workOrderUtils";
 
 interface WorkOrderListViewProps {
   workOrders: WorkOrderWithRelations[];
