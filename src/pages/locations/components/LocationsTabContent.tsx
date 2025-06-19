@@ -1,6 +1,6 @@
 
 import React from "react";
-import { TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { LocationHierarchyView } from "@/components/locations/LocationHierarchyView";
 import { LocationsListView } from "@/pages/locations/components/LocationsListView";
 import { LocationAnalytics } from "@/components/locations/LocationAnalytics";
@@ -50,7 +50,7 @@ export const LocationsTabContent: React.FC<LocationsTabContentProps> = ({
   isDeleting,
 }) => {
   return (
-    <div className="mt-6">
+    <Tabs value={viewMode} className="w-full">
       {(viewMode === "hierarchy" || viewMode === "list") && (
         <LocationFilters
           searchQuery={searchQuery}
@@ -64,37 +64,39 @@ export const LocationsTabContent: React.FC<LocationsTabContentProps> = ({
         />
       )}
 
-      <TabsContent value="hierarchy" className="mt-6">
-        <LocationHierarchyView 
-          locations={hierarchyLocations}
-          isLoading={isLoading}
-          isDeleting={isDeleting}
-          onAddSubLocation={onAddSubLocation}
-          onDeleteLocation={onDeleteLocation}
-          onEditLocation={onEditLocationClick}
-        />
-      </TabsContent>
+      <div className="mt-6">
+        <TabsContent value="hierarchy" className="mt-0">
+          <LocationHierarchyView 
+            locations={hierarchyLocations}
+            isLoading={isLoading}
+            isDeleting={isDeleting}
+            onAddSubLocation={onAddSubLocation}
+            onDeleteLocation={onDeleteLocation}
+            onEditLocation={onEditLocationClick}
+          />
+        </TabsContent>
 
-      <TabsContent value="list" className="mt-6">
-        <LocationsListView
-          locations={filteredLocations}
-          isLoading={isLoading}
-          searchQuery={searchQuery}
-          onAddSubLocation={onAddSubLocation}
-          setIsAddDialogOpen={setIsAddDialogOpen}
-        />
-      </TabsContent>
+        <TabsContent value="list" className="mt-0">
+          <LocationsListView
+            locations={filteredLocations}
+            isLoading={isLoading}
+            searchQuery={searchQuery}
+            onAddSubLocation={onAddSubLocation}
+            setIsAddDialogOpen={setIsAddDialogOpen}
+          />
+        </TabsContent>
 
-      <TabsContent value="analytics" className="mt-6">
-        <LocationAnalytics />
-      </TabsContent>
+        <TabsContent value="analytics" className="mt-0">
+          <LocationAnalytics />
+        </TabsContent>
 
-      <TabsContent value="bulk" className="mt-6">
-        <LocationBulkOperations
-          locations={allLocations}
-          onOperationComplete={onOperationComplete}
-        />
-      </TabsContent>
-    </div>
+        <TabsContent value="bulk" className="mt-0">
+          <LocationBulkOperations
+            locations={allLocations}
+            onOperationComplete={onOperationComplete}
+          />
+        </TabsContent>
+      </div>
+    </Tabs>
   );
 };
