@@ -1,7 +1,21 @@
 
 import { useState, useEffect } from "react";
-import { UserSettingsService, UserSettings } from "@/services/userSettingsService";
+import { getUserSettings, updateUserSettings } from "@/services/userSettingsService";
 import { toast } from "sonner";
+
+interface UserSettings {
+  notification_preferences: {
+    sms_notifications: boolean;
+    push_notifications: boolean;
+    email_notifications: boolean;
+  };
+  display_settings: {
+    dark_mode: boolean;
+    compact_mode: boolean;
+  };
+  dashboard_layout: string;
+  setup_completed: boolean;
+}
 
 export const useUserSettings = () => {
   const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -11,7 +25,7 @@ export const useUserSettings = () => {
   const loadSettings = async () => {
     setIsLoading(true);
     try {
-      const userSettings = await UserSettingsService.getUserSettings();
+      const userSettings = await getUserSettings();
       setSettings(userSettings);
     } catch (error) {
       console.error('Error loading user settings:', error);
@@ -24,7 +38,7 @@ export const useUserSettings = () => {
   const saveSettings = async (newSettings: Partial<UserSettings>) => {
     setIsSaving(true);
     try {
-      const savedSettings = await UserSettingsService.saveUserSettings(newSettings);
+      const savedSettings = await updateUserSettings(newSettings);
       setSettings(savedSettings);
       toast.success('Settings saved successfully');
       return savedSettings;
@@ -40,7 +54,7 @@ export const useUserSettings = () => {
   const updateNotificationPreferences = async (preferences: UserSettings['notification_preferences']) => {
     setIsSaving(true);
     try {
-      const updatedSettings = await UserSettingsService.updateNotificationPreferences(preferences);
+      const updatedSettings = await updateUserSettings({ notification_preferences: preferences });
       setSettings(updatedSettings);
       toast.success('Notification preferences updated');
       return updatedSettings;
@@ -56,7 +70,7 @@ export const useUserSettings = () => {
   const updateDisplaySettings = async (displaySettings: UserSettings['display_settings']) => {
     setIsSaving(true);
     try {
-      const updatedSettings = await UserSettingsService.updateDisplaySettings(displaySettings);
+      const updatedSettings = await updateUserSettings({ display_settings: displaySettings });
       setSettings(updatedSettings);
       toast.success('Display settings updated');
       return updatedSettings;
@@ -72,7 +86,7 @@ export const useUserSettings = () => {
   const updateDashboardLayout = async (layout: string) => {
     setIsSaving(true);
     try {
-      const updatedSettings = await UserSettingsService.updateDashboardLayout(layout);
+      const updatedSettings = await updateUserSettings({ dashboard_layout: layout });
       setSettings(updatedSettings);
       toast.success('Dashboard layout updated');
       return updatedSettings;
@@ -88,7 +102,7 @@ export const useUserSettings = () => {
   const markSetupCompleted = async () => {
     setIsSaving(true);
     try {
-      const updatedSettings = await UserSettingsService.markSetupCompleted();
+      const updatedSettings = await updateUserSettings({ setup_completed: true });
       setSettings(updatedSettings);
       return updatedSettings;
     } catch (error) {
