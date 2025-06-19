@@ -16,50 +16,7 @@ const LocationsPage = () => {
   });
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  const locationPageData = useLocationPage();
-  const isLoading = false;
-
-  // Mock locations data
-  const mockLocations = [
-    {
-      id: 1,
-      name: "Main Facility",
-      type: "Building",
-      address: "123 Industrial Dr, Manufacturing City, ST 12345",
-      status: "active",
-      assets: 45,
-      workOrders: 12
-    },
-    {
-      id: 2,
-      name: "Warehouse A",
-      type: "Warehouse",
-      address: "456 Storage Ln, Distribution Hub, ST 12346",
-      status: "active",
-      assets: 23,
-      workOrders: 3
-    },
-    {
-      id: 3,
-      name: "Office Building",
-      type: "Office",
-      address: "789 Corporate Blvd, Business District, ST 12347",
-      status: "active",
-      assets: 15,
-      workOrders: 5
-    }
-  ];
-
-  const filteredLocations = mockLocations.filter((location) => {
-    const matchesSearch = !filters.search || 
-      location.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
-      location.address?.toLowerCase().includes(filters.search.toLowerCase());
-    
-    const matchesType = filters.type === "all" || location.type === filters.type;
-    const matchesStatus = filters.status === "all" || location.status === filters.status;
-    
-    return matchesSearch && matchesType && matchesStatus;
-  });
+  const { isLoading, filteredLocations } = useLocationPage();
 
   if (isLoading) {
     return (
@@ -115,28 +72,39 @@ const LocationsPage = () => {
           </div>
           
           <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredLocations.map((location) => (
-                <Card key={location.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>{location.name}</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                        {location.status}
-                      </span>
-                    </CardTitle>
-                    <CardDescription>{location.type}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-4">{location.address}</p>
-                    <div className="flex justify-between text-sm">
-                      <span>{location.assets} Assets</span>
-                      <span>{location.workOrders} Work Orders</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {filteredLocations.length === 0 ? (
+              <div className="text-center py-12">
+                <MapPin className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No locations found</h3>
+                <p className="text-gray-500 mb-6">Create your first location to get started</p>
+                <Button onClick={() => setShowAddDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Location
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredLocations.map((location) => (
+                  <Card key={location.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span>{location.name}</span>
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                          active
+                        </span>
+                      </CardTitle>
+                      <CardDescription>{location.description || 'No description'}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between text-sm">
+                        <span>0 Assets</span>
+                        <span>0 Work Orders</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="hierarchy" className="mt-0 space-y-4 sm:space-y-6">
@@ -146,29 +114,26 @@ const LocationsPage = () => {
                 <CardDescription>View the organizational structure of your locations</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="font-medium">🏢 Company Headquarters</div>
-                  <div className="ml-4 space-y-1">
-                    <div>📍 Main Facility</div>
-                    <div className="ml-4 text-sm text-gray-600">
-                      • Production Floor A<br/>
-                      • Production Floor B<br/>
-                      • Quality Control Lab
-                    </div>
-                    <div>📍 Warehouse A</div>
-                    <div className="ml-4 text-sm text-gray-600">
-                      • Storage Area 1<br/>
-                      • Loading Dock<br/>
-                      • Shipping Department
-                    </div>
-                    <div>📍 Office Building</div>
-                    <div className="ml-4 text-sm text-gray-600">
-                      • Administration<br/>
-                      • IT Department<br/>
-                      • Conference Rooms
-                    </div>
+                {filteredLocations.length === 0 ? (
+                  <div className="text-center py-8">
+                    <MapPin className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No locations found</h3>
+                    <p className="text-gray-500 mb-6">Create locations to see the hierarchy view</p>
                   </div>
-                </div>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredLocations.map((location) => (
+                      <div key={location.id} className="font-medium">
+                        📍 {location.name}
+                        {location.description && (
+                          <div className="ml-4 text-sm text-gray-600">
+                            {location.description}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

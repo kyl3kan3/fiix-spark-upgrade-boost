@@ -1,8 +1,6 @@
 
-// Empty data placeholders for calendar
-export const events = [
-  // Will be populated from database
-];
+// Data will be populated from database
+export const events = [];
 
 export const technicians = [
   { id: 1, name: "All Technicians", value: "all" }
