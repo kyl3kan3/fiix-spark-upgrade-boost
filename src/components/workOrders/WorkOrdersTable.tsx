@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -24,6 +24,12 @@ interface WorkOrdersTableProps {
 }
 
 const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading, error }) => {
+  const navigate = useNavigate();
+
+  const handleCreateWorkOrder = () => {
+    navigate("/work-orders/new");
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-40 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
@@ -41,7 +47,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
   }
 
   if (!workOrders || workOrders.length === 0) {
-    return <EmptyWorkOrdersState />;
+    return <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />;
   }
 
   return (
