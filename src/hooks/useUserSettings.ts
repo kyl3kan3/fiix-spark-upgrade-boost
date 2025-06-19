@@ -17,6 +17,27 @@ interface UserSettings {
   setup_completed: boolean;
 }
 
+// Transform database response to our UserSettings interface
+const transformDatabaseResponse = (dbResponse: any): UserSettings => {
+  return {
+    notification_preferences: typeof dbResponse.notification_preferences === 'object' 
+      ? dbResponse.notification_preferences 
+      : {
+          sms_notifications: false,
+          push_notifications: false,
+          email_notifications: true
+        },
+    display_settings: typeof dbResponse.display_settings === 'object'
+      ? dbResponse.display_settings
+      : {
+          dark_mode: false,
+          compact_mode: false
+        },
+    dashboard_layout: dbResponse.dashboard_layout || 'Default',
+    setup_completed: dbResponse.setup_completed || false
+  };
+};
+
 export const useUserSettings = () => {
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +47,8 @@ export const useUserSettings = () => {
     setIsLoading(true);
     try {
       const userSettings = await getUserSettings();
-      setSettings(userSettings);
+      const transformedSettings = transformDatabaseResponse(userSettings);
+      setSettings(transformedSettings);
     } catch (error) {
       console.error('Error loading user settings:', error);
       toast.error('Failed to load user settings');
@@ -39,9 +61,10 @@ export const useUserSettings = () => {
     setIsSaving(true);
     try {
       const savedSettings = await updateUserSettings(newSettings);
-      setSettings(savedSettings);
+      const transformedSettings = transformDatabaseResponse(savedSettings);
+      setSettings(transformedSettings);
       toast.success('Settings saved successfully');
-      return savedSettings;
+      return transformedSettings;
     } catch (error) {
       console.error('Error saving user settings:', error);
       toast.error('Failed to save settings');
@@ -55,9 +78,10 @@ export const useUserSettings = () => {
     setIsSaving(true);
     try {
       const updatedSettings = await updateUserSettings({ notification_preferences: preferences });
-      setSettings(updatedSettings);
+      const transformedSettings = transformDatabaseResponse(updatedSettings);
+      setSettings(transformedSettings);
       toast.success('Notification preferences updated');
-      return updatedSettings;
+      return transformedSettings;
     } catch (error) {
       console.error('Error updating notification preferences:', error);
       toast.error('Failed to update notification preferences');
@@ -71,9 +95,10 @@ export const useUserSettings = () => {
     setIsSaving(true);
     try {
       const updatedSettings = await updateUserSettings({ display_settings: displaySettings });
-      setSettings(updatedSettings);
+      const transformedSettings = transformDatabaseResponse(updatedSettings);
+      setSettings(transformedSettings);
       toast.success('Display settings updated');
-      return updatedSettings;
+      return transformedSettings;
     } catch (error) {
       console.error('Error updating display settings:', error);
       toast.error('Failed to update display settings');
@@ -87,9 +112,10 @@ export const useUserSettings = () => {
     setIsSaving(true);
     try {
       const updatedSettings = await updateUserSettings({ dashboard_layout: layout });
-      setSettings(updatedSettings);
+      const transformedSettings = transformDatabaseResponse(updatedSettings);
+      setSettings(transformedSettings);
       toast.success('Dashboard layout updated');
-      return updatedSettings;
+      return transformedSettings;
     } catch (error) {
       console.error('Error updating dashboard layout:', error);
       toast.error('Failed to update dashboard layout');
@@ -103,8 +129,9 @@ export const useUserSettings = () => {
     setIsSaving(true);
     try {
       const updatedSettings = await updateUserSettings({ setup_completed: true });
-      setSettings(updatedSettings);
-      return updatedSettings;
+      const transformedSettings = transformDatabaseResponse(updatedSettings);
+      setSettings(transformedSettings);
+      return transformedSettings;
     } catch (error) {
       console.error('Error marking setup as completed:', error);
       toast.error('Failed to update setup status');
