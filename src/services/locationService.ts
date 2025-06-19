@@ -41,6 +41,52 @@ export const fetchLocations = async (): Promise<Location[]> => {
   }
 };
 
+// Alias for compatibility with existing code
+export const getAllLocations = fetchLocations;
+
+export const getLocationById = async (id: string): Promise<Location | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching location:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error in getLocationById:', error);
+    throw error;
+  }
+};
+
+export const getLocationPath = async (id: string): Promise<string> => {
+  try {
+    const locations = await fetchLocations();
+    const locationMap = new Map(locations.map(loc => [loc.id, loc]));
+    
+    const buildPath = (locationId: string): string[] => {
+      const location = locationMap.get(locationId);
+      if (!location) return [];
+      
+      const path = [location.name];
+      if (location.parent_id) {
+        path.unshift(...buildPath(location.parent_id));
+      }
+      return path;
+    };
+    
+    return buildPath(id).join(' > ');
+  } catch (error) {
+    console.error('Error in getLocationPath:', error);
+    return '';
+  }
+};
+
 export const createLocation = async (locationData: CreateLocationData): Promise<Location> => {
   try {
     const { data, error } = await supabase

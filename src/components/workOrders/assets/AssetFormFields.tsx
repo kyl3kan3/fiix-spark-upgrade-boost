@@ -26,16 +26,19 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
   });
 
   // Fetch all locations for location dropdown
-  const { data: locations, isLoading: locationsLoading, refetch: refetchLocations } = useQuery({
+  const { data: locationsData, isLoading: locationsLoading, refetch: refetchLocations } = useQuery({
     queryKey: ["allLocations"],
     queryFn: getAllLocations
   });
 
-  console.log("Assets loaded:", assets?.length || 0);
-  console.log("Locations loaded:", locations?.length || 0);
+  // Ensure locations is always an array
+  const locations = Array.isArray(locationsData) ? locationsData : [];
+
+  console.log("Assets loaded:", Array.isArray(assets) ? assets.length : 0);
+  console.log("Locations loaded:", locations.length);
 
   // Filter out the current asset (we can't set an asset as its own parent)
-  const availableParentAssets = assets?.filter(asset => asset.id !== currentAssetId) || [];
+  const availableParentAssets = Array.isArray(assets) ? assets.filter(asset => asset.id !== currentAssetId) : [];
 
   // Handle adding new location
   const handleAddLocation = async (locationName: string) => {

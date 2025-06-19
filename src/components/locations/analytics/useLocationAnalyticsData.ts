@@ -9,8 +9,11 @@ export const useLocationAnalyticsData = () => {
 
   const isLoading = locationsLoading || assetsLoading;
 
-  // Calculate analytics
+  // Calculate analytics with proper type checking
   const analytics = React.useMemo(() => {
+    if (!Array.isArray(locations) || !Array.isArray(assetCounts)) {
+      return null;
+    }
     return calculateLocationAnalytics(locations, assetCounts);
   }, [locations, assetCounts]);
 

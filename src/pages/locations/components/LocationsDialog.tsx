@@ -38,6 +38,7 @@ export const LocationsDialog: React.FC<LocationsDialogProps> = ({
         onSubmit={onSubmit}
         onCancel={onCancel}
         isLoading={isCreating}
+        mode="create"
       />
     </DialogContent>
   );
