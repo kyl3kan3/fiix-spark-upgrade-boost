@@ -202,7 +202,7 @@ export const WorkOrderDetails: React.FC<WorkOrderDetailsProps> = ({
       </div>
 
       {/* Comments */}
-      <WorkOrderComments workOrderId={workOrder.id} />
+      <WorkOrderComments workOrder={workOrder} />
     </div>
   );
 };

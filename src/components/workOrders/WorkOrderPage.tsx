@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWorkOrders } from "./useWorkOrders";
 import { WorkOrderListView } from "./WorkOrderListView";
-import { WorkOrderFilters } from "./WorkOrderFilters";
-import { WorkOrderBoardView } from "./WorkOrderBoardView";
-import { EmptyWorkOrdersState } from "./EmptyWorkOrdersState";
+import WorkOrderFilters from "./WorkOrderFilters";
+import WorkOrderBoardView from "./WorkOrderBoardView";
+import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -114,8 +114,8 @@ export const WorkOrderPage: React.FC = () => {
           <CardContent>
             <WorkOrderFilters
               filters={filters}
-              onFiltersChange={updateFilters}
-              onClearFilters={resetFilters}
+              updateFilters={updateFilters}
+              resetFilters={resetFilters}
             />
           </CardContent>
         </Card>

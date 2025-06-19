@@ -1,15 +1,25 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, UserIcon, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon, UserIcon, AlertCircle, Eye, Edit, Trash2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { format } from "date-fns";
 
 interface WorkOrderBoardViewProps {
   workOrders: WorkOrderWithRelations[];
+  onView: (workOrder: WorkOrderWithRelations) => void;
+  onEdit: (workOrder: WorkOrderWithRelations) => void;
+  onDelete: (workOrderId: string) => void;
 }
 
-const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ workOrders }) => {
+const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ 
+  workOrders,
+  onView,
+  onEdit,
+  onDelete
+}) => {
   const statusColumns = [
     { key: 'pending', label: 'Pending', color: 'bg-yellow-50 border-yellow-200' },
     { key: 'in_progress', label: 'In Progress', color: 'bg-blue-50 border-blue-200' },
@@ -52,7 +62,7 @@ const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ workOrders }) =
           
           <div className="space-y-2 sm:space-y-3 max-h-[500px] sm:max-h-[600px] overflow-y-auto">
             {groupedWorkOrders[column.key]?.map((workOrder) => (
-              <Card key={workOrder.id} className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card key={workOrder.id} className="hover:shadow-md transition-shadow">
                 <CardHeader className="p-3 sm:p-4 pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-sm sm:text-base font-medium line-clamp-2">
@@ -74,7 +84,7 @@ const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ workOrders }) =
                     </p>
                   )}
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 mb-3">
                     {workOrder.asset && (
                       <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500">
                         <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -97,6 +107,33 @@ const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({ workOrders }) =
                         <span>{format(new Date(workOrder.due_date), 'MMM dd, yyyy')}</span>
                       </div>
                     )}
+                  </div>
+
+                  <div className="flex items-center gap-1 pt-2 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onView(workOrder)}
+                      className="h-8 px-2"
+                    >
+                      <Eye className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(workOrder)}
+                      className="h-8 px-2"
+                    >
+                      <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onDelete(workOrder.id)}
+                      className="h-8 px-2 text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
