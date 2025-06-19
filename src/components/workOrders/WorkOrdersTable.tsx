@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
-import { formatDate } from "@/components/workOrders/workOrderUtils";
-import { statusColorMap, priorityColorMap } from "@/components/workOrders/workOrderUtils";
+import { formatDate, getStatusColor, getPriorityColor } from "@/components/workOrders/workOrderUtils";
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 
 interface WorkOrdersTableProps {
@@ -73,12 +72,12 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
                 </Link>
               </TableCell>
               <TableCell>
-                <Badge className={statusColorMap[workOrder.status] || "bg-gray-100"}>
+                <Badge className={getStatusColor(workOrder.status)}>
                   {workOrder.status?.replace("_", " ")}
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge className={priorityColorMap[workOrder.priority] || "bg-gray-100"}>
+                <Badge className={getPriorityColor(workOrder.priority)}>
                   {workOrder.priority}
                 </Badge>
               </TableCell>

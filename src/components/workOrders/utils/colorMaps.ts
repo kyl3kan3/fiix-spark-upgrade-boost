@@ -1,4 +1,7 @@
 
+// This file is deprecated - color utilities have been moved to workOrderUtils.ts
+// Please import getStatusColor and getPriorityColor from ../workOrderUtils instead
+
 export const statusColorMap: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   in_progress: "bg-blue-100 text-blue-800",
