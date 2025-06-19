@@ -37,3 +37,24 @@ export async function getAssetWithLocationById(assetId: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getAllAssets() {
+  const { data, error } = await supabase
+    .from("assets")
+    .select("*")
+    .order("name");
+    
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getAssetById(assetId: string) {
+  const { data, error } = await supabase
+    .from("assets")
+    .select("*")
+    .eq("id", assetId)
+    .single();
+    
+  if (error) throw error;
+  return data;
+}

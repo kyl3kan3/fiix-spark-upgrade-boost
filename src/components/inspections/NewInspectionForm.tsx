@@ -17,7 +17,7 @@ const NewInspectionForm = () => {
   const navigate = useNavigate();
   
   // Fetch assets from database
-  const { data: assets, isLoading: assetsLoading } = useQuery({
+  const { data: assetsData, isLoading: assetsLoading } = useQuery({
     queryKey: ["assets"],
     queryFn: getAllAssets
   });
@@ -34,6 +34,9 @@ const NewInspectionForm = () => {
       return data || [];
     }
   });
+
+  // Ensure assets is always an array
+  const assets = Array.isArray(assetsData) ? assetsData : [];
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +75,7 @@ const NewInspectionForm = () => {
                   <SelectValue placeholder="Select asset" />
                 </SelectTrigger>
                 <SelectContent className="dark:border-gray-700 dark:bg-gray-800">
-                  {assets && assets.length > 0 ? (
+                  {assets.length > 0 ? (
                     assets.map((asset) => (
                       <SelectItem key={asset.id} value={asset.id}>
                         {asset.name}
