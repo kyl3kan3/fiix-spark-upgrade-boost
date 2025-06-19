@@ -1,102 +1,95 @@
 
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useCallback } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createLocation,
+  updateLocation,
+  deleteLocation,
+  CreateLocationData,
+  LocationWithChildren
+} from "@/services/locationService";
 import { toast } from "sonner";
-import { createLocation, deleteLocation, updateLocation } from "@/services/locationService";
 
-export const useLocationActions = () => {
+export function useLocationActions() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedParentId, setSelectedParentId] = useState<string>("");
-  const [editingLocation, setEditingLocation] = useState<any>(null);
-  const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedParentId, setSelectedParentId] = useState("");
+  const [editingLocation, setEditingLocation] = useState<LocationWithChildren | null>(null);
   const queryClient = useQueryClient();
 
-  const handleAddLocation = async (locationData: {
-    name: string;
-    description: string;
-    parent_id: string | null;
-  }) => {
-    setIsCreating(true);
-    try {
-      await createLocation(locationData);
-      toast.success("Location added successfully");
-      
-      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
-      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
-      
+  const createMutation = useMutation({
+    mutationFn: createLocation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
       setIsAddDialogOpen(false);
       setSelectedParentId("");
-    } catch (err: any) {
-      console.error("Error creating location:", err);
-      toast.error(err.message || "Failed to add location");
-    } finally {
-      setIsCreating(false);
+    },
+    onError: (error) => {
+      console.error('Error creating location:', error);
     }
-  };
+  });
 
-  const handleEditLocation = async (locationData: {
-    name: string;
-    description: string;
-    parent_id: string | null;
-  }) => {
-    if (!editingLocation) return;
-    
-    setIsUpdating(true);
-    try {
-      await updateLocation(editingLocation.id, locationData);
-      toast.success("Location updated successfully");
-      
-      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
-      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
-      
+  const updateMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<CreateLocationData> }) =>
+      updateLocation(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
       setIsEditDialogOpen(false);
       setEditingLocation(null);
-    } catch (err: any) {
-      console.error("Error updating location:", err);
-      toast.error(err.message || "Failed to update location");
-    } finally {
-      setIsUpdating(false);
+    },
+    onError: (error) => {
+      console.error('Error updating location:', error);
     }
-  };
+  });
 
-  const handleDeleteLocation = async (locationId: string) => {
-    setIsDeleting(true);
-    try {
-      await deleteLocation(locationId);
-      toast.success("Location deleted successfully");
-
-      await queryClient.invalidateQueries({ queryKey: ["locationHierarchy"] });
-      await queryClient.invalidateQueries({ queryKey: ["allLocations"] });
-    } catch (err: any) {
-      console.error("Error deleting location:", err);
-      toast.error(err.message || "Failed to delete location");
-    } finally {
-      setIsDeleting(false);
+  const deleteMutation = useMutation({
+    mutationFn: deleteLocation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
+      toast.success('Location deleted successfully');
+    },
+    onError: (error) => {
+      console.error('Error deleting location:', error);
     }
-  };
+  });
 
-  const handleAddSubLocation = (parentId: string) => {
+  const handleAddLocation = useCallback(async (data: CreateLocationData) => {
+    await createMutation.mutateAsync(data);
+  }, [createMutation]);
+
+  const handleEditLocation = useCallback(async (data: CreateLocationData) => {
+    if (!editingLocation) return;
+    await updateMutation.mutateAsync({
+      id: editingLocation.id,
+      updates: data
+    });
+  }, [editingLocation, updateMutation]);
+
+  const handleDeleteLocation = useCallback(async (locationId: string) => {
+    if (window.confirm('Are you sure you want to delete this location?')) {
+      await deleteMutation.mutateAsync(locationId);
+    }
+  }, [deleteMutation]);
+
+  const handleAddSubLocation = useCallback((parentId: string) => {
     setSelectedParentId(parentId);
     setIsAddDialogOpen(true);
-  };
+  }, []);
 
-  const handleEditLocationClick = (location: any) => {
+  const handleEditLocationClick = useCallback((location: LocationWithChildren) => {
     setEditingLocation(location);
     setIsEditDialogOpen(true);
-  };
+  }, []);
 
-  const handleDialogClose = () => {
+  const handleDialogClose = useCallback(() => {
     setIsAddDialogOpen(false);
     setSelectedParentId("");
-  };
+  }, []);
 
-  const handleEditDialogClose = () => {
+  const handleEditDialogClose = useCallback(() => {
     setIsEditDialogOpen(false);
     setEditingLocation(null);
-  };
+  }, []);
 
   return {
     isAddDialogOpen,
@@ -104,9 +97,9 @@ export const useLocationActions = () => {
     isEditDialogOpen,
     selectedParentId,
     editingLocation,
-    isCreating,
-    isUpdating,
-    isDeleting,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
     handleAddLocation,
     handleEditLocation,
     handleDeleteLocation,
@@ -115,4 +108,4 @@ export const useLocationActions = () => {
     handleDialogClose,
     handleEditDialogClose
   };
-};
+}

@@ -1,181 +1,174 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface Location {
   id: string;
   name: string;
-  description: string | null;
-  parent_id: string | null;
+  description?: string;
+  parent_id?: string;
   created_at: string;
   updated_at: string;
-  children?: Location[];
 }
 
 export interface LocationWithChildren extends Location {
-  children: LocationWithChildren[];
+  children?: LocationWithChildren[];
 }
 
-// Get all locations
-export async function getAllLocations() {
-  const { data, error } = await supabase
-    .from("locations")
-    .select("*")
-    .order("name");
-    
-  if (error) throw error;
-  return data || [];
-}
-
-// Get location hierarchy (locations with their children)
-export async function getLocationHierarchy(): Promise<LocationWithChildren[]> {
-  const { data: locations, error } = await supabase
-    .from("locations")
-    .select("*")
-    .order("name");
-    
-  if (error) throw error;
-  
-  // Build hierarchy structure
-  const locationMap = new Map<string, LocationWithChildren>();
-  const rootLocations: LocationWithChildren[] = [];
-  
-  // First pass: create map of all locations
-  locations?.forEach(location => {
-    const locationWithChildren: LocationWithChildren = {
-      ...location,
-      children: []
-    };
-    locationMap.set(location.id, locationWithChildren);
-  });
-  
-  // Second pass: build hierarchical structure
-  locations?.forEach(location => {
-    if (location.parent_id && locationMap.has(location.parent_id)) {
-      // This location has a parent, add it to the parent's children
-      locationMap.get(location.parent_id)!.children.push(locationMap.get(location.id)!);
-    } else {
-      // This is a root location (no parent)
-      rootLocations.push(locationMap.get(location.id)!);
-    }
-  });
-  
-  return rootLocations;
-}
-
-// Create a new location
-export async function createLocation(locationData: {
+export interface CreateLocationData {
   name: string;
   description?: string;
   parent_id?: string;
-}) {
-  const { data, error } = await supabase
-    .from("locations")
-    .insert({
-      name: locationData.name,
-      description: locationData.description || null,
-      parent_id: locationData.parent_id || null,
-    })
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data;
 }
 
-// Update a location
-export async function updateLocation(locationId: string, locationData: {
-  name?: string;
-  description?: string;
-  parent_id?: string;
-}) {
-  const { data, error } = await supabase
-    .from("locations")
-    .update({
-      name: locationData.name,
-      description: locationData.description,
-      parent_id: locationData.parent_id,
-    })
-    .eq("id", locationId)
-    .select()
-    .single();
-    
-  if (error) throw error;
-  return data;
-}
+export const fetchLocations = async (): Promise<Location[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .order('name');
 
-// Delete a location
-export async function deleteLocation(locationId: string) {
-  console.log('🗑️ Starting location deletion for ID:', locationId);
-  
-  // First check if location has children
-  const { data: children, error: childrenError } = await supabase
-    .from("locations")
-    .select("id")
-    .eq("parent_id", locationId);
-    
-  if (childrenError) {
-    console.error('❌ Error checking children:', childrenError);
-    throw childrenError;
-  }
-  
-  if (children && children.length > 0) {
-    console.log('❌ Location has children, cannot delete. Children count:', children.length);
-    throw new Error("Cannot delete location with sub-locations. Please delete or move sub-locations first.");
-  }
-  
-  // Check if location has assets - using proper table name and column
-  const { data: assets, error: assetsError } = await supabase
-    .from("assets")
-    .select("id")
-    .eq("location_id", locationId);
-    
-  if (assetsError) {
-    console.error('❌ Error checking assets:', assetsError);
-    throw assetsError;
-  }
-  
-  if (assets && assets.length > 0) {
-    console.log('❌ Location has assets, cannot delete. Assets count:', assets.length);
-    throw new Error("Cannot delete location with assets. Please move or delete assets first.");
-  }
-  
-  console.log('✅ Pre-checks passed, proceeding with deletion');
-  
-  // Perform the actual deletion
-  const { error } = await supabase
-    .from("locations")
-    .delete()
-    .eq("id", locationId);
-    
-  if (error) {
-    console.error('❌ Delete operation failed:', error);
+    if (error) {
+      console.error('Error fetching locations:', error);
+      toast.error('Failed to fetch locations');
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in fetchLocations:', error);
     throw error;
   }
-  
-  console.log('✅ Location deleted successfully');
-}
+};
 
-// Get location by ID
-export async function getLocationById(locationId: string) {
-  const { data, error } = await supabase
-    .from("locations")
-    .select("*")
-    .eq("id", locationId)
-    .single();
+export const createLocation = async (locationData: CreateLocationData): Promise<Location> => {
+  try {
+    const { data, error } = await supabase
+      .from('locations')
+      .insert([locationData])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating location:', error);
+      toast.error('Failed to create location');
+      throw error;
+    }
+
+    toast.success('Location created successfully');
+    return data;
+  } catch (error) {
+    console.error('Error in createLocation:', error);
+    throw error;
+  }
+};
+
+export const updateLocation = async (id: string, updates: Partial<CreateLocationData>): Promise<Location> => {
+  try {
+    const { data, error } = await supabase
+      .from('locations')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating location:', error);
+      toast.error('Failed to update location');
+      throw error;
+    }
+
+    toast.success('Location updated successfully');
+    return data;
+  } catch (error) {
+    console.error('Error in updateLocation:', error);
+    throw error;
+  }
+};
+
+export const deleteLocation = async (id: string): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('locations')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting location:', error);
+      toast.error('Failed to delete location');
+      throw error;
+    }
+
+    toast.success('Location deleted successfully');
+  } catch (error) {
+    console.error('Error in deleteLocation:', error);
+    throw error;
+  }
+};
+
+export const buildLocationHierarchy = (locations: Location[]): LocationWithChildren[] => {
+  const locationMap = new Map<string, LocationWithChildren>();
+  const rootLocations: LocationWithChildren[] = [];
+
+  // Create a map of all locations
+  locations.forEach(location => {
+    locationMap.set(location.id, { ...location, children: [] });
+  });
+
+  // Build the hierarchy
+  locations.forEach(location => {
+    const locationWithChildren = locationMap.get(location.id)!;
     
-  if (error) throw error;
-  return data;
-}
+    if (location.parent_id) {
+      const parent = locationMap.get(location.parent_id);
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push(locationWithChildren);
+      }
+    } else {
+      rootLocations.push(locationWithChildren);
+    }
+  });
 
-// Get full location path (e.g., "Building A > Floor 2 > Room 201")
-export async function getLocationPath(locationId: string): Promise<string> {
-  const location = await getLocationById(locationId);
-  if (!location) return "";
+  return rootLocations;
+};
+
+export const searchLocations = (locations: Location[], query: string): Location[] => {
+  if (!query.trim()) return locations;
   
-  if (location.parent_id) {
-    const parentPath = await getLocationPath(location.parent_id);
-    return `${parentPath} > ${location.name}`;
+  const searchTerm = query.toLowerCase();
+  return locations.filter(location => 
+    location.name.toLowerCase().includes(searchTerm) ||
+    (location.description && location.description.toLowerCase().includes(searchTerm))
+  );
+};
+
+export const filterLocationsByParent = (locations: Location[], parentId: string): Location[] => {
+  if (parentId === 'all') return locations;
+  return locations.filter(location => location.parent_id === parentId);
+};
+
+export const filterLocationsByDate = (locations: Location[], dateFilter: string): Location[] => {
+  if (dateFilter === 'all') return locations;
+  
+  const now = new Date();
+  const filterDate = new Date();
+  
+  switch (dateFilter) {
+    case 'today':
+      filterDate.setHours(0, 0, 0, 0);
+      break;
+    case 'week':
+      filterDate.setDate(now.getDate() - 7);
+      break;
+    case 'month':
+      filterDate.setMonth(now.getMonth() - 1);
+      break;
+    default:
+      return locations;
   }
   
-  return location.name;
-}
+  return locations.filter(location => 
+    new Date(location.created_at) >= filterDate
+  );
+};

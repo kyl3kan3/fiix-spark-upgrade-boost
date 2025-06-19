@@ -1,90 +1,61 @@
 
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getLocationHierarchy, getAllLocations } from "@/services/locationService";
+import { useState, useEffect, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  fetchLocations,
+  buildLocationHierarchy,
+  searchLocations,
+  filterLocationsByParent,
+  filterLocationsByDate,
+  Location,
+  LocationWithChildren
+} from "@/services/locationService";
 
-export const useLocationPage = () => {
+export function useLocationPage() {
   const [viewMode, setViewMode] = useState<"hierarchy" | "list" | "analytics" | "bulk">("hierarchy");
   const [searchQuery, setSearchQuery] = useState("");
   const [parentFilter, setParentFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
+  const queryClient = useQueryClient();
 
-  // Fetch location hierarchy for hierarchy view
-  const { data: hierarchyLocations = [], isLoading: isHierarchyLoading, refetch: refetchHierarchy } = useQuery({
-    queryKey: ["locationHierarchy"],
-    queryFn: getLocationHierarchy,
+  const {
+    data: locations = [],
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ['locations'],
+    queryFn: fetchLocations,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // Fetch all locations for list view and form options
-  const { data: allLocations = [], isLoading: isAllLocationsLoading, refetch: refetchAll } = useQuery({
-    queryKey: ["allLocations"],
-    queryFn: getAllLocations,
-  });
+  const hierarchyLocations = buildLocationHierarchy(locations);
 
-  const isLoading = viewMode === "hierarchy" ? isHierarchyLoading : isAllLocationsLoading;
+  const filteredLocations = locations
+    .filter(location => !searchQuery || searchLocations([location], searchQuery).length > 0)
+    .filter(location => parentFilter === 'all' || location.parent_id === parentFilter)
+    .filter(location => {
+      if (dateFilter === 'all') return true;
+      return filterLocationsByDate([location], dateFilter).length > 0;
+    });
 
-  // Filter locations based on search and filters
-  const filteredLocations = useMemo(() => {
-    let filtered = allLocations;
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(location =>
-        location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (location.description && location.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-
-    // Apply parent filter
-    if (parentFilter !== "all") {
-      if (parentFilter === "root") {
-        filtered = filtered.filter(location => !location.parent_id);
-      } else {
-        filtered = filtered.filter(location => location.parent_id === parentFilter);
-      }
-    }
-
-    // Apply date filter
-    if (dateFilter !== "all") {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      
-      filtered = filtered.filter(location => {
-        const createdDate = new Date(location.created_at);
-        
-        switch (dateFilter) {
-          case "today":
-            return createdDate >= today;
-          case "week":
-            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return createdDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            return createdDate >= monthAgo;
-          default:
-            return true;
-        }
-      });
-    }
-
-    return filtered;
-  }, [allLocations, searchQuery, parentFilter, dateFilter]);
-
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearchQuery("");
     setParentFilter("all");
     setDateFilter("all");
-  };
+  }, []);
 
-  const handleImportComplete = () => {
-    refetchHierarchy();
-    refetchAll();
-  };
+  const handleImportComplete = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['locations'] });
+  }, [queryClient]);
 
-  const handleOperationComplete = () => {
-    refetchHierarchy();
-    refetchAll();
-  };
+  const handleOperationComplete = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['locations'] });
+  }, [queryClient]);
+
+  if (error) {
+    console.error('Error loading locations:', error);
+  }
 
   return {
     viewMode,
@@ -96,11 +67,11 @@ export const useLocationPage = () => {
     dateFilter,
     setDateFilter,
     hierarchyLocations,
-    allLocations,
+    allLocations: locations,
     filteredLocations,
     isLoading,
     handleClearFilters,
     handleImportComplete,
     handleOperationComplete,
   };
-};
+}
