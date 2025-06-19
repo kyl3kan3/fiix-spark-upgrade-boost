@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { AssetFormValues } from "./AssetFormSchema";
@@ -20,7 +19,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
   console.log("AssetFormFields rendering with currentAssetId:", currentAssetId);
   
   // Fetch all assets for parent selection
-  const { data: assets, isLoading: assetsLoading } = useQuery({
+  const { data: assetsData, isLoading: assetsLoading } = useQuery({
     queryKey: ["assets"],
     queryFn: getAllAssets
   });
@@ -31,14 +30,15 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
     queryFn: getAllLocations
   });
 
-  // Ensure locations is always an array
+  // Ensure assets and locations are always arrays
+  const assets = Array.isArray(assetsData) ? assetsData : [];
   const locations = Array.isArray(locationsData) ? locationsData : [];
 
-  console.log("Assets loaded:", Array.isArray(assets) ? assets.length : 0);
+  console.log("Assets loaded:", assets.length);
   console.log("Locations loaded:", locations.length);
 
   // Filter out the current asset (we can't set an asset as its own parent)
-  const availableParentAssets = Array.isArray(assets) ? assets.filter(asset => asset.id !== currentAssetId) : [];
+  const availableParentAssets = assets.filter(asset => asset.id !== currentAssetId);
 
   // Handle adding new location
   const handleAddLocation = async (locationName: string) => {
