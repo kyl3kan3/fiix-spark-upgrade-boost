@@ -10,7 +10,7 @@ import TeamMembersList from "@/components/team/TeamMembersList";
 import TeamMembersGrid from "@/components/team/TeamMembersGrid";
 import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
 import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
-import { useTeamData } from "@/hooks/team/useTeamData";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 const Team = () => {
   const [filters, setFilters] = useState({
@@ -21,7 +21,7 @@ const Team = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { teamMembers, loading } = useTeamData({});
+  const { teamMembers, loading } = useTeamMembers();
 
   const filteredMembers = teamMembers.filter((member) => {
     const matchesSearch = !filters.search || 
