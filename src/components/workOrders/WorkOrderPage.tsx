@@ -9,11 +9,9 @@ import { WorkOrderListView } from "./WorkOrderListView";
 import WorkOrderFilters from "./WorkOrderFilters";
 import WorkOrderBoardView from "./WorkOrderBoardView";
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useWorkOrderNavigation } from "./hooks/useWorkOrderNavigation";
 
 export const WorkOrderPage: React.FC = () => {
-  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"list" | "board">("list");
   const [showFilters, setShowFilters] = useState(false);
   
@@ -25,28 +23,12 @@ export const WorkOrderPage: React.FC = () => {
     resetFilters
   } = useWorkOrders();
 
-  const handleCreateWorkOrder = () => {
-    navigate("/work-orders/new");
-  };
-
-  const handleViewWorkOrder = (workOrder: any) => {
-    navigate(`/work-orders/${workOrder.id}`);
-  };
-
-  const handleEditWorkOrder = (workOrder: any) => {
-    navigate(`/work-orders/${workOrder.id}/edit`);
-  };
-
-  const handleDeleteWorkOrder = async (workOrderId: string) => {
-    if (window.confirm("Are you sure you want to delete this work order?")) {
-      try {
-        // TODO: Implement delete functionality
-        toast.success("Work order deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete work order");
-      }
-    }
-  };
+  const {
+    handleCreateWorkOrder,
+    handleViewWorkOrder,
+    handleEditWorkOrder,
+    handleDeleteWorkOrder
+  } = useWorkOrderNavigation();
 
   if (isLoading) {
     return (

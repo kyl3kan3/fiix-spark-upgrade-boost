@@ -3,14 +3,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useWorkOrders } from "./useWorkOrders";
 import WorkOrderFilters from "./WorkOrderFilters";
 import WorkOrdersTable from "./WorkOrdersTable";
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
+import { useWorkOrderNavigation } from "./hooks/useWorkOrderNavigation";
 
 const WorkOrderList: React.FC = () => {
-  const navigate = useNavigate();
   const { 
     workOrders, 
     isLoading, 
@@ -19,9 +19,7 @@ const WorkOrderList: React.FC = () => {
     resetFilters 
   } = useWorkOrders();
 
-  const handleCreateWorkOrder = () => {
-    navigate("/work-orders/new");
-  };
+  const { handleCreateWorkOrder } = useWorkOrderNavigation();
   
   return (
     <Card className="w-full transition-colors dark:border-gray-700">
