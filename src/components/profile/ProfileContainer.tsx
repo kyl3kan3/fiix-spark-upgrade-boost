@@ -1,6 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ProfileSkeleton } from "./ProfileSkeleton";
 import { ProfileContent } from "./ProfileContent";
 import { useProfile } from "@/hooks/profile/useProfile";
@@ -9,7 +12,7 @@ import { useAvatarUpload } from "@/hooks/profile/useAvatarUpload";
 
 const ProfileContainer: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
-  const { profile, isLoading, saveProfile } = useProfile();
+  const { profile, isLoading, error, refreshProfile, saveProfile } = useProfile();
   
   // Only initialize form when profile is loaded
   const profileForm = useProfileForm({
@@ -58,8 +61,35 @@ const ProfileContainer: React.FC = () => {
     }
   };
 
+  const handleRetry = () => {
+    refreshProfile();
+  };
+
   if (isLoading) {
     return <ProfileSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>User Profile</CardTitle>
+          <CardDescription>Error loading profile data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert className="mb-4 bg-red-50 border-red-200">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <AlertDescription className="text-red-700">
+              {error}
+            </AlertDescription>
+          </Alert>
+          <Button onClick={handleRetry} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry Loading Profile
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (!profile) {
@@ -70,9 +100,13 @@ const ProfileContainer: React.FC = () => {
           <CardDescription>Unable to load profile data</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
-            There was an issue loading your profile information. Please try again later.
+          <p className="text-muted-foreground mb-4">
+            There was an issue loading your profile information.
           </p>
+          <Button onClick={handleRetry} variant="outline">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Try Again
+          </Button>
         </CardContent>
       </Card>
     );

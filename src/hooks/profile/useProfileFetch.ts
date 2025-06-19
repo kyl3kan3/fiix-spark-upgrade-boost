@@ -22,24 +22,44 @@ export function useProfileFetch({
       setLoadingState(true);
       clearError();
 
+      console.log("Fetching profile for user ID:", userId);
+
+      // Check if user is still authenticated
+      const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError) {
+        console.error("Auth error during profile fetch:", authError);
+        throw new Error("Authentication error: " + authError.message);
+      }
+
+      if (!currentUser || currentUser.id !== userId) {
+        console.error("User not authenticated or ID mismatch");
+        throw new Error("User not authenticated");
+      }
+
       const { data, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        console.error("Database error fetching profile:", fetchError);
+        throw new Error("Failed to fetch profile: " + fetchError.message);
+      }
 
       if (!data) {
+        console.log("No profile found, creating new profile");
         // Create profile if it doesn't exist
         const newProfile = await createProfile(userId, userEmail);
         return newProfile;
       } else {
+        console.log("Profile found:", data);
         return data;
       }
     } catch (error: any) {
-      console.error("Error fetching profile:", error);
-      setErrorState(error.message);
+      console.error("Error in fetchProfile:", error);
+      setErrorState(error.message || "Failed to load profile");
       throw error;
     } finally {
       setLoadingState(false);

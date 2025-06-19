@@ -1,30 +1,18 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-export interface UserSettings {
-  id?: string;
-  user_id?: string;
-  notification_preferences: {
-    email_notifications: boolean;
-    push_notifications: boolean;
-    sms_notifications: boolean;
-  };
-  display_settings: {
-    compact_mode: boolean;
-    dark_mode: boolean;
-  };
-  dashboard_layout: string;
-  setup_completed: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export class UserSettingsService {
-  static async getUserSettings(): Promise<UserSettings | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+export const getUserSettings = async () => {
+  try {
+    // Check if user is authenticated first
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError) {
+      console.error("Auth error:", authError);
+      throw new Error("User not authenticated");
+    }
     
     if (!user) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const { data, error } = await supabase
@@ -34,74 +22,61 @@ export class UserSettingsService {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching user settings:', error);
+      console.error("Error fetching user settings:", error);
       throw error;
     }
 
-    return data as UserSettings | null;
-  }
-
-  static async saveUserSettings(settings: Partial<UserSettings>): Promise<UserSettings> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      throw new Error('User not authenticated');
+    // Return default settings if none exist
+    if (!data) {
+      return {
+        notification_preferences: {
+          sms_notifications: false,
+          push_notifications: false,
+          email_notifications: true
+        },
+        display_settings: {
+          dark_mode: false,
+          compact_mode: false
+        },
+        dashboard_layout: 'Default',
+        setup_completed: false
+      };
     }
 
-    const settingsData = {
-      user_id: user.id,
-      ...settings,
-    };
+    return data;
+  } catch (error) {
+    console.error("Error loading user settings:", error);
+    throw error;
+  }
+};
+
+export const updateUserSettings = async (settings: any) => {
+  try {
+    // Check if user is authenticated first
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      throw new Error("User not authenticated");
+    }
 
     const { data, error } = await supabase
       .from('user_settings')
-      .upsert(settingsData, {
-        onConflict: 'user_id'
+      .upsert({
+        user_id: user.id,
+        ...settings,
+        updated_at: new Date().toISOString()
       })
       .select()
       .single();
 
     if (error) {
-      console.error('Error saving user settings:', error);
+      console.error("Error updating user settings:", error);
       throw error;
     }
 
-    return data as UserSettings;
+    return data;
+  } catch (error) {
+    console.error("Error updating user settings:", error);
+    throw error;
   }
-
-  static async updateNotificationPreferences(preferences: UserSettings['notification_preferences']): Promise<UserSettings> {
-    const currentSettings = await this.getUserSettings();
-    
-    return this.saveUserSettings({
-      ...currentSettings,
-      notification_preferences: preferences,
-    });
-  }
-
-  static async updateDisplaySettings(settings: UserSettings['display_settings']): Promise<UserSettings> {
-    const currentSettings = await this.getUserSettings();
-    
-    return this.saveUserSettings({
-      ...currentSettings,
-      display_settings: settings,
-    });
-  }
-
-  static async updateDashboardLayout(layout: string): Promise<UserSettings> {
-    const currentSettings = await this.getUserSettings();
-    
-    return this.saveUserSettings({
-      ...currentSettings,
-      dashboard_layout: layout,
-    });
-  }
-
-  static async markSetupCompleted(): Promise<UserSettings> {
-    const currentSettings = await this.getUserSettings();
-    
-    return this.saveUserSettings({
-      ...currentSettings,
-      setup_completed: true,
-    });
-  }
-}
+};

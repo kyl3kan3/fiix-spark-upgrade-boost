@@ -7,7 +7,7 @@ import { useProfileFetch } from "./useProfileFetch";
 import { ProfileData } from "@/components/profile/types";
 
 export function useProfile() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const { isLoading, isSaving, error, setLoadingState, setSavingState, setErrorState, clearError } = useProfileState();
   const { createProfile, saveProfile: saveProfileAction, updateAvatar: updateAvatarAction } = useProfileActions();
@@ -55,10 +55,17 @@ export function useProfile() {
   }, [profile, updateAvatarAction, setSavingState, handleProfileUpdate]);
 
   const refreshProfile = useCallback(async () => {
+    // Don't fetch if auth is still loading
+    if (authLoading) {
+      return;
+    }
+
     // Only fetch if user is authenticated and available
     if (!isAuthenticated || !user?.id) {
+      console.log("useProfile: User not authenticated, clearing profile");
       setLoadingState(false);
       setProfile(null);
+      clearError();
       return;
     }
 
@@ -66,13 +73,20 @@ export function useProfile() {
       console.log("Fetching profile for user:", user.id);
       const profileData = await fetchProfile(user.id, user.email);
       setProfile(profileData);
+      clearError();
     } catch (error) {
       console.error("Error refreshing profile:", error);
       // Error handling is done in fetchProfile
     }
-  }, [user?.id, user?.email, isAuthenticated, fetchProfile, setLoadingState]);
+  }, [user?.id, user?.email, isAuthenticated, authLoading, fetchProfile, setLoadingState, clearError]);
 
   useEffect(() => {
+    // Wait for auth to finish loading before making decisions
+    if (authLoading) {
+      console.log("useProfile: Auth still loading, waiting...");
+      return;
+    }
+
     if (isAuthenticated && user?.id) {
       console.log("useProfile: User authenticated, fetching profile");
       refreshProfile();
@@ -80,12 +94,13 @@ export function useProfile() {
       console.log("useProfile: User not authenticated or no user ID");
       setLoadingState(false);
       setProfile(null);
+      clearError();
     }
-  }, [refreshProfile, isAuthenticated, user?.id]);
+  }, [refreshProfile, isAuthenticated, user?.id, authLoading]);
 
   return {
     profile,
-    isLoading,
+    isLoading: authLoading || isLoading,
     isSaving,
     error,
     saveProfile,
