@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "next-themes";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import ProfileInformation from "@/components/profile/ProfileInformation";
@@ -14,7 +15,12 @@ import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const handleDarkModeToggle = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+  };
 
   return (
     <DashboardLayout>
@@ -23,11 +29,11 @@ const Settings = () => {
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <SettingsIcon className="h-6 w-6 sm:h-8 sm:w-8" />
               Settings
             </h1>
-            <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your account and application preferences</p>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">Manage your account and application preferences</p>
           </div>
         </div>
 
@@ -71,7 +77,7 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="emailNotifications">Email Notifications</Label>
-                    <p className="text-sm text-gray-500">Receive updates via email</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Receive updates via email</p>
                   </div>
                   <Switch 
                     id="emailNotifications"
@@ -82,7 +88,7 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="pushNotifications">Push Notifications</Label>
-                    <p className="text-sm text-gray-500">Receive browser notifications</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Receive browser notifications</p>
                   </div>
                   <Switch 
                     id="pushNotifications"
@@ -117,12 +123,12 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="darkMode">Dark Mode</Label>
-                    <p className="text-sm text-gray-500">Switch to dark theme</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Switch to dark theme</p>
                   </div>
                   <Switch 
                     id="darkMode"
-                    checked={darkMode}
-                    onCheckedChange={setDarkMode}
+                    checked={theme === 'dark'}
+                    onCheckedChange={handleDarkModeToggle}
                   />
                 </div>
                 <Button>Save Appearance</Button>
