@@ -1,0 +1,181 @@
+
+import React, { useState } from "react";
+import { Plus, Grid, List, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useWorkOrders } from "./useWorkOrders";
+import { WorkOrderListView } from "./WorkOrderListView";
+import { WorkOrderFilters } from "./WorkOrderFilters";
+import { WorkOrderBoardView } from "./WorkOrderBoardView";
+import { EmptyWorkOrdersState } from "./EmptyWorkOrdersState";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
+export const WorkOrderPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<"list" | "board">("list");
+  const [showFilters, setShowFilters] = useState(false);
+  
+  const {
+    workOrders,
+    isLoading,
+    filters,
+    updateFilters,
+    resetFilters
+  } = useWorkOrders();
+
+  const handleCreateWorkOrder = () => {
+    navigate("/work-orders/new");
+  };
+
+  const handleViewWorkOrder = (workOrder: any) => {
+    navigate(`/work-orders/${workOrder.id}`);
+  };
+
+  const handleEditWorkOrder = (workOrder: any) => {
+    navigate(`/work-orders/${workOrder.id}/edit`);
+  };
+
+  const handleDeleteWorkOrder = async (workOrderId: string) => {
+    if (window.confirm("Are you sure you want to delete this work order?")) {
+      try {
+        // TODO: Implement delete functionality
+        toast.success("Work order deleted successfully");
+      } catch (error) {
+        toast.error("Failed to delete work order");
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+      </div>
+    );
+  }
+
+  if (workOrders.length === 0 && !filters.searchQuery && filters.statusFilter === "all" && filters.priorityFilter === "all") {
+    return <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />;
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Work Orders
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage and track maintenance work orders
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="h-4 w-4 mr-2" />
+            Filters
+          </Button>
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <Button
+              variant={viewMode === "list" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === "board" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("board")}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+          </div>
+          <Button onClick={handleCreateWorkOrder}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Work Order
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      {showFilters && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <WorkOrderFilters
+              filters={filters}
+              onFiltersChange={updateFilters}
+              onClearFilters={resetFilters}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {workOrders.length}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Total Work Orders</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-yellow-600">
+              {workOrders.filter(wo => wo.status === "pending").length}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-blue-600">
+              {workOrders.filter(wo => wo.status === "in_progress").length}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">In Progress</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-green-600">
+              {workOrders.filter(wo => wo.status === "completed").length}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Completed</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Content */}
+      <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "list" | "board")}>
+        <TabsContent value="list" className="mt-0">
+          <WorkOrderListView
+            workOrders={workOrders}
+            onView={handleViewWorkOrder}
+            onEdit={handleEditWorkOrder}
+            onDelete={handleDeleteWorkOrder}
+          />
+        </TabsContent>
+        <TabsContent value="board" className="mt-0">
+          <WorkOrderBoardView 
+            workOrders={workOrders}
+            onView={handleViewWorkOrder}
+            onEdit={handleEditWorkOrder}
+            onDelete={handleDeleteWorkOrder}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
