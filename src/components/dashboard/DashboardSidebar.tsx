@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   List,
@@ -11,7 +12,9 @@ import {
   Wrench,
   Calendar,
   BarChart3,
-  ListChecks
+  ListChecks,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface DashboardSidebarProps {
   isOpen: boolean;
@@ -32,84 +36,129 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { profile, isLoading } = useUserProfile();
+  const [openSections, setOpenSections] = useState<string[]>(['operations']);
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
-  const sidebarItems = [
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => 
+      prev.includes(section) 
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const menuSections = [
     {
-      icon: LayoutDashboard,
-      label: "Dashboard",
-      href: "/dashboard",
-      description: "Overview of your account"
+      key: 'main',
+      label: 'Overview',
+      items: [
+        {
+          icon: LayoutDashboard,
+          label: "Dashboard",
+          href: "/dashboard",
+          description: "Overview of your account"
+        }
+      ]
     },
     {
-      icon: List,
-      label: "Work Orders",
-      href: "/work-orders",
-      description: "Manage maintenance tasks"
+      key: 'operations',
+      label: 'Operations',
+      items: [
+        {
+          icon: List,
+          label: "Work Orders",
+          href: "/work-orders",
+          description: "Manage maintenance tasks"
+        },
+        {
+          icon: ClipboardCheck,
+          label: "Inspections",
+          href: "/inspections",
+          description: "Schedule and manage inspections"
+        },
+        {
+          icon: Wrench,
+          label: "Maintenance",
+          href: "/maintenance",
+          description: "Preventive maintenance scheduling"
+        },
+        {
+          icon: ListChecks,
+          label: "Checklists",
+          href: "/checklists",
+        }
+      ]
     },
     {
-      icon: Package,
-      label: "Assets",
-      href: "/assets",
-      description: "Track equipment and inventory"
+      key: 'assets',
+      label: 'Assets & Locations',
+      items: [
+        {
+          icon: Package,
+          label: "Assets",
+          href: "/assets",
+          description: "Track equipment and inventory"
+        },
+        {
+          icon: Building,
+          label: "Locations",
+          href: "/locations",
+          description: "Manage locations"
+        }
+      ]
     },
     {
-      icon: ClipboardCheck,
-      label: "Inspections",
-      href: "/inspections",
-      description: "Schedule and manage inspections"
+      key: 'planning',
+      label: 'Planning & Reports',
+      items: [
+        {
+          icon: Calendar,
+          label: "Calendar",
+          href: "/calendar",
+          description: "View scheduled events"
+        },
+        {
+          icon: BarChart3,
+          label: "Reports",
+          href: "/reports",
+          description: "Analytics and reporting"
+        }
+      ]
     },
     {
-      icon: Calendar,
-      label: "Calendar",
-      href: "/calendar",
-      description: "View scheduled events"
+      key: 'collaboration',
+      label: 'Team & Vendors',
+      items: [
+        {
+          icon: Users,
+          label: "Team",
+          href: "/team",
+          description: "Collaborate with your team"
+        },
+        {
+          icon: Building2,
+          label: "Vendors",
+          href: "/vendors",
+          description: "Manage vendor relationships"
+        }
+      ]
     },
     {
-      icon: Wrench,
-      label: "Maintenance",
-      href: "/maintenance",
-      description: "Preventive maintenance scheduling"
-    },
-    {
-      icon: BarChart3,
-      label: "Reports",
-      href: "/reports",
-      description: "Analytics and reporting"
-    },
-    {
-      icon: Building2,
-      label: "Vendors",
-      href: "/vendors",
-      description: "Manage vendor relationships"
-    },
-    {
-      icon: Users,
-      label: "Team",
-      href: "/team",
-      description: "Collaborate with your team"
-    },
-    {
-      icon: Building,
-      label: "Locations",
-      href: "/locations",
-      description: "Manage locations"
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      href: "/settings",
-      description: "Customize your experience"
-    },
-    {
-      icon: ListChecks,
-      label: "Checklists",
-      href: "/checklists",
-    },
+      key: 'settings',
+      label: 'Settings',
+      items: [
+        {
+          icon: Settings,
+          label: "Settings",
+          href: "/settings",
+          description: "Customize your experience"
+        }
+      ]
+    }
   ];
 
   if (isLoading) {
@@ -129,25 +178,76 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) 
 
           <Separator />
 
-          <div className="flex-grow p-2">
-            <ul className="space-y-1">
-              {sidebarItems.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.href}
-                    className={cn(
-                      "flex items-center space-x-2 rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
-                      pathname === item.href
-                        ? "bg-secondary text-secondary-foreground"
-                        : "text-muted-foreground"
-                    )}
+          <div className="flex-grow p-2 overflow-y-auto">
+            <div className="space-y-1">
+              {menuSections.map((section) => {
+                const isOpen = openSections.includes(section.key);
+                const hasActiveItem = section.items.some(item => pathname === item.href);
+                
+                if (section.items.length === 1) {
+                  // Single item sections don't need collapsible
+                  const item = section.items[0];
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      className={cn(
+                        "flex items-center space-x-2 rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
+                        pathname === item.href
+                          ? "bg-secondary text-secondary-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                }
+
+                return (
+                  <Collapsible
+                    key={section.key}
+                    open={isOpen}
+                    onOpenChange={() => toggleSection(section.key)}
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    <CollapsibleTrigger asChild>
+                      <button
+                        className={cn(
+                          "flex items-center justify-between w-full rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
+                          hasActiveItem || isOpen
+                            ? "bg-secondary text-secondary-foreground"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        <span>{section.label}</span>
+                        {isOpen ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="ml-4 space-y-1">
+                      {section.items.map((item) => (
+                        <Link
+                          key={item.label}
+                          to={item.href}
+                          className={cn(
+                            "flex items-center space-x-2 rounded-md p-2 text-sm font-medium hover:bg-secondary hover:text-secondary-foreground",
+                            pathname === item.href
+                              ? "bg-secondary text-secondary-foreground"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                        </Link>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
           </div>
 
           <Separator />
