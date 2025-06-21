@@ -44,9 +44,23 @@ export const WorkOrderPage: React.FC = () => {
     return (
       <div className="space-y-4 sm:space-y-6">
         {/* Header with back button and title */}
-        <div className="flex items-center gap-4 mb-6">
-          <BackToDashboard />
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <BackToDashboard />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+          </div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+              Manage and track maintenance work orders
+            </p>
+          </div>
+          <Button onClick={handleCreateWorkOrder} className="bg-maintenease-600 hover:bg-maintenease-700">
+            <Plus className="h-4 w-4 mr-2" />
+            <span className="text-sm sm:text-base">New Work Order</span>
+          </Button>
         </div>
         
         <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />
@@ -57,9 +71,11 @@ export const WorkOrderPage: React.FC = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header with back button and title */}
-      <div className="flex items-center gap-4">
-        <BackToDashboard />
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <BackToDashboard />
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+        </div>
       </div>
 
       {/* Actions and description */}
@@ -78,22 +94,6 @@ export const WorkOrderPage: React.FC = () => {
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
-          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-            <Button
-              variant={viewMode === "list" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("list")}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === "board" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setViewMode("board")}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-          </div>
           <Button onClick={handleCreateWorkOrder} className="bg-maintenease-600 hover:bg-maintenease-700">
             <Plus className="h-4 w-4 mr-2" />
             <span className="text-sm sm:text-base">New Work Order</span>
@@ -155,6 +155,21 @@ export const WorkOrderPage: React.FC = () => {
 
       {/* Content */}
       <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as "list" | "board")}>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 min-w-[200px]">
+            <TabsTrigger value="list" className="text-xs sm:text-sm">
+              <List className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">List View</span>
+              <span className="sm:hidden">List</span>
+            </TabsTrigger>
+            <TabsTrigger value="board" className="text-xs sm:text-sm">
+              <Grid className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Board View</span>
+              <span className="sm:hidden">Board</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        
         <TabsContent value="list" className="mt-0">
           <WorkOrderListView
             workOrders={workOrders}
