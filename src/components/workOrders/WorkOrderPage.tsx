@@ -10,6 +10,7 @@ import WorkOrderFilters from "./WorkOrderFilters";
 import WorkOrderBoardView from "./WorkOrderBoardView";
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 import { useWorkOrderNavigation } from "./hooks/useWorkOrderNavigation";
+import BackToDashboard from "@/components/dashboard/BackToDashboard";
 
 export const WorkOrderPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"list" | "board">("list");
@@ -44,14 +45,19 @@ export const WorkOrderPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header with back button and title */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <BackToDashboard />
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+        </div>
+      </div>
+
+      {/* Actions and description */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Work Orders
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
             Manage and track maintenance work orders
           </p>
         </div>
@@ -80,9 +86,9 @@ export const WorkOrderPage: React.FC = () => {
               <Grid className="h-4 w-4" />
             </Button>
           </div>
-          <Button onClick={handleCreateWorkOrder}>
+          <Button onClick={handleCreateWorkOrder} className="bg-maintenease-600 hover:bg-maintenease-700">
             <Plus className="h-4 w-4 mr-2" />
-            New Work Order
+            <span className="text-sm sm:text-base">New Work Order</span>
           </Button>
         </div>
       </div>
