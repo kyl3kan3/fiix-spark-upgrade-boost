@@ -42,13 +42,8 @@ const InspectionsPage = () => {
   return (
     <DashboardLayout>
       <div className="space-y-4 sm:space-y-6">
-        {/* Header with toggle menu and title */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <BackToDashboard />
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
-          </div>
-        </div>
+        <BackToDashboard />
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

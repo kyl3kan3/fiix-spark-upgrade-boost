@@ -43,13 +43,8 @@ export const WorkOrderPage: React.FC = () => {
   if (workOrders.length === 0 && !filters.searchQuery && filters.statusFilter === "all" && filters.priorityFilter === "all") {
     return (
       <div className="space-y-4 sm:space-y-6">
-        {/* Header with back button and title */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <BackToDashboard />
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
-          </div>
-        </div>
+        <BackToDashboard />
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -70,13 +65,8 @@ export const WorkOrderPage: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header with back button and title */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <BackToDashboard />
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
-        </div>
-      </div>
+      <BackToDashboard />
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
 
       {/* Actions and description */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
