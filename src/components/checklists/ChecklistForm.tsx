@@ -1,20 +1,13 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, GripVertical, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
-import { ChecklistTypes, ChecklistFrequencies } from "@/types/checklists";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import BasicInformationSection from "./BasicInformationSection";
+import ChecklistItemsSection from "./ChecklistItemsSection";
 
 interface ChecklistFormProps {
   mode: "create" | "edit";
@@ -200,6 +193,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
     }
   };
 
+  const handleBasicInfoUpdate = (field: keyof Omit<ChecklistFormData, 'items'>, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   const addItem = () => {
     setFormData(prev => ({
       ...prev,
@@ -275,198 +272,18 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Information */}
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter checklist name"
-                    required
-                  />
-                </div>
+            <BasicInformationSection
+              formData={formData}
+              onUpdate={handleBasicInfoUpdate}
+            />
 
-                <div className="space-y-2">
-                  <Label htmlFor="type">Type</Label>
-                  <Select
-                    value={formData.type}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ChecklistTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="frequency">Frequency</Label>
-                  <Select
-                    value={formData.frequency}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, frequency: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ChecklistFrequencies.map((freq) => (
-                        <SelectItem key={freq.value} value={freq.value}>
-                          {freq.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="is_active"
-                    checked={formData.is_active}
-                    onCheckedChange={(checked) => 
-                      setFormData(prev => ({ ...prev, is_active: !!checked }))
-                    }
-                  />
-                  <Label htmlFor="is_active">Active</Label>
-                </div>
-              </div>
-
-              <div className="mt-4 space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter checklist description"
-                  rows={3}
-                />
-              </div>
-            </Card>
-
-            {/* Checklist Items */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Checklist Items</h2>
-                <Button type="button" onClick={addItem} variant="outline">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Item
-                </Button>
-              </div>
-
-              {formData.items.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  No items added yet. Click "Add Item" to get started.
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {formData.items.map((item, index) => (
-                    <div key={index} className="border rounded-lg p-4 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <GripVertical className="h-4 w-4 text-gray-400" />
-                          <span className="font-medium">Item {index + 1}</span>
-                          {item.is_required && (
-                            <Badge variant="outline">Required</Badge>
-                          )}
-                          <Badge variant="outline" className="capitalize">
-                            {item.item_type}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => moveItem(index, "up")}
-                            disabled={index === 0}
-                          >
-                            ↑
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => moveItem(index, "down")}
-                            disabled={index === formData.items.length - 1}
-                          >
-                            ↓
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeItem(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Title *</Label>
-                          <Input
-                            value={item.title}
-                            onChange={(e) => updateItem(index, "title", e.target.value)}
-                            placeholder="Enter item title"
-                            required
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label>Type</Label>
-                          <Select
-                            value={item.item_type}
-                            onValueChange={(value) => updateItem(index, "item_type", value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="checkbox">Checkbox</SelectItem>
-                              <SelectItem value="text">Text</SelectItem>
-                              <SelectItem value="number">Number</SelectItem>
-                              <SelectItem value="date">Date</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Description</Label>
-                        <Textarea
-                          value={item.description}
-                          onChange={(e) => updateItem(index, "description", e.target.value)}
-                          placeholder="Enter item description (optional)"
-                          rows={2}
-                        />
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`required-${index}`}
-                          checked={item.is_required}
-                          onCheckedChange={(checked) => 
-                            updateItem(index, "is_required", !!checked)
-                          }
-                        />
-                        <Label htmlFor={`required-${index}`}>Required field</Label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Card>
+            <ChecklistItemsSection
+              items={formData.items}
+              onAddItem={addItem}
+              onRemoveItem={removeItem}
+              onUpdateItem={updateItem}
+              onMoveItem={moveItem}
+            />
 
             {/* Submit Button */}
             <div className="flex justify-end gap-4">
