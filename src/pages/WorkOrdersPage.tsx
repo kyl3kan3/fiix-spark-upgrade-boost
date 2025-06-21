@@ -6,7 +6,9 @@ import { WorkOrderPage } from "@/components/workOrders/WorkOrderPage";
 const WorkOrdersPage = () => {
   return (
     <DashboardLayout>
-      <WorkOrderPage />
+      <div className="p-4 sm:p-6">
+        <WorkOrderPage />
+      </div>
     </DashboardLayout>
   );
 };

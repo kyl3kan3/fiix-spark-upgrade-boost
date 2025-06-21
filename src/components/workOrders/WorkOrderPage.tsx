@@ -41,23 +41,31 @@ export const WorkOrderPage: React.FC = () => {
   }
 
   if (workOrders.length === 0 && !filters.searchQuery && filters.statusFilter === "all" && filters.priorityFilter === "all") {
-    return <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />;
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header with back button and title */}
+        <div className="flex items-center gap-4 mb-6">
+          <BackToDashboard />
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
+        </div>
+        
+        <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header with back button and title */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <BackToDashboard />
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
-        </div>
+      <div className="flex items-center gap-4">
+        <BackToDashboard />
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Work Orders</h1>
       </div>
 
       {/* Actions and description */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
             Manage and track maintenance work orders
           </p>
         </div>
