@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus, CalendarIcon, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -42,11 +42,16 @@ const InspectionsPage = () => {
   return (
     <DashboardLayout>
       <div className="space-y-4 sm:space-y-6">
-        <BackToDashboard />
+        {/* Header with toggle menu and title */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <BackToDashboard />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
+          </div>
+        </div>
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
             <p className="text-sm sm:text-base text-gray-500 mt-1">Schedule and manage equipment inspections</p>
           </div>
           <Link to="/inspections/new">
