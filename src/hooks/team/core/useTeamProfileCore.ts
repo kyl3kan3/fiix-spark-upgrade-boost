@@ -79,8 +79,22 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
         setIsLoading(false);
         return null;
       }
+
+      // Fetch role from user_roles table
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (roleError) {
+        console.error("Error fetching user role:", roleError);
+      }
+
+      // Use role from user_roles if available, fallback to profiles.role
+      const userRole = roleData?.role || (data as any).role || null;
       
-      console.log("Profile data fetched successfully:", data);
+      console.log("Profile data fetched successfully:", data, "Role:", userRole);
       
       // Process and validate the profile data
       if (typeof data === 'object' && data !== null) {
@@ -88,7 +102,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
         
         if ('company_id' in typedData && typedData.company_id !== null && typedData.company_id !== undefined) {
           const profileData: TeamProfileData = {
-            role: typedData.role || null,
+            role: userRole,
             company_id: String(typedData.company_id),
             company_name: typedData.company_name,
             first_name: typedData.first_name,

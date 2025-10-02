@@ -10,49 +10,76 @@ export const updateUserRole = async (userId: string, role: string) => {
     if (!userId) throw new Error("Invalid user ID");
     console.log("Updating role for user ID:", userId, "to role:", role);
 
-    // 1. Perform the update
+    // Get user's company_id
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('company_id')
+      .eq('id', userId)
+      .single();
+
+    if (profileError || !profile?.company_id) {
+      throw new Error("Could not find user's company");
+    }
+
+    // Delete existing role for this user in this company
+    const { error: deleteError } = await supabase
+      .from('user_roles')
+      .delete()
+      .eq('user_id', userId)
+      .eq('company_id', profile.company_id);
+
+    if (deleteError) {
+      console.error("Error deleting old role:", deleteError);
+    }
+
+    // Insert new role
+    const currentUser = await supabase.auth.getUser();
+    const { error: insertError } = await supabase
+      .from('user_roles')
+      .insert([{
+        user_id: userId,
+        role: role as any,
+        company_id: profile.company_id,
+        created_by: currentUser.data.user?.id
+      }] as any);
+
+    if (insertError) {
+      console.error("Error inserting new role:", insertError);
+      throw insertError;
+    }
+
+    // Also update the role in profiles table for backward compatibility
     const { error: updateError } = await supabase
       .from('profiles')
       .update({ role })
       .eq('id', userId);
 
     if (updateError) {
-      console.error("Supabase update error:", updateError);
-      throw updateError;
+      console.error("Error updating profiles table:", updateError);
     }
 
-    // 2. Wait a little for DB to settle (addresses race condition)
+    // Wait a little for DB to settle
     await wait(250);
 
-    // 3. Fetch the updated profile
-    const { data: updatedProfile, error: fetchError } = await supabase
-      .from('profiles')
+    // Verify the role was updated
+    const { data: updatedRole, error: fetchError } = await supabase
+      .from('user_roles')
       .select('role')
-      .eq('id', userId)
-      .maybeSingle(); // Avoid .single() in case no data found
+      .eq('user_id', userId)
+      .eq('company_id', profile.company_id)
+      .single();
       
     if (fetchError) {
-      console.error("Error fetching updated profile:", fetchError);
+      console.error("Error fetching updated role:", fetchError);
       throw fetchError;
     }
-    if (!updatedProfile) {
-      console.error("No profile returned after role update for user:", userId);
-      throw new Error("No profile returned after update.");
-    }
-    console.log(`Fetched updated profile:`, updatedProfile, "checking role match with:", role);
 
-    // 4. Robust comparison
-    if (
-      String(updatedProfile.role).trim().toLowerCase() !== String(role).trim().toLowerCase()
-    ) {
-      console.error(
-        `Role was not updated correctly. Expected: "${role}", Actual: "${updatedProfile.role}"`
-      );
-      throw new Error("Role update did not take effect. Please try again.");
+    if (!updatedRole) {
+      throw new Error("Role update did not take effect.");
     }
 
-    console.log("Role update confirmed:", updatedProfile);
-    return { success: true, data: updatedProfile };
+    console.log("Role update confirmed:", updatedRole);
+    return { success: true, data: { role: updatedRole.role } };
   } catch (error: any) {
     console.error("Error updating role:", error);
     toast(error.message || "Failed to update role. Please try again.");

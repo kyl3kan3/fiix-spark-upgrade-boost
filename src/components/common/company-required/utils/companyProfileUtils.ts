@@ -73,6 +73,7 @@ export const findOrCreateCompany = async (userId: string) => {
  * Create a user profile with company association
  */
 export const createUserProfile = async (userId: string, email: string, companyId: string) => {
+  // Create profile
   const { error: createError } = await supabase
     .from('profiles')
     .insert({
@@ -85,6 +86,20 @@ export const createUserProfile = async (userId: string, email: string, companyId
   if (createError) {
     console.error("Error creating profile:", createError);
     return { success: false, error: createError };
+  }
+
+  // Create user role entry
+  const { error: roleError } = await supabase
+    .from('user_roles')
+    .insert([{
+      user_id: userId,
+      role: 'technician' as any,
+      company_id: companyId
+    }] as any);
+
+  if (roleError) {
+    console.error("Error creating user role:", roleError);
+    // Continue anyway, the role in profiles table will still work
   }
   
   return { success: true, error: null };

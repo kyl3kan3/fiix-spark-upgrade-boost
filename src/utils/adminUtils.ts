@@ -10,7 +10,7 @@ export const setUserAsAdmin = async (email: string): Promise<{ success: boolean,
     // Query to find the user by email
     const { data: userProfiles, error: queryError } = await supabase
       .from('profiles')
-      .select('id, email, role')
+      .select('id, email, company_id')
       .eq('email', email);
       
     if (queryError) {
@@ -25,17 +25,43 @@ export const setUserAsAdmin = async (email: string): Promise<{ success: boolean,
     }
     
     const userId = userProfiles[0].id;
-    
-    // Update the user's role to administrator
-    const { data, error: updateError } = await supabase
+    const companyId = userProfiles[0].company_id;
+
+    if (!companyId) {
+      throw new Error("User has no company association");
+    }
+
+    // Delete existing roles for this user in this company
+    await supabase
+      .from('user_roles')
+      .delete()
+      .eq('user_id', userId)
+      .eq('company_id', companyId);
+
+    // Insert administrator role
+    const currentUser = await supabase.auth.getUser();
+    const { error: insertError } = await supabase
+      .from('user_roles')
+      .insert([{
+        user_id: userId,
+        role: 'administrator' as any,
+        company_id: companyId,
+        created_by: currentUser.data.user?.id
+      }] as any);
+      
+    if (insertError) {
+      console.error("Error inserting admin role:", insertError);
+      throw insertError;
+    }
+
+    // Also update profiles table for backward compatibility
+    const { error: updateError } = await supabase
       .from('profiles')
       .update({ role: 'administrator' })
-      .eq('id', userId)
-      .select();
+      .eq('id', userId);
       
     if (updateError) {
-      console.error("Error updating user role:", updateError);
-      throw updateError;
+      console.error("Error updating profile:", updateError);
     }
     
     return { success: true };
