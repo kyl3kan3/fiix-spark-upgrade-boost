@@ -24,35 +24,57 @@ Deno.serve(async (req) => {
 
     // Check if demo user already exists
     const { data: existingUser } = await supabaseAdmin.auth.admin.listUsers()
-    const demoUserExists = existingUser?.users.some(u => u.email === 'demo@demo.com')
+    const demoUser = existingUser?.users.find(u => u.email === 'demo@demo.com')
+    let actualUserId = demoUser?.id
 
-    if (demoUserExists) {
-      return new Response(
-        JSON.stringify({ message: 'Demo user already exists' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-      )
-    }
+    if (demoUser) {
+      // Delete existing demo data first
+      console.log('Cleaning up existing demo data...')
+      
+      // Delete in correct order due to foreign keys
+      await supabaseAdmin.from('checklist_submission_items').delete().eq('submission_id', '00000000-0000-0000-0000-000000000109')
+      await supabaseAdmin.from('checklist_submissions').delete().eq('submitted_by', demoUser.id)
+      await supabaseAdmin.from('checklist_items').delete().in('checklist_id', ['00000000-0000-0000-0000-0000000000e1'])
+      await supabaseAdmin.from('checklists').delete().eq('created_by', demoUser.id)
+      await supabaseAdmin.from('work_order_comments').delete().eq('user_id', demoUser.id)
+      await supabaseAdmin.from('work_orders').delete().eq('created_by', demoUser.id)
+      await supabaseAdmin.from('vendor_assets').delete().in('vendor_id', ['00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c2'])
+      await supabaseAdmin.from('vendor_contracts').delete().in('vendor_id', ['00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c2'])
+      await supabaseAdmin.from('vendors').delete().eq('company_id', '00000000-0000-0000-0000-000000000001')
+      await supabaseAdmin.from('assets').delete().eq('company_id', '00000000-0000-0000-0000-000000000001')
+      await supabaseAdmin.from('locations').delete().eq('company_id', '00000000-0000-0000-0000-000000000001')
+      await supabaseAdmin.from('daily_logs').delete().eq('user_id', demoUser.id)
+      await supabaseAdmin.from('notifications').delete().eq('user_id', demoUser.id)
+      await supabaseAdmin.from('user_roles').delete().eq('user_id', demoUser.id)
+      await supabaseAdmin.from('profiles').delete().eq('id', demoUser.id)
+      await supabaseAdmin.from('companies').delete().eq('id', '00000000-0000-0000-0000-000000000001')
+      
+      console.log('Existing demo data cleaned up')
+    } else {
+      // Create the demo auth user
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email: 'demo@demo.com',
+        password: 'demo123',
+        email_confirm: true,
+        user_metadata: {
+          first_name: 'Demo',
+          last_name: 'User'
+        }
+      })
 
-    // Create the demo auth user with a specific UUID
-    const demoUserId = '00000000-0000-0000-0000-000000000099'
-    
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: 'demo@demo.com',
-      password: 'demo123',
-      email_confirm: true,
-      user_metadata: {
-        first_name: 'Demo',
-        last_name: 'User'
+      if (authError) {
+        console.error('Auth error:', authError)
+        throw authError
       }
-    })
 
-    if (authError) {
-      console.error('Auth error:', authError)
-      throw authError
+      actualUserId = authData.user.id
     }
 
-    // Update the user's UUID to our specific demo UUID
-    const actualUserId = authData.user.id
+    if (!actualUserId) {
+      throw new Error('Failed to determine user ID')
+    }
+    
+    console.log('Setting up demo data for user:', actualUserId)
     
     // Create demo company
     const { data: companyData, error: companyError } = await supabaseAdmin
@@ -76,20 +98,46 @@ Deno.serve(async (req) => {
       console.error('Company error:', companyError)
     }
 
-    // Update the profile that was auto-created
-    const { error: profileError } = await supabaseAdmin
+    // Check if profile exists, if not create it
+    const { data: existingProfile } = await supabaseAdmin
       .from('profiles')
-      .update({
-        company_id: '00000000-0000-0000-0000-000000000001',
-        role: 'administrator',
-        first_name: 'Demo',
-        last_name: 'User',
-        phone_number: '(555) 999-0000'
-      })
+      .select('id')
       .eq('id', actualUserId)
+      .maybeSingle()
 
-    if (profileError) {
-      console.error('Profile error:', profileError)
+    if (!existingProfile) {
+      // Create profile
+      const { error: profileInsertError } = await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id: actualUserId,
+          email: 'demo@demo.com',
+          company_id: '00000000-0000-0000-0000-000000000001',
+          role: 'administrator',
+          first_name: 'Demo',
+          last_name: 'User',
+          phone_number: '(555) 999-0000'
+        })
+
+      if (profileInsertError) {
+        console.error('Profile insert error:', profileInsertError)
+      }
+    } else {
+      // Update existing profile
+      const { error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .update({
+          company_id: '00000000-0000-0000-0000-000000000001',
+          role: 'administrator',
+          first_name: 'Demo',
+          last_name: 'User',
+          phone_number: '(555) 999-0000'
+        })
+        .eq('id', actualUserId)
+
+      if (profileError) {
+        console.error('Profile update error:', profileError)
+      }
     }
 
     // Add user role
