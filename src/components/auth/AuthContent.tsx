@@ -4,6 +4,7 @@ import AuthHeader from "./AuthHeader";
 import AuthError from "./AuthError";
 import AuthForm from "./AuthForm";
 import AuthToggle from "./AuthToggle";
+import { DemoSetupButton } from "./DemoSetupButton";
 
 interface AuthContentProps {
   isSignUp: boolean;
@@ -24,6 +25,7 @@ export const AuthContent: React.FC<AuthContentProps> = ({
       <AuthError message={error} />
       <AuthForm isSignUp={isSignUp} onError={onError} />
       <AuthToggle isSignUp={isSignUp} onToggle={onToggleMode} />
+      <DemoSetupButton />
     </>
   );
 };

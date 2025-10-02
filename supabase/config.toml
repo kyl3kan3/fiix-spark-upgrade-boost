@@ -1,6 +1,9 @@
 
 project_id = "gowdckitwgmctqlpqzod"
 
+[functions.create-demo-user]
+verify_jwt = false
+
 [functions.send-email]
 verify_jwt = true
 
