@@ -169,6 +169,50 @@ Deno.serve(async (req) => {
       equipment_readings: [{ equipment: 'HVAC Floor 1', reading: '72°F', status: 'normal' }]
     })
 
+    // Create demo vendor contracts
+    await supabaseAdmin.from('vendor_contracts').insert([
+      { id: '00000000-0000-0000-0000-000000000101', vendor_id: '00000000-0000-0000-0000-0000000000c1', title: 'Annual HVAC Maintenance Contract', description: 'Comprehensive HVAC maintenance and repair services', contract_type: 'service', status: 'active', start_date: '2024-01-01', end_date: '2024-12-31', contract_value: 12000, contract_number: 'HVAC-2024-001', terms: 'Quarterly maintenance visits included' },
+      { id: '00000000-0000-0000-0000-000000000102', vendor_id: '00000000-0000-0000-0000-0000000000c2', title: 'Equipment Repair Service Agreement', description: 'On-call repair services for warehouse equipment', contract_type: 'service', status: 'active', start_date: '2024-01-01', end_date: '2024-12-31', contract_value: 8500, contract_number: 'EQP-2024-001', terms: '24-hour response time guaranteed' }
+    ])
+
+    // Create demo vendor-asset relationships
+    await supabaseAdmin.from('vendor_assets').insert([
+      { id: '00000000-0000-0000-0000-000000000103', vendor_id: '00000000-0000-0000-0000-0000000000c1', asset_id: '00000000-0000-0000-0000-0000000000b1', relationship_type: 'service', notes: 'Primary HVAC service provider' },
+      { id: '00000000-0000-0000-0000-000000000104', vendor_id: '00000000-0000-0000-0000-0000000000c2', asset_id: '00000000-0000-0000-0000-0000000000b2', relationship_type: 'service', notes: 'Authorized forklift service center' },
+      { id: '00000000-0000-0000-0000-000000000105', vendor_id: '00000000-0000-0000-0000-0000000000c1', asset_id: '00000000-0000-0000-0000-0000000000b3', relationship_type: 'service', notes: 'Fire system inspection provider' }
+    ])
+
+    // Create demo work order comments
+    await supabaseAdmin.from('work_order_comments').insert([
+      { id: '00000000-0000-0000-0000-000000000106', work_order_id: '00000000-0000-0000-0000-0000000000d1', user_id: actualUserId, comment: 'Technician arrived on site and began initial assessment.' },
+      { id: '00000000-0000-0000-0000-000000000107', work_order_id: '00000000-0000-0000-0000-0000000000d1', user_id: actualUserId, comment: 'Replaced air filters and cleaned condenser coils. System running efficiently.' },
+      { id: '00000000-0000-0000-0000-000000000108', work_order_id: '00000000-0000-0000-0000-0000000000d3', user_id: actualUserId, comment: 'All fire alarm zones tested successfully. System fully operational.' }
+    ])
+
+    // Create demo checklist submission
+    const submissionId = '00000000-0000-0000-0000-000000000109'
+    await supabaseAdmin.from('checklist_submissions').insert({
+      id: submissionId,
+      checklist_id: '00000000-0000-0000-0000-0000000000e1',
+      submitted_by: actualUserId,
+      status: 'completed',
+      notes: 'All safety checks passed. No issues found.'
+    })
+
+    // Create demo checklist submission items
+    await supabaseAdmin.from('checklist_submission_items').insert([
+      { id: '00000000-0000-0000-0000-000000000110', submission_id: submissionId, checklist_item_id: '00000000-0000-0000-0000-0000000000f1', is_checked: true, notes: 'All exits clear' },
+      { id: '00000000-0000-0000-0000-000000000111', submission_id: submissionId, checklist_item_id: '00000000-0000-0000-0000-0000000000f2', is_checked: true, notes: 'All extinguishers in good condition' },
+      { id: '00000000-0000-0000-0000-000000000112', submission_id: submissionId, checklist_item_id: '00000000-0000-0000-0000-0000000000f3', response_value: 'Excellent - all areas well lit' }
+    ])
+
+    // Create demo notifications
+    await supabaseAdmin.from('notifications').insert([
+      { id: '00000000-0000-0000-0000-000000000113', user_id: actualUserId, type: 'work_order', title: 'New Work Order Assigned', body: 'HVAC Quarterly Maintenance has been assigned to you', reference_id: '00000000-0000-0000-0000-0000000000d1', read: false },
+      { id: '00000000-0000-0000-0000-000000000114', user_id: actualUserId, type: 'work_order', title: 'Work Order Due Soon', body: 'Forklift Annual Inspection is due in 3 days', reference_id: '00000000-0000-0000-0000-0000000000d2', read: false },
+      { id: '00000000-0000-0000-0000-000000000115', user_id: actualUserId, type: 'checklist', title: 'Daily Safety Inspection Completed', body: 'You have completed your daily safety checklist', reference_id: submissionId, read: true }
+    ])
+
     return new Response(
       JSON.stringify({ 
         message: 'Demo user created successfully',
