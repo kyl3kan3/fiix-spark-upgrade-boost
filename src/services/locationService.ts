@@ -134,6 +134,41 @@ export const updateLocation = async (id: string, updates: Partial<CreateLocation
 
 export const deleteLocation = async (id: string): Promise<void> => {
   try {
+    // Check for child locations
+    const { data: childLocations, error: childError } = await supabase
+      .from('locations')
+      .select('id')
+      .eq('parent_id', id);
+
+    if (childError) {
+      console.error('Error checking child locations:', childError);
+      toast.error('Failed to check location dependencies');
+      throw childError;
+    }
+
+    if (childLocations && childLocations.length > 0) {
+      toast.error('Cannot delete location with sub-locations. Please delete or move child locations first.');
+      throw new Error('Location has child locations');
+    }
+
+    // Check for assets referencing this location
+    const { data: assets, error: assetsError } = await supabase
+      .from('assets')
+      .select('id')
+      .eq('location_id', id);
+
+    if (assetsError) {
+      console.error('Error checking location assets:', assetsError);
+      toast.error('Failed to check location dependencies');
+      throw assetsError;
+    }
+
+    if (assets && assets.length > 0) {
+      toast.error('Cannot delete location with assets. Please move or delete assets first.');
+      throw new Error('Location has associated assets');
+    }
+
+    // Proceed with deletion if no dependencies
     const { error } = await supabase
       .from('locations')
       .delete()
