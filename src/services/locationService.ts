@@ -134,11 +134,30 @@ export const updateLocation = async (id: string, updates: Partial<CreateLocation
 
 export const deleteLocation = async (id: string): Promise<void> => {
   try {
-    // Check for child locations
+    // Get the current user's company_id
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('User not authenticated');
+      throw new Error('User not authenticated');
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('company_id')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile?.company_id) {
+      toast.error('User company not found');
+      throw new Error('User company not found');
+    }
+
+    // Check for child locations in user's company
     const { data: childLocations, error: childError } = await supabase
       .from('locations')
       .select('id')
-      .eq('parent_id', id);
+      .eq('parent_id', id)
+      .eq('company_id', profile.company_id);
 
     if (childError) {
       console.error('Error checking child locations:', childError);
@@ -151,11 +170,12 @@ export const deleteLocation = async (id: string): Promise<void> => {
       throw new Error('Location has child locations');
     }
 
-    // Check for assets referencing this location
+    // Check for assets referencing this location in user's company
     const { data: assets, error: assetsError } = await supabase
       .from('assets')
       .select('id')
-      .eq('location_id', id);
+      .eq('location_id', id)
+      .eq('company_id', profile.company_id);
 
     if (assetsError) {
       console.error('Error checking location assets:', assetsError);
@@ -172,7 +192,8 @@ export const deleteLocation = async (id: string): Promise<void> => {
     const { error } = await supabase
       .from('locations')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('company_id', profile.company_id);
 
     if (error) {
       console.error('Error deleting location:', error);
