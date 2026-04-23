@@ -57,9 +57,10 @@ export const checklistService = {
 
   // Update checklist
   async updateChecklist(id: string, updates: Partial<Checklist>): Promise<Checklist> {
+    const { items, ...rest } = updates as Partial<Checklist> & { items?: unknown };
     const { data, error } = await supabase
       .from('checklists')
-      .update(updates)
+      .update(rest)
       .eq('id', id)
       .select()
       .single();

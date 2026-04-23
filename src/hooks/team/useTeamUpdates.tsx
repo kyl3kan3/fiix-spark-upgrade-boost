@@ -27,7 +27,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       
       const { data, error } = await supabase
         .from("profiles")
-        .update(updateData)
+        .update(updateData as any)
         .eq("id", userId)
         .select();
         
