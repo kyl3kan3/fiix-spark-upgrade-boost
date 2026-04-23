@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,6 +29,36 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log("Processing email request...");
+
+    // Verify caller JWT
+    const authHeader = req.headers.get("authorization") ?? "";
+    const jwt = authHeader.replace("Bearer ", "");
+    if (!jwt) {
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!supabaseUrl || !anonKey) {
+      return new Response(JSON.stringify({ success: false, error: "Server misconfigured" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: `Bearer ${jwt}` } },
+      auth: { persistSession: false },
+    });
+    const { data: userData, error: userError } = await userClient.auth.getUser(jwt);
+    const authedUserId = userData?.user?.id;
+    if (userError || !authedUserId) {
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
     
     // Check if API key exists
     const apiKey = Deno.env.get("RESEND_API_KEY");
@@ -68,6 +99,14 @@ const handler = async (req: Request): Promise<Response> => {
       };
       return new Response(JSON.stringify(errorResponse), {
         status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // Ensure callers can only send notifications on behalf of themselves
+    if (userId !== authedUserId) {
+      return new Response(JSON.stringify({ success: false, error: "Forbidden" }), {
+        status: 403,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
