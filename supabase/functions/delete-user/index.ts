@@ -33,10 +33,21 @@ serve(async (req) => {
       });
     }
 
-    // Get user ID from JWT
-    const userInfo = parseJwt(jwt);
-    const userId = userInfo?.sub;
-    if (!userId) {
+    // Verify JWT cryptographically using Supabase auth
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!anonKey) {
+      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
+    const userClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: `Bearer ${jwt}` } },
+      auth: { persistSession: false },
+    });
+    const { data: userData, error: userError } = await userClient.auth.getUser(jwt);
+    const userId = userData?.user?.id;
+    if (userError || !userId) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
         headers: corsHeaders,
@@ -80,14 +91,3 @@ serve(async (req) => {
     );
   }
 });
-
-// Simple JWT parsing utils (since atob is available in Deno)
-function parseJwt(token: string): any {
-  try {
-    const payload = token.split(".")[1];
-    const decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
-    return JSON.parse(decoded);
-  } catch {
-    return null;
-  }
-}
