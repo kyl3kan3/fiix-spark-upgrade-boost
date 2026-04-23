@@ -1063,18 +1063,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_user_company: {
-        Args: { _user_id: string }
-        Returns: string
-      }
-      get_user_company_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_user_company: { Args: { _user_id: string }; Returns: string }
+      get_user_company_id: { Args: never; Returns: string }
+      get_user_role: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1082,10 +1073,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      migrate_company_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      migrate_company_data: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "administrator" | "manager" | "technician" | "viewer"
