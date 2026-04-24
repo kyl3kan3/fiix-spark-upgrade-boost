@@ -11,20 +11,24 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-2">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-sm sm:text-base text-gray-500 mt-1">Welcome back! Here's what's happening with your maintenance operations.</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
+              Dashboard
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1.5">
+              Welcome back. Here's what's happening with your operations.
+            </p>
           </div>
         </div>
 
         <Tabs defaultValue="overview" className="w-full">
           <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 min-w-[300px]">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-              <TabsTrigger value="tasks" className="text-xs sm:text-sm">Tasks</TabsTrigger>
-              <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
-              <TabsTrigger value="settings" className="text-xs sm:text-sm">Settings</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 mb-6 min-w-[300px] bg-muted/60 p-1 h-11">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">Overview</TabsTrigger>
+              <TabsTrigger value="tasks" className="text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">Tasks</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">Analytics</TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">Settings</TabsTrigger>
             </TabsList>
           </div>
           
