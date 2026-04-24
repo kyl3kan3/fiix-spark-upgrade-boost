@@ -11,29 +11,32 @@ const DashboardRecentActivities = () => {
   }, []);
 
   return (
-    <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg dark:text-gray-200">Recent Activities</CardTitle>
+    <Card className="surface-card animate-entry h-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold tracking-tight">Recent Activities</CardTitle>
       </CardHeader>
-      <CardContent className="pl-2">
+      <CardContent>
         {activities.length > 0 ? (
-          <div className="relative pl-6 border-l border-gray-200 dark:border-gray-700 space-y-6 py-2">
+          <div className="relative pl-6 border-l border-border space-y-6 py-2">
             {activities.map((activity) => (
               <div key={activity.id} className="relative pb-1">
-                <span className="absolute -left-9 p-1 bg-white rounded-full">
+                <span className="absolute -left-[34px] h-6 w-6 flex items-center justify-center rounded-full bg-primary/10 text-primary ring-2 ring-background">
                   {activity.icon}
                 </span>
                 <div>
-                  <h4 className="text-sm font-medium">{activity.title}</h4>
-                  <p className="text-sm text-gray-500">{activity.description}</p>
-                  <span className="text-xs text-gray-400">{activity.time}</span>
+                  <h4 className="text-sm font-medium text-foreground">{activity.title}</h4>
+                  <p className="text-sm text-muted-foreground">{activity.description}</p>
+                  <span className="text-xs text-muted-foreground/70">{activity.time}</span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center p-6 text-gray-500 dark:text-gray-400">
-            No recent activities
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
+              <span className="text-muted-foreground text-xl">·</span>
+            </div>
+            <p className="text-sm text-muted-foreground">No recent activities</p>
           </div>
         )}
       </CardContent>

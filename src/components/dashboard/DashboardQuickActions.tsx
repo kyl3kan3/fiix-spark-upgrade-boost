@@ -2,14 +2,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  FileText, 
-  CalendarDays, 
-  Wrench, 
+import {
+  FileText,
+  CalendarDays,
+  Wrench,
   CheckSquare,
-  FileBarChart 
+  FileBarChart,
+  ArrowUpRight,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -18,74 +18,68 @@ const DashboardQuickActions = () => {
   const isMobile = useIsMobile();
 
   const handleActionClick = (action: string, path: string) => {
-    // Add debug information
-    console.log(`Attempting to navigate to: ${path} for action: ${action}`);
-    
-    // Navigate directly without any conditional checks
     if (path) {
       navigate(path);
       toast.info(`Navigating to ${action}`);
     }
   };
-  
+
   const allActions = [
-    { 
-      title: "New Work Order", 
-      icon: <FileText className="h-5 w-5 md:h-6 md:w-6" color="#3b82f6" />, 
-      color: "bg-blue-100/80 border-blue-200",
-      textColor: "text-blue-700",
-      onClick: () => handleActionClick("New Work Order", "/work-orders/new") 
+    {
+      title: "New Work Order",
+      icon: FileText,
+      tone: "bg-info/10 text-info ring-1 ring-info/20",
+      onClick: () => handleActionClick("New Work Order", "/work-orders/new"),
     },
-    { 
-      title: "Schedule Maintenance", 
-      icon: <CalendarDays className="h-5 w-5 md:h-6 md:w-6" color="#22c55e" />, 
-      color: "bg-green-100/80 border-green-200",
-      textColor: "text-green-700",
-      onClick: () => handleActionClick("Schedule Maintenance", "/calendar") 
+    {
+      title: "Schedule",
+      icon: CalendarDays,
+      tone: "bg-success/10 text-success ring-1 ring-success/20",
+      onClick: () => handleActionClick("Schedule Maintenance", "/calendar"),
     },
-    { 
-      title: "Asset Management", 
-      icon: <Wrench className="h-5 w-5 md:h-6 md:w-6" color="#a855f7" />, 
-      color: "bg-purple-100/80 border-purple-200",
-      textColor: "text-purple-700",
-      onClick: () => handleActionClick("Asset Management", "/assets") 
+    {
+      title: "Assets",
+      icon: Wrench,
+      tone: "bg-primary/10 text-primary ring-1 ring-primary/20",
+      onClick: () => handleActionClick("Asset Management", "/assets"),
     },
-    { 
-      title: "Inspections", 
-      icon: <CheckSquare className="h-5 w-5 md:h-6 md:w-6" color="#6366f1" />, 
-      color: "bg-indigo-100/80 border-indigo-200",
-      textColor: "text-indigo-700",
-      onClick: () => handleActionClick("Inspections", "/inspections")
+    {
+      title: "Inspections",
+      icon: CheckSquare,
+      tone: "bg-accent text-accent-foreground ring-1 ring-primary/20",
+      onClick: () => handleActionClick("Inspections", "/inspections"),
     },
-    { 
-      title: "Reports", 
-      icon: <FileBarChart className="h-5 w-5 md:h-6 md:w-6" color="#ca8a04" />, 
-      color: "bg-yellow-100/80 border-yellow-200",
-      textColor: "text-yellow-700",
-      onClick: () => handleActionClick("Reports", "/reports") 
-    }
+    {
+      title: "Reports",
+      icon: FileBarChart,
+      tone: "bg-warning/10 text-warning ring-1 ring-warning/20",
+      onClick: () => handleActionClick("Reports", "/reports"),
+    },
   ];
-  
-  // Show fewer actions on mobile
+
   const quickActions = isMobile ? allActions.slice(0, 3) : allActions;
-  
+
   return (
-    <Card className="bg-white border border-gray-100 shadow-sm rounded-xl animate-entry">
-      <CardHeader className="pb-1 md:pb-2">
-        <CardTitle className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-200">Quick Actions</CardTitle>
+    <Card className="surface-card animate-entry overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold tracking-tight">Quick Actions</CardTitle>
+          <span className="text-xs text-muted-foreground">Jump in fast</span>
+        </div>
       </CardHeader>
-      <CardContent className="p-3 md:p-4">
-        <div className="grid grid-cols-3 gap-2 md:gap-4">
-          {quickActions.map((action, index) => (
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+          {quickActions.map(({ title, icon: Icon, tone, onClick }) => (
             <button
-              key={index}
-              onClick={() => action.onClick()}
-              className={`flex flex-col items-center justify-center p-2 md:p-4 h-[100px] md:h-[120px] rounded-lg border transition-all ${action.color} hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary animate-entry`}
+              key={title}
+              onClick={onClick}
+              className="group relative flex flex-col items-start gap-3 p-4 rounded-xl bg-card border border-border/60 hover:border-primary/40 hover:shadow-md transition-all text-left focus:outline-none focus:ring-2 focus:ring-primary/40"
             >
-              <div className="mb-2 md:mb-3">
-                {action.icon}
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${tone}`}>
+                <Icon className="h-5 w-5" />
               </div>
-              <span className={`${action.textColor} text-xs md:text-sm text-center`}>{action.title}</span>
+              <span className="text-sm font-medium text-foreground leading-tight">{title}</span>
+              <ArrowUpRight className="absolute top-3 right-3 h-4 w-4 text-muted-foreground/40 group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
             </button>
           ))}
         </div>

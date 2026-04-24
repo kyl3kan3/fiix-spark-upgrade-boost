@@ -7,30 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 const DashboardTasksOverview = () => {
   const [tasksByCategory, setTasksByCategory] = useState([
-    {
-      category: "Preventive Maintenance",
-      total: 0,
-      completed: 0,
-      color: "bg-blue-500",
-    },
-    {
-      category: "Repairs",
-      total: 0,
-      completed: 0,
-      color: "bg-yellow-500",
-    },
-    {
-      category: "Inspections",
-      total: 0,
-      completed: 0,
-      color: "bg-green-500",
-    },
-    {
-      category: "Safety Checks",
-      total: 0,
-      completed: 0,
-      color: "bg-red-500",
-    },
+    { category: "Preventive Maintenance", total: 0, completed: 0, color: "bg-info" },
+    { category: "Repairs", total: 0, completed: 0, color: "bg-warning" },
+    { category: "Inspections", total: 0, completed: 0, color: "bg-success" },
+    { category: "Safety Checks", total: 0, completed: 0, color: "bg-destructive" },
   ]);
 
   const [overallProgress, setOverallProgress] = useState({
@@ -44,47 +24,48 @@ const DashboardTasksOverview = () => {
   }, []);
 
   return (
-    <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-lg dark:text-gray-200">Tasks Overview</CardTitle>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+    <Card className="surface-card animate-entry h-full">
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
+        <CardTitle className="text-base font-semibold tracking-tight">Tasks Overview</CardTitle>
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {tasksByCategory.map((category, index) => {
             const percentage = category.total > 0 ? (category.completed / category.total) * 100 : 0;
-            
             return (
-              <div key={index} className="space-y-1">
+              <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span>{category.category}</span>
-                  <span>
-                    {category.completed}/{category.total} tasks
+                  <span className="font-medium text-foreground">{category.category}</span>
+                  <span className="text-muted-foreground tabular-nums">
+                    {category.completed}/{category.total}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                   <div
-                    className={`h-full ${category.color} rounded-full`}
+                    className={`h-full ${category.color} rounded-full transition-all`}
                     style={{ width: `${percentage}%` }}
-                  ></div>
+                  />
                 </div>
               </div>
             );
           })}
         </div>
-        
-        <div className="mt-6 pt-4 border-t">
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <span>Overall Progress</span>
-            <span>{overallProgress.completed}/{overallProgress.total} tasks ({overallProgress.percentage}%)</span>
+
+        <div className="mt-6 pt-5 border-t border-border">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium text-foreground">Overall Progress</span>
+            <span className="text-muted-foreground tabular-nums">
+              {overallProgress.completed}/{overallProgress.total} ({overallProgress.percentage}%)
+            </span>
           </div>
-          <div className="mt-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-maintenease-500 rounded-full"
+              className="h-full bg-gradient-primary rounded-full transition-all"
               style={{ width: `${overallProgress.percentage}%` }}
-            ></div>
+            />
           </div>
         </div>
       </CardContent>
