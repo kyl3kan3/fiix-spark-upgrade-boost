@@ -17,8 +17,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  
   useEffect(() => {
     // Fetch notifications count on component mount
     fetchNotificationsCount();
@@ -49,20 +47,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     setUnreadCount(count);
   };
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full relative overflow-x-clip">
         <GradientBackground />
-        <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <SidebarInset className="flex flex-col flex-1">
+        <DashboardSidebar />
+        <SidebarInset className="flex flex-col flex-1 bg-transparent">
           <DashboardHeader 
             unreadCount={unreadCount} 
             toggleNotifications={toggleNotifications}
-            toggleSidebar={toggleSidebar}
           />
           
           <ContentContainer>
