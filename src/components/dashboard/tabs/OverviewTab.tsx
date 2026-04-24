@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClipboardList, CircleDashed, Loader2, CheckCircle2 } from "lucide-react";
 import DashboardQuickActions from "../DashboardQuickActions";
 import DashboardRecentActivities from "../DashboardRecentActivities";
 import DashboardTasksOverview from "../DashboardTasksOverview";
@@ -11,7 +12,14 @@ import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 const OverviewTab: React.FC = () => {
   const navigate = useNavigate();
   const { workOrders, stats, isLoading } = useWorkOrdersData();
-  
+
+  const statCards = [
+    { label: "Total Work Orders", value: stats.total, icon: ClipboardList, accent: "text-foreground", iconBg: "bg-muted text-muted-foreground" },
+    { label: "Open", value: stats.open, icon: CircleDashed, accent: "text-warning", iconBg: "bg-warning/10 text-warning" },
+    { label: "In Progress", value: stats.inProgress, icon: Loader2, accent: "text-info", iconBg: "bg-info/10 text-info" },
+    { label: "Completed", value: stats.completed, icon: CheckCircle2, accent: "text-success", iconBg: "bg-success/10 text-success" },
+  ];
+
   return (
     <div className="space-y-6 animate-entry">
       {/* Quick Actions */}
@@ -21,41 +29,27 @@ const OverviewTab: React.FC = () => {
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Total Work Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Open</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-yellow-500">{stats.open}</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">In Progress</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-blue-500">{stats.inProgress}</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-600 dark:text-gray-200">Completed</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-green-500">{stats.completed}</p>
-          </CardContent>
-        </Card>
+        {statCards.map(({ label, value, icon: Icon, accent, iconBg }) => (
+          <Card
+            key={label}
+            className="surface-card group relative overflow-hidden animate-entry"
+          >
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1.5">
+                  <p className="text-sm font-medium text-muted-foreground">{label}</p>
+                  <p className={`text-3xl font-semibold tracking-tight tabular-nums ${accent}`}>
+                    {value}
+                  </p>
+                </div>
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${iconBg}`}>
+                  <Icon className="h-5 w-5" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -71,41 +65,41 @@ const OverviewTab: React.FC = () => {
       </div>
       
       {/* Recent Work Orders */}
-      <Card className="card-gradient dark:card-gradient-dark glass-morphism dark:glass-morphism-dark shadow-lg rounded-2xl animate-entry">
+      <Card className="surface-card animate-entry">
         <CardHeader>
-          <CardTitle>Recent Work Orders</CardTitle>
+          <CardTitle className="text-lg font-semibold">Recent Work Orders</CardTitle>
           <CardDescription>
             Your most recent maintenance tasks
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {isLoading ? (
-              <div className="text-center p-6 text-gray-500">
+              <div className="text-center p-6 text-muted-foreground">
                 Loading work orders...
               </div>
             ) : workOrders.length > 0 ? (
               workOrders.slice(0, 5).map((order) => (
                 <div 
                   key={order.id} 
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
+                  className="flex items-center justify-between p-4 border border-border/60 rounded-lg hover:bg-accent/40 hover:border-border transition-colors"
                 >
-                  <div>
-                    <p className="font-medium">{order.title}</p>
-                    <p className="text-sm text-gray-500">{order.description}</p>
+                  <div className="min-w-0 pr-3">
+                    <p className="font-medium truncate">{order.title}</p>
+                    <p className="text-sm text-muted-foreground truncate">{order.description}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
-                      ${order.priority === "high" ? "bg-red-100 text-red-800" : 
-                        order.priority === "medium" ? "bg-yellow-100 text-yellow-800" : 
-                        "bg-green-100 text-green-800"}`}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium border
+                      ${order.priority === "high" ? "bg-destructive/10 text-destructive border-destructive/20" : 
+                        order.priority === "medium" ? "bg-warning/10 text-warning border-warning/20" : 
+                        "bg-success/10 text-success border-success/20"}`}
                     >
                       {order.priority}
                     </span>
-                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
-                      ${order.status === "pending" ? "bg-blue-100 text-blue-800" : 
-                        order.status === "in_progress" ? "bg-purple-100 text-purple-800" : 
-                        "bg-green-100 text-green-800"}`}
+                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium border
+                      ${order.status === "pending" ? "bg-info/10 text-info border-info/20" : 
+                        order.status === "in_progress" ? "bg-primary/10 text-primary border-primary/20" : 
+                        "bg-success/10 text-success border-success/20"}`}
                     >
                       {order.status.replace('_', ' ')}
                     </span>
@@ -113,7 +107,7 @@ const OverviewTab: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center p-6 text-gray-500">
+              <div className="text-center p-6 text-muted-foreground">
                 No work orders available
               </div>
             )}
