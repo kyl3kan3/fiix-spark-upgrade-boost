@@ -14,15 +14,23 @@ const AuthHeader = ({
   showBackButton = false
 }: AuthHeaderProps) => {
   return (
-    <div className="flex justify-between items-center">
-      <h2 className="text-3xl font-extrabold text-gray-900">
-        {isSignUp ? AUTH_HEADERS.SIGN_UP : AUTH_HEADERS.SIGN_IN}
-      </h2>
+    <div className="flex justify-between items-start gap-4">
+      <div className="space-y-1.5">
+        <h2 className="text-2xl sm:text-[28px] font-semibold tracking-tight text-foreground leading-tight">
+          {isSignUp ? AUTH_HEADERS.SIGN_UP : AUTH_HEADERS.SIGN_IN}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {isSignUp
+            ? "Get started in less than a minute."
+            : "Welcome back. Pick up where you left off."}
+        </p>
+      </div>
       {showBackButton && onBackToDashboard && (
         <Button 
           variant="outline" 
           onClick={onBackToDashboard}
-          className="text-sm"
+          size="sm"
+          className="text-sm shrink-0"
         >
           Back to Dashboard
         </Button>
