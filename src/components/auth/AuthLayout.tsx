@@ -20,7 +20,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
         />
         <div className="relative flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-xl bg-primary-foreground/15 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center">
-            <Wrench className="h-4.5 w-4.5" />
+            <Wrench className="h-4 w-4" />
           </div>
           <span className="text-lg font-semibold tracking-tight">MaintenEase</span>
         </div>
@@ -59,7 +59,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           {/* Mobile brand */}
           <div className="flex items-center gap-2.5 mb-8 lg:hidden">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
-              <Wrench className="h-4.5 w-4.5 text-primary-foreground" />
+              <Wrench className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="text-lg font-semibold tracking-tight text-foreground">MaintenEase</span>
           </div>
