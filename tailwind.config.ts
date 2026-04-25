@@ -20,9 +20,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'system-ui', 'sans-serif'],
-				display: ['Fraunces', 'Georgia', 'serif'],
-				serif: ['Fraunces', 'Georgia', 'serif'],
+				sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+				display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+				serif: ['"Space Mono"', 'ui-monospace', 'monospace'],
 				mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
 			},
 			colors: {
