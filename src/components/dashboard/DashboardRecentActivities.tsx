@@ -1,46 +1,40 @@
+import React from "react";
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
-
-const DashboardRecentActivities = () => {
-  const [activities, setActivities] = useState([]);
-
-  useEffect(() => {
-    // This will be replaced with real data fetching from Supabase
-  }, []);
+const DashboardRecentActivities: React.FC = () => {
+  // Mock activities until wired to real feed
+  const activities: Array<{ id: string; code: string; title: string; meta: string; time: string }> = [];
 
   return (
-    <Card className="surface-card animate-entry h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold tracking-tight">Recent Activities</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="ticket-card h-full">
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="font-display text-sm font-semibold">Activity Log</h3>
+        <span className="label-meta">LIVE · 24H</span>
+      </div>
+      <div className="p-5">
         {activities.length > 0 ? (
-          <div className="relative pl-6 border-l border-border space-y-6 py-2">
-            {activities.map((activity) => (
-              <div key={activity.id} className="relative pb-1">
-                <span className="absolute -left-[34px] h-6 w-6 flex items-center justify-center rounded-full bg-primary/10 text-primary ring-2 ring-background">
-                  {activity.icon}
-                </span>
-                <div>
-                  <h4 className="text-sm font-medium text-foreground">{activity.title}</h4>
-                  <p className="text-sm text-muted-foreground">{activity.description}</p>
-                  <span className="text-xs text-muted-foreground/70">{activity.time}</span>
-                </div>
+          <div className="relative pl-5 border-l border-dashed border-border space-y-4">
+            {activities.map((a) => (
+              <div key={a.id} className="relative">
+                <span className="absolute -left-[22px] top-1 h-2 w-2 bg-accent rounded-full ring-4 ring-background" />
+                <div className="font-mono text-[10px] tracking-wider uppercase text-accent">{a.code}</div>
+                <div className="font-medium text-sm mt-0.5">{a.title}</div>
+                <div className="text-xs text-muted-foreground">{a.meta}</div>
+                <div className="font-mono text-[10px] text-muted-foreground/70 mt-0.5">{a.time}</div>
               </div>
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
-              <span className="text-muted-foreground text-xl">·</span>
+            <div className="h-10 w-10 border border-dashed border-border flex items-center justify-center mb-3">
+              <span className="font-mono text-muted-foreground text-xs">∅</span>
             </div>
-            <p className="text-sm text-muted-foreground">No recent activities</p>
+            <div className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+              No activity recorded
+            </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
