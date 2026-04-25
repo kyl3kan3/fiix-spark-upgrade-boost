@@ -1,227 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =====================================================================
+   INDUSTRIAL BLUEPRINT — design tokens
+   Light: warm paper + ink + blueprint blue + signal amber
+   Dark:  graphite + off-white + electric amber
+   All colors are HSL channels for token use: hsl(var(--token))
+   ===================================================================== */
+
 @layer base {
   :root {
-    --background: 210 40% 98.5%;
-    --foreground: 222 47% 11%;
+    /* Surfaces */
+    --background: 40 28% 94%;          /* #F5F2EC warm paper */
+    --foreground: 220 18% 9%;          /* #13161B ink */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 40 35% 97%;                /* lighter paper */
+    --card-foreground: 220 18% 9%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 40 35% 97%;
+    --popover-foreground: 220 18% 9%;
 
-    --primary: 168 84% 32%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 168 76% 45%;
+    /* Brand */
+    --primary: 213 52% 25%;            /* #1E3A5F blueprint blue */
+    --primary-foreground: 40 35% 97%;
+    --primary-glow: 213 60% 38%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 40 18% 88%;           /* warm muted */
+    --secondary-foreground: 220 18% 14%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 40 14% 90%;
+    --muted-foreground: 220 10% 38%;
 
-    --accent: 168 70% 95%;
-    --accent-foreground: 168 84% 22%;
+    --accent: 22 78% 57%;              /* #E8843C signal amber */
+    --accent-foreground: 40 35% 97%;
 
-    --success: 142 71% 38%;
-    --warning: 38 92% 50%;
-    --info: 217 91% 60%;
+    --success: 142 38% 32%;            /* moss green */
+    --warning: 38 78% 48%;             /* drafted amber */
+    --info:    213 52% 35%;            /* blueprint info */
+    --destructive: 4 62% 44%;          /* rust red */
+    --destructive-foreground: 40 35% 97%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --border: 220 12% 78%;             /* hairline */
+    --input:  220 12% 78%;
+    --ring:   22 78% 57%;
 
-    --border: 215 20% 91%;
-    --input: 215 20% 91%;
-    --ring: 168 84% 32%;
+    --radius: 0.25rem;                 /* sharp corners (4px max) */
 
-    --radius: 0.75rem;
+    /* Industrial gradients (kept for legacy utility names — now subtle) */
+    --gradient-primary: linear-gradient(135deg, hsl(213 52% 25%) 0%, hsl(213 60% 38%) 100%);
+    --gradient-subtle:  linear-gradient(180deg, hsl(40 28% 95%) 0%, hsl(40 24% 92%) 100%);
+    --gradient-mesh:    none;          /* no mesh in industrial */
 
-    /* Premium gradients & shadows */
-    --gradient-primary: linear-gradient(135deg, hsl(168 84% 32%) 0%, hsl(168 76% 45%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(210 40% 99%) 0%, hsl(210 40% 96%) 100%);
-    --gradient-mesh: radial-gradient(at 0% 0%, hsl(168 70% 92% / 0.6) 0px, transparent 50%),
-                     radial-gradient(at 100% 0%, hsl(217 91% 92% / 0.4) 0px, transparent 50%),
-                     radial-gradient(at 50% 100%, hsl(168 70% 95% / 0.5) 0px, transparent 50%);
-
-    --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.04);
-    --shadow-sm: 0 1px 3px 0 hsl(222 47% 11% / 0.06), 0 1px 2px -1px hsl(222 47% 11% / 0.04);
-    --shadow-md: 0 4px 12px -2px hsl(222 47% 11% / 0.08), 0 2px 4px -2px hsl(222 47% 11% / 0.04);
-    --shadow-lg: 0 12px 32px -8px hsl(222 47% 11% / 0.12), 0 4px 8px -4px hsl(222 47% 11% / 0.06);
-    --shadow-elegant: 0 20px 50px -20px hsl(168 84% 32% / 0.25);
-    --shadow-glow: 0 0 40px hsl(168 76% 45% / 0.35);
+    /* Shadows replaced by hairlines — keep variables for back-compat */
+    --shadow-xs: 0 1px 0 0 hsl(220 12% 78% / 0.6);
+    --shadow-sm: 0 1px 0 0 hsl(220 12% 78% / 0.7);
+    --shadow-md: 0 1px 0 0 hsl(220 12% 78% / 0.8), 0 0 0 1px hsl(220 12% 78% / 0.4);
+    --shadow-lg: 0 2px 0 0 hsl(220 18% 9% / 0.06), 0 0 0 1px hsl(220 12% 78% / 0.6);
+    --shadow-elegant: 0 0 0 1px hsl(213 52% 25% / 0.18);
+    --shadow-glow:    0 0 0 2px hsl(22 78% 57% / 0.18);
 
     --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 30% 25%;
-    --sidebar-primary: 168 84% 32%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 168 70% 95%;
-    --sidebar-accent-foreground: 168 84% 22%;
-    --sidebar-border: 215 20% 92%;
-    --sidebar-ring: 168 84% 32%;
+    /* Sidebar tokens (legacy shadcn sidebar) */
+    --sidebar-background: 220 18% 9%;
+    --sidebar-foreground: 40 18% 80%;
+    --sidebar-primary: 22 78% 57%;
+    --sidebar-primary-foreground: 220 18% 9%;
+    --sidebar-accent: 220 14% 14%;
+    --sidebar-accent-foreground: 40 24% 92%;
+    --sidebar-border: 220 14% 18%;
+    --sidebar-ring: 22 78% 57%;
+
+    /* Blueprint grid line color */
+    --grid-line: 220 14% 84%;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    --background: 220 16% 6%;          /* #0D0F12 graphite */
+    --foreground: 40 24% 92%;
 
-    --card: 222 40% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 14% 9%;
+    --card-foreground: 40 24% 92%;
 
-    --popover: 222 40% 9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 14% 9%;
+    --popover-foreground: 40 24% 92%;
 
-    --primary: 168 76% 48%;
-    --primary-foreground: 222 47% 6%;
-    --primary-glow: 168 84% 60%;
+    --primary: 213 60% 60%;            /* lighter blueprint */
+    --primary-foreground: 220 16% 6%;
+    --primary-glow: 213 70% 70%;
 
-    --secondary: 222 30% 14%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 12% 14%;
+    --secondary-foreground: 40 24% 92%;
 
-    --muted: 222 30% 14%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 12% 12%;
+    --muted-foreground: 40 8% 62%;
 
-    --accent: 168 50% 18%;
-    --accent-foreground: 168 76% 75%;
+    --accent: 22 90% 60%;              /* electric amber */
+    --accent-foreground: 220 16% 6%;
 
-    --success: 142 71% 50%;
-    --warning: 38 92% 60%;
-    --info: 217 91% 65%;
+    --success: 142 50% 48%;
+    --warning: 38 90% 58%;
+    --info:    213 60% 60%;
+    --destructive: 4 72% 52%;
+    --destructive-foreground: 40 24% 92%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --border: 220 12% 18%;
+    --input:  220 12% 18%;
+    --ring:   22 90% 60%;
 
-    --border: 222 30% 16%;
-    --input: 222 30% 16%;
-    --ring: 168 76% 48%;
+    --gradient-primary: linear-gradient(135deg, hsl(213 60% 50%) 0%, hsl(213 70% 65%) 100%);
+    --gradient-subtle:  linear-gradient(180deg, hsl(220 16% 7%) 0%, hsl(220 16% 5%) 100%);
+    --gradient-mesh:    none;
 
-    --gradient-primary: linear-gradient(135deg, hsl(168 76% 40%) 0%, hsl(168 84% 55%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(222 47% 7%) 0%, hsl(222 47% 5%) 100%);
-    --gradient-mesh: radial-gradient(at 0% 0%, hsl(168 76% 25% / 0.3) 0px, transparent 50%),
-                     radial-gradient(at 100% 0%, hsl(217 91% 25% / 0.2) 0px, transparent 50%),
-                     radial-gradient(at 50% 100%, hsl(168 76% 20% / 0.25) 0px, transparent 50%);
+    --shadow-xs: 0 1px 0 0 hsl(220 12% 18% / 0.8);
+    --shadow-sm: 0 1px 0 0 hsl(220 12% 18% / 0.9);
+    --shadow-md: 0 1px 0 0 hsl(220 12% 18%), 0 0 0 1px hsl(220 12% 18% / 0.6);
+    --shadow-lg: 0 2px 0 0 hsl(0 0% 0% / 0.4), 0 0 0 1px hsl(220 12% 18% / 0.8);
+    --shadow-elegant: 0 0 0 1px hsl(213 60% 60% / 0.28);
+    --shadow-glow:    0 0 0 2px hsl(22 90% 60% / 0.24);
 
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
-    --shadow-lg: 0 12px 32px -8px hsl(0 0% 0% / 0.5), 0 4px 8px -4px hsl(0 0% 0% / 0.3);
-    --shadow-elegant: 0 20px 50px -20px hsl(168 76% 40% / 0.4);
-    --shadow-glow: 0 0 40px hsl(168 84% 55% / 0.4);
+    --sidebar-background: 220 18% 5%;
+    --sidebar-foreground: 40 18% 80%;
+    --sidebar-primary: 22 90% 60%;
+    --sidebar-primary-foreground: 220 16% 6%;
+    --sidebar-accent: 220 14% 12%;
+    --sidebar-accent-foreground: 40 24% 92%;
+    --sidebar-border: 220 14% 14%;
+    --sidebar-ring: 22 90% 60%;
 
-    --sidebar-background: 222 47% 7%;
-    --sidebar-foreground: 210 30% 85%;
-    --sidebar-primary: 168 76% 48%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 222 30% 14%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 30% 14%;
-    --sidebar-ring: 168 76% 48%;
+    --grid-line: 220 14% 14%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 
-  body {
+  html, body {
     @apply bg-background text-foreground;
-    font-feature-settings: "cv11", "ss01", "ss03";
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5 {
-    @apply tracking-tight;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    @apply tracking-tight font-semibold;
   }
 
-  /* Subtle glass effect for dark mode cards and sections */
-  .glass-morphism {
-    @apply backdrop-blur-xl shadow-lg border border-white/10 rounded-2xl transition-all;
-  }
-  .glass-morphism-dark {
-    @apply backdrop-blur-2xl shadow-lg border border-gray-800/40 rounded-2xl transition-all;
+  /* Tabular numerics everywhere by default */
+  .num, table, [role="table"] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 @layer utilities {
+  /* ============ TYPOGRAPHY ============ */
+  .font-display { font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif; }
+  .font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  .label-eyebrow {
+    @apply font-mono uppercase tracking-[0.18em] text-[10px] text-muted-foreground;
+  }
+  .label-meta {
+    @apply font-mono uppercase tracking-[0.14em] text-[11px] text-muted-foreground;
+  }
+  .num-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ============ BACKGROUNDS ============ */
+  .bg-blueprint-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--grid-line) / 0.55) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid-line) / 0.55) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .bg-blueprint-grid-fine {
+    background-image:
+      linear-gradient(to right, hsl(var(--grid-line) / 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid-line) / 0.35) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  .bg-paper {
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(hsl(var(--grid-line) / 0.4) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* ============ HAIRLINES & DRAFTING ============ */
+  .hairline   { @apply border border-border; }
+  .hairline-t { @apply border-t border-border; }
+  .hairline-b { @apply border-b border-border; }
+  .hairline-l { @apply border-l border-border; }
+  .hairline-r { @apply border-r border-border; }
+
+  .divider-dashed {
+    border-top: 1px dashed hsl(var(--border));
+  }
+  .divider-ticked {
+    background-image: linear-gradient(to right, hsl(var(--border)) 50%, transparent 50%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    background-position: 0 50%;
+    height: 1px;
+  }
+
+  /* ============ TICKET CARD ============ */
+  .ticket-card {
+    @apply relative bg-card hairline;
+    background-image: linear-gradient(135deg, transparent calc(100% - 14px), hsl(var(--border)) calc(100% - 14px), hsl(var(--border)) calc(100% - 13px), transparent calc(100% - 13px));
+  }
+  .ticket-card-accent {
+    @apply relative bg-card border border-border;
+    border-left: 3px solid hsl(var(--accent));
+  }
+
+  /* ============ STATUS PILLS ============ */
+  .pill {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 font-mono uppercase tracking-[0.1em] text-[10px] font-medium border;
+  }
+  .pill-dot {
+    @apply inline-block w-1.5 h-1.5 rounded-full;
+  }
+
+  /* ============ LEGACY UTILITY NAMES (redefined) ============ */
   .bg-gradient-primary { background-image: var(--gradient-primary); }
-  .bg-gradient-subtle { background-image: var(--gradient-subtle); }
-  .bg-gradient-mesh { background-image: var(--gradient-mesh); }
+  .bg-gradient-subtle  { background-image: var(--gradient-subtle); }
+  .bg-gradient-mesh    { background: hsl(var(--background)); }
 
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .shadow-soft { box-shadow: var(--shadow-md); }
+  .shadow-glow    { box-shadow: var(--shadow-glow); }
+  .shadow-soft    { box-shadow: var(--shadow-md); }
   .shadow-soft-lg { box-shadow: var(--shadow-lg); }
 
   .text-gradient-primary {
-    background-image: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: hsl(var(--primary));
+    background-image: none;
   }
 
   .surface-card {
-    @apply bg-card border border-border/60 rounded-xl;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.25s var(--transition-smooth), transform 0.25s var(--transition-smooth);
+    @apply bg-card hairline;
+    border-radius: var(--radius);
+    transition: border-color 0.2s var(--transition-smooth);
   }
-  .surface-card:hover {
-    box-shadow: var(--shadow-md);
+  .surface-card:hover { border-color: hsl(var(--foreground) / 0.35); }
+
+  .glass-morphism,
+  .glass-morphism-dark {
+    @apply bg-card hairline;
+    backdrop-filter: none;
+    border-radius: var(--radius);
   }
 
-  .card-gradient {
-    background: hsl(var(--card));
-  }
+  .card-gradient,
   .card-gradient-dark {
     background: hsl(var(--card));
   }
+
   .hover-scale {
-    transition: transform 0.18s cubic-bezier(0.4,0,0.2,1);
-    will-change: transform;
+    transition: transform 0.15s var(--transition-smooth), border-color 0.15s var(--transition-smooth);
   }
-  .hover-scale:hover {
-    transform: scale(1.045);
-  }
-  .animate-entry {
-    animation: entry-fade-slide 0.45s cubic-bezier(0.4,0,0.2,1);
-  }
-  .pulse {
-    animation: pulse-badge 1.2s cubic-bezier(0.4,0,0.6,1) infinite;
-  }
+  .hover-scale:hover { transform: translateY(-1px); }
+
+  .animate-entry { animation: entry-fade-slide 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+  .pulse { animation: pulse-badge 1.4s cubic-bezier(0.4,0,0.6,1) infinite; }
 }
 
 @keyframes pulse-badge {
-  0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
-  70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
-  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  0%   { box-shadow: 0 0 0 0 hsl(var(--accent) / 0.6); }
+  70%  { box-shadow: 0 0 0 8px hsl(var(--accent) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0); }
 }
 
-/* Enhanced toast swipe interactions */
+/* Toast interactions (preserved) */
 [data-sonner-toaster] [data-sonner-toast] {
   touch-action: pan-x;
   user-select: none;
 }
-
-[data-sonner-toaster] [data-sonner-toast][data-swiping="true"] {
-  transition: none !important;
-}
-
+[data-sonner-toaster] [data-sonner-toast][data-swiping="true"] { transition: none !important; }
 [data-sonner-toaster] [data-sonner-toast][data-swipe-out="true"] {
   animation: slide-out-right 200ms ease-out forwards;
 }
-
 @keyframes slide-out-right {
-  from {
-    transform: translateX(var(--swipe-amount, 0));
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+  from { transform: translateX(var(--swipe-amount, 0)); }
+  to   { transform: translateX(100%); opacity: 0; }
 }
