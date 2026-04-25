@@ -1,14 +1,18 @@
-
 import React from "react";
-import { Loader2 } from "lucide-react";
 
 const DashboardLoadingState: React.FC = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-maintenease-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="text-center glass-morphism dark:glass-morphism-dark p-10 rounded-xl">
-        <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-        <p className="mt-4 text-lg font-medium">Loading your dashboard...</p>
-        <p className="text-muted-foreground text-sm mt-2">Please wait while we prepare everything for you</p>
+    <div className="flex items-center justify-center min-h-screen bg-background bg-blueprint-grid">
+      <div className="ticket-card-accent px-8 py-7 text-center max-w-sm">
+        <div className="label-eyebrow mb-3">SYS · INIT</div>
+        <div className="font-display text-xl font-semibold mb-1">Preparing workspace</div>
+        <div className="text-sm text-muted-foreground mb-5">
+          Loading operations data
+        </div>
+        <div className="h-1 bg-muted overflow-hidden">
+          <div className="h-full w-1/3 bg-accent animate-[loading_1.2s_ease-in-out_infinite]" />
+        </div>
+        <style>{`@keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }`}</style>
       </div>
     </div>
   );

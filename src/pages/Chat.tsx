@@ -1,21 +1,17 @@
-
 import React from "react";
-import DashboardLayout from "../components/dashboard/DashboardLayout";
-import ChatInterface from "../components/chat/ChatInterface";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageHeader from "@/components/shell/PageHeader";
+import ChatInterface from "@/components/chat/ChatInterface";
 import { Helmet } from "react-helmet";
 
 const Chat = () => {
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>Team Chat | MaintenEase</title>
-      </Helmet>
-      <BackToDashboard />
-      <div className="flex items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Team Chat</h1>
+      <Helmet><title>Team Chat | MaintenEase</title></Helmet>
+      <PageHeader code="MSG · 001" title="Team Chat" description="Direct messages and channel conversations." />
+      <div className="px-4 md:px-6 lg:px-8 py-6">
+        <ChatInterface />
       </div>
-      <ChatInterface />
     </DashboardLayout>
   );
 };

@@ -2,15 +2,15 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import AssetPageHeader from "@/components/assets/AssetPageHeader";
+import PageHeader from "@/components/shell/PageHeader";
 import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
 
 const AssetsPage = () => {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     search: "",
     status: "all",
@@ -50,11 +50,9 @@ const AssetsPage = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="space-y-4 sm:space-y-6">
-          <BackToDashboard />
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
-          </div>
+        <PageHeader code="AST · INDEX" title="Assets" />
+        <div className="flex items-center justify-center h-64 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+          Loading…
         </div>
       </DashboardLayout>
     );
@@ -62,19 +60,17 @@ const AssetsPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
-        <BackToDashboard />
-        
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <AssetPageHeader />
-          <Link to="/assets/new">
-            <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              <span className="text-sm sm:text-base">Add Asset</span>
-            </Button>
-          </Link>
-        </div>
-
+      <PageHeader
+        code="AST · INDEX"
+        title="Assets"
+        description="Equipment, vehicles, facilities, and tools — by location and status."
+        actions={
+          <Button variant="accent" size="sm" onClick={() => navigate("/assets/new")}>
+            <Plus className="h-3.5 w-3.5" />Add Asset
+          </Button>
+        }
+      />
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         <div className="space-y-4 sm:space-y-6">
           <AssetFilters 
             searchQuery={filters.search}

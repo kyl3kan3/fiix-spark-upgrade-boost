@@ -1,128 +1,163 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowUpRight, ArrowDownRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ClipboardList, CircleDashed, Loader2, CheckCircle2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import DashboardQuickActions from "../DashboardQuickActions";
 import DashboardRecentActivities from "../DashboardRecentActivities";
 import DashboardTasksOverview from "../DashboardTasksOverview";
 import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
+import { cn } from "@/lib/utils";
+
+interface KpiProps {
+  code: string;
+  label: string;
+  value: number | string;
+  delta?: number;
+  tone?: "neutral" | "warning" | "info" | "success" | "destructive";
+}
+
+const Kpi: React.FC<KpiProps> = ({ code, label, value, delta, tone = "neutral" }) => {
+  const toneClass = {
+    neutral: "text-foreground",
+    warning: "text-warning",
+    info: "text-info",
+    success: "text-success",
+    destructive: "text-destructive",
+  }[tone];
+
+  return (
+    <div className="ticket-card p-5 hover-scale">
+      <div className="flex items-center justify-between mb-4">
+        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-accent">{code}</span>
+        {delta !== undefined && (
+          <span
+            className={cn(
+              "inline-flex items-center gap-0.5 font-mono text-[10px] tracking-wider uppercase",
+              delta >= 0 ? "text-success" : "text-destructive"
+            )}
+          >
+            {delta >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+            {Math.abs(delta)}%
+          </span>
+        )}
+      </div>
+      <div className={cn("font-display font-bold text-4xl leading-none tabular-nums", toneClass)}>
+        {value}
+      </div>
+      <div className="mt-2 label-meta">{label}</div>
+    </div>
+  );
+};
 
 const OverviewTab: React.FC = () => {
   const navigate = useNavigate();
   const { workOrders, stats, isLoading } = useWorkOrdersData();
 
-  const statCards = [
-    { label: "Total Work Orders", value: stats.total, icon: ClipboardList, accent: "text-foreground", iconBg: "bg-muted text-muted-foreground" },
-    { label: "Open", value: stats.open, icon: CircleDashed, accent: "text-warning", iconBg: "bg-warning/10 text-warning" },
-    { label: "In Progress", value: stats.inProgress, icon: Loader2, accent: "text-info", iconBg: "bg-info/10 text-info" },
-    { label: "Completed", value: stats.completed, icon: CheckCircle2, accent: "text-success", iconBg: "bg-success/10 text-success" },
-  ];
+  const priorityVariant = (p?: string) =>
+    p === "high" ? "destructive" : p === "medium" ? "warning" : "success";
+  const statusVariant = (s?: string) =>
+    s === "completed" ? "success" : s === "in_progress" ? "info" : "warning";
 
   return (
-    <div className="space-y-6 animate-entry">
-      {/* Quick Actions */}
-      <div className="animate-entry">
-        <DashboardQuickActions />
-      </div>
-      
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map(({ label, value, icon: Icon, accent, iconBg }) => (
-          <Card
-            key={label}
-            className="surface-card group relative overflow-hidden animate-entry"
-          >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <CardContent className="p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1.5">
-                  <p className="text-sm font-medium text-muted-foreground">{label}</p>
-                  <p className={`text-3xl font-semibold tracking-tight tabular-nums ${accent}`}>
-                    {value}
-                  </p>
-                </div>
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${iconBg}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activities */}
-        <div className="animate-entry">
-          <DashboardRecentActivities />
+    <div className="space-y-8">
+      {/* KPI strip */}
+      <section>
+        <div className="label-eyebrow mb-3 flex items-center gap-2">
+          <span className="text-accent">▮</span>
+          <span>SECTION 01 — KEY METRICS</span>
+          <span className="divider-ticked flex-1 max-w-[120px]" />
         </div>
-        
-        {/* Tasks Overview */}
-        <div className="animate-entry">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Kpi code="WO·TOT" label="Total Work Orders" value={stats.total} delta={4} />
+          <Kpi code="WO·OPN" label="Open" value={stats.open} tone="warning" delta={-2} />
+          <Kpi code="WO·PRG" label="In Progress" value={stats.inProgress} tone="info" delta={8} />
+          <Kpi code="WO·CMP" label="Completed" value={stats.completed} tone="success" delta={12} />
+        </div>
+      </section>
+
+      {/* Quick actions */}
+      <section>
+        <div className="label-eyebrow mb-3 flex items-center gap-2">
+          <span className="text-accent">▮</span>
+          <span>SECTION 02 — DISPATCH</span>
+          <span className="divider-ticked flex-1 max-w-[120px]" />
+        </div>
+        <DashboardQuickActions />
+      </section>
+
+      {/* Activities + Tasks */}
+      <section>
+        <div className="label-eyebrow mb-3 flex items-center gap-2">
+          <span className="text-accent">▮</span>
+          <span>SECTION 03 — LIVE FEED</span>
+          <span className="divider-ticked flex-1 max-w-[120px]" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <DashboardRecentActivities />
           <DashboardTasksOverview />
         </div>
-      </div>
-      
-      {/* Recent Work Orders */}
-      <Card className="surface-card animate-entry">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold">Recent Work Orders</CardTitle>
-          <CardDescription>
-            Your most recent maintenance tasks
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {isLoading ? (
-              <div className="text-center p-6 text-muted-foreground">
-                Loading work orders...
-              </div>
-            ) : workOrders.length > 0 ? (
-              workOrders.slice(0, 5).map((order) => (
-                <div 
-                  key={order.id} 
-                  className="flex items-center justify-between p-4 border border-border/60 rounded-lg hover:bg-accent/40 hover:border-border transition-colors"
-                >
-                  <div className="min-w-0 pr-3">
-                    <p className="font-medium truncate">{order.title}</p>
-                    <p className="text-sm text-muted-foreground truncate">{order.description}</p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium border
-                      ${order.priority === "high" ? "bg-destructive/10 text-destructive border-destructive/20" : 
-                        order.priority === "medium" ? "bg-warning/10 text-warning border-warning/20" : 
-                        "bg-success/10 text-success border-success/20"}`}
-                    >
-                      {order.priority}
-                    </span>
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium border
-                      ${order.status === "pending" ? "bg-info/10 text-info border-info/20" : 
-                        order.status === "in_progress" ? "bg-primary/10 text-primary border-primary/20" : 
-                        "bg-success/10 text-success border-success/20"}`}
-                    >
-                      {order.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center p-6 text-muted-foreground">
-                No work orders available
-              </div>
-            )}
+      </section>
+
+      {/* Recent work orders — drafting log */}
+      <section>
+        <div className="label-eyebrow mb-3 flex items-center gap-2">
+          <span className="text-accent">▮</span>
+          <span>SECTION 04 — RECENT WORK ORDERS</span>
+          <span className="divider-ticked flex-1 max-w-[120px]" />
+        </div>
+
+        <div className="ticket-card overflow-hidden">
+          {/* Table header */}
+          <div className="grid grid-cols-[80px,1fr,90px,90px,32px] items-center gap-3 px-4 py-2.5 border-b border-border bg-muted/40 label-meta">
+            <span>ID</span>
+            <span>Title</span>
+            <span>Priority</span>
+            <span>Status</span>
+            <span></span>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate("/work-orders")}
-            className="w-full"
-          >
-            View All Work Orders
-          </Button>
-        </CardFooter>
-      </Card>
+
+          {isLoading ? (
+            <div className="p-8 text-center font-mono text-xs uppercase tracking-wider text-muted-foreground">
+              Loading…
+            </div>
+          ) : workOrders.length > 0 ? (
+            workOrders.slice(0, 6).map((order, idx) => (
+              <button
+                key={order.id}
+                onClick={() => navigate(`/work-orders/${order.id}`)}
+                className="w-full grid grid-cols-[80px,1fr,90px,90px,32px] items-center gap-3 px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors text-left group"
+              >
+                <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                  WO-{String(idx + 1).padStart(4, "0")}
+                </span>
+                <div className="min-w-0">
+                  <div className="font-medium text-sm truncate">{order.title}</div>
+                  <div className="text-xs text-muted-foreground truncate">{order.description}</div>
+                </div>
+                <Badge variant={priorityVariant(order.priority) as any}>{order.priority}</Badge>
+                <Badge variant={statusVariant(order.status) as any}>
+                  {order.status?.replace("_", " ")}
+                </Badge>
+                <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-accent transition-colors" />
+              </button>
+            ))
+          ) : (
+            <div className="p-12 text-center">
+              <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                No work orders on file
+              </div>
+            </div>
+          )}
+
+          <div className="p-3 border-t border-border bg-muted/20">
+            <Button variant="outline" onClick={() => navigate("/work-orders")} className="w-full" size="sm">
+              View all work orders
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

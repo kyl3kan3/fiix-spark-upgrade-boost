@@ -1,6 +1,5 @@
-
 import React, { ReactNode } from "react";
-import { Wrench, ShieldCheck, Activity, Sparkles } from "lucide-react";
+import { Wrench } from "lucide-react";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -8,63 +7,97 @@ interface AuthLayoutProps {
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen w-full grid lg:grid-cols-2 bg-background">
-      {/* Branded panel */}
-      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-gradient-to-br from-primary via-primary to-primary-glow text-primary-foreground">
-        <div
-          className="absolute inset-0 opacity-30 pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 20%, hsl(var(--primary-glow) / 0.6), transparent 45%), radial-gradient(circle at 80% 80%, hsl(var(--primary-foreground) / 0.15), transparent 50%)",
-          }}
-        />
-        <div className="relative flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-primary-foreground/15 backdrop-blur-sm border border-primary-foreground/20 flex items-center justify-center">
-            <Wrench className="h-4 w-4" />
+    <div className="min-h-screen w-full grid lg:grid-cols-[1.1fr,1fr] bg-background">
+      {/* Industrial blueprint panel */}
+      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-foreground text-background">
+        {/* Blueprint grid backdrop */}
+        <div aria-hidden className="absolute inset-0 bg-blueprint-grid opacity-[0.08]" />
+        <div aria-hidden className="absolute inset-0 bg-blueprint-grid-fine opacity-[0.04]" />
+
+        {/* Corner registration marks */}
+        <div aria-hidden className="absolute top-6 right-6 text-background/30 font-mono text-[10px] tracking-[0.3em] uppercase">
+          ME · OPS / V.04
+        </div>
+        <div aria-hidden className="absolute bottom-6 right-6 text-background/30 font-mono text-[10px] tracking-[0.3em] uppercase">
+          AUTH · 001
+        </div>
+
+        {/* Brand */}
+        <div className="relative flex items-center gap-3">
+          <div className="h-9 w-9 border border-background/30 flex items-center justify-center">
+            <Wrench className="h-4 w-4 text-accent" strokeWidth={1.5} />
           </div>
-          <span className="text-lg font-semibold tracking-tight">MaintenEase</span>
+          <div className="leading-none">
+            <div className="font-display font-bold text-lg tracking-tight">MaintenEase</div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-background/50 mt-1">
+              Maintenance Operations
+            </div>
+          </div>
         </div>
 
-        <div className="relative space-y-6 max-w-md">
-          <h1 className="text-4xl xl:text-5xl font-semibold tracking-tight leading-[1.05]">
-            Operations, beautifully maintained.
+        {/* Schematic-style hero */}
+        <div className="relative space-y-8 max-w-lg">
+          <div className="label-eyebrow text-background/50">SECTION 01 — OVERVIEW</div>
+          <h1 className="font-display text-5xl xl:text-6xl font-bold tracking-tight leading-[0.95]">
+            Built for the
+            <br />
+            <span className="text-accent">field</span>, not the
+            <br />
+            boardroom.
           </h1>
-          <p className="text-base text-primary-foreground/80 leading-relaxed">
-            Track assets, dispatch work orders, and keep your team in sync — all from one calm, focused workspace.
+          <div className="divider-ticked" />
+          <p className="text-base text-background/70 leading-relaxed font-sans">
+            Track equipment, dispatch work orders, and keep your crew aligned —
+            with the precision of an engineer's notebook.
           </p>
-          <ul className="space-y-3 pt-2">
+
+          {/* Spec-sheet style feature list */}
+          <div className="space-y-2 pt-2">
             {[
-              { icon: Activity, text: "Real-time work order visibility" },
-              { icon: ShieldCheck, text: "Role-based access, multi-tenant secure" },
-              { icon: Sparkles, text: "Smart checklists and inspections" },
-            ].map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-3 text-sm text-primary-foreground/90">
-                <span className="h-7 w-7 rounded-md bg-primary-foreground/15 border border-primary-foreground/20 flex items-center justify-center shrink-0">
-                  <Icon className="h-3.5 w-3.5" />
-                </span>
-                {text}
-              </li>
+              ["WO·SYS", "Real-time work order dispatch"],
+              ["RBAC",   "Role-based access · multi-tenant"],
+              ["INSP",   "Templated checklists & inspections"],
+              ["AST",    "Asset hierarchy with QR identifiers"],
+            ].map(([code, label]) => (
+              <div key={code} className="flex items-center gap-4 py-1.5 border-t border-background/10">
+                <span className="font-mono text-[11px] tracking-[0.18em] text-accent w-16 shrink-0">{code}</span>
+                <span className="text-sm text-background/85">{label}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
-        <p className="relative text-xs text-primary-foreground/60">
-          © {new Date().getFullYear()} MaintenEase. Built for maintenance teams.
-        </p>
+        <div className="relative flex items-end justify-between text-[10px] font-mono uppercase tracking-[0.3em] text-background/40">
+          <span>© {new Date().getFullYear()} MAINTENEASE</span>
+          <span>SHEET 01 / 01</span>
+        </div>
       </div>
 
       {/* Form panel */}
-      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12">
-        <div className="w-full max-w-md">
+      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-14 relative">
+        <div aria-hidden className="absolute inset-0 bg-blueprint-grid opacity-[0.4] pointer-events-none" />
+
+        <div className="relative w-full max-w-[420px]">
           {/* Mobile brand */}
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
-              <Wrench className="h-4 w-4 text-primary-foreground" />
+          <div className="flex items-center gap-3 mb-8 lg:hidden">
+            <div className="h-9 w-9 border border-foreground flex items-center justify-center">
+              <Wrench className="h-4 w-4 text-accent" strokeWidth={1.5} />
             </div>
-            <span className="text-lg font-semibold tracking-tight text-foreground">MaintenEase</span>
+            <span className="font-display text-lg font-bold tracking-tight">MaintenEase</span>
           </div>
-          <div className="rounded-2xl border border-border/60 bg-card shadow-elegant p-7 sm:p-9 space-y-7">
+
+          {/* Ticket-style form card */}
+          <div className="ticket-card-accent p-7 sm:p-9 space-y-7">
+            <div className="label-eyebrow flex items-center justify-between">
+              <span>FORM · ACCESS-001</span>
+              <span className="text-accent">●</span>
+            </div>
             {children}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            <span>REV. 04 · 2026</span>
+            <span>SECURE / TLS</span>
           </div>
         </div>
       </div>

@@ -1,75 +1,57 @@
+import React, { useState } from "react";
 
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MoreHorizontal } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-
-const DashboardTasksOverview = () => {
-  const [tasksByCategory, setTasksByCategory] = useState([
-    { category: "Preventive Maintenance", total: 0, completed: 0, color: "bg-info" },
-    { category: "Repairs", total: 0, completed: 0, color: "bg-warning" },
-    { category: "Inspections", total: 0, completed: 0, color: "bg-success" },
-    { category: "Safety Checks", total: 0, completed: 0, color: "bg-destructive" },
+const DashboardTasksOverview: React.FC = () => {
+  const [tasksByCategory] = useState([
+    { code: "PM",   category: "Preventive",  total: 0, completed: 0 },
+    { code: "RPR",  category: "Repairs",     total: 0, completed: 0 },
+    { code: "INS",  category: "Inspections", total: 0, completed: 0 },
+    { code: "SAF",  category: "Safety",      total: 0, completed: 0 },
   ]);
 
-  const [overallProgress, setOverallProgress] = useState({
-    completed: 0,
-    total: 0,
-    percentage: 0
-  });
-
-  useEffect(() => {
-    // This will be replaced with real data fetching from Supabase
-  }, []);
+  const overallTotal = tasksByCategory.reduce((s, c) => s + c.total, 0);
+  const overallCompleted = tasksByCategory.reduce((s, c) => s + c.completed, 0);
+  const overallPct = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
 
   return (
-    <Card className="surface-card animate-entry h-full">
-      <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-base font-semibold tracking-tight">Tasks Overview</CardTitle>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-5">
-          {tasksByCategory.map((category, index) => {
-            const percentage = category.total > 0 ? (category.completed / category.total) * 100 : 0;
-            return (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-foreground">{category.category}</span>
-                  <span className="text-muted-foreground tabular-nums">
-                    {category.completed}/{category.total}
-                  </span>
-                </div>
-                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${category.color} rounded-full transition-all`}
-                    style={{ width: `${percentage}%` }}
-                  />
-                </div>
+    <div className="ticket-card h-full">
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="font-display text-sm font-semibold">Task Throughput</h3>
+        <span className="label-meta">WTD</span>
+      </div>
+      <div className="p-5 space-y-5">
+        {tasksByCategory.map((c) => {
+          const pct = c.total > 0 ? (c.completed / c.total) * 100 : 0;
+          return (
+            <div key={c.code} className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] tracking-wider text-accent">{c.code}</span>
+                  <span className="font-medium">{c.category}</span>
+                </span>
+                <span className="font-mono text-muted-foreground tabular-nums">
+                  {c.completed}/{c.total}
+                </span>
               </div>
-            );
-          })}
-        </div>
+              <div className="h-1 bg-muted overflow-hidden">
+                <div className="h-full bg-foreground transition-all" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })}
 
-        <div className="mt-6 pt-5 border-t border-border">
-          <div className="flex items-center justify-between text-sm">
-            <span className="font-medium text-foreground">Overall Progress</span>
-            <span className="text-muted-foreground tabular-nums">
-              {overallProgress.completed}/{overallProgress.total} ({overallProgress.percentage}%)
+        <div className="pt-4 mt-4 border-t border-dashed border-border">
+          <div className="flex items-center justify-between mb-2">
+            <span className="label-meta">OVERALL</span>
+            <span className="font-mono text-xs tabular-nums">
+              {overallCompleted}/{overallTotal} · {overallPct}%
             </span>
           </div>
-          <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-primary rounded-full transition-all"
-              style={{ width: `${overallProgress.percentage}%` }}
-            />
+          <div className="h-1.5 bg-muted overflow-hidden">
+            <div className="h-full bg-accent transition-all" style={{ width: `${overallPct}%` }} />
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
