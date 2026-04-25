@@ -22,7 +22,7 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
   const top = NAV_ITEMS.find((i) => pathname.startsWith(i.href));
 
   return (
-    <header className="sticky top-0 z-30 h-12 bg-background/95 backdrop-blur-sm hairline-b flex items-center justify-between px-3 md:px-5 gap-3">
+    <header className="sticky top-0 z-30 h-14 bg-background/85 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 gap-3">
       {/* Left: mobile menu + breadcrumb */}
       <div className="flex items-center gap-3 min-w-0">
         {/* Mobile nav drawer */}
@@ -32,11 +32,11 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
               <Menu className="h-4 w-4" strokeWidth={1.5} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64 bg-foreground text-background border-r-0">
-            <div className="p-4 hairline-b border-background/10">
-              <span className="font-display font-bold text-accent text-base">MaintenEase</span>
+          <SheetContent side="left" className="p-0 w-72 bg-sidebar text-sidebar-foreground border-r-0">
+            <div className="p-5 border-b border-sidebar-border">
+              <span className="font-display italic font-semibold text-sidebar-primary text-2xl">MaintenEase</span>
             </div>
-            <nav className="py-2">
+            <nav className="py-3">
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const active = pathname.startsWith(item.href);
@@ -45,13 +45,12 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
                     key={item.href}
                     onClick={() => navigate(item.href)}
                     className={cn(
-                      "w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors",
-                      active ? "bg-background/5 text-accent border-l-2 border-accent" : "text-background/70 hover:text-background hover:bg-background/5 border-l-2 border-transparent"
+                      "w-full flex items-center gap-3 px-5 py-3 text-sm transition-colors rounded-r-full mr-3",
+                      active ? "bg-sidebar-accent text-sidebar-primary" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/60"
                     )}
                   >
-                    <Icon className="h-4 w-4" strokeWidth={1.5} />
+                    <Icon className="h-4 w-4" strokeWidth={1.75} />
                     <span className="flex-1 text-left">{item.label}</span>
-                    <span className="font-mono text-[10px] tracking-wider text-background/40">{item.code}</span>
                   </button>
                 );
               })}
@@ -60,17 +59,17 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
         </Sheet>
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.12em] text-muted-foreground min-w-0">
-          <Link to="/dashboard" className="hover:text-foreground transition-colors hidden sm:inline">ME</Link>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
+          <Link to="/dashboard" className="font-display italic font-semibold text-foreground text-lg hover:text-primary transition-colors hidden sm:inline">
+            MaintenEase
+          </Link>
           {top && (
             <>
-              <ChevronRight className="h-3 w-3 hidden sm:inline" />
-              <span className="text-accent">{top.code}</span>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-foreground truncate">{titleize(segments[0] || "dashboard")}</span>
+              <ChevronRight className="h-3.5 w-3.5 hidden sm:inline opacity-60" />
+              <span className="text-foreground truncate font-medium">{titleize(segments[0] || "dashboard")}</span>
               {segments[1] && (
                 <>
-                  <ChevronRight className="h-3 w-3 hidden md:inline" />
+                  <ChevronRight className="h-3.5 w-3.5 hidden md:inline opacity-60" />
                   <span className="hidden md:inline truncate text-muted-foreground">{titleize(segments[1])}</span>
                 </>
               )}
@@ -82,25 +81,25 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
       {/* Center: command palette trigger */}
       <button
         onClick={onOpenPalette}
-        className="hidden md:flex items-center gap-2 h-7 px-2.5 rounded-sm hairline bg-card hover:border-foreground/40 transition-colors text-xs text-muted-foreground min-w-[260px]"
+        className="hidden md:flex items-center gap-2.5 h-9 px-3.5 rounded-full border border-border bg-card hover:border-primary/40 hover:shadow-sm transition-all text-sm text-muted-foreground min-w-[280px]"
       >
-        <CmdIcon className="h-3 w-3" strokeWidth={1.5} />
-        <span className="flex-1 text-left font-mono tracking-wider uppercase">Search · Jump · Create</span>
-        <kbd className="font-mono text-[10px] px-1 hairline rounded-sm">⌘K</kbd>
+        <CmdIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+        <span className="flex-1 text-left">Search anything…</span>
+        <kbd className="font-mono text-[10px] px-1.5 py-0.5 border border-border rounded-md bg-muted">⌘K</kbd>
       </button>
 
       {/* Right */}
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={onOpenPalette}>
-          <CmdIcon className="h-4 w-4" strokeWidth={1.5} />
+      <div className="flex items-center gap-1.5">
+        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9" onClick={onOpenPalette}>
+          <CmdIcon className="h-4 w-4" strokeWidth={1.75} />
         </Button>
         <button
           onClick={onToggleNotifications}
-          className="relative h-8 w-8 flex items-center justify-center rounded-sm hover:bg-foreground/5 transition-colors"
+          className="relative h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary transition-colors"
         >
-          <Bell className="h-4 w-4" strokeWidth={1.5} />
+          <Bell className="h-4 w-4" strokeWidth={1.75} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 h-1.5 w-1.5 bg-accent rounded-full ring-2 ring-background" />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full ring-2 ring-background" />
           )}
         </button>
       </div>
