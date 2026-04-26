@@ -45,18 +45,21 @@ const IconRail: React.FC<IconRailProps> = () => {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <aside className="hidden md:flex flex-col w-[72px] shrink-0 bg-sidebar text-sidebar-foreground border-r-2 border-foreground h-screen sticky top-0 z-30">
+      <aside className="hidden md:flex flex-col w-[76px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen sticky top-0 z-30">
         {/* Brand mark */}
-        <div className="h-14 flex items-center justify-center border-b-2 border-sidebar-border bg-sidebar-primary">
-          <NavLink to="/dashboard" className="font-mono font-bold text-sidebar-primary-foreground text-lg tracking-tighter">
-            ME/
+        <div className="h-16 flex items-center justify-center border-b border-sidebar-border">
+          <NavLink
+            to="/dashboard"
+            className="h-10 w-10 rounded-xl bg-gradient-primary text-primary-foreground font-display font-extrabold flex items-center justify-center shadow-soft"
+          >
+            M
           </NavLink>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-2">
+        <nav className="flex-1 overflow-y-auto py-3">
           {grouped.map((group, gi) => (
-            <div key={gi} className={cn("py-0.5", gi > 0 && "border-t-2 border-sidebar-border mt-2 pt-2")}>
+            <div key={gi} className={cn("py-1", gi > 0 && "border-t border-sidebar-border/60 mt-2 pt-2")}>
               {group.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -66,20 +69,18 @@ const IconRail: React.FC<IconRailProps> = () => {
                         to={item.href}
                         className={({ isActive }) =>
                           cn(
-                            "relative flex items-center justify-center h-11 mx-2 my-0.5 rounded-none border-2 border-transparent transition-all group",
-                            "text-sidebar-foreground/70 hover:text-sidebar-primary hover:border-sidebar-primary",
-                            isActive && "text-sidebar-primary-foreground bg-sidebar-primary border-sidebar-primary"
+                            "relative flex items-center justify-center h-11 w-11 mx-auto my-1 rounded-xl transition-all duration-200 group",
+                            "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
+                            isActive && "text-sidebar-primary-foreground bg-sidebar-primary shadow-soft hover:text-sidebar-primary-foreground hover:bg-sidebar-primary"
                           )
                         }
                       >
                         {({ isActive }) => (
-                          <>
-                            <Icon className="h-[19px] w-[19px]" strokeWidth={isActive ? 2.5 : 2} />
-                          </>
+                          <Icon className="h-5 w-5" strokeWidth={isActive ? 2.4 : 2} />
                         )}
                       </NavLink>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="font-mono text-xs uppercase tracking-wider border-2 border-foreground rounded-none">
+                    <TooltipContent side="right" className="text-xs font-medium">
                       {item.label}
                     </TooltipContent>
                   </Tooltip>
@@ -90,46 +91,46 @@ const IconRail: React.FC<IconRailProps> = () => {
         </nav>
 
         {/* Footer */}
-        <div className="border-t-2 border-sidebar-border py-3 flex flex-col items-center gap-1.5">
+        <div className="border-t border-sidebar-border py-3 flex flex-col items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="h-10 w-10 flex items-center justify-center rounded-none border-2 border-transparent text-sidebar-foreground/70 hover:text-sidebar-primary hover:border-sidebar-primary transition-colors"
+                className="h-10 w-10 flex items-center justify-center rounded-xl text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
               >
                 {theme === "dark" ? <Sun className="h-4 w-4" strokeWidth={2} /> : <Moon className="h-4 w-4" strokeWidth={2} />}
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-mono text-xs uppercase tracking-wider border-2 border-foreground rounded-none">Theme</TooltipContent>
+            <TooltipContent side="right" className="text-xs font-medium">Theme</TooltipContent>
           </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={handleLogout}
-                className="h-10 w-10 flex items-center justify-center rounded-none border-2 border-transparent text-sidebar-foreground/70 hover:text-destructive-foreground hover:bg-destructive hover:border-destructive transition-colors"
+                className="h-10 w-10 flex items-center justify-center rounded-xl text-sidebar-foreground/70 hover:text-destructive-foreground hover:bg-destructive transition-colors"
               >
                 <LogOut className="h-4 w-4" strokeWidth={2} />
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-mono text-xs uppercase tracking-wider border-2 border-foreground rounded-none">Sign out</TooltipContent>
+            <TooltipContent side="right" className="text-xs font-medium">Sign out</TooltipContent>
           </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 onClick={() => navigate("/profile")}
-                className="mt-1 overflow-hidden border-2 border-sidebar-border hover:border-sidebar-primary transition rounded-none"
+                className="mt-1 overflow-hidden rounded-full ring-2 ring-sidebar-border hover:ring-sidebar-primary transition"
               >
-                <Avatar className="h-9 w-9 rounded-none">
+                <Avatar className="h-9 w-9">
                   <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "User"} />
-                  <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs font-mono font-bold rounded-none">
+                  <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
                     {initial}
                   </AvatarFallback>
                 </Avatar>
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="font-mono text-xs uppercase tracking-wider border-2 border-foreground rounded-none">Profile</TooltipContent>
+            <TooltipContent side="right" className="text-xs font-medium">Profile</TooltipContent>
           </Tooltip>
         </div>
       </aside>
