@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import PageHeader from "@/components/shell/PageHeader";
 import CalendarSidebar from "@/components/calendar/CalendarSidebar";
 import CalendarContent from "@/components/calendar/CalendarContent";
 import DailyLog from "@/components/calendar/DailyLog";
@@ -59,23 +59,22 @@ const CalendarPage = () => {
 
   return (
     <DashboardLayout>
-      <BackToDashboard />
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Maintenance Calendar</h1>
-          <p className="text-sm sm:text-base text-gray-500">Schedule and manage maintenance events</p>
-        </div>
-        <Button onClick={handleScheduleEvent} className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
-          <CalendarIcon className="h-4 w-4 mr-2" />
-          Schedule Event
-        </Button>
-      </div>
-
+      <PageHeader
+        title="Calendar"
+        description="See what's planned this week — jobs, check-ups, and recurring tasks."
+        actions={
+          <Button variant="accent" size="lg" onClick={handleScheduleEvent}>
+            <CalendarIcon className="h-4 w-4" />
+            Add to calendar
+          </Button>
+        }
+      />
+      <div className="px-4 md:px-6 lg:px-8 py-6">
       <Tabs defaultValue="calendar" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
-          <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar View</TabsTrigger>
-          <TabsTrigger value="daily-log" className="text-xs sm:text-sm">Daily Log</TabsTrigger>
-          <TabsTrigger value="logs-list" className="text-xs sm:text-sm">All Logs</TabsTrigger>
+          <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar</TabsTrigger>
+          <TabsTrigger value="daily-log" className="text-xs sm:text-sm">Today's notes</TabsTrigger>
+          <TabsTrigger value="logs-list" className="text-xs sm:text-sm">All notes</TabsTrigger>
         </TabsList>
         
         <TabsContent value="calendar" className="mt-0">
@@ -132,6 +131,7 @@ const CalendarPage = () => {
           <DailyLogsList onViewLog={handleViewLogFromList} />
         </TabsContent>
       </Tabs>
+      </div>
     </DashboardLayout>
   );
 };
