@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { ClipboardList, Plus } from "lucide-react";
 
 interface EmptyWorkOrdersStateProps {
   onCreateWorkOrder: () => void;
@@ -8,14 +9,22 @@ interface EmptyWorkOrdersStateProps {
 
 const EmptyWorkOrdersState: React.FC<EmptyWorkOrdersStateProps> = ({ onCreateWorkOrder }) => {
   return (
-    <div className="text-center py-10 text-gray-500">
-      <p>No work orders found</p>
-      <Button 
-        variant="outline" 
-        className="border-maintenease-600 text-maintenease-600 hover:bg-maintenease-50 mt-4"
+    <div className="text-center py-16 bg-card rounded-3xl border-2 border-border">
+      <div className="mx-auto h-16 w-16 rounded-2xl bg-secondary flex items-center justify-center mb-4">
+        <ClipboardList className="h-8 w-8 text-muted-foreground" strokeWidth={2} />
+      </div>
+      <h3 className="font-display font-bold text-xl text-foreground">No jobs yet</h3>
+      <p className="mt-2 text-base text-muted-foreground font-medium max-w-md mx-auto px-4">
+        When something needs fixing or checking, add it here so your team knows.
+      </p>
+      <Button
+        variant="accent"
+        size="lg"
+        className="mt-6"
         onClick={onCreateWorkOrder}
       >
-        Create your first work order
+        <Plus className="mr-2 h-5 w-5" />
+        Report a Problem
       </Button>
     </div>
   );
