@@ -10,8 +10,8 @@ const VendorPageHeader: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Vendors</h1>
-      <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your service providers and suppliers</p>
+      <h1 className="font-display text-2xl md:text-3xl font-extrabold tracking-tight">Suppliers</h1>
+      <p className="mt-2 text-base text-muted-foreground font-medium">People who help you — service providers, parts shops, and contractors.</p>
     </div>
   );
 };
