@@ -1,81 +1,143 @@
-## Design direction: "Industrial Blueprint"
+# Make the App Easy for Anyone to Use
 
-A complete departure from the current teal-on-white SaaS template. This identity is built for a maintenance/CMMS product — it should feel like equipment software, not a marketing landing page.
+## The problem today
 
-### Visual language
-- **Palette (light)**: warm paper background `#F5F2EC`, ink `#13161B`, blueprint blue `#1E3A5F` as primary, signal amber `#E8843C` as accent, with status semantics in muted industrial tones (rust red, moss green, slate).
-- **Palette (dark)**: graphite canvas `#0D0F12`, off-white ink, electric amber accent, subtle blueprint-grid background overlay.
-- **Typography**: `Space Grotesk` for display/headings (technical, geometric), `Inter` for body, `JetBrains Mono` for IDs, timestamps, asset codes, status tags. Tabular numerics everywhere. Generous tracking on uppercase labels.
-- **Component shapes**: Sharp corners (radius 4px max), 1px hairline borders instead of shadows, ticket-style cards with corner-cut accents, "drafting" dividers (dashed lines with tick marks), monospace metadata strips at the top of every card.
-- **Iconography**: Lucide with `stroke-width={1.5}` for a drafted feel, paired with small monospace labels.
-- **Motion**: Minimal — only purposeful transitions (200ms, ease-out). No glassmorphism, no blur, no animated gradients.
+Even though we moved to a friendly look, the app still feels like it was made for technical people:
 
-### Layout language: dual-pane workspace + icon rail
-- **Left rail (60px)**: Icon-only navigation, always visible, with a colored active indicator bar. Tooltip labels on hover. Bottom shows user avatar + theme toggle.
-- **Top bar (48px, slim)**: Breadcrumb on the left, ⌘K command palette trigger center, notifications + profile right. No big logo, no big search input.
-- **Workspace area**:
-  - **Dashboard, Reports, Calendar, Settings**: full-width single pane.
-  - **List/detail pages (Work Orders, Assets, Vendors, Inspections, Checklists, Team)**: dual-pane — list on the left (~420px), selected item detail on the right. Detail pane is sticky and updates in place; URL syncs to selected item. Mobile collapses to single pane with back navigation.
+- The dashboard is called **"Operations Console"** with codes like `DSH · TUESDAY, APR 28, 2026`, `WO·TOT`, `SECTION 01 — KEY METRICS`, and ticked dividers — these mean nothing to a regular maintenance worker.
+- Page headers everywhere still show technical codes (`WO · INDEX`, `AST · INDEX`, `MNT · 001`, `INS`).
+- Buttons say things like **"New WO"**, **"Dispatch"**, **"Triage"**, **"Live Feed"**, **"Recent Activities"**.
+- The Inspections page still uses the old layout (gray heading, "Inspections", "Schedule and manage equipment inspections") and ignores the new shell.
+- Empty states say "No work orders on file" instead of helpful guidance.
+- The dashboard tabs (Overview, Tasks, Analytics, Settings) duplicate things already in the sidebar and overwhelm a first-time user.
+- There's no obvious "what should I do right now?" moment when you land on the home screen.
 
----
+## The fix — one consistent, plain-language experience
 
-## Implementation plan
+### 1. A friendly Home screen (replaces "Operations Console")
 
-### 1. Design system foundation
-- Rewrite `src/index.css` tokens for both themes (paper/graphite palette, blueprint blue + amber, industrial semantics, hairline borders, no elegant/glow shadows).
-- Update `tailwind.config.ts`: register Space Grotesk + JetBrains Mono via fontFamily, add `border-hairline` utility, blueprint-grid background utility, ticket-card clip-path utility, tighten radius scale (max 4px).
-- Add Google Fonts link in `index.html` for Space Grotesk + JetBrains Mono.
-- Refactor shadcn primitives that currently rely on rounded-xl/lg defaults: `button`, `card`, `input`, `select`, `badge`, `tabs`, `dialog`, `sheet`, `dropdown-menu`, `table` — sharper corners, hairline borders, mono labels on badges.
+The first thing you see after login becomes a clean, welcoming Home:
 
-### 2. App shell (replaces current sidebar + header)
-- New `src/components/shell/IconRail.tsx` (60px left rail, icon-only nav, active indicator, tooltips).
-- New `src/components/shell/TopBar.tsx` (breadcrumb + ⌘K trigger + notifications + profile, 48px tall).
-- New `src/components/shell/CommandPalette.tsx` using `cmdk` with sections: Navigate, Create, Recent, Search.
-- New `src/components/shell/AppShell.tsx` composing rail + topbar + outlet, with blueprint-grid background.
-- Rewrite `DashboardLayout.tsx` to use `AppShell`. Retire `DashboardSidebar`, `DashboardHeader`, `GradientBackground`, `ContentContainer` (or reduce to thin wrappers).
+```text
+ ┌────────────────────────────────────────────────┐
+ │  Good morning, Sam  👋                          │
+ │  Here's what's happening today.                 │
+ │                                                 │
+ │  [ + Report a Problem ]  [ Start a Check-Up ]   │
+ └────────────────────────────────────────────────┘
 
-### 3. Dual-pane workspace primitive
-- New `src/components/shell/WorkspacePane.tsx`: takes `list` and `detail` slots, handles responsive collapse, sticky detail, URL param sync (`?id=`).
-- New `src/components/shell/ListItemRow.tsx`: ticket-style row with mono ID strip, title, status pill, secondary metadata, selected state (amber left border).
+ ┌─ Today ─────────────┐ ┌─ Needs your attention ──┐
+ │  3 jobs due today   │ │  2 jobs overdue         │
+ │  1 check-up to do   │ │  1 high-priority repair │
+ └─────────────────────┘ └─────────────────────────┘
 
-### 4. Page redesigns (every main page)
-For each, rebuild the page-level composition; reuse existing data hooks/services unchanged.
+ My Jobs (next 5)        →  See all
+ Recent Activity         →
+```
 
-- **Dashboard** (`Dashboard.tsx`, `OverviewTab.tsx`, `DashboardQuickActions`, `DashboardRecentActivities`, `DashboardTasksOverview`, `DashboardStatsCards`): KPI strip with mono numbers + delta indicators, blueprint-grid section dividers, activity feed as a drafting timeline, quick actions as labeled tile buttons.
-- **Work Orders** (`WorkOrdersPage`, `WorkOrderDetailPage`): dual-pane. List with status/priority pills, mono WO-#### ID, due date. Detail pane with header strip (ID, status, assignee), tabs (Details, Tasks, Comments, History), action bar pinned to bottom.
-- **Assets** (`AssetsPage`, `AssetFormPage`): dual-pane. List grouped by location with collapsible sections. Detail pane shows asset card with technical spec sheet styling, QR code area, related WOs.
-- **Vendors** (`VendorsPage`, `VendorFormPage`, `VendorImportPage`): dual-pane. Detail shows contact card, contracts, assets serviced.
-- **Inspections** (`InspectionsPage`, `InspectionDetailPage`, `NewInspectionPage`): dual-pane. Inspection forms restyled as drafting forms with section numbers.
-- **Checklists** (`ChecklistsPage`, `ChecklistDetailPage`, `EditChecklistPage`, `NewChecklistPage`, `ChecklistSubmitPage`, `ChecklistSubmissionsPage`): dual-pane for the index; submit/edit pages as full-width forms.
-- **Team** (`Team.tsx`): dual-pane. Member list + detail with roles, recent activity.
-- **Calendar** (`Calendar.tsx`): full-width. Restyle to look like a wall planner — mono day numbers, hairline grid, amber today indicator, ticket-style events.
-- **Reports** (`ReportsPage.tsx`): full-width. Section dividers as drafting rules, tables with mono numerics, chart restyling (single-color amber/blueprint, no gradients).
-- **Settings** (`Settings.tsx`): full-width with vertical sub-nav. Forms use the new field styling.
-- **Profile** (`ProfilePage.tsx`): full-width settings-style layout.
-- **Help** (`Help.tsx`): full-width article layout.
-- **Maintenance** (`MaintenancePage.tsx`): full-width.
-- **Locations** (`LocationsPage.tsx`, `LocationDetailPage.tsx`): dual-pane.
-- **Chat** (`Chat.tsx`): three-column (channels rail | conversation | details), restyled in industrial palette.
-- **Auth** (`Auth.tsx`, `auth/AuthLayout.tsx`, `auth/AuthHeader.tsx`): split-screen with a blueprint-grid + technical schematic illustration on the left, ticket-style form card on the right. Replaces the current generic split-screen.
-- **Onboarding** (`OnboardingPage.tsx`, `CompanySetup.tsx`, `TeamSetup.tsx`, `SetupPage.tsx`): stepper restyled as a drafting checklist with numbered steps and tick marks.
-- **Index / landing** (`Index.tsx`, `components/Hero.tsx`, `Features.tsx`, `CTA.tsx`, `Testimonials.tsx`, `Footer.tsx`, `Navbar.tsx`): editorial industrial landing — large Space Grotesk display, blueprint-grid hero, mono section numbers (01 / 02 / 03), amber CTAs.
-- **404** (`NotFound.tsx`): on-brand error page with mono "ERR_404" stamp.
+Changes:
+- Drop "Operations Console", drop date code, drop "SECTION 01" eyebrows, drop tick-mark dividers.
+- Replace the four-tab layout (Overview/Tasks/Analytics/Settings) with a single scrollable Home. Analytics → "Reports" already in sidebar. Settings → already in sidebar.
+- KPI cards become **plain sentences** with big numbers: "3 jobs due today", "1 overdue", "5 done this week". No codes like `WO·TOT`.
+- Two **giant primary buttons** at the top so a non-technical worker always knows what to do: **Report a Problem** and **Start a Check-Up**.
 
-### 5. Cross-cutting cleanup
-- Audit and replace remaining hardcoded Tailwind colors (`bg-gray-*`, `text-blue-*`, `bg-white`, `bg-maintenease-*`) with semantic tokens. Targeted sweep across `src/components/**` and `src/pages/**`.
-- Remove the `maintenease` color scale from `tailwind.config.ts` once references are migrated.
-- Verify both light and dark modes on every redesigned surface.
+### 2. Plain-language headers on every page
 
-### 6. QA pass
-- Type-check, dev server build check.
-- Visual spot-check key surfaces in light + dark via the preview at desktop and mobile viewports.
+Replace the codes + jargon with clear titles and a single short sentence:
 
-### What this plan does NOT include
-- No backend / data model / RLS changes.
-- No new features, routes, or business logic.
-- Existing data hooks, services, and edge functions are untouched.
+| Page | Before | After |
+|---|---|---|
+| Dashboard | "DSH · TUESDAY… — Operations Console" | "Good morning, Sam — Here's your day" |
+| Work Orders | "WO · INDEX — Work Orders" | "My Jobs — Things to fix and follow up on" |
+| Inspections | "Inspections — Schedule and manage…" | "Check-Ups — Walk-throughs and safety checks" |
+| Maintenance | "MNT · 001 — Maintenance" | "Repairs — Planned upkeep & quick fixes" |
+| Assets | "AST · INDEX — Assets" | "Equipment — Everything you take care of" |
+| Locations | "LOC — Locations" | "Places — Buildings, rooms, and sites" |
+| Vendors | "VND — Vendors" | "Suppliers — People who help you" |
+| Reports | "RPT — Reports" | "Reports — Simple summaries of your work" |
 
-### Tradeoffs to flag
-- This is a large change touching ~40+ files. Expect noticeable credit usage.
-- Dual-pane layouts change URL behavior for list pages (selected item in query param). Existing deep links to detail routes will keep working — detail routes will redirect into the dual-pane view with the id preselected.
-- The `maintenease` brand color scale will be retired in favor of semantic tokens. Any external mention of brand color will need to reference the new blueprint-blue/amber system.
+The technical "code" prop stays in `PageHeader` but is hidden by default; remove it from every page.
+
+### 3. Friendlier buttons & labels (everywhere)
+
+- "New WO" → **"+ New Job"**
+- "New Work Order" → **"+ New Job"**
+- "Dispatch" / "Triage" → removed
+- "Filters" → **"Find / Filter"**
+- "Export" → **"Download"**
+- "Live Feed" → **"What's happening"**
+- "Recent Activities" → **"Recent updates"**
+- "Tasks Overview" → **"Things to do"**
+- "Inspections" tabs "List / Calendar" → **"List" / "On a calendar"**
+
+### 4. Helpful empty states
+
+When there's nothing on a page, instead of "No work orders on file" we show:
+
+```text
+   📋   You don't have any jobs yet.
+        Tap "+ New Job" to add the first one.
+        [ + New Job ]
+```
+
+Same pattern for Equipment, Inspections, Repairs, Places, Suppliers.
+
+### 5. Fix Inspections page (still on old layout)
+
+Rewrite `InspectionsPage.tsx` to match the new shell: use `PageHeader` (no code), friendly title "Check-Ups", new button labels, and the same card style as the other pages.
+
+### 6. Mobile bottom nav refinement
+
+Already in good shape. Just rename one item: keep Home / My Jobs / Check-Ups / Calendar / More, and make the active state larger and obvious.
+
+### 7. Tone everywhere
+
+- Drop ALL CAPS section labels and `▮` markers in dashboard.
+- Drop monospace tracking labels (`SECTION 01 — KEY METRICS`).
+- Use sentence case ("Things to do today") instead of UPPERCASE EYEBROWS.
+- Numbers stay big and bold; surrounding text gets shorter and warmer.
+
+## Files to change
+
+**Pages (header/labels rewrite):**
+- `src/pages/Dashboard.tsx` — remove tabs, remove code/date eyebrow, friendlier title + 2 big CTAs
+- `src/pages/WorkOrdersPage.tsx`
+- `src/pages/AssetsPage.tsx`
+- `src/pages/MaintenancePage.tsx`
+- `src/pages/InspectionsPage.tsx` — rewrite to match new shell
+- `src/pages/LocationsPage.tsx`
+- `src/pages/VendorsPage.tsx`
+- `src/pages/ReportsPage.tsx`
+- `src/pages/Chat.tsx`
+- `src/pages/Calendar.tsx`
+- `src/pages/Help.tsx`
+- `src/pages/Settings.tsx`, `src/pages/ProfilePage.tsx`, `src/pages/Team.tsx`
+
+**Dashboard pieces:**
+- `src/components/dashboard/tabs/OverviewTab.tsx` — drop `SECTION 0X` eyebrows, replace KPI codes with plain labels, friendlier table headings
+- `src/components/dashboard/DashboardQuickActions.tsx` — title becomes "What do you want to do?"
+- `src/components/dashboard/DashboardRecentActivities.tsx` — title "Recent updates"
+- `src/components/dashboard/DashboardTasksOverview.tsx` — title "Things to do"
+
+**Shell:**
+- `src/components/shell/PageHeader.tsx` — make `code` truly optional and visually subtle (or remove rendering by default)
+- `src/components/shell/TopBar.tsx` — keep the friendly greeting, remove any remaining mono breadcrumb codes
+- `src/components/shell/MobileBottomNav.tsx` — minor active-state polish
+- `src/components/shell/navConfig.ts` — already friendly, no change
+
+**Empty-state components (friendlier copy + CTA):**
+- `src/components/assets/AssetEmptyState.tsx`
+- Add small inline empty state in WO list, Inspections list, etc.
+
+## What stays the same
+
+- Color palette, fonts, spacing, rounded shapes — already friendly.
+- Sidebar grouping (Main / Things / Plan / People / More) — already plain English.
+- Mobile bottom nav structure.
+- All routes, data, and behavior — purely a UX/copy/layout makeover.
+
+## Out of scope
+
+- No new database fields, no backend changes.
+- No changes to forms (WO form, Asset form, Inspection form) — only their page wrappers/headers.
+- No theme switch or auth changes.
