@@ -2,9 +2,6 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import {
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,110 +28,103 @@ const IconRail: React.FC<IconRailProps> = () => {
     navigate("/auth");
   };
 
-  // Group items in display order, but render flat with hairline dividers between groups
-  const grouped: Array<typeof NAV_ITEMS> = [];
-  let currentGroup = "";
+  // Group items
+  const grouped: Array<{ name: string; items: typeof NAV_ITEMS }> = [];
   NAV_ITEMS.forEach((item) => {
-    if (item.group !== currentGroup) {
-      grouped.push([item]);
-      currentGroup = item.group;
+    const last = grouped[grouped.length - 1];
+    if (!last || last.name !== item.group) {
+      grouped.push({ name: item.group, items: [item] });
     } else {
-      grouped[grouped.length - 1].push(item);
+      last.items.push(item);
     }
   });
 
   return (
-    <TooltipProvider delayDuration={150}>
-      <aside className="hidden md:flex flex-col w-[76px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen sticky top-0 z-30">
-        {/* Brand mark */}
-        <div className="h-16 flex items-center justify-center border-b border-sidebar-border">
-          <NavLink
-            to="/dashboard"
-            className="h-10 w-10 rounded-xl bg-gradient-primary text-primary-foreground font-display font-extrabold flex items-center justify-center shadow-soft"
+    <aside className="hidden lg:flex flex-col w-[248px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen sticky top-0 z-30">
+      {/* Brand */}
+      <div className="h-20 flex items-center gap-3 px-5 border-b border-sidebar-border">
+        <NavLink
+          to="/dashboard"
+          className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground font-display font-extrabold text-xl flex items-center justify-center shadow-soft"
+        >
+          M
+        </NavLink>
+        <div className="flex flex-col leading-tight">
+          <span className="font-display font-extrabold text-lg text-foreground tracking-tight">MaintenEase</span>
+          <span className="text-xs text-muted-foreground font-medium">Easy maintenance</span>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3">
+        {grouped.map((group) => (
+          <div key={group.name} className="mb-5 last:mb-0">
+            <div className="label-eyebrow px-3 mb-2">{group.name}</div>
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 h-12 px-3 my-1 rounded-2xl transition-all duration-200 text-base font-bold",
+                      "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                      isActive && "bg-gradient-primary text-primary-foreground shadow-soft hover:bg-gradient-primary hover:text-primary-foreground"
+                    )
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon className="h-5 w-5 shrink-0" strokeWidth={isActive ? 2.5 : 2.2} />
+                      <span className="truncate">{item.label}</span>
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="border-t border-sidebar-border p-3 space-y-1">
+        <button
+          onClick={() => navigate("/profile")}
+          className="w-full flex items-center gap-3 p-2 rounded-2xl hover:bg-sidebar-accent transition-colors"
+        >
+          <Avatar className="h-11 w-11 ring-2 ring-sidebar-border">
+            <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "User"} />
+            <AvatarFallback className="bg-gradient-primary text-primary-foreground font-extrabold">
+              {initial}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-start leading-tight min-w-0 flex-1">
+            <span className="text-sm font-bold text-foreground truncate w-full text-left">
+              {profile?.first_name || profile?.email?.split("@")[0] || "Welcome"}
+            </span>
+            <span className="text-xs text-muted-foreground">View profile</span>
+          </div>
+        </button>
+
+        <div className="flex gap-1">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
           >
-            M
-          </NavLink>
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <span>{theme === "dark" ? "Light" : "Dark"}</span>
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-sidebar-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sign out</span>
+          </button>
         </div>
-
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-3">
-          {grouped.map((group, gi) => (
-            <div key={gi} className={cn("py-1", gi > 0 && "border-t border-sidebar-border/60 mt-2 pt-2")}>
-              {group.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Tooltip key={item.href}>
-                    <TooltipTrigger asChild>
-                      <NavLink
-                        to={item.href}
-                        className={({ isActive }) =>
-                          cn(
-                            "relative flex items-center justify-center h-11 w-11 mx-auto my-1 rounded-xl transition-all duration-200 group",
-                            "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
-                            isActive && "text-sidebar-primary-foreground bg-sidebar-primary shadow-soft hover:text-sidebar-primary-foreground hover:bg-sidebar-primary"
-                          )
-                        }
-                      >
-                        {({ isActive }) => (
-                          <Icon className="h-5 w-5" strokeWidth={isActive ? 2.4 : 2} />
-                        )}
-                      </NavLink>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="text-xs font-medium">
-                      {item.label}
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* Footer */}
-        <div className="border-t border-sidebar-border py-3 flex flex-col items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="h-10 w-10 flex items-center justify-center rounded-xl text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
-              >
-                {theme === "dark" ? <Sun className="h-4 w-4" strokeWidth={2} /> : <Moon className="h-4 w-4" strokeWidth={2} />}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs font-medium">Theme</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleLogout}
-                className="h-10 w-10 flex items-center justify-center rounded-xl text-sidebar-foreground/70 hover:text-destructive-foreground hover:bg-destructive transition-colors"
-              >
-                <LogOut className="h-4 w-4" strokeWidth={2} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs font-medium">Sign out</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => navigate("/profile")}
-                className="mt-1 overflow-hidden rounded-full ring-2 ring-sidebar-border hover:ring-sidebar-primary transition"
-              >
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "User"} />
-                  <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
-                    {initial}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs font-medium">Profile</TooltipContent>
-          </Tooltip>
-        </div>
-      </aside>
-    </TooltipProvider>
+      </div>
+    </aside>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import IconRail from "./IconRail";
 import TopBar from "./TopBar";
 import CommandPalette from "./CommandPalette";
+import MobileBottomNav from "./MobileBottomNav";
 import DashboardNotifications from "@/components/dashboard/DashboardNotifications";
 import { getUserNotifications } from "@/services/notifications";
 
@@ -54,7 +55,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
           onOpenPalette={() => setPaletteOpen(true)}
         />
 
-        <main className="flex-1 w-full">
+        <main className="flex-1 w-full pb-24 lg:pb-0">
           {children}
         </main>
 
@@ -66,6 +67,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
       </div>
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <MobileBottomNav onOpenMenu={() => setPaletteOpen(true)} />
     </div>
   );
 };

@@ -21,9 +21,9 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['"Inter"', 'system-ui', 'sans-serif'],
-				display: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
-				serif: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
-				mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+				display: ['"Nunito"', '"Inter"', 'system-ui', 'sans-serif'],
+				serif: ['"Nunito"', '"Inter"', 'system-ui', 'sans-serif'],
+				mono: ['"Inter"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
