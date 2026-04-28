@@ -13,20 +13,20 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard",   href: "/dashboard",    icon: LayoutDashboard, code: "DSH", group: "Overview" },
-  { label: "Work Orders", href: "/work-orders",  icon: ClipboardList,   code: "WO",  group: "Operations" },
-  { label: "Inspections", href: "/inspections",  icon: ClipboardCheck,  code: "INS", group: "Operations" },
-  { label: "Maintenance", href: "/maintenance",  icon: Wrench,          code: "MNT", group: "Operations" },
-  { label: "Checklists",  href: "/checklists",   icon: ListChecks,      code: "CHK", group: "Operations" },
-  { label: "Assets",      href: "/assets",       icon: Package,         code: "AST", group: "Resources" },
-  { label: "Locations",   href: "/locations",    icon: Building,        code: "LOC", group: "Resources" },
-  { label: "Vendors",     href: "/vendors",      icon: Building2,       code: "VND", group: "Resources" },
-  { label: "Calendar",    href: "/calendar",     icon: Calendar,        code: "CAL", group: "Planning" },
-  { label: "Reports",     href: "/reports",      icon: BarChart3,       code: "RPT", group: "Planning" },
-  { label: "Team",        href: "/team",         icon: Users,           code: "TM",  group: "People" },
-  { label: "Chat",        href: "/chat",         icon: MessageSquare,   code: "MSG", group: "People" },
-  { label: "Settings",    href: "/settings",     icon: Settings,        code: "SET", group: "System" },
-  { label: "Help",        href: "/help",         icon: HelpCircle,      code: "HLP", group: "System" },
+  { label: "Home",         href: "/dashboard",    icon: LayoutDashboard, code: "DSH", group: "Main" },
+  { label: "My Jobs",      href: "/work-orders",  icon: ClipboardList,   code: "WO",  group: "Main" },
+  { label: "Check-Ups",    href: "/inspections",  icon: ClipboardCheck,  code: "INS", group: "Main" },
+  { label: "Repairs",      href: "/maintenance",  icon: Wrench,          code: "MNT", group: "Main" },
+  { label: "Checklists",   href: "/checklists",   icon: ListChecks,      code: "CHK", group: "Main" },
+  { label: "Equipment",    href: "/assets",       icon: Package,         code: "AST", group: "Things" },
+  { label: "Places",       href: "/locations",    icon: Building,        code: "LOC", group: "Things" },
+  { label: "Suppliers",    href: "/vendors",      icon: Building2,       code: "VND", group: "Things" },
+  { label: "Calendar",     href: "/calendar",     icon: Calendar,        code: "CAL", group: "Plan" },
+  { label: "Reports",      href: "/reports",      icon: BarChart3,       code: "RPT", group: "Plan" },
+  { label: "Team",         href: "/team",         icon: Users,           code: "TM",  group: "People" },
+  { label: "Messages",     href: "/chat",         icon: MessageSquare,   code: "MSG", group: "People" },
+  { label: "Settings",     href: "/settings",     icon: Settings,        code: "SET", group: "More" },
+  { label: "Help",         href: "/help",         icon: HelpCircle,      code: "HLP", group: "More" },
 ];
 
 export const NAV_GROUPS = Array.from(new Set(NAV_ITEMS.map(i => i.group)));
