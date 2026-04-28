@@ -18,9 +18,9 @@ export const BasicFields = ({ form }: BasicFieldsProps) => {
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Title</FormLabel>
+            <FormLabel>What's the problem?</FormLabel>
             <FormControl>
-              <Input placeholder="Enter work order title" {...field} />
+              <Input placeholder="e.g. Leaky faucet in 2nd-floor bathroom" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -32,10 +32,10 @@ export const BasicFields = ({ form }: BasicFieldsProps) => {
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
+            <FormLabel>Tell us a bit more</FormLabel>
             <FormControl>
               <Textarea 
-                placeholder="Describe the work order task" 
+                placeholder="When did it start? Anything else we should know?"
                 className="min-h-[100px]"
                 {...field} 
               />

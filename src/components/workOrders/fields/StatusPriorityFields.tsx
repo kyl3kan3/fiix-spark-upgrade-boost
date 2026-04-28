@@ -17,21 +17,21 @@ export const StatusPriorityFields = ({ form }: StatusPriorityFieldsProps) => {
         name="priority"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Priority</FormLabel>
+            <FormLabel>How urgent is it?</FormLabel>
             <Select 
               onValueChange={field.onChange} 
               defaultValue={field.value}
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder="Pick how urgent" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="urgent">Urgent</SelectItem>
+                <SelectItem value="low">Whenever — no rush</SelectItem>
+                <SelectItem value="medium">Soon — this week</SelectItem>
+                <SelectItem value="high">Important — this is slowing us down</SelectItem>
+                <SelectItem value="urgent">Right away — it's broken or unsafe</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -44,20 +44,20 @@ export const StatusPriorityFields = ({ form }: StatusPriorityFieldsProps) => {
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel>Where is it now?</FormLabel>
             <Select 
               onValueChange={field.onChange} 
               defaultValue={field.value}
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder="Pick a status" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="pending">Not started yet</SelectItem>
+                <SelectItem value="in_progress">Being worked on</SelectItem>
+                <SelectItem value="completed">All done</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
             </Select>

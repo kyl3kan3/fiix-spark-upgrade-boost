@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import PageHeader from "@/components/shell/PageHeader";
 import { getWorkOrderById } from "@/services/workOrderService";
 import { Helmet } from "react-helmet";
 
@@ -32,17 +32,18 @@ const WorkOrderFormPage: React.FC = () => {
   return (
     <DashboardLayout>
       <Helmet>
-        <title>{isEditMode ? "Edit Work Order" : "New Work Order"} | MaintenEase</title>
+        <title>{isEditMode ? "Edit Job" : "Report a Problem"} | MaintenEase</title>
       </Helmet>
-      <BackToDashboard />
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">
-          {isEditMode ? "Edit Work Order" : "Create Work Order"}
-        </h1>
-        
+      <PageHeader
+        title={isEditMode ? "Edit job" : "Report a problem"}
+        description={isEditMode
+          ? "Update the details for this job."
+          : "Tell us what's wrong — we'll get someone on it."}
+      />
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         {isEditMode && isLoading ? (
           <div className="flex justify-center items-center h-60">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <WorkOrderForm 
