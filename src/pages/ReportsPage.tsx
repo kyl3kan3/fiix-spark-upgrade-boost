@@ -4,21 +4,17 @@ import PageHeader from "@/components/shell/PageHeader";
 import ReportsContent from "@/components/features/ReportsContent";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Download, Filter } from "lucide-react";
+import { Download } from "lucide-react";
 
 const ReportsPage = () => {
   return (
     <DashboardLayout>
-      <Helmet><title>Reports & Analytics | MaintenEase</title></Helmet>
+      <Helmet><title>Reports | MaintenEase</title></Helmet>
       <PageHeader
-        code="RPT · 001"
-        title="Reports & Analytics"
-        description="Throughput, downtime, and crew utilization across the organization."
+        title="Reports"
+        description="Simple summaries of your work — what's done, what's pending, and how things are trending."
         actions={
-          <>
-            <Button variant="outline" size="sm"><Filter className="h-3.5 w-3.5" />Filters</Button>
-            <Button variant="accent" size="sm"><Download className="h-3.5 w-3.5" />Export</Button>
-          </>
+          <Button variant="accent" size="lg"><Download className="h-4 w-4" />Download</Button>
         }
       />
       <div className="px-4 md:px-6 lg:px-8 py-6">
