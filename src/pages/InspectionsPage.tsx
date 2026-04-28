@@ -1,16 +1,17 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Plus, CalendarIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import PageHeader from "@/components/shell/PageHeader";
 import InspectionsList from "@/components/inspections/InspectionsList";
 import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import { useInspections } from "@/hooks/useInspections";
 
 const InspectionsPage = () => {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     search: "",
     status: "all",
@@ -41,41 +42,33 @@ const InspectionsPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
-        <BackToDashboard />
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Inspections</h1>
-        
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-sm sm:text-base text-gray-500 mt-1">Schedule and manage equipment inspections</p>
-          </div>
-          <Link to="/inspections/new">
-            <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              <span className="text-sm sm:text-base">New Inspection</span>
-            </Button>
-          </Link>
-        </div>
+      <PageHeader
+        title="Check-Ups"
+        description="Routine inspections to keep your equipment safe and working."
+        actions={
+          <Button variant="accent" size="lg" onClick={() => navigate("/inspections/new")}>
+            <Plus className="h-5 w-5" />
+            New Check-Up
+          </Button>
+        }
+      />
 
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         <Tabs defaultValue="list" className="w-full">
-          <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 min-w-[200px]">
-              <TabsTrigger value="list" className="text-xs sm:text-sm">
-                <span className="hidden sm:inline">List View</span>
-                <span className="sm:hidden">List</span>
-              </TabsTrigger>
-              <TabsTrigger value="calendar" className="text-xs sm:text-sm">
-                <CalendarIcon className="h-4 w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Calendar</span>
-                <span className="sm:hidden">Cal</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          
-          <TabsContent value="list" className="mt-0 space-y-4 sm:space-y-6">
+          <TabsList className="bg-secondary rounded-2xl p-1 mb-6 h-auto">
+            <TabsTrigger value="list" className="rounded-xl px-5 py-2.5 font-bold text-sm data-[state=active]:bg-card data-[state=active]:shadow-soft">
+              List
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="rounded-xl px-5 py-2.5 font-bold text-sm data-[state=active]:bg-card data-[state=active]:shadow-soft">
+              <CalendarIcon className="h-4 w-4 mr-2" />
+              Calendar
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="list" className="mt-0 space-y-4">
             <InspectionsList inspections={filteredInspections} loading={loading} />
           </TabsContent>
-          
+
           <TabsContent value="calendar" className="mt-0">
             <InspectionsCalendarView filters={calendarFilters} />
           </TabsContent>

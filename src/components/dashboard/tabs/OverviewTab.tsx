@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowUpRight, ArrowDownRight, ChevronRight } from "lucide-react";
+import { ChevronRight, AlertCircle, Clock, CheckCircle2, ListTodo } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardQuickActions from "../DashboardQuickActions";
@@ -9,43 +9,27 @@ import DashboardTasksOverview from "../DashboardTasksOverview";
 import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 import { cn } from "@/lib/utils";
 
-interface KpiProps {
-  code: string;
-  label: string;
+interface SummaryProps {
+  icon: React.ElementType;
   value: number | string;
-  delta?: number;
-  tone?: "neutral" | "warning" | "info" | "success" | "destructive";
+  label: string;
+  tone?: "neutral" | "warning" | "info" | "success";
 }
 
-const Kpi: React.FC<KpiProps> = ({ code, label, value, delta, tone = "neutral" }) => {
-  const toneClass = {
-    neutral: "text-foreground",
-    warning: "text-warning",
-    info: "text-info",
-    success: "text-success",
-    destructive: "text-destructive",
+const Summary: React.FC<SummaryProps> = ({ icon: Icon, value, label, tone = "neutral" }) => {
+  const toneBg = {
+    neutral: "bg-secondary text-foreground",
+    warning: "bg-warning/15 text-warning",
+    info: "bg-info/15 text-info",
+    success: "bg-success/15 text-success",
   }[tone];
-
   return (
-    <div className="ticket-card p-5 hover-scale">
-      <div className="flex items-center justify-between mb-4">
-        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-accent">{code}</span>
-        {delta !== undefined && (
-          <span
-            className={cn(
-              "inline-flex items-center gap-0.5 font-mono text-[10px] tracking-wider uppercase",
-              delta >= 0 ? "text-success" : "text-destructive"
-            )}
-          >
-            {delta >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-            {Math.abs(delta)}%
-          </span>
-        )}
+    <div className="rounded-3xl border-2 border-border bg-card p-5 hover:border-primary/40 transition-colors">
+      <div className={cn("h-12 w-12 rounded-2xl flex items-center justify-center mb-3", toneBg)}>
+        <Icon className="h-6 w-6" strokeWidth={2.2} />
       </div>
-      <div className={cn("font-display font-bold text-4xl leading-none tabular-nums", toneClass)}>
-        {value}
-      </div>
-      <div className="mt-2 label-meta">{label}</div>
+      <div className="font-display font-extrabold text-3xl leading-none tabular-nums">{value}</div>
+      <div className="mt-1 text-sm font-semibold text-muted-foreground">{label}</div>
     </div>
   );
 };
@@ -61,38 +45,26 @@ const OverviewTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* KPI strip */}
+      {/* Summary cards */}
       <section>
-        <div className="label-eyebrow mb-3 flex items-center gap-2">
-          <span className="text-accent">▮</span>
-          <span>SECTION 01 — KEY METRICS</span>
-          <span className="divider-ticked flex-1 max-w-[120px]" />
-        </div>
+        <h2 className="font-display font-bold text-lg mb-3">How things are going</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Kpi code="WO·TOT" label="Total Work Orders" value={stats.total} delta={4} />
-          <Kpi code="WO·OPN" label="Open" value={stats.open} tone="warning" delta={-2} />
-          <Kpi code="WO·PRG" label="In Progress" value={stats.inProgress} tone="info" delta={8} />
-          <Kpi code="WO·CMP" label="Completed" value={stats.completed} tone="success" delta={12} />
+          <Summary icon={ListTodo} value={stats.total} label="All jobs" />
+          <Summary icon={AlertCircle} value={stats.open} label="Need attention" tone="warning" />
+          <Summary icon={Clock} value={stats.inProgress} label="Being worked on" tone="info" />
+          <Summary icon={CheckCircle2} value={stats.completed} label="Finished" tone="success" />
         </div>
       </section>
 
       {/* Quick actions */}
       <section>
-        <div className="label-eyebrow mb-3 flex items-center gap-2">
-          <span className="text-accent">▮</span>
-          <span>SECTION 02 — DISPATCH</span>
-          <span className="divider-ticked flex-1 max-w-[120px]" />
-        </div>
+        <h2 className="font-display font-bold text-lg mb-3">What do you want to do?</h2>
         <DashboardQuickActions />
       </section>
 
       {/* Activities + Tasks */}
       <section>
-        <div className="label-eyebrow mb-3 flex items-center gap-2">
-          <span className="text-accent">▮</span>
-          <span>SECTION 03 — LIVE FEED</span>
-          <span className="divider-ticked flex-1 max-w-[120px]" />
-        </div>
+        <h2 className="font-display font-bold text-lg mb-3">What's happening</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <DashboardRecentActivities />
           <DashboardTasksOverview />
@@ -101,59 +73,46 @@ const OverviewTab: React.FC = () => {
 
       {/* Recent work orders — drafting log */}
       <section>
-        <div className="label-eyebrow mb-3 flex items-center gap-2">
-          <span className="text-accent">▮</span>
-          <span>SECTION 04 — RECENT WORK ORDERS</span>
-          <span className="divider-ticked flex-1 max-w-[120px]" />
-        </div>
+        <h2 className="font-display font-bold text-lg mb-3">Recent jobs</h2>
 
-        <div className="ticket-card overflow-hidden">
-          {/* Table header */}
-          <div className="grid grid-cols-[80px,1fr,90px,90px,32px] items-center gap-3 px-4 py-2.5 border-b border-border bg-muted/40 label-meta">
-            <span>ID</span>
-            <span>Title</span>
-            <span>Priority</span>
-            <span>Status</span>
-            <span></span>
-          </div>
+        <div className="rounded-3xl border-2 border-border bg-card overflow-hidden">
 
           {isLoading ? (
-            <div className="p-8 text-center font-mono text-xs uppercase tracking-wider text-muted-foreground">
+            <div className="p-8 text-center text-sm font-semibold text-muted-foreground">
               Loading…
             </div>
           ) : workOrders.length > 0 ? (
-            workOrders.slice(0, 6).map((order, idx) => (
+            workOrders.slice(0, 6).map((order) => (
               <button
                 key={order.id}
                 onClick={() => navigate(`/work-orders/${order.id}`)}
-                className="w-full grid grid-cols-[80px,1fr,90px,90px,32px] items-center gap-3 px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors text-left group"
+                className="w-full flex items-center gap-3 px-4 py-4 border-b border-border last:border-b-0 hover:bg-secondary/60 transition-colors text-left group"
               >
-                <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                  WO-{String(idx + 1).padStart(4, "0")}
-                </span>
-                <div className="min-w-0">
-                  <div className="font-medium text-sm truncate">{order.title}</div>
-                  <div className="text-xs text-muted-foreground truncate">{order.description}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-base truncate">{order.title}</div>
+                  <div className="text-sm text-muted-foreground truncate">{order.description}</div>
                 </div>
-                <Badge variant={priorityVariant(order.priority) as any}>{order.priority}</Badge>
-                <Badge variant={statusVariant(order.status) as any}>
-                  {order.status?.replace("_", " ")}
-                </Badge>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-accent transition-colors" />
+                <div className="hidden sm:flex items-center gap-2 shrink-0">
+                  <Badge variant={priorityVariant(order.priority) as any}>{order.priority}</Badge>
+                  <Badge variant={statusVariant(order.status) as any}>
+                    {order.status?.replace("_", " ")}
+                  </Badge>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground/50 group-hover:text-primary transition-colors shrink-0" />
               </button>
             ))
           ) : (
             <div className="p-12 text-center">
-              <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                No work orders on file
+              <div className="text-base font-semibold text-muted-foreground">
+                No jobs yet — you're all caught up! 🎉
               </div>
             </div>
           )}
 
-          <div className="p-3 border-t border-border bg-muted/20">
-            <Button variant="outline" onClick={() => navigate("/work-orders")} className="w-full" size="sm">
-              View all work orders
-              <ChevronRight className="h-3.5 w-3.5" />
+          <div className="p-3 border-t-2 border-border bg-secondary/30">
+            <Button variant="outline" onClick={() => navigate("/work-orders")} className="w-full" size="lg">
+              See all my jobs
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -8,8 +8,8 @@ const AssetPageHeader: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Assets</h1>
-      <p className="text-sm sm:text-base text-gray-500 mt-1">Manage your equipment and facility assets</p>
+      <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-foreground">Equipment</h1>
+      <p className="text-base text-muted-foreground mt-1 font-medium">Everything you take care of — tools, vehicles, and machines.</p>
     </div>
   );
 };

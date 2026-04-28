@@ -50,8 +50,8 @@ const AssetsPage = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <PageHeader code="AST · INDEX" title="Assets" />
-        <div className="flex items-center justify-center h-64 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+        <PageHeader title="Equipment" />
+        <div className="flex items-center justify-center h-64 text-sm font-semibold text-muted-foreground">
           Loading…
         </div>
       </DashboardLayout>
@@ -61,12 +61,11 @@ const AssetsPage = () => {
   return (
     <DashboardLayout>
       <PageHeader
-        code="AST · INDEX"
-        title="Assets"
-        description="Equipment, vehicles, facilities, and tools — by location and status."
+        title="Equipment"
+        description="Everything you take care of — tools, vehicles, machines, and more."
         actions={
-          <Button variant="accent" size="sm" onClick={() => navigate("/assets/new")}>
-            <Plus className="h-3.5 w-3.5" />Add Asset
+          <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
+            <Plus className="h-5 w-5" />Add Equipment
           </Button>
         }
       />
