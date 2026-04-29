@@ -27,7 +27,7 @@ const AssetsPage = () => {
   });
   const assetCategories = ["Equipment", "Vehicles", "Facilities", "Tools"];
 
-  const filteredAssets = assets.filter((asset) => {
+  const filteredAssets = assets.filter((asset: any) => {
     const matchesSearch = !filters.search || 
       asset.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
       asset.serial_number?.toLowerCase().includes(filters.search.toLowerCase());
