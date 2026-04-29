@@ -82,14 +82,15 @@ const GuidedTour: React.FC = () => {
       disableScrolling={false}
       callback={handleCallback}
       styles={{
-        options: {
-          primaryColor: "hsl(var(--primary))",
-          zIndex: 10000,
-          arrowColor: "hsl(var(--card))",
+        tooltip: {
           backgroundColor: "hsl(var(--card))",
-          textColor: "hsl(var(--foreground))",
-          overlayColor: "rgba(0,0,0,0.5)",
+          color: "hsl(var(--foreground))",
+          borderRadius: 8,
         },
+        tooltipContent: { color: "hsl(var(--foreground))" },
+        buttonNext: { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" },
+        buttonBack: { color: "hsl(var(--muted-foreground))" },
+        overlay: { backgroundColor: "rgba(0,0,0,0.5)" },
       }}
       locale={{
         back: "Back",
