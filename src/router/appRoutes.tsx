@@ -3,12 +3,14 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
+import NotFound from "@/pages/NotFound";
 
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const VendorsPage = lazy(() => import("@/pages/VendorsPage"));
 const VendorFormPage = lazy(() => import("@/pages/VendorFormPage"));
 const AssetsPage = lazy(() => import("@/pages/AssetsPage"));
 const AssetFormPage = lazy(() => import("@/pages/AssetFormPage"));
+const AssetDetailPage = lazy(() => import("@/pages/AssetDetailPage"));
 const WorkOrdersPage = lazy(() => import("@/pages/WorkOrdersPage"));
 const WorkOrderFormPage = lazy(() => import("@/pages/WorkOrderFormPage"));
 const VendorImportPage = lazy(() => import("@/pages/VendorImportPage"));
@@ -54,6 +56,7 @@ export const AppRoutes = () => (
       <Route path="/assets" element={<ProtectedRoute><AssetsPage /></ProtectedRoute>} />
       <Route path="/assets/new" element={<ProtectedRoute><AssetFormPage /></ProtectedRoute>} />
       <Route path="/assets/:assetId/edit" element={<ProtectedRoute><AssetFormPage /></ProtectedRoute>} />
+      <Route path="/assets/:assetId" element={<ProtectedRoute><AssetDetailPage /></ProtectedRoute>} />
 
       <Route path="/work-orders" element={<ProtectedRoute><WorkOrdersPage /></ProtectedRoute>} />
       <Route path="/work-orders/new" element={<ProtectedRoute><WorkOrderFormPage /></ProtectedRoute>} />
@@ -85,7 +88,7 @@ export const AppRoutes = () => (
       <Route path="/company-setup" element={<ProtectedRoute><CompanySetup /></ProtectedRoute>} />
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>
 );
