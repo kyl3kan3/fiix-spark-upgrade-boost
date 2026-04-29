@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import { useLocation } from "react-router-dom";
+import { Joyride, STATUS, type EventData, type Step } from "react-joyride";
 import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
 
 const STEPS: Step[] = [
@@ -9,7 +9,6 @@ const STEPS: Step[] = [
     content:
       "Welcome! This is your home dashboard — your daily snapshot of what's happening across your facilities.",
     placement: "center",
-    disableBeacon: true,
   },
   {
     target: '[data-tour="report-problem"]',
@@ -46,7 +45,6 @@ const STEPS: Step[] = [
 const GuidedTour: React.FC = () => {
   const { progress, completeTour } = useOnboardingProgress();
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const [run, setRun] = useState(false);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const GuidedTour: React.FC = () => {
     }
   }, [progress?.tour_complete, progress?.wizard_complete, pathname]);
 
-  const handleCallback = (data: CallBackProps) => {
+  const handleCallback = (data: EventData) => {
     const { status } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
       setRun(false);
@@ -83,6 +81,7 @@ const GuidedTour: React.FC = () => {
       showProgress
       disableScrolling={false}
       callback={handleCallback}
+      options={{ disableBeacon: true } as never}
       styles={{
         options: {
           primaryColor: "hsl(var(--primary))",
