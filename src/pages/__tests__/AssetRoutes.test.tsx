@@ -50,11 +50,9 @@ describe("Asset routes", () => {
 
   it("renders detail page with asset name and edit link", async () => {
     renderAt("/assets/abc-123");
-    await waitFor(() => {
-      expect(screen.getByText("Test Pump")).toBeInTheDocument();
-    });
-    const editLink = screen.getByRole("link", { name: /edit asset/i });
+    const editLink = await screen.findByRole("link", { name: /edit asset/i });
     expect(editLink).toHaveAttribute("href", "/assets/abc-123/edit");
+    expect(screen.getAllByText("Test Pump").length).toBeGreaterThan(0);
   });
 
   it("shows not-found fallback for missing asset", async () => {
