@@ -88,7 +88,7 @@ const GuidedTour: React.FC = () => {
           borderRadius: 8,
         },
         tooltipContent: { color: "hsl(var(--foreground))" },
-        buttonNext: { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" },
+        buttonPrimary: { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" },
         buttonBack: { color: "hsl(var(--muted-foreground))" },
         overlay: { backgroundColor: "rgba(0,0,0,0.5)" },
       }}
