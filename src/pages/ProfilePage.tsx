@@ -41,7 +41,7 @@ const ProfilePage = () => {
   if (authLoading) {
     return (
       <DashboardLayout>
-        <div className="container mx-auto px-4 py-8">
+        <div className="px-4 md:px-6 lg:px-8 py-6">
           <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
           <div className="animate-pulse space-y-4">
             <div className="h-12 bg-gray-200 rounded"></div>
@@ -61,7 +61,7 @@ const ProfilePage = () => {
   return (
     <DashboardLayout>
       <BackToDashboard />
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
           <Button variant="ghost" size="sm" onClick={handleRefresh}>

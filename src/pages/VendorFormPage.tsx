@@ -40,7 +40,7 @@ const VendorFormPage: React.FC = () => {
   if (isEditing && isLoadingVendor) {
     return (
       <DashboardLayout>
-        <div className="container mx-auto py-6 px-4">
+        <div className="px-4 md:px-6 lg:px-8 py-6">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
             <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
@@ -61,7 +61,7 @@ const VendorFormPage: React.FC = () => {
         <title>{isEditing ? 'Edit Vendor' : 'Add New Vendor'} | MaintenEase</title>
       </Helmet>
       
-      <div className="container mx-auto py-6 px-4">
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         <div className="flex items-center gap-4 mb-6">
           <Button
             variant="ghost"
