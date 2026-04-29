@@ -76,7 +76,7 @@ const LocationDetailPage = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="container mx-auto px-4 py-8">
+        <div className="px-4 md:px-6 lg:px-8 py-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
             <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -94,7 +94,7 @@ const LocationDetailPage = () => {
   if (!location) {
     return (
       <DashboardLayout>
-        <div className="container mx-auto px-4 py-8">
+        <div className="px-4 md:px-6 lg:px-8 py-6">
           <div className="text-center">
             <MapPin className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">Location not found</h3>
@@ -109,7 +109,7 @@ const LocationDetailPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-4 md:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="mb-6">
           <Link 
