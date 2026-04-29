@@ -18,14 +18,16 @@ export const ImportResultsTabs: React.FC<ImportResultsTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue="edit" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="edit" className="flex items-center gap-2">
+      <TabsList className="grid w-full grid-cols-3 h-auto">
+        <TabsTrigger value="edit" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
           <Eye className="h-4 w-4" />
-          Edit by Page
+          <span className="hidden sm:inline">Edit by Page</span>
+          <span className="sm:hidden">Edit</span>
         </TabsTrigger>
-        <TabsTrigger value="table" className="flex items-center gap-2">
+        <TabsTrigger value="table" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
           <Eye className="h-4 w-4" />
-          Table View
+          <span className="hidden sm:inline">Table View</span>
+          <span className="sm:hidden">Table</span>
         </TabsTrigger>
         <TabsTrigger value="preview" className="flex items-center gap-2">
           <Eye className="h-4 w-4" />

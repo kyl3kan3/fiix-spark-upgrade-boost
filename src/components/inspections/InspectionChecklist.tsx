@@ -28,12 +28,13 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
         <CardTitle>Inspection Checklist</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[300px]">Item</TableHead>
+              <TableHead className="min-w-[160px] sm:w-[300px]">Item</TableHead>
               <TableHead className="w-[100px] text-center">Pass/Fail</TableHead>
-              <TableHead>Notes</TableHead>
+              <TableHead className="hidden md:table-cell">Notes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,7 +63,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <Textarea
                     value={item.notes}
                     disabled={isCompleted}
@@ -75,6 +76,24 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
             ))}
           </TableBody>
         </Table>
+        </div>
+        {/* Mobile-only notes inputs */}
+        <div className="md:hidden mt-4 space-y-3">
+          {items.map(item => (
+            <div key={`m-${item.id}`} className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">
+                Notes — {item.name}
+              </label>
+              <Textarea
+                value={item.notes}
+                disabled={isCompleted}
+                onChange={(e) => handleNoteChange(item.id, e.target.value)}
+                placeholder="Enter notes"
+                className="h-16 min-h-0"
+              />
+            </div>
+          ))}
+        </div>
         
         {!isCompleted && items.length > 0 && (
           <div className="mt-4 flex justify-end">

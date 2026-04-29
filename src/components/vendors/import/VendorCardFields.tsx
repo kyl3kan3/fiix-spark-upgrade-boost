@@ -159,7 +159,7 @@ export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
           <Label htmlFor={`city-${index}`} className="text-xs">City</Label>
           <Input
