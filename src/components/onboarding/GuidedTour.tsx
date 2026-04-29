@@ -49,27 +49,23 @@ const GuidedTour: React.FC = () => {
 
   useEffect(() => {
     if (!progress) return;
-    // Auto-run when wizard complete, tour not done, and on dashboard
-    if (progress.wizard_complete && !progress.tour_complete && pathname === "/dashboard") {
-      // Slight delay so DOM mounts
+    if (
+      progress.wizard_complete &&
+      !progress.tour_complete &&
+      pathname === "/dashboard"
+    ) {
       const t = setTimeout(() => setRun(true), 800);
       return () => clearTimeout(t);
     }
-    // Manual restart: tour_complete=false set by user via "Take the product tour"
-    if (!progress.tour_complete && pathname === "/dashboard" && progress.wizard_complete) {
-      setRun(true);
-    }
   }, [progress?.tour_complete, progress?.wizard_complete, pathname]);
 
-  const handleCallback = (data: EventData) => {
-    const { status } = data;
-    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+  const handleEvent = (data: EventData) => {
+    if (data.status === STATUS.FINISHED || data.status === STATUS.SKIPPED) {
       setRun(false);
       completeTour();
     }
   };
 
-  // Only render on dashboard to keep DOM light
   if (pathname !== "/dashboard") return null;
 
   return (
@@ -77,20 +73,17 @@ const GuidedTour: React.FC = () => {
       steps={STEPS}
       run={run}
       continuous
-      showSkipButton
-      showProgress
-      disableScrolling={false}
-      callback={handleCallback}
-      styles={{
-        tooltip: {
-          backgroundColor: "hsl(var(--card))",
-          color: "hsl(var(--foreground))",
-          borderRadius: 8,
-        },
-        tooltipContent: { color: "hsl(var(--foreground))" },
-        buttonPrimary: { backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" },
-        buttonBack: { color: "hsl(var(--muted-foreground))" },
-        overlay: { backgroundColor: "rgba(0,0,0,0.5)" },
+      onEvent={handleEvent}
+      options={{
+        showProgress: true,
+        skipBeacon: true,
+        buttons: ["back", "skip", "primary"],
+        primaryColor: "hsl(var(--primary))",
+        backgroundColor: "hsl(var(--card))",
+        textColor: "hsl(var(--foreground))",
+        arrowColor: "hsl(var(--card))",
+        overlayColor: "rgba(0,0,0,0.5)",
+        zIndex: 10000,
       }}
       locale={{
         back: "Back",
