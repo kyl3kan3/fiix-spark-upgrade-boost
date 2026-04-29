@@ -29,9 +29,10 @@ export const ImportResultsTabs: React.FC<ImportResultsTabsProps> = ({
           <span className="hidden sm:inline">Table View</span>
           <span className="sm:hidden">Table</span>
         </TabsTrigger>
-        <TabsTrigger value="preview" className="flex items-center gap-2">
+        <TabsTrigger value="preview" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
           <Eye className="h-4 w-4" />
-          Save Preview
+          <span className="hidden sm:inline">Save Preview</span>
+          <span className="sm:hidden">Save</span>
         </TabsTrigger>
       </TabsList>
       
