@@ -88,7 +88,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
             </div>
             <div className="flex-grow">
               {canEdit ? (
-                <Link to={`/assets/edit/${asset.id}`} className="block">
+                <Link to={`/assets/${asset.id}/edit`} className="block">
                   <h3 className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">{asset.name}</h3>
                 </Link>
               ) : (
