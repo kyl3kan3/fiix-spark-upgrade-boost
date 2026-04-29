@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import PageHeader from "@/components/shell/PageHeader";
 import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
+import { getAllAssets } from "@/services/assets/assetQueries";
 
 const AssetsPage = () => {
   const navigate = useNavigate();
@@ -19,12 +21,13 @@ const AssetsPage = () => {
   });
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Mock data for now - will be replaced with actual query
-  const assets: any[] = [];
-  const isLoading = false;
+  const { data: assets = [], isLoading, error } = useQuery({
+    queryKey: ["assets"],
+    queryFn: getAllAssets,
+  });
   const assetCategories = ["Equipment", "Vehicles", "Facilities", "Tools"];
 
-  const filteredAssets = assets.filter((asset) => {
+  const filteredAssets = assets.filter((asset: any) => {
     const matchesSearch = !filters.search || 
       asset.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
       asset.serial_number?.toLowerCase().includes(filters.search.toLowerCase());
@@ -85,7 +88,7 @@ const AssetsPage = () => {
             <AssetGridView 
               assets={filteredAssets}
               isLoading={false}
-              error={null}
+              error={error}
               hasFilters={!!filters.search || selectedCategories.length > 0}
               isDeleting={false}
               onDeleteAsset={() => {}}
