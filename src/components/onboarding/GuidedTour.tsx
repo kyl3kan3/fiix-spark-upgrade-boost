@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Joyride, STATUS, type EventData, type Step } from "react-joyride";
+import Joyride, { STATUS, type CallBackProps, type Step } from "react-joyride";
 import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -63,7 +63,7 @@ const GuidedTour: React.FC = () => {
     }
   }, [progress?.tour_complete, progress?.wizard_complete, pathname, isMobile]);
 
-  const handleEvent = (data: EventData) => {
+  const handleEvent = (data: CallBackProps) => {
     if (data.status === STATUS.FINISHED || data.status === STATUS.SKIPPED) {
       setRun(false);
       completeTour();
@@ -77,17 +77,19 @@ const GuidedTour: React.FC = () => {
       steps={STEPS}
       run={run}
       continuous
-      onEvent={handleEvent}
-      options={{
-        showProgress: true,
-        skipBeacon: true,
-        buttons: ["back", "skip", "primary"],
-        primaryColor: "hsl(var(--primary))",
-        backgroundColor: "hsl(var(--card))",
-        textColor: "hsl(var(--foreground))",
-        arrowColor: "hsl(var(--card))",
-        overlayColor: "rgba(0,0,0,0.5)",
-        zIndex: 10000,
+      showProgress
+      showSkipButton
+      disableScrolling
+      callback={handleEvent}
+      styles={{
+        options: {
+          primaryColor: "hsl(var(--primary))",
+          backgroundColor: "hsl(var(--card))",
+          textColor: "hsl(var(--foreground))",
+          arrowColor: "hsl(var(--card))",
+          overlayColor: "rgba(0,0,0,0.5)",
+          zIndex: 10000,
+        },
       }}
       locale={{
         back: "Back",
