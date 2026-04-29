@@ -117,11 +117,11 @@ const PerformanceAnalyticsContent: React.FC = () => {
           </div>
 
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="efficiency">Asset Efficiency</TabsTrigger>
-              <TabsTrigger value="costs">Cost Analysis</TabsTrigger>
-              <TabsTrigger value="maintenance">Maintenance Types</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm whitespace-nowrap">Overview</TabsTrigger>
+              <TabsTrigger value="efficiency" className="text-xs sm:text-sm whitespace-nowrap">Asset Efficiency</TabsTrigger>
+              <TabsTrigger value="costs" className="text-xs sm:text-sm whitespace-nowrap">Cost Analysis</TabsTrigger>
+              <TabsTrigger value="maintenance" className="text-xs sm:text-sm whitespace-nowrap">Maintenance Types</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="space-y-6">
@@ -272,7 +272,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
                             {type.efficiency}% efficiency
                           </Badge>
                         </div>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                           <div>
                             <p className="text-gray-500">Completed</p>
                             <p className="font-medium">{type.completed}</p>

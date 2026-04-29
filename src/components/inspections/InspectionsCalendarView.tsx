@@ -97,15 +97,16 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
         {format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}
       </h2>
       
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center text-sm font-medium">
-            {day}
+          <div key={day} className="text-center text-[10px] sm:text-sm font-medium">
+            <span className="sm:hidden">{day.charAt(0)}</span>
+            <span className="hidden sm:inline">{day}</span>
           </div>
         ))}
       </div>
       
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
           const date = new Date(currentYear, currentMonth, day);
@@ -114,11 +115,11 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
           return (
             <div 
               key={day} 
-              className={`min-h-24 border rounded-md p-1 ${
+              className={`min-h-16 sm:min-h-24 border rounded-md p-0.5 sm:p-1 text-[10px] sm:text-xs ${
                 date.getDate() === currentDate.getDate() ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
               }`}
             >
-              <div className="text-right text-sm font-medium mb-1">{day}</div>
+              <div className="text-right text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">{day}</div>
               
               <div className="space-y-1">
                 {dayInspections.map(inspection => (

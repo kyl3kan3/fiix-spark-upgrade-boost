@@ -56,10 +56,10 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
           <TableRow className="dark:border-gray-700">
             <TableHead>Title</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Priority</TableHead>
-            <TableHead>Asset</TableHead>
-            <TableHead>Assignee</TableHead>
-            <TableHead>Due Date</TableHead>
+            <TableHead className="hidden sm:table-cell">Priority</TableHead>
+            <TableHead className="hidden md:table-cell">Asset</TableHead>
+            <TableHead className="hidden lg:table-cell">Assignee</TableHead>
+            <TableHead className="hidden md:table-cell">Due Date</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -76,18 +76,18 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
                   {workOrder.status?.replace("_", " ")}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="hidden sm:table-cell">
                 <Badge className={getPriorityColor(workOrder.priority)}>
                   {workOrder.priority}
                 </Badge>
               </TableCell>
-              <TableCell>{workOrder.asset?.name || "—"}</TableCell>
-              <TableCell>
+              <TableCell className="hidden md:table-cell">{workOrder.asset?.name || "—"}</TableCell>
+              <TableCell className="hidden lg:table-cell">
                 {workOrder.assignee ? 
                   `${workOrder.assignee.first_name || ''} ${workOrder.assignee.last_name || ''}`.trim() : 
                   "Unassigned"}
               </TableCell>
-              <TableCell>
+              <TableCell className="hidden md:table-cell">
                 {workOrder.due_date ? formatDate(workOrder.due_date) : "—"}
               </TableCell>
               <TableCell>
