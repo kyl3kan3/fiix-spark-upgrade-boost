@@ -7,11 +7,18 @@ import { SearchResults } from "@/components/help/components/SearchResults";
 import { HelpTabs } from "@/components/help/components/HelpTabs";
 import { LiveChatSheet } from "@/components/help/components/LiveChatSheet";
 import { useHelpSearch } from "@/components/help/hooks/useHelpSearch";
+import { Button } from "@/components/ui/button";
+import { Compass, RefreshCw } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { toast } from "sonner";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("faq");
+  const navigate = useNavigate();
+  const { restartTour, restartWizard, showChecklist } = useOnboardingProgress();
   
   const { searchResults, totalResults } = useHelpSearch(searchQuery);
 
@@ -47,6 +54,31 @@ const Help = () => {
       <div className="flex items-center mb-6">
         <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
         <h1 className="text-2xl font-bold text-gray-900">Help Center</h1>
+      </div>
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          onClick={() => {
+            restartTour();
+            showChecklist();
+            toast.info("Heading to your dashboard to start the tour…");
+            navigate("/dashboard");
+          }}
+        >
+          <Compass className="h-4 w-4 mr-2" />
+          Take the product tour
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            restartWizard();
+            navigate("/setup");
+          }}
+        >
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Re-run setup wizard
+        </Button>
       </div>
 
       <HelpSearchBar
