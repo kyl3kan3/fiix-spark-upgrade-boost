@@ -36,8 +36,8 @@ const STEPS: Step[] = [
     placement: "right",
   },
   {
-    target: '[data-tour="nav-help"]',
-    content: "Need a refresher? Re-launch this tour anytime from the Help page.",
+    target: '[data-tour="nav-settings"]',
+    content: "Need a refresher? Visit Help (in Settings) to re-launch this tour anytime.",
     placement: "right",
   },
 ];
