@@ -1,60 +1,78 @@
-# Mobile Optimization Audit
+## Goal
 
-## Short answer
-**Mostly yes, but not entirely.** The shell (sidebar collapses to bottom nav, top bar adapts, page padding is now consistent) is mobile-ready. But several content areas still break or feel cramped on phones.
+Create a true guided setup experience consisting of three connected pieces, with progress persisted per-user in Supabase, available automatically for new users and re-runnable from the Help menu.
 
-## Issues found
+## What you'll get
 
-### 1. Wide tables overflow on phones
-- `VendorTable` uses a raw `<table>` with no horizontal scroll wrapper — columns spill off screen.
-- `WorkOrdersTable` has `overflow-x-auto` but rows are dense with no responsive column hiding.
-- `InspectionChecklist` forces a 300px column width on small screens.
+1. **Improved /setup wizard** — same 9 steps, but with helper text, illustrations, validation, "Save & Continue Later", and a sidebar checklist showing where you are.
+2. **Post-setup product tour** — a coach-mark overlay walking through Dashboard, Assets, Work Orders, Locations, Vendors, Team, and Reports. Built with `react-joyride`.
+3. **Dashboard onboarding checklist** — a dismissible widget on the dashboard showing tasks like "Add your first location", "Add your first asset", "Invite a teammate", "Create your first work order", with live progress and one-click navigation to each.
 
-**Fix:** Wrap `VendorTable` in `overflow-x-auto`, hide non-essential columns under `md` (e.g. dates, assignee), and convert key tables to card-list layout below `sm`.
+All three read/write from a single `onboarding_progress` table so they stay in sync.
 
-### 2. Tab bars too wide for narrow phones
-TabsLists with 3-4 equal columns and forced `min-w-[300px]` (`Team`, `Calendar`, `locations`, `PerformanceAnalytics`, `DowntimeTracking`, `TeamCollaboration`, `vendors/import`):
-- Trigger labels truncate or wrap awkwardly at 360-390px viewports.
+## Database changes (one migration)
 
-**Fix:** Allow horizontal scroll (`overflow-x-auto`) on TabsList and use `whitespace-nowrap` triggers; for 4-col lists, stack to `grid-cols-2 sm:grid-cols-4`.
+New table `public.onboarding_progress`:
 
-### 3. Inspections calendar grid is too tight
-`grid-cols-7` with `gap-2` on InspectionsCalendarView is unreadable below 400px — day cells become ~40px wide with truncated content.
+```text
+id              uuid pk default gen_random_uuid()
+user_id         uuid not null  (one row per user)
+company_id      uuid not null
+wizard_step     int  default 0
+wizard_complete boolean default false
+tour_complete   boolean default false
+checklist_dismissed boolean default false
+tasks_completed jsonb default '{}'  (e.g. {"first_location": true, "first_asset": false, ...})
+updated_at      timestamptz default now()
+unique (user_id)
+```
 
-**Fix:** Reduce padding and font in cells under `sm`, or switch to a list view by default on mobile.
+RLS policies (multi-tenant, per memory rules):
+- SELECT/INSERT/UPDATE: `user_id = auth.uid() AND company_id = get_user_company(auth.uid())`
+- No DELETE policy.
 
-### 4. Multi-column form/info grids don't collapse
-`VendorCardFields` uses `grid-cols-3 gap-3` with no mobile breakpoint, and `PerformanceAnalyticsContent` has a `grid-cols-3` stats row — labels squash on mobile.
+Trigger to auto-update `updated_at`.
 
-**Fix:** Change to `grid-cols-1 sm:grid-cols-3` (or `grid-cols-2`).
+## Frontend additions
 
-### 5. Decorative gradient blobs cause horizontal overflow
-`GradientBackground` uses fixed `w-[500px] h-[500px]` blurs positioned with `left-1/4` — on 390px screens these can push body width past viewport unless the parent clips.
+**New files**
+- `src/hooks/onboarding/useOnboardingProgress.ts` — fetch/update the row, exposes `progress`, `markTask(name)`, `setWizardStep(n)`, `completeTour()`, `dismissChecklist()`.
+- `src/components/onboarding/GuidedTour.tsx` — `react-joyride` provider with steps targeting `[data-tour="dashboard-stats"]`, `[data-tour="nav-assets"]`, etc.
+- `src/components/onboarding/OnboardingChecklist.tsx` — dashboard widget: 5 tasks with progress bar, dismiss button, "Take the tour" / "Resume setup" links.
+- `src/components/onboarding/TourTrigger.tsx` — "Take a tour" menu item used in the Help menu.
+- `src/services/onboarding/onboardingService.ts` — typed CRUD for the new table.
 
-**Fix:** Wrap in `overflow-hidden` parent (verify) or scale down on mobile.
+**Edited files**
+- `src/components/setup/SetupContent.tsx` — load `wizard_step` from DB, save on every nav, add a left sidebar showing all 9 steps (clickable), add "Save & exit" button.
+- `src/components/setup/SetupProgress.tsx` — switch to a step-list with check icons + estimated time per step.
+- Each `*Setup.tsx` step (CompanyInfo, UserRoles, AssetCategories, Locations, MaintenanceSchedule, Notifications, Integrations, DashboardCustomization) — add a short helper paragraph and an illustration/icon header for guidance.
+- `src/pages/Dashboard.tsx` — render `<OnboardingChecklist />` at the top when `wizard_complete && !checklist_dismissed`.
+- `src/pages/Dashboard.tsx` + first nav items — add `data-tour` attributes for joyride targets.
+- `src/components/help/components/HelpTabs.tsx` (or top-level Help) — add "Re-run setup" and "Take product tour" buttons.
+- `src/router/appRoutes.tsx` — mount `<GuidedTour />` once inside the authed layout so it can be triggered from anywhere.
+- Auto-trigger tour: when `wizard_complete && !tour_complete && route === /dashboard`, start joyride.
 
-### 6. Dialogs / modals
-`AddTeamMemberDialog` uses `sm:max-w-[425px]` (fine on mobile — full-width below `sm`), but several dialogs throughout the app should be spot-checked for forms that need scroll on short phones (inspection forms, checklist forms).
+**Task auto-completion**
+The checklist watches existing data via React Query:
+- `first_location` → `locations` count > 0
+- `first_asset` → `assets` count > 0
+- `first_vendor` → `vendors` count > 0
+- `first_work_order` → `work_orders` count > 0
+- `invited_teammate` → `organization_invitations` or 2nd `profiles` row in company
 
-**Fix:** Ensure dialog content uses `max-h-[90vh] overflow-y-auto` consistently.
+When a count flips to >0, write `tasks_completed[name] = true`.
 
-### 7. Touch target audit
-The base `index.css` already enforces `min-height: 44px` on buttons/links on touch devices — good. But icon-only buttons in dense toolbars (e.g. workOrders row actions) can sit tightly together. Add `gap-1` spacing where icons cluster.
+## Dependency
 
-## Plan of changes
-
-1. **Tables**: wrap `VendorTable` in scroll container; add responsive column hiding (`hidden md:table-cell`) on `WorkOrdersTable` and `InspectionChecklist`.
-2. **TabsLists**: add `overflow-x-auto` + `whitespace-nowrap` to all multi-tab bars; collapse 4-col lists to 2-col on mobile.
-3. **Inspections calendar**: smaller cell padding/text under `sm`.
-4. **Form grids**: add mobile breakpoints to `grid-cols-3` blocks in `VendorCardFields` and analytics/feature pages.
-5. **GradientBackground**: ensure parent has `overflow-hidden`; reduce blob size under `sm`.
-6. **Dialog content**: add `max-h-[90vh] overflow-y-auto` to long-form dialogs.
+Add `react-joyride` (~110KB, MIT, well-maintained).
 
 ## Out of scope
-- Redesigning data-heavy tables into bespoke mobile cards (large effort) — only adding scroll + column hiding here.
-- Changing the existing sidebar/bottom nav shell — already mobile-optimized.
 
-## Technical notes
-- All changes are Tailwind-class additions; no logic, no API changes, no new dependencies.
-- Semantic tokens preserved — no hardcoded colors introduced.
-- Component contracts unchanged.
+- No changes to existing auth/onboarding form (`/onboarding`) flow — it stays as the very first step after signup.
+- No email reminders for incomplete setup (can be added later).
+
+## Acceptance
+
+- New user signs up → onboarding form → /setup with new sidebar + helper text → progress persists if they refresh → on completion, lands on dashboard with checklist + auto tour → can re-launch tour or wizard from Help.
+- Existing users with `wizard_complete = false` (default) see the checklist on next dashboard visit.
+- Dismissed checklist stays dismissed across sessions.

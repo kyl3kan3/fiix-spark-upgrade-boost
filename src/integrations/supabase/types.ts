@@ -514,6 +514,45 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_progress: {
+        Row: {
+          checklist_dismissed: boolean
+          company_id: string
+          created_at: string
+          id: string
+          tasks_completed: Json
+          tour_complete: boolean
+          updated_at: string
+          user_id: string
+          wizard_complete: boolean
+          wizard_step: number
+        }
+        Insert: {
+          checklist_dismissed?: boolean
+          company_id: string
+          created_at?: string
+          id?: string
+          tasks_completed?: Json
+          tour_complete?: boolean
+          updated_at?: string
+          user_id: string
+          wizard_complete?: boolean
+          wizard_step?: number
+        }
+        Update: {
+          checklist_dismissed?: boolean
+          company_id?: string
+          created_at?: string
+          id?: string
+          tasks_completed?: Json
+          tour_complete?: boolean
+          updated_at?: string
+          user_id?: string
+          wizard_complete?: boolean
+          wizard_step?: number
+        }
+        Relationships: []
+      }
       organization_invitations: {
         Row: {
           accepted_at: string | null

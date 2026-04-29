@@ -66,6 +66,7 @@ const IconRail: React.FC<IconRailProps> = () => {
                 <NavLink
                   key={item.href}
                   to={item.href}
+                  data-tour={`nav-${item.href.replace(/^\//, "").replace(/\//g, "-")}`}
                   className={({ isActive }) =>
                     cn(
                       "flex items-center gap-3 h-12 px-3 my-1 rounded-2xl transition-all duration-200 text-base font-bold",

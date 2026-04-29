@@ -7,11 +7,13 @@ import { steps } from "./setupSteps";
 interface SetupProgressProps {
   currentStep?: number;
   totalSteps?: number;
+  onStepClick?: (step: number) => void;
 }
 
 export const SetupProgress: React.FC<SetupProgressProps> = ({ 
   currentStep = 0, 
-  totalSteps = steps.length 
+  totalSteps = steps.length,
+  onStepClick,
 }) => {
   const progressPercentage = ((currentStep + 1) / totalSteps) * 100;
 
@@ -29,14 +31,17 @@ export const SetupProgress: React.FC<SetupProgressProps> = ({
       
       <div className="space-y-2">
         {steps.map((step, index) => (
-          <div 
-            key={step.id} 
-            className={`flex items-center gap-3 p-2 rounded ${
+          <button
+            type="button"
+            key={step.id}
+            onClick={() => onStepClick && index <= currentStep && onStepClick(index)}
+            disabled={!onStepClick || index > currentStep}
+            className={`w-full text-left flex items-center gap-3 p-2 rounded transition-colors ${
               index === currentStep 
                 ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' 
                 : index < currentStep 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-gray-500 dark:text-gray-400'
+                  ? 'text-green-600 dark:text-green-400 hover:bg-muted/50' 
+                  : 'text-gray-500 dark:text-gray-400 cursor-default'
             }`}
           >
             {index < currentStep ? (
@@ -49,7 +54,7 @@ export const SetupProgress: React.FC<SetupProgressProps> = ({
               }`} />
             )}
             <span className="font-medium">{step.label}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>

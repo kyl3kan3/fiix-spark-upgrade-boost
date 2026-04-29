@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
 import { setSetupComplete as setLocalSetupComplete } from "@/hooks/onboarding/storageUtils";
+import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
 
 interface SetupNavigationProps {
   currentStep: number;
@@ -26,6 +27,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
   onSetCurrentStep 
 }) => {
   const navigate = useNavigate();
+  const { completeWizard } = useOnboardingProgress();
 
   const handleNext = async () => {
     try {
@@ -76,6 +78,9 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
       
       // Double-check the localStorage flag is set
       localStorage.setItem('maintenease_setup_complete', 'true');
+
+      // Mark wizard complete in onboarding_progress so the tour + checklist trigger
+      completeWizard();
       
       toast.success("Setup completed successfully!");
       console.log("Setup marked as complete successfully");
