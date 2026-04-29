@@ -81,7 +81,6 @@ const GuidedTour: React.FC = () => {
       showProgress
       disableScrolling={false}
       callback={handleCallback}
-      options={{ disableBeacon: true } as never}
       styles={{
         options: {
           primaryColor: "hsl(var(--primary))",
