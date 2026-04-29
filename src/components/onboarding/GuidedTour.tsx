@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Joyride, STATUS, type EventData, type Step } from "react-joyride";
 import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const STEPS: Step[] = [
   {
@@ -46,9 +47,12 @@ const GuidedTour: React.FC = () => {
   const { progress, completeTour } = useOnboardingProgress();
   const { pathname } = useLocation();
   const [run, setRun] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!progress) return;
+    // Skip the desktop-nav-targeted tour on small screens; the sidebar isn't visible there.
+    if (isMobile) return;
     if (
       progress.wizard_complete &&
       !progress.tour_complete &&
@@ -57,7 +61,7 @@ const GuidedTour: React.FC = () => {
       const t = setTimeout(() => setRun(true), 800);
       return () => clearTimeout(t);
     }
-  }, [progress?.tour_complete, progress?.wizard_complete, pathname]);
+  }, [progress?.tour_complete, progress?.wizard_complete, pathname, isMobile]);
 
   const handleEvent = (data: EventData) => {
     if (data.status === STATUS.FINISHED || data.status === STATUS.SKIPPED) {
