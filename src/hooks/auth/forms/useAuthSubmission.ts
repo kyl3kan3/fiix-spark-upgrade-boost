@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import { useAuthActions } from "../useAuthActions";
 import { useAuthValidation } from "../validation/useAuthValidation";
 import { useAuthNavigation } from "../useAuthNavigation";
+import { setSupabaseRememberMe } from "@/integrations/supabase/authStorage";
+import { setRememberMe as persistRememberMePref } from "@/utils/storageUtils";
 
 interface UseAuthSubmissionProps {
   onError: (message: string) => void;
@@ -22,6 +24,12 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
     }
 
     try {
+      // Apply the "Remember me" preference BEFORE signing in so that the
+      // session tokens are written to the correct storage (local vs session).
+      const remember = rememberMe ?? true;
+      setSupabaseRememberMe(remember);
+      persistRememberMePref(remember);
+
       const result = await signIn(email, password);
       
       if (result.success) {
