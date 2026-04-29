@@ -9,24 +9,33 @@ import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
+import GuidedTour from "@/components/onboarding/GuidedTour";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
     <DashboardLayout>
+      <GuidedTour />
       <PageHeader
         title="Home"
         description="Your daily snapshot — see what needs doing today."
         actions={
-          <Button variant="accent" size="lg" onClick={() => navigate("/work-orders/new")}>
+          <Button
+            variant="accent"
+            size="lg"
+            onClick={() => navigate("/work-orders/new")}
+            data-tour="report-problem"
+          >
             <Plus className="h-5 w-5" strokeWidth={2.4} />
             Report a Problem
           </Button>
         }
       />
 
-      <div className="px-4 md:px-6 lg:px-8 py-6">
+      <div className="px-4 md:px-6 lg:px-8 py-6" data-tour="dashboard-home">
+        <OnboardingChecklist />
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
             {[
