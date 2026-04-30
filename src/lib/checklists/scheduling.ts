@@ -59,3 +59,37 @@ export function isDue(nextDueAtIso: string | null | undefined, now: Date = new D
   if (!nextDueAtIso) return false;
   return new Date(nextDueAtIso).getTime() <= now.getTime();
 }
+
+/**
+ * Given the checklist's base due time and a per-asset offset (in minutes),
+ * return when this specific asset's prompt should activate.
+ */
+export function assetDueAt(
+  baseDueAtIso: string | null | undefined,
+  offsetMinutes: number = 0,
+): Date | null {
+  if (!baseDueAtIso) return null;
+  const base = new Date(baseDueAtIso);
+  if (Number.isNaN(base.getTime())) return null;
+  return new Date(base.getTime() + Math.max(0, offsetMinutes) * 60_000);
+}
+
+/**
+ * Filter a checklist's assets down to the ones currently due, considering
+ * per-asset stagger offsets. Returns the asset IDs whose offset window has elapsed.
+ */
+export function dueAssetIds(
+  baseDueAtIso: string | null | undefined,
+  assetIds: string[] = [],
+  offsets: Record<string, number> = {},
+  now: Date = new Date(),
+): string[] {
+  if (!baseDueAtIso) return [];
+  const baseMs = new Date(baseDueAtIso).getTime();
+  if (Number.isNaN(baseMs)) return [];
+  const nowMs = now.getTime();
+  return assetIds.filter((id) => {
+    const off = Math.max(0, offsets[id] ?? 0);
+    return baseMs + off * 60_000 <= nowMs;
+  });
+}
