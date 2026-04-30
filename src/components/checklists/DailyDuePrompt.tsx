@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Bell } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
+import { dueAssetIds } from "@/lib/checklists/scheduling";
 
 const STORAGE_KEY = "due-prompt:lastShown";
 
@@ -29,7 +30,15 @@ const DailyDuePrompt: React.FC = () => {
 
   useEffect(() => {
     if (firedRef.current) return;
-    if (!due.length) return;
+    // Respect per-asset stagger: only count checklists that have at least one
+    // currently-due asset (or no assets at all, which means "checklist itself is due").
+    const now = new Date();
+    const activeDue = due.filter((c: any) => {
+      const ids = c.asset_ids ?? [];
+      if (ids.length === 0) return true;
+      return dueAssetIds(c.schedule?.next_due_at, ids, c.asset_offsets ?? {}, now).length > 0;
+    });
+    if (!activeDue.length) return;
 
     const key = promptKey(new Date());
     let last: string | null = null;
@@ -47,7 +56,7 @@ const DailyDuePrompt: React.FC = () => {
       /* ignore */
     }
 
-    const count = due.length;
+    const count = activeDue.length;
     toast(`${count} inspection${count === 1 ? "" : "s"} due`, {
       description: "Open the Due dashboard to start checking your equipment.",
       icon: <Bell className="h-4 w-4" />,
