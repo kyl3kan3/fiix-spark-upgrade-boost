@@ -197,7 +197,16 @@ export const checklistService = {
   },
 
   // ---------- Asset links ----------
-  async setChecklistAssets(checklistId: string, assetIds: string[]): Promise<void> {
+  async setChecklistAssets(
+    checklistId: string,
+    assetIds: string[],
+    options?: {
+      /** Per-asset offset in minutes from the checklist's base due time. */
+      offsets?: Record<string, number>;
+      /** Auto-stagger evenly across the day (minutes between assets). Used when offsets is not provided. */
+      autoStaggerMinutes?: number;
+    },
+  ): Promise<void> {
     // Replace links: delete all then insert. (small N, simple & correct)
     const { error: delErr } = await supabase
       .from('checklist_assets')
@@ -206,11 +215,31 @@ export const checklistService = {
     if (delErr) throw delErr;
 
     if (assetIds.length === 0) return;
-    const rows = assetIds.map(asset_id => ({ checklist_id: checklistId, asset_id }));
+    const stagger = options?.autoStaggerMinutes;
+    const rows = assetIds.map((asset_id, i) => ({
+      checklist_id: checklistId,
+      asset_id,
+      start_offset_minutes:
+        options?.offsets?.[asset_id] ?? (stagger ? i * stagger : 0),
+    }));
     const { error: insErr } = await supabase
       .from('checklist_assets')
       .insert(rows);
     if (insErr) throw insErr;
+  },
+
+  /** Update only the staggered start offset for one asset on a checklist. */
+  async updateChecklistAssetOffset(
+    checklistId: string,
+    assetId: string,
+    minutes: number,
+  ): Promise<void> {
+    const { error } = await supabase
+      .from('checklist_assets')
+      .update({ start_offset_minutes: Math.max(0, Math.round(minutes)) })
+      .eq('checklist_id', checklistId)
+      .eq('asset_id', assetId);
+    if (error) throw error;
   },
 
   // ---------- Schedules ----------
