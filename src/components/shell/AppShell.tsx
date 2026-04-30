@@ -5,6 +5,7 @@ import CommandPalette from "./CommandPalette";
 import MobileBottomNav from "./MobileBottomNav";
 import DashboardNotifications from "@/components/dashboard/DashboardNotifications";
 import { getUserNotifications } from "@/services/notifications";
+import DailyDuePrompt from "@/components/checklists/DailyDuePrompt";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -68,6 +69,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
       <MobileBottomNav onOpenMenu={() => setPaletteOpen(true)} />
+      <DailyDuePrompt />
     </div>
   );
 };
