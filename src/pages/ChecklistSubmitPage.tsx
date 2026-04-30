@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import ChecklistSubmissionForm from "@/components/checklists/ChecklistSubmissionForm";
+import MultiAssetSubmissionForm from "@/components/checklists/MultiAssetSubmissionForm";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 
 const ChecklistSubmitPage = () => {
@@ -84,10 +85,17 @@ const ChecklistSubmitPage = () => {
             )}
           </div>
 
-          <ChecklistSubmissionForm 
-            checklist={checklist} 
-            onSubmitSuccess={handleSubmitSuccess}
-          />
+          {(checklist.asset_ids?.length || 0) > 0 ? (
+            <MultiAssetSubmissionForm
+              checklist={checklist}
+              onSubmitSuccess={handleSubmitSuccess}
+            />
+          ) : (
+            <ChecklistSubmissionForm
+              checklist={checklist}
+              onSubmitSuccess={handleSubmitSuccess}
+            />
+          )}
         </div>
       </div>
     </DashboardLayout>
