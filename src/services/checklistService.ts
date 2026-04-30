@@ -11,7 +11,7 @@ export const checklistService = {
         *,
         items:checklist_items(*),
         schedule:checklist_schedules(*),
-        asset_links:checklist_assets(asset_id)
+        asset_links:checklist_assets(asset_id, start_offset_minutes)
       `)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
@@ -20,6 +20,9 @@ export const checklistService = {
     return (data || []).map((row: any) => ({
       ...row,
       asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      asset_offsets: Object.fromEntries(
+        (row.asset_links || []).map((l: any) => [l.asset_id, l.start_offset_minutes ?? 0]),
+      ),
       schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
     })) as Checklist[];
   },
@@ -32,7 +35,7 @@ export const checklistService = {
         *,
         items:checklist_items(*),
         schedule:checklist_schedules(*),
-        asset_links:checklist_assets(asset_id)
+        asset_links:checklist_assets(asset_id, start_offset_minutes)
       `)
       .eq('id', id)
       .single();
@@ -43,6 +46,9 @@ export const checklistService = {
     return {
       ...row,
       asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      asset_offsets: Object.fromEntries(
+        (row.asset_links || []).map((l: any) => [l.asset_id, l.start_offset_minutes ?? 0]),
+      ),
       schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
     } as Checklist;
   },
