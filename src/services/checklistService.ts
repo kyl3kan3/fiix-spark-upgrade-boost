@@ -292,4 +292,27 @@ export const checklistService = {
       schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
     })) as Checklist[];
   },
+
+  /**
+   * All scheduled checklists with their next-due time, sorted by soonest.
+   * Used by the Due dashboard to bucket into overdue / today / upcoming.
+   */
+  async getScheduledChecklists(): Promise<Checklist[]> {
+    const { data, error } = await supabase
+      .from('checklists')
+      .select(`
+        *,
+        items:checklist_items(*),
+        schedule:checklist_schedules!inner(*),
+        asset_links:checklist_assets(asset_id)
+      `)
+      .eq('is_active', true)
+      .order('next_due_at', { foreignTable: 'checklist_schedules', ascending: true });
+    if (error) throw error;
+    return (data || []).map((row: any) => ({
+      ...row,
+      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
+    })) as Checklist[];
+  },
 };
