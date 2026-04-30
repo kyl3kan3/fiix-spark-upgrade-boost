@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          image_url: string | null
           location: string | null
           location_id: string | null
           model: string | null
@@ -35,6 +36,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           location?: string | null
           location_id?: string | null
           model?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           location?: string | null
           location_id?: string | null
           model?: string | null
@@ -430,6 +433,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          image_url: string | null
           name: string
           parent_id: string | null
           updated_at: string
@@ -439,6 +443,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           name: string
           parent_id?: string | null
           updated_at?: string
@@ -448,6 +453,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           name?: string
           parent_id?: string | null
           updated_at?: string
