@@ -21,41 +21,60 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Snowflake } from "lucide-react";
+import { Snowflake, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { bulkCreateAssets } from "@/services/assets/mutations/createAssetMutations";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistFrequencies } from "@/types/checklists";
+import { CHECKLIST_TEMPLATES, getTemplateById } from "@/lib/checklists/templates";
+
+type GroupMode = "new" | "existing";
+
+interface FreezerGroup {
+  id: string;
+  // Asset section
+  prefix: string;
+  count: number;
+  namesText: string;
+  useCustomNames: boolean;
+  // Checklist section
+  mode: GroupMode;
+  templateId: string;
+  checklistName: string;
+  frequency: string;
+  itemsText: string;
+  existingChecklistId: string;
+}
+
+const newId = () => Math.random().toString(36).slice(2, 10);
+
+const makeGroup = (overrides: Partial<FreezerGroup> = {}): FreezerGroup => {
+  const tpl = getTemplateById(overrides.templateId ?? "freezer-coil-daily");
+  return {
+    id: newId(),
+    prefix: "Freezer",
+    count: 5,
+    namesText: "",
+    useCustomNames: false,
+    mode: "new",
+    templateId: tpl.id,
+    checklistName: tpl.defaultChecklistName,
+    frequency: tpl.defaultFrequency,
+    itemsText: tpl.items.join("\n"),
+    existingChecklistId: "",
+    ...overrides,
+  };
+};
 
 /**
- * One-shot setup: bulk-create freezer assets AND attach them to a checklist
- * (new or existing) in a single submission. Optimized for the common
- * "stand up daily coil checks for N freezers" workflow.
+ * One-shot setup: bulk-create freezer assets AND attach them to inspection
+ * checklists in a single submission. Supports MULTIPLE groups so different
+ * freezer sets can get different checklist templates.
  */
-const DEFAULT_ITEMS = [
-  "Ice build-up OK",
-  "Belt condition OK",
-  "No leaking valves",
-  "Coil clean",
-  "Temperature in range",
-];
-
 const QuickFreezerSetupDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-
-  // Asset inputs
-  const [prefix, setPrefix] = useState("Freezer");
-  const [count, setCount] = useState(5);
-  const [namesText, setNamesText] = useState("");
-  const [useCustomNames, setUseCustomNames] = useState(false);
-
-  // Checklist inputs
-  const [mode, setMode] = useState<"new" | "existing">("new");
-  const [checklistName, setChecklistName] = useState("Freezer coil daily check");
-  const [frequency, setFrequency] = useState("daily");
-  const [itemsText, setItemsText] = useState(DEFAULT_ITEMS.join("\n"));
-  const [existingChecklistId, setExistingChecklistId] = useState<string>("");
+  const [groups, setGroups] = useState<FreezerGroup[]>([makeGroup()]);
 
   const { data: existingChecklists = [] } = useQuery({
     queryKey: ["checklists"],
@@ -63,95 +82,113 @@ const QuickFreezerSetupDialog: React.FC = () => {
     enabled: open,
   });
 
-  const computedNames = useMemo(() => {
-    if (useCustomNames) {
-      return namesText
+  const computeNames = (g: FreezerGroup): string[] => {
+    if (g.useCustomNames) {
+      return g.namesText
         .split(/[\n,]/)
         .map((s) => s.trim())
         .filter(Boolean);
     }
-    const n = Math.max(0, Math.min(200, Number(count) || 0));
-    return Array.from({ length: n }, (_, i) => `${prefix.trim()} ${i + 1}`.trim()).filter(Boolean);
-  }, [useCustomNames, namesText, prefix, count]);
-
-  const parsedItems = useMemo(
-    () =>
-      itemsText
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean),
-    [itemsText],
-  );
-
-  const reset = () => {
-    setPrefix("Freezer");
-    setCount(5);
-    setNamesText("");
-    setUseCustomNames(false);
-    setMode("new");
-    setChecklistName("Freezer coil daily check");
-    setFrequency("daily");
-    setItemsText(DEFAULT_ITEMS.join("\n"));
-    setExistingChecklistId("");
+    const n = Math.max(0, Math.min(200, Number(g.count) || 0));
+    return Array.from({ length: n }, (_, i) => `${g.prefix.trim()} ${i + 1}`.trim()).filter(Boolean);
   };
+
+  const parseItems = (text: string) =>
+    text.split("\n").map((s) => s.trim()).filter(Boolean);
+
+  const updateGroup = (id: string, patch: Partial<FreezerGroup>) => {
+    setGroups((gs) => gs.map((g) => (g.id === id ? { ...g, ...patch } : g)));
+  };
+
+  const applyTemplate = (id: string, templateId: string) => {
+    const tpl = getTemplateById(templateId);
+    updateGroup(id, {
+      templateId,
+      checklistName: tpl.defaultChecklistName,
+      frequency: tpl.defaultFrequency,
+      itemsText: tpl.items.join("\n"),
+    });
+  };
+
+  const addGroup = () => setGroups((gs) => [...gs, makeGroup({ prefix: `Group ${gs.length + 1}` })]);
+  const removeGroup = (id: string) =>
+    setGroups((gs) => (gs.length === 1 ? gs : gs.filter((g) => g.id !== id)));
+
+  const reset = () => setGroups([makeGroup()]);
+
+  const totalAssets = useMemo(
+    () => groups.reduce((sum, g) => sum + computeNames(g).length, 0),
+    [groups],
+  );
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (computedNames.length === 0) throw new Error("Add at least one freezer name");
-      if (mode === "new" && !checklistName.trim()) throw new Error("Checklist name required");
-      if (mode === "new" && parsedItems.length === 0) throw new Error("Add at least one checklist item");
-      if (mode === "existing" && !existingChecklistId) throw new Error("Pick an existing checklist");
+      // Validate every group up front
+      for (const [idx, g] of groups.entries()) {
+        const names = computeNames(g);
+        if (names.length === 0) throw new Error(`Group ${idx + 1}: add at least one freezer`);
+        if (g.mode === "new") {
+          if (!g.checklistName.trim()) throw new Error(`Group ${idx + 1}: checklist name required`);
+          if (parseItems(g.itemsText).length === 0)
+            throw new Error(`Group ${idx + 1}: add at least one checklist item`);
+        } else if (!g.existingChecklistId) {
+          throw new Error(`Group ${idx + 1}: pick an existing checklist`);
+        }
+      }
 
-      // 1. Bulk create assets
-      const { data: createdAssets, error: assetErr } = await bulkCreateAssets(computedNames, {
-        description: "Freezer unit",
-      });
-      if (assetErr) throw assetErr;
-      const assetIds = (createdAssets || []).map((a: any) => a.id);
-
-      // 2. Resolve target checklist
-      let checklistId = existingChecklistId;
-      if (mode === "new") {
-        const created = await checklistService.createChecklist({
-          name: checklistName.trim(),
-          description: "Daily freezer coil inspection",
-          type: "equipment",
-          frequency,
-          is_active: true,
+      let totalCreated = 0;
+      for (const g of groups) {
+        const names = computeNames(g);
+        const { data: createdAssets, error: assetErr } = await bulkCreateAssets(names, {
+          description: "Freezer unit",
         });
-        checklistId = created.id;
+        if (assetErr) throw assetErr;
+        const assetIds = (createdAssets || []).map((a: any) => a.id);
 
-        // Add items
-        await Promise.all(
-          parsedItems.map((title, i) =>
-            checklistService.createChecklistItem({
-              checklist_id: checklistId,
-              title,
-              item_type: "checkbox",
-              is_required: true,
-              sort_order: i,
-            }),
-          ),
-        );
+        let checklistId = g.existingChecklistId;
+        if (g.mode === "new") {
+          const created = await checklistService.createChecklist({
+            name: g.checklistName.trim(),
+            description: getTemplateById(g.templateId).description,
+            type: "equipment",
+            frequency: g.frequency,
+            is_active: true,
+          });
+          checklistId = created.id;
 
-        await checklistService.ensureSchedule(checklistId, frequency);
+          const items = parseItems(g.itemsText);
+          await Promise.all(
+            items.map((title, i) =>
+              checklistService.createChecklistItem({
+                checklist_id: checklistId,
+                title,
+                item_type: "checkbox",
+                is_required: true,
+                sort_order: i,
+              }),
+            ),
+          );
+          await checklistService.ensureSchedule(checklistId, g.frequency);
+          await checklistService.setChecklistAssets(checklistId, assetIds);
+        } else {
+          const target = existingChecklists.find((c) => c.id === checklistId);
+          const merged = Array.from(new Set([...(target?.asset_ids || []), ...assetIds]));
+          await checklistService.setChecklistAssets(checklistId, merged);
+        }
+
+        totalCreated += assetIds.length;
       }
 
-      // 3. Link assets to checklist (merge with any existing links for "existing" mode)
-      if (mode === "existing") {
-        const target = existingChecklists.find((c) => c.id === checklistId);
-        const merged = Array.from(new Set([...(target?.asset_ids || []), ...assetIds]));
-        await checklistService.setChecklistAssets(checklistId, merged);
-      } else {
-        await checklistService.setChecklistAssets(checklistId, assetIds);
-      }
-
-      return { assetCount: assetIds.length };
+      return { assetCount: totalCreated, groupCount: groups.length };
     },
-    onSuccess: ({ assetCount }) => {
+    onSuccess: ({ assetCount, groupCount }) => {
       queryClient.invalidateQueries({ queryKey: ["assets"] });
       queryClient.invalidateQueries({ queryKey: ["checklists"] });
-      toast.success(`Set up ${assetCount} freezer${assetCount === 1 ? "" : "s"} with checklist`);
+      toast.success(
+        `Set up ${assetCount} freezer${assetCount === 1 ? "" : "s"} across ${groupCount} group${
+          groupCount === 1 ? "" : "s"
+        }`,
+      );
       reset();
       setOpen(false);
     },
@@ -168,164 +205,241 @@ const QuickFreezerSetupDialog: React.FC = () => {
           Quick Freezer Setup
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Quick freezer setup</DialogTitle>
           <DialogDescription>
-            Create multiple freezer units and attach them to an inspection checklist in one step.
+            Create freezer units in groups and attach a different inspection checklist template to each group.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Assets section */}
-          <section className="space-y-3">
-            <h3 className="text-sm font-semibold">1. Freezer units</h3>
-
-            <div className="flex items-center justify-between rounded-md border p-3">
-              <div>
-                <Label htmlFor="custom-names" className="text-sm">Use custom names</Label>
-                <p className="text-xs text-muted-foreground">
-                  Off: auto-generate "{prefix} 1", "{prefix} 2"…
-                </p>
-              </div>
-              <Switch
-                id="custom-names"
-                checked={useCustomNames}
-                onCheckedChange={setUseCustomNames}
-              />
-            </div>
-
-            {!useCustomNames ? (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="prefix">Name prefix</Label>
-                  <Input
-                    id="prefix"
-                    value={prefix}
-                    onChange={(e) => setPrefix(e.target.value)}
-                  />
+        <div className="space-y-4">
+          {groups.map((g, idx) => {
+            const names = computeNames(g);
+            const items = parseItems(g.itemsText);
+            return (
+              <div key={g.id} className="rounded-lg border p-4 space-y-4 bg-card">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold">Group {idx + 1}</h3>
+                  {groups.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeGroup(g.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Remove
+                    </Button>
+                  )}
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="count">How many</Label>
-                  <Input
-                    id="count"
-                    type="number"
-                    min={1}
-                    max={200}
-                    value={count}
-                    onChange={(e) => setCount(Number(e.target.value))}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-1.5">
-                <Label htmlFor="names">Names (one per line or comma-separated)</Label>
-                <Textarea
-                  id="names"
-                  rows={5}
-                  value={namesText}
-                  onChange={(e) => setNamesText(e.target.value)}
-                  placeholder={"Walk-in Freezer A\nReach-in Freezer B"}
-                />
-              </div>
-            )}
 
-            <p className="text-xs text-muted-foreground">
-              {computedNames.length} unit{computedNames.length === 1 ? "" : "s"} ready
-              {computedNames.length > 0 && (
-                <>: <span className="text-foreground">{computedNames.slice(0, 3).join(", ")}{computedNames.length > 3 ? `, +${computedNames.length - 3} more` : ""}</span></>
-              )}
-            </p>
-          </section>
+                {/* Freezer units */}
+                <section className="space-y-3">
+                  <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Freezer units
+                  </h4>
 
-          {/* Checklist section */}
-          <section className="space-y-3">
-            <h3 className="text-sm font-semibold">2. Inspection checklist</h3>
-
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={mode === "new" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setMode("new")}
-              >
-                New checklist
-              </Button>
-              <Button
-                type="button"
-                variant={mode === "existing" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setMode("existing")}
-                disabled={existingChecklists.length === 0}
-              >
-                Use existing
-              </Button>
-            </div>
-
-            {mode === "new" ? (
-              <>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5 col-span-2">
-                    <Label htmlFor="cl-name">Checklist name</Label>
-                    <Input
-                      id="cl-name"
-                      value={checklistName}
-                      onChange={(e) => setChecklistName(e.target.value)}
+                  <div className="flex items-center justify-between rounded-md border p-3">
+                    <div>
+                      <Label htmlFor={`custom-names-${g.id}`} className="text-sm">
+                        Use custom names
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Off: auto-generate "{g.prefix} 1", "{g.prefix} 2"…
+                      </p>
+                    </div>
+                    <Switch
+                      id={`custom-names-${g.id}`}
+                      checked={g.useCustomNames}
+                      onCheckedChange={(v) => updateGroup(g.id, { useCustomNames: v })}
                     />
                   </div>
-                  <div className="space-y-1.5 col-span-2">
-                    <Label htmlFor="cl-freq">Frequency</Label>
-                    <Select value={frequency} onValueChange={setFrequency}>
-                      <SelectTrigger id="cl-freq">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ChecklistFrequencies.map((f) => (
-                          <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="items">Inspection items (one per line)</Label>
-                  <Textarea
-                    id="items"
-                    rows={5}
-                    value={itemsText}
-                    onChange={(e) => setItemsText(e.target.value)}
-                  />
+
+                  {!g.useCustomNames ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <Label htmlFor={`prefix-${g.id}`}>Name prefix</Label>
+                        <Input
+                          id={`prefix-${g.id}`}
+                          value={g.prefix}
+                          onChange={(e) => updateGroup(g.id, { prefix: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor={`count-${g.id}`}>How many</Label>
+                        <Input
+                          id={`count-${g.id}`}
+                          type="number"
+                          min={1}
+                          max={200}
+                          value={g.count}
+                          onChange={(e) => updateGroup(g.id, { count: Number(e.target.value) })}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`names-${g.id}`}>Names (one per line or comma-separated)</Label>
+                      <Textarea
+                        id={`names-${g.id}`}
+                        rows={4}
+                        value={g.namesText}
+                        onChange={(e) => updateGroup(g.id, { namesText: e.target.value })}
+                        placeholder={"Walk-in Freezer A\nReach-in Freezer B"}
+                      />
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground">
-                    {parsedItems.length} item{parsedItems.length === 1 ? "" : "s"}
+                    {names.length} unit{names.length === 1 ? "" : "s"} ready
+                    {names.length > 0 && (
+                      <>
+                        :{" "}
+                        <span className="text-foreground">
+                          {names.slice(0, 3).join(", ")}
+                          {names.length > 3 ? `, +${names.length - 3} more` : ""}
+                        </span>
+                      </>
+                    )}
                   </p>
-                </div>
-              </>
-            ) : (
-              <div className="space-y-1.5">
-                <Label htmlFor="existing-cl">Existing checklist</Label>
-                <Select value={existingChecklistId} onValueChange={setExistingChecklistId}>
-                  <SelectTrigger id="existing-cl">
-                    <SelectValue placeholder="Select a checklist" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {existingChecklists.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  New units will be added to this checklist's existing assets.
-                </p>
+                </section>
+
+                {/* Inspection checklist */}
+                <section className="space-y-3">
+                  <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    Inspection checklist
+                  </h4>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={g.mode === "new" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => updateGroup(g.id, { mode: "new" })}
+                    >
+                      From template
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={g.mode === "existing" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => updateGroup(g.id, { mode: "existing" })}
+                      disabled={existingChecklists.length === 0}
+                    >
+                      Use existing
+                    </Button>
+                  </div>
+
+                  {g.mode === "new" ? (
+                    <>
+                      <div className="space-y-1.5">
+                        <Label htmlFor={`tpl-${g.id}`}>Template</Label>
+                        <Select
+                          value={g.templateId}
+                          onValueChange={(v) => applyTemplate(g.id, v)}
+                        >
+                          <SelectTrigger id={`tpl-${g.id}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CHECKLIST_TEMPLATES.map((t) => (
+                              <SelectItem key={t.id} value={t.id}>
+                                {t.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          {getTemplateById(g.templateId).description}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                          <Label htmlFor={`cl-name-${g.id}`}>Checklist name</Label>
+                          <Input
+                            id={`cl-name-${g.id}`}
+                            value={g.checklistName}
+                            onChange={(e) => updateGroup(g.id, { checklistName: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label htmlFor={`cl-freq-${g.id}`}>Frequency</Label>
+                          <Select
+                            value={g.frequency}
+                            onValueChange={(v) => updateGroup(g.id, { frequency: v })}
+                          >
+                            <SelectTrigger id={`cl-freq-${g.id}`}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ChecklistFrequencies.map((f) => (
+                                <SelectItem key={f.value} value={f.value}>
+                                  {f.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label htmlFor={`items-${g.id}`}>Inspection items (one per line)</Label>
+                        <Textarea
+                          id={`items-${g.id}`}
+                          rows={5}
+                          value={g.itemsText}
+                          onChange={(e) => updateGroup(g.id, { itemsText: e.target.value })}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {items.length} item{items.length === 1 ? "" : "s"}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`existing-cl-${g.id}`}>Existing checklist</Label>
+                      <Select
+                        value={g.existingChecklistId}
+                        onValueChange={(v) => updateGroup(g.id, { existingChecklistId: v })}
+                      >
+                        <SelectTrigger id={`existing-cl-${g.id}`}>
+                          <SelectValue placeholder="Select a checklist" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {existingChecklists.map((c) => (
+                            <SelectItem key={c.id} value={c.id}>
+                              {c.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        New units will be added to this checklist's existing assets.
+                      </p>
+                    </div>
+                  )}
+                </section>
               </div>
-            )}
-          </section>
+            );
+          })}
+
+          <Button type="button" variant="outline" size="sm" onClick={addGroup} className="w-full">
+            <Plus className="h-4 w-4" />
+            Add another group
+          </Button>
         </div>
 
         <DialogFooter>
+          <p className="mr-auto text-xs text-muted-foreground self-center">
+            {totalAssets} unit{totalAssets === 1 ? "" : "s"} across {groups.length} group
+            {groups.length === 1 ? "" : "s"}
+          </p>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
           <Button
             onClick={() => mutation.mutate()}
-            disabled={mutation.isPending || computedNames.length === 0}
+            disabled={mutation.isPending || totalAssets === 0}
           >
             {mutation.isPending ? "Setting up…" : "Create & link"}
           </Button>
