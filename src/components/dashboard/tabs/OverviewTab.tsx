@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import DashboardQuickActions from "../DashboardQuickActions";
 import DashboardRecentActivities from "../DashboardRecentActivities";
 import DashboardTasksOverview from "../DashboardTasksOverview";
+import DueInspectionsWidget from "@/components/checklists/DueInspectionsWidget";
 import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 import { cn } from "@/lib/utils";
 
@@ -45,6 +46,9 @@ const OverviewTab: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Inspections that need attention */}
+      <DueInspectionsWidget />
+
       {/* Summary cards */}
       <section>
         <h2 className="font-display font-bold text-lg mb-3">How things are going</h2>
