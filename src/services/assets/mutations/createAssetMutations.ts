@@ -68,3 +68,37 @@ export async function bulkCreateAssets(names: string[], opts?: { description?: s
   if (rows.length === 0) return { data: [], error: null };
   return await supabase.from("assets").insert(rows).select();
 }
+
+export type BulkAssetRow = {
+  name: string;
+  description?: string | null;
+  model?: string | null;
+  serial_number?: string | null;
+  location?: string | null;
+  status?: string | null;
+};
+
+export async function bulkCreateAssetsFromRows(rows: BulkAssetRow[]) {
+  const company_id = await getCurrentUserCompanyId();
+  const allowed = new Set(["active", "inactive", "maintenance", "retired"]);
+  const cleaned = rows
+    .filter((r) => r.name && r.name.trim())
+    .map((r) => {
+      const status = (r.status || "active").toLowerCase();
+      return {
+        name: r.name.trim(),
+        description: r.description?.toString().trim() || null,
+        model: r.model?.toString().trim() || null,
+        serial_number: r.serial_number?.toString().trim() || null,
+        location: r.location?.toString().trim() || null,
+        status: (allowed.has(status) ? status : "active") as
+          | "active"
+          | "inactive"
+          | "maintenance"
+          | "retired",
+        company_id,
+      };
+    });
+  if (cleaned.length === 0) return { data: [], error: null };
+  return await supabase.from("assets").insert(cleaned).select();
+}
