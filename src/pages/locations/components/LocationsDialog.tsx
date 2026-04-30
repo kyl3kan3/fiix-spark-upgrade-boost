@@ -7,7 +7,12 @@ import { Location } from "@/services/locationService";
 interface LocationsDialogProps {
   selectedParentId: string;
   allLocations: Location[];
-  onSubmit: (data: { name: string; description: string; parent_id: string | null }) => Promise<void>;
+  onSubmit: (data: {
+    name: string;
+    description: string;
+    parent_id: string | null;
+    image_url?: string | null;
+  }) => Promise<void>;
   onCancel: () => void;
   isCreating: boolean;
 }

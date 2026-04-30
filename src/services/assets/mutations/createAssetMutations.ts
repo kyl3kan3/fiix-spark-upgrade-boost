@@ -28,6 +28,7 @@ export async function createAsset(assetData: Partial<AssetFormValues>) {
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
     status: assetData.status as "active" | "inactive" | "maintenance" | "retired",
     parent_id: assetData.parent_id || null,
+    image_url: assetData.image_url || null,
     company_id,
   };
 

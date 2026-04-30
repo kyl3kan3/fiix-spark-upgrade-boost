@@ -9,7 +9,12 @@ interface LocationEditDialogProps {
   allLocations: Location[];
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; description: string; parent_id: string | null }) => Promise<void>;
+  onSubmit: (data: {
+    name: string;
+    description: string;
+    parent_id: string | null;
+    image_url?: string | null;
+  }) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -57,7 +62,8 @@ export const LocationEditDialog: React.FC<LocationEditDialogProps> = ({
           initialData={{
             name: location.name,
             description: location.description || "",
-            parent_id: location.parent_id
+            parent_id: location.parent_id,
+            image_url: location.image_url ?? null,
           }}
           onSubmit={onSubmit}
           onCancel={onClose}
