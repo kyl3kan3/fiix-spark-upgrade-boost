@@ -7,6 +7,7 @@ export interface Location {
   name: string;
   description?: string;
   parent_id?: string;
+  image_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +20,7 @@ export interface CreateLocationData {
   name: string;
   description?: string;
   parent_id?: string;
+  image_url?: string | null;
 }
 
 export const fetchLocations = async (): Promise<Location[]> => {
