@@ -2,6 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { toast } from "sonner";
 import { ChecklistFrequencies } from "@/types/checklists";
+import JsBarcode from "jsbarcode";
 
 interface AssetLite {
   id: string;
@@ -42,6 +43,36 @@ const formatOffset = (m: number) => {
 };
 
 /**
+ * Returns the asset's scannable label/barcode value. Prefers the serial number,
+ * otherwise derives a stable short code from the asset id (e.g. AST-AB12CD).
+ */
+export const getAssetBarcodeValue = (a: AssetLite): string => {
+  const sn = (a.serial_number || "").trim();
+  if (sn) return sn.toUpperCase();
+  const compact = (a.id || "").replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  return `AST-${compact.slice(0, 6) || "000000"}`;
+};
+
+/** Generate a Code128 barcode PNG data URL for the given value. */
+const generateBarcodeDataUrl = (value: string): string | null => {
+  try {
+    if (typeof document === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    JsBarcode(canvas, value, {
+      format: "CODE128",
+      displayValue: false,
+      margin: 0,
+      height: 40,
+      width: 1.4,
+    });
+    return canvas.toDataURL("image/png");
+  } catch (e) {
+    console.warn("Barcode generation failed for", value, e);
+    return null;
+  }
+};
+
+/**
  * Generates a printable setup sheet PDF that lists equipment (with labels)
  * and any attached checklists. Designed to be printed and posted near
  * equipment for technicians to reference.
@@ -79,14 +110,20 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
     doc.text("Equipment", margin, cursorY);
     cursorY += 6;
 
+    // Pre-generate barcodes (one per asset) so the table render is sync.
+    const barcodeByAsset = new Map<string, string | null>();
+    data.assets.forEach((a) => {
+      barcodeByAsset.set(a.id, generateBarcodeDataUrl(getAssetBarcodeValue(a)));
+    });
+
     autoTable(doc, {
       startY: cursorY,
-      head: [["#", "Label / Name", "Model", "Serial #", "Location", "Notes"]],
+      head: [["#", "Label / Name", "Asset Barcode", "Model", "Location", "Notes"]],
       body: data.assets.map((a, i) => [
         String(i + 1),
         a.name || "—",
+        getAssetBarcodeValue(a),
         a.model || "—",
-        a.serial_number || "—",
         a.location || "—",
         a.description || "",
       ]),
@@ -95,13 +132,46 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
       alternateRowStyles: { fillColor: [245, 247, 250] },
       columnStyles: {
         0: { cellWidth: 28, halign: "center" },
-        1: { cellWidth: 130, fontStyle: "bold" },
-        2: { cellWidth: 80 },
-        3: { cellWidth: 80 },
-        4: { cellWidth: 90 },
+        1: { cellWidth: 120, fontStyle: "bold" },
+        2: { cellWidth: 130, halign: "center", minCellHeight: 46 },
+        3: { cellWidth: 70 },
+        4: { cellWidth: 80 },
         5: { cellWidth: "auto" },
       },
       margin: { left: margin, right: margin },
+      didDrawCell: (hook) => {
+        if (hook.section !== "body" || hook.column.index !== 2) return;
+        const asset = data.assets[hook.row.index];
+        if (!asset) return;
+        const dataUrl = barcodeByAsset.get(asset.id);
+        const value = getAssetBarcodeValue(asset);
+        const cell = hook.cell;
+        const padding = 4;
+        const imgH = 28;
+        const imgW = Math.min(cell.width - padding * 2, 110);
+        const x = cell.x + (cell.width - imgW) / 2;
+        const y = cell.y + padding;
+        if (dataUrl) {
+          try {
+            doc.addImage(dataUrl, "PNG", x, y, imgW, imgH);
+          } catch (e) {
+            // ignore — text fallback will still render below
+          }
+        }
+        // Caption underneath the barcode
+        doc.setFont("courier", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(40, 40, 40);
+        doc.text(value, cell.x + cell.width / 2, y + imgH + 8, { align: "center" });
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+      },
+      // Hide the plain text in the barcode column — we draw our own.
+      willDrawCell: (hook) => {
+        if (hook.section === "body" && hook.column.index === 2) {
+          hook.cell.text = [];
+        }
+      },
     });
 
     cursorY = (doc as any).lastAutoTable.finalY + 24;
@@ -201,11 +271,11 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
           cursorY += 4;
           autoTable(doc, {
             startY: cursorY,
-            head: [["#", "Label", "Serial #", "Location", "Stagger"]],
+            head: [["#", "Label", "Asset Barcode", "Location", "Stagger"]],
             body: linkedAssets.map(({ id, asset }, i) => [
               String(i + 1),
               asset!.name || "—",
-              asset!.serial_number || "—",
+              getAssetBarcodeValue(asset!),
               asset!.location || "—",
               formatOffset(cl.asset_offsets?.[id] ?? 0),
             ]),
@@ -213,9 +283,9 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
             headStyles: { fillColor: [100, 116, 139], textColor: 255 },
             columnStyles: {
               0: { cellWidth: 28, halign: "center" },
-              1: { cellWidth: 150, fontStyle: "bold" },
-              2: { cellWidth: 90 },
-              3: { cellWidth: 110 },
+              1: { cellWidth: 140, fontStyle: "bold" },
+              2: { cellWidth: 110, halign: "center", fontStyle: "bold" },
+              3: { cellWidth: 100 },
               4: { cellWidth: "auto", halign: "center" },
             },
             margin: { left: margin, right: margin },
