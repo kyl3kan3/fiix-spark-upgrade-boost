@@ -25,6 +25,7 @@ export const assetFormSchema = z.object({
   parent_location_id: z.string().optional(), // New field for parent asset location ID
   new_location: z.boolean().default(false),
   new_location_name: z.string().optional(),
+  image_url: z.string().url().nullable().optional(),
 });
 
 export type AssetFormValues = z.infer<typeof assetFormSchema>;
