@@ -53,6 +53,14 @@ const AssetDetailPage = () => {
       />
       <div className="px-4 md:px-6 lg:px-8 py-6">
         <Card className="p-6 max-w-2xl">
+          {(asset as any).image_url && (
+            <img
+              src={(asset as any).image_url}
+              alt={asset.name}
+              className="mb-4 w-full max-h-72 object-cover rounded-lg border"
+              loading="lazy"
+            />
+          )}
           <div className="flex items-start gap-4">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
               <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
