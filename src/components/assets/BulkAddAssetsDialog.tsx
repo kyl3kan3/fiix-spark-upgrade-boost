@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Layers, Upload, Download } from "lucide-react";
 import { toast } from "sonner";
-import { bulkCreateAssets } from "@/services/assets/mutations/createAssetMutations";
+import { bulkCreateAssets, bulkCreateAssetsFromRows } from "@/services/assets/mutations/createAssetMutations";
 import Papa from "papaparse";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
