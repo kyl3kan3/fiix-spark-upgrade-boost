@@ -169,11 +169,21 @@ const QuickFreezerSetupDialog: React.FC = () => {
             ),
           );
           await checklistService.ensureSchedule(checklistId, g.frequency);
-          await checklistService.setChecklistAssets(checklistId, assetIds);
+          // Auto-stagger new freezer prompts 15 min apart so they don't all fire at once.
+          await checklistService.setChecklistAssets(checklistId, assetIds, {
+            autoStaggerMinutes: 15,
+          });
         } else {
           const target = existingChecklists.find((c) => c.id === checklistId);
           const merged = Array.from(new Set([...(target?.asset_ids || []), ...assetIds]));
-          await checklistService.setChecklistAssets(checklistId, merged);
+          // Preserve existing assets' positions; only stagger the appended new ones.
+          const existingOffsets = (target as any)?.asset_offsets || {};
+          const offsets: Record<string, number> = { ...existingOffsets };
+          const baseCount = (target?.asset_ids || []).length;
+          assetIds.forEach((id, i) => {
+            offsets[id] = (baseCount + i) * 15;
+          });
+          await checklistService.setChecklistAssets(checklistId, merged, { offsets });
         }
 
         totalCreated += assetIds.length;

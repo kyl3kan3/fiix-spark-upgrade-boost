@@ -90,18 +90,21 @@ export type Database = {
           checklist_id: string
           created_at: string
           id: string
+          start_offset_minutes: number
         }
         Insert: {
           asset_id: string
           checklist_id: string
           created_at?: string
           id?: string
+          start_offset_minutes?: number
         }
         Update: {
           asset_id?: string
           checklist_id?: string
           created_at?: string
           id?: string
+          start_offset_minutes?: number
         }
         Relationships: []
       }

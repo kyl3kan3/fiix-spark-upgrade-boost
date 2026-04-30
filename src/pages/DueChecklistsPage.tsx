@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { checklistService } from "@/services/checklistService";
 import { Checklist, ChecklistFrequencies } from "@/types/checklists";
 import { format, formatDistanceToNowStrict, isToday, startOfDay, endOfDay } from "date-fns";
+import { dueAssetIds } from "@/lib/checklists/scheduling";
 
 type Bucket = "overdue" | "today" | "upcoming";
 
@@ -44,6 +45,16 @@ const ChecklistRow: React.FC<{ checklist: Checklist; bucket: Bucket }> = ({ chec
       ? "text-warning"
       : "text-muted-foreground";
 
+  const total = checklist.asset_ids?.length ?? 0;
+  const readyNow = total
+    ? dueAssetIds(
+        checklist.schedule?.next_due_at,
+        checklist.asset_ids ?? [],
+        checklist.asset_offsets ?? {},
+      ).length
+    : 0;
+  const waiting = total - readyNow;
+
   return (
     <button
       onClick={() => navigate(`/checklists/${checklist.id}/submit`)}
@@ -53,9 +64,12 @@ const ChecklistRow: React.FC<{ checklist: Checklist; bucket: Bucket }> = ({ chec
         <div className="font-semibold truncate">{checklist.name}</div>
         <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
           <Badge variant="outline" className="text-[10px]">{freqLabel(checklist.frequency)}</Badge>
-          {(checklist.asset_ids?.length || 0) > 0 && (
+          {total > 0 && (
             <span className="text-muted-foreground">
-              {checklist.asset_ids!.length} unit{checklist.asset_ids!.length === 1 ? "" : "s"}
+              {readyNow}/{total} ready
+              {waiting > 0 && bucket !== "upcoming" && (
+                <span className="ml-1 text-info">· {waiting} staggered</span>
+              )}
             </span>
           )}
           <span className={`font-medium ${dueTone}`}>{dueLabel}</span>

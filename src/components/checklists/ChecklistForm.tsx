@@ -31,6 +31,7 @@ interface ChecklistFormData {
   is_active: boolean;
   items: ChecklistItemForm[];
   assetIds: string[];
+  assetOffsets: Record<string, number>;
 }
 
 const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
@@ -46,6 +47,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
     is_active: true,
     items: [],
     assetIds: [],
+    assetOffsets: {},
   });
 
   // Load existing checklist for edit mode
@@ -72,6 +74,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
           sort_order: item.sort_order || index
         })) || [],
         assetIds: checklist.asset_ids || [],
+        assetOffsets: checklist.asset_offsets || {},
       });
     }
   }, [checklist, mode]);
@@ -100,8 +103,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
         });
       }
 
-      // Asset links + schedule
-      await checklistService.setChecklistAssets(newChecklist.id, data.assetIds);
+      // Asset links (with stagger offsets) + schedule
+      await checklistService.setChecklistAssets(newChecklist.id, data.assetIds, {
+        offsets: data.assetOffsets,
+      });
       await checklistService.ensureSchedule(newChecklist.id, data.frequency);
 
       return newChecklist;
@@ -168,8 +173,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
         await checklistService.deleteChecklistItem(item.id);
       }
 
-      // Asset links + schedule (frequency may have changed)
-      await checklistService.setChecklistAssets(id, data.assetIds);
+      // Asset links (with stagger offsets) + schedule (frequency may have changed)
+      await checklistService.setChecklistAssets(id, data.assetIds, {
+        offsets: data.assetOffsets,
+      });
       await checklistService.ensureSchedule(id, data.frequency);
     },
     onSuccess: () => {
@@ -300,6 +307,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
             <ChecklistAssetsSelector
               selectedAssetIds={formData.assetIds}
               onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}
+              assetOffsets={formData.assetOffsets}
+              onOffsetsChange={(offsets) =>
+                setFormData((prev) => ({ ...prev, assetOffsets: offsets }))
+              }
             />
 
             {/* Submit Button */}
