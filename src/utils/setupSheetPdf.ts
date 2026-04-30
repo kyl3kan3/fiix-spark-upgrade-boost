@@ -176,6 +176,84 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
 
     cursorY = (doc as any).lastAutoTable.finalY + 24;
 
+    // ---- Overall compliance summary ----
+    const allChecklists = data.checklists || [];
+    if (allChecklists.length > 0) {
+      const totalItems = allChecklists.reduce((s, c) => s + (c.items?.length || 0), 0);
+      const totalRequired = allChecklists.reduce(
+        (s, c) => s + (c.items?.filter((i) => i.is_required).length || 0),
+        0,
+      );
+      const totalOptional = totalItems - totalRequired;
+      const compliancePct = totalItems
+        ? Math.round((totalRequired / totalItems) * 100)
+        : 0;
+
+      if (cursorY + 90 > pageHeight - 60) {
+        doc.addPage();
+        cursorY = margin;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("Compliance Summary", margin, cursorY);
+      cursorY += 8;
+
+      autoTable(doc, {
+        startY: cursorY,
+        head: [["Checklist", "Frequency", "Required", "Optional", "Total", "% Required"]],
+        body: [
+          ...allChecklists.map((c) => {
+            const items = c.items || [];
+            const req = items.filter((i) => i.is_required).length;
+            const opt = items.length - req;
+            const pct = items.length ? Math.round((req / items.length) * 100) : 0;
+            return [
+              c.name,
+              freqLabel(c.frequency),
+              String(req),
+              String(opt),
+              String(items.length),
+              `${pct}%`,
+            ];
+          }),
+          [
+            { content: "TOTAL", styles: { fontStyle: "bold" } } as any,
+            "",
+            { content: String(totalRequired), styles: { fontStyle: "bold" } } as any,
+            { content: String(totalOptional), styles: { fontStyle: "bold" } } as any,
+            { content: String(totalItems), styles: { fontStyle: "bold" } } as any,
+            { content: `${compliancePct}%`, styles: { fontStyle: "bold" } } as any,
+          ],
+        ],
+        styles: { fontSize: 9, cellPadding: 5 },
+        headStyles: { fillColor: [22, 101, 52], textColor: 255, fontStyle: "bold" },
+        alternateRowStyles: { fillColor: [240, 253, 244] },
+        columnStyles: {
+          0: { cellWidth: "auto", fontStyle: "bold" },
+          1: { cellWidth: 90 },
+          2: { cellWidth: 60, halign: "center" },
+          3: { cellWidth: 60, halign: "center" },
+          4: { cellWidth: 50, halign: "center" },
+          5: { cellWidth: 70, halign: "center" },
+        },
+        margin: { left: margin, right: margin },
+      });
+      cursorY = (doc as any).lastAutoTable.finalY + 8;
+
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(8);
+      doc.setTextColor(90, 90, 90);
+      doc.text(
+        `Required items must be completed for the inspection to pass. Optional items provide additional context.`,
+        margin,
+        cursorY + 4,
+      );
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      cursorY += 22;
+    }
+
     // ---- Checklists ----
     const checklists = data.checklists || [];
     if (checklists.length > 0) {
@@ -183,6 +261,8 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
 
       checklists.forEach((cl, idx) => {
         const items = cl.items || [];
+        const requiredCount = items.filter((i) => i.is_required).length;
+        const optionalCount = items.length - requiredCount;
         const linkedAssets = (cl.asset_ids || [])
           .map((id) => ({ id, asset: assetById.get(id) }))
           .filter((x) => x.asset);
@@ -208,7 +288,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
 
         // Checklist heading box
         doc.setFillColor(238, 242, 247);
-        doc.rect(margin, cursorY, pageWidth - margin * 2, 36, "F");
+        doc.rect(margin, cursorY, pageWidth - margin * 2, 50, "F");
         doc.setFont("helvetica", "bold");
         doc.setFontSize(12);
         doc.setTextColor(13, 71, 161);
@@ -223,8 +303,19 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
           margin + 10,
           cursorY + 30,
         );
+        // Compliance line inside heading box
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(22, 101, 52);
+        doc.text(
+          `Compliance: ${requiredCount} required  ·  ${optionalCount} optional  ·  ${
+            items.length ? Math.round((requiredCount / items.length) * 100) : 0
+          }% required`,
+          margin + 10,
+          cursorY + 44,
+        );
         doc.setTextColor(0, 0, 0);
-        cursorY += 44;
+        doc.setFont("helvetica", "normal");
+        cursorY += 58;
 
         if (cl.description) {
           doc.setFontSize(9);
