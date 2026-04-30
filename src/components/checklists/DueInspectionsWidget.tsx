@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ChevronRight } from "lucide-react";
+import { Bell, ChevronRight, ArrowRight } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistFrequencies } from "@/types/checklists";
 
@@ -24,16 +24,25 @@ const DueInspectionsWidget: React.FC = () => {
         <div className="h-10 w-10 rounded-2xl bg-warning/15 text-warning flex items-center justify-center shrink-0">
           <Bell className="h-5 w-5" />
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="font-display font-bold text-lg leading-tight">Inspections due</h3>
           <p className="text-sm text-muted-foreground">
             {due.length} {due.length === 1 ? "checklist needs" : "checklists need"} attention.
           </p>
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate("/checklists/due")}
+          className="shrink-0"
+        >
+          View all
+          <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
 
       <div className="space-y-2">
-        {due.map((cl: any) => {
+        {due.slice(0, 5).map((cl: any) => {
           const freq = ChecklistFrequencies.find((f) => f.value === cl.frequency)?.label || cl.frequency;
           return (
             <button
