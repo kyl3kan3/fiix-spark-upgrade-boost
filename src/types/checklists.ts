@@ -12,6 +12,8 @@ export interface Checklist {
   is_active: boolean;
   items?: ChecklistItem[];
   asset_ids?: string[];
+  /** Per-asset stagger: minutes after the checklist's base due time that each asset's prompt activates. */
+  asset_offsets?: Record<string, number>;
   schedule?: ChecklistSchedule | null;
 }
 
