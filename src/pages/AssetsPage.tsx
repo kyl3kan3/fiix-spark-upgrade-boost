@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Printer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
@@ -12,6 +12,8 @@ import AssetEmptyState from "@/components/assets/AssetEmptyState";
 import { getAllAssets } from "@/services/assets/assetQueries";
 import BulkAddAssetsDialog from "@/components/assets/BulkAddAssetsDialog";
 import QuickFreezerSetupDialog from "@/components/assets/QuickFreezerSetupDialog";
+import { checklistService } from "@/services/checklistService";
+import { generateSetupSheetPdf } from "@/utils/setupSheetPdf";
 
 const AssetsPage = () => {
   const navigate = useNavigate();
@@ -26,6 +28,10 @@ const AssetsPage = () => {
   const { data: assets = [], isLoading, error } = useQuery({
     queryKey: ["assets"],
     queryFn: getAllAssets,
+  });
+  const { data: checklists = [] } = useQuery({
+    queryKey: ["checklists"],
+    queryFn: checklistService.getChecklists,
   });
   const assetCategories = ["Equipment", "Vehicles", "Facilities", "Tools"];
 
@@ -52,6 +58,19 @@ const AssetsPage = () => {
     );
   };
 
+  const handlePrintSetupSheet = () => {
+    // Only include checklists that reference one of the visible (filtered) assets.
+    const visibleIds = new Set(filteredAssets.map((a: any) => a.id));
+    const relevantChecklists = checklists.filter((c) =>
+      (c.asset_ids || []).some((id) => visibleIds.has(id)),
+    );
+    generateSetupSheetPdf({
+      title: "Equipment Setup Sheet",
+      assets: filteredAssets as any,
+      checklists: relevantChecklists as any,
+    });
+  };
+
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -70,6 +89,15 @@ const AssetsPage = () => {
         description="Everything you take care of — tools, vehicles, machines, and more."
         actions={
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handlePrintSetupSheet}
+              disabled={filteredAssets.length === 0}
+            >
+              <Printer className="h-5 w-5" />
+              Setup Sheet
+            </Button>
             <QuickFreezerSetupDialog />
             <BulkAddAssetsDialog />
             <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>

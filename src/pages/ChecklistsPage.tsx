@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Search, ListChecks, Calendar, User, Clock } from "lucide-react";
+import { PlusCircle, Search, ListChecks, Calendar, User, Clock, Printer } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistTypes, ChecklistFrequencies } from "@/types/checklists";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { format } from "date-fns";
+import { getAllAssets } from "@/services/assets/assetQueries";
+import { generateSetupSheetPdf } from "@/utils/setupSheetPdf";
 
 const ChecklistsPage = () => {
   const navigate = useNavigate();
@@ -20,6 +22,10 @@ const ChecklistsPage = () => {
   const { data: checklists = [], isLoading } = useQuery({
     queryKey: ["checklists"],
     queryFn: checklistService.getChecklists,
+  });
+  const { data: allAssets = [] } = useQuery({
+    queryKey: ["assets"],
+    queryFn: getAllAssets,
   });
 
   const filteredChecklists = checklists.filter(checklist => {
@@ -194,6 +200,23 @@ const ChecklistsPage = () => {
                     }}
                   >
                     Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    title="Print setup sheet"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const linkedIds = new Set(checklist.asset_ids || []);
+                      const linkedAssets = (allAssets as any[]).filter((a) => linkedIds.has(a.id));
+                      generateSetupSheetPdf({
+                        title: `${checklist.name} — Setup Sheet`,
+                        assets: linkedAssets,
+                        checklists: [checklist as any],
+                      });
+                    }}
+                  >
+                    <Printer className="h-4 w-4" />
                   </Button>
                 </div>
               </Card>
