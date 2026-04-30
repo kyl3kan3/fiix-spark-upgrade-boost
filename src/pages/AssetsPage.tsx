@@ -11,6 +11,7 @@ import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
 import { getAllAssets } from "@/services/assets/assetQueries";
 import BulkAddAssetsDialog from "@/components/assets/BulkAddAssetsDialog";
+import QuickFreezerSetupDialog from "@/components/assets/QuickFreezerSetupDialog";
 
 const AssetsPage = () => {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const AssetsPage = () => {
         description="Everything you take care of — tools, vehicles, machines, and more."
         actions={
           <div className="flex gap-2">
+            <QuickFreezerSetupDialog />
             <BulkAddAssetsDialog />
             <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
               <Plus className="h-5 w-5" />Add Equipment
