@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSubmissionItem } from "@/types/checklists";
+import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSchedule } from "@/types/checklists";
+import { nextDueAt } from "@/lib/checklists/scheduling";
 
 export const checklistService = {
   // Get all checklists
@@ -8,13 +9,19 @@ export const checklistService = {
       .from('checklists')
       .select(`
         *,
-        items:checklist_items(*)
+        items:checklist_items(*),
+        schedule:checklist_schedules(*),
+        asset_links:checklist_assets(asset_id)
       `)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return (data || []) as Checklist[];
+    return (data || []).map((row: any) => ({
+      ...row,
+      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
+    })) as Checklist[];
   },
 
   // Get checklist by ID
@@ -23,13 +30,21 @@ export const checklistService = {
       .from('checklists')
       .select(`
         *,
-        items:checklist_items(*)
+        items:checklist_items(*),
+        schedule:checklist_schedules(*),
+        asset_links:checklist_assets(asset_id)
       `)
       .eq('id', id)
       .single();
 
     if (error) throw error;
-    return data as Checklist;
+    if (!data) return null;
+    const row: any = data;
+    return {
+      ...row,
+      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
+    } as Checklist;
   },
 
   // Create checklist - now includes frequency
@@ -117,7 +132,7 @@ export const checklistService = {
   // Submit checklist
   async submitChecklist(
     checklistId: string, 
-    items: Array<{ item_id: string; response_value?: string; is_checked?: boolean; notes?: string }>,
+    items: Array<{ item_id: string; response_value?: string; is_checked?: boolean; notes?: string; asset_id?: string | null }>,
     notes?: string
   ): Promise<ChecklistSubmission> {
     const { data: { user } } = await supabase.auth.getUser();
@@ -142,6 +157,7 @@ export const checklistService = {
       response_value: item.response_value,
       is_checked: item.is_checked,
       notes: item.notes,
+      asset_id: item.asset_id ?? null,
     }));
 
     const { error: itemsError } = await supabase
@@ -149,6 +165,9 @@ export const checklistService = {
       .insert(submissionItems);
 
     if (itemsError) throw itemsError;
+
+    // Roll the schedule forward
+    await checklistService.rollSchedule(checklistId);
 
     return submission as ChecklistSubmission;
   },
@@ -169,5 +188,108 @@ export const checklistService = {
 
     if (error) throw error;
     return (data || []) as ChecklistSubmission[];
+  },
+
+  // ---------- Asset links ----------
+  async setChecklistAssets(checklistId: string, assetIds: string[]): Promise<void> {
+    // Replace links: delete all then insert. (small N, simple & correct)
+    const { error: delErr } = await supabase
+      .from('checklist_assets')
+      .delete()
+      .eq('checklist_id', checklistId);
+    if (delErr) throw delErr;
+
+    if (assetIds.length === 0) return;
+    const rows = assetIds.map(asset_id => ({ checklist_id: checklistId, asset_id }));
+    const { error: insErr } = await supabase
+      .from('checklist_assets')
+      .insert(rows);
+    if (insErr) throw insErr;
+  },
+
+  // ---------- Schedules ----------
+  async ensureSchedule(checklistId: string, frequency: string): Promise<void> {
+    const next = nextDueAt(frequency, new Date());
+    // Try update first; if no row exists, insert.
+    const { data: existing, error: selErr } = await supabase
+      .from('checklist_schedules')
+      .select('id')
+      .eq('checklist_id', checklistId)
+      .maybeSingle();
+    if (selErr) throw selErr;
+
+    if (existing) {
+      const { error } = await supabase
+        .from('checklist_schedules')
+        .update({ next_due_at: next ? next.toISOString() : null })
+        .eq('checklist_id', checklistId);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('checklist_schedules')
+        .insert({
+          checklist_id: checklistId,
+          next_due_at: next ? next.toISOString() : null,
+        });
+      if (error) throw error;
+    }
+  },
+
+  async rollSchedule(checklistId: string): Promise<void> {
+    // Look up checklist frequency, then push next_due_at forward.
+    const { data: cl, error: clErr } = await supabase
+      .from('checklists')
+      .select('frequency')
+      .eq('id', checklistId)
+      .single();
+    if (clErr) throw clErr;
+
+    const next = nextDueAt(cl.frequency, new Date());
+    const now = new Date().toISOString();
+
+    const { data: existing } = await supabase
+      .from('checklist_schedules')
+      .select('id')
+      .eq('checklist_id', checklistId)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from('checklist_schedules')
+        .update({
+          next_due_at: next ? next.toISOString() : null,
+          last_submitted_at: now,
+        })
+        .eq('checklist_id', checklistId);
+    } else {
+      await supabase
+        .from('checklist_schedules')
+        .insert({
+          checklist_id: checklistId,
+          next_due_at: next ? next.toISOString() : null,
+          last_submitted_at: now,
+        });
+    }
+  },
+
+  async getDueChecklists(): Promise<Checklist[]> {
+    const nowIso = new Date().toISOString();
+    const { data, error } = await supabase
+      .from('checklists')
+      .select(`
+        *,
+        items:checklist_items(*),
+        schedule:checklist_schedules!inner(*),
+        asset_links:checklist_assets(asset_id)
+      `)
+      .eq('is_active', true)
+      .lte('schedule.next_due_at', nowIso)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data || []).map((row: any) => ({
+      ...row,
+      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
+      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
+    })) as Checklist[];
   },
 };

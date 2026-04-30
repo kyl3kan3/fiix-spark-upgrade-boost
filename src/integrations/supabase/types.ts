@@ -84,6 +84,27 @@ export type Database = {
           },
         ]
       }
+      checklist_assets: {
+        Row: {
+          asset_id: string
+          checklist_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          asset_id: string
+          checklist_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          asset_id?: string
+          checklist_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       checklist_items: {
         Row: {
           checklist_id: string
@@ -125,8 +146,36 @@ export type Database = {
           },
         ]
       }
+      checklist_schedules: {
+        Row: {
+          checklist_id: string
+          created_at: string
+          id: string
+          last_submitted_at: string | null
+          next_due_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          checklist_id: string
+          created_at?: string
+          id?: string
+          last_submitted_at?: string | null
+          next_due_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          checklist_id?: string
+          created_at?: string
+          id?: string
+          last_submitted_at?: string | null
+          next_due_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       checklist_submission_items: {
         Row: {
+          asset_id: string | null
           checklist_item_id: string
           created_at: string
           id: string
@@ -136,6 +185,7 @@ export type Database = {
           submission_id: string
         }
         Insert: {
+          asset_id?: string | null
           checklist_item_id: string
           created_at?: string
           id?: string
@@ -145,6 +195,7 @@ export type Database = {
           submission_id: string
         }
         Update: {
+          asset_id?: string | null
           checklist_item_id?: string
           created_at?: string
           id?: string

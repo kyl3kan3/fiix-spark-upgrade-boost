@@ -11,6 +11,8 @@ export interface Checklist {
   updated_at: string;
   is_active: boolean;
   items?: ChecklistItem[];
+  asset_ids?: string[];
+  schedule?: ChecklistSchedule | null;
 }
 
 export interface ChecklistItem {
@@ -42,8 +44,18 @@ export interface ChecklistSubmissionItem {
   response_value?: string;
   is_checked?: boolean;
   notes?: string;
+  asset_id?: string | null;
   created_at: string;
   checklist_item?: ChecklistItem;
+}
+
+export interface ChecklistSchedule {
+  id: string;
+  checklist_id: string;
+  next_due_at: string | null;
+  last_submitted_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export const ChecklistTypes = [
@@ -56,8 +68,10 @@ export const ChecklistTypes = [
 
 export const ChecklistFrequencies = [
   { value: 'one-time', label: 'One-time' },
+  { value: 'twice-daily', label: 'Twice daily' },
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
+  { value: 'biweekly', label: 'Biweekly' },
   { value: 'monthly', label: 'Monthly' },
   { value: 'quarterly', label: 'Quarterly' },
   { value: 'annually', label: 'Annually' },

@@ -10,6 +10,7 @@ import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
 import { getAllAssets } from "@/services/assets/assetQueries";
+import BulkAddAssetsDialog from "@/components/assets/BulkAddAssetsDialog";
 
 const AssetsPage = () => {
   const navigate = useNavigate();
@@ -67,9 +68,12 @@ const AssetsPage = () => {
         title="Equipment"
         description="Everything you take care of — tools, vehicles, machines, and more."
         actions={
-          <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
-            <Plus className="h-5 w-5" />Add Equipment
-          </Button>
+          <div className="flex gap-2">
+            <BulkAddAssetsDialog />
+            <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
+              <Plus className="h-5 w-5" />Add Equipment
+            </Button>
+          </div>
         }
       />
       <div className="px-4 md:px-6 lg:px-8 py-6">
