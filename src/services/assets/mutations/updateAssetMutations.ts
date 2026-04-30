@@ -11,7 +11,8 @@ export async function updateAsset(assetId: string, assetData: Partial<AssetFormV
     serial_number: assetData.serial_number || null,
     purchase_date: assetData.purchase_date ? assetData.purchase_date : null,
     status: assetData.status as "active" | "inactive" | "maintenance" | "retired",
-    parent_id: assetData.parent_id || null
+    parent_id: assetData.parent_id || null,
+    image_url: assetData.image_url ?? null,
   };
 
   const response = await supabase
