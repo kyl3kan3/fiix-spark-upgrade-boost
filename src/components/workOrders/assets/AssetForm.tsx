@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form } from "@/components/ui/form";
 import { AssetFormFields } from "./AssetFormFields";
 import { AssetFormValues, assetFormSchema } from "./AssetFormSchema";
+import { ImageUploadField } from "@/components/common/ImageUploadField";
 import { createAsset, createParentAsset, updateAsset } from "@/services/assets/assetMutations";
 import { getAssetById } from "@/services/assets/assetQueries";
 
@@ -47,6 +48,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
       parent_location_id: "",
       new_location: false,
       new_location_name: "",
+      image_url: null,
     },
   });
 
@@ -68,6 +70,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
         parent_location_id: "",
         new_location: false,
         new_location_name: "",
+        image_url: (existingAsset as any).image_url ?? null,
       });
     }
   }, [existingAsset, form]);
@@ -165,7 +168,16 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <AssetFormFields form={form} currentAssetId={assetId} />
-            
+            <ImageUploadField
+              label="Equipment photo"
+              folder="assets"
+              value={form.watch("image_url") ?? null}
+              onChange={(url) =>
+                form.setValue("image_url", url, { shouldDirty: true })
+              }
+              helperText="Optional — helps technicians identify the unit on site."
+            />
+
             <div className="flex justify-end space-x-2">
               <Button
                 type="button"
