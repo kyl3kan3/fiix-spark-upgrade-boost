@@ -9,11 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Location } from "@/services/locationService";
+import { ImageUploadField } from "@/components/common/ImageUploadField";
 
 const locationSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   parent_id: z.string().optional(),
+  image_url: z.string().url().nullable().optional(),
 });
 
 type LocationFormData = z.infer<typeof locationSchema>;
@@ -25,6 +27,7 @@ interface LocationFormProps {
     name: string;
     description: string;
     parent_id: string | null;
+    image_url?: string | null;
   };
   onSubmit: (data: LocationFormData) => Promise<void>;
   onCancel: () => void;
@@ -53,10 +56,12 @@ export const LocationForm: React.FC<LocationFormProps> = ({
       name: initialData?.name || "",
       description: initialData?.description || "",
       parent_id: parentId || initialData?.parent_id || "",
+      image_url: initialData?.image_url ?? null,
     }
   });
 
   const parentIdValue = watch("parent_id");
+  const imageUrlValue = watch("image_url");
 
   const handleFormSubmit = async (data: LocationFormData) => {
     try {
@@ -117,6 +122,17 @@ export const LocationForm: React.FC<LocationFormProps> = ({
           </SelectContent>
         </Select>
       </div>
+
+      <ImageUploadField
+        label="Location photo"
+        folder="locations"
+        value={imageUrlValue ?? null}
+        onChange={(url) =>
+          setValue("image_url", url, { shouldDirty: true })
+        }
+        disabled={isLoading}
+        helperText="Optional — a photo of the room, building, or area."
+      />
 
       <div className="flex justify-end space-x-2 pt-4">
         <Button
