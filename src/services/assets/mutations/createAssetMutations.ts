@@ -53,3 +53,18 @@ export async function createParentAsset(parentData: {
     
   return response;
 }
+
+export async function bulkCreateAssets(names: string[], opts?: { description?: string }) {
+  const company_id = await getCurrentUserCompanyId();
+  const rows = names
+    .map((n) => n.trim())
+    .filter(Boolean)
+    .map((name) => ({
+      name,
+      description: opts?.description || null,
+      status: "active" as const,
+      company_id,
+    }));
+  if (rows.length === 0) return { data: [], error: null };
+  return await supabase.from("assets").insert(rows).select();
+}
