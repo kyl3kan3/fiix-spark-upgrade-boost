@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BasicInformationSection from "./BasicInformationSection";
 import ChecklistItemsSection from "./ChecklistItemsSection";
+import ChecklistAssetsSelector from "./ChecklistAssetsSelector";
 
 interface ChecklistFormProps {
   mode: "create" | "edit";
@@ -29,6 +30,7 @@ interface ChecklistFormData {
   frequency: string;
   is_active: boolean;
   items: ChecklistItemForm[];
+  assetIds: string[];
 }
 
 const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
@@ -42,7 +44,8 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
     type: "general",
     frequency: "one-time",
     is_active: true,
-    items: []
+    items: [],
+    assetIds: [],
   });
 
   // Load existing checklist for edit mode
@@ -67,7 +70,8 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
           item_type: item.item_type,
           is_required: item.is_required,
           sort_order: item.sort_order || index
-        })) || []
+        })) || [],
+        assetIds: checklist.asset_ids || [],
       });
     }
   }, [checklist, mode]);
@@ -95,6 +99,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
           sort_order: i
         });
       }
+
+      // Asset links + schedule
+      await checklistService.setChecklistAssets(newChecklist.id, data.assetIds);
+      await checklistService.ensureSchedule(newChecklist.id, data.frequency);
 
       return newChecklist;
     },
@@ -159,6 +167,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
       for (const item of itemsToDelete) {
         await checklistService.deleteChecklistItem(item.id);
       }
+
+      // Asset links + schedule (frequency may have changed)
+      await checklistService.setChecklistAssets(id, data.assetIds);
+      await checklistService.ensureSchedule(id, data.frequency);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist", id] });
@@ -283,6 +295,11 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
               onRemoveItem={removeItem}
               onUpdateItem={updateItem}
               onMoveItem={moveItem}
+            />
+
+            <ChecklistAssetsSelector
+              selectedAssetIds={formData.assetIds}
+              onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}
             />
 
             {/* Submit Button */}
