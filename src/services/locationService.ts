@@ -91,9 +91,25 @@ export const getLocationPath = async (id: string): Promise<string> => {
 
 export const createLocation = async (locationData: CreateLocationData): Promise<Location> => {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('You must be signed in to create a location.');
+      throw new Error('Not authenticated');
+    }
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('company_id')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (profileError) throw profileError;
+    if (!profile?.company_id) {
+      toast.error('Your account is not linked to a company.');
+      throw new Error('Missing company');
+    }
+
     const { data, error } = await supabase
       .from('locations')
-      .insert([locationData])
+      .insert([{ ...locationData, company_id: profile.company_id }])
       .select()
       .single();
 
