@@ -68,9 +68,26 @@ export const getVendorById = async (id: string): Promise<VendorWithContracts | n
 };
 
 export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("You must be signed in to create a vendor.");
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("company_id, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError) throw profileError;
+  if (!profile?.company_id) {
+    throw new Error("Your account is not linked to a company. Complete setup first.");
+  }
+  if (!["administrator", "manager"].includes((profile.role || "").toLowerCase())) {
+    throw new Error("Only administrators or managers can create vendors.");
+  }
+
   const { data, error } = await supabase
     .from("vendors")
-    .insert([vendorData])
+    .insert([{ ...vendorData, company_id: profile.company_id }])
     .select()
     .single();
 
