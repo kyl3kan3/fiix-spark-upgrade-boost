@@ -1,5 +1,7 @@
 
 import React, { useState } from "react";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -9,6 +11,7 @@ import VendorPageHeader from "@/components/vendors/VendorPageHeader";
 import VendorFilters from "@/components/vendors/VendorFilters";
 import VendorGridView from "@/components/vendors/VendorGridView";
 import VendorEmptyState from "@/components/vendors/VendorEmptyState";
+import { getAllVendors, deleteVendor } from "@/services/vendorService";
 
 const VendorsPage = () => {
   const [filters, setFilters] = useState({
@@ -20,21 +23,35 @@ const VendorsPage = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedVendors, setSelectedVendors] = useState<string[]>([]);
 
-  // Mock data for now
-  const vendors: any[] = [];
-  const isLoading = false;
+  const queryClient = useQueryClient();
+  const { data: vendors = [], isLoading, error } = useQuery({
+    queryKey: ["vendors"],
+    queryFn: getAllVendors,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteVendor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["vendors"] });
+      toast.success("Vendor deleted");
+    },
+    onError: (err: any) => {
+      toast.error("Failed to delete vendor", { description: err?.message });
+    },
+  });
+
   const statusOptions = ["active", "inactive", "pending"];
   const typeOptions = ["supplier", "contractor", "service", "maintenance"];
 
-  const filteredVendors = vendors.filter((vendor) => {
+  const filteredVendors = vendors.filter((vendor: any) => {
     const matchesSearch = !filters.search || 
       vendor.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
       vendor.email?.toLowerCase().includes(filters.search.toLowerCase());
     
-    const matchesCategory = filters.category === "all" || vendor.category === filters.category;
-    const matchesStatus = filters.status === "all" || vendor.status === filters.status;
+    const matchesStatus = selectedStatus.length === 0 || selectedStatus.includes(vendor.status);
+    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(vendor.vendor_type);
     
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesStatus && matchesType;
   });
 
   const handleSearchChange = (value: string) => {
@@ -66,7 +83,7 @@ const VendorsPage = () => {
   };
 
   const handleSelectAll = () => {
-    setSelectedVendors(vendors.map(v => v.id));
+    setSelectedVendors(vendors.map((v: any) => v.id));
   };
 
   const handleClearSelection = () => {
@@ -127,11 +144,11 @@ const VendorsPage = () => {
             <VendorGridView 
               vendors={filteredVendors}
               isLoading={false}
-              error={null}
+              error={error}
               hasFilters={!!filters.search || selectedStatus.length > 0 || selectedTypes.length > 0}
-              isDeleting={false}
+              isDeleting={deleteMutation.isPending}
               selectedVendors={selectedVendors}
-              onDeleteVendor={() => {}}
+              onDeleteVendor={(id) => deleteMutation.mutate(id)}
               onToggleSelection={handleToggleSelection}
               onSelectAll={handleSelectAll}
               onClearSelection={handleClearSelection}
