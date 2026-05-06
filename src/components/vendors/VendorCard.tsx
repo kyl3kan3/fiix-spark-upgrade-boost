@@ -68,16 +68,16 @@ const VendorCard: React.FC<VendorCardProps> = ({
 
   return (
     <Card 
-      className={`p-4 hover:shadow-md transition-all h-full bg-white dark:bg-gray-800 border relative group ${
+      className={`group relative h-full border bg-white p-4 transition-all hover:shadow-md dark:bg-gray-800 ${
         isSelected 
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
           : 'border-gray-200 dark:border-gray-700'
       }`}
     >
-      <div className="flex items-start">
+      <div className="flex items-start gap-3 sm:gap-4">
         {/* Selection checkbox - only show for administrators */}
         {canDelete && (
-          <div className="mr-3 mt-1">
+          <div className="mt-1 shrink-0">
             <Checkbox
               checked={isSelected}
               onCheckedChange={() => onToggleSelection(vendor.id)}
@@ -85,35 +85,34 @@ const VendorCard: React.FC<VendorCardProps> = ({
           </div>
         )}
         
-        <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
+        <div className="shrink-0 rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
           <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
         </div>
-        <div className="flex-grow">
+        <div className="min-w-0 flex-1">
           <Link to={`/vendors/edit/${vendor.id}`} className="block">
-            <h3 className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">{vendor.name}</h3>
+            <h3 className="cursor-pointer break-words font-medium text-gray-900 transition-colors hover:text-blue-600 dark:text-white dark:hover:text-blue-400">{vendor.name}</h3>
           </Link>
           
           {vendor.contact_person && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{vendor.contact_person}</p>
+            <p className="mt-1 break-words text-sm text-gray-600 dark:text-gray-400">{vendor.contact_person}</p>
           )}
           
-          <div className="flex items-center gap-2 mt-2">
+          <div className="mt-2 space-y-1">
             {vendor.email && (
-              <div className="flex items-center text-gray-500 dark:text-gray-400">
-                <Mail className="h-3 w-3 mr-1" />
-                <p className="text-xs truncate">{vendor.email}</p>
+              <div className="flex min-w-0 items-start text-gray-500 dark:text-gray-400">
+                <Mail className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
+                <p className="min-w-0 break-all text-xs">{vendor.email}</p>
               </div>
             )}
-          </div>
-          
+
           {vendor.phone && (
-            <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1">
-              <Phone className="h-3 w-3 mr-1" />
-              <p className="text-xs">{vendor.phone}</p>
+            <div className="flex min-w-0 items-start text-gray-500 dark:text-gray-400">
+              <Phone className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
+              <p className="break-words text-xs">{vendor.phone}</p>
             </div>
           )}
           
-          <div className="flex items-center gap-2 mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <Badge className={`text-xs font-medium ${getStatusColor(vendor.status)}`}>
               {vendor.status.charAt(0).toUpperCase() + vendor.status.slice(1)}
             </Badge>
@@ -123,7 +122,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
           </div>
           
           {vendor.rating && (
-            <div className="flex items-center mt-2">
+            <div className="mt-2 flex flex-wrap items-center gap-1">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -134,14 +133,14 @@ const VendorCard: React.FC<VendorCardProps> = ({
                   />
                 ))}
               </div>
-              <span className="text-xs text-gray-500 ml-1">({vendor.rating}/5)</span>
+              <span className="ml-1 text-xs text-gray-500">({vendor.rating}/5)</span>
             </div>
           )}
         </div>
         
         {/* Delete button - only show for admins */}
         {canDelete && (
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="shrink-0 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
