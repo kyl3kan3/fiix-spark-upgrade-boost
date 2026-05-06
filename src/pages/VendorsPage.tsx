@@ -93,7 +93,7 @@ const VendorsPage = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 px-4 pb-6 pt-4 sm:space-y-6 md:px-6 lg:px-8">
           <BackToDashboard />
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
@@ -105,12 +105,12 @@ const VendorsPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-4 px-4 pb-6 pt-4 sm:space-y-6 md:px-6 lg:px-8">
         <BackToDashboard />
         
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <VendorPageHeader />
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto lg:justify-end">
             <Link to="/vendors/import" className="w-full sm:w-auto">
               <Button variant="outline" className="w-full sm:w-auto">
                 <Upload className="h-4 w-4 mr-2" />
