@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
-  Package, Building, Calendar, Users, Settings, type LucideIcon,
+  Package, Building, Calendar, Users, Building2, Settings, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -20,6 +20,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Equipment",    href: "/assets",       icon: Package,         code: "AST", group: "Things" },
   { label: "Places",       href: "/locations",    icon: Building,        code: "LOC", group: "Things" },
   { label: "Team",         href: "/team",         icon: Users,           code: "TM",  group: "People" },
+  { label: "Vendors",      href: "/vendors",      icon: Building2,       code: "VEN", group: "People" },
   { label: "Settings",     href: "/settings",     icon: Settings,        code: "SET", group: "More" },
 ];
 
