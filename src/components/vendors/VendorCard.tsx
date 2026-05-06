@@ -111,6 +111,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
               <p className="break-words text-xs">{vendor.phone}</p>
             </div>
           )}
+          </div>
           
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <Badge className={`text-xs font-medium ${getStatusColor(vendor.status)}`}>
