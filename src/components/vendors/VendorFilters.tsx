@@ -37,13 +37,13 @@ const VendorFilters: React.FC<VendorFiltersProps> = ({
   const totalFilters = selectedStatus.length + selectedTypes.length;
 
   return (
-    <div className="flex items-center gap-3 w-full md:w-auto">
-      <div className="relative flex-grow md:w-64">
+    <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="relative w-full sm:flex-1 sm:min-w-0 sm:max-w-xl">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
         <Input
           type="search"
           placeholder="Search vendors..."
-          className="pl-8 w-full"
+          className="w-full pl-8"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />
@@ -51,7 +51,7 @@ const VendorFilters: React.FC<VendorFiltersProps> = ({
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="whitespace-nowrap">
+          <Button variant="outline" className="w-full whitespace-nowrap sm:w-auto sm:px-4">
             <Filter className="mr-2 h-4 w-4" />
             Filters
             {totalFilters > 0 && (
