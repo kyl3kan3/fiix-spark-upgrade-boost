@@ -81,8 +81,13 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {assets.map((asset) => (
-        <Card key={asset.id} className="p-0 hover:shadow-md transition-shadow h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 relative group">
-          <Link to={`/assets/${asset.id}`} className="block p-4 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg">
+        <div key={asset.id} className="relative group">
+          <Link
+            to={`/assets/${asset.id}`}
+            className="block focus:outline-none focus:ring-2 focus:ring-primary rounded-3xl"
+            aria-label={`Open ${asset.name}`}
+          >
+          <Card className="p-4 cursor-pointer h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <div className="flex items-start">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
               <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
@@ -107,6 +112,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
               </div>
             </div>
           </div>
+          </Card>
           </Link>
 
           {/* Delete button - only show for admins, positioned over the link */}
@@ -118,7 +124,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
                     variant="ghost"
                     size="sm"
                     disabled={isDeleting}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                     className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -145,7 +151,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
               </AlertDialog>
             </div>
           )}
-        </Card>
+        </div>
       ))}
     </div>
   );
