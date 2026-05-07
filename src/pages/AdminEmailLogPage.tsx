@@ -38,7 +38,7 @@ const AdminEmailLogPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const focusId = searchParams.get("message_id");
-  const { isAdmin, loading: adminLoading } = useAdminStatus();
+  const { isAdminUser: isAdmin, isLoading: adminLoading } = useAdminStatus();
   const [notifs, setNotifs] = useState<NotifRow[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
