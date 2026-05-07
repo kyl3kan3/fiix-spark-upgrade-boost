@@ -33,6 +33,7 @@ const OnboardingPage = lazy(() => import("@/pages/OnboardingPage"));
 const LocationDetailPage = lazy(() => import("@/pages/LocationDetailPage"));
 const ChecklistsPage = lazy(() => import("@/pages/ChecklistsPage"));
 const NewChecklistPage = lazy(() => import("@/pages/NewChecklistPage"));
+const ChecklistImportPage = lazy(() => import("@/pages/ChecklistImportPage"));
 const EditChecklistPage = lazy(() => import("@/pages/EditChecklistPage"));
 const ChecklistDetailPage = lazy(() => import("@/pages/ChecklistDetailPage"));
 const ChecklistSubmitPage = lazy(() => import("@/pages/ChecklistSubmitPage"));
@@ -70,6 +71,7 @@ export const AppRoutes = () => (
       <Route path="/checklists" element={<ProtectedRoute><ChecklistsPage /></ProtectedRoute>} />
       <Route path="/checklists/due" element={<ProtectedRoute><DueChecklistsPage /></ProtectedRoute>} />
       <Route path="/checklists/new" element={<ProtectedRoute><NewChecklistPage /></ProtectedRoute>} />
+      <Route path="/checklists/import" element={<ProtectedRoute><ChecklistImportPage /></ProtectedRoute>} />
       <Route path="/checklists/:id" element={<ProtectedRoute><ChecklistDetailPage /></ProtectedRoute>} />
       <Route path="/checklists/:id/edit" element={<ProtectedRoute><EditChecklistPage /></ProtectedRoute>} />
       <Route path="/checklists/:id/submit" element={<ProtectedRoute><ChecklistSubmitPage /></ProtectedRoute>} />
