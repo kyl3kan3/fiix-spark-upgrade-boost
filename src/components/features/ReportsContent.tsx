@@ -9,6 +9,7 @@ import CustomReportForm from "./reports/CustomReportForm";
 import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import ImageGallery from "@/components/common/ImageGallery";
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -99,13 +100,27 @@ const ReportsContent: React.FC = () => {
       
       {/* Selected Report Chart */}
       {selectedReport && (
-        <ReportChart 
-          reportType={selectedReport}
-          data={getReportData()}
-          isMobile={isMobile}
-          isExporting={isExporting}
-          onExport={handleExportPdf}
-        />
+        <>
+          <ReportChart 
+            reportType={selectedReport}
+            data={getReportData()}
+            isMobile={isMobile}
+            isExporting={isExporting}
+            onExport={handleExportPdf}
+          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Report Photos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ImageGallery
+                entityType="report"
+                entityId={`report:${selectedReport.toLowerCase().replace(/\s+/g, "-")}`}
+                title="Attached photos"
+              />
+            </CardContent>
+          </Card>
+        </>
       )}
       
       {/* Custom Reports Section */}
