@@ -56,7 +56,9 @@ const ReportsContent: React.FC = () => {
     setIsExporting(true);
     try {
       const dataToExport = getReportData();
-      await exportReportToPdf(selectedReport, dataToExport);
+      await exportReportToPdf(selectedReport, dataToExport, {
+        reportEntityId: REPORT_ENTITY_IDS[selectedReport],
+      });
       toast.success("Report exported to PDF successfully");
     } catch (error) {
       toast.error("Failed to export report");
