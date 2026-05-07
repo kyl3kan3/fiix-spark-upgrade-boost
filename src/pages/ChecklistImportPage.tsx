@@ -443,11 +443,12 @@ const ChecklistImportPage: React.FC = () => {
                   id="file-input"
                   type="file"
                   accept=".xlsx,.xls,.csv,.docx"
+                  multiple
                   className="hidden"
                   disabled={parsing}
                   onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleFile(f);
+                    const fs = Array.from(e.target.files || []);
+                    if (fs.length) handleFiles(fs);
                     e.target.value = "";
                   }}
                 />
