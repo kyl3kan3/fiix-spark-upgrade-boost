@@ -589,6 +589,30 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_dispatch_log: {
+        Row: {
+          event_type: string
+          id: string
+          recipient_id: string
+          reference_id: string
+          sent_at: string
+        }
+        Insert: {
+          event_type: string
+          id?: string
+          recipient_id: string
+          reference_id: string
+          sent_at?: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          recipient_id?: string
+          reference_id?: string
+          sent_at?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           created_at: string
@@ -1249,6 +1273,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      dispatch_notification_event: {
+        Args: { _event_type: string; _payload: Json }
+        Returns: undefined
+      }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       get_user_company_id: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }

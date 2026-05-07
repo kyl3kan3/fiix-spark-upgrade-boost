@@ -10,6 +10,9 @@ import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import ImageGallery from "@/components/common/ImageGallery";
+import ShareReportDialog from "./reports/ShareReportDialog";
+import { Button } from "@/components/ui/button";
+import { Mail } from "lucide-react";
 
 // Stable UUIDs per built-in report type so we can attach photos via the attachments table
 const REPORT_ENTITY_IDS: Record<string, string> = {
@@ -23,6 +26,7 @@ const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [shareOpen, setShareOpen] = useState(false);
   const isMobile = useIsMobile();
   
   // Simulate loading state for better UX
@@ -118,6 +122,12 @@ const ReportsContent: React.FC = () => {
             isExporting={isExporting}
             onExport={handleExportPdf}
           />
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => setShareOpen(true)}>
+              <Mail className="h-4 w-4 mr-2" />
+              Email report to team
+            </Button>
+          </div>
           {REPORT_ENTITY_IDS[selectedReport] && (
             <Card>
               <CardHeader>
@@ -132,6 +142,12 @@ const ReportsContent: React.FC = () => {
               </CardContent>
             </Card>
           )}
+          <ShareReportDialog
+            open={shareOpen}
+            onOpenChange={setShareOpen}
+            reportName={selectedReport}
+            reportId={REPORT_ENTITY_IDS[selectedReport]}
+          />
         </>
       )}
       
