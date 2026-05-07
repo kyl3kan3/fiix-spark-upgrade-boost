@@ -40,6 +40,7 @@ const ChecklistDetailPage = lazy(() => import("@/pages/ChecklistDetailPage"));
 const ChecklistSubmitPage = lazy(() => import("@/pages/ChecklistSubmitPage"));
 const ChecklistSubmissionsPage = lazy(() => import("@/pages/ChecklistSubmissionsPage"));
 const DueChecklistsPage = lazy(() => import("@/pages/DueChecklistsPage"));
+const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
