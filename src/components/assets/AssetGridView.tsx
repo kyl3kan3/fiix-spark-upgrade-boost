@@ -81,15 +81,14 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {assets.map((asset) => (
-        <Card key={asset.id} className="p-4 hover:shadow-md transition-shadow h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 relative group">
+        <Card key={asset.id} className="p-0 hover:shadow-md transition-shadow h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 relative group">
+          <Link to={`/assets/${asset.id}`} className="block p-4 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg">
           <div className="flex items-start">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
               <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
             </div>
             <div className="flex-grow">
-              <Link to={`/assets/${asset.id}`} className="block">
-                <h3 className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">{asset.name}</h3>
-              </Link>
+              <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{asset.name}</h3>
               {asset.location && (
                 <div className="flex items-center text-gray-500 dark:text-gray-400 mt-1">
                   <MapPin className="h-3 w-3 mr-1" />
@@ -107,46 +106,45 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
                 </span>
               </div>
             </div>
-            
-            {/* Delete button - only show for admins */}
-            {canDelete && (
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled={isDeleting}
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Asset</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete "{asset.name}"? This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          console.log('🗑️ Deleting asset:', asset.id);
-                          onDeleteAsset(asset.id);
-                        }}
-                        disabled={isDeleting}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        {isDeleting ? "Deleting..." : "Delete"}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            )}
           </div>
+          </Link>
+
+          {/* Delete button - only show for admins, positioned over the link */}
+          {canDelete && (
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={isDeleting}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{asset.name}"? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => onDeleteAsset(asset.id)}
+                      disabled={isDeleting}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      {isDeleting ? "Deleting..." : "Delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
         </Card>
       ))}
     </div>

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { getLocationById, getLocationPath } from "@/services/locationService";
 import { supabase } from "@/integrations/supabase/client";
+import ImageGallery from "@/components/common/ImageGallery";
 
 const LocationDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -267,6 +268,12 @@ const LocationDetailPage = () => {
             </CardContent>
           </Card>
         </div>
+
+        <Card className="mt-8">
+          <CardContent className="p-6">
+            <ImageGallery entityType="location" entityId={id!} title="Location Photos" />
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );
