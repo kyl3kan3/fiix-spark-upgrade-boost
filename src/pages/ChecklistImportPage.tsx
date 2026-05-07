@@ -435,9 +435,9 @@ const ChecklistImportPage: React.FC = () => {
                 <Upload className={cn("h-10 w-10", dragActive ? "text-primary" : "text-muted-foreground")} />
                 <div className="space-y-1">
                   <p className="font-medium">
-                    {parsing ? "Parsing file..." : dragActive ? "Drop to upload" : "Drag & drop a file here, or click to browse"}
+                    {parsing ? "Parsing files..." : dragActive ? "Drop to upload" : "Drag & drop one or more files, or click to browse"}
                   </p>
-                  <p className="text-sm text-muted-foreground">Excel (.xlsx, .xls, .csv) or Word (.docx)</p>
+                  <p className="text-sm text-muted-foreground">Excel (.xlsx, .xls, .csv) or Word (.docx) — multiple files will be merged</p>
                 </div>
                 <Input
                   id="file-input"
