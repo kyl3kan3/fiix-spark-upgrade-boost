@@ -5,10 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { WorkOrderFormValues } from "../WorkOrderFormSchema";
 import { supabase } from "@/integrations/supabase/client";
 import { createWorkOrder, updateWorkOrder } from "@/services/workOrderService";
-import {
-  notifyWorkOrderAssigned,
-  notifyWorkOrderCompleted,
-} from "@/services/notifications/workOrderNotifier";
 
 type UseWorkOrderSubmitProps = {
   workOrderId?: string;
@@ -36,55 +32,15 @@ export const useWorkOrderSubmit = ({ workOrderId, onSuccess }: UseWorkOrderSubmi
       }
 
       let response;
-      let previousAssignee: string | null = null;
-      let previousStatus: string | null = null;
-      let creatorId: string | null = null;
 
       if (isEditing && workOrderId) {
-        const { data: existing } = await supabase
-          .from("work_orders")
-          .select("assigned_to, status, created_by")
-          .eq("id", workOrderId)
-          .maybeSingle();
-        previousAssignee = existing?.assigned_to ?? null;
-        previousStatus = existing?.status ?? null;
-        creatorId = existing?.created_by ?? null;
         response = await updateWorkOrder(workOrderId, values);
       } else {
         response = await createWorkOrder(user.id, values);
-        creatorId = user.id;
       }
 
       if (response.error) {
         throw response.error;
-      }
-
-      const saved = Array.isArray(response.data) ? response.data[0] : null;
-      const savedId: string | undefined = saved?.id ?? workOrderId;
-
-      // Notify newly assigned user
-      if (savedId && values.assigned_to && values.assigned_to !== previousAssignee) {
-        void notifyWorkOrderAssigned({
-          workOrderId: savedId,
-          title: values.title,
-          assigneeId: values.assigned_to,
-          actorId: user.id,
-        });
-      }
-
-      // Notify creator when status transitions to completed
-      if (
-        savedId &&
-        values.status === "completed" &&
-        previousStatus !== "completed" &&
-        creatorId
-      ) {
-        void notifyWorkOrderCompleted({
-          workOrderId: savedId,
-          title: values.title,
-          creatorId,
-          actorId: user.id,
-        });
       }
 
       toast({
