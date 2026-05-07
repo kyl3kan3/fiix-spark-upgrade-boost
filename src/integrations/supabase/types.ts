@@ -87,6 +87,48 @@ export type Database = {
           },
         ]
       }
+      attachments: {
+        Row: {
+          company_id: string
+          content_type: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          file_name: string | null
+          id: string
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string
+          url: string
+        }
+        Insert: {
+          company_id: string
+          content_type?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          file_name?: string | null
+          id?: string
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by: string
+          url: string
+        }
+        Update: {
+          company_id?: string
+          content_type?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          file_name?: string | null
+          id?: string
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string
+          url?: string
+        }
+        Relationships: []
+      }
       checklist_assets: {
         Row: {
           asset_id: string
