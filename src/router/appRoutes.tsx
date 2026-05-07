@@ -13,6 +13,7 @@ const AssetFormPage = lazy(() => import("@/pages/AssetFormPage"));
 const AssetDetailPage = lazy(() => import("@/pages/AssetDetailPage"));
 const WorkOrdersPage = lazy(() => import("@/pages/WorkOrdersPage"));
 const WorkOrderFormPage = lazy(() => import("@/pages/WorkOrderFormPage"));
+const WorkOrderDetailPage = lazy(() => import("@/pages/WorkOrderDetailPage"));
 const VendorImportPage = lazy(() => import("@/pages/VendorImportPage"));
 const Team = lazy(() => import("@/pages/Team"));
 const LocationsPage = lazy(() => import("@/pages/LocationsPage"));
@@ -63,6 +64,7 @@ export const AppRoutes = () => (
       <Route path="/work-orders" element={<ProtectedRoute><WorkOrdersPage /></ProtectedRoute>} />
       <Route path="/work-orders/new" element={<ProtectedRoute><WorkOrderFormPage /></ProtectedRoute>} />
       <Route path="/work-orders/:workOrderId/edit" element={<ProtectedRoute><WorkOrderFormPage /></ProtectedRoute>} />
+      <Route path="/work-orders/:workOrderId" element={<ProtectedRoute><WorkOrderDetailPage /></ProtectedRoute>} />
 
       <Route path="/inspections" element={<ProtectedRoute><InspectionsPage /></ProtectedRoute>} />
       <Route path="/inspections/new" element={<ProtectedRoute><NewInspectionPage /></ProtectedRoute>} />
