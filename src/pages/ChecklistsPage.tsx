@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Search, ListChecks, Calendar, User, Clock, Printer } from "lucide-react";
+import { PlusCircle, Search, ListChecks, Calendar, User, Clock, Printer, Upload } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { ChecklistTypes, ChecklistFrequencies } from "@/types/checklists";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -81,6 +81,10 @@ const ChecklistsPage = () => {
             >
               <Calendar className="mr-2 h-4 w-4" />
               View Submissions
+            </Button>
+            <Button onClick={() => navigate("/checklists/import")} variant="outline">
+              <Upload className="mr-2 h-4 w-4" />
+              Import
             </Button>
             <Button onClick={() => navigate("/checklists/new")}>
               <PlusCircle className="mr-2 h-4 w-4" />
