@@ -40,6 +40,7 @@ const ChecklistDetailPage = lazy(() => import("@/pages/ChecklistDetailPage"));
 const ChecklistSubmitPage = lazy(() => import("@/pages/ChecklistSubmitPage"));
 const ChecklistSubmissionsPage = lazy(() => import("@/pages/ChecklistSubmissionsPage"));
 const DueChecklistsPage = lazy(() => import("@/pages/DueChecklistsPage"));
+const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -78,6 +79,7 @@ export const AppRoutes = () => (
       <Route path="/checklists/:id/edit" element={<ProtectedRoute><EditChecklistPage /></ProtectedRoute>} />
       <Route path="/checklists/:id/submit" element={<ProtectedRoute><ChecklistSubmitPage /></ProtectedRoute>} />
       <Route path="/checklists/submissions" element={<ProtectedRoute><ChecklistSubmissionsPage /></ProtectedRoute>} />
+      <Route path="/admin/email-log" element={<ProtectedRoute><AdminEmailLogPage /></ProtectedRoute>} />
 
       <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
       <Route path="/maintenance" element={<ProtectedRoute><MaintenancePage /></ProtectedRoute>} />

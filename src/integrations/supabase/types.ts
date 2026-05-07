@@ -514,6 +514,36 @@ export type Database = {
         }
         Relationships: []
       }
+      email_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          occurred_at: string
+          provider_message_id: string
+          raw: Json | null
+          recipient_email: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          occurred_at?: string
+          provider_message_id: string
+          raw?: Json | null
+          recipient_email?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          occurred_at?: string
+          provider_message_id?: string
+          raw?: Json | null
+          recipient_email?: string | null
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           company_id: string | null
@@ -655,8 +685,11 @@ export type Database = {
       notifications: {
         Row: {
           body: string
+          company_id: string | null
           created_at: string
+          event_type: string | null
           id: string
+          provider_message_id: string | null
           read: boolean
           reference_id: string | null
           title: string
@@ -665,8 +698,11 @@ export type Database = {
         }
         Insert: {
           body: string
+          company_id?: string | null
           created_at?: string
+          event_type?: string | null
           id?: string
+          provider_message_id?: string | null
           read?: boolean
           reference_id?: string | null
           title: string
@@ -675,8 +711,11 @@ export type Database = {
         }
         Update: {
           body?: string
+          company_id?: string | null
           created_at?: string
+          event_type?: string | null
           id?: string
+          provider_message_id?: string | null
           read?: boolean
           reference_id?: string | null
           title?: string

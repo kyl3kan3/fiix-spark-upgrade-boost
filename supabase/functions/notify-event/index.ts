@@ -17,12 +17,12 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
 });
 const resend = new Resend(RESEND_API_KEY);
 
-type Recipient = { user_id: string; email: string | null; email_enabled: boolean };
+type Recipient = { user_id: string; email: string | null; email_enabled: boolean; company_id?: string | null };
 
 async function getRecipient(userId: string): Promise<Recipient | null> {
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, email")
+    .select("id, email, company_id")
     .eq("id", userId)
     .maybeSingle();
   if (!profile) return null;
@@ -37,6 +37,7 @@ async function getRecipient(userId: string): Promise<Recipient | null> {
     user_id: userId,
     email: prefs?.email_address || profile.email || null,
     email_enabled: prefs ? !!prefs.email_enabled : true,
+    company_id: (profile as any).company_id || null,
   };
 }
 
@@ -79,23 +80,30 @@ async function deliver(opts: {
     body: opts.body,
     type: "in_app",
     reference_id: opts.referenceId,
+    event_type: opts.eventType,
+    company_id: recipient.company_id ?? null,
   });
 
   // Email
   if (recipient.email_enabled && recipient.email) {
     try {
-      await resend.emails.send({
+      const sendRes = await resend.emails.send({
         from: FROM,
         to: [recipient.email],
         subject: opts.title,
         html: `<p>${opts.body}</p>`,
       });
+      const providerMessageId =
+        (sendRes as any)?.data?.id || (sendRes as any)?.id || null;
       await admin.from("notifications").insert({
         user_id: opts.userId,
         title: opts.title,
         body: opts.body,
         type: "email",
         reference_id: opts.referenceId,
+        event_type: opts.eventType,
+        company_id: recipient.company_id ?? null,
+        provider_message_id: providerMessageId,
       });
     } catch (e) {
       console.error("Email send failed:", e);

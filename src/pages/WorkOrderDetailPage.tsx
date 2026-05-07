@@ -10,6 +10,10 @@ import WorkOrderDetail from "@/components/workOrders/WorkOrderDetail";
 import { useWorkOrderNavigation } from "@/components/workOrders/hooks/useWorkOrderNavigation";
 import ImageGallery from "@/components/common/ImageGallery";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  WorkOrderNotificationHistoryCard,
+  WorkOrderNotificationHistoryDrawer,
+} from "@/components/workOrders/components/WorkOrderNotificationHistory";
 
 const WorkOrderDetailPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
@@ -49,15 +53,18 @@ const WorkOrderDetailPage: React.FC = () => {
       </Helmet>
 
       <div className="space-y-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleBackToWorkOrders}
-          className="-ml-2"
-        >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back to Dashboard
-        </Button>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBackToWorkOrders}
+            className="-ml-2"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Dashboard
+          </Button>
+          <WorkOrderNotificationHistoryDrawer workOrderId={workOrder.id} />
+        </div>
 
         <WorkOrderDetail workOrder={workOrder} />
 
@@ -66,6 +73,8 @@ const WorkOrderDetailPage: React.FC = () => {
             <ImageGallery entityType="work_order" entityId={workOrder.id} title="Photos & Attachments" />
           </CardContent>
         </Card>
+
+        <WorkOrderNotificationHistoryCard workOrderId={workOrder.id} />
       </div>
     </DashboardLayout>
   );
