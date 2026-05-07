@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useWorkOrderDetails } from "@/components/workOrders/hooks/useWorkOrderDetails";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Edit, Clipboard } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import WorkOrderDetail from "@/components/workOrders/WorkOrderDetail";
 import { useWorkOrderNavigation } from "@/components/workOrders/hooks/useWorkOrderNavigation";
 import ImageGallery from "@/components/common/ImageGallery";
@@ -15,13 +15,13 @@ const WorkOrderDetailPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
   
   const { workOrder, isLoading } = useWorkOrderDetails(workOrderId);
-  const { handleBackToWorkOrders, handleEditWorkOrder } = useWorkOrderNavigation();
+  const { handleBackToWorkOrders } = useWorkOrderNavigation();
 
   if (isLoading) {
     return (
       <DashboardLayout>
         <div className="flex justify-center items-center h-60">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
       </DashboardLayout>
     );
@@ -32,7 +32,7 @@ const WorkOrderDetailPage: React.FC = () => {
       <DashboardLayout>
         <div className="text-center py-10">
           <h1 className="text-2xl font-bold mb-2">Work Order Not Found</h1>
-          <p className="mb-4 text-gray-500">The requested work order could not be found.</p>
+          <p className="mb-4 text-muted-foreground">The requested work order could not be found.</p>
           <Button onClick={handleBackToWorkOrders}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Work Orders
@@ -47,41 +47,18 @@ const WorkOrderDetailPage: React.FC = () => {
       <Helmet>
         <title>{workOrder.title} | Work Order | MaintenEase</title>
       </Helmet>
-      
+
       <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleBackToWorkOrders}
-            >
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              Back
-            </Button>
-            <h1 className="text-2xl font-bold">{workOrder.title}</h1>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handleEditWorkOrder(workOrder)}
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(workOrder.id);
-              }}
-              variant="secondary"
-            >
-              <Clipboard className="h-4 w-4 mr-2" />
-              Copy ID
-            </Button>
-          </div>
-        </div>
-        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleBackToWorkOrders}
+          className="-ml-2"
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Back to Dashboard
+        </Button>
+
         <WorkOrderDetail workOrder={workOrder} />
 
         <Card>
