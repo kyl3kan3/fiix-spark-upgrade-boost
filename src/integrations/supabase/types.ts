@@ -87,11 +87,49 @@ export type Database = {
           },
         ]
       }
+      attachment_audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          attachment_id: string | null
+          company_id: string
+          created_at: string
+          details: Json
+          entity_id: string
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          attachment_id?: string | null
+          company_id: string
+          created_at?: string
+          details?: Json
+          entity_id: string
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          attachment_id?: string | null
+          company_id?: string
+          created_at?: string
+          details?: Json
+          entity_id?: string
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
       attachments: {
         Row: {
+          caption: string | null
           company_id: string
           content_type: string | null
           created_at: string
+          description: string | null
           entity_id: string
           entity_type: string
           file_name: string | null
@@ -103,9 +141,11 @@ export type Database = {
           url: string
         }
         Insert: {
+          caption?: string | null
           company_id: string
           content_type?: string | null
           created_at?: string
+          description?: string | null
           entity_id: string
           entity_type: string
           file_name?: string | null
@@ -117,9 +157,11 @@ export type Database = {
           url: string
         }
         Update: {
+          caption?: string | null
           company_id?: string
           content_type?: string | null
           created_at?: string
+          description?: string | null
           entity_id?: string
           entity_type?: string
           file_name?: string | null
