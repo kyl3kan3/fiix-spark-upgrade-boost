@@ -8,7 +8,7 @@ export function useFormState() {
     password: "",
     name: "",
     companyName: "",
-    rememberMe: false
+    rememberMe: true
   });
 
   const setEmail = (email: string) => 
