@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getAssetById } from "@/services/assets/assetQueries";
 import AssetNotFound from "@/components/assets/AssetNotFound";
+import ImageGallery from "@/components/common/ImageGallery";
 
 const AssetDetailPage = () => {
   const { assetId } = useParams<{ assetId: string }>();
@@ -52,7 +53,7 @@ const AssetDetailPage = () => {
         }
       />
       <div className="px-4 md:px-6 lg:px-8 py-6">
-        <Card className="p-6 max-w-2xl">
+        <Card className="p-6 max-w-3xl space-y-6">
           {(asset as any).image_url && (
             <img
               src={(asset as any).image_url}
@@ -80,6 +81,7 @@ const AssetDetailPage = () => {
               </dl>
             </div>
           </div>
+          <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
         </Card>
       </div>
     </DashboardLayout>

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, Edit, Clipboard } from "lucide-react";
 import WorkOrderDetail from "@/components/workOrders/WorkOrderDetail";
 import { useWorkOrderNavigation } from "@/components/workOrders/hooks/useWorkOrderNavigation";
+import ImageGallery from "@/components/common/ImageGallery";
+import { Card, CardContent } from "@/components/ui/card";
 
 const WorkOrderDetailPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
@@ -81,6 +83,12 @@ const WorkOrderDetailPage: React.FC = () => {
         </div>
         
         <WorkOrderDetail workOrder={workOrder} />
+
+        <Card>
+          <CardContent className="p-6">
+            <ImageGallery entityType="work_order" entityId={workOrder.id} title="Photos & Attachments" />
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );
