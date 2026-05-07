@@ -20,10 +20,13 @@ import { toast } from "sonner";
 import { Trash2, Upload, FileSpreadsheet, FileText, Download, AlertTriangle, CheckCircle2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type DraftItem = { title: string; description?: string; is_required: boolean };
+type DraftItem = { title: string; description?: string; is_required: boolean; sourceFile?: string };
 type Step = "upload" | "configure" | "preview";
 
 const NONE = "__none__";
+
+const normalizeTitle = (s: string) =>
+  s.toLowerCase().replace(/[\p{P}\p{S}]/gu, "").replace(/\s+/g, " ").trim();
 
 function downloadExcelTemplate() {
   const wb = XLSX.utils.book_new();
@@ -86,6 +89,8 @@ const ChecklistImportPage: React.FC = () => {
 
   // Word / final items
   const [items, setItems] = useState<DraftItem[]>([]);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [importStats, setImportStats] = useState<{ files: string[]; totalParsed: number } | null>(null);
 
   const isExcel = useMemo(() => /\.(xlsx|xls|csv)$/i.test(fileName), [fileName]);
   const isWord = useMemo(() => /\.docx$/i.test(fileName), [fileName]);
@@ -101,6 +106,8 @@ const ChecklistImportPage: React.FC = () => {
     setDescCol(NONE);
     setReqCol(NONE);
     setItems([]);
+    setSelected(new Set());
+    setImportStats(null);
   };
 
   const loadSheet = (wb: XLSX.WorkBook, sn: string) => {
@@ -126,11 +133,44 @@ const ChecklistImportPage: React.FC = () => {
     setReqCol(guess(/required|must|mandatory/i) || NONE);
   };
 
-  const handleFile = useCallback(async (file: File) => {
-    setParsing(true);
-    setFileName(file.name);
-    try {
-      if (/\.(xlsx|xls|csv)$/i.test(file.name)) {
+  const parseExcelAuto = async (file: File): Promise<DraftItem[]> => {
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: "array" });
+    const sn = wb.SheetNames[0];
+    const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[sn], { header: 1, defval: "" });
+    if (aoa.length === 0) return [];
+    const headers = aoa[0].map((h: any, i: number) => String(h ?? "").trim() || `Column ${i + 1}`);
+    const guess = (re: RegExp) => headers.findIndex((h) => re.test(h));
+    const tIdx = (() => { const i = guess(/title|task|item|name/i); return i >= 0 ? i : 0; })();
+    const dIdx = guess(/desc|note/i);
+    const rIdx = guess(/required|must|mandatory/i);
+    return aoa.slice(1).map((r) => {
+      const title = String(r[tIdx] ?? "").trim();
+      if (!title) return null;
+      const desc = dIdx >= 0 ? String(r[dIdx] ?? "").trim() : "";
+      const req = rIdx >= 0 ? /^(true|yes|y|1|x|required)$/i.test(String(r[rIdx]).trim()) : false;
+      return { title, description: desc || undefined, is_required: req, sourceFile: file.name } as DraftItem;
+    }).filter(Boolean) as DraftItem[];
+  };
+
+  const parseWord = async (file: File): Promise<DraftItem[]> => {
+    const buf = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer: buf });
+    return result.value
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[\s\-\*\u2022\d\.\)\(]+/, "").trim())
+      .filter((l) => l.length > 0)
+      .map<DraftItem>((title) => ({ title, is_required: false, sourceFile: file.name }));
+  };
+
+  const handleFiles = useCallback(async (files: File[]) => {
+    if (files.length === 0) return;
+    // Single Excel file → go through configure step for column mapping
+    if (files.length === 1 && /\.(xlsx|xls|csv)$/i.test(files[0].name)) {
+      const file = files[0];
+      setParsing(true);
+      setFileName(file.name);
+      try {
         const buf = await file.arrayBuffer();
         const wb = XLSX.read(buf, { type: "array" });
         setWorkbook(wb);
@@ -139,28 +179,43 @@ const ChecklistImportPage: React.FC = () => {
         loadSheet(wb, first);
         if (!name) setName(file.name.replace(/\.[^.]+$/, ""));
         setStep("configure");
-      } else if (/\.docx$/i.test(file.name)) {
-        const buf = await file.arrayBuffer();
-        const result = await mammoth.extractRawText({ arrayBuffer: buf });
-        const parsed = result.value
-          .split(/\r?\n/)
-          .map((l) => l.replace(/^[\s\-\*\u2022\d\.\)\(]+/, "").trim())
-          .filter((l) => l.length > 0)
-          .map<DraftItem>((title) => ({ title, is_required: false }));
-        if (parsed.length === 0) throw new Error("No items found in the document");
-        setItems(parsed);
-        if (!name) setName(file.name.replace(/\.[^.]+$/, ""));
-        setStep("preview");
-      } else {
-        throw new Error("Unsupported file type. Use .xlsx, .xls, .csv, or .docx");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to parse file");
+        reset();
+      } finally {
+        setParsing(false);
       }
+      return;
+    }
+
+    // Multiple files (or single Word) → auto-parse all and merge
+    setParsing(true);
+    setFileName(files.map((f) => f.name).join(", "));
+    try {
+      const merged: DraftItem[] = [];
+      const fileNames: string[] = [];
+      for (const f of files) {
+        let parsed: DraftItem[] = [];
+        if (/\.(xlsx|xls|csv)$/i.test(f.name)) parsed = await parseExcelAuto(f);
+        else if (/\.docx$/i.test(f.name)) parsed = await parseWord(f);
+        else { toast.error(`Skipping unsupported file: ${f.name}`); continue; }
+        merged.push(...parsed);
+        fileNames.push(f.name);
+      }
+      if (merged.length === 0) throw new Error("No items found in selected files");
+      setItems(merged);
+      setImportStats({ files: fileNames, totalParsed: merged.length });
+      if (!name) setName(files[0].name.replace(/\.[^.]+$/, ""));
+      setStep("preview");
     } catch (err: any) {
-      toast.error(err?.message || "Failed to parse file");
+      toast.error(err?.message || "Failed to parse files");
       reset();
     } finally {
       setParsing(false);
     }
   }, [name]);
+
+  const handleFile = (file: File) => handleFiles([file]);
 
   const onSheetChange = (sn: string) => {
     if (!workbook) return;
@@ -184,36 +239,94 @@ const ChecklistImportPage: React.FC = () => {
     if (!titleCol) { toast.error("Choose a Title column"); return; }
     const built = buildItemsFromMapping();
     if (built.length === 0) { toast.error("No items found with current mapping"); return; }
-    setItems(built);
+    const stamped = built.map((it) => ({ ...it, sourceFile: fileName }));
+    setItems(stamped);
+    setImportStats({ files: [fileName], totalParsed: stamped.length });
     setStep("preview");
   };
 
   // Validation in preview
-  const { duplicateIndices, emptyIndices } = useMemo(() => {
+  const { duplicateIndices, emptyIndices, dupOf } = useMemo(() => {
     const seen = new Map<string, number>();
     const dup = new Set<number>();
     const empty = new Set<number>();
+    const dupOf = new Map<number, number>(); // index -> first occurrence row #
     items.forEach((it, i) => {
-      const t = it.title.trim().toLowerCase();
+      const t = normalizeTitle(it.title);
       if (!t) empty.add(i);
-      else if (seen.has(t)) { dup.add(i); dup.add(seen.get(t)!); }
-      else seen.set(t, i);
+      else if (seen.has(t)) {
+        const first = seen.get(t)!;
+        dup.add(i); dup.add(first);
+        dupOf.set(i, first);
+      } else seen.set(t, i);
     });
-    return { duplicateIndices: dup, emptyIndices: empty };
+    return { duplicateIndices: dup, emptyIndices: empty, dupOf };
   }, [items]);
 
   const updateItem = (i: number, patch: Partial<DraftItem>) =>
     setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
-  const removeItem = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
-  const removeEmpties = () => setItems((prev) => prev.filter((it) => it.title.trim()));
+  const removeItem = (i: number) => {
+    setItems((prev) => prev.filter((_, idx) => idx !== i));
+    setSelected(new Set());
+  };
+  const removeEmpties = () => { setItems((prev) => prev.filter((it) => it.title.trim())); setSelected(new Set()); };
   const dedupe = () => {
     const seen = new Set<string>();
     setItems((prev) => prev.filter((it) => {
-      const k = it.title.trim().toLowerCase();
+      const k = normalizeTitle(it.title);
       if (!k || seen.has(k)) return false;
       seen.add(k);
       return true;
     }));
+    setSelected(new Set());
+  };
+
+  // Bulk selection / actions
+  const toggleSelect = (i: number) =>
+    setSelected((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  const toggleSelectAll = () =>
+    setSelected((prev) => prev.size === items.length ? new Set() : new Set(items.map((_, i) => i)));
+  const bulkMarkRequired = (required: boolean) => {
+    if (selected.size === 0) return;
+    setItems((prev) => prev.map((it, i) => selected.has(i) ? { ...it, is_required: required } : it));
+  };
+  const bulkClearDescriptions = () => {
+    if (selected.size === 0) return;
+    setItems((prev) => prev.map((it, i) => selected.has(i) ? { ...it, description: undefined } : it));
+  };
+  const bulkDelete = () => {
+    if (selected.size === 0) return;
+    setItems((prev) => prev.filter((_, i) => !selected.has(i)));
+    setSelected(new Set());
+  };
+
+  const downloadReport = () => {
+    const valid = items.filter((it) => it.title.trim());
+    const lines: string[] = [];
+    lines.push("Checklist Import Report");
+    lines.push(`Generated,${new Date().toISOString()}`);
+    lines.push(`Checklist name,"${name}"`);
+    if (importStats) lines.push(`Source files,"${importStats.files.join("; ")}"`);
+    lines.push("");
+    lines.push("Summary");
+    lines.push(`Total parsed,${items.length}`);
+    lines.push(`Empty titles,${emptyIndices.size}`);
+    lines.push(`Duplicates,${duplicateIndices.size - new Set(Array.from(dupOf.values())).size}`);
+    lines.push(`Items to import,${valid.length - (duplicateIndices.size - new Set(Array.from(dupOf.values())).size)}`);
+    lines.push("");
+    lines.push("Row,Title,Description,Required,Source,Status");
+    items.forEach((it, i) => {
+      const status = emptyIndices.has(i) ? "EMPTY" : dupOf.has(i) ? `DUPLICATE of row ${dupOf.get(i)! + 1}` : "OK";
+      const esc = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
+      lines.push([i + 1, esc(it.title), esc(it.description ?? ""), it.is_required ? "yes" : "no", esc(it.sourceFile ?? ""), status].join(","));
+    });
+    const blob = new Blob([lines.join("\r\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(name || "checklist").replace(/[^a-z0-9-_]+/gi, "_")}-import-report.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const saveMutation = useMutation({
@@ -253,8 +366,8 @@ const ChecklistImportPage: React.FC = () => {
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleFile(file);
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length) handleFiles(files);
   };
 
   return (
