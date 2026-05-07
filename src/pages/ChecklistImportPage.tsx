@@ -586,6 +586,9 @@ const ChecklistImportPage: React.FC = () => {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Preview Items ({items.length})</CardTitle>
                 <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={downloadReport}>
+                    <Download className="mr-2 h-4 w-4" /> Report
+                  </Button>
                   {emptyIndices.size > 0 && (
                     <Button size="sm" variant="outline" onClick={removeEmpties}>Remove empty ({emptyIndices.size})</Button>
                   )}
@@ -595,6 +598,24 @@ const ChecklistImportPage: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
+                {/* Bulk actions bar */}
+                <div className="flex flex-wrap items-center gap-2 rounded-md border bg-muted/30 p-2 text-sm">
+                  <Checkbox
+                    checked={items.length > 0 && selected.size === items.length}
+                    onCheckedChange={toggleSelectAll}
+                    aria-label="Select all"
+                  />
+                  <span className="text-muted-foreground">
+                    {selected.size > 0 ? `${selected.size} selected` : "Select all"}
+                  </span>
+                  <div className="ml-auto flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" disabled={selected.size === 0} onClick={() => bulkMarkRequired(true)}>Mark required</Button>
+                    <Button size="sm" variant="outline" disabled={selected.size === 0} onClick={() => bulkMarkRequired(false)}>Mark optional</Button>
+                    <Button size="sm" variant="outline" disabled={selected.size === 0} onClick={bulkClearDescriptions}>Clear descriptions</Button>
+                    <Button size="sm" variant="outline" disabled={selected.size === 0} onClick={bulkDelete}>Delete</Button>
+                  </div>
+                </div>
+
                 {(emptyIndices.size > 0 || duplicateIndices.size > 0) ? (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
@@ -616,6 +637,7 @@ const ChecklistImportPage: React.FC = () => {
                 {items.map((it, i) => {
                   const isEmpty = emptyIndices.has(i);
                   const isDup = duplicateIndices.has(i);
+                  const dupRow = dupOf.get(i);
                   return (
                     <div
                       key={i}
@@ -625,11 +647,17 @@ const ChecklistImportPage: React.FC = () => {
                         !isEmpty && isDup && "border-yellow-500/60 bg-yellow-500/5",
                       )}
                     >
-                      <div className="flex items-center pt-2">
+                      <div className="flex flex-col items-center gap-2 pt-2">
+                        <Checkbox
+                          checked={selected.has(i)}
+                          onCheckedChange={() => toggleSelect(i)}
+                          aria-label="Select row"
+                        />
                         <Checkbox
                           checked={it.is_required}
                           onCheckedChange={(v) => updateItem(i, { is_required: Boolean(v) })}
                           title="Required"
+                          className="border-primary"
                         />
                       </div>
                       <div className="flex-1 space-y-1">
@@ -641,7 +669,14 @@ const ChecklistImportPage: React.FC = () => {
                             className={cn(isEmpty && "border-destructive")}
                           />
                           {isEmpty && <Badge variant="destructive">Empty</Badge>}
-                          {!isEmpty && isDup && <Badge className="bg-yellow-500 text-yellow-50 hover:bg-yellow-500">Duplicate</Badge>}
+                          {!isEmpty && isDup && (
+                            <Badge className="bg-yellow-500 text-yellow-50 hover:bg-yellow-500">
+                              {dupRow !== undefined ? `Duplicate of row ${dupRow + 1}` : "Duplicate"}
+                            </Badge>
+                          )}
+                          {it.sourceFile && importStats && importStats.files.length > 1 && (
+                            <Badge variant="outline" className="text-xs">{it.sourceFile}</Badge>
+                          )}
                         </div>
                         <Input
                           value={it.description ?? ""}
