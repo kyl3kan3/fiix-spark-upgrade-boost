@@ -9,6 +9,15 @@ import CustomReportForm from "./reports/CustomReportForm";
 import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import ImageGallery from "@/components/common/ImageGallery";
+
+// Stable UUIDs per built-in report type so we can attach photos via the attachments table
+const REPORT_ENTITY_IDS: Record<string, string> = {
+  "Work Order Statistics": "11111111-1111-4111-8111-111111111111",
+  "Asset Performance":     "22222222-2222-4222-8222-222222222222",
+  "Maintenance Trends":    "33333333-3333-4333-8333-333333333333",
+  "Custom Report":         "44444444-4444-4444-8444-444444444444",
+};
 
 const ReportsContent: React.FC = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -99,13 +108,29 @@ const ReportsContent: React.FC = () => {
       
       {/* Selected Report Chart */}
       {selectedReport && (
-        <ReportChart 
-          reportType={selectedReport}
-          data={getReportData()}
-          isMobile={isMobile}
-          isExporting={isExporting}
-          onExport={handleExportPdf}
-        />
+        <>
+          <ReportChart 
+            reportType={selectedReport}
+            data={getReportData()}
+            isMobile={isMobile}
+            isExporting={isExporting}
+            onExport={handleExportPdf}
+          />
+          {REPORT_ENTITY_IDS[selectedReport] && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Report Photos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageGallery
+                  entityType="report"
+                  entityId={REPORT_ENTITY_IDS[selectedReport]}
+                  title="Attached photos"
+                />
+              </CardContent>
+            </Card>
+          )}
+        </>
       )}
       
       {/* Custom Reports Section */}

@@ -2,13 +2,10 @@ import React, { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Loader2, Trash2, X } from "lucide-react";
+import { ImagePlus, Loader2, Trash2, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Pencil, Check } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const BUCKET = "asset-images";
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -28,7 +25,6 @@ interface ImageGalleryProps {
   entityId: string;
   title?: string;
   className?: string;
-  /** Compact preview (thumbnails only, no upload UI). */
   readOnly?: boolean;
 }
 
@@ -39,6 +35,7 @@ interface AttachmentRow {
   file_name: string | null;
   uploaded_by: string;
   created_at: string;
+  sort_order?: number | null;
 }
 
 export const ImageGallery: React.FC<ImageGalleryProps> = ({
@@ -51,7 +48,10 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [manageOpen, setManageOpen] = useState(false);
+  const [orderedIds, setOrderedIds] = useState<string[]>([]);
 
   const queryKey = ["attachments", entityType, entityId];
 
@@ -60,10 +60,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attachments")
-        .select("id,url,storage_path,file_name,uploaded_by,created_at")
+        .select("id,url,storage_path,file_name,uploaded_by,created_at,sort_order")
         .eq("entity_type", entityType)
         .eq("entity_id", entityId)
-        .order("created_at", { ascending: false });
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
       if (error) throw error;
       return (data || []) as AttachmentRow[];
     },
@@ -100,15 +101,14 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
       content_type: file.type,
       size_bytes: file.size,
       uploaded_by: user.id,
+      sort_order: Date.now() % 1000000,
     });
     if (insErr) throw insErr;
   };
 
   const uploadMutation = useMutation({
     mutationFn: async (files: File[]) => {
-      for (const f of files) {
-        await uploadOne(f);
-      }
+      for (const f of files) await uploadOne(f);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey });
@@ -137,21 +137,72 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
     onError: (e: any) => toast.error(e?.message || "Delete failed"),
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      await Promise.all(ids.map((id, idx) =>
+        supabase.from("attachments").update({ sort_order: idx }).eq("id", id)
+      ));
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey });
+      toast.success("Order saved");
+      setManageOpen(false);
+    },
+    onError: (e: any) => toast.error(e?.message || "Could not save order"),
+  });
+
+  const openManage = () => {
+    setOrderedIds(items.map((i) => i.id));
+    setManageOpen(true);
+  };
+
+  const moveItem = (idx: number, dir: -1 | 1) => {
+    setOrderedIds((prev) => {
+      const next = [...prev];
+      const target = idx + dir;
+      if (target < 0 || target >= next.length) return prev;
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+  };
+
+  const orderedForManage = orderedIds
+    .map((id) => items.find((i) => i.id === id))
+    .filter(Boolean) as AttachmentRow[];
+
+  const showLightbox = (i: number) => { setLightboxIndex(i); setZoom(1); };
+  const lightboxItem = lightboxIndex != null ? items[lightboxIndex] : null;
+  const navLightbox = (dir: -1 | 1) => {
+    if (lightboxIndex == null) return;
+    const next = (lightboxIndex + dir + items.length) % items.length;
+    setLightboxIndex(next);
+    setZoom(1);
+  };
+
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-sm">{title} {items.length > 0 && <span className="text-muted-foreground font-normal">({items.length})</span>}</h3>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-semibold text-sm">
+          {title} {items.length > 0 && <span className="text-muted-foreground font-normal">({items.length})</span>}
+        </h3>
         {!readOnly && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={uploading}
-            onClick={() => inputRef.current?.click()}
-          >
-            {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
-            {uploading ? "Uploading…" : "Add photos"}
-          </Button>
+          <div className="flex gap-2">
+            {items.length > 1 && (
+              <Button type="button" variant="outline" size="sm" onClick={openManage}>
+                <Pencil className="mr-2 h-4 w-4" /> Manage
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={uploading}
+              onClick={() => inputRef.current?.click()}
+            >
+              {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
+              {uploading ? "Uploading…" : "Add photos"}
+            </Button>
+          </div>
         )}
         <input
           ref={inputRef}
@@ -178,14 +229,14 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
         )
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {items.map((it) => (
+          {items.map((it, i) => (
             <div key={it.id} className="relative group aspect-square rounded-md overflow-hidden border bg-muted">
               <img
                 src={it.url}
                 alt={it.file_name || "Photo"}
                 className="h-full w-full object-cover cursor-zoom-in"
                 loading="lazy"
-                onClick={() => setPreviewUrl(it.url)}
+                onClick={() => showLightbox(i)}
               />
               {!readOnly && (
                 <Button
@@ -204,11 +255,81 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
         </div>
       )}
 
-      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
-        <DialogContent className="max-w-4xl p-0 bg-transparent border-0 shadow-none">
-          {previewUrl && (
-            <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-lg" />
+      {/* Lightbox with zoom + nav */}
+      <Dialog open={lightboxIndex != null} onOpenChange={(o) => !o && setLightboxIndex(null)}>
+        <DialogContent className="max-w-5xl p-0 bg-background border overflow-hidden">
+          {lightboxItem && (
+            <div className="relative">
+              <div className="overflow-auto max-h-[80vh] flex items-center justify-center bg-muted">
+                <img
+                  src={lightboxItem.url}
+                  alt={lightboxItem.file_name || "Preview"}
+                  className="transition-transform"
+                  style={{ transform: `scale(${zoom})`, transformOrigin: "center" }}
+                />
+              </div>
+              <div className="absolute top-2 right-2 flex gap-1">
+                <Button size="icon" variant="secondary" onClick={() => setZoom((z) => Math.max(0.5, +(z - 0.25).toFixed(2)))} title="Zoom out">
+                  <ZoomOut className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setZoom(1)} title="Reset zoom" className="px-2">
+                  <span className="text-xs font-medium">{Math.round(zoom * 100)}%</span>
+                </Button>
+                <Button size="icon" variant="secondary" onClick={() => setZoom((z) => Math.min(4, +(z + 0.25).toFixed(2)))} title="Zoom in">
+                  <ZoomIn className="h-4 w-4" />
+                </Button>
+              </div>
+              {items.length > 1 && (
+                <>
+                  <Button size="icon" variant="secondary" className="absolute left-2 top-1/2 -translate-y-1/2" onClick={() => navLightbox(-1)}>
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <Button size="icon" variant="secondary" className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => navLightbox(1)}>
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-background/80 px-3 py-1 rounded-full text-xs">
+                {(lightboxIndex ?? 0) + 1} / {items.length}
+                {lightboxItem.file_name ? ` — ${lightboxItem.file_name}` : ""}
+              </div>
+            </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage / reorder modal */}
+      <Dialog open={manageOpen} onOpenChange={setManageOpen}>
+        <DialogContent className="max-w-2xl">
+          <div className="space-y-3">
+            <h3 className="font-semibold">Manage photos</h3>
+            <p className="text-sm text-muted-foreground">Reorder using the arrows. Click Save to apply.</p>
+            <div className="space-y-2 max-h-[60vh] overflow-auto">
+              {orderedForManage.map((it, i) => (
+                <div key={it.id} className="flex items-center gap-3 border rounded-md p-2">
+                  <img src={it.url} alt="" className="h-14 w-14 object-cover rounded" />
+                  <div className="flex-1 truncate text-sm">{it.file_name || "Photo"}</div>
+                  <div className="flex gap-1">
+                    <Button size="icon" variant="ghost" disabled={i === 0} onClick={() => moveItem(i, -1)}>
+                      <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" disabled={i === orderedForManage.length - 1} onClick={() => moveItem(i, 1)}>
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="text-destructive" onClick={() => deleteMutation.mutate(it)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setManageOpen(false)}>Cancel</Button>
+              <Button onClick={() => reorderMutation.mutate(orderedIds)} disabled={reorderMutation.isPending}>
+                <Check className="mr-2 h-4 w-4" /> {reorderMutation.isPending ? "Saving…" : "Save order"}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
