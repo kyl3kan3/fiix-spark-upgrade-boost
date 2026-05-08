@@ -23,7 +23,7 @@ const NotificationsPanelFooter: React.FC<NotificationsPanelFooterProps> = ({
       >
         Mark all as read
       </Button>
-      <Button variant="ghost" size="sm" onClick={() => navigate("/admin/email-log")}>
+      <Button variant="ghost" size="sm" onClick={() => navigate("/notifications/email-log")}>
         View all
       </Button>
     </div>
