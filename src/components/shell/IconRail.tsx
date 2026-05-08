@@ -40,7 +40,7 @@ const IconRail: React.FC<IconRailProps> = () => {
   });
 
   return (
-    <aside className="hidden lg:flex flex-col w-[248px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen sticky top-0 z-30">
+    <aside className="hidden lg:flex flex-col w-[248px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen fixed left-0 top-0 z-40">
       {/* Brand */}
       <div className="h-20 flex items-center gap-3 px-5 border-b border-sidebar-border">
         <NavLink

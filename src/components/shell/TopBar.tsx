@@ -26,7 +26,7 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
   const name = profile?.first_name || "";
 
   return (
-    <header className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 right-0 left-0 lg:left-[248px] z-30 bg-background/90 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between gap-3 h-16 lg:h-20 px-4 md:px-6">
         {/* Left: mobile menu + greeting/title */}
         <div className="flex items-center gap-3 min-w-0 flex-1">
