@@ -441,6 +441,7 @@ export type Database = {
       }
       daily_logs: {
         Row: {
+          company_id: string | null
           created_at: string
           date: string
           equipment_readings: Json | null
@@ -456,6 +457,7 @@ export type Database = {
           weather_conditions: string | null
         }
         Insert: {
+          company_id?: string | null
           created_at?: string
           date: string
           equipment_readings?: Json | null
@@ -471,6 +473,7 @@ export type Database = {
           weather_conditions?: string | null
         }
         Update: {
+          company_id?: string | null
           created_at?: string
           date?: string
           equipment_readings?: Json | null
