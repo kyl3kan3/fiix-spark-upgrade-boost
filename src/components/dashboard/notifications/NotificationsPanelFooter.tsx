@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface NotificationsPanelFooterProps {
   unreadCount: number;
@@ -11,6 +12,7 @@ const NotificationsPanelFooter: React.FC<NotificationsPanelFooterProps> = ({
   unreadCount, 
   onMarkAllAsRead 
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="p-3 border-t dark:border-gray-700 flex justify-between">
       <Button 
@@ -21,7 +23,7 @@ const NotificationsPanelFooter: React.FC<NotificationsPanelFooterProps> = ({
       >
         Mark all as read
       </Button>
-      <Button variant="ghost" size="sm">
+      <Button variant="ghost" size="sm" onClick={() => navigate("/admin/email-log")}>
         View all
       </Button>
     </div>
