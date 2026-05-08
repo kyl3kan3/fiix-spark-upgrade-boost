@@ -36,14 +36,18 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
 
   // Close the panel when clicking outside
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(event.target as Node) && isOpen) {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    // Defer attaching so the click that opened the panel doesn't immediately close it
+    const t = window.setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 0);
     return () => {
+      window.clearTimeout(t);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, setIsOpen]);
@@ -87,7 +91,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           />
           
           <NotificationsList 
-            notifications={notifications}
+            notifications={notifications.filter((n) => n.type !== 'email')}
             loading={loading}
             onDismiss={handleDismissNotification}
           />
