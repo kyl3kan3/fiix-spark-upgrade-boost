@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "./AuthLayout";
 import { AuthContent } from "./AuthContent";
 import { useAuth } from "@/hooks/auth";
@@ -41,6 +43,40 @@ export const AuthContainer: React.FC = () => {
     if (params.get("signup") === "true") {
       setIsSignUp(true);
     }
+
+    // Handle invitation token from email link
+    const token = params.get("token");
+    if (token) {
+      setIsSignUp(true);
+      localStorage.setItem("pending_invite_token", token);
+      (async () => {
+        const { data: invitation } = await supabase
+          .from("organization_invitations")
+          .select("email, status, organization_id")
+          .eq("token", token)
+          .maybeSingle();
+
+        if (!invitation) {
+          toast.error("Invitation not found", {
+            description: "This link is invalid or has already been used.",
+          });
+          localStorage.removeItem("pending_invite_token");
+          return;
+        }
+        if (invitation.status !== "pending") {
+          toast.info("This invitation has already been accepted.");
+          localStorage.removeItem("pending_invite_token");
+          return;
+        }
+        if (invitation.email) {
+          localStorage.setItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, invitation.email);
+        }
+        toast.success("You're invited!", {
+          description: `Create your account with ${invitation.email} to join the team.`,
+        });
+      })();
+    }
+
     clearError();
   }, [location, clearError]);
 
