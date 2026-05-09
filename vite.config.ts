@@ -12,6 +12,11 @@ export default defineConfig(({ mode }) => ({
   build: {
     sourcemap: true,
   },
+  optimizeDeps: {
+    // Always re-bundle deps on dev server startup to avoid stale
+    // ".vite/deps" chunks causing "Importing a module script failed".
+    force: true,
+  },
   plugins: [
     react(),
     mode === 'development' &&
