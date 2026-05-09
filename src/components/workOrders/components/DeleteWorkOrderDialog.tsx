@@ -14,12 +14,14 @@ interface DeleteWorkOrderDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
+  isDeleting?: boolean;
 }
 
 export const DeleteWorkOrderDialog: React.FC<DeleteWorkOrderDialogProps> = ({ 
   isOpen, 
   onClose, 
-  onDelete 
+  onDelete,
+  isDeleting = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -34,14 +36,16 @@ export const DeleteWorkOrderDialog: React.FC<DeleteWorkOrderDialogProps> = ({
           <Button 
             variant="outline" 
             onClick={onClose}
+            disabled={isDeleting}
           >
             Cancel
           </Button>
           <Button 
             variant="destructive" 
             onClick={onDelete}
+            disabled={isDeleting}
           >
-            Delete
+            {isDeleting ? "Deleting…" : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

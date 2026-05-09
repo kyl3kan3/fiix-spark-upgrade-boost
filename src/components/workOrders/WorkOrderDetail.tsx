@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 
@@ -20,32 +20,35 @@ interface WorkOrderDetailProps {
 // Update component to receive and use the workOrder prop
 const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
+    if (isDeleting) return;
+    setIsDeleting(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("work_orders")
         .delete()
-        .eq("id", workOrder.id);
+        .eq("id", workOrder.id)
+        .select("id");
 
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error("You don't have permission to delete this job.");
+      }
 
-      toast({
-        title: "Work Order Deleted",
-        description: "The work order has been successfully deleted."
+      toast.success("Job deleted", {
+        description: "The work order has been removed.",
       });
-      
+      setIsDeleteDialogOpen(false);
       navigate("/work-orders");
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete the work order",
-        variant: "destructive"
+      toast.error("Couldn't delete job", {
+        description: error.message || "Please try again.",
       });
     } finally {
-      setIsDeleteDialogOpen(false);
+      setIsDeleting(false);
     }
   };
 
@@ -71,8 +74,9 @@ const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
       {/* Delete Confirmation Dialog */}
       <DeleteWorkOrderDialog 
         isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
+        onClose={() => !isDeleting && setIsDeleteDialogOpen(false)}
         onDelete={handleDelete}
+        isDeleting={isDeleting}
       />
     </>
   );
