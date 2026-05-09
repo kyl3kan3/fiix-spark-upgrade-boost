@@ -1,10 +1,16 @@
 
 import { useState } from "react";
 import { FormStateData } from "@/types/forms";
+import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 
 export function useFormState() {
+  const initialEmail =
+    typeof window !== "undefined"
+      ? localStorage.getItem(AUTH_STORAGE_KEYS.PENDING_EMAIL) || ""
+      : "";
+
   const [formData, setFormData] = useState<FormStateData>({
-    email: "",
+    email: initialEmail,
     password: "",
     name: "",
     companyName: "",
