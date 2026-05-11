@@ -42,6 +42,19 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Require shared secret — only the database (pg_cron) may call this.
+    const SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
+    if (!SHARED_SECRET) {
+      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (req.headers.get("x-notify-secret") !== SHARED_SECRET) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: companies } = await admin
       .from("companies")
       .select("id, name, temp_min_c, temp_max_c, temp_unit, weather_alerts_enabled")
