@@ -64,6 +64,20 @@ export const markAllNotificationsAsRead = async (): Promise<void> => {
   if (error) throw error;
 };
 
+// Function to delete (clear) all of the current user's notifications
+export const clearAllNotifications = async (): Promise<void> => {
+  const { data: userData } = await supabase.auth.getUser();
+  const userId = userData?.user?.id;
+  if (!userId) throw new Error('Not authenticated');
+
+  const { error } = await supabase
+    .from('notifications')
+    .delete()
+    .eq('user_id', userId);
+
+  if (error) throw error;
+};
+
 // Function to register a device token for push notifications
 export const registerDeviceToken = async (token: string, deviceType: 'web' | 'ios' | 'android'): Promise<void> => {
   const { data: user } = await supabase.auth.getUser();
