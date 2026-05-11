@@ -428,6 +428,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
 
 export default ImageGallery;
 
+const ManageThumb: React.FC<{ src: string }> = ({ src }) => {
+  const url = useSignedAssetImageUrl(src);
+  return <img src={url ?? src} alt="" className="h-14 w-14 object-cover rounded" />;
+};
+
 interface PhotoCardProps {
   item: AttachmentRow;
   readOnly?: boolean;
