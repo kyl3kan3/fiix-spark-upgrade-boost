@@ -10,6 +10,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
 const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
@@ -315,6 +316,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Require shared secret — only the database (cron + triggers) may call this.
+    if (!NOTIFY_SHARED_SECRET) {
+      console.error("NOTIFY_SHARED_SECRET not configured");
+      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const provided = req.headers.get("x-notify-secret");
+    if (!provided || provided !== NOTIFY_SHARED_SECRET) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { event_type, payload } = await req.json();
 
     switch (event_type) {
