@@ -2,7 +2,6 @@ import React, { useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import * as XLSX from "xlsx";
-import mammoth from "mammoth";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { Button } from "@/components/ui/button";
@@ -12,82 +11,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ChecklistTypes, ChecklistFrequencies } from "@/types/checklists";
 import { checklistService } from "@/services/checklistService";
 import { toast } from "sonner";
-import { Trash2, Upload, FileSpreadsheet, FileText, Download, AlertTriangle, CheckCircle2, X } from "lucide-react";
+import { Upload, FileSpreadsheet, FileText, Download, AlertTriangle, CheckCircle2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type DraftItem = { title: string; description?: string; is_required: boolean; sourceFile?: string };
-type Step = "upload" | "configure" | "preview";
-
-const NONE = "__none__";
-
-const normalizeTitle = (s: string) =>
-  s.toLowerCase().replace(/[\p{P}\p{S}]/gu, "").replace(/\s+/g, " ").trim();
-
-function downloadExcelTemplate() {
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet([
-    ["Title", "Description", "Required"],
-    ["Check oil level", "Inspect dipstick reading", "yes"],
-    ["Inspect belts", "Look for cracks or fraying", "no"],
-    ["Verify safety guards in place", "", "yes"],
-  ]);
-  ws["!cols"] = [{ wch: 32 }, { wch: 40 }, { wch: 12 }];
-  XLSX.utils.book_append_sheet(wb, ws, "Checklist");
-  XLSX.writeFile(wb, "checklist-template.xlsx");
-}
-
-function downloadWordTemplate() {
-  const lines = [
-    "Checklist Template",
-    "",
-    "Each non-empty line below becomes one checklist item.",
-    "Numbering and bullets (1., -, *, •) are stripped automatically.",
-    "",
-    "1. Check oil level",
-    "2. Inspect belts",
-    "3. Verify safety guards in place",
-    "- Test emergency stop button",
-    "- Record temperature readings",
-  ];
-  const blob = new Blob([lines.join("\r\n")], { type: "application/msword" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "checklist-template.doc";
-  a.click();
-  URL.revokeObjectURL(url);
-}
+import {
+  NONE,
+  normalizeTitle,
+  downloadExcelTemplate,
+  downloadWordTemplate,
+  parseExcelAuto,
+  parseWord,
+  type DraftItem,
+  type Step,
+} from "@/components/checklists/import/parsers";
+import { PreviewItemRow } from "@/components/checklists/import/PreviewItemRow";
 
 const ChecklistImportPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Form
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("general");
   const [frequency, setFrequency] = useState("one-time");
 
-  // Upload + parsing state
   const [step, setStep] = useState<Step>("upload");
   const [fileName, setFileName] = useState<string>("");
   const [parsing, setParsing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
-  // Excel state
   const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
   const [sheetName, setSheetName] = useState<string>("");
   const [columns, setColumns] = useState<string[]>([]);
-  const [rawRows, setRawRows] = useState<Record<string, any>[]>([]);
+  const [rawRows, setRawRows] = useState<Record<string, unknown>[]>([]);
   const [titleCol, setTitleCol] = useState<string>("");
   const [descCol, setDescCol] = useState<string>(NONE);
   const [reqCol, setReqCol] = useState<string>(NONE);
 
-  // Word / final items
   const [items, setItems] = useState<DraftItem[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [importStats, setImportStats] = useState<{ files: string[]; totalParsed: number } | null>(null);
@@ -112,60 +74,28 @@ const ChecklistImportPage: React.FC = () => {
 
   const loadSheet = (wb: XLSX.WorkBook, sn: string) => {
     const sheet = wb.Sheets[sn];
-    const aoa = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, defval: "" });
+    const aoa = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, defval: "" });
     if (aoa.length === 0) {
       setColumns([]);
       setRawRows([]);
       return;
     }
-    const headerRow = aoa[0].map((h, i) => String(h ?? "").trim() || `Column ${i + 1}`);
+    const headerRow = (aoa[0] as unknown[]).map((h, i) => String(h ?? "").trim() || `Column ${i + 1}`);
     const rows = aoa.slice(1).map((r) => {
-      const o: Record<string, any> = {};
-      headerRow.forEach((h, i) => { o[h] = r[i] ?? ""; });
+      const o: Record<string, unknown> = {};
+      headerRow.forEach((h, i) => { o[h] = (r as unknown[])[i] ?? ""; });
       return o;
     });
     setColumns(headerRow);
     setRawRows(rows);
-    // Auto-guess
     const guess = (re: RegExp) => headerRow.find((h) => re.test(h)) || "";
     setTitleCol(guess(/title|task|item|name/i) || headerRow[0]);
     setDescCol(guess(/desc|note/i) || NONE);
     setReqCol(guess(/required|must|mandatory/i) || NONE);
   };
 
-  const parseExcelAuto = async (file: File): Promise<DraftItem[]> => {
-    const buf = await file.arrayBuffer();
-    const wb = XLSX.read(buf, { type: "array" });
-    const sn = wb.SheetNames[0];
-    const aoa = XLSX.utils.sheet_to_json<any[]>(wb.Sheets[sn], { header: 1, defval: "" });
-    if (aoa.length === 0) return [];
-    const headers = aoa[0].map((h: any, i: number) => String(h ?? "").trim() || `Column ${i + 1}`);
-    const guess = (re: RegExp) => headers.findIndex((h) => re.test(h));
-    const tIdx = (() => { const i = guess(/title|task|item|name/i); return i >= 0 ? i : 0; })();
-    const dIdx = guess(/desc|note/i);
-    const rIdx = guess(/required|must|mandatory/i);
-    return aoa.slice(1).map((r) => {
-      const title = String(r[tIdx] ?? "").trim();
-      if (!title) return null;
-      const desc = dIdx >= 0 ? String(r[dIdx] ?? "").trim() : "";
-      const req = rIdx >= 0 ? /^(true|yes|y|1|x|required)$/i.test(String(r[rIdx]).trim()) : false;
-      return { title, description: desc || undefined, is_required: req, sourceFile: file.name } as DraftItem;
-    }).filter(Boolean) as DraftItem[];
-  };
-
-  const parseWord = async (file: File): Promise<DraftItem[]> => {
-    const buf = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ arrayBuffer: buf });
-    return result.value
-      .split(/\r?\n/)
-      .map((l) => l.replace(/^[\s\-\*\u2022\d\.\)\(]+/, "").trim())
-      .filter((l) => l.length > 0)
-      .map<DraftItem>((title) => ({ title, is_required: false, sourceFile: file.name }));
-  };
-
   const handleFiles = useCallback(async (files: File[]) => {
     if (files.length === 0) return;
-    // Single Excel file → go through configure step for column mapping
     if (files.length === 1 && /\.(xlsx|xls|csv)$/i.test(files[0].name)) {
       const file = files[0];
       setParsing(true);
@@ -179,8 +109,8 @@ const ChecklistImportPage: React.FC = () => {
         loadSheet(wb, first);
         if (!name) setName(file.name.replace(/\.[^.]+$/, ""));
         setStep("configure");
-      } catch (err: any) {
-        toast.error(err?.message || "Failed to parse file");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Failed to parse file");
         reset();
       } finally {
         setParsing(false);
@@ -188,7 +118,6 @@ const ChecklistImportPage: React.FC = () => {
       return;
     }
 
-    // Multiple files (or single Word) → auto-parse all and merge
     setParsing(true);
     setFileName(files.map((f) => f.name).join(", "));
     try {
@@ -207,15 +136,13 @@ const ChecklistImportPage: React.FC = () => {
       setImportStats({ files: fileNames, totalParsed: merged.length });
       if (!name) setName(files[0].name.replace(/\.[^.]+$/, ""));
       setStep("preview");
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to parse files");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to parse files");
       reset();
     } finally {
       setParsing(false);
     }
   }, [name]);
-
-  const handleFile = (file: File) => handleFiles([file]);
 
   const onSheetChange = (sn: string) => {
     if (!workbook) return;
@@ -245,12 +172,11 @@ const ChecklistImportPage: React.FC = () => {
     setStep("preview");
   };
 
-  // Validation in preview
   const { duplicateIndices, emptyIndices, dupOf } = useMemo(() => {
     const seen = new Map<string, number>();
     const dup = new Set<number>();
     const empty = new Set<number>();
-    const dupOf = new Map<number, number>(); // index -> first occurrence row #
+    const dupOf = new Map<number, number>();
     items.forEach((it, i) => {
       const t = normalizeTitle(it.title);
       if (!t) empty.add(i);
@@ -269,7 +195,10 @@ const ChecklistImportPage: React.FC = () => {
     setItems((prev) => prev.filter((_, idx) => idx !== i));
     setSelected(new Set());
   };
-  const removeEmpties = () => { setItems((prev) => prev.filter((it) => it.title.trim())); setSelected(new Set()); };
+  const removeEmpties = () => {
+    setItems((prev) => prev.filter((it) => it.title.trim()));
+    setSelected(new Set());
+  };
   const dedupe = () => {
     const seen = new Set<string>();
     setItems((prev) => prev.filter((it) => {
@@ -281,9 +210,12 @@ const ChecklistImportPage: React.FC = () => {
     setSelected(new Set());
   };
 
-  // Bulk selection / actions
   const toggleSelect = (i: number) =>
-    setSelected((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+    setSelected((prev) => {
+      const n = new Set(prev);
+      if (n.has(i)) n.delete(i); else n.add(i);
+      return n;
+    });
   const toggleSelectAll = () =>
     setSelected((prev) => prev.size === items.length ? new Set() : new Set(items.map((_, i) => i)));
   const bulkMarkRequired = (required: boolean) => {
@@ -302,6 +234,7 @@ const ChecklistImportPage: React.FC = () => {
 
   const downloadReport = () => {
     const valid = items.filter((it) => it.title.trim());
+    const dupCount = duplicateIndices.size - new Set(Array.from(dupOf.values())).size;
     const lines: string[] = [];
     lines.push("Checklist Import Report");
     lines.push(`Generated,${new Date().toISOString()}`);
@@ -311,8 +244,8 @@ const ChecklistImportPage: React.FC = () => {
     lines.push("Summary");
     lines.push(`Total parsed,${items.length}`);
     lines.push(`Empty titles,${emptyIndices.size}`);
-    lines.push(`Duplicates,${duplicateIndices.size - new Set(Array.from(dupOf.values())).size}`);
-    lines.push(`Items to import,${valid.length - (duplicateIndices.size - new Set(Array.from(dupOf.values())).size)}`);
+    lines.push(`Duplicates,${dupCount}`);
+    lines.push(`Items to import,${valid.length - dupCount}`);
     lines.push("");
     lines.push("Row,Title,Description,Required,Source,Status");
     items.forEach((it, i) => {
@@ -359,16 +292,17 @@ const ChecklistImportPage: React.FC = () => {
       toast.success("Checklist imported");
       navigate(`/checklists/${c.id}`);
     },
-    onError: (e: any) => toast.error(e?.message || "Failed to save checklist"),
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Failed to save checklist"),
   });
 
-  // Drag & drop handlers
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
     const files = Array.from(e.dataTransfer.files || []);
     if (files.length) handleFiles(files);
   };
+
+  const showSourceBadge = (importStats?.files.length ?? 0) > 1;
 
   return (
     <DashboardLayout>
@@ -379,13 +313,10 @@ const ChecklistImportPage: React.FC = () => {
           <p className="text-muted-foreground">Upload an Excel or Word document to create a new checklist.</p>
         </div>
 
-        {/* Stepper */}
         <div className="flex items-center gap-2 text-sm">
           {(["upload", "configure", "preview"] as Step[]).map((s, i) => {
             const active = step === s;
-            const done =
-              (s === "upload" && step !== "upload") ||
-              (s === "configure" && step === "preview");
+            const done = (s === "upload" && step !== "upload") || (s === "configure" && step === "preview");
             const labels = { upload: "1. Upload", configure: "2. Map Columns", preview: "3. Preview & Save" } as const;
             const skipConfigure = isWord && s === "configure";
             return (
@@ -406,7 +337,6 @@ const ChecklistImportPage: React.FC = () => {
           })}
         </div>
 
-        {/* STEP 1 — Upload */}
         {step === "upload" && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -474,7 +404,6 @@ const ChecklistImportPage: React.FC = () => {
           </Card>
         )}
 
-        {/* STEP 2 — Configure (Excel only) */}
         {step === "configure" && isExcel && workbook && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -543,7 +472,6 @@ const ChecklistImportPage: React.FC = () => {
           </Card>
         )}
 
-        {/* STEP 3 — Preview */}
         {step === "preview" && (
           <>
             <Card>
@@ -598,7 +526,6 @@ const ChecklistImportPage: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {/* Bulk actions bar */}
                 <div className="flex flex-wrap items-center gap-2 rounded-md border bg-muted/30 p-2 text-sm">
                   <Checkbox
                     checked={items.length > 0 && selected.size === items.length}
@@ -634,62 +561,21 @@ const ChecklistImportPage: React.FC = () => {
                   </Alert>
                 ) : null}
 
-                {items.map((it, i) => {
-                  const isEmpty = emptyIndices.has(i);
-                  const isDup = duplicateIndices.has(i);
-                  const dupRow = dupOf.get(i);
-                  return (
-                    <div
-                      key={i}
-                      className={cn(
-                        "flex items-start gap-2 border rounded-md p-2",
-                        isEmpty && "border-destructive/60 bg-destructive/5",
-                        !isEmpty && isDup && "border-yellow-500/60 bg-yellow-500/5",
-                      )}
-                    >
-                      <div className="flex flex-col items-center gap-2 pt-2">
-                        <Checkbox
-                          checked={selected.has(i)}
-                          onCheckedChange={() => toggleSelect(i)}
-                          aria-label="Select row"
-                        />
-                        <Checkbox
-                          checked={it.is_required}
-                          onCheckedChange={(v) => updateItem(i, { is_required: Boolean(v) })}
-                          title="Required"
-                          className="border-primary"
-                        />
-                      </div>
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={it.title}
-                            onChange={(e) => updateItem(i, { title: e.target.value })}
-                            placeholder="Item title"
-                            className={cn(isEmpty && "border-destructive")}
-                          />
-                          {isEmpty && <Badge variant="destructive">Empty</Badge>}
-                          {!isEmpty && isDup && (
-                            <Badge className="bg-yellow-500 text-yellow-50 hover:bg-yellow-500">
-                              {dupRow !== undefined ? `Duplicate of row ${dupRow + 1}` : "Duplicate"}
-                            </Badge>
-                          )}
-                          {it.sourceFile && importStats && importStats.files.length > 1 && (
-                            <Badge variant="outline" className="text-xs">{it.sourceFile}</Badge>
-                          )}
-                        </div>
-                        <Input
-                          value={it.description ?? ""}
-                          onChange={(e) => updateItem(i, { description: e.target.value })}
-                          placeholder="Description (optional)"
-                        />
-                      </div>
-                      <Button variant="ghost" size="icon" onClick={() => removeItem(i)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  );
-                })}
+                {items.map((it, i) => (
+                  <PreviewItemRow
+                    key={i}
+                    item={it}
+                    index={i}
+                    isEmpty={emptyIndices.has(i)}
+                    isDuplicate={duplicateIndices.has(i)}
+                    duplicateOf={dupOf.get(i)}
+                    isSelected={selected.has(i)}
+                    showSourceBadge={showSourceBadge}
+                    onUpdate={(patch) => updateItem(i, patch)}
+                    onRemove={() => removeItem(i)}
+                    onToggleSelect={() => toggleSelect(i)}
+                  />
+                ))}
               </CardContent>
             </Card>
 

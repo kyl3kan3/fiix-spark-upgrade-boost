@@ -37,7 +37,7 @@ const InspectionsPage = () => {
     status: filters.status,
     priority: "all", // Default priority filter
     assignedTo: filters.assignee,
-    dateRange: { from: undefined, to: undefined } // Default date range
+    dateRange: { from: undefined as Date | undefined, to: undefined as Date | undefined }
   };
 
   return (

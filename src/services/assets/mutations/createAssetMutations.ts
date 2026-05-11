@@ -1,6 +1,9 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import type { PostgrestError } from "@supabase/supabase-js";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
+
+type BulkInsertResult<T = unknown> = { data: T[] | null; error: PostgrestError | null };
 
 async function getCurrentUserCompanyId(): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser();
@@ -55,7 +58,7 @@ export async function createParentAsset(parentData: {
   return response;
 }
 
-export async function bulkCreateAssets(names: string[], opts?: { description?: string }) {
+export async function bulkCreateAssets(names: string[], opts?: { description?: string }): Promise<BulkInsertResult> {
   const company_id = await getCurrentUserCompanyId();
   const rows = names
     .map((n) => n.trim())
@@ -79,7 +82,7 @@ export type BulkAssetRow = {
   status?: string | null;
 };
 
-export async function bulkCreateAssetsFromRows(rows: BulkAssetRow[]) {
+export async function bulkCreateAssetsFromRows(rows: BulkAssetRow[]): Promise<BulkInsertResult> {
   const company_id = await getCurrentUserCompanyId();
   const allowed = new Set(["active", "inactive", "maintenance", "retired"]);
   const cleaned = rows

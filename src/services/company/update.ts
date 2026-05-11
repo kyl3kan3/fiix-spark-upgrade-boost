@@ -74,9 +74,10 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
     };
     
     // Remove undefined values
-    Object.keys(finalUpdateData).forEach(key => 
-      finalUpdateData[key] === undefined && delete finalUpdateData[key]
-    );
+    Object.keys(finalUpdateData).forEach(key => {
+      const k = key as keyof typeof finalUpdateData;
+      if (finalUpdateData[k] === undefined) delete finalUpdateData[k];
+    });
     
     console.log("Final update data:", finalUpdateData);
     

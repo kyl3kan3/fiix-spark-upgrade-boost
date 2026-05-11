@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { requireUserCompany } from "@/services/supabaseHelpers";
 
 export interface Location {
   id: string;
@@ -91,25 +92,11 @@ export const getLocationPath = async (id: string): Promise<string> => {
 
 export const createLocation = async (locationData: CreateLocationData): Promise<Location> => {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error('You must be signed in to create a location.');
-      throw new Error('Not authenticated');
-    }
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    if (profileError) throw profileError;
-    if (!profile?.company_id) {
-      toast.error('Your account is not linked to a company.');
-      throw new Error('Missing company');
-    }
+    const { companyId } = await requireUserCompany();
 
     const { data, error } = await supabase
       .from('locations')
-      .insert([{ ...locationData, company_id: profile.company_id }])
+      .insert([{ ...locationData, company_id: companyId }])
       .select()
       .single();
 
@@ -152,30 +139,14 @@ export const updateLocation = async (id: string, updates: Partial<CreateLocation
 
 export const deleteLocation = async (id: string): Promise<void> => {
   try {
-    // Get the current user's company_id
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error('User not authenticated');
-      throw new Error('User not authenticated');
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile?.company_id) {
-      toast.error('User company not found');
-      throw new Error('User company not found');
-    }
+    const { companyId } = await requireUserCompany();
 
     // Check for child locations in user's company
     const { data: childLocations, error: childError } = await supabase
       .from('locations')
       .select('id')
       .eq('parent_id', id)
-      .eq('company_id', profile.company_id);
+      .eq('company_id', companyId);
 
     if (childError) {
       console.error('Error checking child locations:', childError);
@@ -193,7 +164,7 @@ export const deleteLocation = async (id: string): Promise<void> => {
       .from('assets')
       .select('id')
       .eq('location_id', id)
-      .eq('company_id', profile.company_id);
+      .eq('company_id', companyId);
 
     if (assetsError) {
       console.error('Error checking location assets:', assetsError);
@@ -211,7 +182,7 @@ export const deleteLocation = async (id: string): Promise<void> => {
       .from('locations')
       .delete()
       .eq('id', id)
-      .eq('company_id', profile.company_id);
+      .eq('company_id', companyId);
 
     if (error) {
       console.error('Error deleting location:', error);

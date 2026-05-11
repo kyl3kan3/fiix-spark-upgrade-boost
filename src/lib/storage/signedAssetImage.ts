@@ -42,7 +42,7 @@ export function useSignedAssetImageUrl(input: string | null | undefined): string
   const [url, setUrl] = useState<string | null>(input ?? null);
   useEffect(() => {
     let cancelled = false;
-    if (!input) { setUrl(null); return; }
+    if (!input) { setUrl(null); return undefined; }
     getSignedAssetImageUrl(input).then((u) => { if (!cancelled) setUrl(u); });
     return () => { cancelled = true; };
   }, [input]);

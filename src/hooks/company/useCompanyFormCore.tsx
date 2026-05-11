@@ -53,8 +53,8 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
 
   // Auto-save when form values change (but only after initialization)
   useEffect(() => {
-    if (!isInitialized) return;
-    
+    if (!isInitialized) return undefined;
+
     const subscription = form.watch((values) => {
       // Only call onUpdate if we have valid data
       if (values && typeof onUpdate === 'function') {

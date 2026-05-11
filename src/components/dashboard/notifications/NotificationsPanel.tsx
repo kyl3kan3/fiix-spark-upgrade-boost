@@ -37,7 +37,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
 
   // Close the panel when clicking outside
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return undefined;
     const handleClickOutside = (event: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
         setIsOpen(false);

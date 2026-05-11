@@ -1,10 +1,10 @@
 
 // Data will be populated from database
-export const emptyWorkOrdersData = [];
+export const emptyWorkOrdersData: { month: string; completed: number; pending: number; canceled: number }[] = [];
 
-export const emptyMaintenanceCostsData = [];
+export const emptyMaintenanceCostsData: { month: string; planned: number; unplanned: number }[] = [];
 
-export const emptyAssetStatusData = [];
+export const emptyAssetStatusData: { name: string; value: number; color: string }[] = [];
 
 export const workCompletionRateConfig = {
   completed: {

@@ -87,7 +87,7 @@ export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> 
 
   const { data, error } = await supabase
     .from("vendors")
-    .insert([{ ...vendorData, company_id: profile.company_id }])
+    .insert([{ ...vendorData, company_id: profile.company_id as string }])
     .select()
     .single();
 

@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { requireUserCompany } from "@/services/supabaseHelpers";
 
 export interface Asset {
   id: string;
@@ -84,28 +85,14 @@ export const getAssetById = async (id: string): Promise<Asset | null> => {
 
 export const createAsset = async (assetData: CreateAssetData): Promise<Asset> => {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error('You must be signed in to create an asset.');
-      throw new Error('Not authenticated');
-    }
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    if (profileError) throw profileError;
-    if (!profile?.company_id) {
-      toast.error('Your account is not linked to a company.');
-      throw new Error('Missing company');
-    }
+    const { companyId } = await requireUserCompany();
 
     const { data, error } = await supabase
       .from('assets')
       .insert([{
         ...assetData,
         status: assetData.status || 'active',
-        company_id: profile.company_id,
+        company_id: companyId,
       }])
       .select()
       .single();

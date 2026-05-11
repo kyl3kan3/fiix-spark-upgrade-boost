@@ -25,30 +25,26 @@ export function useProfile() {
 
   // Profile operations
   const saveProfile = useCallback(async (updates: Partial<ProfileData>) => {
-    if (!profile) return;
+    if (!profile) return undefined;
 
     try {
       setSavingState(true);
       const updatedProfile = await saveProfileAction(profile.id, updates);
       handleProfileUpdate(updatedProfile);
       return updatedProfile;
-    } catch (error) {
-      throw error;
     } finally {
       setSavingState(false);
     }
   }, [profile, saveProfileAction, setSavingState, handleProfileUpdate]);
 
   const updateAvatar = useCallback(async (file: File | null) => {
-    if (!profile) return;
+    if (!profile) return undefined;
 
     try {
       setSavingState(true);
       const updatedProfile = await updateAvatarAction(profile.id, file);
       handleProfileUpdate(updatedProfile);
       return updatedProfile;
-    } catch (error) {
-      throw error;
     } finally {
       setSavingState(false);
     }

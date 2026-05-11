@@ -12,7 +12,7 @@ export const useMessages = (recipientId: string | undefined) => {
     // Skip if no recipient is selected
     if (!recipientId) {
       setMessages([]);
-      return;
+      return undefined;
     }
 
     const fetchMessages = async () => {
