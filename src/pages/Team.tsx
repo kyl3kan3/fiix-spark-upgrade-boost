@@ -11,6 +11,7 @@ import TeamMembersGrid from "@/components/team/TeamMembersGrid";
 import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
 import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
+import { usePendingInvitations } from "@/hooks/team/usePendingInvitations";
 
 const Team = () => {
   const [filters, setFilters] = useState({
@@ -22,6 +23,7 @@ const Team = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { teamMembers, loading } = useTeamMembers();
+  const { pendingInvitations, loading: invitesLoading, refreshPendingInvitations } = usePendingInvitations();
 
   const filteredMembers = teamMembers.filter((member) => {
     const matchesSearch = !filters.search || 
@@ -122,7 +124,12 @@ const Team = () => {
           </TabsContent>
           
           <TabsContent value="invitations" className="mt-0">
-            <PendingInvitationsSection invitations={[]} roleColorMap={roleColorMap} />
+            <PendingInvitationsSection
+              invitations={pendingInvitations}
+              roleColorMap={roleColorMap}
+              loading={invitesLoading}
+              onInvitationDeleted={refreshPendingInvitations}
+            />
           </TabsContent>
           
           <TabsContent value="roles" className="mt-0">
