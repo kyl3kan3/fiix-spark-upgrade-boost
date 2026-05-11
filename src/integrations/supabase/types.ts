@@ -401,7 +401,11 @@ export type Database = {
           name: string
           phone: string | null
           state: string | null
+          temp_max_c: number | null
+          temp_min_c: number | null
+          temp_unit: string
           updated_at: string
+          weather_alerts_enabled: boolean
           website: string | null
           zip_code: string | null
         }
@@ -417,7 +421,11 @@ export type Database = {
           name: string
           phone?: string | null
           state?: string | null
+          temp_max_c?: number | null
+          temp_min_c?: number | null
+          temp_unit?: string
           updated_at?: string
+          weather_alerts_enabled?: boolean
           website?: string | null
           zip_code?: string | null
         }
@@ -433,7 +441,11 @@ export type Database = {
           name?: string
           phone?: string | null
           state?: string | null
+          temp_max_c?: number | null
+          temp_min_c?: number | null
+          temp_unit?: string
           updated_at?: string
+          weather_alerts_enabled?: boolean
           website?: string | null
           zip_code?: string | null
         }
@@ -554,9 +566,12 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          latitude: number | null
+          longitude: number | null
           name: string
           parent_id: string | null
           updated_at: string
+          weather_alerts_enabled: boolean
         }
         Insert: {
           company_id?: string | null
@@ -564,9 +579,12 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
           parent_id?: string | null
           updated_at?: string
+          weather_alerts_enabled?: boolean
         }
         Update: {
           company_id?: string | null
@@ -574,9 +592,12 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           parent_id?: string | null
           updated_at?: string
+          weather_alerts_enabled?: boolean
         }
         Relationships: [
           {
@@ -1196,6 +1217,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      weather_alert_state: {
+        Row: {
+          company_id: string
+          last_alert_at: string | null
+          last_kind: string
+          last_temperature_c: number | null
+          location_id: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          last_alert_at?: string | null
+          last_kind?: string
+          last_temperature_c?: number | null
+          location_id: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          last_alert_at?: string | null
+          last_kind?: string
+          last_temperature_c?: number | null
+          location_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      weather_readings: {
+        Row: {
+          company_id: string
+          fetched_at: string
+          id: string
+          location_id: string
+          raw: Json | null
+          temperature_c: number
+        }
+        Insert: {
+          company_id: string
+          fetched_at?: string
+          id?: string
+          location_id: string
+          raw?: Json | null
+          temperature_c: number
+        }
+        Update: {
+          company_id?: string
+          fetched_at?: string
+          id?: string
+          location_id?: string
+          raw?: Json | null
+          temperature_c?: number
+        }
+        Relationships: []
       }
       work_order_comments: {
         Row: {

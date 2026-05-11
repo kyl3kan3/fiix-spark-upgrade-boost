@@ -10,6 +10,9 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
+const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
 const FROM = "MaintenEase <noreply@maintain.rockcitydevelopment.com>";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
@@ -17,19 +20,26 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
 });
 const resend = new Resend(RESEND_API_KEY);
 
-type Recipient = { user_id: string; email: string | null; email_enabled: boolean; company_id?: string | null };
+type Recipient = {
+  user_id: string;
+  email: string | null;
+  email_enabled: boolean;
+  sms_enabled: boolean;
+  phone: string | null;
+  company_id?: string | null;
+};
 
 async function getRecipient(userId: string): Promise<Recipient | null> {
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, email, company_id")
+    .select("id, email, company_id, phone_number")
     .eq("id", userId)
     .maybeSingle();
   if (!profile) return null;
 
   const { data: prefs } = await admin
     .from("notification_preferences")
-    .select("email_enabled, email_address")
+    .select("email_enabled, sms_enabled, email_address, phone_number")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -37,6 +47,8 @@ async function getRecipient(userId: string): Promise<Recipient | null> {
     user_id: userId,
     email: prefs?.email_address || profile.email || null,
     email_enabled: prefs ? !!prefs.email_enabled : true,
+    sms_enabled: prefs ? !!prefs.sms_enabled : false,
+    phone: prefs?.phone_number || (profile as any).phone_number || null,
     company_id: (profile as any).company_id || null,
   };
 }
@@ -65,6 +77,7 @@ async function deliver(opts: {
   referenceId?: string;
   eventType: string;
   dedupeKey?: string;
+  smsBody?: string;
 }) {
   const recipient = await getRecipient(opts.userId);
   if (!recipient) return;
@@ -107,6 +120,39 @@ async function deliver(opts: {
       });
     } catch (e) {
       console.error("Email send failed:", e);
+    }
+  }
+
+  // SMS via Twilio gateway
+  if (recipient.sms_enabled && recipient.phone && opts.smsBody && LOVABLE_API_KEY && TWILIO_API_KEY && TWILIO_FROM_NUMBER) {
+    try {
+      const res = await fetch("https://connector-gateway.lovable.dev/twilio/Messages.json", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "X-Connection-Api-Key": TWILIO_API_KEY,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          To: recipient.phone,
+          From: TWILIO_FROM_NUMBER,
+          Body: opts.smsBody,
+        }),
+      });
+      if (!res.ok) console.error("Twilio SMS failed:", res.status, await res.text());
+      else {
+        await admin.from("notifications").insert({
+          user_id: opts.userId,
+          title: opts.title,
+          body: opts.smsBody,
+          type: "sms",
+          reference_id: opts.referenceId,
+          event_type: opts.eventType,
+          company_id: recipient.company_id ?? null,
+        });
+      }
+    } catch (e) {
+      console.error("Twilio SMS error:", e);
     }
   }
 
@@ -215,6 +261,56 @@ async function handleReportShared(p: any) {
   }
 }
 
+function fmtTemp(tempC: number, unit: string): string {
+  if ((unit || "F").toUpperCase() === "F") {
+    const f = tempC * 9 / 5 + 32;
+    return `${f.toFixed(1)}°F`;
+  }
+  return `${tempC.toFixed(1)}°C`;
+}
+
+async function handleWeatherAlert(p: any) {
+  const { company_id, location_id, location_name, kind, temperature_c, unit, min_c, max_c } = p;
+  if (!company_id || !location_id) return;
+
+  const tempStr = fmtTemp(Number(temperature_c), unit || "F");
+  let title = "";
+  let body = "";
+  if (kind === "high") {
+    title = `High temperature at ${location_name}`;
+    body = `Temperature at ${location_name} is ${tempStr}, above the configured max (${max_c != null ? fmtTemp(Number(max_c), unit) : "n/a"}).`;
+  } else if (kind === "low") {
+    title = `Low temperature at ${location_name}`;
+    body = `Temperature at ${location_name} is ${tempStr}, below the configured min (${min_c != null ? fmtTemp(Number(min_c), unit) : "n/a"}).`;
+  } else if (kind === "recovered") {
+    title = `Temperature back to normal at ${location_name}`;
+    body = `Temperature at ${location_name} is ${tempStr}, back within configured range.`;
+  } else {
+    return;
+  }
+
+  // Notify all admins + managers in the company
+  const { data: roles } = await admin
+    .from("user_roles")
+    .select("user_id, role")
+    .eq("company_id", company_id)
+    .in("role", ["administrator", "manager"]);
+
+  const targets = Array.from(new Set((roles ?? []).map((r: any) => r.user_id))).filter(Boolean);
+
+  for (const userId of targets) {
+    await deliver({
+      userId,
+      title,
+      body,
+      referenceId: location_id,
+      eventType: "weather_alert",
+      dedupeKey: `${location_id}:${kind}:${new Date().toISOString().slice(0, 13)}`,
+      smsBody: `${title}: ${tempStr}`,
+    });
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -233,6 +329,9 @@ serve(async (req) => {
         break;
       case "report_shared":
         await handleReportShared(payload);
+        break;
+      case "weather_alert":
+        await handleWeatherAlert(payload);
         break;
       default:
         return new Response(
