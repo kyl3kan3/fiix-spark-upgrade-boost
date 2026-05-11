@@ -19,10 +19,9 @@ const AssetDetailPage = () => {
     queryKey: ["asset", assetId],
     queryFn: () => getAssetById(assetId as string),
     enabled: !!assetId,
-  });
-  const heroImage = useSignedAssetImageUrl((asset as any)?.image_url ?? null);
     retry: false,
   });
+  const heroImage = useSignedAssetImageUrl((asset as any)?.image_url ?? null);
 
   if (isLoading) {
     return (
