@@ -6,6 +6,7 @@ import {
   getUserNotifications, 
   markNotificationAsRead, 
   markAllNotificationsAsRead,
+  clearAllNotifications,
   type Notification
 } from "@/services/notifications";
 
@@ -138,6 +139,19 @@ export function useNotificationsData(
     }
   };
 
+  const handleClearAll = async () => {
+    if (notifications.length === 0) return;
+    try {
+      await clearAllNotifications();
+      setNotifications([]);
+      if (onNotificationCountChange) onNotificationCountChange(0);
+      toast.success("All notifications cleared");
+    } catch (error) {
+      console.error("Error clearing notifications:", error);
+      toast.error("Failed to clear notifications");
+    }
+  };
+
   const getUnreadCount = useCallback(() => {
     return notifications.filter(n => !n.read).length;
   }, [notifications]);
@@ -148,6 +162,7 @@ export function useNotificationsData(
     loadNotifications,
     handleMarkAllAsRead,
     handleDismissNotification,
+    handleClearAll,
     getUnreadCount
   };
 }

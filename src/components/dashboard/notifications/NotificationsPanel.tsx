@@ -31,6 +31,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
     loadNotifications, 
     handleMarkAllAsRead, 
     handleDismissNotification,
+    handleClearAll,
     getUnreadCount
   } = useNotificationsData(onNotificationCountChange, onNewNotification, isOpen);
 
@@ -99,6 +100,8 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
           <NotificationsPanelFooter 
             unreadCount={getUnreadCount()}
             onMarkAllAsRead={handleMarkAllAsRead}
+            onClearAll={handleClearAll}
+            totalCount={notifications.filter((n) => n.type !== 'email').length}
           />
         </Card>
       </div>
