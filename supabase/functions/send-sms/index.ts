@@ -54,6 +54,34 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Restrict `to` to the authenticated user's own phone number to prevent
+    // arbitrary outbound SMS abuse.
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!serviceKey) {
+      return new Response(JSON.stringify({ success: false, error: "Server misconfigured" }), {
+        status: 500, headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      serviceKey,
+      { auth: { persistSession: false } },
+    );
+    const { data: profile } = await adminClient
+      .from("profiles").select("phone_number").eq("id", authUserId).maybeSingle();
+    const { data: prefs } = await adminClient
+      .from("notification_preferences").select("phone_number").eq("user_id", authUserId).maybeSingle();
+    const norm = (s: string | null | undefined) => (s || "").replace(/[^\d+]/g, "");
+    const allowed = new Set(
+      [(profile as any)?.phone_number, (prefs as any)?.phone_number].filter(Boolean).map(norm),
+    );
+    if (!allowed.has(norm(to))) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Recipient must match the authenticated user's own phone number",
+      }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
     // Initialize Twilio client
     const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
     const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
