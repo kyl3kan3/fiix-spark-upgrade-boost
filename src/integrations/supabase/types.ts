@@ -1404,6 +1404,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_attachment_event: {
+        Args: {
+          _action: string
+          _attachment_id?: string
+          _details?: Json
+          _entity_id: string
+          _entity_type: string
+        }
+        Returns: undefined
+      }
       migrate_company_data: { Args: never; Returns: undefined }
     }
     Enums: {
