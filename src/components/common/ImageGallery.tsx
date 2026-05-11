@@ -9,6 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { logAttachmentEvent } from "@/lib/attachments/audit";
+import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 
 const BUCKET = "asset-images";
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -261,6 +262,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
 
   const showLightbox = (i: number) => { setLightboxIndex(i); setZoom(1); };
   const lightboxItem = lightboxIndex != null ? items[lightboxIndex] : null;
+  const lightboxSrc = useSignedAssetImageUrl(lightboxItem?.url ?? null);
   const navLightbox = (dir: -1 | 1) => {
     if (lightboxIndex == null) return;
     const next = (lightboxIndex + dir + items.length) % items.length;
@@ -340,7 +342,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
             <div className="relative">
               <div className="overflow-auto max-h-[80vh] flex items-center justify-center bg-muted">
                 <img
-                  src={lightboxItem.url}
+                  src={lightboxSrc ?? lightboxItem.url}
                   alt={lightboxItem.file_name || "Preview"}
                   className="transition-transform"
                   style={{ transform: `scale(${zoom})`, transformOrigin: "center" }}
@@ -393,7 +395,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
                   className="flex items-center gap-3 border rounded-md p-2 bg-card hover:bg-accent/30 cursor-grab active:cursor-grabbing"
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  <img src={it.url} alt="" className="h-14 w-14 object-cover rounded" />
+                  <ManageThumb src={it.url} />
                   <div className="flex-1 truncate text-sm">
                     {it.caption || it.file_name || "Photo"}
                   </div>
@@ -426,6 +428,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
 
 export default ImageGallery;
 
+const ManageThumb: React.FC<{ src: string }> = ({ src }) => {
+  const url = useSignedAssetImageUrl(src);
+  return <img src={url ?? src} alt="" className="h-14 w-14 object-cover rounded" />;
+};
+
 interface PhotoCardProps {
   item: AttachmentRow;
   readOnly?: boolean;
@@ -438,6 +445,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ item, readOnly, onZoom, onDelete,
   const [editing, setEditing] = useState(false);
   const [caption, setCaption] = useState(item.caption ?? "");
   const [description, setDescription] = useState(item.description ?? "");
+  const displayUrl = useSignedAssetImageUrl(item.url);
 
   useEffect(() => {
     setCaption(item.caption ?? "");
@@ -448,7 +456,7 @@ const PhotoCard: React.FC<PhotoCardProps> = ({ item, readOnly, onZoom, onDelete,
     <div className="relative group rounded-md overflow-hidden border bg-muted flex flex-col">
       <div className="relative aspect-square">
         <img
-          src={item.url}
+          src={displayUrl ?? item.url}
           alt={item.caption || item.file_name || "Photo"}
           className="h-full w-full object-cover cursor-zoom-in"
           loading="lazy"

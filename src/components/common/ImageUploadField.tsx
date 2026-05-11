@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useSignedAssetImageUrl, getSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 
 interface ImageUploadFieldProps {
   label?: string;
@@ -32,6 +33,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const displayUrl = useSignedAssetImageUrl(value);
 
   const handleFile = async (file: File) => {
     if (!ALLOWED.includes(file.type)) {
@@ -56,6 +58,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("asset-images").getPublicUrl(path);
       onChange(data.publicUrl);
+      // Pre-warm the signed-URL cache so the preview renders immediately.
+      void getSignedAssetImageUrl(data.publicUrl);
       toast.success("Image uploaded");
     } catch (e: any) {
       console.error("Image upload failed", e);
@@ -71,9 +75,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       <Label>{label}</Label>
       <div className="flex items-start gap-4">
         <div className="h-24 w-24 shrink-0 rounded-md border bg-muted overflow-hidden flex items-center justify-center">
-          {value ? (
+          {displayUrl ? (
             <img
-              src={value}
+              src={displayUrl}
               alt={label}
               className="h-full w-full object-cover"
               loading="lazy"

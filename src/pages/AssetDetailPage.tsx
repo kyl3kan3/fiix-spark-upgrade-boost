@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { getAssetById } from "@/services/assets/assetQueries";
 import AssetNotFound from "@/components/assets/AssetNotFound";
 import ImageGallery from "@/components/common/ImageGallery";
+import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 
 const AssetDetailPage = () => {
   const { assetId } = useParams<{ assetId: string }>();
@@ -20,6 +21,7 @@ const AssetDetailPage = () => {
     enabled: !!assetId,
     retry: false,
   });
+  const heroImage = useSignedAssetImageUrl((asset as any)?.image_url ?? null);
 
   if (isLoading) {
     return (
@@ -54,9 +56,9 @@ const AssetDetailPage = () => {
       />
       <div className="px-4 md:px-6 lg:px-8 py-6">
         <Card className="p-6 max-w-3xl space-y-6">
-          {(asset as any).image_url && (
+          {heroImage && (
             <img
-              src={(asset as any).image_url}
+              src={heroImage}
               alt={asset.name}
               className="mb-4 w-full max-h-72 object-cover rounded-lg border"
               loading="lazy"
