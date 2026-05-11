@@ -11,6 +11,20 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Restrict to callers with the demo-reset shared secret to prevent abuse.
+    const expected = Deno.env.get('DEMO_RESET_SECRET')
+    if (!expected) {
+      return new Response(JSON.stringify({ error: 'Server misconfigured' }), {
+        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+    const provided = req.headers.get('x-demo-reset-secret')
+    if (!provided || provided !== expected) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -264,9 +278,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         message: 'Demo user created successfully',
-        email: 'demo@demo.com',
-        password: 'demo123',
-        userId: actualUserId
+        email: 'demo@demo.com'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )
