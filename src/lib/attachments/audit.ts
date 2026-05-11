@@ -18,17 +18,13 @@ export interface AuditEntryInput {
  */
 export async function logAttachmentEvent(entry: AuditEntryInput): Promise<void> {
   try {
-    const { error } = await supabase.from("attachment_audit_log").insert([
-      {
-        company_id: entry.companyId,
-        entity_type: entry.entityType,
-        entity_id: entry.entityId,
-        attachment_id: entry.attachmentId ?? null,
-        action: entry.action,
-        actor_id: entry.actorId,
-        details: (entry.details ?? {}) as never,
-      },
-    ]);
+    const { error } = await (supabase as any).rpc("log_attachment_event", {
+      _entity_type: entry.entityType,
+      _entity_id: entry.entityId,
+      _action: entry.action,
+      _attachment_id: entry.attachmentId ?? null,
+      _details: (entry.details ?? {}) as never,
+    });
     if (error) console.warn("attachment audit insert failed:", error.message);
   } catch (e) {
     console.warn("attachment audit insert threw:", e);

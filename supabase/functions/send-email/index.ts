@@ -111,6 +111,31 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Restrict recipient to the authenticated user's own email addresses to
+    // prevent abuse of the verified sender domain for arbitrary outbound mail.
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!serviceKey) {
+      return new Response(JSON.stringify({ success: false, error: "Server misconfigured" }), {
+        status: 500, headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    const adminClient = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+    const { data: profile } = await adminClient
+      .from("profiles").select("email").eq("id", authedUserId).maybeSingle();
+    const { data: prefs } = await adminClient
+      .from("notification_preferences").select("email_address").eq("user_id", authedUserId).maybeSingle();
+    const allowed = new Set(
+      [profile?.email, (prefs as any)?.email_address]
+        .filter(Boolean)
+        .map((e: string) => e.trim().toLowerCase()),
+    );
+    if (!allowed.has(String(to).trim().toLowerCase())) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Recipient must match the authenticated user's own email address",
+      }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
     console.log("Sending email via Resend...");
     console.log("Email details:", { 
       from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
