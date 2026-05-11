@@ -11,6 +11,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
+import WeatherAlertsCard from "@/components/dashboard/tabs/settings/WeatherAlertsCard";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -99,6 +100,9 @@ const Settings = () => {
                 <Button className="bg-primary hover:bg-primary/90 text-white">Save Preferences</Button>
               </CardContent>
             </Card>
+            <div className="mt-6">
+              <WeatherAlertsCard />
+            </div>
           </TabsContent>
           
           <TabsContent value="security" className="mt-0">
