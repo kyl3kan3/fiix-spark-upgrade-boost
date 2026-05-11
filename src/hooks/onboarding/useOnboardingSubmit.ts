@@ -167,6 +167,7 @@ export const useOnboardingSubmit = (
 
       setSetupComplete();
       clearOnboardingStorage();
+      localStorage.removeItem("pending_invite_token");
       
       toast.success("Onboarding complete! Redirecting to dashboard...");
       setTimeout(() => {
