@@ -10,20 +10,37 @@ export const useInvitation = (email: string) => {
   // Check if the user was invited to a company
   useEffect(() => {
     const checkInvitation = async () => {
+      // Prefer the explicit token captured at the invite link, fall back to email match
+      const token = localStorage.getItem("pending_invite_token");
+
+      if (token) {
+        const { data: invite, error } = await supabase
+          .from("organization_invitations")
+          .select("*")
+          .eq("token", token)
+          .eq("status", "pending")
+          .maybeSingle();
+
+        if (!error && invite) {
+          setIsInvited(true);
+          setInviteDetails(invite);
+          return;
+        }
+      }
+
       if (!email) return;
 
-      // Check for invitation by email
       const { data: invites, error } = await supabase
         .from("organization_invitations")
         .select("*")
         .eq("email", email)
         .eq("status", "pending");
-      
+
       if (error) {
         console.error("Error checking invitations:", error);
         return;
       }
-      
+
       if (invites && invites.length > 0) {
         setIsInvited(true);
         setInviteDetails(invites[0]);
