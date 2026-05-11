@@ -30,21 +30,9 @@ const ShareReportDialog: React.FC<ShareReportDialogProps> = ({ open, onOpenChang
     (async () => {
       const { data: me } = await supabase.auth.getUser();
       if (!me.user) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", me.user.id)
-        .maybeSingle();
-      if (!profile?.company_id) {
-        setLoading(false);
-        return;
-      }
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name, email")
-        .eq("company_id", profile.company_id)
-        .neq("id", me.user.id);
-      setTeammates(data || []);
+      const { data } = await (supabase as any).rpc("get_company_directory");
+      const teammates = (data || []).filter((p: any) => p.id !== me.user!.id);
+      setTeammates(teammates);
       setLoading(false);
     })();
   }, [open]);

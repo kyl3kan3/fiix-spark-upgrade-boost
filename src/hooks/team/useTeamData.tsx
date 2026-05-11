@@ -50,12 +50,11 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
       
       const companyId = currentUserProfile.company_id;
 
-      // Fetch all profiles from the same company except current user
-      const { data: profiles, error } = await supabase
-        .from("profiles")
-        .select("id, email, first_name, last_name, role, avatar_url, phone_number, company_id")
-        .eq("company_id", companyId)
-        .neq("id", currentUserId);
+      // Fetch directory entries via security-definer RPC (no phone_number for non-admins)
+      const { data: directory, error } = await (supabase as any).rpc("get_company_directory");
+      const profiles = (directory || []).filter(
+        (p: any) => p.id !== currentUserId && p.company_id === companyId,
+      );
 
       if (error) {
         console.error("Error fetching profiles:", error);

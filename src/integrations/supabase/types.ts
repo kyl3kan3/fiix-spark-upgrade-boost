@@ -1394,6 +1394,21 @@ export type Database = {
         Args: { _event_type: string; _payload: Json }
         Returns: undefined
       }
+      get_company_directory: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          company_id: string
+          company_name: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          role: string
+          updated_at: string
+        }[]
+      }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       get_user_company_id: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }

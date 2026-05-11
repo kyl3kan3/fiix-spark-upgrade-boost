@@ -18,9 +18,12 @@ export const useWorkOrderFormData = () => {
   const { data: technicians, isLoading: isLoadingTechnicians } = useQuery({
     queryKey: ["technicians"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("*").order("first_name");
+      const { data, error } = await (supabase as any).rpc("get_company_directory");
       if (error) throw error;
-      return data || [];
+      const sorted = (data || []).slice().sort((a: any, b: any) =>
+        (a.first_name || "").localeCompare(b.first_name || "")
+      );
+      return sorted;
     },
   });
 
