@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Message } from "@/types/chat";
 import { toast } from "@/hooks/use-toast";
 
+const getUserMessagesChannelTopic = (userId: string) => `user:${userId}:messages`;
+
 export const useMessages = (recipientId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -14,6 +16,8 @@ export const useMessages = (recipientId: string | undefined) => {
       setMessages([]);
       return;
     }
+
+    let subscription: ReturnType<typeof supabase.channel> | null = null;
 
     const fetchMessages = async () => {
       try {
@@ -36,6 +40,31 @@ export const useMessages = (recipientId: string | undefined) => {
         
         // Mark messages from this recipient as read
         markAsRead();
+
+        subscription = supabase
+          .channel(getUserMessagesChannelTopic(currentUserId), {
+            config: { private: true },
+          })
+          .on('postgres_changes', 
+            { 
+              event: '*', 
+              schema: 'public', 
+              table: 'messages',
+              filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
+            }, 
+            (payload) => {
+              if (payload.eventType === 'INSERT') {
+                setMessages(prev => [...prev, payload.new as Message]);
+                if (payload.new.sender_id === recipientId) {
+                  markAsRead();
+                }
+              } else if (payload.eventType === 'UPDATE') {
+                setMessages(prev => 
+                  prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
+                );
+              }
+            })
+          .subscribe();
       } catch (error) {
         console.error("Error fetching messages:", error);
         toast({
@@ -50,34 +79,10 @@ export const useMessages = (recipientId: string | undefined) => {
 
     fetchMessages();
 
-    // Set up real-time subscription for new messages
-    const subscription = supabase
-      .channel('public:messages')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'messages',
-          filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
-        }, 
-        (payload) => {
-          // Handle different types of changes
-          if (payload.eventType === 'INSERT') {
-            setMessages(prev => [...prev, payload.new as Message]);
-            // Auto-mark messages as read if they're from the current recipient
-            if (payload.new.sender_id === recipientId) {
-              markAsRead();
-            }
-          } else if (payload.eventType === 'UPDATE') {
-            setMessages(prev => 
-              prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
-            );
-          }
-        })
-      .subscribe();
-
     return () => {
-      supabase.removeChannel(subscription);
+      if (subscription) {
+        supabase.removeChannel(subscription);
+      }
     };
   }, [recipientId]);
 
