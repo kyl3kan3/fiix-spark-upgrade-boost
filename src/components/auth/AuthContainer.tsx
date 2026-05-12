@@ -22,9 +22,11 @@ export const AuthContainer: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      // Check if there's a redirect location from ProtectedRoute
+      // If a pending invite token is present, send the user to onboarding
+      // so the invitation can be accepted before landing on the dashboard.
+      const hasPendingInvite = !!localStorage.getItem("pending_invite_token");
       const from = location.state?.from?.pathname || "/dashboard";
-      navigate(from, { replace: true });
+      navigate(hasPendingInvite ? "/onboarding" : from, { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate, location.state]);
 
