@@ -50,11 +50,9 @@ export const AuthContainer: React.FC = () => {
       setIsSignUp(true);
       localStorage.setItem("pending_invite_token", token);
       (async () => {
-        const { data: invitation } = await supabase
-          .from("organization_invitations")
-          .select("email, status, organization_id")
-          .eq("token", token)
-          .maybeSingle();
+        const { data: invitations } = await supabase
+          .rpc("get_invitation_by_token", { _token: token });
+        const invitation = invitations?.[0];
 
         if (!invitation) {
           toast.error("Invitation not found", {
