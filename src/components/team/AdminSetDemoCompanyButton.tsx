@@ -16,13 +16,20 @@ const AdminSetDemoCompanyButton: React.FC = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      const { data } = await supabase
+      const { data: profile } = await supabase
         .from('profiles')
-        .select('role, company_id')
+        .select('company_id')
         .eq('id', user.id)
         .single();
-        
-      if (data && data.role === 'administrator' && data.company_id) {
+
+      const { data: roleRow } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'administrator')
+        .maybeSingle();
+
+      if (profile?.company_id && roleRow) {
         setIsAdmin(true);
       }
     };
