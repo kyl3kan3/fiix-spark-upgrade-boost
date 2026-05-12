@@ -1,5 +1,5 @@
 
-import { sendEmailNotification } from "@/services/notifications/notificationSenders";
+import { supabase } from "@/integrations/supabase/client";
 
 export async function sendInvitationEmail(
   inviteEmail: string, 
@@ -36,13 +36,26 @@ export async function sendInvitationEmail(
     </div>
   `;
 
-  console.log("📧 Calling sendEmailNotification...");
+  console.log("📧 Invoking send-email edge function for invitation...");
 
   try {
-    await sendEmailNotification(inviteEmail, emailSubject, emailBody, userId, invitationId);
-    console.log("✅ Email sent successfully to:", inviteEmail);
+    const { data, error } = await supabase.functions.invoke("send-email", {
+      body: {
+        to: inviteEmail,
+        subject: emailSubject,
+        body: emailBody,
+        userId,
+        notificationType: "invitation",
+        referenceId: invitationId,
+      },
+    });
+    if (error) throw new Error(error.message || "Edge function error");
+    if (!data || !data.success) {
+      throw new Error(data?.error || "Email sending failed");
+    }
+    console.log("✅ Invitation email sent successfully to:", inviteEmail);
   } catch (error) {
-    console.error("❌ Email sending failed:", error);
+    console.error("❌ Invitation email sending failed:", error);
     throw error;
   }
 }
