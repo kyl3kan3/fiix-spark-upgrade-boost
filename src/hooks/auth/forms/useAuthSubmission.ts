@@ -46,7 +46,7 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
     } catch (error: any) {
       onError(error.message || "An unexpected error occurred during sign in");
     }
-  }, [signIn, validateSignInForm, handleAuthSuccess, onError]);
+  }, [signIn, validateSignInForm, handleAuthSuccess, navigate, onError]);
 
   const handleSignUp = useCallback(async (email: string, password: string, name: string, companyName: string) => {
     // Validate form data
@@ -82,7 +82,7 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
     } catch (error: any) {
       onError(error.message || "An unexpected error occurred during sign up");
     }
-  }, [signUp, validateSignUpForm, handleAuthSuccess, onError]);
+  }, [signUp, validateSignUpForm, handleAuthSuccess, navigate, onError]);
 
   return {
     handleSignIn,
