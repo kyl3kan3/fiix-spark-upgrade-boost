@@ -2,21 +2,38 @@
 import { useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+const getUserMessagesChannelTopic = (userId: string) => `user:${userId}:messages`;
+
 export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
   useEffect(() => {
-    // Create a channel to listen for new messages
-    const messageChannel = supabase
-      .channel('public:messages')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'messages'
-        },
-        () => {
-          fetchTeamMembers();
+    let messageChannel: ReturnType<typeof supabase.channel> | null = null;
+
+    const subscribeToMessageEvents = async () => {
+      const { data: userData, error } = await supabase.auth.getUser();
+      const currentUserId = userData?.user?.id;
+
+      if (error || !currentUserId) {
+        console.error("Error getting current user for message subscription:", error);
+        return;
+      }
+
+      messageChannel = supabase
+        .channel(getUserMessagesChannelTopic(currentUserId), {
+          config: { private: true },
         })
-      .subscribe();
+        .on('postgres_changes', 
+          { 
+            event: '*', 
+            schema: 'public', 
+            table: 'messages'
+          },
+          () => {
+            fetchTeamMembers();
+          })
+        .subscribe();
+    };
+
+    void subscribeToMessageEvents();
 
     // Create a channel to listen for profile changes
     const profileChannel = supabase
@@ -33,7 +50,9 @@ export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(messageChannel);
+      if (messageChannel) {
+        supabase.removeChannel(messageChannel);
+      }
       supabase.removeChannel(profileChannel);
     };
   }, [fetchTeamMembers]);
