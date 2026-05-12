@@ -71,7 +71,7 @@ const Team = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="space-y-4 sm:space-y-6">
+        <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4 sm:space-y-6">
           <BackToDashboard />
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
@@ -83,7 +83,7 @@ const Team = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
+      <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4 sm:space-y-6">
         <BackToDashboard />
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
