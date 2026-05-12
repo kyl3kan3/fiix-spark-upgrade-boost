@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import TeamHeader from "@/components/team/TeamHeader";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import AddTeamMemberDialog from "@/components/team/AddTeamMemberDialog";
 import TeamMembersList from "@/components/team/TeamMembersList";
 import TeamMembersGrid from "@/components/team/TeamMembersGrid";
 import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
@@ -88,13 +90,15 @@ const Team = () => {
         
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <TeamHeader />
-          <Button 
-            onClick={() => setShowAddDialog(true)}
-            className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto"
-          >
-            <UserPlus className="h-4 w-4 mr-2" />
-            <span className="text-sm sm:text-base">Add Member</span>
-          </Button>
+          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <DialogTrigger asChild>
+              <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+                <UserPlus className="h-4 w-4 mr-2" />
+                <span className="text-sm sm:text-base">Add Member</span>
+              </Button>
+            </DialogTrigger>
+            <AddTeamMemberDialog />
+          </Dialog>
         </div>
 
         <Tabs defaultValue="members" className="w-full">
