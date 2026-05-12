@@ -27,17 +27,13 @@ export const useInviteProcess = () => {
     setIsProcessingInvite(true);
     try {
       // Look up the invitation
-      const { data: invitation, error } = await supabase
-        .from("organization_invitations")
-        .select("*")
-        .eq("token", token)
-        .eq("status", "pending")
-        .maybeSingle();
-        
+      const { data: invitations, error } = await supabase
+        .rpc("get_invitation_by_token", { _token: token });
+
       if (error) {
         throw error;
       }
-      
+      const invitation = invitations?.find((i: any) => i.status === "pending");
       if (!invitation) {
         setAuthError("Invalid or expired invitation link");
         return;
@@ -61,13 +57,9 @@ export const useInviteProcess = () => {
   const handleInviteAccept = async (token: string, email: string) => {
     try {
       // Find the invitation
-      const { data: invitation, error } = await supabase
-        .from("organization_invitations")
-        .select("*")
-        .eq("token", token)
-        .eq("status", "pending")
-        .maybeSingle();
-        
+      const { data: invitations, error } = await supabase
+        .rpc("get_invitation_by_token", { _token: token });
+      const invitation = invitations?.find((i: any) => i.status === "pending");
       if (error || !invitation) {
         throw new Error("Invalid or expired invitation");
       }

@@ -14,16 +14,12 @@ export const useInvitation = (email: string) => {
       const token = localStorage.getItem("pending_invite_token");
 
       if (token) {
-        const { data: invite, error } = await supabase
-          .from("organization_invitations")
-          .select("*")
-          .eq("token", token)
-          .eq("status", "pending")
-          .maybeSingle();
-
-        if (!error && invite) {
+        const { data: invites, error } = await supabase
+          .rpc("get_invitation_by_token", { _token: token });
+        const invite = invites?.[0];
+        if (!error && invite && invite.status === "pending") {
           setIsInvited(true);
-          setInviteDetails(invite);
+          setInviteDetails(invite as any);
           return;
         }
       }

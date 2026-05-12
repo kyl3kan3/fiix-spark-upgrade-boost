@@ -1409,6 +1409,17 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_invitation_by_token: {
+        Args: { _token: string }
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+          organization_id: string
+          role: string
+          status: string
+        }[]
+      }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       get_user_company_id: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }
