@@ -19,10 +19,10 @@ export function useTeamSetupAuth() {
       }
 
       try {
-        // Check if user has admin role
+        // Get the user's company from profiles (company_id only - role lives in user_roles)
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("role, company_id")
+          .select("company_id")
           .eq("id", user.id)
           .single();
 
@@ -34,7 +34,15 @@ export function useTeamSetupAuth() {
           return;
         }
 
-        setIsAdmin(profile.role === 'administrator');
+        // Check admin role from user_roles (source of truth)
+        const { data: roleRow } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "administrator")
+          .maybeSingle();
+
+        setIsAdmin(!!roleRow);
 
         // Get company name
         const { data: company, error: companyError } = await supabase
