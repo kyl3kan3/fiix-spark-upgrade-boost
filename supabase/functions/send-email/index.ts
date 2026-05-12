@@ -120,19 +120,44 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
     const adminClient = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+    const recipientLower = String(to).trim().toLowerCase();
+    let recipientAllowed = false;
+
+    // Allow: sending to your own email (profile or notification preferences)
     const { data: profile } = await adminClient
       .from("profiles").select("email").eq("id", authedUserId).maybeSingle();
     const { data: prefs } = await adminClient
       .from("notification_preferences").select("email_address").eq("user_id", authedUserId).maybeSingle();
-    const allowed = new Set(
+    const ownEmails = new Set(
       [profile?.email, (prefs as any)?.email_address]
         .filter(Boolean)
         .map((e: string) => e.trim().toLowerCase()),
     );
-    if (!allowed.has(String(to).trim().toLowerCase())) {
+    if (ownEmails.has(recipientLower)) {
+      recipientAllowed = true;
+    }
+
+    // Allow: sending an invitation email to the invitee, provided the
+    // authenticated user created the invitation and it matches the recipient.
+    if (!recipientAllowed && notificationType === "invitation" && referenceId) {
+      const { data: invite } = await adminClient
+        .from("organization_invitations")
+        .select("email, invited_by, status")
+        .eq("id", referenceId)
+        .maybeSingle();
+      if (
+        invite &&
+        invite.invited_by === authedUserId &&
+        String(invite.email).trim().toLowerCase() === recipientLower
+      ) {
+        recipientAllowed = true;
+      }
+    }
+
+    if (!recipientAllowed) {
       return new Response(JSON.stringify({
         success: false,
-        error: "Recipient must match the authenticated user's own email address",
+        error: "Recipient not permitted for this sender",
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
