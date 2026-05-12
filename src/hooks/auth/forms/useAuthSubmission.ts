@@ -1,5 +1,6 @@
 
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "../useAuthActions";
 import { useAuthValidation } from "../validation/useAuthValidation";
 import { useAuthNavigation } from "../useAuthNavigation";
@@ -14,6 +15,7 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
   const { signIn, signUp, isSigningIn, isSigningUp } = useAuthActions();
   const { validateSignInForm, validateSignUpForm } = useAuthValidation();
   const { handleAuthSuccess } = useAuthNavigation();
+  const navigate = useNavigate();
 
   const handleSignIn = useCallback(async (email: string, password: string, rememberMe?: boolean) => {
     // Validate form data
@@ -33,7 +35,11 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
       const result = await signIn(email, password);
       
       if (result.success) {
-        handleAuthSuccess();
+        if (localStorage.getItem("pending_invite_token")) {
+          navigate("/onboarding", { replace: true });
+        } else {
+          handleAuthSuccess();
+        }
       } else if (result.error) {
         onError(result.error);
       }
@@ -65,7 +71,11 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
       const result = await signUp(email, password, userData);
       
       if (result.success) {
-        handleAuthSuccess();
+        if (localStorage.getItem("pending_invite_token")) {
+          navigate("/onboarding", { replace: true });
+        } else {
+          handleAuthSuccess();
+        }
       } else if (result.error) {
         onError(result.error);
       }
