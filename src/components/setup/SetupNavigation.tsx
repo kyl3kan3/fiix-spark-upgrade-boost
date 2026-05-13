@@ -8,6 +8,7 @@ import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
 import { setSetupComplete as setLocalSetupComplete } from "@/hooks/onboarding/storageUtils";
 import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { logger } from "@/lib/logger";
 
 interface SetupNavigationProps {
   currentStep: number;
@@ -33,7 +34,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
     try {
       if (currentStep < steps.length - 1) {
         // Save current step data
-        console.log("Saving setup data before moving to next step:", setupData);
+        logger.log("Saving setup data before moving to next step:", setupData);
         await saveSetupData(setupData, false);
         
         // Update step in state
@@ -42,9 +43,9 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
         // Scroll to top for better UX
         window.scrollTo(0, 0);
         
-        console.log(`Moving to step ${currentStep + 1}: ${steps[currentStep + 1].label}`);
+        logger.log(`Moving to step ${currentStep + 1}: ${steps[currentStep + 1].label}`);
       } else {
-        console.log("Already at the last step");
+        logger.log("Already at the last step");
       }
     } catch (error) {
       console.error("Error navigating to next step:", error);
@@ -56,7 +57,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
     if (currentStep > 0) {
       onPrevious();
       window.scrollTo(0, 0);
-      console.log(`Moving to previous step ${currentStep - 1}: ${steps[currentStep - 1].label}`);
+      logger.log(`Moving to previous step ${currentStep - 1}: ${steps[currentStep - 1].label}`);
     }
   };
 
@@ -83,7 +84,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
       completeWizard();
       
       toast.success("Setup completed successfully!");
-      console.log("Setup marked as complete successfully");
+      logger.log("Setup marked as complete successfully");
       
       // Redirect to dashboard after short delay
       setTimeout(() => {

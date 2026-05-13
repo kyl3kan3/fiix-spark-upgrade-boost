@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface PendingInvitation {
   id: string;
@@ -18,7 +19,7 @@ export const usePendingInvitations = () => {
   const fetchPendingInvitations = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("Fetching pending invitations...");
+      logger.log("Fetching pending invitations...");
       
       // Get current user
       const { data: currentUserData, error: userError } = await supabase.auth.getUser();
@@ -60,7 +61,7 @@ export const usePendingInvitations = () => {
         throw error;
       }
       
-      console.log(`Fetched ${invitations ? invitations.length : 0} pending invitations:`, invitations);
+      logger.log(`Fetched ${invitations ? invitations.length : 0} pending invitations:`, invitations);
       setPendingInvitations(invitations || []);
     } catch (error) {
       console.error("Error fetching pending invitations:", error);

@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { logger } from "@/lib/logger";
 import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
 import { useAuth } from "@/hooks/auth";
 import TeamMemberForm from "./form/TeamMemberForm";
@@ -17,14 +18,14 @@ const AddTeamMemberDialog = () => {
   const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
 
   const handleSubmit = async (data: TeamMemberFormValues) => {
-    console.log("=== DIALOG SUBMISSION START ===");
-    console.log("AddTeamMemberDialog handleSubmit called with:", data);
-    console.log("Current user in dialog:", user);
-    console.log("Dialog state:", { isSubmitting, error });
+    logger.log("=== DIALOG SUBMISSION START ===");
+    logger.log("AddTeamMemberDialog handleSubmit called with:", data);
+    logger.log("Current user in dialog:", user);
+    logger.log("Dialog state:", { isSubmitting, error });
     
     try {
       const success = await sendInvitation(data.email);
-      console.log("Dialog submission result:", success);
+      logger.log("Dialog submission result:", success);
       return success;
     } catch (error) {
       console.error("Error in dialog handleSubmit:", error);
@@ -34,7 +35,7 @@ const AddTeamMemberDialog = () => {
 
   const isDisabled = !user;
 
-  console.log("AddTeamMemberDialog render state:", { 
+  logger.log("AddTeamMemberDialog render state:", { 
     user: !!user, 
     isSubmitting, 
     error, 

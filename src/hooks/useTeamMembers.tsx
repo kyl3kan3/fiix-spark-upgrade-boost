@@ -5,6 +5,7 @@ import { useTeamData } from "./team/useTeamData";
 import { useTeamUpdates } from "./team/useTeamUpdates";
 import { useTeamEvents } from "./team/useTeamEvents";
 import { ChatUser } from "@/types/chat";
+import { logger } from "@/lib/logger";
 
 /**
  * Combined hook for team members functionality
@@ -25,7 +26,7 @@ export const useTeamMembers = () => {
   
   // Fetch team members on mount
   useEffect(() => {
-    console.log("useTeamMembers hook: Initial fetch of team members");
+    logger.log("useTeamMembers hook: Initial fetch of team members");
     fetchTeamMembers();
   }, [fetchTeamMembers]);
   

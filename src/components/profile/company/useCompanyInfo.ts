@@ -4,6 +4,7 @@ import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany, createCompany
 import { CompanyInfo } from "./types";
 import { toast } from "sonner";
 import { useUnifiedCompanyStatus } from "@/hooks/company/useUnifiedCompanyStatus";
+import { logger } from "@/lib/logger";
 
 export const useCompanyInfo = () => {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
@@ -23,7 +24,7 @@ export const useCompanyInfo = () => {
         const company = await fetchUserCompany();
         
         if (company) {
-          console.log("Retrieved company from Supabase:", company);
+          logger.log("Retrieved company from Supabase:", company);
           setCompanyId(company.id);
           setCompanyInfo(mapCompanyToCompanyInfo(company));
           

@@ -1,5 +1,6 @@
 
 import { sendEmailNotification } from "@/services/notifications/notificationSenders";
+import { logger } from "@/lib/logger";
 
 export async function sendInvitationEmail(
   inviteEmail: string, 
@@ -8,12 +9,12 @@ export async function sendInvitationEmail(
   userId: string, 
   invitationId: string
 ) {
-  console.log("📤 Starting email send process...");
-  console.log("To:", inviteEmail);
-  console.log("Company:", companyName);
-  console.log("Token:", token);
-  console.log("User ID:", userId);
-  console.log("Invitation ID:", invitationId);
+  logger.log("📤 Starting email send process...");
+  logger.log("To:", inviteEmail);
+  logger.log("Company:", companyName);
+  logger.log("Token:", token);
+  logger.log("User ID:", userId);
+  logger.log("Invitation ID:", invitationId);
   
   // Use your actual domain instead of window.location.origin
   const inviteUrl = `https://maintain.rockcitydevelopment.com/auth?signup=true&token=${token}`;
@@ -36,11 +37,11 @@ export async function sendInvitationEmail(
     </div>
   `;
 
-  console.log("📧 Calling sendEmailNotification...");
+  logger.log("📧 Calling sendEmailNotification...");
 
   try {
     await sendEmailNotification(inviteEmail, emailSubject, emailBody, userId, invitationId);
-    console.log("✅ Email sent successfully to:", inviteEmail);
+    logger.log("✅ Email sent successfully to:", inviteEmail);
   } catch (error) {
     console.error("❌ Email sending failed:", error);
     throw error;

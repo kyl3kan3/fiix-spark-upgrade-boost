@@ -8,6 +8,7 @@ import { PendingInvitation } from "@/hooks/team/usePendingInvitations";
 import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
 import { deleteInvitation } from "@/services/team/invitationService";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 interface PendingInvitationCardProps {
   invitation: PendingInvitation;
@@ -27,11 +28,11 @@ const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
   };
 
   const handleResend = async () => {
-    console.log("Resending invitation to:", invitation.email);
+    logger.log("Resending invitation to:", invitation.email);
     // Pass true as the second parameter to indicate this is a resend
     const result = await sendInvitation(invitation.email, true);
     if (result) {
-      console.log("Resend successful for:", invitation.email);
+      logger.log("Resend successful for:", invitation.email);
     }
   };
 

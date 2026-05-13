@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 // Function to send an in-app notification
 export const sendInAppNotification = async (
@@ -29,11 +30,11 @@ export const sendEmailNotification = async (
   userId: string,
   referenceId?: string
 ): Promise<void> => {
-  console.log("=== EMAIL NOTIFICATION START ===");
-  console.log("sendEmailNotification called with:", { to, subject, userId, referenceId });
+  logger.log("=== EMAIL NOTIFICATION START ===");
+  logger.log("sendEmailNotification called with:", { to, subject, userId, referenceId });
   
   try {
-    console.log("About to invoke send-email edge function...");
+    logger.log("About to invoke send-email edge function...");
     
     const { data, error } = await supabase.functions.invoke("send-email", {
       body: {
@@ -46,7 +47,7 @@ export const sendEmailNotification = async (
       }
     });
     
-    console.log("Edge function response received:", { data, error });
+    logger.log("Edge function response received:", { data, error });
     
     if (error) {
       console.error("Edge function returned error:", error);
@@ -58,10 +59,10 @@ export const sendEmailNotification = async (
       throw new Error(`Email sending failed: ${data?.error || 'Unknown error'}`);
     }
 
-    console.log("Email function invoked successfully:", data);
+    logger.log("Email function invoked successfully:", data);
 
     // Also store in notifications table
-    console.log("Storing notification in database...");
+    logger.log("Storing notification in database...");
     const { error: dbError } = await supabase
       .from('notifications')
       .insert({
@@ -76,10 +77,10 @@ export const sendEmailNotification = async (
       console.error("Database storage error:", dbError);
       // Don't throw here, email was sent successfully
     } else {
-      console.log("Email notification stored in database successfully");
+      logger.log("Email notification stored in database successfully");
     }
     
-    console.log("=== EMAIL NOTIFICATION SUCCESS ===");
+    logger.log("=== EMAIL NOTIFICATION SUCCESS ===");
   } catch (err) {
     console.error("=== EMAIL NOTIFICATION FAILED ===");
     console.error("Error in sendEmailNotification:", err);

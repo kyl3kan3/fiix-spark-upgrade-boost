@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { parseFile } from '../services/fileParsingService';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from "@/lib/logger";
 
 export const useVendorImport = () => {
   const [vendors, setVendors] = useState<any[]>([]);
@@ -9,7 +10,7 @@ export const useVendorImport = () => {
   const [error, setError] = useState('');
 
   const clearResults = () => {
-    console.log('🧹 Clearing all import results');
+    logger.log('🧹 Clearing all import results');
     setVendors([]);
     setError('');
     setLoading(false);
@@ -21,8 +22,8 @@ export const useVendorImport = () => {
     instructions?: string,
     timestamp?: number
   ) => {
-    console.log('🚀 STARTING FRESH FILE PROCESSING');
-    console.log('⏰ Processing timestamp:', timestamp || 'Not provided');
+    logger.log('🚀 STARTING FRESH FILE PROCESSING');
+    logger.log('⏰ Processing timestamp:', timestamp || 'Not provided');
     
     setError('');
     setVendors([]);
@@ -30,23 +31,23 @@ export const useVendorImport = () => {
     
     const file = e.target.files?.[0];
     if (!file) {
-      console.log('❌ No file selected');
+      logger.log('❌ No file selected');
       return setLoading(false);
     }
 
-    console.log('📁 Processing file:', file.name, 'Size:', file.size);
-    console.log('📋 Expected count:', expectedCount);
-    console.log('📝 Instructions:', instructions || 'None provided');
+    logger.log('📁 Processing file:', file.name, 'Size:', file.size);
+    logger.log('📋 Expected count:', expectedCount);
+    logger.log('📝 Instructions:', instructions || 'None provided');
 
     try {
       // Add cache busting by creating a unique file identifier
       const fileId = `${file.name}_${file.size}_${file.lastModified}_${timestamp || Date.now()}`;
-      console.log('🆔 Unique file identifier:', fileId);
+      logger.log('🆔 Unique file identifier:', fileId);
       
       const rows = await parseFile(file, expectedCount, instructions);
       
-      console.log('✅ File parsing completed successfully');
-      console.log('📊 Results:', rows.length, 'vendors found');
+      logger.log('✅ File parsing completed successfully');
+      logger.log('📊 Results:', rows.length, 'vendors found');
       
       setVendors(rows);
       
@@ -57,7 +58,7 @@ export const useVendorImport = () => {
         
         if (percentDiff > 50) {
           const warningMsg = `Warning: Found ${rows.length} vendors but expected ${expectedCount}. The parsing might need adjustment.`;
-          console.log('⚠️', warningMsg);
+          logger.log('⚠️', warningMsg);
           setError(warningMsg);
         }
       }
@@ -68,7 +69,7 @@ export const useVendorImport = () => {
     }
     
     setLoading(false);
-    console.log('🏁 File processing completed');
+    logger.log('🏁 File processing completed');
   };
 
   const saveToSupabase = async () => {

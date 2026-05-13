@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { ChatUser } from "@/types/chat";
+import { logger } from "@/lib/logger";
 
 export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateAction<ChatUser[]>>) => {
   const updateTeamMember = useCallback(async (userId: string, updates: {
@@ -14,7 +15,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
     companyName?: string;
   }) => {
     try {
-      console.log("Updating team member:", userId, updates);
+      logger.log("Updating team member:", userId, updates);
       
       const updateData: Record<string, any> = {};
       if (updates.firstName !== undefined) updateData.first_name = updates.firstName;
@@ -23,7 +24,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
       if (updates.email !== undefined) updateData.email = updates.email;
       if (updates.phone !== undefined) updateData.phone_number = updates.phone; // Map phone to phone_number field
       
-      console.log("Sending update to Supabase:", updateData);
+      logger.log("Sending update to Supabase:", updateData);
       
       const { data, error } = await supabase
         .from("profiles")
@@ -36,13 +37,13 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
         throw error;
       }
       
-      console.log("Update successful, received data:", data);
+      logger.log("Update successful, received data:", data);
       
       // Update local state with the new information immediately
       setTeamMembers(prev => 
         prev.map(member => {
           if (member.id === userId) {
-            console.log(`Found member to update: ${member.name}`);
+            logger.log(`Found member to update: ${member.name}`);
             const updatedMember = { 
               ...member, 
               ...(updates.firstName !== undefined && { firstName: updates.firstName }),
@@ -57,7 +58,7 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
                   (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
               } : {})
             };
-            console.log("Updated member object:", updatedMember);
+            logger.log("Updated member object:", updatedMember);
             return updatedMember;
           }
           return member;

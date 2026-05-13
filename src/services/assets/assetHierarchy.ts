@@ -1,9 +1,10 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AssetWithChildren } from "./types";
+import { logger } from "@/lib/logger";
 
 export async function getAssetHierarchy() {
-  console.log('🏗️ getAssetHierarchy - Starting fresh fetch from database');
+  logger.log('🏗️ getAssetHierarchy - Starting fresh fetch from database');
   
   // Get all assets with location information
   const { data: assets, error } = await supabase
@@ -30,10 +31,10 @@ export async function getAssetHierarchy() {
     throw error;
   }
   
-  console.log('🏗️ getAssetHierarchy - Raw assets from database:', assets);
+  logger.log('🏗️ getAssetHierarchy - Raw assets from database:', assets);
   
   if (!assets || assets.length === 0) {
-    console.log('🏗️ getAssetHierarchy - No assets found, returning empty array');
+    logger.log('🏗️ getAssetHierarchy - No assets found, returning empty array');
     return [];
   }
   
@@ -48,7 +49,7 @@ export async function getAssetHierarchy() {
       children: []
     };
     assetMap.set(asset.id, assetWithChildren);
-    console.log(`🏗️ Added asset to map: ${asset.name} (ID: ${asset.id}, parent_id: ${asset.parent_id || 'null'})`);
+    logger.log(`🏗️ Added asset to map: ${asset.name} (ID: ${asset.id}, parent_id: ${asset.parent_id || 'null'})`);
   });
   
   // Second pass: build hierarchical structure
@@ -64,21 +65,21 @@ export async function getAssetHierarchy() {
       if (parentAsset) {
         // This asset has a parent, add it to the parent's children
         parentAsset.children.push(currentAsset);
-        console.log(`🏗️ Added ${asset.name} as child of ${parentAsset.name}`);
+        logger.log(`🏗️ Added ${asset.name} as child of ${parentAsset.name}`);
       } else {
         // Parent not found, treat as root asset
-        console.log(`🏗️ Parent ${asset.parent_id} not found for ${asset.name}, treating as root`);
+        logger.log(`🏗️ Parent ${asset.parent_id} not found for ${asset.name}, treating as root`);
         rootAssets.push(currentAsset);
       }
     } else {
       // This is a root asset (no parent)
       rootAssets.push(currentAsset);
-      console.log(`🏗️ Added ${asset.name} as root asset`);
+      logger.log(`🏗️ Added ${asset.name} as root asset`);
     }
   });
   
-  console.log('🏗️ getAssetHierarchy - Final root assets:', rootAssets.length);
-  console.log('🏗️ getAssetHierarchy - Root assets with children:', rootAssets.map(asset => ({
+  logger.log('🏗️ getAssetHierarchy - Final root assets:', rootAssets.length);
+  logger.log('🏗️ getAssetHierarchy - Root assets with children:', rootAssets.map(asset => ({
     name: asset.name,
     id: asset.id,
     childrenCount: asset.children.length,

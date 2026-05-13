@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
+import { logger } from "@/lib/logger";
 
 interface UseProfileFetchProps {
   setLoadingState: (loading: boolean) => void;
@@ -22,7 +23,7 @@ export function useProfileFetch({
       setLoadingState(true);
       clearError();
 
-      console.log("Fetching profile for user ID:", userId);
+      logger.log("Fetching profile for user ID:", userId);
 
       // Check if user is still authenticated
       const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
@@ -49,12 +50,12 @@ export function useProfileFetch({
       }
 
       if (!data) {
-        console.log("No profile found, creating new profile");
+        logger.log("No profile found, creating new profile");
         // Create profile if it doesn't exist
         const newProfile = await createProfile(userId, userEmail);
         return newProfile;
       } else {
-        console.log("Profile found:", data);
+        logger.log("Profile found:", data);
         return data;
       }
     } catch (error: any) {

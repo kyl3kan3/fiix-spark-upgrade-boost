@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const useTeamPresence = () => {
   const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
@@ -11,7 +12,7 @@ export const useTeamPresence = () => {
       .channel('online-users')
       .on('presence', { event: 'sync' }, () => {
         const state = presenceChannel.presenceState();
-        console.log('Presence state updated:', state);
+        logger.log('Presence state updated:', state);
         
         const onlineStatus: Record<string, boolean> = {};
         Object.keys(state).forEach(userId => {

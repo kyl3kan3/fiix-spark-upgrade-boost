@@ -7,6 +7,7 @@ import { getOrCreateOrganization } from "@/services/team/organizationService";
 import { checkExistingInvitation, createInvitation, getExistingInvitation } from "@/services/team/invitationService";
 import { sendInvitationEmail } from "@/services/team/invitationEmailService";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export function useTeamInvitation() {
   const { user } = useAuth();
@@ -15,7 +16,7 @@ export function useTeamInvitation() {
   const [statusUpdates, setStatusUpdates] = useState<string[]>([]);
 
   const addStatusUpdate = (message: string) => {
-    console.log(message);
+    logger.log(message);
     setStatusUpdates(prev => [...prev, message]);
   };
 
@@ -24,15 +25,15 @@ export function useTeamInvitation() {
   };
 
   const debugInvitations = async (email: string, organizationId: string) => {
-    console.log("=== DEBUG: ALL INVITATIONS FOR EMAIL ===");
+    logger.log("=== DEBUG: ALL INVITATIONS FOR EMAIL ===");
     const { data: allInvites, error } = await supabase
       .from("organization_invitations")
       .select("*")
       .eq("email", email)
       .order('created_at', { ascending: false });
     
-    console.log("All invitations for email:", allInvites);
-    console.log("Total count:", allInvites?.length || 0);
+    logger.log("All invitations for email:", allInvites);
+    logger.log("Total count:", allInvites?.length || 0);
     
     const { data: orgInvites, error: orgError } = await supabase
       .from("organization_invitations")
@@ -40,15 +41,15 @@ export function useTeamInvitation() {
       .eq("organization_id", organizationId)
       .order('created_at', { ascending: false });
     
-    console.log("All invitations for organization:", orgInvites);
-    console.log("Organization invites count:", orgInvites?.length || 0);
+    logger.log("All invitations for organization:", orgInvites);
+    logger.log("Organization invites count:", orgInvites?.length || 0);
   };
 
   const sendInvitation = async (inviteEmail: string, isResend = false) => {
-    console.log("🚀 INVITATION PROCESS STARTING");
-    console.log("Email to invite:", inviteEmail);
-    console.log("Is resend:", isResend);
-    console.log("Current user:", user?.id);
+    logger.log("🚀 INVITATION PROCESS STARTING");
+    logger.log("Email to invite:", inviteEmail);
+    logger.log("Is resend:", isResend);
+    logger.log("Current user:", user?.id);
     
     setError(null);
     setIsSubmitting(true);
@@ -82,7 +83,7 @@ export function useTeamInvitation() {
       let organizationData;
       try {
         organizationData = await getOrCreateOrganization(user.id, addStatusUpdate);
-        console.log("✅ Organization data:", organizationData);
+        logger.log("✅ Organization data:", organizationData);
         addStatusUpdate("✅ Organization setup complete");
       } catch (orgError: any) {
         console.error("❌ Organization setup failed:", orgError);
@@ -136,7 +137,7 @@ export function useTeamInvitation() {
         addStatusUpdate("➕ Creating new invitation...");
         try {
           inviteData = await createInvitation(inviteEmail, organizationId, user.id);
-          console.log("✅ Invitation created:", inviteData.id);
+          logger.log("✅ Invitation created:", inviteData.id);
           addStatusUpdate("✅ Invitation created successfully");
         } catch (createError: any) {
           console.error("❌ Failed to create invitation:", createError);
@@ -151,7 +152,7 @@ export function useTeamInvitation() {
       addStatusUpdate("📤 Sending email notification...");
       try {
         await sendInvitationEmail(inviteEmail, companyName, inviteData.token, user.id, inviteData.id);
-        console.log("✅ Email sent successfully");
+        logger.log("✅ Email sent successfully");
         addStatusUpdate("✅ Email sent successfully");
       } catch (emailError: any) {
         console.error("❌ Email sending failed:", emailError);
@@ -162,7 +163,7 @@ export function useTeamInvitation() {
         return true; // Still return success since invitation was created
       }
       
-      console.log("🎉 INVITATION PROCESS COMPLETED SUCCESSFULLY");
+      logger.log("🎉 INVITATION PROCESS COMPLETED SUCCESSFULLY");
       addStatusUpdate("🎉 Invitation process completed successfully!");
       
       if (isResend) {
@@ -182,7 +183,7 @@ export function useTeamInvitation() {
       addStatusUpdate(`💥 Error: ${errorMessage}`);
       return false;
     } finally {
-      console.log("🏁 Setting isSubmitting to false");
+      logger.log("🏁 Setting isSubmitting to false");
       setIsSubmitting(false);
     }
   };

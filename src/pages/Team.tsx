@@ -12,6 +12,7 @@ import PendingInvitationsSection from "@/components/team/PendingInvitationsSecti
 import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 import { usePendingInvitations } from "@/hooks/team/usePendingInvitations";
+import { logger } from "@/lib/logger";
 
 const Team = () => {
   const [filters, setFilters] = useState({
@@ -64,7 +65,7 @@ const Team = () => {
     phone?: string;
     companyName?: string;
   }) => {
-    console.log('Member updated:', userId, updates);
+    logger.log('Member updated:', userId, updates);
     // This would typically update the member data
   };
 

@@ -3,13 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { CompanyInfo } from "@/components/profile/company/types";
 import { CompanyData } from "./types";
 import { mapCompanyInfoToCompanyData } from "./utils";
+import { logger } from "@/lib/logger";
 
 /**
  * Creates a new company and associates it with the current user
  */
 export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<CompanyData> => {
   try {
-    console.log("Creating company with data:", companyData);
+    logger.log("Creating company with data:", companyData);
     
     // Get the current user - with better error handling
     const { data, error: userError } = await supabase.auth.getUser();
@@ -45,7 +46,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       }
       
       if (existingCompany) {
-        console.log("Company with this name already exists:", existingCompany);
+        logger.log("Company with this name already exists:", existingCompany);
         
         // If company exists, associate user with it instead of creating a new one
         const { error: updateError } = await supabase
@@ -62,7 +63,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
           throw updateError;
         }
         
-        console.log("User set as administrator for existing company");
+        logger.log("User set as administrator for existing company");
         
         // Update user roles in a separate query to ensure it's set
         const { error: roleError } = await supabase
@@ -97,7 +98,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
           .eq("id", user.id)
           .maybeSingle();
           
-        console.log("Updated profile check:", profileCheck);
+        logger.log("Updated profile check:", profileCheck);
         
         return company;
       }
@@ -134,7 +135,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       throw companyError;
     }
     
-    console.log("Company created successfully:", company);
+    logger.log("Company created successfully:", company);
     
     // Try multiple approaches to ensure the profile gets updated
     
@@ -161,10 +162,10 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
         console.error("Alternative update also failed:", updateAltError);
         throw updateError;
       } else {
-        console.log("Alternative profile update succeeded");
+        logger.log("Alternative profile update succeeded");
       }
     } else {
-      console.log("User profile updated with company ID:", company.id);
+      logger.log("User profile updated with company ID:", company.id);
     }
     
     // Second update - ensure role is set separately (for redundancy)
@@ -176,7 +177,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
     if (roleError) {
       console.error("Error setting user as administrator:", roleError);
     } else {
-      console.log("User set as administrator for the company");
+      logger.log("User set as administrator for the company");
     }
     
     // Verify the profile update was successful
@@ -186,7 +187,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
       .eq("id", user.id)
       .maybeSingle();
       
-    console.log("Updated profile check:", profileCheck);
+    logger.log("Updated profile check:", profileCheck);
     
     // Set setup complete flag
     localStorage.setItem('maintenease_setup_complete', 'true');

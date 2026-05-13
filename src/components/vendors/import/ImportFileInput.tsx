@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X, Upload, RefreshCw } from 'lucide-react';
+import { logger } from "@/lib/logger";
 
 interface ImportFileInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,12 +13,12 @@ interface ImportFileInputProps {
 
 const ImportFileInput: React.FC<ImportFileInputProps> = ({ onChange, onClear, loading }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('📁 File input changed:', e.target.files?.[0]?.name || 'No file');
+    logger.log('📁 File input changed:', e.target.files?.[0]?.name || 'No file');
     onChange(e);
   };
 
   const handleClear = () => {
-    console.log('🗑️ Clearing file input');
+    logger.log('🗑️ Clearing file input');
     if (onClear) {
       onClear();
     }

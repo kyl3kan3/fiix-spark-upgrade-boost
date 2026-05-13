@@ -5,6 +5,7 @@ import { useCurrentUserRole } from "@/hooks/team/useCurrentUserRole";
 import { updateUserRole } from "@/services/roleService";
 import RoleEditMode from "./roles/RoleEditMode";
 import RoleDisplayMode from "./roles/RoleDisplayMode";
+import { logger } from "@/lib/logger";
 
 interface UserRoleSelectorProps {
   userId: string;
@@ -26,14 +27,14 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
   
   // This will ensure that if the currentRole prop changes externally, our component updates
   useEffect(() => {
-    console.log(`UserRoleSelector: currentRole prop changed to ${currentRole}`);
+    logger.log(`UserRoleSelector: currentRole prop changed to ${currentRole}`);
     setRole(currentRole);
     setIsChanged(false);
   }, [currentRole]);
 
   const handleRoleChange = (newRole: string) => {
     if (newRole !== role) {
-      console.log(`Role changed from ${role} to ${newRole}`);
+      logger.log(`Role changed from ${role} to ${newRole}`);
       setRole(newRole);
       setIsChanged(true);
     }
@@ -46,10 +47,10 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
         throw new Error("You do not have permission to change roles");
       }
       setIsSaving(true);
-      console.log(`Attempting to update role for user ${userId} to ${role}`);
+      logger.log(`Attempting to update role for user ${userId} to ${role}`);
       const result = await updateUserRole(userId, role);
       if (result.success) {
-        console.log("Role update successful:", result.data);
+        logger.log("Role update successful:", result.data);
         toast(`Role updated to ${role}`);
         setIsChanged(false);
         setIsEditing(false);

@@ -1,5 +1,6 @@
 
 import { getStorageItem, removeStorageItem, setStorageItem } from "@/utils/storageUtils";
+import { logger } from "@/lib/logger";
 
 export const getInitialEmail = (): string => {
   return getStorageItem("pending_auth_email") || "";
@@ -16,7 +17,7 @@ export const clearOnboardingStorage = (): void => {
 
 export const setSetupComplete = (): void => {
   setStorageItem('maintenease_setup_complete', 'true');
-  console.log("Local storage setup complete flag set to true");
+  logger.log("Local storage setup complete flag set to true");
 };
 
 export const isSetupCompleteInLocalStorage = (): boolean => {

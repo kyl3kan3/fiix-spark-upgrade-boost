@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
+import { logger } from "@/lib/logger";
 
 // Helper to wait for a few milliseconds
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -8,7 +9,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const updateUserRole = async (userId: string, role: string) => {
   try {
     if (!userId) throw new Error("Invalid user ID");
-    console.log("Updating role for user ID:", userId, "to role:", role);
+    logger.log("Updating role for user ID:", userId, "to role:", role);
 
     // Get user's company_id
     const { data: profile, error: profileError } = await supabase
@@ -78,7 +79,7 @@ export const updateUserRole = async (userId: string, role: string) => {
       throw new Error("Role update did not take effect.");
     }
 
-    console.log("Role update confirmed:", updatedRole);
+    logger.log("Role update confirmed:", updatedRole);
     return { success: true, data: { role: updatedRole.role } };
   } catch (error: any) {
     console.error("Error updating role:", error);
