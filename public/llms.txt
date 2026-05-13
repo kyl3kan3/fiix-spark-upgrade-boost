@@ -1,0 +1,8 @@
+# MaintenEase
+
+> Modern maintenance management software that helps teams organize, track, and optimize their operations — work orders, inspections, assets, and team coordination.
+
+## Pages
+
+- [Home](/): Product overview and entry point.
+- [Sign in / Sign up](/auth): Account access for team members.

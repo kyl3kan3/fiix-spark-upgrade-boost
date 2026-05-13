@@ -23,12 +23,12 @@ const Index = () => {
 
   // Show loading indicator while checking auth status
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <main className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
         <p className="mt-4">Preparing your workspace...</p>
       </div>
-    </div>
+    </main>
   );
 };
 
