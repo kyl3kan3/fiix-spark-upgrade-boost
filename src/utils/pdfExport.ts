@@ -9,6 +9,13 @@ interface ExportOptions {
   reportEntityId?: string;
 }
 
+type JsPDFWithAutoTable = jsPDF & {
+  lastAutoTable: { finalY: number };
+  internal: jsPDF["internal"] & { getNumberOfPages: () => number };
+};
+
+export type ReportRow = Record<string, unknown>;
+
 const fetchImageAsDataUrl = async (url: string): Promise<{ dataUrl: string; format: string } | null> => {
   try {
     const res = await fetch(url);
@@ -30,7 +37,7 @@ const fetchImageAsDataUrl = async (url: string): Promise<{ dataUrl: string; form
 
 export const exportReportToPdf = async (
   reportType: string,
-  data: any[],
+  data: ReportRow[],
   options: ExportOptions = {}
 ) => {
   try {
@@ -98,7 +105,7 @@ export const exportReportToPdf = async (
         summaryText += "maintenance activities and performance metrics.";
     }
     
-    const finalY = (doc as any).lastAutoTable.finalY || 150;
+    const finalY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY || 150;
     doc.text("Summary", 14, finalY + 15);
     
     const splitText = doc.splitTextToSize(summaryText, pageWidth - 30);
@@ -162,7 +169,7 @@ export const exportReportToPdf = async (
 
     // Add footer to every page
     const footer = `© ${new Date().getFullYear()} MaintenEase - All rights reserved`;
-    const pageCount = (doc as any).internal.getNumberOfPages();
+    const pageCount = (doc as JsPDFWithAutoTable).internal.getNumberOfPages();
     for (let p = 1; p <= pageCount; p++) {
       doc.setPage(p);
       doc.setFontSize(10);

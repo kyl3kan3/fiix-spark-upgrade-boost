@@ -3,6 +3,28 @@ import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSchedule } from
 import { nextDueAt } from "@/lib/checklists/scheduling";
 import { requireUserCompany, tryGetUserCompany } from "@/services/supabaseHelpers";
 
+interface AssetLinkRow {
+  asset_id: string;
+  start_offset_minutes?: number | null;
+}
+
+interface ChecklistRow {
+  asset_links?: AssetLinkRow[] | null;
+  schedule?: ChecklistSchedule | ChecklistSchedule[] | null;
+  [key: string]: unknown;
+}
+
+function rowToChecklist(row: ChecklistRow): Checklist {
+  return {
+    ...row,
+    asset_ids: (row.asset_links || []).map((l) => l.asset_id),
+    asset_offsets: Object.fromEntries(
+      (row.asset_links || []).map((l) => [l.asset_id, l.start_offset_minutes ?? 0]),
+    ),
+    schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
+  } as Checklist;
+}
+
 export const checklistService = {
   // Get all checklists
   async getChecklists(): Promise<Checklist[]> {
@@ -18,14 +40,7 @@ export const checklistService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return (data || []).map((row: any) => ({
-      ...row,
-      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
-      asset_offsets: Object.fromEntries(
-        (row.asset_links || []).map((l: any) => [l.asset_id, l.start_offset_minutes ?? 0]),
-      ),
-      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
-    })) as Checklist[];
+    return (data || []).map((row) => rowToChecklist(row as unknown as ChecklistRow));
   },
 
   // Get checklist by ID
@@ -43,15 +58,7 @@ export const checklistService = {
 
     if (error) throw error;
     if (!data) return null;
-    const row: any = data;
-    return {
-      ...row,
-      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
-      asset_offsets: Object.fromEntries(
-        (row.asset_links || []).map((l: any) => [l.asset_id, l.start_offset_minutes ?? 0]),
-      ),
-      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
-    } as Checklist;
+    return rowToChecklist(data as unknown as ChecklistRow);
   },
 
   // Create checklist - now includes frequency
@@ -317,11 +324,7 @@ export const checklistService = {
       .lte('schedule.next_due_at', nowIso)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || []).map((row: any) => ({
-      ...row,
-      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
-      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
-    })) as Checklist[];
+    return (data || []).map((row) => rowToChecklist(row as unknown as ChecklistRow));
   },
 
   /**
@@ -340,10 +343,6 @@ export const checklistService = {
       .eq('is_active', true)
       .order('next_due_at', { foreignTable: 'checklist_schedules', ascending: true });
     if (error) throw error;
-    return (data || []).map((row: any) => ({
-      ...row,
-      asset_ids: (row.asset_links || []).map((l: any) => l.asset_id),
-      schedule: Array.isArray(row.schedule) ? row.schedule[0] || null : row.schedule || null,
-    })) as Checklist[];
+    return (data || []).map((row) => rowToChecklist(row as unknown as ChecklistRow));
   },
 };

@@ -30,14 +30,14 @@ export const loadSetupData = async (): Promise<SetupData> => {
         
         // Convert settings to our SetupData format with proper type checking
         const setupData: SetupData = {
-          companyInfo: (settings.company_info as object) || {},
-          userRoles: (settings.user_roles as object) || {},
-          assetCategories: (settings.asset_categories as object) || {},
-          locations: (settings.locations as object) || {},
-          maintenanceSchedules: (settings.maintenance_schedules as object) || {},
-          notifications: (settings.notifications as object) || {},
-          integrations: (settings.integrations as object) || {},
-          dashboardCustomization: (settings.dashboard_customization as object) || {}
+          companyInfo: (settings.company_info as SetupData["companyInfo"]) || {},
+          userRoles: (settings.user_roles as SetupData["companyInfo"]) || {},
+          assetCategories: (settings.asset_categories as SetupData["companyInfo"]) || {},
+          locations: (settings.locations as SetupData["companyInfo"]) || {},
+          maintenanceSchedules: (settings.maintenance_schedules as SetupData["companyInfo"]) || {},
+          notifications: (settings.notifications as SetupData["companyInfo"]) || {},
+          integrations: (settings.integrations as SetupData["companyInfo"]) || {},
+          dashboardCustomization: (settings.dashboard_customization as SetupData["companyInfo"]) || {}
         };
         
         // Also update localStorage for backup

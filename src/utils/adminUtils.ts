@@ -5,7 +5,7 @@ import { toast } from "sonner";
 /**
  * Updates a user's role to administrator by their email address
  */
-export const setUserAsAdmin = async (email: string): Promise<{ success: boolean, error?: any }> => {
+export const setUserAsAdmin = async (email: string): Promise<{ success: boolean, error?: unknown }> => {
   try {
     // Query to find the user by email
     const { data: userProfiles, error: queryError } = await supabase
@@ -44,10 +44,10 @@ export const setUserAsAdmin = async (email: string): Promise<{ success: boolean,
       .from('user_roles')
       .insert([{
         user_id: userId,
-        role: 'administrator' as any,
+        role: 'administrator',
         company_id: companyId,
         created_by: currentUser.data.user?.id
-      }] as any);
+      }]);
       
     if (insertError) {
       console.error("Error inserting admin role:", insertError);

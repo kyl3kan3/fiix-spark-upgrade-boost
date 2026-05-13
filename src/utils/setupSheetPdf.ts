@@ -1,8 +1,16 @@
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable, { type CellDef, type RowInput } from "jspdf-autotable";
 import { toast } from "sonner";
 import { ChecklistFrequencies } from "@/types/checklists";
 import JsBarcode from "jsbarcode";
+
+// jspdf-autotable extends the jsPDF instance with these properties.
+// jsPDF's own types include getNumberOfPages on the internal namespace
+// but earlier @types/jspdf releases don't, so re-declare both here.
+type JsPDFWithAutoTable = jsPDF & {
+  lastAutoTable: { finalY: number };
+  internal: jsPDF["internal"] & { getNumberOfPages: () => number };
+};
 
 interface AssetLite {
   id: string;
@@ -174,7 +182,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
       },
     });
 
-    cursorY = (doc as any).lastAutoTable.finalY + 24;
+    cursorY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 24;
 
     // ---- Overall compliance summary ----
     const allChecklists = data.checklists || [];
@@ -218,12 +226,12 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
             ];
           }),
           [
-            { content: "TOTAL", styles: { fontStyle: "bold" } } as any,
+            { content: "TOTAL", styles: { fontStyle: "bold" } } as CellDef,
             "",
-            { content: String(totalRequired), styles: { fontStyle: "bold" } } as any,
-            { content: String(totalOptional), styles: { fontStyle: "bold" } } as any,
-            { content: String(totalItems), styles: { fontStyle: "bold" } } as any,
-            { content: `${compliancePct}%`, styles: { fontStyle: "bold" } } as any,
+            { content: String(totalRequired), styles: { fontStyle: "bold" } } as CellDef,
+            { content: String(totalOptional), styles: { fontStyle: "bold" } } as CellDef,
+            { content: String(totalItems), styles: { fontStyle: "bold" } } as CellDef,
+            { content: `${compliancePct}%`, styles: { fontStyle: "bold" } } as CellDef,
           ],
         ],
         styles: { fontSize: 9, cellPadding: 5 },
@@ -239,7 +247,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
         },
         margin: { left: margin, right: margin },
       });
-      cursorY = (doc as any).lastAutoTable.finalY + 8;
+      cursorY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 8;
 
       doc.setFont("helvetica", "italic");
       doc.setFontSize(8);
@@ -347,7 +355,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
             },
             margin: { left: margin, right: margin },
           });
-          cursorY = (doc as any).lastAutoTable.finalY + 12;
+          cursorY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 12;
         }
 
         // Linked assets with stagger
@@ -381,7 +389,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
             },
             margin: { left: margin, right: margin },
           });
-          cursorY = (doc as any).lastAutoTable.finalY + 16;
+          cursorY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 16;
         }
 
         // Sign-off line
@@ -400,7 +408,7 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
     }
 
     // ---- Footer with page numbers ----
-    const pageCount = (doc as any).internal.getNumberOfPages();
+    const pageCount = (doc as JsPDFWithAutoTable).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
@@ -412,8 +420,10 @@ export const generateSetupSheetPdf = (data: SetupSheetData): void => {
     const safeTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     doc.save(`${safeTitle || "setup-sheet"}-${new Date().toISOString().slice(0, 10)}.pdf`);
     toast.success("Setup sheet downloaded");
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Failed to generate setup sheet PDF", err);
-    toast.error("Could not generate PDF", { description: err?.message });
+    toast.error("Could not generate PDF", {
+      description: err instanceof Error ? err.message : undefined,
+    });
   }
 };

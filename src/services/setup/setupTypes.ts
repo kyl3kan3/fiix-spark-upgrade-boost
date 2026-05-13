@@ -1,16 +1,17 @@
+import type { Json } from "@/integrations/supabase/types";
 
 /**
  * Type definitions for setup data
  */
 export interface SetupData {
-  companyInfo: Record<string, any>;
-  userRoles: Record<string, any>;
-  assetCategories: Record<string, any>;
-  locations: Record<string, any>;
-  maintenanceSchedules: Record<string, any>;
-  notifications: Record<string, any>;
-  integrations: Record<string, any>;
-  dashboardCustomization: Record<string, any>;
+  companyInfo: Record<string, Json | undefined>;
+  userRoles: Record<string, Json | undefined>;
+  assetCategories: Record<string, Json | undefined>;
+  locations: Record<string, Json | undefined>;
+  maintenanceSchedules: Record<string, Json | undefined>;
+  notifications: Record<string, Json | undefined>;
+  integrations: Record<string, Json | undefined>;
+  dashboardCustomization: Record<string, Json | undefined>;
 }
 
 export const initialSetupData: SetupData = {

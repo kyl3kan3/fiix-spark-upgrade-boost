@@ -73,7 +73,8 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
         toast.success(`Successfully set ${currentUserEmail} as administrator`);
         setCurrentRole("administrator");
       } else {
-        toast.error(`Failed to set ${currentUserEmail} as administrator: ${result.error?.message || 'Unknown error'}`);
+        const message = result.error instanceof Error ? result.error.message : "Unknown error";
+        toast.error(`Failed to set ${currentUserEmail} as administrator: ${message}`);
       }
     } catch (error) {
       console.error("Error in set admin process:", error);
