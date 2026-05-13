@@ -74,7 +74,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       </div>
 
       {/* Form panel */}
-      <div className="flex items-center justify-center p-6 sm:p-10 lg:p-14 relative">
+      <main className="flex items-center justify-center p-6 sm:p-10 lg:p-14 relative">
         <div aria-hidden className="absolute inset-0 bg-blueprint-grid opacity-[0.4] pointer-events-none" />
 
         <div className="relative w-full max-w-[420px]">
@@ -100,7 +100,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             <span>SECURE / TLS</span>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
