@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,8 +78,8 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
 
     try {
       setIsSubmittingComment(true);
-      const user = (await supabase.auth.getUser()).data.user;
-      
+      const user = await getCurrentUser();
+
       if (!user) {
         toast({
           title: "Authentication Error",

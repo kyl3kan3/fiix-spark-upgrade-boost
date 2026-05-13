@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser, tryGetUserCompany } from "@/services/supabaseHelpers";
 import { toast } from "sonner";
 
 interface ShareReportDialogProps {
@@ -28,22 +29,16 @@ const ShareReportDialog: React.FC<ShareReportDialogProps> = ({ open, onOpenChang
     if (!open) return;
     setLoading(true);
     (async () => {
-      const { data: me } = await supabase.auth.getUser();
-      if (!me.user) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", me.user.id)
-        .maybeSingle();
-      if (!profile?.company_id) {
+      const { userId, companyId } = await tryGetUserCompany();
+      if (!userId || !companyId) {
         setLoading(false);
         return;
       }
       const { data } = await supabase
         .from("profiles")
         .select("id, first_name, last_name, email")
-        .eq("company_id", profile.company_id)
-        .neq("id", me.user.id);
+        .eq("company_id", companyId)
+        .neq("id", userId);
       setTeammates(data || []);
       setLoading(false);
     })();
@@ -64,11 +59,11 @@ const ShareReportDialog: React.FC<ShareReportDialogProps> = ({ open, onOpenChang
     }
     setSending(true);
     try {
-      const { data: me } = await supabase.auth.getUser();
+      const me = await requireUser();
       const { data: meProfile } = await supabase
         .from("profiles")
         .select("first_name, last_name")
-        .eq("id", me.user!.id)
+        .eq("id", me.id)
         .maybeSingle();
       const senderName =
         [meProfile?.first_name, meProfile?.last_name].filter(Boolean).join(" ") || "A teammate";
@@ -82,7 +77,7 @@ const ShareReportDialog: React.FC<ShareReportDialogProps> = ({ open, onOpenChang
             recipients: Array.from(selected),
             sender_name: senderName,
             summary,
-            actor_id: me.user!.id,
+            actor_id: me.id,
           },
         },
       });

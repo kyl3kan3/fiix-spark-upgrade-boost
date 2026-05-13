@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Loader2, Paperclip, MessageCircle } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import { ChatUser, Message } from "@/types/chat";
-import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 import { format } from "date-fns";
 
 interface MessageAreaProps {
@@ -60,14 +60,10 @@ const MessageArea: React.FC<MessageAreaProps> = ({
   
   // Get current user id
   useEffect(() => {
-    const getCurrentUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setCurrentUser({ id: data.user.id });
-      }
-    };
-    
-    getCurrentUser();
+    (async () => {
+      const user = await getCurrentUser();
+      if (user) setCurrentUser({ id: user.id });
+    })();
   }, []);
 
   const formatMessageDate = (dateString: string) => {

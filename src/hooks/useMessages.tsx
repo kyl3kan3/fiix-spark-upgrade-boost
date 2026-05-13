@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 import { Message } from "@/types/chat";
 import { toast } from "@/hooks/use-toast";
 
@@ -18,8 +19,8 @@ export const useMessages = (recipientId: string | undefined) => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
-        const { data: userData } = await supabase.auth.getUser();
-        const currentUserId = userData?.user?.id;
+        const user = await getCurrentUser();
+        const currentUserId = user?.id;
 
         if (!currentUserId) return;
 
@@ -83,8 +84,8 @@ export const useMessages = (recipientId: string | undefined) => {
 
   const sendMessage = async (content: string, recipientId: string) => {
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const currentUserId = userData?.user?.id;
+      const user = await getCurrentUser();
+      const currentUserId = user?.id;
 
       if (!currentUserId) {
         toast({
@@ -118,8 +119,8 @@ export const useMessages = (recipientId: string | undefined) => {
 
   const markAsRead = async () => {
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const currentUserId = userData?.user?.id;
+      const user = await getCurrentUser();
+      const currentUserId = user?.id;
 
       if (!currentUserId || !recipientId) return;
 

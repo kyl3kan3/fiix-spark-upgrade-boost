@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { setUserAsAdmin } from "@/utils/adminUtils";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 
 interface SetAdminUserProps {
   email?: string;
@@ -20,7 +21,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
   useEffect(() => {
     if (!email) {
       const fetchMe = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getCurrentUser();
         setCurrentUserEmail(user?.email ?? null);
       };
       fetchMe();

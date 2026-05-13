@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 import { toast } from "sonner";
 import { useSignedAssetImageUrl, getSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 
@@ -48,8 +49,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     }
     setUploading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("You must be signed in to upload images.");
+      const user = await requireUser();
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
       const path = `${user.id}/${folder}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, type QueryKey } from "@tanstack/
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { logAttachmentEvent } from "@/lib/attachments/audit";
+import { tryGetUserCompany } from "@/services/supabaseHelpers";
 import {
   GALLERY_ALLOWED_TYPES,
   GALLERY_BUCKET,
@@ -9,17 +10,6 @@ import {
   type AttachmentEntityType,
   type AttachmentRow,
 } from "./types";
-
-async function getCurrentUserAndCompany() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { user: null, companyId: null as string | null };
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("company_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  return { user, companyId: (profile?.company_id ?? null) as string | null };
-}
 
 interface UseGalleryArgs {
   entityType: AttachmentEntityType;
@@ -54,8 +44,8 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
   const uploadOne = async (file: File) => {
     if (!GALLERY_ALLOWED_TYPES.includes(file.type)) throw new Error(`Unsupported type: ${file.name}`);
     if (file.size > GALLERY_MAX_BYTES) throw new Error(`${file.name} exceeds 10 MB`);
-    const { user, companyId } = await getCurrentUserAndCompany();
-    if (!user) throw new Error("You must be signed in to upload");
+    const { userId, companyId } = await tryGetUserCompany();
+    if (!userId) throw new Error("You must be signed in to upload");
     if (!companyId) throw new Error("Your account is not linked to a company");
 
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -75,7 +65,7 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
       file_name: file.name,
       content_type: file.type,
       size_bytes: file.size,
-      uploaded_by: user.id,
+      uploaded_by: userId,
       sort_order: Date.now() % 1000000,
     }).select("id").single();
     if (insErr) throw insErr;
@@ -85,7 +75,7 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
       entityId,
       attachmentId: inserted?.id ?? null,
       action: "uploaded",
-      actorId: user.id,
+      actorId: userId,
       details: { file_name: file.name, size_bytes: file.size },
     });
   };
@@ -103,18 +93,18 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
 
   const remove = useMutation({
     mutationFn: async (item: AttachmentRow) => {
-      const { user, companyId } = await getCurrentUserAndCompany();
+      const { userId, companyId } = await tryGetUserCompany();
       await supabase.storage.from(GALLERY_BUCKET).remove([item.storage_path]);
       const { error } = await supabase.from("attachments").delete().eq("id", item.id);
       if (error) throw error;
-      if (user && companyId) {
+      if (userId && companyId) {
         await logAttachmentEvent({
           companyId,
           entityType,
           entityId,
           attachmentId: item.id,
           action: "deleted",
-          actorId: user.id,
+          actorId: userId,
           details: { file_name: item.file_name },
         });
       }
@@ -131,14 +121,14 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
       await Promise.all(ids.map((id, idx) =>
         supabase.from("attachments").update({ sort_order: idx }).eq("id", id)
       ));
-      const { user, companyId } = await getCurrentUserAndCompany();
-      if (user && companyId) {
+      const { userId, companyId } = await tryGetUserCompany();
+      if (userId && companyId) {
         await logAttachmentEvent({
           companyId,
           entityType,
           entityId,
           action: "reordered",
-          actorId: user.id,
+          actorId: userId,
           details: { order: ids },
         });
       }
@@ -158,15 +148,15 @@ export function useGalleryMutations({ entityType, entityId, onReorderSaved }: Us
         .update({ caption: vars.caption ?? null, description: vars.description ?? null })
         .eq("id", vars.id);
       if (error) throw error;
-      const { user, companyId } = await getCurrentUserAndCompany();
-      if (user && companyId) {
+      const { userId, companyId } = await tryGetUserCompany();
+      if (userId && companyId) {
         await logAttachmentEvent({
           companyId,
           entityType,
           entityId,
           attachmentId: vars.id,
           action: "updated",
-          actorId: user.id,
+          actorId: userId,
           details: { caption: vars.caption, description: vars.description },
         });
       }

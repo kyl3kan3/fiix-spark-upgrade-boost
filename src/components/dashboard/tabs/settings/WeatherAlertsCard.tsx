@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { tryGetUserCompany } from "@/services/supabaseHelpers";
 import { toast } from "sonner";
 import { Thermometer } from "lucide-react";
 
@@ -55,15 +56,7 @@ const WeatherAlertsCard: React.FC = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const userId = userData?.user?.id;
-      if (!userId) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", userId)
-        .maybeSingle();
-      const companyId = profile?.company_id;
+      const { companyId } = await tryGetUserCompany();
       if (!companyId) return;
 
       const { data: c } = await supabase

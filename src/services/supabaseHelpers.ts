@@ -1,8 +1,26 @@
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface UserContext {
   userId: string;
   companyId: string;
+}
+
+/**
+ * Returns the current authenticated user, or null if unauthenticated.
+ */
+export async function getCurrentUser(): Promise<User | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user ?? null;
+}
+
+/**
+ * Returns the current authenticated user, or throws if unauthenticated.
+ */
+export async function requireUser(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("You must be signed in");
+  return user;
 }
 
 /**

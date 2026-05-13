@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { WorkOrderFormValues } from "../WorkOrderFormSchema";
-import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 import { createWorkOrder, updateWorkOrder } from "@/services/workOrderService";
 
 type UseWorkOrderSubmitProps = {
@@ -20,8 +20,8 @@ export const useWorkOrderSubmit = ({ workOrderId, onSuccess }: UseWorkOrderSubmi
   const handleSubmit = async (values: WorkOrderFormValues) => {
     setIsSubmitting(true);
     try {
-      const user = (await supabase.auth.getUser()).data.user;
-      
+      const user = await getCurrentUser();
+
       if (!user) {
         toast({
           title: "Authentication Error",
