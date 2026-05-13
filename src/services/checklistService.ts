@@ -145,6 +145,7 @@ export const checklistService = {
     notes?: string
   ): Promise<ChecklistSubmission> {
     const { userId } = await tryGetUserCompany();
+    if (!userId) throw new Error("You must be signed in to submit a checklist");
 
     // Create submission
     const { data: submission, error: submissionError } = await supabase
@@ -282,7 +283,7 @@ export const checklistService = {
       .single();
     if (clErr) throw clErr;
 
-    const next = nextDueAt(cl.frequency, new Date());
+    const next = nextDueAt(cl.frequency ?? "", new Date());
     const now = new Date().toISOString();
 
     const { data: existing } = await supabase

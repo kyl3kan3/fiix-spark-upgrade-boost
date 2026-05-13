@@ -46,8 +46,8 @@ const WorkOrderFormPage: React.FC = () => {
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <WorkOrderForm 
-            initialData={workOrderData} 
+          <WorkOrderForm
+            initialData={workOrderData ?? undefined}
             workOrderId={workOrderId}
             onSuccess={handleSuccess}
           />

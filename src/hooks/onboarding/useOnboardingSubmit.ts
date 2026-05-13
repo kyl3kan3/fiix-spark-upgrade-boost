@@ -93,15 +93,17 @@ export const useOnboardingSubmit = (
           const newCompany = await createCompany({
             companyName: state.company // Use companyName instead of company
           });
-          
-          companyId = newCompany.id;
-          
+
+          if (!newCompany.id) throw new Error("Company created without an id");
+          const newCompanyId = newCompany.id;
+          companyId = newCompanyId;
+
           // Make sure there's a matching organization record
           // First check if organization already exists
           const { data: existingOrg } = await supabase
             .from("organizations")
             .select("id")
-            .eq("id", newCompany.id)
+            .eq("id", newCompanyId)
             .maybeSingle();
             
           if (!existingOrg) {
@@ -109,7 +111,7 @@ export const useOnboardingSubmit = (
             const { error: insertError } = await supabase
               .from("organizations")
               .insert({
-                id: newCompany.id,
+                id: newCompanyId,
                 name: state.company
               });
               

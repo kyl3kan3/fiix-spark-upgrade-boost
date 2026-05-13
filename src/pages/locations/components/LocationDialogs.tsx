@@ -4,6 +4,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { LocationForm } from "@/components/locations/LocationForm";
 import { Location, LocationWithChildren } from "@/services/locationService";
 
+interface LocationFormSubmitData {
+  name: string;
+  description?: string;
+  parent_id?: string;
+  image_url?: string | null;
+}
+
 interface LocationDialogsProps {
   isAddDialogOpen: boolean;
   onAddDialogClose: () => void;
@@ -12,18 +19,8 @@ interface LocationDialogsProps {
   selectedParentId: string;
   editingLocation: LocationWithChildren | null;
   allLocations: Location[];
-  onAddLocation: (data: {
-    name: string;
-    description: string;
-    parent_id: string | null;
-    image_url?: string | null;
-  }) => Promise<void>;
-  onEditLocation: (data: {
-    name: string;
-    description: string;
-    parent_id: string | null;
-    image_url?: string | null;
-  }) => Promise<void>;
+  onAddLocation: (data: LocationFormSubmitData) => Promise<void>;
+  onEditLocation: (data: LocationFormSubmitData) => Promise<void>;
   isCreating: boolean;
   isUpdating: boolean;
 }
@@ -70,8 +67,8 @@ export const LocationDialogs: React.FC<LocationDialogsProps> = ({
               initialData={{
                 name: editingLocation.name,
                 description: editingLocation.description || "",
-                parent_id: editingLocation.parent_id,
-                image_url: (editingLocation as any).image_url ?? null,
+                parent_id: editingLocation.parent_id ?? null,
+                image_url: editingLocation.image_url ?? null,
               }}
               onSubmit={onEditLocation}
               onCancel={onEditDialogClose}

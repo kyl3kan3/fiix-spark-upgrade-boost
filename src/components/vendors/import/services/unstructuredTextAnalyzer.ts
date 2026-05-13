@@ -52,8 +52,12 @@ export function analyzeUnstructuredText(text: string, result: EntityClassificati
   if (state) result.state = state;
   if (zipCode) result.zipCode = zipCode;
   if (state || zipCode) {
-    const stateZipPattern = state && zipCode ? `${state}\\s+${zipCode}` : state || zipCode;
-    workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
+    const stateZipPattern = state && zipCode
+      ? `${state}\\s+${zipCode}`
+      : state || zipCode || "";
+    if (stateZipPattern) {
+      workingText = workingText.replace(new RegExp(stateZipPattern, 'i'), '').trim();
+    }
   }
   
   // Split remaining text into lines for analysis

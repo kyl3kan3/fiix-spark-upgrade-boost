@@ -151,6 +151,7 @@ export function useTeamInvitation() {
 
       addStatusUpdate("📤 Sending email notification...");
       try {
+        if (!inviteData.token || !inviteData.id) throw new Error("Invitation missing token or id");
         await sendInvitationEmail(inviteEmail, companyName, inviteData.token, user.id, inviteData.id);
         logger.log("✅ Email sent successfully");
         addStatusUpdate("✅ Email sent successfully");

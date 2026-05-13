@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/auth";
 
 interface SetupData {
-  companyName: string;
+  companyName: string | null;
   industry: string;
   size: string;
   primaryGoals: string[];

@@ -2,7 +2,7 @@
 import React from "react";
 
 interface MemberAvatarProps {
-  avatar: string;
+  avatar: string | null;
   online?: boolean;
 }
 

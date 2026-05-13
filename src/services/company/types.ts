@@ -1,19 +1,18 @@
-
 import { CompanyInfo } from "@/components/profile/company/types";
 
 export interface CompanyData {
   id?: string;
   name: string;
-  industry?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip_code?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  logo?: string;
+  industry?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip_code?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  logo?: string | null;
   created_at?: string;
   updated_at?: string;
-  created_by?: string;
+  created_by?: string | null;
 }

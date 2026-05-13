@@ -20,7 +20,8 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
     
     // Check if company with the same name already exists (except for this company)
     if (updateData.name) {
-      logger.log("Checking for name conflicts with:", updateData.name);
+      const newName = updateData.name;
+      logger.log("Checking for name conflicts with:", newName);
       
       // Get the current company's name first
       const { data: currentCompany, error: currentCompanyError } = await supabase
@@ -37,24 +38,24 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
       logger.log("Current company name:", currentCompany?.name);
       
       // Only check for conflicts if the name is actually changing
-      if (currentCompany && currentCompany.name.toLowerCase() !== updateData.name.toLowerCase()) {
+      if (currentCompany && currentCompany.name.toLowerCase() !== newName.toLowerCase()) {
         logger.log("Name is changing, checking for conflicts...");
-        
+
         const { data: existingCompanies, error: searchError } = await supabase
           .from("companies")
           .select("id, name")
           .neq("id", companyId);
-        
+
         if (searchError) {
           console.error("Error checking existing companies:", searchError);
           throw new Error(`Failed to check for duplicate company names: ${searchError.message}`);
         }
-        
+
         logger.log("Existing companies:", existingCompanies);
-        
+
         // Check for case-insensitive name conflicts
         const nameConflict = existingCompanies?.find(
-          company => company.name.toLowerCase() === updateData.name.toLowerCase()
+          company => company.name.toLowerCase() === newName.toLowerCase()
         );
         
         if (nameConflict) {

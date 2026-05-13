@@ -5,7 +5,7 @@ export interface TeamMember {
   role: string;
   email: string;
   phone: string;
-  avatar: string;
+  avatar: string | null;
   joined: string;
   lastActive: string;
   firstName?: string;

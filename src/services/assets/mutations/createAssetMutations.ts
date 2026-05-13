@@ -22,6 +22,7 @@ async function getCurrentUserCompanyId(): Promise<string> {
 
 export async function createAsset(assetData: Partial<AssetFormValues>) {
   const company_id = await getCurrentUserCompanyId();
+  if (!assetData.name) throw new Error("Asset name is required");
   const formattedData = {
     name: assetData.name,
     description: assetData.description || null,

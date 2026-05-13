@@ -32,8 +32,8 @@ const LocationDetailPage = () => {
       const { data, error } = await supabase
         .from("assets")
         .select("*")
-        .eq("location_id", id);
-      
+        .eq("location_id", id!);
+
       if (error) throw error;
       return data || [];
     },
@@ -49,8 +49,8 @@ const LocationDetailPage = () => {
           *,
           assets!inner(location_id)
         `)
-        .eq("assets.location_id", id);
-      
+        .eq("assets.location_id", id!);
+
       if (error) throw error;
       return data || [];
     },
@@ -63,9 +63,9 @@ const LocationDetailPage = () => {
       const { data, error } = await supabase
         .from("locations")
         .select("*")
-        .eq("parent_id", id)
+        .eq("parent_id", id!)
         .order("name");
-      
+
       if (error) throw error;
       return data || [];
     },

@@ -6,9 +6,13 @@ import { requireUserCompany } from "@/services/supabaseHelpers";
 export interface Location {
   id: string;
   name: string;
-  description?: string;
-  parent_id?: string;
+  description?: string | null;
+  parent_id?: string | null;
   image_url?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  weather_alerts_enabled?: boolean;
+  company_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -19,8 +23,8 @@ export interface LocationWithChildren extends Location {
 
 export interface CreateLocationData {
   name: string;
-  description?: string;
-  parent_id?: string;
+  description?: string | null;
+  parent_id?: string | null;
   image_url?: string | null;
 }
 

@@ -1,14 +1,14 @@
 
 export interface CompanyInfo {
   companyName?: string;
-  industry?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
+  industry?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zipCode?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
   logo?: string | null;
 }
 

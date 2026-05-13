@@ -23,7 +23,7 @@ import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
 interface Asset {
   id: string;
   name: string;
-  location?: string;
+  location?: string | null;
   status: string;
 }
 

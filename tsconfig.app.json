@@ -20,6 +20,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
     "types": ["vitest/globals"],
     "paths": {
       "@/*": [

@@ -40,7 +40,7 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
       const company = await fetchUserCompany();
       if (company) {
         logger.log("Found existing company:", company);
-        setCompanyId(company.id);
+        setCompanyId(company.id ?? null);
         
         const companyInfo = mapCompanyToCompanyInfo(company);
         form.reset(companyInfo);

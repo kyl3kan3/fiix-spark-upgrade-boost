@@ -3,10 +3,10 @@ import { sendEmailNotification } from "@/services/notifications/notificationSend
 import { logger } from "@/lib/logger";
 
 export async function sendInvitationEmail(
-  inviteEmail: string, 
-  companyName: string, 
-  token: string, 
-  userId: string, 
+  inviteEmail: string,
+  companyName: string | null,
+  token: string,
+  userId: string,
   invitationId: string
 ) {
   logger.log("📤 Starting email send process...");
