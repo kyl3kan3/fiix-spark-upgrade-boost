@@ -24,6 +24,11 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      // Downgraded to warn for now; ~200 occurrences across PDF/Supabase
+      // helpers are scheduled for cleanup in phase 5.
+      "@typescript-eslint/no-explicit-any": "warn",
+      // Tailwind config legitimately requires a CommonJS require().
+      "@typescript-eslint/no-require-imports": ["error", { allow: ["tailwindcss-animate"] }],
     },
   }
 );

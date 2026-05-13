@@ -80,7 +80,7 @@ export async function parseWord(file: File): Promise<DraftItem[]> {
   const result = await mammoth.extractRawText({ arrayBuffer: buf });
   return result.value
     .split(/\r?\n/)
-    .map((l) => l.replace(/^[\s\-\*•\d\.\)\(]+/, "").trim())
+    .map((l) => l.replace(/^[\s\-*•\d.)(]+/, "").trim())
     .filter((l) => l.length > 0)
     .map<DraftItem>((title) => ({ title, is_required: false, sourceFile: file.name }));
 }
