@@ -7,8 +7,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
 import PageHeader from "@/components/shell/PageHeader";
 import { getWorkOrderById } from "@/services/workOrderService";
-import { Helmet } from "react-helmet";
-
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 const WorkOrderFormPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
   const navigate = useNavigate();
@@ -29,11 +28,12 @@ const WorkOrderFormPage: React.FC = () => {
     navigate("/work-orders");
   };
 
+  useDocumentTitle(`${isEditMode ? "Edit Job" : "Report a Problem"} | MaintenEase`);
+
+
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>{isEditMode ? "Edit Job" : "Report a Problem"} | MaintenEase</title>
-      </Helmet>
+      
       <PageHeader
         title={isEditMode ? "Edit job" : "Report a problem"}
         description={isEditMode

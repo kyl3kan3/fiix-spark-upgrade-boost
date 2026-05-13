@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { ArrowLeft, Loader2, Mail, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminStatus } from "@/hooks/team/useAdminStatus";
 import { format } from "date-fns";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface NotifRow {
   id: string;
@@ -42,6 +42,8 @@ const AdminEmailLogPage: React.FC = () => {
   const [notifs, setNotifs] = useState<NotifRow[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useDocumentTitle("Email Delivery Log | MaintenEase");
 
   const load = async () => {
     setLoading(true);
@@ -97,7 +99,7 @@ const AdminEmailLogPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Helmet><title>Email Delivery Log | MaintenEase</title></Helmet>
+      
       <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="-ml-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard

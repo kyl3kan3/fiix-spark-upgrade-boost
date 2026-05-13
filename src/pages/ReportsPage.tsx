@@ -2,14 +2,16 @@ import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import ReportsContent from "@/components/features/ReportsContent";
-import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const ReportsPage = () => {
+  useDocumentTitle("Reports | MaintenEase");
+
   return (
     <DashboardLayout>
-      <Helmet><title>Reports | MaintenEase</title></Helmet>
+      
       <PageHeader
         title="Reports"
         description="Simple summaries of your work — what's done, what's pending, and how things are trending."

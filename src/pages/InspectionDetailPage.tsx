@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Inspection } from "@/types/inspections";
@@ -12,6 +11,7 @@ import InspectionActionsCard from "@/components/inspections/InspectionActionsCar
 import InspectionChecklist from "@/components/inspections/InspectionChecklist";
 import InspectionLoading from "@/components/inspections/InspectionLoading";
 import InspectionNotFound from "@/components/inspections/InspectionNotFound";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const InspectionDetailPage = () => {
   const { inspectionId } = useParams();
@@ -20,6 +20,8 @@ const InspectionDetailPage = () => {
   
   const [inspection, setInspection] = useState<Inspection | undefined>(undefined);
   const [inspectionItems, setInspectionItems] = useState<any[]>([]);
+
+  useDocumentTitle(inspection?.title ? `${inspection.title} | MaintenEase` : "Check-Up | MaintenEase");
 
   // Find the inspection in our list when inspections load
   useEffect(() => {
@@ -95,9 +97,7 @@ const InspectionDetailPage = () => {
     <DashboardLayout>
       {inspection && (
         <>
-          <Helmet>
-            <title>{inspection.title} | MaintenEase</title>
-          </Helmet>
+          
 
           <div className="space-y-6">
             <InspectionHeader 

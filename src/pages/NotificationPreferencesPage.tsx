@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Loader2, Mail, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const NotificationPreferencesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -65,9 +65,12 @@ const NotificationPreferencesPage: React.FC = () => {
     toast.success("Notification preferences saved");
   };
 
+  useDocumentTitle("Notification Preferences | MaintenEase");
+
+
   return (
     <DashboardLayout>
-      <Helmet><title>Notification Preferences | MaintenEase</title></Helmet>
+      
       <div className="px-4 md:px-6 lg:px-8 py-6 max-w-2xl space-y-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="-ml-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard

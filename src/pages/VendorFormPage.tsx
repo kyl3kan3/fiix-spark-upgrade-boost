@@ -1,17 +1,19 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import VendorForm from "@/components/vendors/VendorForm";
 import { useVendorForm } from "@/hooks/vendors/useVendorForm";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const VendorFormPage: React.FC = () => {
   const { vendorId } = useParams();
   const navigate = useNavigate();
   const isEditing = !!vendorId;
-  
+
+  useDocumentTitle(`${isEditing ? "Edit Vendor" : "Add New Vendor"} | MaintenEase`);
+
   const {
     vendor,
     isLoadingVendor,
@@ -57,9 +59,7 @@ const VendorFormPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>{isEditing ? 'Edit Vendor' : 'Add New Vendor'} | MaintenEase</title>
-      </Helmet>
+      
       
       <div className="px-4 md:px-6 lg:px-8 py-6">
         <div className="flex items-center gap-4 mb-6">

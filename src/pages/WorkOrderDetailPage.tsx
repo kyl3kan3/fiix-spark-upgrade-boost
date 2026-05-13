@@ -1,7 +1,6 @@
 
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useWorkOrderDetails } from "@/components/workOrders/hooks/useWorkOrderDetails";
 import { Button } from "@/components/ui/button";
@@ -14,12 +13,19 @@ import {
   WorkOrderNotificationHistoryCard,
   WorkOrderNotificationHistoryDrawer,
 } from "@/components/workOrders/components/WorkOrderNotificationHistory";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const WorkOrderDetailPage: React.FC = () => {
   const { workOrderId } = useParams<{ workOrderId: string }>();
-  
+
   const { workOrder, isLoading } = useWorkOrderDetails(workOrderId);
   const { handleBackToWorkOrders } = useWorkOrderNavigation();
+
+  useDocumentTitle(
+    workOrder?.title
+      ? `${workOrder.title} | Work Order | MaintenEase`
+      : "Work Order | MaintenEase"
+  );
 
   if (isLoading) {
     return (
@@ -48,9 +54,7 @@ const WorkOrderDetailPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>{workOrder.title} | Work Order | MaintenEase</title>
-      </Helmet>
+      
 
       <div className="space-y-6">
         <div className="flex items-center justify-between">

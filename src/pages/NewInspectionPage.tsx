@@ -1,16 +1,16 @@
 
 import React from "react";
-import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import NewInspectionForm from "@/components/inspections/NewInspectionForm";
 import PageHeader from "@/components/shell/PageHeader";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const NewInspectionPage = () => {
+  useDocumentTitle("New Check-Up | MaintenEase");
+
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>New Check-Up | MaintenEase</title>
-      </Helmet>
+      
       <PageHeader
         title="Start a Check-Up"
         description="Pick what you're checking and who's doing it — we'll save it to your list."
