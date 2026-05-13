@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
@@ -45,8 +46,9 @@ const MyEmailLogPage = lazy(() => import("@/pages/MyEmailLogPage"));
 const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
 
 export const AppRoutes = () => (
-  <Suspense fallback={null}>
-    <Routes>
+  <ErrorBoundary>
+    <Suspense fallback={null}>
+      <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/login" element={<Navigate to="/auth" replace />} />
@@ -101,6 +103,7 @@ export const AppRoutes = () => (
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
-    </Routes>
-  </Suspense>
+      </Routes>
+    </Suspense>
+  </ErrorBoundary>
 );

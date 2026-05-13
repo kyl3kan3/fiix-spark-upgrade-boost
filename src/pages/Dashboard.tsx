@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import OverviewTab from "@/components/dashboard/tabs/OverviewTab";
@@ -10,14 +10,19 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
-import GuidedTour from "@/components/onboarding/GuidedTour";
+
+// GuidedTour pulls in react-joyride (~100kB). Defer to keep it out of the
+// main dashboard chunk; it only renders for first-time visitors.
+const GuidedTour = lazy(() => import("@/components/onboarding/GuidedTour"));
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
     <DashboardLayout>
-      <GuidedTour />
+      <Suspense fallback={null}>
+        <GuidedTour />
+      </Suspense>
       <PageHeader
         title="Home"
         description="Your daily snapshot — see what needs doing today."

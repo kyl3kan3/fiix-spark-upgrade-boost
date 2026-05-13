@@ -23,7 +23,11 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
+      // Allow underscored-prefix names to escape (callbacks with required-but-ignored params).
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
       // Downgraded to warn for now; ~200 occurrences across PDF/Supabase
       // helpers are scheduled for cleanup in phase 5.
       "@typescript-eslint/no-explicit-any": "warn",
