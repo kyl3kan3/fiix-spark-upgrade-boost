@@ -7,10 +7,11 @@ import { featureContentMap } from "./features/FeatureContentMap";
 import NotFoundFeature from "./features/NotFoundFeature";
 
 const FeatureDemo = () => {
-  const { featureId } = useParams();
+  const { featureId, title } = useParams();
   const navigate = useNavigate();
-  const decodedFeatureId = featureId ? decodeURIComponent(featureId) : null;
-  
+  const key = featureId ?? title;
+  const decodedFeatureId = key ? decodeURIComponent(key) : null;
+
   const feature = decodedFeatureId ? featureContentMap[decodedFeatureId] : null;
 
   if (!feature) {
@@ -19,12 +20,12 @@ const FeatureDemo = () => {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <Button 
-        onClick={() => navigate('/dashboard')} 
+      <Button
+        onClick={() => navigate('/')}
         className="mb-6 bg-gray-100 hover:bg-gray-200 text-gray-800"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Dashboard
+        Back to Home
       </Button>
       
       <div className="mb-8">
