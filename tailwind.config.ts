@@ -84,6 +84,18 @@ export default {
 					800: "#004636",
 					900: "#00231b"
 				},
+				fiix: {
+					50: "#e6f7f3",
+					100: "#ccefe7",
+					200: "#99dfcf",
+					300: "#66cfb7",
+					400: "#33bf9f",
+					500: "#00af87",
+					600: "#008c6c",
+					700: "#006951",
+					800: "#004636",
+					900: "#00231b"
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
