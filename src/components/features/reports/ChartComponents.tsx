@@ -1,19 +1,18 @@
 
 import React from "react";
-import { 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
-  PieChart, 
-  Pie, 
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
   Cell,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
 } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 
@@ -27,6 +26,7 @@ interface ChartProps {
 export const BarChartComponent: React.FC<ChartProps> = ({ data }) => {
   return (
     <ChartContainer
+      className="h-full w-full"
       config={{
         workOrders: { label: "Work Orders", color: "#1976D2" },
         completed: { label: "Completed", color: "#4CAF50" },
@@ -34,8 +34,6 @@ export const BarChartComponent: React.FC<ChartProps> = ({ data }) => {
       }}
     >
       <BarChart
-        width={500}
-        height={300}
         data={data}
         margin={{
           top: 5,
@@ -60,14 +58,13 @@ export const BarChartComponent: React.FC<ChartProps> = ({ data }) => {
 export const LineChartComponent: React.FC<ChartProps> = ({ data }) => {
   return (
     <ChartContainer
+      className="h-full w-full"
       config={{
         preventive: { label: "Preventive", color: "#4CAF50" },
         corrective: { label: "Corrective", color: "#FF9800" },
       }}
     >
       <LineChart
-        width={500}
-        height={300}
         data={data}
         margin={{
           top: 5,
@@ -91,11 +88,12 @@ export const LineChartComponent: React.FC<ChartProps> = ({ data }) => {
 export const PieChartComponent: React.FC<ChartProps> = ({ data }) => {
   return (
     <ChartContainer
+      className="h-full w-full"
       config={{
         value: { label: "Value", color: "#1976D2" },
       }}
     >
-      <PieChart width={500} height={300}>
+      <PieChart>
         <Pie
           data={data}
           cx="50%"

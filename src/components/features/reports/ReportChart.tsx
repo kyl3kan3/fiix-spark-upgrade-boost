@@ -2,7 +2,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ResponsiveContainer } from "recharts";
 import { BarChart as BarChartIcon, Download, Printer } from "lucide-react";
 import { BarChartComponent, LineChartComponent, PieChartComponent } from "./ChartComponents";
 
@@ -23,25 +22,26 @@ const ReportChart: React.FC<ReportChartProps> = ({
 }) => {
   // Determine which chart to render based on report type
   const renderChart = () => {
+    const height = isMobile ? 300 : 400;
     switch (reportType) {
       case "Work Order Statistics":
         return (
-          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+          <div style={{ width: "100%", height }}>
             <BarChartComponent data={data} />
-          </ResponsiveContainer>
+          </div>
         );
       case "Asset Performance":
         return (
-          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+          <div style={{ width: "100%", height }}>
             <PieChartComponent data={data} />
-          </ResponsiveContainer>
+          </div>
         );
       case "Maintenance Trends":
       case "Custom Report":
         return (
-          <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
+          <div style={{ width: "100%", height }}>
             <LineChartComponent data={data} />
-          </ResponsiveContainer>
+          </div>
         );
       default:
         return (
