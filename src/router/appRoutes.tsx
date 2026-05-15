@@ -43,6 +43,7 @@ const DueChecklistsPage = lazy(() => import("@/pages/DueChecklistsPage"));
 const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
 const MyEmailLogPage = lazy(() => import("@/pages/MyEmailLogPage"));
 const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
+const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -51,6 +52,7 @@ export const AppRoutes = () => (
       <Route path="/auth" element={<Auth />} />
       <Route path="/login" element={<Navigate to="/auth" replace />} />
       <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
+      <Route path="/feature/:title" element={<FeatureDemoPage />} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
