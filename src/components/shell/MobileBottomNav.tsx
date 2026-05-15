@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, ClipboardCheck, Calendar, Menu } from "lucide-react";
+import { LayoutDashboard, ClipboardList, ClipboardCheck, Calendar, BarChart3, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -12,12 +12,13 @@ const items = [
   { label: "My Jobs",   href: "/work-orders", icon: ClipboardList },
   { label: "Check-Ups", href: "/inspections", icon: ClipboardCheck },
   { label: "Calendar",  href: "/calendar",    icon: Calendar },
+  { label: "Analytics", href: "/reports",     icon: BarChart3 },
 ];
 
 const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border pb-safe">
-      <div className="grid grid-cols-5 px-1 pt-1.5">
+      <div className="grid grid-cols-6 px-1 pt-1.5">
         {items.map((it) => {
           const Icon = it.icon;
           return (
