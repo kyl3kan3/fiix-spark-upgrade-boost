@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   "Free 14-day trial",
@@ -10,6 +11,7 @@ const features = [
 ];
 
 const CTA = () => {
+  const navigate = useNavigate();
   return (
     <section id="pricing" className="py-20">
       <div className="container mx-auto px-4">
@@ -30,7 +32,11 @@ const CTA = () => {
                   </li>
                 ))}
               </ul>
-              <Button size="lg" className="bg-white text-fiix-700 hover:bg-fiix-50 group">
+              <Button
+                size="lg"
+                className="bg-white text-fiix-700 hover:bg-fiix-50 group"
+                onClick={() => navigate("/auth?signup=true")}
+              >
                 Start Free Trial
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -61,7 +67,10 @@ const CTA = () => {
                     <span>Custom integrations</span>
                   </li>
                 </ul>
-                <Button className="w-full bg-fiix-600 hover:bg-fiix-700 text-white">
+                <Button
+                  className="w-full bg-fiix-600 hover:bg-fiix-700 text-white"
+                  onClick={() => navigate("/auth?signup=true")}
+                >
                   Contact Sales
                 </Button>
               </div>

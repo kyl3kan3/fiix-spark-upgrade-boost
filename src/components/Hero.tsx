@@ -1,8 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="pt-32 pb-20 md:pt-40 md:pb-28 bg-gradient-to-br from-white via-fiix-50 to-white">
       <div className="container mx-auto px-4">
@@ -15,10 +17,19 @@ const Hero = () => {
               The complete CMMS solution that helps you organize, track, and optimize your maintenance operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-fiix-600 hover:bg-fiix-700 text-white px-8">
+              <Button
+                size="lg"
+                className="bg-fiix-600 hover:bg-fiix-700 text-white px-8"
+                onClick={() => navigate("/auth?signup=true")}
+              >
                 Get Started Free
               </Button>
-              <Button size="lg" variant="outline" className="group">
+              <Button
+                size="lg"
+                variant="outline"
+                className="group"
+                onClick={() => navigate("/auth")}
+              >
                 Book a Demo
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
