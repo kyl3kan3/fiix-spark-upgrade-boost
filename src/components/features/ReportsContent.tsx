@@ -6,6 +6,7 @@ import { exportReportToPdf } from "@/utils/pdfExport";
 import ReportsList from "./reports/ReportsList";
 import ReportChart from "./reports/ReportChart";
 import CustomReportForm from "./reports/CustomReportForm";
+import AnalyticsOverview from "./reports/AnalyticsOverview";
 import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -98,6 +99,8 @@ const ReportsContent: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <AnalyticsOverview />
+
       <Card>
         <CardHeader>
           <CardTitle>Maintenance Analytics & Reports</CardTitle>
