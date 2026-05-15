@@ -11,9 +11,9 @@ const FeatureDemoPage = () => {
   // Removed the redirect logic that was here previously
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow pt-8 pb-16">
         <FeatureDemo />
       </main>
       <Footer />
