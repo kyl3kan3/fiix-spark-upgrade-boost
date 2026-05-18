@@ -3,6 +3,7 @@ import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 import { Loader2 } from "lucide-react";
+import { SubscriptionStatusBanner } from "@/components/billing/SubscriptionStatusBanner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -30,7 +31,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   // Render the protected content if authenticated
-  return <>{children}</>;
+  return (
+    <>
+      <SubscriptionStatusBanner />
+      {children}
+    </>
+  );
 };
 
 export default ProtectedRoute;

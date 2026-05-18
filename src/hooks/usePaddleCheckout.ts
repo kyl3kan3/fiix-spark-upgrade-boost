@@ -7,6 +7,7 @@ interface OpenOptions {
   customerEmail?: string;
   customData?: Record<string, string>;
   successUrl?: string;
+  trialDays?: number;
 }
 
 export function usePaddleCheckout() {
@@ -17,8 +18,12 @@ export function usePaddleCheckout() {
     try {
       await initializePaddle();
       const paddlePriceId = await getPaddlePriceId(options.priceId);
+      const item: any = { priceId: paddlePriceId, quantity: options.quantity ?? 1 };
+      if (options.trialDays && options.trialDays > 0) {
+        item.trialPeriod = { interval: "day", frequency: options.trialDays };
+      }
       window.Paddle.Checkout.open({
-        items: [{ priceId: paddlePriceId, quantity: options.quantity ?? 1 }],
+        items: [item],
         customer: options.customerEmail ? { email: options.customerEmail } : undefined,
         customData: options.customData,
         settings: {

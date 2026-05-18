@@ -31,18 +31,25 @@ async function handleSubscriptionCreatedOrUpdated(data: any, env: PaddleEnv) {
     console.warn('Subscription event missing customData.companyId', id);
     return;
   }
-  const item = items?.[0];
-  const priceExternal = item?.price?.importMeta?.externalId;
-  const productExternal = item?.product?.importMeta?.externalId;
-  if (!priceExternal || !productExternal) {
-    console.warn('Skipping subscription: missing importMeta.externalId', { id });
+  // Find the plan item (tier price) and sum seat add-on quantities separately.
+  let planItem: any = null;
+  let paidSeats = 0;
+  for (const it of items ?? []) {
+    const ext = it?.price?.importMeta?.externalId as string | undefined;
+    if (!ext) continue;
+    if (ext.startsWith('extra_seat')) {
+      paidSeats += Number(it.quantity ?? 0);
+    } else if (parsePriceId(ext)) {
+      planItem = it;
+    }
+  }
+  if (!planItem) {
+    console.warn('Skipping subscription: no recognized plan item', { id });
     return;
   }
-  const parsed = parsePriceId(priceExternal);
-  if (!parsed) {
-    console.warn('Unrecognized price id', priceExternal);
-    return;
-  }
+  const priceExternal = planItem.price.importMeta.externalId as string;
+  const productExternal = planItem.product?.importMeta?.externalId as string;
+  const parsed = parsePriceId(priceExternal)!;
 
   const row = {
     company_id: companyId,
@@ -54,6 +61,7 @@ async function handleSubscriptionCreatedOrUpdated(data: any, env: PaddleEnv) {
     billing_interval: parsed.interval,
     status,
     included_seats: INCLUDED_SEATS[parsed.tier] ?? 2,
+    paid_seats: paidSeats,
     trial_ends_at: status === 'trialing' ? currentBillingPeriod?.endsAt : null,
     current_period_end: currentBillingPeriod?.endsAt ?? null,
     cancel_at_period_end: scheduledChange?.action === 'cancel',
@@ -91,6 +99,9 @@ Deno.serve(async (req) => {
         break;
       case EventName.SubscriptionCanceled:
         await handleSubscriptionCanceled(event.data, env);
+        break;
+      case 'transaction.payment_failed':
+        console.warn('Payment failed', event.data?.id, event.data?.subscriptionId);
         break;
       default:
         console.log('Unhandled event:', event.eventType);

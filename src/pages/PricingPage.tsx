@@ -66,6 +66,7 @@ export default function PricingPage() {
         customerEmail: email,
         customData: { companyId: profile.company_id, userId },
         successUrl: `${window.location.origin}/billing?success=1`,
+        trialDays: 14,
       });
     } catch (e) {
       toast.error((e as Error).message || "Could not start checkout");
