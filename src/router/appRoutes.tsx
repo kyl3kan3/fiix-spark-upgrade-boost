@@ -46,6 +46,9 @@ const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPrefe
 const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const BillingPage = lazy(() => import("@/pages/BillingPage"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
+const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -56,6 +59,12 @@ export const AppRoutes = () => (
       <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
       <Route path="/feature/:title" element={<FeatureDemoPage />} />
       <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/terms-of-service" element={<Navigate to="/terms" replace />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/refunds" element={<Navigate to="/refund-policy" replace />} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
