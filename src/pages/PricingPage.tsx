@@ -7,33 +7,32 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 
 const PLANS = [
   {
     tier: "starter" as const,
     name: "Starter",
-    monthly: 29,
-    yearly: 290,
-    seat: 10,
+    monthly: 49,
+    yearly: 490,
     blurb: "For small teams getting started",
-    features: ["2 included seats", "$10/extra seat/mo", "Up to 50 assets", "100 work orders/mo", "Basic dashboard", "Email support"],
+    features: ["2 included seats", "Up to 50 assets", "100 work orders/mo", "Basic dashboard", "Email support"],
   },
   {
     tier: "pro" as const,
     name: "Pro",
-    monthly: 79,
-    yearly: 790,
-    seat: 12,
+    monthly: 129,
+    yearly: 1290,
     blurb: "For growing maintenance teams",
     popular: true,
-    features: ["4 included seats", "$12/extra seat/mo", "Up to 500 assets", "2,000 work orders/mo", "Full analytics & reports", "Automations", "Priority email support"],
+    features: ["4 included seats", "Up to 500 assets", "2,000 work orders/mo", "Full analytics & reports", "Automations", "Priority email support"],
   },
   {
     tier: "business" as const,
     name: "Business",
-    monthly: 199,
-    yearly: 1990,
-    seat: 15,
+    monthly: 299,
+    yearly: 2990,
     blurb: "For larger organizations",
     features: ["4 included seats", "$15/extra seat/mo", "Unlimited assets", "Unlimited work orders", "Full analytics & exports", "Automations + API", "SSO", "Email + chat support"],
   },
@@ -41,31 +40,43 @@ const PLANS = [
 
 export default function PricingPage() {
   const [interval, setInterval] = useState<"month" | "year">("month");
-  const [loading, setLoading] = useState<string | null>(null);
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { openCheckout } = usePaddleCheckout();
 
   async function startCheckout(tier: "starter" | "pro" | "business") {
-    setLoading(tier);
+    setLoadingTier(tier);
     try {
       const { data: session } = await supabase.auth.getSession();
       if (!session.session) {
         navigate("/auth?signup=true");
         return;
       }
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { tier, interval },
+      const userId = session.session.user.id;
+      const email = session.session.user.email ?? undefined;
+      const { data: profile } = await supabase
+        .from("profiles").select("company_id").eq("id", userId).maybeSingle();
+      if (!profile?.company_id) {
+        toast.error("Finish setting up your company before subscribing.");
+        return;
+      }
+      const priceId = `${tier}_${interval === "month" ? "monthly" : "yearly"}`;
+      await openCheckout({
+        priceId,
+        customerEmail: email,
+        customData: { companyId: profile.company_id, userId },
+        successUrl: `${window.location.origin}/billing?success=1`,
       });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
     } catch (e) {
       toast.error((e as Error).message || "Could not start checkout");
     } finally {
-      setLoading(null);
+      setLoadingTier(null);
     }
   }
 
   return (
     <div className="min-h-screen bg-background">
+      <PaymentTestModeBanner />
       <div className="container mx-auto max-w-6xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
@@ -103,8 +114,8 @@ export default function PricingPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full" disabled={loading === plan.tier} onClick={() => startCheckout(plan.tier)}>
-                    {loading === plan.tier ? "Loading…" : "Start 14-day trial"}
+                  <Button className="w-full" disabled={loadingTier === plan.tier} onClick={() => startCheckout(plan.tier)}>
+                    {loadingTier === plan.tier ? "Loading…" : "Start 14-day trial"}
                   </Button>
                   <ul className="space-y-2 text-sm">
                     {plan.features.map((f) => (

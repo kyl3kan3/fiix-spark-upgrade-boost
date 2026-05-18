@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 
 export default function BillingPage() {
   const { data: sub, isLoading, refetch } = useSubscription();
@@ -38,9 +39,9 @@ export default function BillingPage() {
   async function openPortal() {
     setOpening(true);
     try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
+      const { data, error } = await supabase.functions.invoke("paddle-portal");
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) window.open(data.url, "_blank");
     } catch (e) {
       toast.error((e as Error).message || "Could not open billing portal");
     } finally {
@@ -53,7 +54,9 @@ export default function BillingPage() {
   const noSubscription = !sub;
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8">
+    <div>
+      <PaymentTestModeBanner />
+      <div className="container mx-auto max-w-5xl px-4 py-8">
       <Button asChild variant="ghost" size="sm" className="mb-4">
         <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
       </Button>
@@ -103,7 +106,7 @@ export default function BillingPage() {
                 )}
               </div>
               <Button onClick={openPortal} disabled={opening}>
-                {opening ? "Opening…" : <>Manage in Stripe portal <ExternalLink className="ml-2 h-4 w-4" /></>}
+                {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
               </Button>
             </CardContent>
           </Card>
@@ -131,6 +134,7 @@ export default function BillingPage() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }
