@@ -105,9 +105,14 @@ export default function BillingPage() {
                   </div>
                 )}
               </div>
-              <Button onClick={openPortal} disabled={opening}>
-                {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={openPortal} disabled={opening}>
+                  {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
+                </Button>
+                <Button variant="outline" onClick={openPortal} disabled={opening}>
+                  <Users className="mr-2 h-4 w-4" /> Add seats ($15/seat/mo)
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
