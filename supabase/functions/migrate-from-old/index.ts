@@ -17,12 +17,12 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const OLD_DB_URL = Deno.env.get("OLD_SUPABASE_DB_URL")!;
+    const OLD_DB_URL = sanitizeDbUrl(Deno.env.get("OLD_SUPABASE_DB_URL")!);
     const OLD_URL = Deno.env.get("OLD_SUPABASE_URL")!;
     const OLD_SRK = Deno.env.get("OLD_SUPABASE_SERVICE_ROLE_KEY")!;
     const NEW_URL = Deno.env.get("SUPABASE_URL")!;
     const NEW_SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const NEW_DB_URL = Deno.env.get("SUPABASE_DB_URL")!;
+    const NEW_DB_URL = sanitizeDbUrl(Deno.env.get("SUPABASE_DB_URL")!);
 
     const url = new URL(req.url);
     const phase = url.searchParams.get("phase") ?? "all";
@@ -316,6 +316,24 @@ async function migrateStorage(oldSql: any, oldAdmin: any, newAdmin: any) {
 /* ---------------- helpers ---------------- */
 
 function quoteIdent(s: string) { return `"${s.replace(/"/g, '""')}"`; }
+
+// Re-encode userinfo so passwords with special chars don't break URL parsing.
+function sanitizeDbUrl(raw: string): string {
+  const m = raw.match(/^(postgres(?:ql)?:\/\/)([^@]+)@(.+)$/);
+  if (!m) return raw;
+  const [, scheme, userinfo, rest] = m;
+  const colonIdx = userinfo.indexOf(":");
+  if (colonIdx === -1) return raw;
+  const user = userinfo.slice(0, colonIdx);
+  let pw = userinfo.slice(colonIdx + 1);
+  // If password isn't already percent-encoded, encode it.
+  try { decodeURIComponent(pw); } catch { pw = encodeURIComponent(pw); }
+  if (/[^A-Za-z0-9\-._~%]/.test(pw)) pw = encodeURIComponent(decodeURIComponentSafe(pw));
+  return `${scheme}${user}:${pw}@${rest}`;
+}
+function decodeURIComponentSafe(s: string) {
+  try { return decodeURIComponent(s); } catch { return s; }
+}
 
 async function tryExec(sql: any, ddl: string, label: string) {
   try {
