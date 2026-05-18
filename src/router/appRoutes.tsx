@@ -44,6 +44,8 @@ const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
 const MyEmailLogPage = lazy(() => import("@/pages/MyEmailLogPage"));
 const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
 const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));
+const PricingPage = lazy(() => import("@/pages/PricingPage"));
+const BillingPage = lazy(() => import("@/pages/BillingPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -53,6 +55,7 @@ export const AppRoutes = () => (
       <Route path="/login" element={<Navigate to="/auth" replace />} />
       <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
       <Route path="/feature/:title" element={<FeatureDemoPage />} />
+      <Route path="/pricing" element={<PricingPage />} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
@@ -97,6 +100,7 @@ export const AppRoutes = () => (
       <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
       <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+      <Route path="/billing" element={<ProtectedRoute><BillingPage /></ProtectedRoute>} />
       <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
       <Route path="/team-setup" element={<ProtectedRoute><TeamSetup /></ProtectedRoute>} />
       <Route path="/company-setup" element={<ProtectedRoute><CompanySetup /></ProtectedRoute>} />
