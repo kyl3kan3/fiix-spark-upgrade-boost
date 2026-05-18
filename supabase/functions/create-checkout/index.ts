@@ -55,9 +55,46 @@ Deno.serve(async (req) => {
       customerId = c.id;
     }
 
-    const basePrice = await stripe.prices.list({ lookup_keys: [`${tier}_base_${interval}`], active: true, limit: 1 });
+    const lookupKey = `${tier}_base_${interval}`;
+    let basePrice = await stripe.prices.list({ lookup_keys: [lookupKey], active: true, limit: 1 });
     if (!basePrice.data[0]) {
-      return new Response(JSON.stringify({ error: "Prices not configured. Run stripe-bootstrap first." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      // Auto-bootstrap: create products & prices on first use
+      console.log("Prices not found, auto-bootstrapping Stripe catalog...");
+      const TIERS = [
+        { tier: "starter", name: "MaintenEase Starter", monthly: 2900, yearly: 29000, seatMonthly: 1000, seatYearly: 10000, includedSeats: 2 },
+        { tier: "pro", name: "MaintenEase Pro", monthly: 7900, yearly: 79000, seatMonthly: 1200, seatYearly: 12000, includedSeats: 4 },
+        { tier: "business", name: "MaintenEase Business", monthly: 19900, yearly: 199000, seatMonthly: 1500, seatYearly: 15000, includedSeats: 4 },
+      ];
+      for (const t of TIERS) {
+        const existing = await stripe.products.search({ query: `metadata['tier']:'${t.tier}'` });
+        let product = existing.data[0];
+        if (!product) {
+          product = await stripe.products.create({
+            name: t.name,
+            metadata: { tier: t.tier, included_seats: String(t.includedSeats) },
+          });
+        }
+        const ensurePrice = async (lk: string, amount: number, intv: "month" | "year") => {
+          const found = await stripe.prices.list({ lookup_keys: [lk], active: true, limit: 1 });
+          if (found.data[0]) return;
+          await stripe.prices.create({
+            product: product!.id,
+            unit_amount: amount,
+            currency: "usd",
+            recurring: { interval: intv },
+            lookup_key: lk,
+            transfer_lookup_key: true,
+          });
+        };
+        await ensurePrice(`${t.tier}_base_month`, t.monthly, "month");
+        await ensurePrice(`${t.tier}_base_year`, t.yearly, "year");
+        await ensurePrice(`${t.tier}_seat_month`, t.seatMonthly, "month");
+        await ensurePrice(`${t.tier}_seat_year`, t.seatYearly, "year");
+      }
+      basePrice = await stripe.prices.list({ lookup_keys: [lookupKey], active: true, limit: 1 });
+      if (!basePrice.data[0]) {
+        return new Response(JSON.stringify({ error: "Failed to bootstrap Stripe prices" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
     }
 
     const origin = req.headers.get("origin") ?? "https://maintenease.lovable.app";
