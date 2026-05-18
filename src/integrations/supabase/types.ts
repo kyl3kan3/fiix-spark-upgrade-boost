@@ -913,12 +913,15 @@ export type Database = {
           company_id: string
           created_at: string
           current_period_end: string | null
+          environment: string
           id: string
           included_seats: number
+          paddle_customer_id: string | null
+          paddle_price_id: string | null
+          paddle_product_id: string | null
+          paddle_subscription_id: string | null
           paid_seats: number
           status: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
           tier: Database["public"]["Enums"]["subscription_tier"]
           trial_ends_at: string | null
           updated_at: string
@@ -929,12 +932,15 @@ export type Database = {
           company_id: string
           created_at?: string
           current_period_end?: string | null
+          environment?: string
           id?: string
           included_seats?: number
+          paddle_customer_id?: string | null
+          paddle_price_id?: string | null
+          paddle_product_id?: string | null
+          paddle_subscription_id?: string | null
           paid_seats?: number
           status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
           tier?: Database["public"]["Enums"]["subscription_tier"]
           trial_ends_at?: string | null
           updated_at?: string
@@ -945,12 +951,15 @@ export type Database = {
           company_id?: string
           created_at?: string
           current_period_end?: string | null
+          environment?: string
           id?: string
           included_seats?: number
+          paddle_customer_id?: string | null
+          paddle_price_id?: string | null
+          paddle_product_id?: string | null
+          paddle_subscription_id?: string | null
           paid_seats?: number
           status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
           tier?: Database["public"]["Enums"]["subscription_tier"]
           trial_ends_at?: string | null
           updated_at?: string
