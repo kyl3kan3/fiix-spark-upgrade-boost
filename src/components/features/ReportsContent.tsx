@@ -14,6 +14,7 @@ import ImageGallery from "@/components/common/ImageGallery";
 import ShareReportDialog from "./reports/ShareReportDialog";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import { PaywallGate } from "@/components/billing/PaywallGate";
 
 // Stable UUIDs per built-in report type so we can attach photos via the attachments table
 const REPORT_ENTITY_IDS: Record<string, string> = {
@@ -99,9 +100,14 @@ const ReportsContent: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AnalyticsOverview />
+      <PaywallGate
+        feature="analytics"
+        title="Analytics is a Pro feature"
+        description="Upgrade to Pro or Business to unlock the full analytics dashboard, report exports, and team email reports."
+      >
+        <AnalyticsOverview />
 
-      <Card>
+        <Card>
         <CardHeader>
           <CardTitle>Maintenance Analytics & Reports</CardTitle>
         </CardHeader>
@@ -156,6 +162,7 @@ const ReportsContent: React.FC = () => {
       
       {/* Custom Reports Section */}
       <CustomReportForm onSubmit={handleGenerateCustomReport} />
+      </PaywallGate>
     </div>
   );
 };

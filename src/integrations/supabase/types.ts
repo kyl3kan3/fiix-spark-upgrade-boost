@@ -906,6 +906,57 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          billing_interval: Database["public"]["Enums"]["billing_interval"]
+          cancel_at_period_end: boolean
+          company_id: string
+          created_at: string
+          current_period_end: string | null
+          id: string
+          included_seats: number
+          paid_seats: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          billing_interval?: Database["public"]["Enums"]["billing_interval"]
+          cancel_at_period_end?: boolean
+          company_id: string
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          included_seats?: number
+          paid_seats?: number
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          billing_interval?: Database["public"]["Enums"]["billing_interval"]
+          cancel_at_period_end?: boolean
+          company_id?: string
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          included_seats?: number
+          paid_seats?: number
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       system_settings: {
         Row: {
           asset_categories: Json | null
@@ -1390,6 +1441,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      company_within_limit: { Args: { _resource: string }; Returns: boolean }
       dispatch_notification_event: {
         Args: { _event_type: string; _payload: Json }
         Returns: undefined
@@ -1407,6 +1459,23 @@ export type Database = {
           last_name: string
           role: string
           updated_at: string
+        }[]
+      }
+      get_company_subscription: {
+        Args: never
+        Returns: {
+          asset_limit: number
+          billing_interval: Database["public"]["Enums"]["billing_interval"]
+          cancel_at_period_end: boolean
+          current_period_end: string
+          included_seats: number
+          is_active: boolean
+          paid_seats: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          total_seats: number
+          trial_ends_at: string
+          work_order_limit: number
         }[]
       }
       get_invitation_by_token: {
@@ -1444,6 +1513,14 @@ export type Database = {
     }
     Enums: {
       app_role: "administrator" | "manager" | "technician" | "viewer"
+      billing_interval: "month" | "year"
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "past_due"
+        | "canceled"
+        | "incomplete"
+      subscription_tier: "starter" | "pro" | "business"
       work_order_priority: "low" | "medium" | "high" | "urgent"
       work_order_status: "pending" | "in_progress" | "completed" | "cancelled"
     }
@@ -1574,6 +1651,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["administrator", "manager", "technician", "viewer"],
+      billing_interval: ["month", "year"],
+      subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "canceled",
+        "incomplete",
+      ],
+      subscription_tier: ["starter", "pro", "business"],
       work_order_priority: ["low", "medium", "high", "urgent"],
       work_order_status: ["pending", "in_progress", "completed", "cancelled"],
     },

@@ -6,6 +6,7 @@ import MobileBottomNav from "./MobileBottomNav";
 import DashboardNotifications from "@/components/dashboard/DashboardNotifications";
 import { getUserNotifications } from "@/services/notifications";
 import DailyDuePrompt from "@/components/checklists/DailyDuePrompt";
+import { TrialBanner } from "@/components/billing/TrialBanner";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -57,6 +58,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         />
 
         <main className="flex-1 w-full pt-16 lg:pt-20 pb-24 lg:pb-0">
+          <TrialBanner />
           {children}
         </main>
 
