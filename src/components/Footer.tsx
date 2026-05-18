@@ -1,6 +1,6 @@
 
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,8 +13,12 @@ const Footer = () => {
     // Simple footer for main application pages
     return (
       <footer className="bg-gray-50 border-t border-gray-200 py-4">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          &copy; {currentYear} MaintenEase Software. All rights reserved.
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-gray-500">
+          <span>&copy; {currentYear} Decent4. All rights reserved.</span>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/privacy" className="hover:text-gray-700">Privacy</Link>
+          <Link to="/terms" className="hover:text-gray-700">Terms</Link>
+          <Link to="/refund-policy" className="hover:text-gray-700">Refunds</Link>
         </div>
       </footer>
     );
@@ -23,19 +27,41 @@ const Footer = () => {
   const footerLinks = [
     {
       title: "Product",
-      links: ["Features", "Pricing", "Integrations", "Updates", "Roadmap"],
+      links: [
+        { label: "Features", to: "#" },
+        { label: "Pricing", to: "/pricing" },
+        { label: "Integrations", to: "#" },
+        { label: "Updates", to: "#" },
+        { label: "Roadmap", to: "#" },
+      ],
     },
     {
       title: "Resources",
-      links: ["Documentation", "Guides", "API", "Status", "Help Center"],
+      links: [
+        { label: "Documentation", to: "#" },
+        { label: "Guides", to: "#" },
+        { label: "API", to: "#" },
+        { label: "Status", to: "#" },
+        { label: "Help Center", to: "#" },
+      ],
     },
     {
       title: "Company",
-      links: ["About", "Blog", "Careers", "Customers", "Contact"],
+      links: [
+        { label: "About", to: "#" },
+        { label: "Blog", to: "#" },
+        { label: "Careers", to: "#" },
+        { label: "Customers", to: "#" },
+        { label: "Contact", to: "#" },
+      ],
     },
     {
       title: "Legal",
-      links: ["Privacy", "Terms", "Security", "Cookies"],
+      links: [
+        { label: "Privacy", to: "/privacy" },
+        { label: "Terms", to: "/terms" },
+        { label: "Refund Policy", to: "/refund-policy" },
+      ],
     },
   ];
 
@@ -72,9 +98,15 @@ const Footer = () => {
               <ul className="space-y-3">
                 {column.links.map((link, linkIdx) => (
                   <li key={linkIdx}>
-                    <a href="#" className="text-gray-600 hover:text-maintenease-600 transition-colors">
-                      {link}
-                    </a>
+                    {link.to.startsWith("/") ? (
+                      <Link to={link.to} className="text-gray-600 hover:text-maintenease-600 transition-colors">
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a href={link.to} className="text-gray-600 hover:text-maintenease-600 transition-colors">
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -85,18 +117,18 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm mb-4 md:mb-0">
-              &copy; {currentYear} MaintenEase Software. All rights reserved.
+              &copy; {currentYear} Decent4. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-500 hover:text-gray-700 text-sm">
+              <Link to="/privacy" className="text-gray-500 hover:text-gray-700 text-sm">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-500 hover:text-gray-700 text-sm">
+              </Link>
+              <Link to="/terms" className="text-gray-500 hover:text-gray-700 text-sm">
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-500 hover:text-gray-700 text-sm">
-                Cookies
-              </a>
+              </Link>
+              <Link to="/refund-policy" className="text-gray-500 hover:text-gray-700 text-sm">
+                Refund Policy
+              </Link>
             </div>
           </div>
         </div>
