@@ -322,15 +322,21 @@ function quoteIdent(s: string) { return `"${s.replace(/"/g, '""')}"`; }
 
 // Manual parse: postgres://user:password@host:port/dbname?query
 function parseDbUrl(raw: string): { host: string; port: number; user: string; password: string; database: string } {
-  const m = raw.match(/^postgres(?:ql)?:\/\/([^:@]+):([^@]*)@([^:\/]+):?(\d+)?\/([^?]+)/);
-  if (!m) throw new Error("Bad DB URL format");
-  return {
-    user: m[1],
-    password: m[2],
-    host: m[3],
-    port: m[4] ? parseInt(m[4]) : 5432,
-    database: m[5],
-  };
+  // Split on LAST '@' since password may contain '@'
+  const schemeMatch = raw.match(/^postgres(?:ql)?:\/\/(.+)$/);
+  if (!schemeMatch) throw new Error("Bad DB URL format");
+  const body = schemeMatch[1];
+  const lastAt = body.lastIndexOf("@");
+  if (lastAt === -1) throw new Error("Bad DB URL format: no @");
+  const userinfo = body.slice(0, lastAt);
+  const hostpart = body.slice(lastAt + 1);
+  const firstColon = userinfo.indexOf(":");
+  if (firstColon === -1) throw new Error("Bad DB URL format: no user:pw");
+  const user = userinfo.slice(0, firstColon);
+  const password = userinfo.slice(firstColon + 1);
+  const hm = hostpart.match(/^([^:\/]+):?(\d+)?\/([^?]+)/);
+  if (!hm) throw new Error("Bad DB URL format: bad host");
+  return { user, password, host: hm[1], port: hm[2] ? parseInt(hm[2]) : 5432, database: hm[3] };
 }
 
 async function tryExec(sql: any, ddl: string, label: string) {
