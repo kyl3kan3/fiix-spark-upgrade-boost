@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings as SettingsIcon, User, Bell, Shield, Palette } from "lucide-react";
+import { Settings as SettingsIcon, User, Bell, Shield, Palette, Send, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,15 +12,46 @@ import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 import WeatherAlertsCard from "@/components/dashboard/tabs/settings/WeatherAlertsCard";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const handleDarkModeToggle = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+  };
+
+  const sendTestEmail = async () => {
+    setSendingTest(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) {
+        toast.error("No email on your account");
+        return;
+      }
+      const { error } = await supabase.functions.invoke("send-email", {
+        body: {
+          to: user.email,
+          subject: "MaintenEase test email",
+          notificationType: "test",
+          html: `<div style="font-family:system-ui,sans-serif;padding:24px">
+            <h2>Resend is working ✅</h2>
+            <p>This is a test email from MaintenEase confirming end-to-end delivery.</p>
+          </div>`,
+        },
+      });
+      if (error) throw error;
+      toast.success(`Test email sent to ${user.email}`);
+    } catch (e: any) {
+      toast.error("Failed to send test email: " + (e?.message || "Unknown error"));
+    } finally {
+      setSendingTest(false);
+    }
   };
 
   return (
@@ -97,7 +128,13 @@ const Settings = () => {
                     onCheckedChange={setPushNotifications}
                   />
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 text-white">Save Preferences</Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button className="bg-primary hover:bg-primary/90 text-white">Save Preferences</Button>
+                  <Button variant="outline" onClick={sendTestEmail} disabled={sendingTest || !emailNotifications}>
+                    {sendingTest ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
+                    Send test email
+                  </Button>
+                </div>
               </CardContent>
             </Card>
             <div className="mt-6">
