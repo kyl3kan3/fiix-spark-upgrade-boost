@@ -1,6 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Twilio } from "npm:twilio@4.19.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 const corsHeaders = {
@@ -82,32 +81,33 @@ const handler = async (req: Request): Promise<Response> => {
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    // Initialize Twilio client
-    const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-    const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
-    const twilioPhone = Deno.env.get("TWILIO_PHONE_NUMBER");
-
-    if (!accountSid || !authToken || !twilioPhone) {
-      throw new Error("Missing Twilio credentials");
+    // Send via Lovable Twilio connector gateway
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
+    const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
+    if (!LOVABLE_API_KEY || !TWILIO_API_KEY || !TWILIO_FROM_NUMBER) {
+      throw new Error("Missing Twilio gateway configuration");
     }
 
-    const client = new Twilio(accountSid, authToken);
-
-    // Send SMS
-    const message = await client.messages.create({
-      body: body,
-      from: twilioPhone,
-      to: to
+    const gwRes = await fetch("https://connector-gateway.lovable.dev/twilio/Messages.json", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "X-Connection-Api-Key": TWILIO_API_KEY,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ To: to, From: TWILIO_FROM_NUMBER, Body: body }),
     });
+    const data = await gwRes.json();
+    if (!gwRes.ok) {
+      throw new Error(`Twilio error [${gwRes.status}]: ${JSON.stringify(data)}`);
+    }
 
-    console.log("SMS sent successfully:", message.sid);
+    console.log("SMS sent successfully:", data.sid);
 
     return new Response(
-      JSON.stringify({ success: true, messageId: message.sid }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      JSON.stringify({ success: true, messageId: data.sid }),
+      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error) {
     console.error("Error sending SMS:", error);
