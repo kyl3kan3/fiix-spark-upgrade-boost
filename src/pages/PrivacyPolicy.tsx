@@ -14,6 +14,14 @@ export default function PrivacyPolicy() {
         <meta property="og:description" content="How MaintenEase collects, uses, and protects your personal data." />
         <meta property="og:url" content="https://maintenease.com/privacy" />
         <meta property="og:type" content="article" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "Privacy Notice",
+          datePublished: "2024-01-01",
+          author: { "@type": "Organization", name: "Decent4" },
+          publisher: { "@type": "Organization", name: "MaintenEase" }
+        })}</script>
       </Helmet>
       <div className="container mx-auto max-w-3xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">
