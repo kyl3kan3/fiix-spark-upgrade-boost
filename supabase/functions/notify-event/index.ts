@@ -21,6 +21,16 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
 });
 const resend = new Resend(RESEND_API_KEY);
 
+// Escape user-controlled values before interpolating into HTML email bodies
+function esc(s: unknown): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 type Recipient = {
   user_id: string;
   email: string | null;
@@ -166,7 +176,7 @@ async function handleWoAssigned(p: any) {
   await deliver({
     userId: assignee_id,
     title: `Work order assigned: ${title}`,
-    body: `You have been assigned the work order "${title}".`,
+    body: `You have been assigned the work order "${esc(title)}".`,
     referenceId: work_order_id,
     eventType: "wo_assigned",
   });
@@ -180,7 +190,7 @@ async function handleWoStatusChanged(p: any) {
     await deliver({
       userId: creator_id,
       title: `Work order completed: ${title}`,
-      body: `The work order "${title}" has been marked as completed.`,
+      body: `The work order "${esc(title)}" has been marked as completed.`,
       referenceId: work_order_id,
       eventType: "wo_status_changed",
     });
@@ -196,7 +206,7 @@ async function handleWoStatusChanged(p: any) {
     await deliver({
       userId: assignee_id,
       title: `Work order updated: ${title}`,
-      body: `Status changed to "${new_status}" for "${title}".`,
+      body: `Status changed to "${esc(new_status)}" for "${esc(title)}".`,
       referenceId: work_order_id,
       eventType: "wo_status_changed",
     });
@@ -234,8 +244,8 @@ async function handleScanDue() {
           ? `Overdue: ${wo.title}`
           : `Due soon: ${wo.title}`,
         body: isOverdue
-          ? `The work order "${wo.title}" is overdue (due ${due.toLocaleString()}).`
-          : `The work order "${wo.title}" is due ${due.toLocaleString()}.`,
+          ? `The work order "${esc(wo.title)}" is overdue (due ${esc(due.toLocaleString())}).`
+          : `The work order "${esc(wo.title)}" is due ${esc(due.toLocaleString())}.`,
         referenceId: wo.id,
         eventType,
         dedupeKey,
@@ -253,8 +263,8 @@ async function handleReportShared(p: any) {
     await deliver({
       userId,
       title: `Report shared: ${report_name}`,
-      body: `${sender_name || "A teammate"} shared the report "${report_name}" with you.${
-        summary ? `<br/><br/>${summary}` : ""
+      body: `${esc(sender_name || "A teammate")} shared the report "${esc(report_name)}" with you.${
+        summary ? `<br/><br/>${esc(summary)}` : ""
       }`,
       referenceId: report_id || report_name,
       eventType: "report_shared",
@@ -279,13 +289,13 @@ async function handleWeatherAlert(p: any) {
   let body = "";
   if (kind === "high") {
     title = `High temperature at ${location_name}`;
-    body = `Temperature at ${location_name} is ${tempStr}, above the configured max (${max_c != null ? fmtTemp(Number(max_c), unit) : "n/a"}).`;
+    body = `Temperature at ${esc(location_name)} is ${tempStr}, above the configured max (${max_c != null ? fmtTemp(Number(max_c), unit) : "n/a"}).`;
   } else if (kind === "low") {
     title = `Low temperature at ${location_name}`;
-    body = `Temperature at ${location_name} is ${tempStr}, below the configured min (${min_c != null ? fmtTemp(Number(min_c), unit) : "n/a"}).`;
+    body = `Temperature at ${esc(location_name)} is ${tempStr}, below the configured min (${min_c != null ? fmtTemp(Number(min_c), unit) : "n/a"}).`;
   } else if (kind === "recovered") {
     title = `Temperature back to normal at ${location_name}`;
-    body = `Temperature at ${location_name} is ${tempStr}, back within configured range.`;
+    body = `Temperature at ${esc(location_name)} is ${tempStr}, back within configured range.`;
   } else {
     return;
   }
