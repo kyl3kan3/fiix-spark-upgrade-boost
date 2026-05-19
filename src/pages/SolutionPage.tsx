@@ -16,8 +16,7 @@ const LEAD_FORM_COPY: Record<string, { title: string; subtitle: string; cta: str
     ctaHeadline: "Stop hunting for assets. Start scanning them.",
     ctaBody: "Most teams have their first 100 assets QR-labelled and live within a day. Start free, or book a walkthrough with a specialist.",
   },
-  "asset-management-software",
-: {
+  "asset-management-software": {
     title: "Talk to an asset management specialist",
     subtitle: "Send us the rough shape of your asset register and we'll show you how MaintenEase would handle PMs, warranties, and lifecycle reporting on day one.",
     cta: "Book a tailored demo",
