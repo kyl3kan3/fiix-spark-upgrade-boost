@@ -78,6 +78,15 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Pricing — Plans for Maintenance Teams | MaintenEase</title>
+        <meta name="description" content="Simple per-team pricing for MaintenEase. Compare Starter, Pro, and Business plans for asset tracking, work orders, and inspections. 14-day free trial." />
+        <link rel="canonical" href="https://maintenease.com/pricing" />
+        <meta property="og:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
+        <meta property="og:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
+        <meta property="og:url" content="https://maintenease.com/pricing" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <PaymentTestModeBanner />
       <div className="container mx-auto max-w-6xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">
