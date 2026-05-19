@@ -8,13 +8,8 @@ export async function sendInvitationEmail(
   userId: string, 
   invitationId: string
 ) {
-  console.log("📤 Starting email send process...");
-  console.log("To:", inviteEmail);
-  console.log("Company:", companyName);
-  console.log("Token:", token);
-  console.log("User ID:", userId);
-  console.log("Invitation ID:", invitationId);
-  
+  console.log("Sending invitation email...");
+
   // Use your actual domain instead of window.location.origin
   const inviteUrl = `https://maintain.rockcitydevelopment.com/auth?signup=true&token=${token}`;
   const emailSubject = `You're invited to join ${companyName} on MaintenEase`;
@@ -53,7 +48,7 @@ export async function sendInvitationEmail(
     if (!data || !data.success) {
       throw new Error(data?.error || "Email sending failed");
     }
-    console.log("✅ Invitation email sent successfully to:", inviteEmail);
+    console.log("Invitation email sent successfully");
   } catch (error) {
     console.error("❌ Invitation email sending failed:", error);
     throw error;
