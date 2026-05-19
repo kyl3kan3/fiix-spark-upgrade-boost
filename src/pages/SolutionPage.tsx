@@ -134,13 +134,40 @@ const SolutionPage = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 pb-20 max-w-5xl">
-        <div className="p-10 rounded-2xl bg-maintenease-600 text-white text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">Ready to see {solution.name} in action?</h2>
-          <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">Start free — no credit card required. Most teams have their first work orders running within an hour.</p>
-          <Button asChild size="lg" variant="secondary"><Link to="/auth?signup=true">Start free</Link></Button>
-        </div>
-      </section>
+      {(() => {
+        const lead = LEAD_FORM_COPY[solution.slug];
+        const headline = lead?.ctaHeadline ?? `Ready to see ${solution.name} in action?`;
+        const body = lead?.ctaBody ?? "Start free — no credit card required. Most teams have their first work orders running within an hour.";
+        return (
+          <section className="container mx-auto px-4 pb-20 max-w-5xl">
+            <div className="p-10 rounded-2xl bg-maintenease-600 text-white text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">{headline}</h2>
+              <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">{body}</p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Button asChild size="lg" variant="secondary">
+                  <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                </Button>
+                {LEAD_FORM_SLUGS.has(solution.slug) && (
+                  <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white">
+                    <a href="#talk-to-us">Talk to a specialist</a>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
+      {LEAD_FORM_SLUGS.has(solution.slug) && (
+        <section id="talk-to-us" className="container mx-auto px-4 pb-20 max-w-3xl scroll-mt-24">
+          <LeadCaptureForm
+            sourceSlug={solution.slug}
+            title={LEAD_FORM_COPY[solution.slug].title}
+            subtitle={LEAD_FORM_COPY[solution.slug].subtitle}
+            cta={LEAD_FORM_COPY[solution.slug].cta}
+          />
+        </section>
+      )}
 
       <section className="container mx-auto px-4 pb-16 max-w-5xl">
         <h2 className="text-2xl font-semibold mb-6">Explore other solutions</h2>
