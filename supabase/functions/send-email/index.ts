@@ -1,7 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -76,8 +77,13 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    console.log("Initializing Resend client...");
-    const resend = new Resend(apiKey);
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ success: false, error: "LOVABLE_API_KEY not configured" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
 
     console.log("Parsing request body...");
     const requestData = await req.json() as EmailNotificationRequest;
@@ -161,7 +167,7 @@ const handler = async (req: Request): Promise<Response> => {
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    console.log("Sending email via Resend...");
+    console.log("Sending email via Resend gateway...");
     console.log("Email details:", { 
       from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
       to, 
@@ -169,13 +175,25 @@ const handler = async (req: Request): Promise<Response> => {
       bodyLength: body.length 
     });
 
-    // Use your verified domain
-    const emailResponse = await resend.emails.send({
-      from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
-      to: [to],
-      subject: subject,
-      html: body,
+    // Send via Lovable connector gateway (RESEND_API_KEY is a connection key, not a raw Resend key)
+    const gatewayRes = await fetch(`${GATEWAY_URL}/emails`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": apiKey,
+      },
+      body: JSON.stringify({
+        from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
+        to: [to],
+        subject: subject,
+        html: body,
+      }),
     });
+    const gatewayJson = await gatewayRes.json().catch(() => ({}));
+    const emailResponse = gatewayRes.ok
+      ? { data: gatewayJson, error: null as any }
+      : { data: null as any, error: { message: gatewayJson?.message || gatewayJson?.error || `Gateway HTTP ${gatewayRes.status}` } };
 
     console.log("Resend API response received:", JSON.stringify(emailResponse, null, 2));
 
