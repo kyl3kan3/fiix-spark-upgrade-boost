@@ -4,6 +4,7 @@ export interface FormState {
   fullName: string;
   role: string;
   email: string;
+  phoneNumber: string;
   notifications: boolean;
 }
 

@@ -91,7 +91,22 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           className="w-full"
         />
       </div>
-      
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Phone number <span className="text-gray-400">(optional, for SMS alerts)</span>
+        </label>
+        <Input
+          name="phoneNumber"
+          type="tel"
+          placeholder="+15558675310"
+          value={state.phoneNumber}
+          onChange={handleChange}
+          className="w-full"
+        />
+        <p className="text-xs text-gray-500 mt-1">Use E.164 format (start with +country code).</p>
+      </div>
+
       <div className="flex items-center gap-3">
         <Checkbox
           checked={state.notifications}

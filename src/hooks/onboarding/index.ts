@@ -12,6 +12,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
     fullName: "",
     role: "",
     email: getInitialEmail(),
+    phoneNumber: "",
     notifications: true,
   });
 
