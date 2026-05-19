@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import OverviewTab from "@/components/dashboard/tabs/OverviewTab";
@@ -17,6 +18,14 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Dashboard | MaintenEase</title>
+        <meta name="description" content="Your maintenance command center — see today's work orders, open tasks, and team activity at a glance." />
+        <link rel="canonical" href="https://maintenease.com/dashboard" />
+        <meta property="og:title" content="Dashboard | MaintenEase" />
+        <meta property="og:description" content="Today's work orders, open tasks, and team activity at a glance." />
+        <meta property="og:url" content="https://maintenease.com/dashboard" />
+      </Helmet>
       <GuidedTour />
       <PageHeader
         title="Home"

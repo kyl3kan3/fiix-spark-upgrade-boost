@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Plus, Printer } from "lucide-react";
@@ -84,6 +85,14 @@ const AssetsPage = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Equipment & Assets | MaintenEase</title>
+        <meta name="description" content="Track every tool, vehicle, and machine in one place. View status, history, and maintenance records for all your assets." />
+        <link rel="canonical" href="https://maintenease.com/assets" />
+        <meta property="og:title" content="Equipment & Assets | MaintenEase" />
+        <meta property="og:description" content="Track every tool, vehicle, and machine in one place." />
+        <meta property="og:url" content="https://maintenease.com/assets" />
+      </Helmet>
       <PageHeader
         title="Equipment"
         description="Everything you take care of — tools, vehicles, machines, and more."
