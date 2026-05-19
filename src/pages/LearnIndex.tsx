@@ -7,7 +7,7 @@ const LearnIndex = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>Maintenance Glossary — Plain-English Definitions | MaintenEase</title>
+        <title>Maintenance Glossary | MaintenEase</title>
         <meta name="description" content="Plain-English definitions of the terms maintenance teams use every day — CMMS, preventive maintenance, work orders, MRO, and more." />
         <link rel="canonical" href="https://maintenease.com/learn" />
         <meta property="og:title" content="Maintenance Glossary | MaintenEase" />

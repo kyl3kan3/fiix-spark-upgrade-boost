@@ -7,7 +7,7 @@ const SolutionsIndex = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>Solutions — Work Orders, PMs, Facilities & Fleet | MaintenEase</title>
+        <title>Solutions — Work Orders, PMs & Fleet | MaintenEase</title>
         <meta name="description" content="See how MaintenEase fits your team — work order software, preventive maintenance, facility maintenance, and fleet maintenance, all in one platform." />
         <link rel="canonical" href="https://maintenease.com/solutions" />
         <meta property="og:title" content="Solutions | MaintenEase" />
