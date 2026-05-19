@@ -9,7 +9,11 @@ import { Download } from "lucide-react";
 const ReportsPage = () => {
   return (
     <DashboardLayout>
-      <Helmet><title>Reports | MaintenEase</title></Helmet>
+      <Helmet>
+        <title>Reports | MaintenEase</title>
+        <meta name="description" content="Maintenance reports and analytics: work order completion, asset health, inspection trends, and team performance summaries for your facility." />
+        <link rel="canonical" href="https://maintenease.com/reports" />
+      </Helmet>
       <PageHeader
         title="Reports"
         description="Simple summaries of your work — what's done, what's pending, and how things are trending."
