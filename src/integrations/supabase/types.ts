@@ -619,6 +619,42 @@ export type Database = {
           },
         ]
       }
+      marketing_leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          source_slug: string | null
+          source_url: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          source_slug?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          source_slug?: string | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
