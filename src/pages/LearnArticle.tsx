@@ -4,6 +4,43 @@ import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getGlossaryTerm, glossary } from "@/data/glossary";
 import { Button } from "@/components/ui/button";
 
+const RELATED_SOLUTIONS: Record<string, { slug: string; name: string; tagline: string }[]> = {
+  cmms: [
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Full asset register, lifecycle and TCO reporting." },
+    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR codes, locations and custody history." },
+    { slug: "work-order-software", name: "Work order software", tagline: "Assign, schedule and close work orders fast." },
+  ],
+  "preventive-maintenance": [
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Tie PMs to a full asset register." },
+    { slug: "preventive-maintenance-software", name: "Preventive maintenance software", tagline: "Time and meter-based PM schedules." },
+  ],
+  "work-order": [
+    { slug: "work-order-software", name: "Work order software", tagline: "Assign, schedule and close work orders fast." },
+    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "Attach every WO to a tracked asset." },
+  ],
+  "facility-maintenance": [
+    { slug: "facility-maintenance-software", name: "Facility maintenance software", tagline: "Run buildings, rooms and equipment." },
+    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR codes for every room and unit." },
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Lifecycle and warranty tracking." },
+  ],
+  "fleet-maintenance": [
+    { slug: "fleet-maintenance-software", name: "Fleet maintenance software", tagline: "Vehicle PMs and service history." },
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Each vehicle as a tracked asset." },
+  ],
+  mro: [
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Asset register, parts and warranty." },
+    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "Track spares, tools and equipment." },
+  ],
+  "building-maintenance": [
+    { slug: "facility-maintenance-software", name: "Facility maintenance software", tagline: "Buildings, rooms and equipment in one place." },
+    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR-coded assets across every building." },
+  ],
+  "property-maintenance": [
+    { slug: "maintenance-request-portal", name: "Maintenance request portal", tagline: "Tenants and staff submit requests." },
+    { slug: "asset-management-software", name: "Asset management software", tagline: "Track appliances, HVAC and fixtures." },
+  ],
+};
+
 const LearnArticle = () => {
   const { slug = "" } = useParams();
   const term = getGlossaryTerm(slug);
@@ -32,6 +69,8 @@ const LearnArticle = () => {
   const related = term.related
     .map((s) => glossary.find((g) => g.slug === s))
     .filter((g): g is NonNullable<typeof g> => Boolean(g));
+
+  const relatedSolutions = RELATED_SOLUTIONS[term.slug] ?? [];
 
   return (
     <MarketingLayout>
@@ -98,6 +137,24 @@ const LearnArticle = () => {
                 >
                   <h3 className="font-semibold text-gray-900 mb-1">{r.term}</h3>
                   <p className="text-sm text-gray-600">{r.short}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {relatedSolutions.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900">Related solutions</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {relatedSolutions.map((r) => (
+                <Link
+                  key={r.slug}
+                  to={`/solutions/${r.slug}`}
+                  className="block p-5 rounded-lg border border-gray-200 bg-white hover:border-maintenease-500 hover:shadow-md transition-all"
+                >
+                  <h3 className="font-semibold text-gray-900 mb-1">{r.name}</h3>
+                  <p className="text-sm text-gray-600">{r.tagline}</p>
                 </Link>
               ))}
             </div>
