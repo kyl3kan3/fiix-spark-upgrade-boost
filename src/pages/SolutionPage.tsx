@@ -77,7 +77,11 @@ const SolutionPage = () => {
         <p className="text-xl text-gray-600 max-w-3xl mb-8">{solution.tagline}</p>
         <div className="flex flex-wrap gap-3 mb-12">
           <Button asChild size="lg"><Link to="/auth?signup=true">Start free</Link></Button>
-          <Button asChild size="lg" variant="outline"><Link to="/pricing">See pricing</Link></Button>
+          {LEAD_FORM_SLUGS.has(solution.slug) ? (
+            <Button asChild size="lg" variant="outline"><a href="#talk-to-us">Talk to a specialist</a></Button>
+          ) : (
+            <Button asChild size="lg" variant="outline"><Link to="/pricing">See pricing</Link></Button>
+          )}
         </div>
         <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">{solution.intro}</p>
       </section>
