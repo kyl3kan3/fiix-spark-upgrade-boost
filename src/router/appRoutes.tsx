@@ -49,6 +49,7 @@ const BillingPage = lazy(() => import("@/pages/BillingPage"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
+const SmsOptIn = lazy(() => import("@/pages/SmsOptIn"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -65,6 +66,8 @@ export const AppRoutes = () => (
       <Route path="/terms-of-service" element={<Navigate to="/terms" replace />} />
       <Route path="/refund-policy" element={<RefundPolicy />} />
       <Route path="/refunds" element={<Navigate to="/refund-policy" replace />} />
+      <Route path="/sms-opt-in" element={<SmsOptIn />} />
+      <Route path="/sms" element={<Navigate to="/sms-opt-in" replace />} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 

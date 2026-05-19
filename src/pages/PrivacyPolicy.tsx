@@ -114,6 +114,37 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold">10. Changes to this notice</h2>
             <p>We may update this notice from time to time. The "Last updated" date above reflects the most recent change.</p>
           </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold">11. SMS messaging program</h2>
+            <p>
+              If you opt in to our SMS program (for example via our{" "}
+              <Link className="underline" to="/sms-opt-in">SMS sign-up page</Link>{" "}
+              or by providing your phone number in onboarding or notification
+              settings), we collect and process your mobile phone number and
+              consent record (timestamp, IP address, user agent, and source) in
+              order to send you transactional and operational text messages such
+              as work-order assignments, inspection reminders, and account
+              alerts.
+            </p>
+            <p>
+              <strong>We do not share, sell, rent, or otherwise disclose your
+              mobile phone number or SMS consent information to third parties or
+              affiliates for their marketing or promotional purposes.</strong>{" "}
+              Phone numbers and SMS opt-in data are shared only with our
+              messaging subprocessor (Twilio) strictly to deliver the messages
+              you requested.
+            </p>
+            <p>
+              Message frequency varies based on your account activity. Message
+              and data rates may apply. You can opt out at any time by replying{" "}
+              <strong>STOP</strong> to any message, or by updating your{" "}
+              <Link className="underline" to="/settings/notifications">
+                notification preferences
+              </Link>
+              . Reply <strong>HELP</strong> for assistance.
+            </p>
+          </section>
         </div>
       </div>
     </div>

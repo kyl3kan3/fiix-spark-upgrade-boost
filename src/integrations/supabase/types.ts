@@ -906,6 +906,36 @@ export type Database = {
           },
         ]
       }
+      sms_optins: {
+        Row: {
+          consent: boolean
+          created_at: string
+          id: string
+          ip_address: string | null
+          phone_number: string
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          consent?: boolean
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          phone_number: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          consent?: boolean
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          phone_number?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           billing_interval: Database["public"]["Enums"]["billing_interval"]

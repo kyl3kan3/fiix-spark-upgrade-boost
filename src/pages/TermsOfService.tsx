@@ -117,6 +117,33 @@ export default function TermsOfService() {
             <p>We may update these Terms from time to time. Continued use of the Service after changes become effective constitutes
               acceptance of the updated Terms.</p>
           </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold">13. SMS messaging terms</h2>
+            <p>
+              By providing your mobile phone number and opting in (for example
+              through our <Link className="underline" to="/sms-opt-in">SMS sign-up page</Link>,
+              onboarding, or notification settings), you agree to receive
+              recurring automated text messages from MaintenEase (Decent4) at
+              the number provided. Messages may include work-order
+              assignments, inspection and checklist reminders, account and
+              security alerts, and occasional service announcements.
+            </p>
+            <p>
+              <strong>Consent is not a condition of purchase.</strong>{" "}
+              Message frequency varies. <strong>Message and data rates may
+              apply.</strong> Carriers are not liable for delayed or undelivered
+              messages.
+            </p>
+            <p>
+              You can cancel at any time by replying <strong>STOP</strong> to
+              any message; you will receive a single confirmation message and
+              no further messages will be sent. Reply <strong>HELP</strong> for
+              assistance, or contact us through the app. For details on how we
+              handle your phone number and consent records, see our{" "}
+              <Link className="underline" to="/privacy">Privacy Notice</Link>.
+            </p>
+          </section>
         </div>
       </div>
     </div>
