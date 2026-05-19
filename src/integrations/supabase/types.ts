@@ -400,6 +400,7 @@ export type Database = {
           logo: string | null
           name: string
           phone: string | null
+          public_slug: string | null
           state: string | null
           temp_max_c: number | null
           temp_min_c: number | null
@@ -420,6 +421,7 @@ export type Database = {
           logo?: string | null
           name: string
           phone?: string | null
+          public_slug?: string | null
           state?: string | null
           temp_max_c?: number | null
           temp_min_c?: number | null
@@ -440,6 +442,7 @@ export type Database = {
           logo?: string | null
           name?: string
           phone?: string | null
+          public_slug?: string | null
           state?: string | null
           temp_max_c?: number | null
           temp_min_c?: number | null
@@ -905,6 +908,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      public_requests: {
+        Row: {
+          company_id: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string
+          id: string
+          location_text: string | null
+          status: string
+          submitter_ip: string | null
+          title: string
+          type: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          company_id: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location_text?: string | null
+          status?: string
+          submitter_ip?: string | null
+          title: string
+          type?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          company_id?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location_text?: string | null
+          status?: string
+          submitter_ip?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
       }
       sms_optins: {
         Row: {
@@ -1526,6 +1580,15 @@ export type Database = {
           organization_id: string
           role: string
           status: string
+        }[]
+      }
+      get_public_company_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          id: string
+          logo: string
+          name: string
+          public_slug: string
         }[]
       }
       get_user_company: { Args: { _user_id: string }; Returns: string }
