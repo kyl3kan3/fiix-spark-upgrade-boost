@@ -172,6 +172,74 @@ export const solutions: Solution[] = [
       { q: "Do submitters need a MaintenEase account?", a: "No. The portal is fully public. Anyone with the link can submit a request." },
     ],
   },
+  {
+    slug: "asset-tracking-software",
+    name: "Asset Tracking Software",
+    h1: "Asset Tracking Software that always knows where every asset lives",
+    tagline: "QR codes, locations, custody, and full service history — for every asset you own.",
+    metaTitle: "Asset Tracking Software — QR Codes & Locations | MaintenEase",
+    metaDescription: "Asset tracking software with QR codes, nested locations, custody logs, and full service history. Free trial — no credit card.",
+    intro:
+      "MaintenEase gives every asset a unique QR code, a permanent home in your location hierarchy, and a full service history that travels with it. Scan a QR code to see the asset's manual, warranty, open work orders, and PM schedule. Move an asset between rooms or buildings and the audit trail updates itself. No more spreadsheets, no more lost equipment.",
+    benefits: [
+      { title: "Find any asset in seconds", body: "Scan the QR code or search by name, tag, or serial. Every asset has a clear home in your location tree." },
+      { title: "Stop losing equipment", body: "Custody changes, transfers, and disposals are all timestamped — you always know who had it last and where it went." },
+      { title: "Service history that follows the asset", body: "Every work order, PM, inspection, and part swap stays attached to the asset for its entire life — including across owners and locations." },
+    ],
+    features: [
+      { title: "QR code generation", body: "Print branded QR labels for every asset. Scanning opens the asset directly in MaintenEase — no app install required for read-only access." },
+      { title: "Nested locations", body: "Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level." },
+      { title: "Custody and transfers", body: "Assign assets to people, teams, or locations. Every transfer is logged with who, when, and why." },
+      { title: "Warranty, manuals, and photos", body: "Attach manuals, photos, purchase records, and warranty dates. Get alerts before warranties expire." },
+      { title: "Bulk import and CSV export", body: "Import existing asset registers from a spreadsheet in minutes. Export filtered views for audits or insurance." },
+      { title: "Asset lifecycle reporting", body: "See total cost of ownership, downtime hours, and remaining useful life per asset and per asset class." },
+    ],
+    useCases: [
+      "Facility teams managing thousands of fixed assets across multiple buildings",
+      "IT and operations teams tracking laptops, tools, and shared equipment",
+      "Manufacturers tracking machines, tooling, and spare parts",
+      "Schools, clinics, and labs tracking regulated or high-value equipment",
+    ],
+    faqs: [
+      { q: "Do I need special hardware to scan QR codes?", a: "No. Any modern smartphone camera scans MaintenEase QR codes — no scanner, no app install required for read-only access." },
+      { q: "Can I import my existing asset list?", a: "Yes. CSV import is supported, and our team will help map columns and locations on the first import." },
+      { q: "Does it support barcodes too?", a: "Yes — both QR codes and 1D barcodes are supported for scanning and lookup." },
+    ],
+  },
+  {
+    slug: "asset-management-software",
+    name: "Asset Management Software",
+    h1: "Asset Management Software that turns your asset register into a working system",
+    tagline: "Register, schedule, maintain, and report on every asset — in one place.",
+    metaTitle: "Asset Management Software for Maintenance Teams | MaintenEase",
+    metaDescription: "Asset management software with PM scheduling, work orders, warranty tracking, and lifecycle reporting. Free trial — no credit card.",
+    intro:
+      "MaintenEase is asset management software built for the teams who actually maintain the assets. Register every asset with its location, warranty, parts, and manuals. Layer PM schedules and work orders directly on top. Report on cost, downtime, and lifecycle — per asset, per location, per category. Your asset register stops being a spreadsheet and starts being the system of record for everything that happens to your equipment.",
+    benefits: [
+      { title: "One source of truth", body: "Every asset, every work order, every PM, every part — in one place. No more reconciling spreadsheets at month-end." },
+      { title: "Smarter capital decisions", body: "See total cost of ownership and downtime per asset to decide what to repair, replace, or retire." },
+      { title: "Audit-ready in one click", body: "Insurance, regulatory, and internal audits export from the asset register with full history attached." },
+    ],
+    features: [
+      { title: "Full asset register", body: "Capture make, model, serial, warranty, purchase price, installation date, and custom fields per asset class." },
+      { title: "PM scheduling per asset", body: "Time-based, runtime-based, or meter-based PMs attached directly to the asset. Work orders generate automatically." },
+      { title: "Work orders and parts", body: "Every repair, inspection, and part swap is recorded against the asset — building a complete service history." },
+      { title: "Warranty and contract tracking", body: "Alerts before warranties and service contracts expire so you never miss a recoverable repair." },
+      { title: "Lifecycle and TCO reporting", body: "Cost per asset, downtime per asset, repair frequency, and depreciation curves — exportable for finance." },
+      { title: "Role and location permissions", body: "Restrict each user to the sites, asset classes, or actions they're responsible for." },
+    ],
+    useCases: [
+      "Manufacturers managing production equipment and tooling",
+      "Facility teams tracking HVAC, electrical, and life-safety assets",
+      "Healthcare and life sciences managing regulated equipment",
+      "Property and real estate teams managing portfolio-wide asset registers",
+    ],
+    faqs: [
+      { q: "How is this different from a CMMS?", a: "Asset management is one of the core capabilities of a CMMS. MaintenEase is a full CMMS — asset management, work orders, PMs, parts, and reporting — sold under whichever name fits how you think about the problem." },
+      { q: "Can I track depreciation?", a: "Yes. Purchase price, installation date, and useful life are captured per asset; straight-line depreciation reports are built in, and you can export raw data for your finance system." },
+      { q: "Does it work for non-physical assets?", a: "Yes — software licenses, certifications, and contracts can be tracked alongside physical assets with their own renewal alerts." },
+    ],
+  },
 ];
 
 export const getSolution = (slug: string) => solutions.find((s) => s.slug === slug);
