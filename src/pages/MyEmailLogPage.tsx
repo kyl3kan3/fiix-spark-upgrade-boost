@@ -89,7 +89,11 @@ const MyEmailLogPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Helmet><title>My Email Log | MaintenEase</title></Helmet>
+      <Helmet>
+        <title>My Email Log | MaintenEase</title>
+        <meta name="description" content="Track delivery status for notification emails sent to you by MaintenEase, including assignments, status changes, and weather alerts." />
+        <link rel="canonical" href="https://maintenease.com/notifications/email-log" />
+      </Helmet>
       <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="-ml-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
