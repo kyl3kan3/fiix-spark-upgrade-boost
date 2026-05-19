@@ -39,7 +39,8 @@ const Settings = () => {
           to: user.email,
           subject: "MaintenEase test email",
           notificationType: "test",
-          html: `<div style="font-family:system-ui,sans-serif;padding:24px">
+          userId: user.id,
+          body: `<div style="font-family:system-ui,sans-serif;padding:24px">
             <h2>Resend is working ✅</h2>
             <p>This is a test email from MaintenEase confirming end-to-end delivery.</p>
           </div>`,
