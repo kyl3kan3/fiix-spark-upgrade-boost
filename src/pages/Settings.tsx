@@ -19,6 +19,7 @@ const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
   const [sendingTest, setSendingTest] = useState(false);
+  const [sendingTestSms, setSendingTestSms] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const handleDarkModeToggle = () => {
@@ -52,6 +53,40 @@ const Settings = () => {
       toast.error("Failed to send test email: " + (e?.message || "Unknown error"));
     } finally {
       setSendingTest(false);
+    }
+  };
+
+  const sendTestSms = async () => {
+    setSendingTestSms(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Not signed in");
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles").select("phone_number").eq("id", user.id).maybeSingle();
+      const { data: prefs } = await supabase
+        .from("notification_preferences").select("phone_number").eq("user_id", user.id).maybeSingle();
+      const phone = (profile as any)?.phone_number || (prefs as any)?.phone_number;
+      if (!phone) {
+        toast.error("Add a phone number to your profile first");
+        return;
+      }
+      const { error } = await supabase.functions.invoke("send-sms", {
+        body: {
+          to: phone,
+          body: "MaintenEase test SMS ✅ Texting is working.",
+          userId: user.id,
+          notificationType: "test",
+        },
+      });
+      if (error) throw error;
+      toast.success(`Test SMS sent to ${phone}`);
+    } catch (e: any) {
+      toast.error("Failed to send test SMS: " + (e?.message || "Unknown error"));
+    } finally {
+      setSendingTestSms(false);
     }
   };
 
@@ -134,6 +169,10 @@ const Settings = () => {
                   <Button variant="outline" onClick={sendTestEmail} disabled={sendingTest || !emailNotifications}>
                     {sendingTest ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
                     Send test email
+                  </Button>
+                  <Button variant="outline" onClick={sendTestSms} disabled={sendingTestSms}>
+                    {sendingTestSms ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
+                    Send test SMS
                   </Button>
                 </div>
               </CardContent>
