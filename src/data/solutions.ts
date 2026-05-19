@@ -137,6 +137,41 @@ export const solutions: Solution[] = [
       { q: "Can drivers use this without a full MaintenEase license?", a: "Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost." },
     ],
   },
+  {
+    slug: "maintenance-request-portal",
+    name: "Maintenance Request Portal",
+    h1: "A free, branded portal for customers to report problems",
+    tagline: "Standard requests and an urgent lane — submissions land straight in your inbox.",
+    metaTitle: "Maintenance Request Portal — Free Public Form | MaintenEase",
+    metaDescription: "Give tenants, staff, or the public a branded portal to report maintenance issues — with an urgent lane that alerts your team instantly.",
+    intro:
+      "Every MaintenEase account ships with a branded public request portal at your-team.maintenease.com/r/your-name. Share the link on your website, print a QR code on the wall, or email it to tenants. Submitters pick a standard request or hit the red Urgent button, fill in a short form, and your team is notified — no app install, no login required.",
+    benefits: [
+      { title: "Catch urgent issues in seconds", body: "Urgent submissions fire instant push and email alerts to your on-call admins and managers — even outside business hours." },
+      { title: "Stop drowning in email and texts", body: "Every request lands in one structured inbox with location, photos, and contact info. No more screenshots in group chats." },
+      { title: "Look professional", body: "The portal carries your logo and company name. Customers experience a real product, not a Google Form." },
+    ],
+    features: [
+      { title: "Standard + urgent lanes", body: "Two clear buttons up top. The urgent lane is visually distinct and routes differently." },
+      { title: "One-click convert to work order", body: "Triage in the inbox, then convert any request into a fully populated work order with location, contact info, and the right priority." },
+      { title: "Branded with your logo", body: "Your colors and logo appear at the top. Use a custom URL slug so the link reads naturally on your website." },
+      { title: "Public — no login required", body: "Submitters fill the form in 30 seconds. No account, no install, no friction." },
+      { title: "Spam-safe by design", body: "Length-capped fields and per-tenant rate limiting keep the inbox clean without captchas in front of real users." },
+      { title: "Free on every plan", body: "Included with every MaintenEase plan — no extra cost per submission." },
+    ],
+    useCases: [
+      "Property managers receiving tenant maintenance requests",
+      "Facility teams collecting issues from staff across multiple buildings",
+      "HOAs and condo associations fielding resident reports",
+      "Schools and clinics where staff need a fast way to flag problems",
+    ],
+    faqs: [
+      { q: "Is the portal really free?", a: "Yes. The public request portal is included on every MaintenEase plan, with no per-submission charges." },
+      { q: "Can I customize the URL?", a: "Yes — each company picks a unique slug (e.g. /r/acme-facilities). You can change it any time from settings." },
+      { q: "How do urgent alerts work?", a: "When someone selects the Urgent option, MaintenEase fires push notifications and emails to admins and managers immediately — using their existing notification preferences." },
+      { q: "Do submitters need a MaintenEase account?", a: "No. The portal is fully public. Anyone with the link can submit a request." },
+    ],
+  },
 ];
 
 export const getSolution = (slug: string) => solutions.find((s) => s.slug === slug);

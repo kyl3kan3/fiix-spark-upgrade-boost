@@ -35,6 +35,7 @@ const Footer = () => {
       links: [
         { label: "Features", to: "#" },
         { label: "Pricing", to: "/pricing" },
+        { label: "Request Portal", to: "/solutions/maintenance-request-portal" },
         { label: "Integrations", to: "#" },
         { label: "Updates", to: "#" },
         { label: "Roadmap", to: "#" },
