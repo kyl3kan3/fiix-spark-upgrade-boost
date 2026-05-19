@@ -140,7 +140,8 @@ export const useOnboardingSubmit = (
           first_name: firstName,
           last_name: lastName,
           role: isInvited ? inviteDetails?.role : "administrator",
-          company_id: companyId
+          company_id: companyId,
+          phone_number: state.phoneNumber?.trim() || null,
         })
         .eq("id", user.id);
         
