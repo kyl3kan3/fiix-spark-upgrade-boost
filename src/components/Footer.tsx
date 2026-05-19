@@ -6,8 +6,13 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const location = useLocation();
   
-  // Only show footer on landing page or feature demo pages
-  const showFullFooter = location.pathname === "/landing" || location.pathname.startsWith("/feature");
+  // Show full marketing footer on landing/feature and SEO marketing routes
+  const p = location.pathname;
+  const showFullFooter =
+    p === "/landing" ||
+    p.startsWith("/feature") ||
+    p.startsWith("/learn") ||
+    p.startsWith("/solutions");
   
   if (!showFullFooter) {
     // Simple footer for main application pages
@@ -38,8 +43,8 @@ const Footer = () => {
     {
       title: "Resources",
       links: [
-        { label: "Documentation", to: "#" },
-        { label: "Guides", to: "#" },
+        { label: "Glossary", to: "/learn" },
+        { label: "Solutions", to: "/solutions" },
         { label: "API", to: "#" },
         { label: "Status", to: "#" },
         { label: "Help Center", to: "#" },
