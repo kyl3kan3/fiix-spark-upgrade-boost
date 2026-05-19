@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Loader2, Mail, Bell } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, Bell, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,6 +15,7 @@ const NotificationPreferencesPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [defaultEmail, setDefaultEmail] = useState<string>("");
   const [inApp, setInApp] = useState(true);
@@ -63,6 +64,40 @@ const NotificationPreferencesPage: React.FC = () => {
     setSaving(false);
     if (error) { toast.error("Failed to save: " + error.message); return; }
     toast.success("Notification preferences saved");
+  };
+
+  const sendTestEmail = async () => {
+    if (!userId) return;
+    const to = (emailAddress || defaultEmail || "").trim();
+    if (!to) {
+      toast.error("No email address available");
+      return;
+    }
+    setSendingTest(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-email", {
+        body: {
+          to,
+          subject: "MaintenEase test email",
+          body: `<div style="font-family:Arial,sans-serif;padding:24px;color:#111">
+            <h2 style="margin:0 0 12px">Resend is working ✅</h2>
+            <p>This is a test email from MaintenEase confirming end-to-end delivery.</p>
+            <p style="color:#666;font-size:12px;margin-top:24px">Sent to ${to}</p>
+          </div>`,
+          userId,
+          notificationType: "test",
+        },
+      });
+      if (error) throw error;
+      if (data && (data as any).success === false) {
+        throw new Error((data as any).error || "Unknown error");
+      }
+      toast.success(`Test email sent to ${to}`);
+    } catch (e: any) {
+      toast.error("Failed to send test email: " + (e?.message || "Unknown error"));
+    } finally {
+      setSendingTest(false);
+    }
   };
 
   return (
@@ -135,6 +170,10 @@ const NotificationPreferencesPage: React.FC = () => {
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => navigate("/notifications/email-log")}>
                 View email log
+              </Button>
+              <Button variant="outline" onClick={sendTestEmail} disabled={sendingTest || !emailEnabled}>
+                {sendingTest ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
+                Send test email
               </Button>
               <Button onClick={save} disabled={saving}>
                 {saving && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
