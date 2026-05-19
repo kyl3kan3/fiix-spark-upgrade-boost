@@ -50,6 +50,10 @@ const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
 const SmsOptIn = lazy(() => import("@/pages/SmsOptIn"));
+const LearnIndex = lazy(() => import("@/pages/LearnIndex"));
+const LearnArticle = lazy(() => import("@/pages/LearnArticle"));
+const SolutionsIndex = lazy(() => import("@/pages/SolutionsIndex"));
+const SolutionPage = lazy(() => import("@/pages/SolutionPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -68,6 +72,11 @@ export const AppRoutes = () => (
       <Route path="/refunds" element={<Navigate to="/refund-policy" replace />} />
       <Route path="/sms-opt-in" element={<SmsOptIn />} />
       <Route path="/sms" element={<Navigate to="/sms-opt-in" replace />} />
+
+      <Route path="/learn" element={<LearnIndex />} />
+      <Route path="/learn/:slug" element={<LearnArticle />} />
+      <Route path="/solutions" element={<SolutionsIndex />} />
+      <Route path="/solutions/:slug" element={<SolutionPage />} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
