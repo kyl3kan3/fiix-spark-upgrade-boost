@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import { HelpCircle } from "lucide-react";
 import { HelpSearchBar } from "@/components/help/components/HelpSearchBar";
@@ -12,6 +13,7 @@ import { Compass, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
 import { toast } from "sonner";
+import { faqItems } from "@/components/help/data/helpData";
 
 const Help = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,6 +53,20 @@ const Help = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Help Center — MaintenEase</title>
+        <meta name="description" content="Find answers about work orders, assets, inspections, and more in the MaintenEase Help Center." />
+        <link rel="canonical" href="https://maintenease.com/help" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        })}</script>
+      </Helmet>
       <div className="flex items-center mb-6">
         <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
         <h1 className="text-2xl font-bold text-gray-900">Help Center</h1>
