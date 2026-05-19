@@ -106,6 +106,14 @@ const VendorsPage = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Vendors & Contractors | MaintenEase</title>
+        <meta name="description" content="Manage maintenance vendors and contractors — contact info, service categories, and work history in one place." />
+        <link rel="canonical" href="https://maintenease.com/vendors" />
+        <meta property="og:title" content="Vendors & Contractors | MaintenEase" />
+        <meta property="og:description" content="Manage maintenance vendors and contractors in one place." />
+        <meta property="og:url" content="https://maintenease.com/vendors" />
+      </Helmet>
       <div className="space-y-4 px-4 pb-6 pt-4 sm:space-y-6 md:px-6 lg:px-8">
         <BackToDashboard />
         
