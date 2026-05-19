@@ -13,12 +13,12 @@ const Footer = () => {
     // Simple footer for main application pages
     return (
       <footer className="bg-gray-50 border-t border-gray-200 py-4">
-        <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-gray-500">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-gray-700">
           <span>&copy; {currentYear} Decent4. All rights reserved.</span>
           <span className="hidden sm:inline">·</span>
-          <Link to="/privacy" className="hover:text-gray-700">Privacy</Link>
-          <Link to="/terms" className="hover:text-gray-700">Terms</Link>
-          <Link to="/refund-policy" className="hover:text-gray-700">Refunds</Link>
+          <Link to="/privacy" className="hover:text-gray-900">Privacy</Link>
+          <Link to="/terms" className="hover:text-gray-900">Terms</Link>
+          <Link to="/refund-policy" className="hover:text-gray-900">Refunds</Link>
         </div>
       </footer>
     );
