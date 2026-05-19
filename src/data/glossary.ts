@@ -45,7 +45,7 @@ export const glossary: GlossaryTerm[] = [
     slug: "preventive-maintenance",
     term: "Preventive Maintenance",
     short: "Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.",
-    metaTitle: "What is Preventive Maintenance? Definition, Examples & Schedules",
+    metaTitle: "What is Preventive Maintenance? Definition & Examples",
     metaDescription: "Preventive maintenance is scheduled service done before equipment fails. Learn how to set frequencies, what to track, and where to start.",
     sections: [
       {
@@ -105,7 +105,7 @@ export const glossary: GlossaryTerm[] = [
     slug: "facility-maintenance",
     term: "Facility Maintenance",
     short: "All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.",
-    metaTitle: "What is Facility Maintenance? Scope, Examples & Best Practices",
+    metaTitle: "What is Facility Maintenance? Scope & Examples",
     metaDescription: "Facility maintenance keeps buildings safe, comfortable, and compliant. Learn the scope, common tasks, and how teams organize the work.",
     sections: [
       {
