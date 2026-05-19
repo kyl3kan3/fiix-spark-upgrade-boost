@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -5,6 +6,15 @@ import { ArrowLeft } from "lucide-react";
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Privacy Notice | MaintenEase</title>
+        <meta name="description" content="How MaintenEase (Decent4) collects, uses, and protects personal data, including your rights, retention, and sharing with subprocessors like Paddle." />
+        <link rel="canonical" href="https://maintenease.com/privacy" />
+        <meta property="og:title" content="Privacy Notice | MaintenEase" />
+        <meta property="og:description" content="How MaintenEase collects, uses, and protects your personal data." />
+        <meta property="og:url" content="https://maintenease.com/privacy" />
+        <meta property="og:type" content="article" />
+      </Helmet>
       <div className="container mx-auto max-w-3xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Link>
