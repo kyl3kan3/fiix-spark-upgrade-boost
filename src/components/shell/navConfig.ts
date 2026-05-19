@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
-  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, type LucideIcon,
+  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -13,6 +13,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home",         href: "/dashboard",    icon: LayoutDashboard, code: "DSH", group: "Main" },
+  { label: "Request Inbox", href: "/requests",    icon: Inbox,           code: "REQ", group: "Main" },
   { label: "Due Today",    href: "/checklists/due", icon: Bell,          code: "DUE", group: "Main" },
   { label: "My Jobs",      href: "/work-orders",  icon: ClipboardList,   code: "WO",  group: "Main" },
   { label: "Check-Ups",    href: "/inspections",  icon: ClipboardCheck,  code: "INS", group: "Main" },

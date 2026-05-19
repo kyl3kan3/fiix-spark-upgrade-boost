@@ -54,6 +54,8 @@ const LearnIndex = lazy(() => import("@/pages/LearnIndex"));
 const LearnArticle = lazy(() => import("@/pages/LearnArticle"));
 const SolutionsIndex = lazy(() => import("@/pages/SolutionsIndex"));
 const SolutionPage = lazy(() => import("@/pages/SolutionPage"));
+const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
+const RequestsInboxPage = lazy(() => import("@/pages/RequestsInboxPage"));
 
 export const AppRoutes = () => (
   <Suspense fallback={null}>
@@ -77,6 +79,9 @@ export const AppRoutes = () => (
       <Route path="/learn/:slug" element={<LearnArticle />} />
       <Route path="/solutions" element={<SolutionsIndex />} />
       <Route path="/solutions/:slug" element={<SolutionPage />} />
+
+      <Route path="/r/:slug" element={<PublicRequestPortal />} />
+      <Route path="/requests" element={<ProtectedRoute><RequestsInboxPage /></ProtectedRoute>} />
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
