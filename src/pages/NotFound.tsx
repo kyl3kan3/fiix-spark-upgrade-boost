@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet";
 
 const NotFound = () => {
   const location = useLocation();
@@ -10,6 +11,11 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background bg-blueprint-grid p-6">
+      <Helmet>
+        <title>Page not found | MaintenEase</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Return to the MaintenEase dashboard or visit the homepage to find what you need." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="ticket-card-accent p-8 max-w-md w-full">
         <div className="label-eyebrow mb-3 flex items-center justify-between">
           <span>ERR · 404</span>
