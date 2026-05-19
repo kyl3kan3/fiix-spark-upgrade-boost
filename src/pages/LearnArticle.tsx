@@ -4,40 +4,42 @@ import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getGlossaryTerm, glossary } from "@/data/glossary";
 import { Button } from "@/components/ui/button";
 
-const RELATED_SOLUTIONS: Record<string, { slug: string; name: string; tagline: string }[]> = {
+// Anchor text is intentionally varied per source article — keyword-rich but
+// contextual, avoiding repetition of the same phrase across the site.
+const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline: string }[]> = {
   cmms: [
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Full asset register, lifecycle and TCO reporting." },
-    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR codes, locations and custody history." },
-    { slug: "work-order-software", name: "Work order software", tagline: "Assign, schedule and close work orders fast." },
+    { slug: "asset-management-software", anchor: "Asset management software for CMMS teams", tagline: "Full asset register, lifecycle and TCO reporting inside your CMMS." },
+    { slug: "asset-tracking-software", anchor: "QR-code asset tracking inside your CMMS", tagline: "Scan, locate and audit every asset from one CMMS." },
+    { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule and close work orders fast." },
   ],
   "preventive-maintenance": [
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Tie PMs to a full asset register." },
-    { slug: "preventive-maintenance-software", name: "Preventive maintenance software", tagline: "Time and meter-based PM schedules." },
+    { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie every PM to an asset with warranty, parts and history." },
+    { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Time and meter-based PM schedules." },
   ],
   "work-order": [
-    { slug: "work-order-software", name: "Work order software", tagline: "Assign, schedule and close work orders fast." },
-    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "Attach every WO to a tracked asset." },
+    { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule and close work orders fast." },
+    { slug: "asset-tracking-software", anchor: "Track the asset behind every work order", tagline: "Attach every WO to a QR-tagged asset and its service history." },
   ],
   "facility-maintenance": [
-    { slug: "facility-maintenance-software", name: "Facility maintenance software", tagline: "Run buildings, rooms and equipment." },
-    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR codes for every room and unit." },
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Lifecycle and warranty tracking." },
+    { slug: "facility-maintenance-software", anchor: "Facility maintenance software", tagline: "Run buildings, rooms and equipment." },
+    { slug: "asset-tracking-software", anchor: "Track facility assets with QR codes", tagline: "Every room, unit and piece of equipment, labelled and located." },
+    { slug: "asset-management-software", anchor: "Manage your facility asset register", tagline: "Lifecycle, warranty and contract tracking across your portfolio." },
   ],
   "fleet-maintenance": [
-    { slug: "fleet-maintenance-software", name: "Fleet maintenance software", tagline: "Vehicle PMs and service history." },
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Each vehicle as a tracked asset." },
+    { slug: "fleet-maintenance-software", anchor: "Fleet maintenance software", tagline: "Vehicle PMs and full service history." },
+    { slug: "asset-management-software", anchor: "Manage every vehicle as a tracked asset", tagline: "Per-vehicle lifecycle, TCO and warranty reporting." },
   ],
   mro: [
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Asset register, parts and warranty." },
-    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "Track spares, tools and equipment." },
+    { slug: "asset-management-software", anchor: "Asset management software for MRO operations", tagline: "Asset register, parts and warranty in one place." },
+    { slug: "asset-tracking-software", anchor: "Track spares, tools and shop-floor equipment", tagline: "QR-labelled tools and parts with custody history." },
   ],
   "building-maintenance": [
-    { slug: "facility-maintenance-software", name: "Facility maintenance software", tagline: "Buildings, rooms and equipment in one place." },
-    { slug: "asset-tracking-software", name: "Asset tracking software", tagline: "QR-coded assets across every building." },
+    { slug: "facility-maintenance-software", anchor: "Facility maintenance software", tagline: "Buildings, rooms and equipment in one place." },
+    { slug: "asset-tracking-software", anchor: "QR-tagged asset tracking across every building", tagline: "Find any asset by scan, search, or location tree." },
   ],
   "property-maintenance": [
-    { slug: "maintenance-request-portal", name: "Maintenance request portal", tagline: "Tenants and staff submit requests." },
-    { slug: "asset-management-software", name: "Asset management software", tagline: "Track appliances, HVAC and fixtures." },
+    { slug: "maintenance-request-portal", anchor: "Maintenance request portal", tagline: "Tenants and staff submit requests." },
+    { slug: "asset-management-software", anchor: "Track every appliance, HVAC unit and fixture", tagline: "Per-unit asset register with warranty and service history." },
   ],
 };
 
@@ -153,7 +155,7 @@ const LearnArticle = () => {
                   to={`/solutions/${r.slug}`}
                   className="block p-5 rounded-lg border border-gray-200 bg-white hover:border-maintenease-500 hover:shadow-md transition-all"
                 >
-                  <h3 className="font-semibold text-gray-900 mb-1">{r.name}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{r.anchor}</h3>
                   <p className="text-sm text-gray-600">{r.tagline}</p>
                 </Link>
               ))}
