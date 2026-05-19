@@ -3,7 +3,28 @@ import { Link, useParams, Navigate } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getSolution, solutions } from "@/data/solutions";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
+
+const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
+
+const LEAD_FORM_COPY: Record<string, { title: string; subtitle: string; cta: string; ctaHeadline: string; ctaBody: string }> = {
+  "asset-tracking-software": {
+    title: "See your asset register on a map and a QR scan",
+    subtitle: "Tell us how many assets you track and we'll show you the fastest way to get every one labelled, located, and live in MaintenEase.",
+    cta: "Book a 20-min walkthrough",
+    ctaHeadline: "Stop hunting for assets. Start scanning them.",
+    ctaBody: "Most teams have their first 100 assets QR-labelled and live within a day. Start free, or book a walkthrough with a specialist.",
+  },
+  "asset-management-software",
+: {
+    title: "Talk to an asset management specialist",
+    subtitle: "Send us the rough shape of your asset register and we'll show you how MaintenEase would handle PMs, warranties, and lifecycle reporting on day one.",
+    cta: "Book a tailored demo",
+    ctaHeadline: "Turn your asset register into a system of record.",
+    ctaBody: "Free trial, no credit card. Or book a 20-minute call and we'll map your assets, PMs, and reports together.",
+  },
+};
 
 const SolutionPage = () => {
   const { slug = "" } = useParams();
