@@ -18,7 +18,7 @@ export const solutions: Solution[] = [
     name: "Work Order Software",
     h1: "Work Order Software that turns requests into completed work",
     tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
-    metaTitle: "Work Order Software — Capture, Assign & Close Faster | MaintenEase",
+    metaTitle: "Work Order Software — Capture & Close Faster | MaintenEase",
     metaDescription: "Work order software for maintenance teams. Submit, assign, prioritize, and close work from any device. Free trial — no credit card.",
     intro:
       "MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
@@ -80,7 +80,7 @@ export const solutions: Solution[] = [
     name: "Facility Maintenance Software",
     h1: "Facility Maintenance Software for buildings that have to just work",
     tagline: "One system for assets, work orders, PMs, and tenant requests across every building.",
-    metaTitle: "Facility Maintenance Software | Multi-Site Buildings & Assets",
+    metaTitle: "Facility Maintenance Software | Multi-Site Teams",
     metaDescription: "Facility maintenance software for multi-site teams. Manage assets, work orders, PMs, and occupant requests in one place.",
     intro:
       "MaintenEase gives facility teams a single system across every building, floor, and room they look after. Register assets with locations, warranties, and manuals. Schedule the predictable work. Collect occupant requests through a QR code on the wall. Report up to leadership with numbers that hold up to scrutiny.",
