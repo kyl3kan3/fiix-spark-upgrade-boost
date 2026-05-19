@@ -86,6 +86,18 @@ export default function PricingPage() {
         <meta property="og:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
         <meta property="og:url" content="https://maintenease.com/pricing" />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "MaintenEase",
+          description: "Maintenance management software for asset tracking, work orders, and inspections.",
+          brand: { "@type": "Brand", name: "MaintenEase" },
+          offers: [
+            { "@type": "Offer", name: "Starter", price: "49", priceCurrency: "USD" },
+            { "@type": "Offer", name: "Pro", price: "129", priceCurrency: "USD" },
+            { "@type": "Offer", name: "Business", price: "299", priceCurrency: "USD" }
+          ]
+        })}</script>
       </Helmet>
       <PaymentTestModeBanner />
       <div className="container mx-auto max-w-6xl px-4 py-12">

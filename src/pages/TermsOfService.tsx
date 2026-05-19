@@ -14,6 +14,14 @@ export default function TermsOfService() {
         <meta property="og:description" content="The terms governing your use of the MaintenEase service." />
         <meta property="og:url" content="https://maintenease.com/terms" />
         <meta property="og:type" content="article" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: "Terms & Conditions",
+          datePublished: "2024-01-01",
+          author: { "@type": "Organization", name: "Decent4" },
+          publisher: { "@type": "Organization", name: "MaintenEase" }
+        })}</script>
       </Helmet>
       <div className="container mx-auto max-w-3xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">

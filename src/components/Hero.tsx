@@ -34,7 +34,7 @@ const Hero = () => {
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </div>
-            <div className="mt-8 text-sm text-gray-500">
+            <div className="mt-8 text-sm text-gray-700">
               Join 3,000+ companies already managing their assets
             </div>
           </div>
