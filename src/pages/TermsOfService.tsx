@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -5,6 +6,15 @@ import { ArrowLeft } from "lucide-react";
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Terms & Conditions | MaintenEase</title>
+        <meta name="description" content="The legal terms governing your use of MaintenEase, including acceptable use, subscriptions, Paddle as Merchant of Record, liability, and termination." />
+        <link rel="canonical" href="https://maintenease.com/terms" />
+        <meta property="og:title" content="Terms & Conditions | MaintenEase" />
+        <meta property="og:description" content="The terms governing your use of the MaintenEase service." />
+        <meta property="og:url" content="https://maintenease.com/terms" />
+        <meta property="og:type" content="article" />
+      </Helmet>
       <div className="container mx-auto max-w-3xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Link>
