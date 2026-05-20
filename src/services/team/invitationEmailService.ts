@@ -10,15 +10,22 @@ export async function sendInvitationEmail(
 ) {
  console.log("Sending invitation email...");
 
- // Build the invite URL from the current origin so it always points to the
- // domain the app is actually running on (maintenease.com in production,
- // preview/localhost in dev). Falls back to the production domain when
- // window is unavailable (e.g. SSR / edge contexts).
- const origin =
- typeof window !== "undefined" && window.location?.origin
- ? window.location.origin
- : "https://maintenease.com";
- const inviteUrl = `${origin}/auth?signup=true&token=${token}`;
+  // Always send invitations pointing at the production domain so recipients
+  // never land on a preview/lovable.app/lovable.dev URL. If the app is being
+  // exercised from a preview environment we still want the email link to go
+  // to maintenease.com.
+  const PRODUCTION_ORIGIN = "https://maintenease.com";
+  const currentOrigin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "";
+  const isProductionHost = /maintenease\.com$/i.test(
+    (() => {
+      try { return new URL(currentOrigin).hostname; } catch { return ""; }
+    })()
+  );
+  const origin = isProductionHost ? currentOrigin : PRODUCTION_ORIGIN;
+  const inviteUrl = `${origin}/auth?signup=true&token=${token}`;
  const emailSubject = `You're invited to join ${companyName} on MaintenEase`;
  const emailBody = `
  <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
