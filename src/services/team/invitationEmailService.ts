@@ -10,8 +10,15 @@ export async function sendInvitationEmail(
 ) {
   console.log("Sending invitation email...");
 
-  // Use your actual domain instead of window.location.origin
-  const inviteUrl = `https://maintain.rockcitydevelopment.com/auth?signup=true&token=${token}`;
+  // Build the invite URL from the current origin so it always points to the
+  // domain the app is actually running on (maintenease.com in production,
+  // preview/localhost in dev). Falls back to the production domain when
+  // window is unavailable (e.g. SSR / edge contexts).
+  const origin =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://maintenease.com";
+  const inviteUrl = `${origin}/auth?signup=true&token=${token}`;
   const emailSubject = `You're invited to join ${companyName} on MaintenEase`;
   const emailBody = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
