@@ -202,6 +202,10 @@ const SolutionPage = () => {
             </Link>
           ))}
         </div>
+        <div className="mt-10 flex flex-col items-start gap-3 border-t border-gray-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-600">Share this page</p>
+          <ShareButtons url={url} title={solution.metaTitle} description={solution.tagline} />
+        </div>
       </section>
     </MarketingLayout>
   );
