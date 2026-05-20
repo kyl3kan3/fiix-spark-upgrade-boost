@@ -41,6 +41,7 @@ const ChecklistSubmitPage = lazy(() => import("@/pages/ChecklistSubmitPage"));
 const ChecklistSubmissionsPage = lazy(() => import("@/pages/ChecklistSubmissionsPage"));
 const DueChecklistsPage = lazy(() => import("@/pages/DueChecklistsPage"));
 const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
+const AdminSeoIndexPage = lazy(() => import("@/pages/AdminSeoIndexPage"));
 const MyEmailLogPage = lazy(() => import("@/pages/MyEmailLogPage"));
 const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
 const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));

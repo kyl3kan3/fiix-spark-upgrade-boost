@@ -64,7 +64,7 @@ function verdictBadge(v?: string, hasError?: boolean) {
 
 const AdminSeoIndexPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAdmin, loading: roleLoading } = useAdminStatus();
+  const { isAdminUser, isLoading: roleLoading } = useAdminStatus();
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<InspectResult[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -127,7 +127,7 @@ const AdminSeoIndexPage: React.FC = () => {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAdminUser) {
     return (
       <DashboardLayout>
         <div className="container mx-auto max-w-3xl px-4 py-10">
