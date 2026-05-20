@@ -142,7 +142,7 @@ const Settings = () => {
  <CardDescription className="text-foreground">Control how and when you receive notifications.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border">
  <div>
  <Label htmlFor="emailNotifications" className="text-foreground font-medium">Email Notifications</Label>
  <p className="text-sm text-foreground">Receive updates via email</p>
@@ -153,7 +153,7 @@ const Settings = () => {
  onCheckedChange={setEmailNotifications}
  />
  </div>
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border">
  <div>
  <Label htmlFor="pushNotifications" className="text-foreground font-medium">Push Notifications</Label>
  <p className="text-sm text-foreground">Receive browser notifications</p>
@@ -201,7 +201,7 @@ const Settings = () => {
  <CardDescription className="text-foreground">Customize the look and feel of your dashboard.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border">
  <div>
  <Label htmlFor="darkMode" className="text-foreground font-medium">Dark Mode</Label>
  <p className="text-sm text-foreground">Switch to dark theme</p>

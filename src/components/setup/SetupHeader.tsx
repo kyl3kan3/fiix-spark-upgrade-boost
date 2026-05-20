@@ -33,7 +33,7 @@ const SetupHeader: React.FC<SetupHeaderProps> = ({ title, subtitle }) => {
  variant="outline" 
  size="sm" 
  onClick={handleLogout}
- className="flex items-center gap-1 border-border dark:border-gray-600 text-foreground hover:bg-muted dark:hover:bg-card"
+ className="flex items-center gap-1 border-border text-foreground hover:bg-muted"
  >
  <LogOut className="h-4 w-4" />
  Sign out

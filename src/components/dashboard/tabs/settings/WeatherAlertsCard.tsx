@@ -133,7 +133,7 @@ const WeatherAlertsCard: React.FC = () => {
  </CardDescription>
  </CardHeader>
  <CardContent className="space-y-6">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border">
  <div>
  <Label className="text-foreground font-medium">Enable temperature alerts</Label>
  <p className="text-sm text-foreground">Master switch for your whole company.</p>

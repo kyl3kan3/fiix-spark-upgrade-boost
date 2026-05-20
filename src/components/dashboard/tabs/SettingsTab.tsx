@@ -45,7 +45,7 @@ const SettingsTab: React.FC = () => {
  </CardContent>
  <CardFooter>
  <Button 
- className={`ml-auto ${hasPendingChanges ? 'bg-maintenease-600 hover:bg-maintenease-700' : 'bg-gray-400 hover:bg-gray-500'}`}
+ className={`ml-auto ${hasPendingChanges ? 'bg-maintenease-600 hover:bg-maintenease-700' : 'bg-muted-foreground hover:bg-muted-foreground'}`}
  onClick={handleSaveSettings}
  disabled={!hasPendingChanges}
  >

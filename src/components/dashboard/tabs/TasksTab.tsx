@@ -25,8 +25,8 @@ const TasksTab: React.FC = () => {
  </div>
  </CardContent>
  <CardFooter className="flex justify-between">
- <Button variant="outline" className="dark:hover:bg-card">Mark All Complete</Button>
- <Button variant="outline" className="dark:hover:bg-card">View All Tasks</Button>
+ <Button variant="outline" className="">Mark All Complete</Button>
+ <Button variant="outline" className="">View All Tasks</Button>
  </CardFooter>
  </Card>
  );

@@ -41,7 +41,7 @@ export const SetupProgress: React.FC<SetupProgressProps> = ({
  {index < currentStep ? (
  <CheckCircle2 className="h-5 w-5" />
  ) : (
- <div className={`w-5 h-5 rounded-full border-2 ${ index === currentStep ? 'border-blue-500 bg-blue-500' : 'border-border dark:border-gray-600' }`} />
+ <div className={`w-5 h-5 rounded-full border-2 ${ index === currentStep ? 'border-blue-500 bg-blue-500' : 'border-border ' }`} />
  )}
  <span className="font-medium">{step.label}</span>
  </button>

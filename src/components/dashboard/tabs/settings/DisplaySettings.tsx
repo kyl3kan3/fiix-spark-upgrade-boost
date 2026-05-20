@@ -70,7 +70,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = ({
  <p className="text-sm text-muted-foreground">Choose your preferred dashboard layout</p>
  </div>
  <select 
- className="border rounded-md px-2 py-1 text-sm dark:border-gray-600"
+ className="border rounded-md px-2 py-1 text-sm"
  value={dashboardLayout}
  onChange={onLayoutChange}
  >

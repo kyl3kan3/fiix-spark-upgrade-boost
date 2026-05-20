@@ -48,7 +48,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
  return (
  <div className="border rounded-lg bg-card">
  <div 
- className="flex items-center justify-between p-4 hover:bg-muted dark:hover:bg-card cursor-pointer"
+ className="flex items-center justify-between p-4 hover:bg-muted cursor-pointer"
  style={{ paddingLeft: `${level * 20 + 16}px` }}
  >
  <div className="flex items-center space-x-3">

@@ -16,7 +16,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 }) => {
  return (
  <div 
- className={`p-4 border-b last:border-0 hover:bg-muted dark:hover:bg-card ${ notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20" } relative transition-colors duration-200 group animate-fade-in`}
+ className={`p-4 border-b last:border-0 hover:bg-muted ${ notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20" } relative transition-colors duration-200 group animate-fade-in`}
  >
  <div className="flex items-start">
  <NotificationTypeBadge type={notification.type} />

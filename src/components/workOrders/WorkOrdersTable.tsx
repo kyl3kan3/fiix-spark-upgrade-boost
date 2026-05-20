@@ -91,7 +91,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
  {workOrder.due_date ? formatDate(workOrder.due_date) : "—"}
  </TableCell>
  <TableCell>
- <Button variant="outline" size="sm" asChild className="dark:border-gray-600 dark:hover:bg-card">
+ <Button variant="outline" size="sm" asChild className="">
  <Link to={`/work-orders/${workOrder.id}`}>
  View
  </Link>
