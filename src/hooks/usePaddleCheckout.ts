@@ -18,10 +18,9 @@ export function usePaddleCheckout() {
  try {
  await initializePaddle();
  const paddlePriceId = await getPaddlePriceId(options.priceId);
- const item: any = { priceId: paddlePriceId, quantity: options.quantity ?? 1 };
- if (options.trialDays && options.trialDays > 0) {
- item.trialPeriod = { interval: "day", frequency: options.trialDays };
- }
+      // Trial period is configured on the Paddle price itself, so we don't
+      // pass trialPeriod here (overlay checkout doesn't accept item-level overrides).
+      const item: any = { priceId: paddlePriceId, quantity: options.quantity ?? 1 };
  window.Paddle.Checkout.open({
  items: [item],
  customer: options.customerEmail ? { email: options.customerEmail } : undefined,
