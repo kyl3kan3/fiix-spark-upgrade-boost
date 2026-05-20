@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import ShareButtons from "@/components/marketing/ShareButtons";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 
@@ -86,6 +87,8 @@ export default function PricingPage() {
         <meta property="og:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
         <meta property="og:url" content="https://maintenease.com/pricing" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
@@ -157,6 +160,14 @@ export default function PricingPage() {
         <p className="mt-10 text-center text-sm text-muted-foreground">
           All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 15 to avoid charges.
         </p>
+        <div className="mt-10 flex flex-col items-center gap-3 border-t pt-8 sm:flex-row sm:justify-between">
+          <p className="text-sm text-muted-foreground">Share these plans</p>
+          <ShareButtons
+            url="https://maintenease.com/pricing"
+            title="MaintenEase Pricing — Plans for Maintenance Teams"
+            description="Compare Starter, Pro, and Business plans. 14-day free trial."
+          />
+        </div>
       </div>
     </div>
   );

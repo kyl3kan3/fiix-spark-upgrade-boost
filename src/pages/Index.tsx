@@ -8,6 +8,7 @@ import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
+import ShareButtons from "@/components/marketing/ShareButtons";
 
 const Index = () => {
   return (
@@ -20,6 +21,8 @@ const Index = () => {
         <meta property="og:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
         <meta property="og:url" content="https://maintenease.com/" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
       <Navbar />
       <main className="flex-1">
@@ -28,6 +31,19 @@ const Index = () => {
         <RequestPortalSection />
         <Testimonials />
         <CTA />
+        <section className="container mx-auto px-4 py-10 max-w-5xl">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-white px-6 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Found this useful?</h2>
+              <p className="text-sm text-gray-600">Share MaintenEase with your team or network.</p>
+            </div>
+            <ShareButtons
+              url="https://maintenease.com/"
+              title="MaintenEase — Maintenance Management Software"
+              description="Organize assets, schedule work orders, and run inspections from one modern platform."
+            />
+          </div>
+        </section>
         <SiteIndexLinks />
       </main>
       <Footer />
