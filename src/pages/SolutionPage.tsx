@@ -6,7 +6,7 @@ import { getSolution, solutions } from "@/data/solutions";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
-import { isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
+import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -33,10 +33,11 @@ const SolutionPage = () => {
 
   useEffect(() => {
     if (!solution || !isTrackedMarketingSlug(solution.slug)) return;
+    const dedupeKey = buildPageViewDedupeKey(solution.slug);
     void trackMarketingEvent({
       eventType: "page_view",
       pageSlug: solution.slug,
-      dedupeKey: `page_view:${solution.slug}`,
+      ...(dedupeKey ? { dedupeKey } : {}),
     });
   }, [solution]);
 

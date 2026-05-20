@@ -6,6 +6,7 @@ import MetricCard from "./analytics/MetricCard";
 import WorkOrdersLineChart from "./analytics/WorkOrdersLineChart";
 import MaintenanceCostsBarChart from "./analytics/MaintenanceCostsBarChart";
 import AssetStatusPieChart from "./analytics/AssetStatusPieChart";
+import AssetMarketingFunnel from "./analytics/AssetMarketingFunnel";
 import { 
   emptyWorkOrdersData,
   emptyMaintenanceCostsData,
@@ -91,6 +92,8 @@ const AnalyticsTab: React.FC = () => {
             onDataNotAvailable={handleDataNotAvailable}
           />
         </div>
+
+        <AssetMarketingFunnel />
       </CardContent>
     </Card>
   );
