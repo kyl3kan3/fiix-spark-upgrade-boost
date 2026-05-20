@@ -15,24 +15,30 @@ const DeleteAccountButton: React.FC = () => {
  const handleDelete = async () => {
  setIsDeleting(true);
 
- // Get current session to get the jwt token
- const { data: { session }, error: sessionError } = await supabase.auth.getSession();
- if (sessionError || !session) {
- toast({
- title: "Error",
- description: "No user session found.",
- variant: "destructive",
- });
- setIsDeleting(false);
- setOpen(false);
- return;
- }
-
     try {
+      console.log("[delete-account] starting");
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log("[delete-account] session", { hasSession: !!session, sessionError });
+
+      if (sessionError || !session) {
+        // No session — nothing to delete on the client side. Just bounce to /auth.
+        localStorage.clear();
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+        toast({
+          title: "Signed out",
+          description: "You were already signed out. Redirecting…",
+        });
+        setIsDeleting(false);
+        setOpen(false);
+        window.location.href = "/auth";
+        return;
+      }
+
       const { data: body, error: invokeError } = await supabase.functions.invoke(
         "delete-user",
         { method: "POST" }
       );
+      console.log("[delete-account] invoke result", { body, invokeError });
 
       // Detect 401 from FunctionsHttpError — the user was already deleted in a
       // prior attempt and the stale JWT is no longer valid. Treat as success.
@@ -67,15 +73,15 @@ const DeleteAccountButton: React.FC = () => {
             (body as any)?.error || invokeError?.message || "Could not delete your account.",
           variant: "destructive",
         });
-        setIsDeleting(false);
-        setOpen(false);
       }
  } catch (err: any) {
+      console.error("[delete-account] error", err);
  toast({
  title: "Network Error",
  description: err.message || "Failed to connect to server.",
  variant: "destructive",
  });
+    } finally {
  setIsDeleting(false);
  setOpen(false);
  }
