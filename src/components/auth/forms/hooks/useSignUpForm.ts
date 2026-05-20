@@ -3,5 +3,5 @@
 import { useAuthForm } from "../../../../hooks/auth/forms/useAuthForm";
 
 export function useSignUpForm(onError: (message: string) => void) {
-  return useAuthForm({ isSignUp: true, onError });
+ return useAuthForm({ isSignUp: true, onError });
 }

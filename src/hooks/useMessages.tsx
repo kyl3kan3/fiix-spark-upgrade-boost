@@ -7,140 +7,140 @@ import { toast } from "@/hooks/use-toast";
 const getUserMessagesChannelTopic = (userId: string) => `user:${userId}:messages`;
 
 export const useMessages = (recipientId: string | undefined) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
+ const [messages, setMessages] = useState<Message[]>([]);
+ const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Skip if no recipient is selected
-    if (!recipientId) {
-      setMessages([]);
-      return;
-    }
+ useEffect(() => {
+ // Skip if no recipient is selected
+ if (!recipientId) {
+ setMessages([]);
+ return;
+ }
 
-    let subscription: ReturnType<typeof supabase.channel> | null = null;
+ let subscription: ReturnType<typeof supabase.channel> | null = null;
 
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const { data: userData } = await supabase.auth.getUser();
-        const currentUserId = userData?.user?.id;
+ const fetchMessages = async () => {
+ try {
+ setLoading(true);
+ const { data: userData } = await supabase.auth.getUser();
+ const currentUserId = userData?.user?.id;
 
-        if (!currentUserId) return;
+ if (!currentUserId) return;
 
-        // Get messages between current user and selected recipient (both sent and received)
-        const { data, error } = await supabase
-          .from("messages")
-          .select("*")
-          .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${currentUserId})`)
-          .order("created_at", { ascending: true });
+ // Get messages between current user and selected recipient (both sent and received)
+ const { data, error } = await supabase
+ .from("messages")
+ .select("*")
+ .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${currentUserId})`)
+ .order("created_at", { ascending: true });
 
-        if (error) throw error;
+ if (error) throw error;
 
-        setMessages(data || []);
-        
-        // Mark messages from this recipient as read
-        markAsRead();
+ setMessages(data || []);
+ 
+ // Mark messages from this recipient as read
+ markAsRead();
 
-        subscription = supabase
-          .channel(getUserMessagesChannelTopic(currentUserId), {
-            config: { private: true },
-          })
-          .on('postgres_changes', 
-            { 
-              event: '*', 
-              schema: 'public', 
-              table: 'messages',
-              filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
-            }, 
-            (payload) => {
-              if (payload.eventType === 'INSERT') {
-                setMessages(prev => [...prev, payload.new as Message]);
-                if (payload.new.sender_id === recipientId) {
-                  markAsRead();
-                }
-              } else if (payload.eventType === 'UPDATE') {
-                setMessages(prev => 
-                  prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
-                );
-              }
-            })
-          .subscribe();
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load messages",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+ subscription = supabase
+ .channel(getUserMessagesChannelTopic(currentUserId), {
+ config: { private: true },
+ })
+ .on('postgres_changes', 
+ { 
+ event: '*', 
+ schema: 'public', 
+ table: 'messages',
+ filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
+ }, 
+ (payload) => {
+ if (payload.eventType === 'INSERT') {
+ setMessages(prev => [...prev, payload.new as Message]);
+ if (payload.new.sender_id === recipientId) {
+ markAsRead();
+ }
+ } else if (payload.eventType === 'UPDATE') {
+ setMessages(prev => 
+ prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
+ );
+ }
+ })
+ .subscribe();
+ } catch (error) {
+ console.error("Error fetching messages:", error);
+ toast({
+ title: "Error",
+ description: "Failed to load messages",
+ variant: "destructive"
+ });
+ } finally {
+ setLoading(false);
+ }
+ };
 
-    fetchMessages();
+ fetchMessages();
 
-    return () => {
-      if (subscription) {
-        supabase.removeChannel(subscription);
-      }
-    };
-  }, [recipientId]);
+ return () => {
+ if (subscription) {
+ supabase.removeChannel(subscription);
+ }
+ };
+ }, [recipientId]);
 
-  const sendMessage = async (content: string, recipientId: string) => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      const currentUserId = userData?.user?.id;
+ const sendMessage = async (content: string, recipientId: string) => {
+ try {
+ const { data: userData } = await supabase.auth.getUser();
+ const currentUserId = userData?.user?.id;
 
-      if (!currentUserId) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to send messages",
-          variant: "destructive"
-        });
-        return;
-      }
+ if (!currentUserId) {
+ toast({
+ title: "Error",
+ description: "You must be logged in to send messages",
+ variant: "destructive"
+ });
+ return;
+ }
 
-      const { error } = await supabase
-        .from("messages")
-        .insert({
-          sender_id: currentUserId,
-          recipient_id: recipientId,
-          content,
-          read: false
-        });
+ const { error } = await supabase
+ .from("messages")
+ .insert({
+ sender_id: currentUserId,
+ recipient_id: recipientId,
+ content,
+ read: false
+ });
 
-      if (error) throw error;
+ if (error) throw error;
 
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive"
-      });
-    }
-  };
+ } catch (error) {
+ console.error("Error sending message:", error);
+ toast({
+ title: "Error",
+ description: "Failed to send message",
+ variant: "destructive"
+ });
+ }
+ };
 
-  const markAsRead = async () => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      const currentUserId = userData?.user?.id;
+ const markAsRead = async () => {
+ try {
+ const { data: userData } = await supabase.auth.getUser();
+ const currentUserId = userData?.user?.id;
 
-      if (!currentUserId || !recipientId) return;
+ if (!currentUserId || !recipientId) return;
 
-      // Mark all messages from this sender to current user as read
-      const { error } = await supabase
-        .from("messages")
-        .update({ read: true })
-        .eq("sender_id", recipientId)
-        .eq("recipient_id", currentUserId)
-        .eq("read", false);
+ // Mark all messages from this sender to current user as read
+ const { error } = await supabase
+ .from("messages")
+ .update({ read: true })
+ .eq("sender_id", recipientId)
+ .eq("recipient_id", currentUserId)
+ .eq("read", false);
 
-      if (error) throw error;
-    } catch (error) {
-      console.error("Error marking messages as read:", error);
-    }
-  };
+ if (error) throw error;
+ } catch (error) {
+ console.error("Error marking messages as read:", error);
+ }
+ };
 
-  return { messages, sendMessage, markAsRead, loading };
+ return { messages, sendMessage, markAsRead, loading };
 };

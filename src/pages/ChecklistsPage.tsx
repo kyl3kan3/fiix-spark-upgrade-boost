@@ -15,221 +15,221 @@ import { getAllAssets } from "@/services/assets/assetQueries";
 import { generateSetupSheetPdf } from "@/utils/setupSheetPdf";
 
 const ChecklistsPage = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
+ const navigate = useNavigate();
+ const [searchTerm, setSearchTerm] = useState("");
+ const [typeFilter, setTypeFilter] = useState("all");
 
-  const { data: checklists = [], isLoading } = useQuery({
-    queryKey: ["checklists"],
-    queryFn: checklistService.getChecklists,
-  });
-  const { data: allAssets = [] } = useQuery({
-    queryKey: ["assets"],
-    queryFn: getAllAssets,
-  });
+ const { data: checklists = [], isLoading } = useQuery({
+ queryKey: ["checklists"],
+ queryFn: checklistService.getChecklists,
+ });
+ const { data: allAssets = [] } = useQuery({
+ queryKey: ["assets"],
+ queryFn: getAllAssets,
+ });
 
-  const filteredChecklists = checklists.filter(checklist => {
-    const matchesSearch = checklist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      checklist.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === "all" || checklist.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
+ const filteredChecklists = checklists.filter(checklist => {
+ const matchesSearch = checklist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+ checklist.description?.toLowerCase().includes(searchTerm.toLowerCase());
+ const matchesType = typeFilter === "all" || checklist.type === typeFilter;
+ return matchesSearch && matchesType;
+ });
 
-  const getTypeColor = (type: string) => {
-    switch(type) {
-      case 'safety': return 'bg-red-100 text-red-800';
-      case 'equipment': return 'bg-blue-100 text-blue-800';
-      case 'maintenance': return 'bg-yellow-100 text-yellow-800';
-      case 'quality': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+ const getTypeColor = (type: string) => {
+ switch(type) {
+ case 'safety': return 'bg-red-100 text-red-800';
+ case 'equipment': return 'bg-blue-100 text-blue-800';
+ case 'maintenance': return 'bg-yellow-100 text-yellow-800';
+ case 'quality': return 'bg-green-100 text-green-800';
+ default: return 'bg-muted text-foreground';
+ }
+ };
 
-  const getFrequencyColor = (frequency: string) => {
-    switch(frequency) {
-      case 'daily': return 'bg-blue-100 text-blue-800';
-      case 'weekly': return 'bg-green-100 text-green-800';
-      case 'monthly': return 'bg-purple-100 text-purple-800';
-      case 'quarterly': return 'bg-orange-100 text-orange-800';
-      case 'annually': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+ const getFrequencyColor = (frequency: string) => {
+ switch(frequency) {
+ case 'daily': return 'bg-blue-100 text-blue-800';
+ case 'weekly': return 'bg-green-100 text-green-800';
+ case 'monthly': return 'bg-purple-100 text-purple-800';
+ case 'quarterly': return 'bg-orange-100 text-orange-800';
+ case 'annually': return 'bg-red-100 text-red-800';
+ default: return 'bg-muted text-foreground';
+ }
+ };
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="p-6">
-          <div className="text-center py-12">Loading checklists...</div>
-        </div>
-      </DashboardLayout>
-    );
-  }
+ if (isLoading) {
+ return (
+ <DashboardLayout>
+ <div className="p-6">
+ <div className="text-center py-12">Loading checklists...</div>
+ </div>
+ </DashboardLayout>
+ );
+ }
 
-  return (
-    <DashboardLayout>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Checklists</h1>
-            <p className="text-gray-500 dark:text-gray-400">Create and manage checklist templates</p>
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              onClick={() => navigate("/checklists/submissions")}
-              variant="outline"
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              View Submissions
-            </Button>
-            <Button onClick={() => navigate("/checklists/import")} variant="outline">
-              <Upload className="mr-2 h-4 w-4" />
-              Import
-            </Button>
-            <Button onClick={() => navigate("/checklists/new")}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Create Checklist
-            </Button>
-          </div>
-        </div>
+ return (
+ <DashboardLayout>
+ <div className="p-6">
+ <div className="flex justify-between items-center mb-6">
+ <div>
+ <h1 className="text-3xl font-bold text-foreground dark:text-muted-foreground">Checklists</h1>
+ <p className="text-muted-foreground dark:text-muted-foreground">Create and manage checklist templates</p>
+ </div>
+ <div className="flex gap-2">
+ <Button 
+ onClick={() => navigate("/checklists/submissions")}
+ variant="outline"
+ >
+ <Calendar className="mr-2 h-4 w-4" />
+ View Submissions
+ </Button>
+ <Button onClick={() => navigate("/checklists/import")} variant="outline">
+ <Upload className="mr-2 h-4 w-4" />
+ Import
+ </Button>
+ <Button onClick={() => navigate("/checklists/new")}>
+ <PlusCircle className="mr-2 h-4 w-4" />
+ Create Checklist
+ </Button>
+ </div>
+ </div>
 
-        {/* Filters */}
-        <div className="flex gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search checklists..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              {ChecklistTypes.map(type => (
-                <SelectItem key={type.value} value={type.value}>
-                  {type.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+ {/* Filters */}
+ <div className="flex gap-4 mb-6">
+ <div className="relative flex-1">
+ <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+ <Input
+ placeholder="Search checklists..."
+ value={searchTerm}
+ onChange={(e) => setSearchTerm(e.target.value)}
+ className="pl-10"
+ />
+ </div>
+ <Select value={typeFilter} onValueChange={setTypeFilter}>
+ <SelectTrigger className="w-48">
+ <SelectValue placeholder="Filter by type" />
+ </SelectTrigger>
+ <SelectContent>
+ <SelectItem value="all">All Types</SelectItem>
+ {ChecklistTypes.map(type => (
+ <SelectItem key={type.value} value={type.value}>
+ {type.label}
+ </SelectItem>
+ ))}
+ </SelectContent>
+ </Select>
+ </div>
 
-        {/* Checklists Grid */}
-        {filteredChecklists.length === 0 ? (
-          <div className="text-center py-12">
-            <ListChecks className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-              {checklists.length === 0 ? "No checklists yet" : "No checklists match your search"}
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {checklists.length === 0 
-                ? "Create your first checklist template to get started"
-                : "Try adjusting your search or filter criteria"
-              }
-            </p>
-            {checklists.length === 0 && (
-              <Button onClick={() => navigate("/checklists/new")}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create First Checklist
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredChecklists.map((checklist) => (
-              <Card 
-                key={checklist.id} 
-                className="p-6 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => navigate(`/checklists/${checklist.id}`)}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-lg">{checklist.name}</h3>
-                  <div className="flex flex-col gap-2">
-                    <Badge className={getTypeColor(checklist.type)}>
-                      {ChecklistTypes.find(t => t.value === checklist.type)?.label || checklist.type}
-                    </Badge>
-                    <Badge className={getFrequencyColor(checklist.frequency)}>
-                      {ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label || checklist.frequency}
-                    </Badge>
-                  </div>
-                </div>
-                
-                {checklist.description && (
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-                    {checklist.description}
-                  </p>
-                )}
+ {/* Checklists Grid */}
+ {filteredChecklists.length === 0 ? (
+ <div className="text-center py-12">
+ <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+ <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">
+ {checklists.length === 0 ? "No checklists yet" : "No checklists match your search"}
+ </h3>
+ <p className="text-muted-foreground dark:text-muted-foreground mb-6">
+ {checklists.length === 0 
+ ? "Create your first checklist template to get started"
+ : "Try adjusting your search or filter criteria"
+ }
+ </p>
+ {checklists.length === 0 && (
+ <Button onClick={() => navigate("/checklists/new")}>
+ <PlusCircle className="mr-2 h-4 w-4" />
+ Create First Checklist
+ </Button>
+ )}
+ </div>
+ ) : (
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+ {filteredChecklists.map((checklist) => (
+ <Card 
+ key={checklist.id} 
+ className="p-6 hover:shadow-md transition-shadow cursor-pointer"
+ onClick={() => navigate(`/checklists/${checklist.id}`)}
+ >
+ <div className="flex justify-between items-start mb-4">
+ <h3 className="font-semibold text-lg">{checklist.name}</h3>
+ <div className="flex flex-col gap-2">
+ <Badge className={getTypeColor(checklist.type)}>
+ {ChecklistTypes.find(t => t.value === checklist.type)?.label || checklist.type}
+ </Badge>
+ <Badge className={getFrequencyColor(checklist.frequency)}>
+ {ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label || checklist.frequency}
+ </Badge>
+ </div>
+ </div>
+ 
+ {checklist.description && (
+ <p className="text-foreground dark:text-muted-foreground text-sm mb-4 line-clamp-2">
+ {checklist.description}
+ </p>
+ )}
 
-                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  <div className="flex items-center gap-2">
-                    <ListChecks className="h-4 w-4" />
-                    <span>{checklist.items?.length || 0} items</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    <span>{ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label}</span>
-                  </div>
-                </div>
+ <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground mb-4">
+ <div className="flex items-center gap-2">
+ <ListChecks className="h-4 w-4" />
+ <span>{checklist.items?.length || 0} items</span>
+ </div>
+ <div className="flex items-center gap-2">
+ <Clock className="h-4 w-4" />
+ <span>{ChecklistFrequencies.find(f => f.value === checklist.frequency)?.label}</span>
+ </div>
+ </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>{format(new Date(checklist.created_at), "MMM d, yyyy")}</span>
-                  </div>
-                </div>
+ <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
+ <div className="flex items-center gap-2">
+ <Calendar className="h-4 w-4" />
+ <span>{format(new Date(checklist.created_at), "MMM d, yyyy")}</span>
+ </div>
+ </div>
 
-                <div className="mt-4 flex gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="flex-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/checklists/${checklist.id}/submit`);
-                    }}
-                  >
-                    Fill Out
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/checklists/${checklist.id}/edit`);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    title="Print setup sheet"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const linkedIds = new Set(checklist.asset_ids || []);
-                      const linkedAssets = (allAssets as any[]).filter((a) => linkedIds.has(a.id));
-                      generateSetupSheetPdf({
-                        title: `${checklist.name} — Setup Sheet`,
-                        assets: linkedAssets,
-                        checklists: [checklist as any],
-                      });
-                    }}
-                  >
-                    <Printer className="h-4 w-4" />
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-    </DashboardLayout>
-  );
+ <div className="mt-4 flex gap-2">
+ <Button 
+ size="sm" 
+ variant="outline" 
+ className="flex-1"
+ onClick={(e) => {
+ e.stopPropagation();
+ navigate(`/checklists/${checklist.id}/submit`);
+ }}
+ >
+ Fill Out
+ </Button>
+ <Button 
+ size="sm" 
+ variant="outline"
+ onClick={(e) => {
+ e.stopPropagation();
+ navigate(`/checklists/${checklist.id}/edit`);
+ }}
+ >
+ Edit
+ </Button>
+ <Button
+ size="sm"
+ variant="outline"
+ title="Print setup sheet"
+ onClick={(e) => {
+ e.stopPropagation();
+ const linkedIds = new Set(checklist.asset_ids || []);
+ const linkedAssets = (allAssets as any[]).filter((a) => linkedIds.has(a.id));
+ generateSetupSheetPdf({
+ title: `${checklist.name} — Setup Sheet`,
+ assets: linkedAssets,
+ checklists: [checklist as any],
+ });
+ }}
+ >
+ <Printer className="h-4 w-4" />
+ </Button>
+ </div>
+ </Card>
+ ))}
+ </div>
+ )}
+ </div>
+ </DashboardLayout>
+ );
 };
 
 export default ChecklistsPage;

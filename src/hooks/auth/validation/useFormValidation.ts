@@ -3,9 +3,9 @@
 import { useUnifiedAuthValidation } from "./useUnifiedAuthValidation";
 
 export function useFormValidation() {
-  const { validateFormField } = useUnifiedAuthValidation();
-  
-  return { 
-    validateFormField 
-  };
+ const { validateFormField } = useUnifiedAuthValidation();
+ 
+ return { 
+ validateFormField 
+ };
 }

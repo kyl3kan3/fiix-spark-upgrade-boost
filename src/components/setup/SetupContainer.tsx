@@ -5,23 +5,23 @@ import { SetupLoader } from "./SetupLoader";
 import { SetupContent } from "./SetupContent";
 
 const SetupContainer: React.FC = () => {
-  const { 
-    isAuthenticated, 
-    isAuthLoading, 
-    isDataLoading
-  } = useSetup();
+ const { 
+ isAuthenticated, 
+ isAuthLoading, 
+ isDataLoading
+ } = useSetup();
 
-  // Show loading while checking auth or loading data
-  if (isAuthLoading || isDataLoading) {
-    return <SetupLoader />;
-  }
+ // Show loading while checking auth or loading data
+ if (isAuthLoading || isDataLoading) {
+ return <SetupLoader />;
+ }
 
-  // Redirect to auth will be handled by useSetupAuth hook
-  if (!isAuthenticated) {
-    return null;
-  }
+ // Redirect to auth will be handled by useSetupAuth hook
+ if (!isAuthenticated) {
+ return null;
+ }
 
-  return <SetupContent />;
+ return <SetupContent />;
 };
 
 export default SetupContainer;

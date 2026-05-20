@@ -16,112 +16,112 @@ import { toast } from "sonner";
 import { faqItems } from "@/components/help/data/helpData";
 
 const Help = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [chatOpen, setChatOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("faq");
-  const navigate = useNavigate();
-  const { restartTour, restartWizard, showChecklist } = useOnboardingProgress();
-  
-  const { searchResults, totalResults } = useHelpSearch(searchQuery);
+ const [searchQuery, setSearchQuery] = useState("");
+ const [chatOpen, setChatOpen] = useState(false);
+ const [activeTab, setActiveTab] = useState("faq");
+ const navigate = useNavigate();
+ const { restartTour, restartWizard, showChecklist } = useOnboardingProgress();
+ 
+ const { searchResults, totalResults } = useHelpSearch(searchQuery);
 
-  // Switch to the tab with most results when searching
-  useEffect(() => {
-    if (searchQuery && totalResults > 0) {
-      const resultCounts = [
-        { tab: "faq", count: searchResults.faq.length },
-        { tab: "documentation", count: searchResults.documentation.length },
-        { tab: "tutorials", count: searchResults.tutorials.length }
-      ];
-      
-      const maxResultTab = resultCounts.reduce((max, current) => 
-        current.count > max.count ? current : max
-      , resultCounts[0]);
-      
-      if (maxResultTab.count > 0) {
-        setActiveTab(maxResultTab.tab);
-      }
-    }
-  }, [searchQuery, searchResults, totalResults]);
+ // Switch to the tab with most results when searching
+ useEffect(() => {
+ if (searchQuery && totalResults > 0) {
+ const resultCounts = [
+ { tab: "faq", count: searchResults.faq.length },
+ { tab: "documentation", count: searchResults.documentation.length },
+ { tab: "tutorials", count: searchResults.tutorials.length }
+ ];
+ 
+ const maxResultTab = resultCounts.reduce((max, current) => 
+ current.count > max.count ? current : max
+ , resultCounts[0]);
+ 
+ if (maxResultTab.count > 0) {
+ setActiveTab(maxResultTab.tab);
+ }
+ }
+ }, [searchQuery, searchResults, totalResults]);
 
-  const handleClearSearch = () => {
-    setSearchQuery("");
-  };
+ const handleClearSearch = () => {
+ setSearchQuery("");
+ };
 
-  const handleOpenChat = () => {
-    setChatOpen(true);
-  };
+ const handleOpenChat = () => {
+ setChatOpen(true);
+ };
 
-  return (
-    <DashboardLayout>
-      <Helmet>
-        <title>Help Center — MaintenEase</title>
-        <meta name="description" content="Find answers about work orders, assets, inspections, and more in the MaintenEase Help Center." />
-        <link rel="canonical" href="https://maintenease.com/help" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faqItems.map((f) => ({
-            "@type": "Question",
-            name: f.question,
-            acceptedAnswer: { "@type": "Answer", text: f.answer },
-          })),
-        })}</script>
-      </Helmet>
-      <div className="flex items-center mb-6">
-        <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
-        <h1 className="text-2xl font-bold text-gray-900">Help Center</h1>
-      </div>
+ return (
+ <DashboardLayout>
+ <Helmet>
+ <title>Help Center — MaintenEase</title>
+ <meta name="description" content="Find answers about work orders, assets, inspections, and more in the MaintenEase Help Center." />
+ <link rel="canonical" href="https://maintenease.com/help" />
+ <script type="application/ld+json">{JSON.stringify({
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ mainEntity: faqItems.map((f) => ({
+ "@type": "Question",
+ name: f.question,
+ acceptedAnswer: { "@type": "Answer", text: f.answer },
+ })),
+ })}</script>
+ </Helmet>
+ <div className="flex items-center mb-6">
+ <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
+ <h1 className="text-2xl font-bold text-foreground">Help Center</h1>
+ </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            restartTour();
-            showChecklist();
-            toast.info("Heading to your dashboard to start the tour…");
-            navigate("/dashboard");
-          }}
-        >
-          <Compass className="h-4 w-4 mr-2" />
-          Take the product tour
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            restartWizard();
-            navigate("/setup");
-          }}
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Re-run setup wizard
-        </Button>
-      </div>
+ <div className="mb-6 flex flex-wrap gap-2">
+ <Button
+ variant="outline"
+ onClick={() => {
+ restartTour();
+ showChecklist();
+ toast.info("Heading to your dashboard to start the tour…");
+ navigate("/dashboard");
+ }}
+ >
+ <Compass className="h-4 w-4 mr-2" />
+ Take the product tour
+ </Button>
+ <Button
+ variant="outline"
+ onClick={() => {
+ restartWizard();
+ navigate("/setup");
+ }}
+ >
+ <RefreshCw className="h-4 w-4 mr-2" />
+ Re-run setup wizard
+ </Button>
+ </div>
 
-      <HelpSearchBar
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onClearSearch={handleClearSearch}
-      />
-      
-      <SearchResults
-        searchQuery={searchQuery}
-        totalResults={totalResults}
-      />
+ <HelpSearchBar
+ searchQuery={searchQuery}
+ onSearchChange={setSearchQuery}
+ onClearSearch={handleClearSearch}
+ />
+ 
+ <SearchResults
+ searchQuery={searchQuery}
+ totalResults={totalResults}
+ />
 
-      <HelpTabs
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        searchQuery={searchQuery}
-        searchResults={searchResults}
-        onOpenChat={handleOpenChat}
-      />
-      
-      <LiveChatSheet
-        open={chatOpen}
-        onOpenChange={setChatOpen}
-      />
-    </DashboardLayout>
-  );
+ <HelpTabs
+ activeTab={activeTab}
+ onTabChange={setActiveTab}
+ searchQuery={searchQuery}
+ searchResults={searchResults}
+ onOpenChat={handleOpenChat}
+ />
+ 
+ <LiveChatSheet
+ open={chatOpen}
+ onOpenChange={setChatOpen}
+ />
+ </DashboardLayout>
+ );
 };
 
 export default Help;

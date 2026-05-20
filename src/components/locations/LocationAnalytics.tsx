@@ -7,35 +7,35 @@ import { LocationAnalyticsEmpty } from "./analytics/LocationAnalyticsEmpty";
 import { useLocationAnalyticsData } from "./analytics/useLocationAnalyticsData";
 
 interface LocationAnalyticsProps {
-  className?: string;
+ className?: string;
 }
 
 export const LocationAnalytics: React.FC<LocationAnalyticsProps> = ({ className }) => {
-  const { isLoading, analytics } = useLocationAnalyticsData();
+ const { isLoading, analytics } = useLocationAnalyticsData();
 
-  if (isLoading) {
-    return <LocationAnalyticsLoading />;
-  }
+ if (isLoading) {
+ return <LocationAnalyticsLoading />;
+ }
 
-  if (!analytics) {
-    return <LocationAnalyticsEmpty className={className} />;
-  }
+ if (!analytics) {
+ return <LocationAnalyticsEmpty className={className} />;
+ }
 
-  return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Summary Cards */}
-      <LocationAnalyticsCards
-        totalLocations={analytics.totalLocations}
-        rootLocations={analytics.rootLocations}
-        emptyLocations={analytics.emptyLocations}
-        maxDepth={analytics.maxDepth}
-      />
+ return (
+ <div className={`space-y-6 ${className}`}>
+ {/* Summary Cards */}
+ <LocationAnalyticsCards
+ totalLocations={analytics.totalLocations}
+ rootLocations={analytics.rootLocations}
+ emptyLocations={analytics.emptyLocations}
+ maxDepth={analytics.maxDepth}
+ />
 
-      {/* Charts */}
-      <LocationAnalyticsCharts
-        assetDistribution={analytics.assetDistribution}
-        hierarchyData={analytics.hierarchyData}
-      />
-    </div>
-  );
+ {/* Charts */}
+ <LocationAnalyticsCharts
+ assetDistribution={analytics.assetDistribution}
+ hierarchyData={analytics.hierarchyData}
+ />
+ </div>
+ );
 };

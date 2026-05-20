@@ -3,7 +3,7 @@ import React from "react";
 import ProfileContainer from "./ProfileContainer";
 
 const ProfileInformation: React.FC = () => {
-  return <ProfileContainer />;
+ return <ProfileContainer />;
 };
 
 export default ProfileInformation;

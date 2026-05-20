@@ -3,5 +3,5 @@
 import { useUnifiedAuthValidation } from "./useUnifiedAuthValidation";
 
 export function useAuthValidation() {
-  return useUnifiedAuthValidation();
+ return useUnifiedAuthValidation();
 }

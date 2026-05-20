@@ -3,7 +3,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+ return twMerge(clsx(inputs))
 }
 
 /**
@@ -12,8 +12,8 @@ export function cn(...inputs: ClassValue[]) {
  * @returns A string with both light and dark mode compatible classes
  */
 export function colorVariant(variable: string, opacity?: number) {
-  const opacityValue = opacity !== undefined ? `/${opacity}` : '';
-  return `hsl(var(--${variable})${opacityValue})`;
+ const opacityValue = opacity !== undefined ? `/${opacity}` : '';
+ return `hsl(var(--${variable})${opacityValue})`;
 }
 
 /**
@@ -23,5 +23,5 @@ export function colorVariant(variable: string, opacity?: number) {
  * @returns A combined string with conditional dark mode class
  */
 export function darkMode(lightClass: string, darkClass: string) {
-  return `${lightClass} dark:${darkClass}`;
+ return `${lightClass} dark:${darkClass}`;
 }

@@ -7,169 +7,169 @@ export type VendorAsset = Database['public']['Tables']['vendor_assets']['Row'];
 export type VendorContractFormData = Omit<VendorContract, 'id' | 'created_at' | 'updated_at'>;
 
 export interface VendorWithContracts extends Vendor {
-  contracts?: VendorContract[];
+ contracts?: VendorContract[];
 }
 
 export interface VendorFormData {
-  name: string;
-  email?: string;
-  phone?: string;
-  contact_person?: string;
-  contact_title?: string;
-  vendor_type: "service" | "supplier" | "contractor" | "consultant";
-  status: "active" | "inactive" | "suspended";
-  address?: string;
-  city?: string;
-  state?: string;
-  zip_code?: string;
-  website?: string;
-  description?: string;
-  rating?: number | null;
+ name: string;
+ email?: string;
+ phone?: string;
+ contact_person?: string;
+ contact_title?: string;
+ vendor_type: "service" | "supplier" | "contractor" | "consultant";
+ status: "active" | "inactive" | "suspended";
+ address?: string;
+ city?: string;
+ state?: string;
+ zip_code?: string;
+ website?: string;
+ description?: string;
+ rating?: number | null;
 }
 
 // Extended type for import processing
 export interface VendorImportData extends VendorFormData {
-  id?: string;
-  pageNumber?: number;
-  sourceText?: string;
-  raw_text?: string;
+ id?: string;
+ pageNumber?: number;
+ sourceText?: string;
+ raw_text?: string;
 }
 
 export const getAllVendors = async (): Promise<Vendor[]> => {
-  const { data, error } = await supabase
-    .from('vendors')
-    .select('*')
-    .order('name');
+ const { data, error } = await supabase
+ .from('vendors')
+ .select('*')
+ .order('name');
 
-  if (error) {
-    console.error('Error fetching vendors:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error fetching vendors:', error);
+ throw error;
+ }
 
-  return data || [];
+ return data || [];
 };
 
 export const getVendorById = async (id: string): Promise<VendorWithContracts | null> => {
-  const { data, error } = await supabase
-    .from('vendors')
-    .select(`
-      *,
-      contracts:vendor_contracts(*)
-    `)
-    .eq('id', id)
-    .single();
+ const { data, error } = await supabase
+ .from('vendors')
+ .select(`
+ *,
+ contracts:vendor_contracts(*)
+ `)
+ .eq('id', id)
+ .single();
 
-  if (error) {
-    console.error('Error fetching vendor:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error fetching vendor:', error);
+ throw error;
+ }
 
-  return data;
+ return data;
 };
 
 export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> => {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be signed in to create a vendor.");
+ const { data: { user } } = await supabase.auth.getUser();
+ if (!user) throw new Error("You must be signed in to create a vendor.");
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("company_id, role")
-    .eq("id", user.id)
-    .maybeSingle();
+ const { data: profile, error: profileError } = await supabase
+ .from("profiles")
+ .select("company_id, role")
+ .eq("id", user.id)
+ .maybeSingle();
 
-  if (profileError) throw profileError;
-  if (!profile?.company_id) {
-    throw new Error("Your account is not linked to a company. Complete setup first.");
-  }
-  if (!["administrator", "manager"].includes((profile.role || "").toLowerCase())) {
-    throw new Error("Only administrators or managers can create vendors.");
-  }
+ if (profileError) throw profileError;
+ if (!profile?.company_id) {
+ throw new Error("Your account is not linked to a company. Complete setup first.");
+ }
+ if (!["administrator", "manager"].includes((profile.role || "").toLowerCase())) {
+ throw new Error("Only administrators or managers can create vendors.");
+ }
 
-  const { data, error } = await supabase
-    .from("vendors")
-    .insert([{ ...vendorData, company_id: profile.company_id }])
-    .select()
-    .single();
+ const { data, error } = await supabase
+ .from("vendors")
+ .insert([{ ...vendorData, company_id: profile.company_id }])
+ .select()
+ .single();
 
-  if (error) {
-    console.error("Error creating vendor:", error);
-    throw new Error(error.message);
-  }
+ if (error) {
+ console.error("Error creating vendor:", error);
+ throw new Error(error.message);
+ }
 
-  return data;
+ return data;
 };
 
 export const updateVendor = async (id: string, vendorData: Partial<VendorFormData>): Promise<Vendor> => {
-  const { data, error } = await supabase
-    .from('vendors')
-    .update(vendorData)
-    .eq('id', id)
-    .select()
-    .single();
+ const { data, error } = await supabase
+ .from('vendors')
+ .update(vendorData)
+ .eq('id', id)
+ .select()
+ .single();
 
-  if (error) {
-    console.error('Error updating vendor:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error updating vendor:', error);
+ throw error;
+ }
 
-  return data;
+ return data;
 };
 
 export const deleteVendor = async (id: string): Promise<void> => {
-  const { error } = await supabase
-    .from('vendors')
-    .delete()
-    .eq('id', id);
+ const { error } = await supabase
+ .from('vendors')
+ .delete()
+ .eq('id', id);
 
-  if (error) {
-    console.error('Error deleting vendor:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error deleting vendor:', error);
+ throw error;
+ }
 };
 
 export const getVendorContracts = async (vendorId: string): Promise<VendorContract[]> => {
-  const { data, error } = await supabase
-    .from('vendor_contracts')
-    .select('*')
-    .eq('vendor_id', vendorId)
-    .order('created_at', { ascending: false });
+ const { data, error } = await supabase
+ .from('vendor_contracts')
+ .select('*')
+ .eq('vendor_id', vendorId)
+ .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching vendor contracts:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error fetching vendor contracts:', error);
+ throw error;
+ }
 
-  return data || [];
+ return data || [];
 };
 
 export const createVendorContract = async (contractData: VendorContractFormData): Promise<VendorContract> => {
-  const { data, error } = await supabase
-    .from('vendor_contracts')
-    .insert(contractData)
-    .select()
-    .single();
+ const { data, error } = await supabase
+ .from('vendor_contracts')
+ .insert(contractData)
+ .select()
+ .single();
 
-  if (error) {
-    console.error('Error creating vendor contract:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error creating vendor contract:', error);
+ throw error;
+ }
 
-  return data;
+ return data;
 };
 
 export const getVendorAssets = async (vendorId: string) => {
-  const { data, error } = await supabase
-    .from('vendor_assets')
-    .select(`
-      *,
-      asset:assets(*)
-    `)
-    .eq('vendor_id', vendorId);
+ const { data, error } = await supabase
+ .from('vendor_assets')
+ .select(`
+ *,
+ asset:assets(*)
+ `)
+ .eq('vendor_id', vendorId);
 
-  if (error) {
-    console.error('Error fetching vendor assets:', error);
-    throw error;
-  }
+ if (error) {
+ console.error('Error fetching vendor assets:', error);
+ throw error;
+ }
 
-  return data || [];
+ return data || [];
 };

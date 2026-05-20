@@ -3,10 +3,10 @@
 import { useAuthActions } from "../useAuthActions";
 
 export function useSignUp() {
-  const { signUp, isSigningUp } = useAuthActions();
-  
-  return { 
-    signUp, 
-    isLoading: isSigningUp 
-  };
+ const { signUp, isSigningUp } = useAuthActions();
+ 
+ return { 
+ signUp, 
+ isLoading: isSigningUp 
+ };
 }

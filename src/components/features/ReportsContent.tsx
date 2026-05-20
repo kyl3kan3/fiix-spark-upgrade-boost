@@ -18,153 +18,153 @@ import { PaywallGate } from "@/components/billing/PaywallGate";
 
 // Stable UUIDs per built-in report type so we can attach photos via the attachments table
 const REPORT_ENTITY_IDS: Record<string, string> = {
-  "Work Order Statistics": "11111111-1111-4111-8111-111111111111",
-  "Asset Performance":     "22222222-2222-4222-8222-222222222222",
-  "Maintenance Trends":    "33333333-3333-4333-8333-333333333333",
-  "Custom Report":         "44444444-4444-4444-8444-444444444444",
+ "Work Order Statistics": "11111111-1111-4111-8111-111111111111",
+ "Asset Performance": "22222222-2222-4222-8222-222222222222",
+ "Maintenance Trends": "33333333-3333-4333-8333-333333333333",
+ "Custom Report": "44444444-4444-4444-8444-444444444444",
 };
 
 const ReportsContent: React.FC = () => {
-  const [selectedReport, setSelectedReport] = useState<string | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [shareOpen, setShareOpen] = useState(false);
-  const isMobile = useIsMobile();
-  
-  // Simulate loading state for better UX
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  const handleGenerateReport = (reportType: string) => {
-    console.log("Generating report:", reportType);
-    setSelectedReport(reportType);
-    toast.success(`${reportType} report generated successfully`);
-  };
+ const [selectedReport, setSelectedReport] = useState<string | null>(null);
+ const [isExporting, setIsExporting] = useState(false);
+ const [isLoading, setIsLoading] = useState(true);
+ const [shareOpen, setShareOpen] = useState(false);
+ const isMobile = useIsMobile();
+ 
+ // Simulate loading state for better UX
+ useEffect(() => {
+ const timer = setTimeout(() => {
+ setIsLoading(false);
+ }, 800);
+ 
+ return () => clearTimeout(timer);
+ }, []);
+ 
+ const handleGenerateReport = (reportType: string) => {
+ console.log("Generating report:", reportType);
+ setSelectedReport(reportType);
+ toast.success(`${reportType} report generated successfully`);
+ };
 
-  const handleGenerateCustomReport = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Generating custom report");
-    setSelectedReport("Custom Report");
-    toast.success("Custom report generated successfully");
-  };
+ const handleGenerateCustomReport = (e: React.FormEvent) => {
+ e.preventDefault();
+ console.log("Generating custom report");
+ setSelectedReport("Custom Report");
+ toast.success("Custom report generated successfully");
+ };
 
-  const handleExportPdf = async () => {
-    if (!selectedReport) {
-      toast.error("No report selected to export");
-      return;
-    }
-    
-    setIsExporting(true);
-    try {
-      const dataToExport = getReportData();
-      await exportReportToPdf(selectedReport, dataToExport, {
-        reportEntityId: REPORT_ENTITY_IDS[selectedReport],
-      });
-      toast.success("Report exported to PDF successfully");
-    } catch (error) {
-      toast.error("Failed to export report");
-      console.error("Export error:", error);
-    } finally {
-      setIsExporting(false);
-    }
-  };
+ const handleExportPdf = async () => {
+ if (!selectedReport) {
+ toast.error("No report selected to export");
+ return;
+ }
+ 
+ setIsExporting(true);
+ try {
+ const dataToExport = getReportData();
+ await exportReportToPdf(selectedReport, dataToExport, {
+ reportEntityId: REPORT_ENTITY_IDS[selectedReport],
+ });
+ toast.success("Report exported to PDF successfully");
+ } catch (error) {
+ toast.error("Failed to export report");
+ console.error("Export error:", error);
+ } finally {
+ setIsExporting(false);
+ }
+ };
 
-  const getReportData = () => {
-    switch (selectedReport) {
-      case "Work Order Statistics":
-        return monthlyWorkOrders;
-      case "Asset Performance":
-        return assetPerformanceData;
-      case "Maintenance Trends":
-        return maintenanceTrendsData;
-      case "Custom Report":
-        // In a real app, this would be generated from custom parameters
-        return [...monthlyWorkOrders].slice(0, 5);
-      default:
-        return monthlyWorkOrders;
-    }
-  };
+ const getReportData = () => {
+ switch (selectedReport) {
+ case "Work Order Statistics":
+ return monthlyWorkOrders;
+ case "Asset Performance":
+ return assetPerformanceData;
+ case "Maintenance Trends":
+ return maintenanceTrendsData;
+ case "Custom Report":
+ // In a real app, this would be generated from custom parameters
+ return [...monthlyWorkOrders].slice(0, 5);
+ default:
+ return monthlyWorkOrders;
+ }
+ };
 
-  if (isLoading) {
-    return (
-      <Card className="w-full h-64 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-maintenease-500" />
-      </Card>
-    );
-  }
+ if (isLoading) {
+ return (
+ <Card className="w-full h-64 flex items-center justify-center">
+ <Loader2 className="h-8 w-8 animate-spin text-maintenease-500" />
+ </Card>
+ );
+ }
 
-  return (
-    <div className="space-y-6">
-      <PaywallGate
-        feature="analytics"
-        title="Analytics is a Pro feature"
-        description="Upgrade to Pro or Business to unlock the full analytics dashboard, report exports, and team email reports."
-      >
-        <AnalyticsOverview />
+ return (
+ <div className="space-y-6">
+ <PaywallGate
+ feature="analytics"
+ title="Analytics is a Pro feature"
+ description="Upgrade to Pro or Business to unlock the full analytics dashboard, report exports, and team email reports."
+ >
+ <AnalyticsOverview />
 
-        <Card>
-        <CardHeader>
-          <CardTitle>Maintenance Analytics & Reports</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-4">
-            Generate reports based on your maintenance data to gain insights and make informed decisions.
-          </p>
-          
-          {/* Available Reports Section */}
-          <ReportsList onGenerateReport={handleGenerateReport} />
-        </CardContent>
-      </Card>
-      
-      {/* Selected Report Chart */}
-      {selectedReport && (
-        <>
-          <ReportChart 
-            reportType={selectedReport}
-            data={getReportData()}
-            isMobile={isMobile}
-            isExporting={isExporting}
-            onExport={handleExportPdf}
-          />
-          <div className="flex justify-end">
-            <Button variant="outline" onClick={() => setShareOpen(true)}>
-              <Mail className="h-4 w-4 mr-2" />
-              Email report to team
-            </Button>
-          </div>
-          {REPORT_ENTITY_IDS[selectedReport] && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Report Photos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ImageGallery
-                  entityType="report"
-                  entityId={REPORT_ENTITY_IDS[selectedReport]}
-                  title="Attached photos"
-                />
-              </CardContent>
-            </Card>
-          )}
-          <ShareReportDialog
-            open={shareOpen}
-            onOpenChange={setShareOpen}
-            reportName={selectedReport}
-            reportId={REPORT_ENTITY_IDS[selectedReport]}
-          />
-        </>
-      )}
-      
-      {/* Custom Reports Section */}
-      <CustomReportForm onSubmit={handleGenerateCustomReport} />
-      </PaywallGate>
-    </div>
-  );
+ <Card>
+ <CardHeader>
+ <CardTitle>Maintenance Analytics & Reports</CardTitle>
+ </CardHeader>
+ <CardContent>
+ <p className="text-muted-foreground mb-4">
+ Generate reports based on your maintenance data to gain insights and make informed decisions.
+ </p>
+ 
+ {/* Available Reports Section */}
+ <ReportsList onGenerateReport={handleGenerateReport} />
+ </CardContent>
+ </Card>
+ 
+ {/* Selected Report Chart */}
+ {selectedReport && (
+ <>
+ <ReportChart 
+ reportType={selectedReport}
+ data={getReportData()}
+ isMobile={isMobile}
+ isExporting={isExporting}
+ onExport={handleExportPdf}
+ />
+ <div className="flex justify-end">
+ <Button variant="outline" onClick={() => setShareOpen(true)}>
+ <Mail className="h-4 w-4 mr-2" />
+ Email report to team
+ </Button>
+ </div>
+ {REPORT_ENTITY_IDS[selectedReport] && (
+ <Card>
+ <CardHeader>
+ <CardTitle>Report Photos</CardTitle>
+ </CardHeader>
+ <CardContent>
+ <ImageGallery
+ entityType="report"
+ entityId={REPORT_ENTITY_IDS[selectedReport]}
+ title="Attached photos"
+ />
+ </CardContent>
+ </Card>
+ )}
+ <ShareReportDialog
+ open={shareOpen}
+ onOpenChange={setShareOpen}
+ reportName={selectedReport}
+ reportId={REPORT_ENTITY_IDS[selectedReport]}
+ />
+ </>
+ )}
+ 
+ {/* Custom Reports Section */}
+ <CustomReportForm onSubmit={handleGenerateCustomReport} />
+ </PaywallGate>
+ </div>
+ );
 };
 
 export default ReportsContent;

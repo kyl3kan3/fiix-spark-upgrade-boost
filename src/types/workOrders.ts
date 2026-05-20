@@ -15,14 +15,14 @@ export type WorkOrderPriority = Database['public']['Enums']['work_order_priority
 export type WorkOrderFormData = Omit<WorkOrder, 'id' | 'created_at' | 'updated_at' | 'created_by'>;
 export type AssetFormData = Omit<Asset, 'id' | 'created_at' | 'updated_at'>;
 export type WorkOrderCommentFormData = {
-  comment: string;
-  work_order_id: string;
+ comment: string;
+ work_order_id: string;
 };
 
 // We can extend these types with UI-specific properties as needed
 export interface WorkOrderWithRelations extends WorkOrder {
-  asset?: Asset | null;
-  assignee?: Profile | null;
-  creator?: Profile | null;
-  comments?: WorkOrderComment[];
+ asset?: Asset | null;
+ assignee?: Profile | null;
+ creator?: Profile | null;
+ comments?: WorkOrderComment[];
 }

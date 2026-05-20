@@ -8,85 +8,85 @@ import { setSupabaseRememberMe } from "@/integrations/supabase/authStorage";
 import { setRememberMe as persistRememberMePref } from "@/utils/storageUtils";
 
 interface UseAuthSubmissionProps {
-  onError: (message: string) => void;
+ onError: (message: string) => void;
 }
 
 export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
-  const { signIn, signUp, isSigningIn, isSigningUp } = useAuthActions();
-  const { validateSignInForm, validateSignUpForm } = useAuthValidation();
-  const { handleAuthSuccess } = useAuthNavigation();
-  const navigate = useNavigate();
+ const { signIn, signUp, isSigningIn, isSigningUp } = useAuthActions();
+ const { validateSignInForm, validateSignUpForm } = useAuthValidation();
+ const { handleAuthSuccess } = useAuthNavigation();
+ const navigate = useNavigate();
 
-  const handleSignIn = useCallback(async (email: string, password: string, rememberMe?: boolean) => {
-    // Validate form data
-    const validation = validateSignInForm(email, password);
-    if (!validation.isValid) {
-      onError(validation.error || "Invalid form data");
-      return;
-    }
+ const handleSignIn = useCallback(async (email: string, password: string, rememberMe?: boolean) => {
+ // Validate form data
+ const validation = validateSignInForm(email, password);
+ if (!validation.isValid) {
+ onError(validation.error || "Invalid form data");
+ return;
+ }
 
-    try {
-      // Apply the "Remember me" preference BEFORE signing in so that the
-      // session tokens are written to the correct storage (local vs session).
-      const remember = rememberMe ?? true;
-      setSupabaseRememberMe(remember);
-      persistRememberMePref(remember);
+ try {
+ // Apply the "Remember me" preference BEFORE signing in so that the
+ // session tokens are written to the correct storage (local vs session).
+ const remember = rememberMe ?? true;
+ setSupabaseRememberMe(remember);
+ persistRememberMePref(remember);
 
-      const result = await signIn(email, password);
-      
-      if (result.success) {
-        if (localStorage.getItem("pending_invite_token")) {
-          navigate("/onboarding", { replace: true });
-        } else {
-          handleAuthSuccess();
-        }
-      } else if (result.error) {
-        onError(result.error);
-      }
-    } catch (error: any) {
-      onError(error.message || "An unexpected error occurred during sign in");
-    }
-  }, [signIn, validateSignInForm, handleAuthSuccess, navigate, onError]);
+ const result = await signIn(email, password);
+ 
+ if (result.success) {
+ if (localStorage.getItem("pending_invite_token")) {
+ navigate("/onboarding", { replace: true });
+ } else {
+ handleAuthSuccess();
+ }
+ } else if (result.error) {
+ onError(result.error);
+ }
+ } catch (error: any) {
+ onError(error.message || "An unexpected error occurred during sign in");
+ }
+ }, [signIn, validateSignInForm, handleAuthSuccess, navigate, onError]);
 
-  const handleSignUp = useCallback(async (email: string, password: string, name: string, companyName: string) => {
-    // Validate form data
-    const validation = validateSignUpForm(email, password, name, companyName);
-    if (!validation.isValid) {
-      onError(validation.error || "Invalid form data");
-      return;
-    }
+ const handleSignUp = useCallback(async (email: string, password: string, name: string, companyName: string) => {
+ // Validate form data
+ const validation = validateSignUpForm(email, password, name, companyName);
+ if (!validation.isValid) {
+ onError(validation.error || "Invalid form data");
+ return;
+ }
 
-    try {
-      // Parse the name into first and last name
-      const nameParts = name.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || "";
+ try {
+ // Parse the name into first and last name
+ const nameParts = name.trim().split(" ");
+ const firstName = nameParts[0] || "";
+ const lastName = nameParts.slice(1).join(" ") || "";
 
-      const userData = {
-        first_name: firstName,
-        last_name: lastName,
-        company_name: companyName
-      };
+ const userData = {
+ first_name: firstName,
+ last_name: lastName,
+ company_name: companyName
+ };
 
-      const result = await signUp(email, password, userData);
-      
-      if (result.success) {
-        if (localStorage.getItem("pending_invite_token")) {
-          navigate("/onboarding", { replace: true });
-        } else {
-          handleAuthSuccess();
-        }
-      } else if (result.error) {
-        onError(result.error);
-      }
-    } catch (error: any) {
-      onError(error.message || "An unexpected error occurred during sign up");
-    }
-  }, [signUp, validateSignUpForm, handleAuthSuccess, navigate, onError]);
+ const result = await signUp(email, password, userData);
+ 
+ if (result.success) {
+ if (localStorage.getItem("pending_invite_token")) {
+ navigate("/onboarding", { replace: true });
+ } else {
+ handleAuthSuccess();
+ }
+ } else if (result.error) {
+ onError(result.error);
+ }
+ } catch (error: any) {
+ onError(error.message || "An unexpected error occurred during sign up");
+ }
+ }, [signUp, validateSignUpForm, handleAuthSuccess, navigate, onError]);
 
-  return {
-    handleSignIn,
-    handleSignUp,
-    isLoading: isSigningIn || isSigningUp
-  };
+ return {
+ handleSignIn,
+ handleSignUp,
+ isLoading: isSigningIn || isSigningUp
+ };
 }

@@ -10,41 +10,41 @@ import { WorkOrderInfoCard } from "./components/WorkOrderInfoCard";
 import { WorkOrderTimelineCard } from "./components/WorkOrderTimelineCard";
 
 interface WorkOrderDetailsProps {
-  workOrder: WorkOrderWithRelations;
-  onEdit: () => void;
-  onDelete: () => void;
+ workOrder: WorkOrderWithRelations;
+ onEdit: () => void;
+ onDelete: () => void;
 }
 
 export const WorkOrderDetails: React.FC<WorkOrderDetailsProps> = ({
-  workOrder,
-  onEdit,
-  onDelete
+ workOrder,
+ onEdit,
+ onDelete
 }) => {
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <Card>
-        <CardHeader>
-          <WorkOrderDetailsHeader 
-            workOrder={workOrder}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-          <WorkOrderBadges workOrder={workOrder} />
-        </CardHeader>
-        <CardContent>
-          <WorkOrderDescription workOrder={workOrder} />
-        </CardContent>
-      </Card>
+ return (
+ <div className="space-y-6">
+ {/* Header */}
+ <Card>
+ <CardHeader>
+ <WorkOrderDetailsHeader 
+ workOrder={workOrder}
+ onEdit={onEdit}
+ onDelete={onDelete}
+ />
+ <WorkOrderBadges workOrder={workOrder} />
+ </CardHeader>
+ <CardContent>
+ <WorkOrderDescription workOrder={workOrder} />
+ </CardContent>
+ </Card>
 
-      {/* Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <WorkOrderInfoCard workOrder={workOrder} />
-        <WorkOrderTimelineCard workOrder={workOrder} />
-      </div>
+ {/* Details */}
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <WorkOrderInfoCard workOrder={workOrder} />
+ <WorkOrderTimelineCard workOrder={workOrder} />
+ </div>
 
-      {/* Comments */}
-      <WorkOrderComments workOrder={workOrder} />
-    </div>
-  );
+ {/* Comments */}
+ <WorkOrderComments workOrder={workOrder} />
+ </div>
+ );
 };

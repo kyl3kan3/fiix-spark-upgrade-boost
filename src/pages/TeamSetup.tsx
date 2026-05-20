@@ -10,32 +10,32 @@ import { TeamSetupNotAuthorized } from "@/components/team/setup/TeamSetupNotAuth
 import { TeamSetupLoading } from "@/components/team/setup/TeamSetupLoading";
 
 const TeamSetup: React.FC = () => {
-  const { isLoading, isAdmin, companyName } = useTeamSetupAuth();
-  const { sendInvitation, isSubmitting, error } = useTeamInvitation();
+ const { isLoading, isAdmin, companyName } = useTeamSetupAuth();
+ const { sendInvitation, isSubmitting, error } = useTeamInvitation();
 
-  if (isLoading) {
-    return <TeamSetupLoading />;
-  }
+ if (isLoading) {
+ return <TeamSetupLoading />;
+ }
 
-  if (!isAdmin) {
-    return <TeamSetupNotAuthorized />;
-  }
+ if (!isAdmin) {
+ return <TeamSetupNotAuthorized />;
+ }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <TeamSetupHeader companyName={companyName} />
-        <CardContent>
-          <TeamSetupForm
-            onSubmit={sendInvitation}
-            isSubmitting={isSubmitting}
-            error={error}
-          />
-          <TeamSetupActions isSubmitting={isSubmitting} />
-        </CardContent>
-      </Card>
-    </div>
-  );
+ return (
+ <div className="flex items-center justify-center min-h-screen bg-muted p-4">
+ <Card className="w-full max-w-md">
+ <TeamSetupHeader companyName={companyName} />
+ <CardContent>
+ <TeamSetupForm
+ onSubmit={sendInvitation}
+ isSubmitting={isSubmitting}
+ error={error}
+ />
+ <TeamSetupActions isSubmitting={isSubmitting} />
+ </CardContent>
+ </Card>
+ </div>
+ );
 };
 
 export default TeamSetup;

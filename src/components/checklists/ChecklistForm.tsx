@@ -11,335 +11,335 @@ import ChecklistItemsSection from "./ChecklistItemsSection";
 import ChecklistAssetsSelector from "./ChecklistAssetsSelector";
 
 interface ChecklistFormProps {
-  mode: "create" | "edit";
+ mode: "create" | "edit";
 }
 
 interface ChecklistItemForm {
-  id?: string;
-  title: string;
-  description: string;
-  item_type: "checkbox" | "text" | "number" | "date";
-  is_required: boolean;
-  sort_order: number;
+ id?: string;
+ title: string;
+ description: string;
+ item_type: "checkbox" | "text" | "number" | "date";
+ is_required: boolean;
+ sort_order: number;
 }
 
 interface ChecklistFormData {
-  name: string;
-  description: string;
-  type: string;
-  frequency: string;
-  is_active: boolean;
-  items: ChecklistItemForm[];
-  assetIds: string[];
-  assetOffsets: Record<string, number>;
+ name: string;
+ description: string;
+ type: string;
+ frequency: string;
+ is_active: boolean;
+ items: ChecklistItemForm[];
+ assetIds: string[];
+ assetOffsets: Record<string, number>;
 }
 
 const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+ const { id } = useParams();
+ const navigate = useNavigate();
+ const queryClient = useQueryClient();
 
-  const [formData, setFormData] = useState<ChecklistFormData>({
-    name: "",
-    description: "",
-    type: "general",
-    frequency: "one-time",
-    is_active: true,
-    items: [],
-    assetIds: [],
-    assetOffsets: {},
-  });
+ const [formData, setFormData] = useState<ChecklistFormData>({
+ name: "",
+ description: "",
+ type: "general",
+ frequency: "one-time",
+ is_active: true,
+ items: [],
+ assetIds: [],
+ assetOffsets: {},
+ });
 
-  // Load existing checklist for edit mode
-  const { data: checklist, isLoading } = useQuery({
-    queryKey: ["checklist", id],
-    queryFn: () => checklistService.getChecklistById(id!),
-    enabled: mode === "edit" && !!id,
-  });
+ // Load existing checklist for edit mode
+ const { data: checklist, isLoading } = useQuery({
+ queryKey: ["checklist", id],
+ queryFn: () => checklistService.getChecklistById(id!),
+ enabled: mode === "edit" && !!id,
+ });
 
-  useEffect(() => {
-    if (checklist && mode === "edit") {
-      setFormData({
-        name: checklist.name,
-        description: checklist.description || "",
-        type: checklist.type,
-        frequency: checklist.frequency,
-        is_active: checklist.is_active,
-        items: checklist.items?.map((item, index) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description || "",
-          item_type: item.item_type,
-          is_required: item.is_required,
-          sort_order: item.sort_order || index
-        })) || [],
-        assetIds: checklist.asset_ids || [],
-        assetOffsets: checklist.asset_offsets || {},
-      });
-    }
-  }, [checklist, mode]);
+ useEffect(() => {
+ if (checklist && mode === "edit") {
+ setFormData({
+ name: checklist.name,
+ description: checklist.description || "",
+ type: checklist.type,
+ frequency: checklist.frequency,
+ is_active: checklist.is_active,
+ items: checklist.items?.map((item, index) => ({
+ id: item.id,
+ title: item.title,
+ description: item.description || "",
+ item_type: item.item_type,
+ is_required: item.is_required,
+ sort_order: item.sort_order || index
+ })) || [],
+ assetIds: checklist.asset_ids || [],
+ assetOffsets: checklist.asset_offsets || {},
+ });
+ }
+ }, [checklist, mode]);
 
-  const createMutation = useMutation({
-    mutationFn: async (data: ChecklistFormData) => {
-      // Create checklist first
-      const newChecklist = await checklistService.createChecklist({
-        name: data.name,
-        description: data.description,
-        type: data.type,
-        frequency: data.frequency,
-        is_active: data.is_active
-      });
+ const createMutation = useMutation({
+ mutationFn: async (data: ChecklistFormData) => {
+ // Create checklist first
+ const newChecklist = await checklistService.createChecklist({
+ name: data.name,
+ description: data.description,
+ type: data.type,
+ frequency: data.frequency,
+ is_active: data.is_active
+ });
 
-      // Then create items
-      for (let i = 0; i < data.items.length; i++) {
-        const item = data.items[i];
-        await checklistService.createChecklistItem({
-          checklist_id: newChecklist.id,
-          title: item.title,
-          description: item.description,
-          item_type: item.item_type,
-          is_required: item.is_required,
-          sort_order: i
-        });
-      }
+ // Then create items
+ for (let i = 0; i < data.items.length; i++) {
+ const item = data.items[i];
+ await checklistService.createChecklistItem({
+ checklist_id: newChecklist.id,
+ title: item.title,
+ description: item.description,
+ item_type: item.item_type,
+ is_required: item.is_required,
+ sort_order: i
+ });
+ }
 
-      // Asset links (with stagger offsets) + schedule
-      await checklistService.setChecklistAssets(newChecklist.id, data.assetIds, {
-        offsets: data.assetOffsets,
-      });
-      await checklistService.ensureSchedule(newChecklist.id, data.frequency);
+ // Asset links (with stagger offsets) + schedule
+ await checklistService.setChecklistAssets(newChecklist.id, data.assetIds, {
+ offsets: data.assetOffsets,
+ });
+ await checklistService.ensureSchedule(newChecklist.id, data.frequency);
 
-      return newChecklist;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["checklists"] });
-      toast.success("Checklist created successfully");
-      navigate("/checklists");
-    },
-    onError: (error: any) => {
-      toast.error("Failed to create checklist", {
-        description: error.message
-      });
-    }
-  });
+ return newChecklist;
+ },
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ["checklists"] });
+ toast.success("Checklist created successfully");
+ navigate("/checklists");
+ },
+ onError: (error: any) => {
+ toast.error("Failed to create checklist", {
+ description: error.message
+ });
+ }
+ });
 
-  const updateMutation = useMutation({
-    mutationFn: async (data: ChecklistFormData) => {
-      if (!id) throw new Error("No checklist ID");
+ const updateMutation = useMutation({
+ mutationFn: async (data: ChecklistFormData) => {
+ if (!id) throw new Error("No checklist ID");
 
-      // Update checklist
-      await checklistService.updateChecklist(id, {
-        name: data.name,
-        description: data.description,
-        type: data.type,
-        frequency: data.frequency,
-        is_active: data.is_active
-      });
+ // Update checklist
+ await checklistService.updateChecklist(id, {
+ name: data.name,
+ description: data.description,
+ type: data.type,
+ frequency: data.frequency,
+ is_active: data.is_active
+ });
 
-      // Get existing items to determine what to update/create/delete
-      const existingItems = checklist?.items || [];
-      const newItems = data.items;
+ // Get existing items to determine what to update/create/delete
+ const existingItems = checklist?.items || [];
+ const newItems = data.items;
 
-      // Update or create items
-      for (let i = 0; i < newItems.length; i++) {
-        const item = newItems[i];
-        if (item.id) {
-          // Update existing item
-          await checklistService.updateChecklistItem(item.id, {
-            title: item.title,
-            description: item.description,
-            item_type: item.item_type,
-            is_required: item.is_required,
-            sort_order: i
-          });
-        } else {
-          // Create new item
-          await checklistService.createChecklistItem({
-            checklist_id: id,
-            title: item.title,
-            description: item.description,
-            item_type: item.item_type,
-            is_required: item.is_required,
-            sort_order: i
-          });
-        }
-      }
+ // Update or create items
+ for (let i = 0; i < newItems.length; i++) {
+ const item = newItems[i];
+ if (item.id) {
+ // Update existing item
+ await checklistService.updateChecklistItem(item.id, {
+ title: item.title,
+ description: item.description,
+ item_type: item.item_type,
+ is_required: item.is_required,
+ sort_order: i
+ });
+ } else {
+ // Create new item
+ await checklistService.createChecklistItem({
+ checklist_id: id,
+ title: item.title,
+ description: item.description,
+ item_type: item.item_type,
+ is_required: item.is_required,
+ sort_order: i
+ });
+ }
+ }
 
-      // Delete removed items
-      const newItemIds = newItems.filter(item => item.id).map(item => item.id);
-      const itemsToDelete = existingItems.filter(item => !newItemIds.includes(item.id));
-      
-      for (const item of itemsToDelete) {
-        await checklistService.deleteChecklistItem(item.id);
-      }
+ // Delete removed items
+ const newItemIds = newItems.filter(item => item.id).map(item => item.id);
+ const itemsToDelete = existingItems.filter(item => !newItemIds.includes(item.id));
+ 
+ for (const item of itemsToDelete) {
+ await checklistService.deleteChecklistItem(item.id);
+ }
 
-      // Asset links (with stagger offsets) + schedule (frequency may have changed)
-      await checklistService.setChecklistAssets(id, data.assetIds, {
-        offsets: data.assetOffsets,
-      });
-      await checklistService.ensureSchedule(id, data.frequency);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["checklist", id] });
-      queryClient.invalidateQueries({ queryKey: ["checklists"] });
-      toast.success("Checklist updated successfully");
-      navigate("/checklists");
-    },
-    onError: (error: any) => {
-      toast.error("Failed to update checklist", {
-        description: error.message
-      });
-    }
-  });
+ // Asset links (with stagger offsets) + schedule (frequency may have changed)
+ await checklistService.setChecklistAssets(id, data.assetIds, {
+ offsets: data.assetOffsets,
+ });
+ await checklistService.ensureSchedule(id, data.frequency);
+ },
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ["checklist", id] });
+ queryClient.invalidateQueries({ queryKey: ["checklists"] });
+ toast.success("Checklist updated successfully");
+ navigate("/checklists");
+ },
+ onError: (error: any) => {
+ toast.error("Failed to update checklist", {
+ description: error.message
+ });
+ }
+ });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name.trim()) {
-      toast.error("Please enter a checklist name");
-      return;
-    }
+ const handleSubmit = (e: React.FormEvent) => {
+ e.preventDefault();
+ 
+ if (!formData.name.trim()) {
+ toast.error("Please enter a checklist name");
+ return;
+ }
 
-    if (formData.items.length === 0) {
-      toast.error("Please add at least one checklist item");
-      return;
-    }
+ if (formData.items.length === 0) {
+ toast.error("Please add at least one checklist item");
+ return;
+ }
 
-    if (mode === "create") {
-      createMutation.mutate(formData);
-    } else {
-      updateMutation.mutate(formData);
-    }
-  };
+ if (mode === "create") {
+ createMutation.mutate(formData);
+ } else {
+ updateMutation.mutate(formData);
+ }
+ };
 
-  const handleBasicInfoUpdate = (field: keyof Omit<ChecklistFormData, 'items'>, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+ const handleBasicInfoUpdate = (field: keyof Omit<ChecklistFormData, 'items'>, value: any) => {
+ setFormData(prev => ({ ...prev, [field]: value }));
+ };
 
-  const addItem = () => {
-    setFormData(prev => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        {
-          title: "",
-          description: "",
-          item_type: "checkbox",
-          is_required: false,
-          sort_order: prev.items.length
-        }
-      ]
-    }));
-  };
+ const addItem = () => {
+ setFormData(prev => ({
+ ...prev,
+ items: [
+ ...prev.items,
+ {
+ title: "",
+ description: "",
+ item_type: "checkbox",
+ is_required: false,
+ sort_order: prev.items.length
+ }
+ ]
+ }));
+ };
 
-  const removeItem = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      items: prev.items.filter((_, i) => i !== index)
-    }));
-  };
+ const removeItem = (index: number) => {
+ setFormData(prev => ({
+ ...prev,
+ items: prev.items.filter((_, i) => i !== index)
+ }));
+ };
 
-  const updateItem = (index: number, field: keyof ChecklistItemForm, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      items: prev.items.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
-    }));
-  };
+ const updateItem = (index: number, field: keyof ChecklistItemForm, value: any) => {
+ setFormData(prev => ({
+ ...prev,
+ items: prev.items.map((item, i) => 
+ i === index ? { ...item, [field]: value } : item
+ )
+ }));
+ };
 
-  const moveItem = (index: number, direction: "up" | "down") => {
-    if (
-      (direction === "up" && index === 0) ||
-      (direction === "down" && index === formData.items.length - 1)
-    ) {
-      return;
-    }
+ const moveItem = (index: number, direction: "up" | "down") => {
+ if (
+ (direction === "up" && index === 0) ||
+ (direction === "down" && index === formData.items.length - 1)
+ ) {
+ return;
+ }
 
-    const newIndex = direction === "up" ? index - 1 : index + 1;
-    const newItems = [...formData.items];
-    [newItems[index], newItems[newIndex]] = [newItems[newIndex], newItems[index]];
+ const newIndex = direction === "up" ? index - 1 : index + 1;
+ const newItems = [...formData.items];
+ [newItems[index], newItems[newIndex]] = [newItems[newIndex], newItems[index]];
 
-    setFormData(prev => ({ ...prev, items: newItems }));
-  };
+ setFormData(prev => ({ ...prev, items: newItems }));
+ };
 
-  if (mode === "edit" && isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="p-6">
-          <div className="text-center py-12">Loading checklist...</div>
-        </div>
-      </DashboardLayout>
-    );
-  }
+ if (mode === "edit" && isLoading) {
+ return (
+ <DashboardLayout>
+ <div className="p-6">
+ <div className="text-center py-12">Loading checklist...</div>
+ </div>
+ </DashboardLayout>
+ );
+ }
 
-  return (
-    <DashboardLayout>
-      <div className="p-6">
-        <Button 
-          variant="outline" 
-          onClick={() => navigate("/checklists")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Checklists
-        </Button>
+ return (
+ <DashboardLayout>
+ <div className="p-6">
+ <Button 
+ variant="outline" 
+ onClick={() => navigate("/checklists")}
+ className="mb-4"
+ >
+ <ArrowLeft className="mr-2 h-4 w-4" />
+ Back to Checklists
+ </Button>
 
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">
-            {mode === "create" ? "Create New Checklist" : "Edit Checklist"}
-          </h1>
+ <div className="max-w-4xl mx-auto">
+ <h1 className="text-3xl font-bold mb-6">
+ {mode === "create" ? "Create New Checklist" : "Edit Checklist"}
+ </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <BasicInformationSection
-              formData={formData}
-              onUpdate={handleBasicInfoUpdate}
-            />
+ <form onSubmit={handleSubmit} className="space-y-6">
+ <BasicInformationSection
+ formData={formData}
+ onUpdate={handleBasicInfoUpdate}
+ />
 
-            <ChecklistItemsSection
-              items={formData.items}
-              onAddItem={addItem}
-              onRemoveItem={removeItem}
-              onUpdateItem={updateItem}
-              onMoveItem={moveItem}
-            />
+ <ChecklistItemsSection
+ items={formData.items}
+ onAddItem={addItem}
+ onRemoveItem={removeItem}
+ onUpdateItem={updateItem}
+ onMoveItem={moveItem}
+ />
 
-            <ChecklistAssetsSelector
-              selectedAssetIds={formData.assetIds}
-              onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}
-              assetOffsets={formData.assetOffsets}
-              onOffsetsChange={(offsets) =>
-                setFormData((prev) => ({ ...prev, assetOffsets: offsets }))
-              }
-            />
+ <ChecklistAssetsSelector
+ selectedAssetIds={formData.assetIds}
+ onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}
+ assetOffsets={formData.assetOffsets}
+ onOffsetsChange={(offsets) =>
+ setFormData((prev) => ({ ...prev, assetOffsets: offsets }))
+ }
+ />
 
-            {/* Submit Button */}
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate("/checklists")}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={createMutation.isPending || updateMutation.isPending}
-                className="min-w-32"
-              >
-                {createMutation.isPending || updateMutation.isPending
-                  ? "Saving..."
-                  : mode === "create"
-                  ? "Create Checklist"
-                  : "Update Checklist"
-                }
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </DashboardLayout>
-  );
+ {/* Submit Button */}
+ <div className="flex justify-end gap-4">
+ <Button
+ type="button"
+ variant="outline"
+ onClick={() => navigate("/checklists")}
+ >
+ Cancel
+ </Button>
+ <Button
+ type="submit"
+ disabled={createMutation.isPending || updateMutation.isPending}
+ className="min-w-32"
+ >
+ {createMutation.isPending || updateMutation.isPending
+ ? "Saving..."
+ : mode === "create"
+ ? "Create Checklist"
+ : "Update Checklist"
+ }
+ </Button>
+ </div>
+ </form>
+ </div>
+ </div>
+ </DashboardLayout>
+ );
 };
 
 export default ChecklistForm;

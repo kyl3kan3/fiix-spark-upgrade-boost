@@ -2,7 +2,7 @@ import React from "react";
 import AppShell from "@/components/shell/AppShell";
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }
 
 /**
@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
  * It now delegates to AppShell (Industrial Blueprint shell).
  */
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  return <AppShell>{children}</AppShell>;
+ return <AppShell>{children}</AppShell>;
 };
 
 export default DashboardLayout;
