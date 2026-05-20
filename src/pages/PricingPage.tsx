@@ -159,6 +159,14 @@ export default function PricingPage() {
         <p className="mt-10 text-center text-sm text-muted-foreground">
           All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 15 to avoid charges.
         </p>
+        <div className="mt-10 flex flex-col items-center gap-3 border-t pt-8 sm:flex-row sm:justify-between">
+          <p className="text-sm text-muted-foreground">Share these plans</p>
+          <ShareButtons
+            url="https://maintenease.com/pricing"
+            title="MaintenEase Pricing — Plans for Maintenance Teams"
+            description="Compare Starter, Pro, and Business plans. 14-day free trial."
+          />
+        </div>
       </div>
     </div>
   );
