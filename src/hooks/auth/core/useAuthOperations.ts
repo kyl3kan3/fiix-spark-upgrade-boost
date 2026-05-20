@@ -38,12 +38,16 @@ export function useAuthOperations() {
 
  const signUp = useCallback(async (email: string, password: string, userData?: SignUpData): Promise<AuthResult> => {
  try {
+      const hasPendingInvite =
+        typeof window !== "undefined" &&
+        !!localStorage.getItem("pending_invite_token");
+      const redirectPath = hasPendingInvite ? "/onboarding" : "/";
  const { error } = await supabase.auth.signUp({
  email,
  password,
  options: {
  data: userData || {},
- emailRedirectTo: `${window.location.origin}/`
+          emailRedirectTo: `${window.location.origin}${redirectPath}`
  }
  });
 

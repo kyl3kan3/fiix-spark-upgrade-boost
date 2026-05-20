@@ -70,6 +70,13 @@ export const AuthContainer: React.FC = () => {
  }
  if (invitation.email) {
  localStorage.setItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, invitation.email);
+        // Notify the auth form that a pending email is now available,
+        // since useFormState only reads localStorage on its first render.
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("pending-email-resolved", { detail: invitation.email })
+          );
+        }
  }
  toast.success("You're invited!", {
  description: `Create your account with ${invitation.email} to join the team.`,
