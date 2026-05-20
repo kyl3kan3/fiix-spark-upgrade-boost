@@ -50,7 +50,7 @@ const LearnArticle = () => {
   if (!term) return <Navigate to="/learn" replace />;
 
   const url = `https://maintenease.com/learn/${term.slug}`;
-  const jsonLd = {
+  const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: term.faqs.map((f) => ({
@@ -58,6 +58,21 @@ const LearnArticle = () => {
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
+  };
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: term.term,
+    description: term.short,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    inLanguage: "en",
+    image: "https://maintenease.com/og-image.png",
+    author: { "@type": "Organization", name: "MaintenEase" },
+    publisher: {
+      "@type": "Organization",
+      name: "MaintenEase",
+      logo: { "@type": "ImageObject", url: "https://maintenease.com/favicon.png" },
+    },
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -84,7 +99,8 @@ const LearnArticle = () => {
         <meta property="og:description" content={term.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
       <article className="container mx-auto px-4 py-12 md:py-16 max-w-3xl">

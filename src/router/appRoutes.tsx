@@ -41,6 +41,7 @@ const ChecklistSubmitPage = lazy(() => import("@/pages/ChecklistSubmitPage"));
 const ChecklistSubmissionsPage = lazy(() => import("@/pages/ChecklistSubmissionsPage"));
 const DueChecklistsPage = lazy(() => import("@/pages/DueChecklistsPage"));
 const AdminEmailLogPage = lazy(() => import("@/pages/AdminEmailLogPage"));
+const AdminSeoIndexPage = lazy(() => import("@/pages/AdminSeoIndexPage"));
 const MyEmailLogPage = lazy(() => import("@/pages/MyEmailLogPage"));
 const NotificationPreferencesPage = lazy(() => import("@/pages/NotificationPreferencesPage"));
 const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));
@@ -113,6 +114,7 @@ export const AppRoutes = () => (
       <Route path="/checklists/:id/submit" element={<ProtectedRoute><ChecklistSubmitPage /></ProtectedRoute>} />
       <Route path="/checklists/submissions" element={<ProtectedRoute><ChecklistSubmissionsPage /></ProtectedRoute>} />
       <Route path="/admin/email-log" element={<ProtectedRoute><AdminEmailLogPage /></ProtectedRoute>} />
+      <Route path="/admin/seo-index" element={<ProtectedRoute><AdminSeoIndexPage /></ProtectedRoute>} />
       <Route path="/notifications/email-log" element={<ProtectedRoute><MyEmailLogPage /></ProtectedRoute>} />
       <Route path="/settings/notifications" element={<ProtectedRoute><NotificationPreferencesPage /></ProtectedRoute>} />
 
