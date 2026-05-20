@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { glossary } from "@/data/glossary";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
 const LearnIndex = () => {
   return (
@@ -20,6 +21,7 @@ const LearnIndex = () => {
         <meta name="twitter:description" content="Plain-English definitions of the terms maintenance teams use every day." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
+      <MarketingJsonLd />
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
         <p className="text-sm font-medium text-maintenease-600 mb-3">Learn</p>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Maintenance Glossary</h1>

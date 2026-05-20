@@ -46,6 +46,26 @@ describe("marketing page meta tags", () => {
           }
         });
       }
+
+      it("renders Organization + WebSite JSON-LD via MarketingJsonLd", () => {
+        expect(
+          /MarketingJsonLd/.test(source),
+          `${page} should render <MarketingJsonLd /> for Organization + WebSite structured data`,
+        ).toBe(true);
+      });
     });
   }
+});
+
+describe("MarketingJsonLd component", () => {
+  const source = readFileSync(
+    resolve(process.cwd(), "src/components/marketing/MarketingJsonLd.tsx"),
+    "utf8",
+  );
+  it("emits Organization schema", () => {
+    expect(source).toMatch(/"@type":\s*"Organization"/);
+  });
+  it("emits WebSite schema", () => {
+    expect(source).toMatch(/"@type":\s*"WebSite"/);
+  });
 });

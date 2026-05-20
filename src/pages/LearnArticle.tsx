@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getGlossaryTerm, glossary } from "@/data/glossary";
 import { Button } from "@/components/ui/button";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
 // Anchor text is intentionally varied per source article — keyword-rich but
 // contextual, avoiding repetition of the same phrase across the site.
@@ -108,6 +109,7 @@ const LearnArticle = () => {
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
+      <MarketingJsonLd />
       <article className="container mx-auto px-4 py-12 md:py-16 max-w-3xl">
         <nav className="text-sm text-gray-500 mb-6">
           <Link to="/learn" className="hover:text-maintenease-600">Learn</Link>

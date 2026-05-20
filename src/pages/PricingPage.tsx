@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ShareButtons from "@/components/marketing/ShareButtons";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 
@@ -105,6 +106,7 @@ export default function PricingPage() {
           ]
         })}</script>
       </Helmet>
+      <MarketingJsonLd />
       <PaymentTestModeBanner />
       <div className="container mx-auto max-w-6xl px-4 py-12">
         <Button asChild variant="ghost" size="sm" className="mb-6">

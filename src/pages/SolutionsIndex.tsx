@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { solutions } from "@/data/solutions";
 import ShareButtons from "@/components/marketing/ShareButtons";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
 const SolutionsIndex = () => {
   return (
@@ -21,6 +22,7 @@ const SolutionsIndex = () => {
         <meta name="twitter:description" content="Work orders, preventive maintenance, facilities, and fleet — one platform." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
+      <MarketingJsonLd />
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
         <p className="text-sm font-medium text-maintenease-600 mb-3">Solutions</p>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">One platform, four ways to use it</h1>
