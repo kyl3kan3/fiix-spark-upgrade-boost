@@ -100,8 +100,11 @@ function renderRoute(route: RouteCase) {
 }
 
 async function flushHelmet() {
-  // react-helmet writes to document.head via a microtask after mount.
-  await new Promise((r) => setTimeout(r, 0));
+  // react-helmet writes to document.head via requestAnimationFrame after mount;
+  // give it a few ticks to flush, especially between consecutive renders.
+  for (let i = 0; i < 5; i += 1) {
+    await new Promise((r) => setTimeout(r, 10));
+  }
 }
 
 function metaByAttr(attr: "property" | "name", key: string): string | null {
