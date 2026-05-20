@@ -167,13 +167,9 @@ const handler = async (req: Request): Promise<Response> => {
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
+    const fromAddress = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com>";
     console.log("Sending email via Resend gateway...");
-    console.log("Email details:", { 
-      from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
-      to, 
-      subject, 
-      bodyLength: body.length 
-    });
+    console.log("Email details:", { from: fromAddress, to, subject, bodyLength: body.length });
 
     // Send via Lovable connector gateway (RESEND_API_KEY is a connection key, not a raw Resend key)
     const gatewayRes = await fetch(`${GATEWAY_URL}/emails`, {
@@ -184,7 +180,7 @@ const handler = async (req: Request): Promise<Response> => {
         "X-Connection-Api-Key": apiKey,
       },
       body: JSON.stringify({
-        from: "MaintenEase <noreply@maintain.rockcitydevelopment.com>",
+        from: fromAddress,
         to: [to],
         subject: subject,
         html: body,
