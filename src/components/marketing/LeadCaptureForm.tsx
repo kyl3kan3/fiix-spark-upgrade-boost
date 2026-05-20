@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2 } from "lucide-react";
-import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
+import { getAttributionMetadata, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const leadSchema = z.object({
   name: z.string().trim().min(1, "Please enter your name").max(120),
@@ -35,6 +35,14 @@ const LeadCaptureForm = ({
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    void trackMarketingEvent({
+      eventType: "lead_form_view",
+      pageSlug: sourceSlug,
+      dedupeKey: `lead_form_view:${sourceSlug}`,
+    });
+  }, [sourceSlug]);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
@@ -54,6 +62,11 @@ const LeadCaptureForm = ({
         if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
       });
       setErrors(fieldErrors);
+      void trackMarketingEvent({
+        eventType: "lead_form_validation_error",
+        pageSlug: sourceSlug,
+        metadata: { fields: Object.keys(fieldErrors), count: Object.keys(fieldErrors).length },
+      });
       return;
     }
     setSubmitting(true);
@@ -72,7 +85,11 @@ const LeadCaptureForm = ({
       void trackMarketingEvent({
         eventType: "lead_submit",
         pageSlug: sourceSlug,
-        metadata: { has_phone: Boolean(parsed.data.phone), has_message: Boolean(parsed.data.message) },
+        metadata: {
+          has_phone: Boolean(parsed.data.phone),
+          has_message: Boolean(parsed.data.message),
+          ...getAttributionMetadata(),
+        },
       });
       toast({ title: "Thanks — we'll be in touch.", description: "A MaintenEase specialist will reach out within one business day." });
     } catch (err) {
