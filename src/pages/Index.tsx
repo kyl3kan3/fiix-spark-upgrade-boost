@@ -7,6 +7,7 @@ import RequestPortalSection from "@/components/RequestPortalSection";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import SiteIndexLinks from "@/components/SiteIndexLinks";
 
 const Index = () => {
   return (
@@ -27,6 +28,7 @@ const Index = () => {
         <RequestPortalSection />
         <Testimonials />
         <CTA />
+        <SiteIndexLinks />
       </main>
       <Footer />
     </div>
