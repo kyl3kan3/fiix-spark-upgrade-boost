@@ -49,10 +49,12 @@ const Navbar = () => {
         isScrolled ? 'bg-white shadow-md py-2' : 'bg-white shadow-sm py-4'
       }`}
     >
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="/" className="flex items-center gap-2">
-          <img src={logo} alt="MaintenEase" className="h-9 w-9" />
-          <span className="text-2xl font-bold text-maintenease-600">MaintenEase</span>
+      <div className="container mx-auto px-4 flex justify-between items-center gap-3">
+        <a href="/" className="flex items-center gap-2 min-w-0 shrink">
+          <img src={logo} alt="MaintenEase" className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
+          <span className="text-lg sm:text-2xl font-bold text-maintenease-600 truncate leading-none">
+            MaintenEase
+          </span>
         </a>
 
         {/* Desktop Navigation */}
@@ -94,9 +96,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-gray-700" 
+        <button
+          className="md:hidden text-gray-700 shrink-0 -mr-1 p-1"
           onClick={toggleMobileMenu}
+          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -104,8 +108,12 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white absolute w-full p-4 shadow-lg animate-fade-in">
+        <div className="md:hidden bg-white absolute left-0 right-0 w-full p-4 shadow-lg animate-fade-in border-t border-gray-100">
           <div className="flex flex-col space-y-4">
+            <a href="/" className="flex items-center gap-2 pb-2 border-b border-gray-100">
+              <img src={logo} alt="MaintenEase" className="h-7 w-7 shrink-0" />
+              <span className="text-lg font-bold text-maintenease-600 leading-none">MaintenEase</span>
+            </a>
             <a href="#features" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Features</a>
             <a href="#testimonials" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Testimonials</a>
             <a href="#pricing" className="text-gray-700 hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
