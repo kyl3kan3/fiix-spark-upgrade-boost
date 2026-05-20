@@ -14,6 +14,11 @@ const LearnIndex = () => {
         <meta property="og:description" content="Plain-English definitions of the terms maintenance teams use every day." />
         <meta property="og:url" content="https://maintenease.com/learn" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Maintenance Glossary | MaintenEase" />
+        <meta name="twitter:description" content="Plain-English definitions of the terms maintenance teams use every day." />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
         <p className="text-sm font-medium text-maintenease-600 mb-3">Learn</p>

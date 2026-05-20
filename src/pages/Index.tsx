@@ -22,6 +22,9 @@ const Index = () => {
         <meta property="og:url" content="https://maintenease.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="MaintenEase — Maintenance Management Software" />
+        <meta name="twitter:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
       <Navbar />

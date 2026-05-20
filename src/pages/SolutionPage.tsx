@@ -76,6 +76,9 @@ const SolutionPage = () => {
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={solution.metaTitle} />
+        <meta name="twitter:description" content={solution.metaDescription} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>

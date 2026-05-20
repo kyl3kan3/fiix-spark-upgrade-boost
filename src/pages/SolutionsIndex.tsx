@@ -16,6 +16,9 @@ const SolutionsIndex = () => {
         <meta property="og:url" content="https://maintenease.com/solutions" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Solutions | MaintenEase" />
+        <meta name="twitter:description" content="Work orders, preventive maintenance, facilities, and fleet — one platform." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
