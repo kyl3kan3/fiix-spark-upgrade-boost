@@ -1688,6 +1688,7 @@ export type Database = {
       get_invitation_by_token: {
         Args: { _token: string }
         Returns: {
+          company_name: string
           created_at: string
           email: string
           id: string
