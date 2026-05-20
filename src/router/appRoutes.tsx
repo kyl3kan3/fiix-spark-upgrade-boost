@@ -114,6 +114,7 @@ export const AppRoutes = () => (
       <Route path="/checklists/:id/submit" element={<ProtectedRoute><ChecklistSubmitPage /></ProtectedRoute>} />
       <Route path="/checklists/submissions" element={<ProtectedRoute><ChecklistSubmissionsPage /></ProtectedRoute>} />
       <Route path="/admin/email-log" element={<ProtectedRoute><AdminEmailLogPage /></ProtectedRoute>} />
+      <Route path="/admin/seo-index" element={<ProtectedRoute><AdminSeoIndexPage /></ProtectedRoute>} />
       <Route path="/notifications/email-log" element={<ProtectedRoute><MyEmailLogPage /></ProtectedRoute>} />
       <Route path="/settings/notifications" element={<ProtectedRoute><NotificationPreferencesPage /></ProtectedRoute>} />
 
