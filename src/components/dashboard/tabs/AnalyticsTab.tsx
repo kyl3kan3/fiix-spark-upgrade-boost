@@ -7,6 +7,7 @@ import WorkOrdersLineChart from "./analytics/WorkOrdersLineChart";
 import MaintenanceCostsBarChart from "./analytics/MaintenanceCostsBarChart";
 import AssetStatusPieChart from "./analytics/AssetStatusPieChart";
 import AssetMarketingFunnel from "./analytics/AssetMarketingFunnel";
+import KeywordTrackerWidget from "./analytics/KeywordTrackerWidget";
 import { 
   emptyWorkOrdersData,
   emptyMaintenanceCostsData,
@@ -94,6 +95,8 @@ const AnalyticsTab: React.FC = () => {
         </div>
 
         <AssetMarketingFunnel />
+
+        <KeywordTrackerWidget />
       </CardContent>
     </Card>
   );
