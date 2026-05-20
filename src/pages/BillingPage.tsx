@@ -38,11 +38,19 @@ export default function BillingPage() {
 
  async function openPortal() {
  setOpening(true);
+    // Open the tab synchronously so popup blockers don't kill it after the await
+    const popup = window.open("about:blank", "_blank");
  try {
  const { data, error } = await supabase.functions.invoke("paddle-portal");
  if (error) throw error;
- if (data?.url) window.open(data.url, "_blank");
+      if (data?.url) {
+        if (popup) popup.location.href = data.url;
+        else window.open(data.url, "_blank");
+      } else {
+        popup?.close();
+      }
  } catch (e) {
+      popup?.close();
  toast.error((e as Error).message || "Could not open billing portal");
  } finally {
  setOpening(false);
