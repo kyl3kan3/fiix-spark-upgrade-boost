@@ -6,6 +6,7 @@ import { getSolution, solutions } from "@/data/solutions";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
+import ShareButtons from "@/components/marketing/ShareButtons";
 import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
@@ -74,6 +75,8 @@ const SolutionPage = () => {
         <meta property="og:description" content={solution.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
