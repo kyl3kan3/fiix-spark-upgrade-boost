@@ -4,6 +4,7 @@ import AuthHeader from "./AuthHeader";
 import AuthError from "./AuthError";
 import AuthForm from "./AuthForm";
 import AuthToggle from "./AuthToggle";
+import InviteMessage from "./InviteMessage";
 
 interface AuthContentProps {
  isSignUp: boolean;
@@ -21,6 +22,7 @@ export const AuthContent: React.FC<AuthContentProps> = ({
  return (
  <>
  <AuthHeader isSignUp={isSignUp} />
+      {isSignUp && <InviteMessage />}
  <AuthError message={error} />
  <AuthForm isSignUp={isSignUp} onError={onError} />
  <AuthToggle isSignUp={isSignUp} onToggle={onToggleMode} />
