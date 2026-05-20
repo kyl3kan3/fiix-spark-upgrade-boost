@@ -28,18 +28,13 @@ const DeleteAccountButton: React.FC = () => {
  return;
  }
 
- try {
- const res = await fetch("https://gowdckitwgmctqlpqzod.functions.supabase.co/delete-user", {
- method: "POST",
- headers: {
- "Content-Type": "application/json",
- "Authorization": `Bearer ${session.access_token}`,
- }
- });
+    try {
+      const { data: body, error: invokeError } = await supabase.functions.invoke(
+        "delete-user",
+        { method: "POST" }
+      );
 
- const body = await res.json();
-
- if (res.ok && body.success) {
+      if (!invokeError && body?.success) {
  // Clear all local storage items
  localStorage.clear();
  
@@ -57,15 +52,16 @@ const DeleteAccountButton: React.FC = () => {
  
  // Use direct location change instead of navigate to ensure complete reload
  window.location.href = "/auth";
- } else {
- toast({
- title: "Account Deletion Failed",
- description: body.error || "Could not delete your account.",
- variant: "destructive",
- });
- setIsDeleting(false);
- setOpen(false);
- }
+      } else {
+        toast({
+          title: "Account Deletion Failed",
+          description:
+            (body as any)?.error || invokeError?.message || "Could not delete your account.",
+          variant: "destructive",
+        });
+        setIsDeleting(false);
+        setOpen(false);
+      }
  } catch (err: any) {
  toast({
  title: "Network Error",
