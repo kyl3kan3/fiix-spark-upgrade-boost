@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2 } from "lucide-react";
+import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const leadSchema = z.object({
   name: z.string().trim().min(1, "Please enter your name").max(120),
@@ -68,6 +69,11 @@ const LeadCaptureForm = ({
       });
       if (error) throw error;
       setSubmitted(true);
+      void trackMarketingEvent({
+        eventType: "lead_submit",
+        pageSlug: sourceSlug,
+        metadata: { has_phone: Boolean(parsed.data.phone), has_message: Boolean(parsed.data.message) },
+      });
       toast({ title: "Thanks — we'll be in touch.", description: "A MaintenEase specialist will reach out within one business day." });
     } catch (err) {
       toast({

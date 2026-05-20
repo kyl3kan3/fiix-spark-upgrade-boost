@@ -1,10 +1,12 @@
 import { Helmet } from "react-helmet";
 import { Link, useParams, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getSolution, solutions } from "@/data/solutions";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
+import { isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -28,6 +30,15 @@ const LEAD_FORM_COPY: Record<string, { title: string; subtitle: string; cta: str
 const SolutionPage = () => {
   const { slug = "" } = useParams();
   const solution = getSolution(slug);
+
+  useEffect(() => {
+    if (!solution || !isTrackedMarketingSlug(solution.slug)) return;
+    void trackMarketingEvent({
+      eventType: "page_view",
+      pageSlug: solution.slug,
+      dedupeKey: `page_view:${solution.slug}`,
+    });
+  }, [solution]);
 
   if (!solution) return <Navigate to="/solutions" replace />;
 

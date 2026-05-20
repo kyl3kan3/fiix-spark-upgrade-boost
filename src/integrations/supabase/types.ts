@@ -655,6 +655,39 @@ export type Database = {
         }
         Relationships: []
       }
+      marketing_page_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+          page_slug: string
+          page_url: string | null
+          referrer: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+          page_slug: string
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+          page_slug?: string
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
