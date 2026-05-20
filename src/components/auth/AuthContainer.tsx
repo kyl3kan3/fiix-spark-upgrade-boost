@@ -78,9 +78,21 @@ export const AuthContainer: React.FC = () => {
           );
         }
  }
- toast.success("You're invited!", {
- description: `Create your account with ${invitation.email} to join the team.`,
- });
+          const companyName = (invitation as any).company_name as string | null;
+          if (companyName) {
+            localStorage.setItem("pending_invite_company", companyName);
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(
+                new CustomEvent("pending-invite-company-resolved", { detail: companyName })
+              );
+            }
+          }
+          toast.success(
+            companyName ? `You're invited to join ${companyName}` : "You're invited!",
+            {
+              description: `Create your account with ${invitation.email} to continue.`,
+            }
+          );
  })();
  }
 
