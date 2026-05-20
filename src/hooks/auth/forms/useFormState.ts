@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormStateData } from "@/types/forms";
 import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
 
@@ -16,6 +16,20 @@ export function useFormState() {
  companyName: "",
  rememberMe: true
  });
+
+  // If the invitation email is resolved asynchronously (after the form
+  // already rendered), prefill it as soon as it lands.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (typeof detail === "string" && detail) {
+        setFormData(prev => (prev.email ? prev : { ...prev, email: detail }));
+      }
+    };
+    window.addEventListener("pending-email-resolved", handler);
+    return () => window.removeEventListener("pending-email-resolved", handler);
+  }, []);
 
  const setEmail = (email: string) => 
  setFormData(prev => ({ ...prev, email }));
