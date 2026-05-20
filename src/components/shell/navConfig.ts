@@ -1,7 +1,11 @@
 import {
  LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
- Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox, type LucideIcon,
+ Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
+ Zap, KeyRound, ShieldCheck, type LucideIcon,
 } from "lucide-react";
+import type { TIER_FEATURES } from "@/hooks/useSubscription";
+
+export type FeatureKey = keyof typeof TIER_FEATURES["starter"];
 
 export interface NavItem {
  label: string;
@@ -9,6 +13,7 @@ export interface NavItem {
  icon: LucideIcon;
  code: string; // mono code shown in tooltips / palette
  group: string;
+ feature?: FeatureKey; // if set, item is hidden unless plan includes feature
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -22,7 +27,10 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Places", href: "/locations", icon: Building, code: "LOC", group: "Things" },
  { label: "Team", href: "/team", icon: Users, code: "TM", group: "People" },
  { label: "Vendors", href: "/vendors", icon: Building2, code: "VEN", group: "People" },
- { label: "Analytics", href: "/reports", icon: BarChart3, code: "RPT", group: "More" },
+ { label: "Analytics", href: "/reports", icon: BarChart3, code: "RPT", group: "More", feature: "analytics" },
+ { label: "Automations", href: "/automations", icon: Zap, code: "AUT", group: "More", feature: "automations" },
+ { label: "API Keys", href: "/api-keys", icon: KeyRound, code: "API", group: "More", feature: "api" },
+ { label: "SSO", href: "/sso", icon: ShieldCheck, code: "SSO", group: "More", feature: "sso" },
  { label: "Billing", href: "/billing", icon: CreditCard, code: "BIL", group: "More" },
  { label: "Settings", href: "/settings", icon: Settings, code: "SET", group: "More" },
 ];

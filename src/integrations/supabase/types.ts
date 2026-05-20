@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          revoked_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+        }
+        Relationships: []
+      }
       assets: {
         Row: {
           company_id: string | null
@@ -1672,6 +1708,10 @@ export type Database = {
       get_user_company: { Args: { _user_id: string }; Returns: string }
       get_user_company_id: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }
+      has_feature: {
+        Args: { _company_id: string; _feature: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

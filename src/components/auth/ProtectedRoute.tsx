@@ -4,6 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 import { Loader2 } from "lucide-react";
 import { SubscriptionStatusBanner } from "@/components/billing/SubscriptionStatusBanner";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface ProtectedRouteProps {
  children: React.ReactNode;
@@ -12,6 +13,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  const { isAuthenticated, isLoading } = useAuth();
  const location = useLocation();
+ const { data: sub, isLoading: subLoading } = useSubscription();
 
  // Show loading spinner while checking authentication
  if (isLoading) {
@@ -28,6 +30,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  // Redirect to auth page if not authenticated, preserving the intended destination
  if (!isAuthenticated) {
  return <Navigate to="/auth" state={{ from: location }} replace />;
+ }
+
+ // Hard-lock the app when subscription is inactive (expired trial, canceled, past due final).
+ // Always allow billing, pricing, profile, settings, onboarding & company setup so the user can recover.
+ const ALLOWED_WHEN_INACTIVE = [
+ "/billing", "/pricing", "/profile", "/settings",
+ "/onboarding", "/company-setup", "/setup", "/team-setup",
+ ];
+ const isAllowed = ALLOWED_WHEN_INACTIVE.some((p) => location.pathname.startsWith(p));
+ if (!subLoading && sub && !sub.is_active && !isAllowed) {
+ return <Navigate to="/billing?inactive=1" replace />;
  }
 
  // Render the protected content if authenticated

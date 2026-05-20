@@ -57,6 +57,9 @@ const SolutionsIndex = lazy(() => import("@/pages/SolutionsIndex"));
 const SolutionPage = lazy(() => import("@/pages/SolutionPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const RequestsInboxPage = lazy(() => import("@/pages/RequestsInboxPage"));
+const AutomationsPage = lazy(() => import("@/pages/AutomationsPage"));
+const ApiKeysPage = lazy(() => import("@/pages/ApiKeysPage"));
+const SsoPage = lazy(() => import("@/pages/SsoPage"));
 
 export const AppRoutes = () => (
  <Suspense fallback={null}>
@@ -129,6 +132,9 @@ export const AppRoutes = () => (
  <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
  <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
  <Route path="/billing" element={<ProtectedRoute><BillingPage /></ProtectedRoute>} />
+  <Route path="/automations" element={<ProtectedRoute><AutomationsPage /></ProtectedRoute>} />
+  <Route path="/api-keys" element={<ProtectedRoute><ApiKeysPage /></ProtectedRoute>} />
+  <Route path="/sso" element={<ProtectedRoute><SsoPage /></ProtectedRoute>} />
  <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
  <Route path="/team-setup" element={<ProtectedRoute><TeamSetup /></ProtectedRoute>} />
  <Route path="/company-setup" element={<ProtectedRoute><CompanySetup /></ProtectedRoute>} />
