@@ -7,6 +7,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./navConfig";
+import { useSubscription, TIER_FEATURES } from "@/hooks/useSubscription";
 
 interface IconRailProps {
  onOpenPalette: () => void;
@@ -17,6 +18,7 @@ const IconRail: React.FC<IconRailProps> = () => {
  const { profile } = useUserProfile();
  const { logout } = useAuth();
  const { theme, setTheme } = useTheme();
+ const { data: sub } = useSubscription();
 
  const initial =
  profile?.first_name?.charAt(0).toUpperCase() ||
@@ -28,9 +30,17 @@ const IconRail: React.FC<IconRailProps> = () => {
  navigate("/auth");
  };
 
+ // Filter items by tier feature
+ const visibleItems = NAV_ITEMS.filter((item) => {
+ if (!item.feature) return true;
+ if (!sub) return false;
+ if (!sub.is_active) return false;
+ return TIER_FEATURES[sub.tier][item.feature];
+ });
+
  // Group items
  const grouped: Array<{ name: string; items: typeof NAV_ITEMS }> = [];
- NAV_ITEMS.forEach((item) => {
+ visibleItems.forEach((item) => {
  const last = grouped[grouped.length - 1];
  if (!last || last.name !== item.group) {
  grouped.push({ name: item.group, items: [item] });
