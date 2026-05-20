@@ -7,6 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -19,7 +20,7 @@ serve(async (req) => {
     if (!supabaseUrl || !serviceRoleKey) {
       return new Response(
         JSON.stringify({ error: "Server missing config: SUPABASE_URL or SERVICE_ROLE_KEY" }),
-        { status: 500, headers: corsHeaders }
+        { status: 500, headers: jsonHeaders }
       );
     }
 
@@ -29,7 +30,7 @@ serve(async (req) => {
     if (!jwt) {
       return new Response(JSON.stringify({ error: "Missing auth token" }), {
         status: 401,
-        headers: corsHeaders,
+        headers: jsonHeaders,
       });
     }
 
@@ -38,7 +39,7 @@ serve(async (req) => {
     if (!anonKey) {
       return new Response(JSON.stringify({ error: "Server misconfigured" }), {
         status: 500,
-        headers: corsHeaders,
+        headers: jsonHeaders,
       });
     }
     const userClient = createClient(supabaseUrl, anonKey, {
@@ -50,7 +51,7 @@ serve(async (req) => {
     if (userError || !userId) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
-        headers: corsHeaders,
+        headers: jsonHeaders,
       });
     }
 
@@ -66,7 +67,7 @@ serve(async (req) => {
     if (updateError) {
       return new Response(
         JSON.stringify({ error: "Unable to update company references: " + updateError.message }),
-        { status: 500, headers: corsHeaders }
+        { status: 500, headers: jsonHeaders }
       );
     }
     
@@ -76,18 +77,18 @@ serve(async (req) => {
     if (error) {
       return new Response(
         JSON.stringify({ error: "Unable to delete account: " + error.message }),
-        { status: 500, headers: corsHeaders }
+        { status: 500, headers: jsonHeaders }
       );
     }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: corsHeaders,
+      headers: jsonHeaders,
     });
   } catch (err) {
     return new Response(
       JSON.stringify({ error: "Server error: " + err.message }),
-      { status: 500, headers: corsHeaders }
+      { status: 500, headers: jsonHeaders }
     );
   }
 });
