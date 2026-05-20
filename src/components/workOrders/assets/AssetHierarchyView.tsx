@@ -46,7 +46,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
  };
 
  return (
- <div className="border rounded-lg bg-card dark:bg-card">
+ <div className="border rounded-lg bg-card">
  <div 
  className="flex items-center justify-between p-4 hover:bg-muted dark:hover:bg-card cursor-pointer"
  style={{ paddingLeft: `${level * 20 + 16}px` }}
@@ -68,11 +68,11 @@ const AssetNode: React.FC<AssetNodeProps> = ({
  )}
  
  <div className="flex-1">
- <h3 className="font-semibold text-foreground dark:text-muted-foreground">
+ <h3 className="font-semibold text-foreground">
  {asset.name}
  </h3>
  {asset.description && (
- <p className="text-sm text-foreground dark:text-muted-foreground">
+ <p className="text-sm text-foreground">
  {asset.description}
  </p>
  )}

@@ -12,7 +12,7 @@ interface AddressInformationSectionProps {
 const AddressInformationSection: React.FC<AddressInformationSectionProps> = ({ control }) => {
  return (
  <div className="space-y-4">
- <h3 className="text-lg font-medium text-foreground ">
+ <h3 className="text-lg font-medium text-foreground">
  Address Information
  </h3>
  

@@ -30,7 +30,7 @@ const DashboardMetricCard: React.FC<DashboardMetricCardProps> = ({
  
  return (
  <Card 
- className="bg-card dark:bg-card border-border dark:border-border shadow-sm hover:shadow-md transition-all hover-scale animate-entry" 
+ className="bg-card border-border shadow-sm hover:shadow-md transition-all hover-scale animate-entry" 
  style={{ animationDelay }}
  >
  <CardHeader className="pb-1 p-3 md:p-4">

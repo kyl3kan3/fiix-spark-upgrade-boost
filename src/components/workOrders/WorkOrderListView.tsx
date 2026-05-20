@@ -22,7 +22,7 @@ export const WorkOrderListView: React.FC<WorkOrderListViewProps> = ({
 }) => {
  if (workOrders.length === 0) {
  return (
- <div className="text-center py-8 text-muted-foreground dark:text-muted-foreground">
+ <div className="text-center py-8 text-muted-foreground">
  No work orders found. Create your first work order to get started.
  </div>
  );
@@ -74,19 +74,19 @@ export const WorkOrderListView: React.FC<WorkOrderListViewProps> = ({
  </div>
  </CardHeader>
  <CardContent className="pt-0">
- <p className="text-foreground dark:text-muted-foreground mb-3 line-clamp-2">
+ <p className="text-foreground mb-3 line-clamp-2">
  {workOrder.description}
  </p>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
  <div>
- <span className="font-medium text-muted-foreground dark:text-muted-foreground">Asset:</span>
- <p className="text-foreground dark:text-muted-foreground">
+ <span className="font-medium text-muted-foreground">Asset:</span>
+ <p className="text-foreground">
  {workOrder.asset?.name || "Unassigned"}
  </p>
  </div>
  <div>
- <span className="font-medium text-muted-foreground dark:text-muted-foreground">Assignee:</span>
- <p className="text-foreground dark:text-muted-foreground">
+ <span className="font-medium text-muted-foreground">Assignee:</span>
+ <p className="text-foreground">
  {workOrder.assignee 
  ? `${workOrder.assignee.first_name || ''} ${workOrder.assignee.last_name || ''}`.trim()
  : "Unassigned"
@@ -94,14 +94,14 @@ export const WorkOrderListView: React.FC<WorkOrderListViewProps> = ({
  </p>
  </div>
  <div>
- <span className="font-medium text-muted-foreground dark:text-muted-foreground">Created:</span>
- <p className="text-foreground dark:text-muted-foreground">
+ <span className="font-medium text-muted-foreground">Created:</span>
+ <p className="text-foreground">
  {format(new Date(workOrder.created_at), "MMM dd, yyyy")}
  </p>
  </div>
  <div>
- <span className="font-medium text-muted-foreground dark:text-muted-foreground">Due Date:</span>
- <p className="text-foreground dark:text-muted-foreground">
+ <span className="font-medium text-muted-foreground">Due Date:</span>
+ <p className="text-foreground">
  {workOrder.due_date 
  ? format(new Date(workOrder.due_date), "MMM dd, yyyy")
  : "Not set"

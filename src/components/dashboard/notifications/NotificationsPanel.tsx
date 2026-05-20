@@ -71,21 +71,19 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  <>
  {isOpen && (
  <div 
- className="fixed inset-0 bg-foreground/20 dark:bg-foreground/50 z-40 backdrop-blur-[2px] animate-fade-in"
+ className="fixed inset-0 bg-foreground/20 /50 z-40 backdrop-blur-[2px] animate-fade-in"
  aria-hidden="true" 
  />
  )}
  
  <div 
  ref={panelRef}
- className={`fixed right-4 top-20 z-50 w-full max-w-sm transition-all duration-300 ease-in-out ${
- isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
- }`}
+ className={`fixed right-4 top-20 z-50 w-full max-w-sm transition-all duration-300 ease-in-out ${ isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none" }`}
  role="dialog"
  aria-modal="true"
  aria-label="Notifications Panel"
  >
- <Card className="shadow-lg dark:border-border animate-scale-in overflow-hidden">
+ <Card className="shadow-lg animate-scale-in overflow-hidden">
  <NotificationsPanelHeader 
  unreadCount={getUnreadCount()} 
  onClose={() => setIsOpen(false)} 

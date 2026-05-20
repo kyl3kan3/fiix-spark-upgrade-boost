@@ -22,7 +22,7 @@ const WorkOrderList: React.FC = () => {
  const { handleCreateWorkOrder } = useWorkOrderNavigation();
  
  return (
- <Card className="w-full transition-colors dark:border-border">
+ <Card className="w-full transition-colors">
  <CardHeader>
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <CardTitle>Work Orders</CardTitle>
@@ -44,7 +44,7 @@ const WorkOrderList: React.FC = () => {
  <CardContent>
  {isLoading ? (
  <div className="flex justify-center items-center h-40">
- <Loader2 className="h-8 w-8 animate-spin text-muted-foreground dark:text-muted-foreground" />
+ <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
  </div>
  ) : workOrders && workOrders.length > 0 ? (
  <WorkOrdersTable workOrders={workOrders} isLoading={isLoading} />

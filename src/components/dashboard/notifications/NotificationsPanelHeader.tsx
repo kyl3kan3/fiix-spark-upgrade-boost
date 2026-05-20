@@ -13,7 +13,7 @@ const NotificationsPanelHeader: React.FC<NotificationsPanelHeaderProps> = ({
  onClose 
 }) => {
  return (
- <div className="p-4 border-b dark:border-border flex items-center justify-between">
+ <div className="p-4 border-b flex items-center justify-between">
  <div className="flex items-center">
  <Bell className="h-5 w-5 text-maintenease-500 mr-2" />
  <h3 className="font-medium">Notifications</h3>

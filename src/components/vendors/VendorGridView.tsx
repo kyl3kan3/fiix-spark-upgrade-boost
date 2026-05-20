@@ -37,7 +37,7 @@ const VendorGridView: React.FC<VendorGridViewProps> = ({
 
  if (error) {
  return (
- <div className="text-center py-12 bg-card dark:bg-card rounded-lg border border-border dark:border-border">
+ <div className="text-center py-12 bg-card rounded-lg border border-border">
  <p className="text-red-500 dark:text-red-400">Error loading vendors.</p>
  </div>
  );

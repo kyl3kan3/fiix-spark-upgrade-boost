@@ -26,11 +26,11 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({
  {preferences.map((pref) => (
  <div 
  key={pref.id} 
- className="flex items-center justify-between p-3 border rounded-md dark:border-border dark:bg-card/50"
+ className="flex items-center justify-between p-3 border rounded-md /50"
  >
  <div>
  <p className="font-medium">{pref.title}</p>
- <p className="text-sm text-muted-foreground dark:text-muted-foreground">{pref.description}</p>
+ <p className="text-sm text-muted-foreground">{pref.description}</p>
  </div>
  <Switch
  checked={pref.enabled}

@@ -31,15 +31,15 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
 
  if (isLoading) {
  return (
- <div className="flex justify-center items-center h-40 bg-card dark:bg-card rounded-lg shadow ">
- <Loader2 className="h-8 w-8 animate-spin text-muted-foreground dark:text-muted-foreground" />
+ <div className="flex justify-center items-center h-40 bg-card rounded-lg shadow">
+ <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
  </div>
  );
  }
 
  if (error) {
  return (
- <div className="text-center py-10 bg-card dark:bg-card rounded-lg shadow ">
+ <div className="text-center py-10 bg-card rounded-lg shadow">
  <p className="text-red-500 dark:text-red-400">Error loading work orders: {error.message}</p>
  </div>
  );
@@ -50,10 +50,10 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
  }
 
  return (
- <div className="overflow-x-auto bg-card dark:bg-card rounded-lg shadow ">
+ <div className="overflow-x-auto bg-card rounded-lg shadow">
  <Table>
  <TableHeader>
- <TableRow className="dark:border-border">
+ <TableRow className="">
  <TableHead>Title</TableHead>
  <TableHead>Status</TableHead>
  <TableHead className="hidden sm:table-cell">Priority</TableHead>
@@ -65,7 +65,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
  </TableHeader>
  <TableBody>
  {workOrders.map((workOrder) => (
- <TableRow key={workOrder.id} className="dark:border-border">
+ <TableRow key={workOrder.id} className="">
  <TableCell className="font-medium">
  <Link to={`/work-orders/${workOrder.id}`} className="hover:underline">
  {workOrder.title}

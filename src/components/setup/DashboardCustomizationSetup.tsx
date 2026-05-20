@@ -349,18 +349,12 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  <div className="space-y-4">
  {enabledWidgets.length > 0 ? (
  enabledWidgets.map((widget) => (
- <div key={widget.id} className={`
- border rounded bg-muted p-3
- ${widget.size === "small" ? "h-20" : widget.size === "medium" ? "h-32" : "h-56"}
- `}>
+ <div key={widget.id} className={`border rounded bg-muted p-3 ${widget.size === "small" ? "h-20" : widget.size === "medium" ? "h-32" : "h-56"}`}>
  <div className="flex items-center gap-2">
  <div className="h-3 w-3 bg-maintenease-600 rounded-full"></div>
  <div className="font-medium text-sm">{widget.name}</div>
  </div>
- <div className={`
- mt-2 flex items-center justify-center
- ${widget.size === "small" ? "h-12" : widget.size === "medium" ? "h-24" : "h-44"}
- `}>
+ <div className={`mt-2 flex items-center justify-center ${widget.size === "small" ? "h-12" : widget.size === "medium" ? "h-24" : "h-44"}`}>
  <div className="bg-card w-11/12 h-full rounded border border-dashed"></div>
  </div>
  </div>

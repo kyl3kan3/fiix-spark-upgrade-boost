@@ -98,9 +98,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  {isChecking ? (
  <span className="text-sm text-muted-foreground">(Checking current role...)</span>
  ) : currentRole ? (
- <span className={`text-sm font-medium px-2 py-1 rounded-full ${
- currentRole === 'administrator' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
- }`}>
+ <span className={`text-sm font-medium px-2 py-1 rounded-full ${ currentRole === 'administrator' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }`}>
  Current role: {currentRole}
  </span>
  ) : (

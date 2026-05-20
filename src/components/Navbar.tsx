@@ -45,9 +45,7 @@ const Navbar = () => {
 
  return (
  <nav 
- className={`fixed w-full z-50 transition-all duration-300 ${
- isScrolled ? 'bg-card shadow-md py-2' : 'bg-card shadow-sm py-4'
- }`}
+ className={`fixed w-full z-50 transition-all duration-300 ${ isScrolled ? 'bg-card shadow-md py-2' : 'bg-card shadow-sm py-4' }`}
  >
  <div className="container mx-auto px-4 flex justify-between items-center gap-3">
  <a href="/" className="flex items-center gap-2 min-w-0 shrink">

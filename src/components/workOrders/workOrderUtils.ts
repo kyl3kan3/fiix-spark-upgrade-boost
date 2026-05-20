@@ -7,18 +7,18 @@ export const statusColorMap: Record<string, string> = {
 };
 
 export const priorityColorMap: Record<string, string> = {
- low: "bg-muted text-foreground dark:bg-card dark:text-muted-foreground",
+ low: "bg-muted text-foreground  ",
  medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
  high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
  urgent: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
 export const getStatusColor = (status: string) => {
- return statusColorMap[status] || "bg-muted text-foreground dark:bg-card dark:text-muted-foreground";
+ return statusColorMap[status] || "bg-muted text-foreground  ";
 };
 
 export const getPriorityColor = (priority: string) => {
- return priorityColorMap[priority] || "bg-muted text-foreground dark:bg-card dark:text-muted-foreground";
+ return priorityColorMap[priority] || "bg-muted text-foreground  ";
 };
 
 export const formatDate = (dateString: string) => {

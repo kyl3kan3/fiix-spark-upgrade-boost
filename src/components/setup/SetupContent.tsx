@@ -51,7 +51,7 @@ export const SetupContent: React.FC = () => {
  };
 
  return (
- <div className="min-h-screen bg-muted dark:bg-card transition-colors">
+ <div className="min-h-screen bg-muted transition-colors">
  <div className="max-w-4xl mx-auto px-4 py-8">
  <div className="flex items-start justify-between gap-4 mb-2">
  <SetupHeader

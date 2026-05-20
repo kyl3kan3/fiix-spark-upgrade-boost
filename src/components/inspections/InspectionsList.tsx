@@ -54,18 +54,18 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  return (
  <div className="space-y-4">
  {[1, 2, 3].map((index) => (
- <Card key={index} className="p-4 dark:border-border">
+ <Card key={index} className="p-4">
  <div className="flex flex-col md:flex-row md:justify-between gap-4">
  <div className="space-y-2 flex-1">
- <Skeleton className="h-6 w-3/4 dark:bg-card" />
- <Skeleton className="h-4 w-1/2 dark:bg-card" />
+ <Skeleton className="h-6 w-3/4" />
+ <Skeleton className="h-4 w-1/2" />
  <div className="mt-4">
- <Skeleton className="h-4 w-1/3 dark:bg-card" />
+ <Skeleton className="h-4 w-1/3" />
  </div>
  </div>
  <div className="flex flex-wrap gap-2">
- <Skeleton className="h-6 w-20 dark:bg-card" />
- <Skeleton className="h-6 w-20 dark:bg-card" />
+ <Skeleton className="h-6 w-20" />
+ <Skeleton className="h-6 w-20" />
  </div>
  </div>
  </Card>
@@ -78,8 +78,8 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  if (inspections.length === 0) {
  return (
  <div className="text-center py-12">
- <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">No inspections found</h3>
- <p className="text-muted-foreground dark:text-muted-foreground mb-6">
+ <h3 className="text-lg font-medium text-foreground mb-2">No inspections found</h3>
+ <p className="text-muted-foreground mb-6">
  Start by creating your first inspection checklist
  </p>
  <Button
@@ -99,25 +99,25 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  {inspections.map((inspection) => (
  <Card
  key={inspection.id}
- className="p-4 hover:shadow-md transition-shadow cursor-pointer dark:border-border"
+ className="p-4 hover:shadow-md transition-shadow cursor-pointer"
  onClick={() => navigate(`/inspections/${inspection.id}`)}
  >
  <div className="flex flex-col md:flex-row md:justify-between gap-2">
  <div>
- <h3 className="font-medium dark:text-muted-foreground">{inspection.title}</h3>
- <p className="text-sm text-muted-foreground dark:text-muted-foreground line-clamp-2 mt-1">{inspection.description}</p>
+ <h3 className="font-medium">{inspection.title}</h3>
+ <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{inspection.description}</p>
  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-3 text-sm">
  <div className="flex items-center">
- <Calendar className="h-4 w-4 mr-2 text-muted-foreground dark:text-muted-foreground" />
- <span className="dark:text-muted-foreground">{format(new Date(inspection.scheduledDate), "MMM d, yyyy")}</span>
+ <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+ <span className="">{format(new Date(inspection.scheduledDate), "MMM d, yyyy")}</span>
  </div>
  <div className="flex items-center">
- <FileText className="h-4 w-4 mr-2 text-muted-foreground dark:text-muted-foreground" />
- <span className="dark:text-muted-foreground">{inspection.assetName}</span>
+ <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+ <span className="">{inspection.assetName}</span>
  </div>
  <div className="flex items-center">
- <User className="h-4 w-4 mr-2 text-muted-foreground dark:text-muted-foreground" />
- <span className="dark:text-muted-foreground">{inspection.assignedTo}</span>
+ <User className="h-4 w-4 mr-2 text-muted-foreground" />
+ <span className="">{inspection.assignedTo}</span>
  </div>
  </div>
  </div>

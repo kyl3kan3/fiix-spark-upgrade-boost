@@ -22,10 +22,10 @@ export const WorkOrderInfoCard: React.FC<WorkOrderInfoCardProps> = ({ workOrder 
  <div className="flex items-center gap-3">
  <User className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Assigned To
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {workOrder.assignee 
  ? `${workOrder.assignee.first_name || ''} ${workOrder.assignee.last_name || ''}`.trim()
  : "Unassigned"
@@ -37,14 +37,14 @@ export const WorkOrderInfoCard: React.FC<WorkOrderInfoCardProps> = ({ workOrder 
  <div className="flex items-center gap-3">
  <Wrench className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Asset
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {workOrder.asset?.name || "No asset assigned"}
  </p>
  {workOrder.asset?.description && (
- <p className="text-sm text-foreground dark:text-muted-foreground">
+ <p className="text-sm text-foreground">
  {workOrder.asset.description}
  </p>
  )}
@@ -54,10 +54,10 @@ export const WorkOrderInfoCard: React.FC<WorkOrderInfoCardProps> = ({ workOrder 
  <div className="flex items-center gap-3">
  <User className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Created By
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {workOrder.creator 
  ? `${workOrder.creator.first_name || ''} ${workOrder.creator.last_name || ''}`.trim()
  : "Unknown"

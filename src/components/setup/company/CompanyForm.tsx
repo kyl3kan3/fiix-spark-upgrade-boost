@@ -22,7 +22,7 @@ const CompanyForm: React.FC<CompanyFormProps> = ({
  onSubmit 
 }) => {
  return (
- <div className="bg-card dark:bg-card rounded-lg p-6 shadow-sm border border-border dark:border-border">
+ <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
  <Form {...form}>
  <form onSubmit={onSubmit} className="space-y-4">
  <BasicInfoFields form={form} />

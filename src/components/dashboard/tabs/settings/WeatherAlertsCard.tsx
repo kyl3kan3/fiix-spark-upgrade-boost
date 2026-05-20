@@ -122,28 +122,28 @@ const WeatherAlertsCard: React.FC = () => {
  };
 
  return (
- <Card className="dark:bg-card dark:border-border border-border">
+ <Card className="border-border">
  <CardHeader>
- <CardTitle className=" text-foreground flex items-center gap-2">
+ <CardTitle className="text-foreground flex items-center gap-2">
  <Thermometer className="h-5 w-5" />
  Temperature Alerts
  </CardTitle>
- <CardDescription className="dark:text-muted-foreground text-foreground">
+ <CardDescription className="text-foreground">
  Get notified when outdoor temperature at any of your locations crosses your configured min/max thresholds. Powered by OpenWeather, checked every 15 minutes.
  </CardDescription>
  </CardHeader>
  <CardContent className="space-y-6">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted dark:bg-card border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
  <div>
- <Label className=" text-foreground font-medium">Enable temperature alerts</Label>
- <p className="text-sm text-foreground dark:text-muted-foreground">Master switch for your whole company.</p>
+ <Label className="text-foreground font-medium">Enable temperature alerts</Label>
+ <p className="text-sm text-foreground">Master switch for your whole company.</p>
  </div>
  <Switch checked={enabled} onCheckedChange={setEnabled} disabled={loading} />
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <div>
- <Label className=" text-foreground">Unit</Label>
+ <Label className="text-foreground">Unit</Label>
  <Select value={unit} onValueChange={(v) => setUnit(v as Unit)}>
  <SelectTrigger className="mt-1">
  <SelectValue />
@@ -155,7 +155,7 @@ const WeatherAlertsCard: React.FC = () => {
  </Select>
  </div>
  <div>
- <Label className=" text-foreground">Min temperature (°{unit})</Label>
+ <Label className="text-foreground">Min temperature (°{unit})</Label>
  <Input
  type="number"
  value={minDisp}
@@ -165,7 +165,7 @@ const WeatherAlertsCard: React.FC = () => {
  />
  </div>
  <div>
- <Label className=" text-foreground">Max temperature (°{unit})</Label>
+ <Label className="text-foreground">Max temperature (°{unit})</Label>
  <Input
  type="number"
  value={maxDisp}
@@ -180,9 +180,9 @@ const WeatherAlertsCard: React.FC = () => {
  {saving ? "Saving..." : "Save thresholds"}
  </Button>
 
- <div className="pt-4 border-t dark:border-border">
+ <div className="pt-4 border-t">
  <h4 className="font-medium text-foreground mb-2">Locations</h4>
- <p className="text-sm text-foreground dark:text-muted-foreground mb-4">
+ <p className="text-sm text-foreground mb-4">
  Add latitude/longitude for each location you want monitored, then enable it.
  </p>
  {locations.length === 0 && (
@@ -192,7 +192,7 @@ const WeatherAlertsCard: React.FC = () => {
  {locations.map((loc) => (
  <div
  key={loc.id}
- className="grid grid-cols-1 sm:grid-cols-[1fr_120px_120px_auto] gap-2 sm:items-center p-3 rounded-md border dark:border-border"
+ className="grid grid-cols-1 sm:grid-cols-[1fr_120px_120px_auto] gap-2 sm:items-center p-3 rounded-md border"
  >
  <div className="font-medium text-foreground">{loc.name}</div>
  <Input
@@ -216,7 +216,7 @@ const WeatherAlertsCard: React.FC = () => {
  }}
  />
  <div className="flex items-center gap-2 justify-end">
- <span className="text-sm text-foreground dark:text-muted-foreground">Alerts</span>
+ <span className="text-sm text-foreground">Alerts</span>
  <Switch
  checked={loc.weather_alerts_enabled}
  onCheckedChange={(v) => updateLocation(loc.id, { weather_alerts_enabled: v })}

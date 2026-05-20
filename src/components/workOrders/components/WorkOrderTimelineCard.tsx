@@ -23,10 +23,10 @@ export const WorkOrderTimelineCard: React.FC<WorkOrderTimelineCardProps> = ({ wo
  <div className="flex items-center gap-3">
  <Clock className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Created
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {format(new Date(workOrder.created_at), "MMM dd, yyyy 'at' h:mm a")}
  </p>
  </div>
@@ -35,10 +35,10 @@ export const WorkOrderTimelineCard: React.FC<WorkOrderTimelineCardProps> = ({ wo
  <div className="flex items-center gap-3">
  <Clock className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Last Updated
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {format(new Date(workOrder.updated_at), "MMM dd, yyyy 'at' h:mm a")}
  </p>
  </div>
@@ -47,10 +47,10 @@ export const WorkOrderTimelineCard: React.FC<WorkOrderTimelineCardProps> = ({ wo
  <div className="flex items-center gap-3">
  <Calendar className="h-4 w-4 text-muted-foreground" />
  <div>
- <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+ <p className="text-sm font-medium text-muted-foreground">
  Due Date
  </p>
- <p className="text-foreground dark:text-muted-foreground">
+ <p className="text-foreground">
  {workOrder.due_date 
  ? format(new Date(workOrder.due_date), "MMM dd, yyyy")
  : "Not set"

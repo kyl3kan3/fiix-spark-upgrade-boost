@@ -56,10 +56,10 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
  return (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {[...Array(6)].map((_, i) => (
- <Card key={i} className="p-4 bg-card dark:bg-card border border-border dark:border-border">
- <Skeleton className="h-6 w-3/4 mb-4 bg-secondary dark:bg-card" />
- <Skeleton className="h-4 w-1/2 mb-2 bg-secondary dark:bg-card" />
- <Skeleton className="h-4 w-1/4 bg-secondary dark:bg-card" />
+ <Card key={i} className="p-4 bg-card border border-border">
+ <Skeleton className="h-6 w-3/4 mb-4 bg-secondary" />
+ <Skeleton className="h-4 w-1/2 mb-2 bg-secondary" />
+ <Skeleton className="h-4 w-1/4 bg-secondary" />
  </Card>
  ))}
  </div>
@@ -68,7 +68,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
 
  if (error) {
  return (
- <div className="text-center py-12 bg-card dark:bg-card rounded-lg border border-border dark:border-border">
+ <div className="text-center py-12 bg-card rounded-lg border border-border">
  <p className="text-red-500 dark:text-red-400">Error loading assets.</p>
  </div>
  );
@@ -87,7 +87,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
  className="block focus:outline-none focus:ring-2 focus:ring-primary rounded-3xl"
  aria-label={`Open ${asset.name}`}
  >
- <Card className="p-4 cursor-pointer h-full bg-card dark:bg-card border border-border dark:border-border">
+ <Card className="p-4 cursor-pointer h-full bg-card border border-border">
  <div className="flex items-start">
  <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg mr-4">
  <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
@@ -95,18 +95,14 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
  <div className="flex-grow">
  <h3 className="font-medium text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{asset.name}</h3>
  {asset.location && (
- <div className="flex items-center text-muted-foreground dark:text-muted-foreground mt-1">
+ <div className="flex items-center text-muted-foreground mt-1">
  <MapPin className="h-3 w-3 mr-1" />
  <p className="text-sm">{asset.location}</p>
  </div>
  )}
  
  <div className="mt-2">
- <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
- asset.status === "operational" ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100" :
- asset.status === "maintenance" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100" :
- "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
- }`}>
+ <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${ asset.status === "operational" ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100" : asset.status === "maintenance" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100" : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100" }`}>
  {asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}
  </span>
  </div>

@@ -6,7 +6,7 @@ import { CheckCircle, PlusCircle, Settings } from "lucide-react";
 
 const TasksTab: React.FC = () => {
  return (
- <Card className="transition-colors dark:border-border">
+ <Card className="transition-colors">
  <CardHeader className="flex flex-row items-center justify-between">
  <div>
  <CardTitle>My Tasks</CardTitle>
@@ -19,14 +19,14 @@ const TasksTab: React.FC = () => {
  </CardHeader>
  <CardContent>
  <div className="space-y-4">
- <div className="text-center py-8 text-muted-foreground dark:text-muted-foreground">
+ <div className="text-center py-8 text-muted-foreground">
  No tasks available. Add a new task to get started.
  </div>
  </div>
  </CardContent>
  <CardFooter className="flex justify-between">
- <Button variant="outline" className="dark:border-border dark:hover:bg-card">Mark All Complete</Button>
- <Button variant="outline" className="dark:border-border dark:hover:bg-card">View All Tasks</Button>
+ <Button variant="outline" className="dark:hover:bg-card">Mark All Complete</Button>
+ <Button variant="outline" className="dark:hover:bg-card">View All Tasks</Button>
  </CardFooter>
  </Card>
  );

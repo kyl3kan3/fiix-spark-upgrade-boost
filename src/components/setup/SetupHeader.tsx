@@ -26,20 +26,20 @@ const SetupHeader: React.FC<SetupHeaderProps> = ({ title, subtitle }) => {
  };
 
  return (
- <div className="mb-8 bg-card dark:bg-card p-6 rounded-lg shadow-sm border border-border dark:border-border">
+ <div className="mb-8 bg-card p-6 rounded-lg shadow-sm border border-border">
  <div className="flex justify-between items-center mb-2">
- <h1 className="text-2xl font-bold text-foreground dark:text-muted-foreground">{title}</h1>
+ <h1 className="text-2xl font-bold text-foreground">{title}</h1>
  <Button 
  variant="outline" 
  size="sm" 
  onClick={handleLogout}
- className="flex items-center gap-1 border-border dark:border-gray-600 text-foreground dark:text-muted-foreground hover:bg-muted dark:hover:bg-card"
+ className="flex items-center gap-1 border-border dark:border-gray-600 text-foreground hover:bg-muted dark:hover:bg-card"
  >
  <LogOut className="h-4 w-4" />
  Sign out
  </Button>
  </div>
- {subtitle && <p className="text-muted-foreground dark:text-muted-foreground">{subtitle}</p>}
+ {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
  </div>
  );
 };

@@ -14,10 +14,10 @@ const VendorEmptyState: React.FC<VendorEmptyStateProps> = ({ hasFilters }) => {
  const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
  return (
- <div className="text-center py-12 bg-card dark:bg-card rounded-lg border border-border dark:border-border">
- <Building2 className="mx-auto h-12 w-12 text-muted-foreground dark:text-muted-foreground" />
- <h3 className="mt-2 text-sm font-medium text-foreground dark:text-muted-foreground">No vendors found</h3>
- <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">
+ <div className="text-center py-12 bg-card rounded-lg border border-border">
+ <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
+ <h3 className="mt-2 text-sm font-medium text-foreground">No vendors found</h3>
+ <p className="mt-1 text-sm text-muted-foreground">
  {hasFilters 
  ? "Try adjusting your search or filters." 
  : canAdd

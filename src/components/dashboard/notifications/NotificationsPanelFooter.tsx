@@ -29,7 +29,7 @@ const NotificationsPanelFooter: React.FC<NotificationsPanelFooterProps> = ({
 }) => {
  const navigate = useNavigate();
  return (
- <div className="p-3 border-t dark:border-border flex flex-wrap items-center justify-between gap-2">
+ <div className="p-3 border-t flex flex-wrap items-center justify-between gap-2">
  <div className="flex items-center gap-1">
  <Button
  variant="ghost"

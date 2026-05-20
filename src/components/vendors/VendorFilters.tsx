@@ -39,7 +39,7 @@ const VendorFilters: React.FC<VendorFiltersProps> = ({
  return (
  <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
  <div className="relative w-full sm:flex-1 sm:min-w-0 sm:max-w-xl">
- <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
+ <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
  <Input
  type="search"
  placeholder="Search vendors..."

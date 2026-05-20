@@ -19,14 +19,14 @@ export const SetupRequiredDisplay: React.FC<SetupRequiredDisplayProps> = ({
  onProfileFixed
 }) => {
  return (
- <div className="flex items-center justify-center min-h-screen bg-muted dark:bg-card p-4 transition-colors">
- <div className="max-w-md w-full bg-card dark:bg-card rounded-lg shadow-lg p-8 border border-border dark:border-border">
+ <div className="flex items-center justify-center min-h-screen bg-muted p-4 transition-colors">
+ <div className="max-w-md w-full bg-card rounded-lg shadow-lg p-8 border border-border">
  <div className="mb-6 flex flex-col items-center">
  <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 p-3 mb-4">
  <Building2 className="h-8 w-8 text-amber-600 dark:text-amber-400" />
  </div>
- <h1 className="text-2xl font-bold text-center text-foreground dark:text-muted-foreground">Company Setup Required</h1>
- <p className="mt-2 text-center text-foreground dark:text-muted-foreground">
+ <h1 className="text-2xl font-bold text-center text-foreground">Company Setup Required</h1>
+ <p className="mt-2 text-center text-foreground">
  You need to complete your company setup before accessing the application.
  </p>
  </div>

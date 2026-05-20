@@ -33,9 +33,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="first_name"
  value={formData.first_name}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${
- errors.first_name ? 'border-red-500' : 'border-border'
- }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.first_name ? 'border-red-500' : 'border-border' }`}
  disabled={isSaving}
  aria-required="true"
  aria-label="First Name"
@@ -55,9 +53,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="last_name"
  value={formData.last_name}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${
- errors.last_name ? 'border-red-500' : 'border-border'
- }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.last_name ? 'border-red-500' : 'border-border' }`}
  disabled={isSaving}
  aria-required="true"
  aria-label="Last Name"
@@ -94,9 +90,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="phone_number"
  value={formData.phone_number}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${
- errors.phone_number ? 'border-red-500' : 'border-border'
- }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.phone_number ? 'border-red-500' : 'border-border' }`}
  disabled={isSaving}
  aria-label="Phone Number"
  />

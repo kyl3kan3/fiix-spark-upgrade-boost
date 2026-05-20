@@ -89,9 +89,7 @@ const Testimonials = () => {
  <button
  key={index}
  onClick={() => setActiveTestimonial(index)}
- className={`h-2 w-2 mx-1 rounded-full transition-all ${
- activeTestimonial === index ? "bg-fiix-600 w-8" : "bg-fiix-300"
- }`}
+ className={`h-2 w-2 mx-1 rounded-full transition-all ${ activeTestimonial === index ? "bg-fiix-600 w-8" : "bg-fiix-300" }`}
  aria-label={`Go to testimonial ${index + 1}`}
  />
  ))}

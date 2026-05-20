@@ -30,7 +30,7 @@ const VendorSelectAllHeader: React.FC<VendorSelectAllHeaderProps> = ({
  const someSelected = selectedCount > 0 && selectedCount < vendorsCount;
 
  return (
- <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted p-4 dark:border-border dark:bg-card sm:flex-nowrap">
+ <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted p-4 sm:flex-nowrap">
  <Checkbox
  checked={allSelected}
  ref={(el: HTMLButtonElement | null) => {
@@ -47,11 +47,11 @@ const VendorSelectAllHeader: React.FC<VendorSelectAllHeaderProps> = ({
  }
  }}
  />
- <span className="min-w-0 text-sm font-medium text-foreground dark:text-muted-foreground">
+ <span className="min-w-0 text-sm font-medium text-foreground">
  {allSelected ? 'Deselect All' : someSelected ? 'Select All' : 'Select All'}
  </span>
  {selectedCount > 0 && (
- <span className="w-full text-sm text-muted-foreground dark:text-muted-foreground sm:w-auto">
+ <span className="w-full text-sm text-muted-foreground sm:w-auto">
  ({selectedCount} selected)
  </span>
  )}

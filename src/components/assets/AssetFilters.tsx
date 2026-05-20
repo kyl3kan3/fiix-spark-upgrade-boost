@@ -29,7 +29,7 @@ const AssetFilters: React.FC<AssetFiltersProps> = ({
  return (
  <div className="flex items-center gap-3 w-full md:w-auto">
  <div className="relative flex-grow md:w-64">
- <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground dark:text-muted-foreground" />
+ <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
  <Input
  type="search"
  placeholder="Search assets..."

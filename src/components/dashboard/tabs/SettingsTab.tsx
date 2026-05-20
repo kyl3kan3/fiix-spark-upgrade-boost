@@ -21,7 +21,7 @@ const SettingsTab: React.FC = () => {
  } = useSettingsState();
 
  return (
- <Card className="transition-colors dark:border-border">
+ <Card className="transition-colors">
  <CardHeader>
  <CardTitle>Settings</CardTitle>
  <CardDescription>

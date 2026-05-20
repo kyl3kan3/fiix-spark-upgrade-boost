@@ -19,7 +19,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
  if (loading) {
  return (
  <div className="max-h-[400px] overflow-y-auto">
- <div className="p-4 text-center text-muted-foreground dark:text-muted-foreground">
+ <div className="p-4 text-center text-muted-foreground">
  <p>Loading notifications...</p>
  </div>
  </div>
@@ -29,7 +29,7 @@ const NotificationsList: React.FC<NotificationsListProps> = ({
  if (notifications.length === 0) {
  return (
  <div className="max-h-[400px] overflow-y-auto">
- <div className="p-4 text-center text-muted-foreground dark:text-muted-foreground">
+ <div className="p-4 text-center text-muted-foreground">
  <p>No new notifications</p>
  </div>
  </div>

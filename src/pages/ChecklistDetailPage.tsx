@@ -100,7 +100,7 @@ const ChecklistDetailPage = () => {
  </div>
  
  {checklist.description && (
- <p className="text-foreground dark:text-muted-foreground mb-4">
+ <p className="text-foreground mb-4">
  {checklist.description}
  </p>
  )}
@@ -147,10 +147,10 @@ const ChecklistDetailPage = () => {
  {!checklist.items || checklist.items.length === 0 ? (
  <div className="text-center py-8">
  <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
- <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">
+ <h3 className="text-lg font-medium text-foreground mb-2">
  No items yet
  </h3>
- <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+ <p className="text-muted-foreground mb-4">
  This checklist doesn't have any items yet.
  </p>
  <Button 
@@ -167,7 +167,7 @@ const ChecklistDetailPage = () => {
  .map((item, index) => (
  <div 
  key={item.id} 
- className="flex items-start gap-4 p-4 bg-muted dark:bg-card rounded-lg"
+ className="flex items-start gap-4 p-4 bg-muted rounded-lg"
  >
  <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm font-medium text-blue-600 dark:text-blue-300">
  {index + 1}
@@ -187,7 +187,7 @@ const ChecklistDetailPage = () => {
  </div>
  
  {item.description && (
- <p className="text-sm text-foreground dark:text-muted-foreground">
+ <p className="text-sm text-foreground">
  {item.description}
  </p>
  )}

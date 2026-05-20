@@ -13,7 +13,7 @@ interface BasicInformationSectionProps {
 const BasicInformationSection: React.FC<BasicInformationSectionProps> = ({ control }) => {
  return (
  <div className="space-y-4">
- <h3 className="text-lg font-medium text-foreground ">
+ <h3 className="text-lg font-medium text-foreground">
  Basic Information
  </h3>
  

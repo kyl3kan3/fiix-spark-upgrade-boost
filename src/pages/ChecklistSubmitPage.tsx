@@ -79,7 +79,7 @@ const ChecklistSubmitPage = () => {
  <div className="max-w-4xl mx-auto">
  <div className="mb-6">
  <h1 className="text-3xl font-bold mb-2">Fill Out Checklist</h1>
- <h2 className="text-xl text-foreground dark:text-muted-foreground">{checklist.name}</h2>
+ <h2 className="text-xl text-foreground">{checklist.name}</h2>
  {checklist.description && (
  <p className="text-muted-foreground mt-2">{checklist.description}</p>
  )}

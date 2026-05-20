@@ -67,7 +67,7 @@ export function useNotificationsData(
  toast(newNotification.title, {
  description: newNotification.body,
  duration: 5000,
- className: "animate-fade-in bg-card/90 dark:bg-card/90 shadow-lg border border-blue-400/30",
+ className: "animate-fade-in bg-card/90 /90 shadow-lg border border-blue-400/30",
  // Sonner allows custom actions
  action: {
  label: "View",

@@ -27,13 +27,13 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
  <div className="space-y-6">
  <div className="flex items-center gap-3">
  <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
- <h2 className="text-xl font-semibold text-foreground dark:text-muted-foreground">Company Information</h2>
+ <h2 className="text-xl font-semibold text-foreground">Company Information</h2>
  </div>
  
- <div className="flex items-center justify-center py-12 bg-card dark:bg-card rounded-lg border border-border dark:border-border">
+ <div className="flex items-center justify-center py-12 bg-card rounded-lg border border-border">
  <div className="flex items-center gap-3">
  <Loader2 className="h-6 w-6 animate-spin text-maintenease-600 dark:text-maintenease-400" />
- <p className="text-muted-foreground dark:text-muted-foreground">Loading company information...</p>
+ <p className="text-muted-foreground">Loading company information...</p>
  </div>
  </div>
  </div>
@@ -44,10 +44,10 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
  <div className="space-y-6">
  <div className="flex items-center gap-3">
  <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
- <h2 className="text-xl font-semibold text-foreground dark:text-muted-foreground">Company Information</h2>
+ <h2 className="text-xl font-semibold text-foreground">Company Information</h2>
  </div>
  
- <p className="text-muted-foreground dark:text-muted-foreground">
+ <p className="text-muted-foreground">
  Set up your company profile to personalize your MaintenEase experience.
  </p>
 
@@ -62,7 +62,7 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
  </div>
  
  <div className="w-full md:w-1/3">
- <div className="bg-card dark:bg-card rounded-lg p-6 shadow-sm border border-border dark:border-border">
+ <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
  <CompanyLogoUploader 
  initialLogo={logoPreview} 
  onLogoChange={handleLogoChange} 

@@ -23,7 +23,7 @@ const ImportProgressStats: React.FC<ImportProgressStatsProps> = ({
  const confidencePercentage = Math.round(overallConfidence * 100);
  
  return (
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted dark:bg-card rounded-lg">
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
  <div className="flex items-center gap-2">
  <FileText className="h-4 w-4 text-blue-500" />
  <div>

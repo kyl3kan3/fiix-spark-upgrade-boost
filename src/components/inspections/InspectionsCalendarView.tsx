@@ -115,9 +115,7 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
  return (
  <div 
  key={day} 
- className={`min-h-16 sm:min-h-24 border rounded-md p-0.5 sm:p-1 text-[10px] sm:text-xs ${
- date.getDate() === currentDate.getDate() ? 'border-blue-500 bg-blue-50' : 'border-border'
- }`}
+ className={`min-h-16 sm:min-h-24 border rounded-md p-0.5 sm:p-1 text-[10px] sm:text-xs ${ date.getDate() === currentDate.getDate() ? 'border-blue-500 bg-blue-50' : 'border-border' }`}
  >
  <div className="text-right text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">{day}</div>
  

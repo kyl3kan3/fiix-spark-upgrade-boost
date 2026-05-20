@@ -71,10 +71,10 @@ const ChecklistSubmissionsPage = () => {
  
  <div className="flex justify-between items-center">
  <div>
- <h1 className="text-3xl font-bold text-foreground dark:text-muted-foreground">
+ <h1 className="text-3xl font-bold text-foreground">
  Checklist Submissions
  </h1>
- <p className="text-muted-foreground dark:text-muted-foreground">
+ <p className="text-muted-foreground">
  View completed checklist submissions and their details
  </p>
  </div>
@@ -98,10 +98,10 @@ const ChecklistSubmissionsPage = () => {
  {filteredSubmissions.length === 0 ? (
  <div className="text-center py-12">
  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
- <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">
+ <h3 className="text-lg font-medium text-foreground mb-2">
  {submissions.length === 0 ? "No submissions yet" : "No submissions match your search"}
  </h3>
- <p className="text-muted-foreground dark:text-muted-foreground mb-6">
+ <p className="text-muted-foreground mb-6">
  {submissions.length === 0 
  ? "Submit some checklists to see them here"
  : "Try adjusting your search criteria"
@@ -129,12 +129,12 @@ const ChecklistSubmissionsPage = () => {
  </div>
  
  {submission.notes && (
- <p className="text-foreground dark:text-muted-foreground text-sm mb-3">
+ <p className="text-foreground text-sm mb-3">
  {submission.notes}
  </p>
  )}
 
- <div className="flex items-center gap-6 text-sm text-muted-foreground dark:text-muted-foreground">
+ <div className="flex items-center gap-6 text-sm text-muted-foreground">
  <div className="flex items-center gap-2">
  <Calendar className="h-4 w-4" />
  <span>{format(new Date(submission.submitted_at), "MMM d, yyyy 'at' h:mm a")}</span>
@@ -153,11 +153,11 @@ const ChecklistSubmissionsPage = () => {
  <h4 className="font-medium mb-3">Responses:</h4>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
  {submission.items.slice(0, 6).map((item) => (
- <div key={item.id} className="bg-muted dark:bg-card p-3 rounded">
+ <div key={item.id} className="bg-muted p-3 rounded">
  <div className="font-medium text-sm mb-1">
  {item.checklist_item?.title}
  </div>
- <div className="text-xs text-foreground dark:text-muted-foreground">
+ <div className="text-xs text-foreground">
  {item.checklist_item?.item_type === 'checkbox' 
  ? (item.is_checked ? '✓ Completed' : '✗ Not completed')
  : item.response_value || 'No response'
@@ -171,7 +171,7 @@ const ChecklistSubmissionsPage = () => {
  </div>
  ))}
  {submission.items.length > 6 && (
- <div className="bg-muted dark:bg-card p-3 rounded flex items-center justify-center text-sm text-muted-foreground">
+ <div className="bg-muted p-3 rounded flex items-center justify-center text-sm text-muted-foreground">
  +{submission.items.length - 6} more items
  </div>
  )}

@@ -185,10 +185,10 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
  <Card className="p-6">
  <div className="text-center py-8">
  <CheckCircle2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
- <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">
+ <h3 className="text-lg font-medium text-foreground mb-2">
  No items to fill out
  </h3>
- <p className="text-muted-foreground dark:text-muted-foreground">
+ <p className="text-muted-foreground">
  This checklist doesn't have any items to complete.
  </p>
  </div>
@@ -225,7 +225,7 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
  </div>
  
  {item.description && (
- <p className="text-sm text-foreground dark:text-muted-foreground">
+ <p className="text-sm text-foreground">
  {item.description}
  </p>
  )}

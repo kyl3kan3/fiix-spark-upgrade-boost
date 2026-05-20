@@ -21,7 +21,7 @@ const SetupPageContent: React.FC<SetupPageContentProps> = ({
  onResetSetup
 }) => {
  return (
- <div className="bg-muted dark:bg-card min-h-screen transition-colors">
+ <div className="bg-muted min-h-screen transition-colors">
  <div className="container mx-auto px-4 py-4 max-w-5xl">
  {showWelcomeBack && !isLoading && !forceSetupMode && (
  <div className="flex flex-col gap-6 mb-6">

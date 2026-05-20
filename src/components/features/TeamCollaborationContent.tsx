@@ -179,19 +179,12 @@ const TeamCollaborationContent: React.FC = () => {
  {notifications.map((notification) => (
  <Card 
  key={notification.id} 
- className={`cursor-pointer transition-colors hover:bg-muted ${
- !notification.read ? 'border-blue-200 bg-blue-50/50' : ''
- }`}
+ className={`cursor-pointer transition-colors hover:bg-muted ${ !notification.read ? 'border-blue-200 bg-blue-50/50' : '' }`}
  onClick={() => handleMarkAsRead(notification.id)}
  >
  <CardContent className="p-4">
  <div className="flex items-start gap-3">
- <div className={`p-2 rounded-full ${
- notification.type === 'task_assigned' ? 'bg-blue-100 text-blue-600' :
- notification.type === 'work_order_completed' ? 'bg-green-100 text-green-600' :
- notification.type === 'maintenance_due' ? 'bg-orange-100 text-orange-600' :
- 'bg-muted text-foreground'
- }`}>
+ <div className={`p-2 rounded-full ${ notification.type === 'task_assigned' ? 'bg-blue-100 text-blue-600' : notification.type === 'work_order_completed' ? 'bg-green-100 text-green-600' : notification.type === 'maintenance_due' ? 'bg-orange-100 text-orange-600' : 'bg-muted text-foreground' }`}>
  {getNotificationIcon(notification.type)}
  </div>
  <div className="flex-1 min-w-0">

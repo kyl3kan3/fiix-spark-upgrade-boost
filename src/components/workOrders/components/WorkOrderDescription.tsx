@@ -11,7 +11,7 @@ export const WorkOrderDescription: React.FC<WorkOrderDescriptionProps> = ({ work
  return (
  <Card>
  <CardContent className="pt-6">
- <p className="text-foreground dark:text-muted-foreground text-lg">
+ <p className="text-foreground text-lg">
  {workOrder.description}
  </p>
  </CardContent>

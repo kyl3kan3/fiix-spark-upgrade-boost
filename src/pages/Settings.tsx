@@ -101,29 +101,29 @@ const Settings = () => {
  <SettingsIcon className="h-6 w-6 sm:h-8 sm:w-8" />
  Settings
  </h1>
- <p className="text-sm sm:text-base text-foreground dark:text-muted-foreground mt-1">Manage your account and application preferences</p>
+ <p className="text-sm sm:text-base text-foreground mt-1">Manage your account and application preferences</p>
  </div>
  </div>
 
  <Tabs defaultValue="profile" className="w-full">
  <div className="overflow-x-auto">
- <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 min-w-[300px] bg-card dark:bg-card border dark:border-border">
- <TabsTrigger value="profile" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card dark:text-muted-foreground text-foreground">
+ <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 min-w-[300px] bg-card border">
+ <TabsTrigger value="profile" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card text-foreground">
  <User className="h-3 w-3 sm:h-4 sm:w-4" />
  <span className="hidden sm:inline">Profile</span>
  <span className="sm:hidden">Profile</span>
  </TabsTrigger>
- <TabsTrigger value="notifications" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card dark:text-muted-foreground text-foreground">
+ <TabsTrigger value="notifications" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card text-foreground">
  <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
  <span className="hidden sm:inline">Notifications</span>
  <span className="sm:hidden">Alerts</span>
  </TabsTrigger>
- <TabsTrigger value="security" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card dark:text-muted-foreground text-foreground">
+ <TabsTrigger value="security" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card text-foreground">
  <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
  <span className="hidden sm:inline">Security</span>
  <span className="sm:hidden">Security</span>
  </TabsTrigger>
- <TabsTrigger value="appearance" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card dark:text-muted-foreground text-foreground">
+ <TabsTrigger value="appearance" className="text-xs sm:text-sm flex items-center gap-1 sm:gap-2 data-[state=active]:bg-muted dark:data-[state=active]:bg-card text-foreground">
  <Palette className="h-3 w-3 sm:h-4 sm:w-4" />
  <span className="hidden sm:inline">Appearance</span>
  <span className="sm:hidden">Theme</span>
@@ -136,16 +136,16 @@ const Settings = () => {
  </TabsContent>
  
  <TabsContent value="notifications" className="mt-0">
- <Card className="dark:bg-card dark:border-border border-border">
+ <Card className="border-border">
  <CardHeader>
- <CardTitle className=" text-foreground">Notification Preferences</CardTitle>
- <CardDescription className="dark:text-muted-foreground text-foreground">Control how and when you receive notifications.</CardDescription>
+ <CardTitle className="text-foreground">Notification Preferences</CardTitle>
+ <CardDescription className="text-foreground">Control how and when you receive notifications.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted dark:bg-card border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
  <div>
- <Label htmlFor="emailNotifications" className=" text-foreground font-medium">Email Notifications</Label>
- <p className="text-sm text-foreground dark:text-muted-foreground">Receive updates via email</p>
+ <Label htmlFor="emailNotifications" className="text-foreground font-medium">Email Notifications</Label>
+ <p className="text-sm text-foreground">Receive updates via email</p>
  </div>
  <Switch 
  id="emailNotifications"
@@ -153,10 +153,10 @@ const Settings = () => {
  onCheckedChange={setEmailNotifications}
  />
  </div>
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted dark:bg-card border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
  <div>
- <Label htmlFor="pushNotifications" className=" text-foreground font-medium">Push Notifications</Label>
- <p className="text-sm text-foreground dark:text-muted-foreground">Receive browser notifications</p>
+ <Label htmlFor="pushNotifications" className="text-foreground font-medium">Push Notifications</Label>
+ <p className="text-sm text-foreground">Receive browser notifications</p>
  </div>
  <Switch 
  id="pushNotifications"
@@ -183,10 +183,10 @@ const Settings = () => {
  </TabsContent>
  
  <TabsContent value="security" className="mt-0">
- <Card className="dark:bg-card dark:border-border border-border">
+ <Card className="border-border">
  <CardHeader>
- <CardTitle className=" text-foreground">Security Settings</CardTitle>
- <CardDescription className="dark:text-muted-foreground text-foreground">Manage your account security and privacy settings.</CardDescription>
+ <CardTitle className="text-foreground">Security Settings</CardTitle>
+ <CardDescription className="text-foreground">Manage your account security and privacy settings.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
  <Button className="bg-primary hover:bg-primary/90 text-white">Update Password</Button>
@@ -195,16 +195,16 @@ const Settings = () => {
  </TabsContent>
  
  <TabsContent value="appearance" className="mt-0">
- <Card className="dark:bg-card dark:border-border border-border">
+ <Card className="border-border">
  <CardHeader>
- <CardTitle className=" text-foreground">Appearance Settings</CardTitle>
- <CardDescription className="dark:text-muted-foreground text-foreground">Customize the look and feel of your dashboard.</CardDescription>
+ <CardTitle className="text-foreground">Appearance Settings</CardTitle>
+ <CardDescription className="text-foreground">Customize the look and feel of your dashboard.</CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
- <div className="flex items-center justify-between p-4 rounded-lg bg-muted dark:bg-card border dark:border-gray-600 border-border">
+ <div className="flex items-center justify-between p-4 rounded-lg bg-muted border dark:border-gray-600 border-border">
  <div>
- <Label htmlFor="darkMode" className=" text-foreground font-medium">Dark Mode</Label>
- <p className="text-sm text-foreground dark:text-muted-foreground">Switch to dark theme</p>
+ <Label htmlFor="darkMode" className="text-foreground font-medium">Dark Mode</Label>
+ <p className="text-sm text-foreground">Switch to dark theme</p>
  </div>
  <Switch 
  id="darkMode"

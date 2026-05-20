@@ -16,16 +16,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 }) => {
  return (
  <div 
- className={`p-4 border-b last:border-0 hover:bg-muted dark:hover:bg-card dark:border-border ${
- notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20"
- } relative transition-colors duration-200 group animate-fade-in`}
+ className={`p-4 border-b last:border-0 hover:bg-muted dark:hover:bg-card ${ notification.read ? "" : "bg-blue-50/30 dark:bg-blue-900/20" } relative transition-colors duration-200 group animate-fade-in`}
  >
  <div className="flex items-start">
  <NotificationTypeBadge type={notification.type} />
  <div className="flex-1 ml-2">
  <p className="font-medium text-sm">{notification.title}</p>
- <p className="text-sm text-foreground dark:text-muted-foreground">{notification.body}</p>
- <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+ <p className="text-sm text-foreground">{notification.body}</p>
+ <p className="text-xs text-muted-foreground mt-1">
  {new Date(notification.created_at).toLocaleString()}
  </p>
  </div>

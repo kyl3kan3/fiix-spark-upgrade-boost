@@ -72,7 +72,7 @@ const LocationsSetup: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =
  {locations.map((location) => (
  <div 
  key={location.id} 
- className="flex flex-col md:flex-row gap-3 p-4 border rounded-md dark:border-border"
+ className="flex flex-col md:flex-row gap-3 p-4 border rounded-md"
  >
  <div className="flex-grow space-y-2">
  <div className="flex flex-col md:flex-row md:items-center gap-3">
@@ -114,7 +114,7 @@ const LocationsSetup: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =
  </div>
  ))}
  
- <div className="border-t pt-4 mt-6 dark:border-border">
+ <div className="border-t pt-4 mt-6">
  <h3 className="text-md font-medium mb-3">Add New Location</h3>
  <div className="flex flex-col md:flex-row gap-3">
  <div className="flex-grow">

@@ -65,13 +65,7 @@ const UserList: React.FC<UserListProps> = ({
  sortedUsers.map((user) => (
  <div
  key={user.id}
- className={`flex items-center p-2 rounded cursor-pointer transition-colors ${
- selectedUser?.id === user.id 
- ? "bg-maintenease-100" 
- : user.unread > 0 
- ? "bg-maintenease-50 hover:bg-maintenease-100" 
- : "hover:bg-muted"
- }`}
+ className={`flex items-center p-2 rounded cursor-pointer transition-colors ${ selectedUser?.id === user.id ? "bg-maintenease-100" : user.unread > 0 ? "bg-maintenease-50 hover:bg-maintenease-100" : "hover:bg-muted" }`}
  onClick={() => onSelectUser(user)}
  >
  <div className="h-10 w-10 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-sm mr-2">

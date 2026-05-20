@@ -71,8 +71,8 @@ const ChecklistsPage = () => {
  <div className="p-6">
  <div className="flex justify-between items-center mb-6">
  <div>
- <h1 className="text-3xl font-bold text-foreground dark:text-muted-foreground">Checklists</h1>
- <p className="text-muted-foreground dark:text-muted-foreground">Create and manage checklist templates</p>
+ <h1 className="text-3xl font-bold text-foreground">Checklists</h1>
+ <p className="text-muted-foreground">Create and manage checklist templates</p>
  </div>
  <div className="flex gap-2">
  <Button 
@@ -123,10 +123,10 @@ const ChecklistsPage = () => {
  {filteredChecklists.length === 0 ? (
  <div className="text-center py-12">
  <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
- <h3 className="text-lg font-medium text-foreground dark:text-muted-foreground mb-2">
+ <h3 className="text-lg font-medium text-foreground mb-2">
  {checklists.length === 0 ? "No checklists yet" : "No checklists match your search"}
  </h3>
- <p className="text-muted-foreground dark:text-muted-foreground mb-6">
+ <p className="text-muted-foreground mb-6">
  {checklists.length === 0 
  ? "Create your first checklist template to get started"
  : "Try adjusting your search or filter criteria"
@@ -160,12 +160,12 @@ const ChecklistsPage = () => {
  </div>
  
  {checklist.description && (
- <p className="text-foreground dark:text-muted-foreground text-sm mb-4 line-clamp-2">
+ <p className="text-foreground text-sm mb-4 line-clamp-2">
  {checklist.description}
  </p>
  )}
 
- <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground mb-4">
+ <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
  <div className="flex items-center gap-2">
  <ListChecks className="h-4 w-4" />
  <span>{checklist.items?.length || 0} items</span>
@@ -176,7 +176,7 @@ const ChecklistsPage = () => {
  </div>
  </div>
 
- <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
+ <div className="flex items-center justify-between text-sm text-muted-foreground">
  <div className="flex items-center gap-2">
  <Calendar className="h-4 w-4" />
  <span>{format(new Date(checklist.created_at), "MMM d, yyyy")}</span>

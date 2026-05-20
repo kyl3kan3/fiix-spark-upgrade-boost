@@ -43,11 +43,11 @@ const VendorCard: React.FC<VendorCardProps> = ({
  case "active":
  return "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100";
  case "inactive":
- return "bg-muted text-foreground dark:bg-card dark:text-muted-foreground";
+ return "bg-muted text-foreground  ";
  case "suspended":
  return "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100";
  default:
- return "bg-muted text-foreground dark:bg-card dark:text-muted-foreground";
+ return "bg-muted text-foreground  ";
  }
  };
 
@@ -62,17 +62,13 @@ const VendorCard: React.FC<VendorCardProps> = ({
  case "consultant":
  return "bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100";
  default:
- return "bg-muted text-foreground dark:bg-card dark:text-muted-foreground";
+ return "bg-muted text-foreground  ";
  }
  };
 
  return (
  <Card 
- className={`group relative h-full border bg-card p-4 transition-all hover:shadow-md dark:bg-card ${
- isSelected 
- ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
- : 'border-border dark:border-border'
- }`}
+ className={`group relative h-full border bg-card p-4 transition-all hover:shadow-md ${ isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-border ' }`}
  >
  <div className="flex items-start gap-3 sm:gap-4">
  {/* Selection checkbox - only show for administrators */}
@@ -94,19 +90,19 @@ const VendorCard: React.FC<VendorCardProps> = ({
  </Link>
  
  {vendor.contact_person && (
- <p className="mt-1 break-words text-sm text-foreground dark:text-muted-foreground">{vendor.contact_person}</p>
+ <p className="mt-1 break-words text-sm text-foreground">{vendor.contact_person}</p>
  )}
  
  <div className="mt-2 space-y-1">
  {vendor.email && (
- <div className="flex min-w-0 items-start text-muted-foreground dark:text-muted-foreground">
+ <div className="flex min-w-0 items-start text-muted-foreground">
  <Mail className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
  <p className="min-w-0 break-all text-xs">{vendor.email}</p>
  </div>
  )}
 
  {vendor.phone && (
- <div className="flex min-w-0 items-start text-muted-foreground dark:text-muted-foreground">
+ <div className="flex min-w-0 items-start text-muted-foreground">
  <Phone className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
  <p className="break-words text-xs">{vendor.phone}</p>
  </div>
@@ -128,9 +124,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  {[...Array(5)].map((_, i) => (
  <Star
  key={i}
- className={`h-3 w-3 ${
- i < vendor.rating! ? "text-yellow-400 fill-current" : "text-muted-foreground"
- }`}
+ className={`h-3 w-3 ${ i < vendor.rating! ? "text-yellow-400 fill-current" : "text-muted-foreground" }`}
  />
  ))}
  </div>
