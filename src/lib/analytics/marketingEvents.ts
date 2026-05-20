@@ -45,7 +45,7 @@ export async function trackMarketingEvent({
       page_url: window.location.href.slice(0, 2048),
       referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
       user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
-      metadata: metadata ?? {},
+      metadata: (metadata ?? {}) as never,
     });
   } catch {
     // Never let analytics failures surface to the user.
