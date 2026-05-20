@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
 import ShareButtons from "@/components/marketing/ShareButtons";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
@@ -83,6 +84,7 @@ const SolutionPage = () => {
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
+      <MarketingJsonLd />
 
       <section className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
         <nav className="text-sm text-gray-500 mb-6">

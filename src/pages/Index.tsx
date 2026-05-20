@@ -9,6 +9,7 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
 import ShareButtons from "@/components/marketing/ShareButtons";
+import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
 const Index = () => {
   return (
@@ -27,6 +28,7 @@ const Index = () => {
         <meta name="twitter:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
+      <MarketingJsonLd />
       <Navbar />
       <main className="flex-1">
         <Hero />
