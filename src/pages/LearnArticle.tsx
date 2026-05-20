@@ -99,6 +99,11 @@ const LearnArticle = () => {
         <meta property="og:description" content={term.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={term.metaTitle} />
+        <meta name="twitter:description" content={term.metaDescription} />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
