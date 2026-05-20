@@ -34,16 +34,24 @@ const DeleteAccountButton: React.FC = () => {
         { method: "POST" }
       );
 
-      if (!invokeError && body?.success) {
+      // Detect 401 from FunctionsHttpError — the user was already deleted in a
+      // prior attempt and the stale JWT is no longer valid. Treat as success.
+      const ctx: any = (invokeError as any)?.context;
+      const status = ctx?.status ?? ctx?.response?.status;
+      const alreadyDeleted = status === 401;
+
+      if ((!invokeError && body?.success) || alreadyDeleted) {
  // Clear all local storage items
  localStorage.clear();
  
  // User deleted successfully - global sign out
  await supabase.auth.signOut({ scope: 'global' });
  
- toast({
- title: "Account Deleted",
- description: "Your account has been deleted.",
+        toast({
+          title: "Account Deleted",
+          description: alreadyDeleted
+            ? "Your account was already deleted. Signing you out."
+            : "Your account has been deleted.",
  variant: "default",
  });
  
