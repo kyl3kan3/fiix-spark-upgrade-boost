@@ -40,51 +40,46 @@ export const useOnboardingSubmit = (
  let companyId: string | undefined;
 
  if (isInvited && inviteDetails) {
- // Use invited company
- companyId = inviteDetails.organization_id;
- console.log("User was invited to company:", companyId);
- 
- // Make sure organization exists in organizations table
- const { data: org } = await supabase
- .from("organizations")
- .select("id")
- .eq("id", companyId)
- .maybeSingle();
- 
- if (!org) {
- // Create organization record if it doesn't exist
- const { data: company } = await supabase
- .from("companies")
- .select("name")
- .eq("id", companyId)
- .maybeSingle();
- 
- if (company) {
- // First check if org exists to avoid duplicate key violation
- const { data: existingOrg } = await supabase
- .from("organizations")
- .select("id")
- .eq("id", companyId)
- .maybeSingle();
- 
- if (!existingOrg) {
- // Insert only if it doesn't exist already
- const { error: insertError } = await supabase
- .from("organizations")
- .insert({
- id: companyId,
- name: company.name
- });
- 
- if (insertError) {
- console.error("Error creating organization record:", insertError);
- } else {
- console.log("Created organization record for invited company");
- }
- }
- }
- }
- } else if (state.company) {
+      // Accept the invitation atomically via SECURITY DEFINER RPC.
+      // This bypasses the restrictive RLS policy that blocks users from
+      // changing their own company_id / role on the profiles table.
+      const token = localStorage.getItem("pending_invite_token");
+      if (!token) {
+        toast.error("Invitation token missing. Please open the invite link again.");
+        setSubmitting(false);
+        return;
+      }
+
+      const { data: acceptResult, error: acceptError } = await supabase.rpc(
+        "accept_invitation",
+        {
+          _token: token,
+          _first_name: firstName,
+          _last_name: lastName,
+          _phone: state.phoneNumber?.trim() || null,
+        }
+      );
+
+      if (acceptError) {
+        console.error("Error accepting invitation:", acceptError);
+        toast.error(acceptError.message || "Failed to accept invitation");
+        setSubmitting(false);
+        return;
+      }
+
+      companyId = (acceptResult as any)?.company_id ?? inviteDetails.organization_id;
+      console.log("Invitation accepted, linked to company:", companyId);
+
+      setSetupComplete();
+      clearOnboardingStorage();
+      localStorage.removeItem("pending_invite_token");
+
+      toast.success("Invitation accepted! Redirecting to dashboard...");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 800);
+      return;
+    } else if (state.company) {
  // Create new company since it's required
  try {
  console.log("Creating new company:", state.company);
