@@ -10,100 +10,100 @@ import { deleteInvitation } from "@/services/team/invitationService";
 import { toast } from "sonner";
 
 interface PendingInvitationCardProps {
-  invitation: PendingInvitation;
-  roleColorMap: Record<string, string>;
-  onInvitationDeleted?: () => void;
+ invitation: PendingInvitation;
+ roleColorMap: Record<string, string>;
+ onInvitationDeleted?: () => void;
 }
 
 const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({ 
-  invitation, 
-  roleColorMap,
-  onInvitationDeleted 
+ invitation, 
+ roleColorMap,
+ onInvitationDeleted 
 }) => {
-  const { sendInvitation, isSubmitting } = useTeamInvitation();
+ const { sendInvitation, isSubmitting } = useTeamInvitation();
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+ const formatDate = (dateString: string) => {
+ return new Date(dateString).toLocaleDateString();
+ };
 
-  const handleResend = async () => {
-    console.log("Resending invitation to:", invitation.email);
-    // Pass true as the second parameter to indicate this is a resend
-    const result = await sendInvitation(invitation.email, true);
-    if (result) {
-      console.log("Resend successful for:", invitation.email);
-    }
-  };
+ const handleResend = async () => {
+ console.log("Resending invitation to:", invitation.email);
+ // Pass true as the second parameter to indicate this is a resend
+ const result = await sendInvitation(invitation.email, true);
+ if (result) {
+ console.log("Resend successful for:", invitation.email);
+ }
+ };
 
-  const handleDelete = async () => {
-    try {
-      await deleteInvitation(invitation.id);
-      toast.success("Invitation deleted successfully");
-      onInvitationDeleted?.();
-    } catch (error: any) {
-      console.error("Error deleting invitation:", error);
-      toast.error("Failed to delete invitation");
-    }
-  };
+ const handleDelete = async () => {
+ try {
+ await deleteInvitation(invitation.id);
+ toast.success("Invitation deleted successfully");
+ onInvitationDeleted?.();
+ } catch (error: any) {
+ console.error("Error deleting invitation:", error);
+ toast.error("Failed to delete invitation");
+ }
+ };
 
-  return (
-    <Card className="h-full border-dashed border-2 border-gray-200 bg-gray-50">
-      <CardContent className="p-4 space-y-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3 min-w-0 flex-1">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-              <Mail className="h-5 w-5 text-gray-500" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-medium text-gray-900 truncate" title={invitation.email}>
-                {invitation.email}
-              </h3>
-              <p className="text-sm text-gray-500">Invitation pending</p>
-            </div>
-          </div>
-          <Badge 
-            variant="outline" 
-            className={`${roleColorMap[invitation.role] || "bg-gray-100 text-gray-800"} flex-shrink-0 ml-2`}
-          >
-            {invitation.role}
-          </Badge>
-        </div>
-        
-        <div className="flex items-center text-sm text-gray-500">
-          <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
-          <span className="truncate">Invited on {formatDate(invitation.created_at)}</span>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-orange-600 font-medium">
-            ⏳ Waiting for acceptance
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResend}
-              disabled={isSubmitting}
-              className="flex items-center space-x-1"
-            >
-              <Send className="h-3 w-3" />
-              <span>Resend</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDelete}
-              disabled={isSubmitting}
-              className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="h-3 w-3" />
-              <span>Delete</span>
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+ return (
+ <Card className="h-full border-dashed border-2 border-border bg-muted">
+ <CardContent className="p-4 space-y-4">
+ <div className="flex items-start justify-between">
+ <div className="flex items-center space-x-3 min-w-0 flex-1">
+ <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+ <Mail className="h-5 w-5 text-muted-foreground" />
+ </div>
+ <div className="min-w-0 flex-1">
+ <h3 className="font-medium text-foreground truncate" title={invitation.email}>
+ {invitation.email}
+ </h3>
+ <p className="text-sm text-muted-foreground">Invitation pending</p>
+ </div>
+ </div>
+ <Badge 
+ variant="outline" 
+ className={`${roleColorMap[invitation.role] || "bg-muted text-foreground"} flex-shrink-0 ml-2`}
+ >
+ {invitation.role}
+ </Badge>
+ </div>
+ 
+ <div className="flex items-center text-sm text-muted-foreground">
+ <Clock className="h-4 w-4 mr-1 flex-shrink-0" />
+ <span className="truncate">Invited on {formatDate(invitation.created_at)}</span>
+ </div>
+ 
+ <div className="flex items-center justify-between">
+ <div className="text-xs text-orange-600 font-medium">
+ ⏳ Waiting for acceptance
+ </div>
+ <div className="flex items-center space-x-2">
+ <Button
+ variant="outline"
+ size="sm"
+ onClick={handleResend}
+ disabled={isSubmitting}
+ className="flex items-center space-x-1"
+ >
+ <Send className="h-3 w-3" />
+ <span>Resend</span>
+ </Button>
+ <Button
+ variant="outline"
+ size="sm"
+ onClick={handleDelete}
+ disabled={isSubmitting}
+ className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+ >
+ <Trash2 className="h-3 w-3" />
+ <span>Delete</span>
+ </Button>
+ </div>
+ </div>
+ </CardContent>
+ </Card>
+ );
 };
 
 export default PendingInvitationCard;

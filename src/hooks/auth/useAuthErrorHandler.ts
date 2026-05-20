@@ -3,11 +3,11 @@
 import { useAuthState } from "./useAuthState";
 
 export function useAuthErrorHandler() {
-  const { error, handleError, clearError } = useAuthState();
-  
-  return {
-    error,
-    handleError,
-    clearError
-  };
+ const { error, handleError, clearError } = useAuthState();
+ 
+ return {
+ error,
+ handleError,
+ clearError
+ };
 }

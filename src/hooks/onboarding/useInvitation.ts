@@ -4,47 +4,47 @@ import { supabase } from "@/integrations/supabase/client";
 import { InviteDetails } from "./types";
 
 export const useInvitation = (email: string) => {
-  const [isInvited, setIsInvited] = useState(false);
-  const [inviteDetails, setInviteDetails] = useState<InviteDetails | null>(null);
+ const [isInvited, setIsInvited] = useState(false);
+ const [inviteDetails, setInviteDetails] = useState<InviteDetails | null>(null);
 
-  // Check if the user was invited to a company
-  useEffect(() => {
-    const checkInvitation = async () => {
-      // Prefer the explicit token captured at the invite link, fall back to email match
-      const token = localStorage.getItem("pending_invite_token");
+ // Check if the user was invited to a company
+ useEffect(() => {
+ const checkInvitation = async () => {
+ // Prefer the explicit token captured at the invite link, fall back to email match
+ const token = localStorage.getItem("pending_invite_token");
 
-      if (token) {
-        const { data: invites, error } = await supabase
-          .rpc("get_invitation_by_token", { _token: token });
-        const invite = invites?.[0];
-        if (!error && invite && invite.status === "pending") {
-          setIsInvited(true);
-          setInviteDetails(invite as any);
-          return;
-        }
-      }
+ if (token) {
+ const { data: invites, error } = await supabase
+ .rpc("get_invitation_by_token", { _token: token });
+ const invite = invites?.[0];
+ if (!error && invite && invite.status === "pending") {
+ setIsInvited(true);
+ setInviteDetails(invite as any);
+ return;
+ }
+ }
 
-      if (!email) return;
+ if (!email) return;
 
-      const { data: invites, error } = await supabase
-        .from("organization_invitations")
-        .select("*")
-        .eq("email", email)
-        .eq("status", "pending");
+ const { data: invites, error } = await supabase
+ .from("organization_invitations")
+ .select("*")
+ .eq("email", email)
+ .eq("status", "pending");
 
-      if (error) {
-        console.error("Error checking invitations:", error);
-        return;
-      }
+ if (error) {
+ console.error("Error checking invitations:", error);
+ return;
+ }
 
-      if (invites && invites.length > 0) {
-        setIsInvited(true);
-        setInviteDetails(invites[0]);
-      }
-    };
-    
-    checkInvitation();
-  }, [email]);
+ if (invites && invites.length > 0) {
+ setIsInvited(true);
+ setInviteDetails(invites[0]);
+ }
+ };
+ 
+ checkInvitation();
+ }, [email]);
 
-  return { isInvited, inviteDetails };
+ return { isInvited, inviteDetails };
 };

@@ -4,21 +4,21 @@ import { useLocationsQuery, useAssetCountsQuery } from "./locationAnalyticsQueri
 import { calculateLocationAnalytics } from "./locationAnalyticsCalculations";
 
 export const useLocationAnalyticsData = () => {
-  const { data: locations = [], isLoading: locationsLoading } = useLocationsQuery();
-  const { data: assetCounts = [], isLoading: assetsLoading } = useAssetCountsQuery();
+ const { data: locations = [], isLoading: locationsLoading } = useLocationsQuery();
+ const { data: assetCounts = [], isLoading: assetsLoading } = useAssetCountsQuery();
 
-  const isLoading = locationsLoading || assetsLoading;
+ const isLoading = locationsLoading || assetsLoading;
 
-  // Calculate analytics with proper type checking
-  const analytics = React.useMemo(() => {
-    if (!Array.isArray(locations) || !Array.isArray(assetCounts)) {
-      return null;
-    }
-    return calculateLocationAnalytics(locations, assetCounts);
-  }, [locations, assetCounts]);
+ // Calculate analytics with proper type checking
+ const analytics = React.useMemo(() => {
+ if (!Array.isArray(locations) || !Array.isArray(assetCounts)) {
+ return null;
+ }
+ return calculateLocationAnalytics(locations, assetCounts);
+ }, [locations, assetCounts]);
 
-  return {
-    isLoading,
-    analytics
-  };
+ return {
+ isLoading,
+ analytics
+ };
 };

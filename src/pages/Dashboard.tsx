@@ -14,63 +14,63 @@ import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import GuidedTour from "@/components/onboarding/GuidedTour";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
 
-  return (
-    <DashboardLayout>
-      <Helmet>
-        <title>Dashboard | MaintenEase</title>
-        <meta name="description" content="Your maintenance command center — see today's work orders, open tasks, and team activity at a glance." />
-        <link rel="canonical" href="https://maintenease.com/dashboard" />
-        <meta property="og:title" content="Dashboard | MaintenEase" />
-        <meta property="og:description" content="Today's work orders, open tasks, and team activity at a glance." />
-        <meta property="og:url" content="https://maintenease.com/dashboard" />
-      </Helmet>
-      <GuidedTour />
-      <PageHeader
-        title="Home"
-        description="Your daily snapshot — see what needs doing today."
-        actions={
-          <Button
-            variant="accent"
-            size="lg"
-            onClick={() => navigate("/work-orders/new")}
-            data-tour="report-problem"
-          >
-            <Plus className="h-5 w-5" strokeWidth={2.4} />
-            Report a Problem
-          </Button>
-        }
-      />
+ return (
+ <DashboardLayout>
+ <Helmet>
+ <title>Dashboard | MaintenEase</title>
+ <meta name="description" content="Your maintenance command center — see today's work orders, open tasks, and team activity at a glance." />
+ <link rel="canonical" href="https://maintenease.com/dashboard" />
+ <meta property="og:title" content="Dashboard | MaintenEase" />
+ <meta property="og:description" content="Today's work orders, open tasks, and team activity at a glance." />
+ <meta property="og:url" content="https://maintenease.com/dashboard" />
+ </Helmet>
+ <GuidedTour />
+ <PageHeader
+ title="Home"
+ description="Your daily snapshot — see what needs doing today."
+ actions={
+ <Button
+ variant="accent"
+ size="lg"
+ onClick={() => navigate("/work-orders/new")}
+ data-tour="report-problem"
+ >
+ <Plus className="h-5 w-5" strokeWidth={2.4} />
+ Report a Problem
+ </Button>
+ }
+ />
 
-      <div className="px-4 md:px-6 lg:px-8 py-6" data-tour="dashboard-home">
-        <OnboardingChecklist />
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
-            {[
-              ["overview", "Today"],
-              ["tasks", "My Tasks"],
-              ["analytics", "Trends"],
-              ["settings", "Preferences"],
-            ].map(([v, l]) => (
-              <TabsTrigger
-                key={v}
-                value={v}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none px-5 py-3 font-display text-base font-bold text-muted-foreground hover:text-foreground transition-colors -mb-px"
-              >
-                {l}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+ <div className="px-4 md:px-6 lg:px-8 py-6" data-tour="dashboard-home">
+ <OnboardingChecklist />
+ <Tabs defaultValue="overview" className="w-full">
+ <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
+ {[
+ ["overview", "Today"],
+ ["tasks", "My Tasks"],
+ ["analytics", "Trends"],
+ ["settings", "Preferences"],
+ ].map(([v, l]) => (
+ <TabsTrigger
+ key={v}
+ value={v}
+ className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none px-5 py-3 font-display text-base font-bold text-muted-foreground hover:text-foreground transition-colors -mb-px"
+ >
+ {l}
+ </TabsTrigger>
+ ))}
+ </TabsList>
 
-          <TabsContent value="overview" className="mt-0"><OverviewTab /></TabsContent>
-          <TabsContent value="tasks" className="mt-0"><TasksTab /></TabsContent>
-          <TabsContent value="analytics" className="mt-0"><AnalyticsTab /></TabsContent>
-          <TabsContent value="settings" className="mt-0"><SettingsTab /></TabsContent>
-        </Tabs>
-      </div>
-    </DashboardLayout>
-  );
+ <TabsContent value="overview" className="mt-0"><OverviewTab /></TabsContent>
+ <TabsContent value="tasks" className="mt-0"><TasksTab /></TabsContent>
+ <TabsContent value="analytics" className="mt-0"><AnalyticsTab /></TabsContent>
+ <TabsContent value="settings" className="mt-0"><SettingsTab /></TabsContent>
+ </Tabs>
+ </div>
+ </DashboardLayout>
+ );
 };
 
 export default Dashboard;

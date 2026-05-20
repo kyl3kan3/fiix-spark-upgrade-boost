@@ -7,154 +7,154 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
+ Select,
+ SelectContent,
+ SelectItem,
+ SelectTrigger,
+ SelectValue
 } from "@/components/ui/select";
 import { TeamMemberFormValues } from "../types";
 import { teamMemberFormSchema } from "./teamMemberFormSchema";
 import { DialogFooter } from "@/components/ui/dialog";
 
 interface TeamMemberFormProps {
-  onSubmit: (data: TeamMemberFormValues) => Promise<boolean>;
-  isSubmitting: boolean;
-  isDisabled: boolean;
-  companyName?: string;
+ onSubmit: (data: TeamMemberFormValues) => Promise<boolean>;
+ isSubmitting: boolean;
+ isDisabled: boolean;
+ companyName?: string;
 }
 
 const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
-  onSubmit,
-  isSubmitting,
-  isDisabled,
-  companyName
+ onSubmit,
+ isSubmitting,
+ isDisabled,
+ companyName
 }) => {
-  const form = useForm<TeamMemberFormValues>({
-    resolver: zodResolver(teamMemberFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      role: "technician",
-    },
-  });
+ const form = useForm<TeamMemberFormValues>({
+ resolver: zodResolver(teamMemberFormSchema),
+ defaultValues: {
+ name: "",
+ email: "",
+ role: "technician",
+ },
+ });
 
-  const handleSubmit = async (data: TeamMemberFormValues) => {
-    console.log("=== FORM SUBMISSION START ===");
-    console.log("TeamMemberForm handleSubmit called with:", data);
-    console.log("Form state:", { isSubmitting, isDisabled });
-    
-    try {
-      const result = await onSubmit(data);
-      console.log("Form submission result:", result);
-      
-      if (result) {
-        console.log("Form submission successful, resetting form");
-        form.reset();
-      } else {
-        console.log("Form submission failed");
-      }
-      
-      return result;
-    } catch (error) {
-      console.error("Error in form submission:", error);
-      return false;
-    }
-  };
+ const handleSubmit = async (data: TeamMemberFormValues) => {
+ console.log("=== FORM SUBMISSION START ===");
+ console.log("TeamMemberForm handleSubmit called with:", data);
+ console.log("Form state:", { isSubmitting, isDisabled });
+ 
+ try {
+ const result = await onSubmit(data);
+ console.log("Form submission result:", result);
+ 
+ if (result) {
+ console.log("Form submission successful, resetting form");
+ form.reset();
+ } else {
+ console.log("Form submission failed");
+ }
+ 
+ return result;
+ } catch (error) {
+ console.error("Error in form submission:", error);
+ return false;
+ }
+ };
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Full name" 
-                  {...field} 
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder="email@example.com" 
-                  {...field} 
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select 
-                onValueChange={field.onChange} 
-                defaultValue={field.value}
-                disabled={isSubmitting}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="administrator">Administrator</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
-                  <SelectItem value="technician">Technician</SelectItem>
-                  <SelectItem value="viewer">Viewer</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        {companyName && (
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Company</span>
-            <span className="font-medium">{companyName}</span>
-          </div>
-        )}
-        
-        <DialogFooter className="mt-4">
-          <Button 
-            type="submit"
-            disabled={isDisabled || isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              'Send Invitation'
-            )}
-          </Button>
-        </DialogFooter>
-      </form>
-    </Form>
-  );
+ return (
+ <Form {...form}>
+ <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+ <FormField
+ control={form.control}
+ name="name"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Name</FormLabel>
+ <FormControl>
+ <Input 
+ placeholder="Full name" 
+ {...field} 
+ disabled={isSubmitting}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
+ 
+ <FormField
+ control={form.control}
+ name="email"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Email</FormLabel>
+ <FormControl>
+ <Input 
+ type="email" 
+ placeholder="email@example.com" 
+ {...field} 
+ disabled={isSubmitting}
+ />
+ </FormControl>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
+ 
+ <FormField
+ control={form.control}
+ name="role"
+ render={({ field }) => (
+ <FormItem>
+ <FormLabel>Role</FormLabel>
+ <Select 
+ onValueChange={field.onChange} 
+ defaultValue={field.value}
+ disabled={isSubmitting}
+ >
+ <FormControl>
+ <SelectTrigger>
+ <SelectValue placeholder="Select a role" />
+ </SelectTrigger>
+ </FormControl>
+ <SelectContent>
+ <SelectItem value="administrator">Administrator</SelectItem>
+ <SelectItem value="manager">Manager</SelectItem>
+ <SelectItem value="technician">Technician</SelectItem>
+ <SelectItem value="viewer">Viewer</SelectItem>
+ </SelectContent>
+ </Select>
+ <FormMessage />
+ </FormItem>
+ )}
+ />
+ 
+ {companyName && (
+ <div className="flex items-center justify-between text-sm text-muted-foreground">
+ <span>Company</span>
+ <span className="font-medium">{companyName}</span>
+ </div>
+ )}
+ 
+ <DialogFooter className="mt-4">
+ <Button 
+ type="submit"
+ disabled={isDisabled || isSubmitting}
+ >
+ {isSubmitting ? (
+ <>
+ <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+ Sending...
+ </>
+ ) : (
+ 'Send Invitation'
+ )}
+ </Button>
+ </DialogFooter>
+ </form>
+ </Form>
+ );
 };
 
 export default TeamMemberForm;

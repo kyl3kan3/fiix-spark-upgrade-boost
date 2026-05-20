@@ -3,10 +3,10 @@
 import { useAuthActions } from "../useAuthActions";
 
 export function useSignOut() {
-  const { signOut, isSigningOut } = useAuthActions();
-  
-  return { 
-    signOut, 
-    isLoading: isSigningOut 
-  };
+ const { signOut, isSigningOut } = useAuthActions();
+ 
+ return { 
+ signOut, 
+ isLoading: isSigningOut 
+ };
 }

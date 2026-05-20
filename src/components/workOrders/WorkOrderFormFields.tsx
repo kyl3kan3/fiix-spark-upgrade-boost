@@ -9,19 +9,19 @@ import { AssignmentField } from "./fields/AssignmentField";
 import { useWorkOrderFormData } from "./hooks/useWorkOrderFormData";
 
 type WorkOrderFormFieldsProps = {
-  form: UseFormReturn<WorkOrderFormValues>;
+ form: UseFormReturn<WorkOrderFormValues>;
 };
 
 export const WorkOrderFormFields = ({ form }: WorkOrderFormFieldsProps) => {
-  // Fetch form data
-  const { assets, technicians } = useWorkOrderFormData();
+ // Fetch form data
+ const { assets, technicians } = useWorkOrderFormData();
 
-  return (
-    <>
-      <BasicFields form={form} />
-      <StatusPriorityFields form={form} />
-      <DateAssetFields form={form} assets={assets} />
-      <AssignmentField form={form} technicians={technicians} />
-    </>
-  );
+ return (
+ <>
+ <BasicFields form={form} />
+ <StatusPriorityFields form={form} />
+ <DateAssetFields form={form} assets={assets} />
+ <AssignmentField form={form} technicians={technicians} />
+ </>
+ );
 };

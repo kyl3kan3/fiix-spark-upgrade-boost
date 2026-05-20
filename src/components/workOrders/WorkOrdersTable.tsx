@@ -4,12 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+ Table, 
+ TableBody, 
+ TableCell, 
+ TableHead, 
+ TableHeader, 
+ TableRow 
 } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
@@ -17,92 +17,92 @@ import { formatDate, getStatusColor, getPriorityColor } from "@/components/workO
 import EmptyWorkOrdersState from "./EmptyWorkOrdersState";
 
 interface WorkOrdersTableProps {
-  workOrders: WorkOrderWithRelations[];
-  isLoading?: boolean;
-  error?: Error | null;
+ workOrders: WorkOrderWithRelations[];
+ isLoading?: boolean;
+ error?: Error | null;
 }
 
 const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading, error }) => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
 
-  const handleCreateWorkOrder = () => {
-    navigate("/work-orders/new");
-  };
+ const handleCreateWorkOrder = () => {
+ navigate("/work-orders/new");
+ };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-40 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500 dark:text-gray-400" />
-      </div>
-    );
-  }
+ if (isLoading) {
+ return (
+ <div className="flex justify-center items-center h-40 bg-card rounded-lg shadow">
+ <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+ </div>
+ );
+ }
 
-  if (error) {
-    return (
-      <div className="text-center py-10 bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
-        <p className="text-red-500 dark:text-red-400">Error loading work orders: {error.message}</p>
-      </div>
-    );
-  }
+ if (error) {
+ return (
+ <div className="text-center py-10 bg-card rounded-lg shadow">
+ <p className="text-red-500 dark:text-red-400">Error loading work orders: {error.message}</p>
+ </div>
+ );
+ }
 
-  if (!workOrders || workOrders.length === 0) {
-    return <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />;
-  }
+ if (!workOrders || workOrders.length === 0) {
+ return <EmptyWorkOrdersState onCreateWorkOrder={handleCreateWorkOrder} />;
+ }
 
-  return (
-    <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700/30">
-      <Table>
-        <TableHeader>
-          <TableRow className="dark:border-gray-700">
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="hidden sm:table-cell">Priority</TableHead>
-            <TableHead className="hidden md:table-cell">Asset</TableHead>
-            <TableHead className="hidden lg:table-cell">Assignee</TableHead>
-            <TableHead className="hidden md:table-cell">Due Date</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {workOrders.map((workOrder) => (
-            <TableRow key={workOrder.id} className="dark:border-gray-700">
-              <TableCell className="font-medium">
-                <Link to={`/work-orders/${workOrder.id}`} className="hover:underline">
-                  {workOrder.title}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(workOrder.status)}>
-                  {workOrder.status?.replace("_", " ")}
-                </Badge>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Badge className={getPriorityColor(workOrder.priority)}>
-                  {workOrder.priority}
-                </Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">{workOrder.asset?.name || "—"}</TableCell>
-              <TableCell className="hidden lg:table-cell">
-                {workOrder.assignee ? 
-                  `${workOrder.assignee.first_name || ''} ${workOrder.assignee.last_name || ''}`.trim() : 
-                  "Unassigned"}
-              </TableCell>
-              <TableCell className="hidden md:table-cell">
-                {workOrder.due_date ? formatDate(workOrder.due_date) : "—"}
-              </TableCell>
-              <TableCell>
-                <Button variant="outline" size="sm" asChild className="dark:border-gray-600 dark:hover:bg-gray-700">
-                  <Link to={`/work-orders/${workOrder.id}`}>
-                    View
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
+ return (
+ <div className="overflow-x-auto bg-card rounded-lg shadow">
+ <Table>
+ <TableHeader>
+ <TableRow className="">
+ <TableHead>Title</TableHead>
+ <TableHead>Status</TableHead>
+ <TableHead className="hidden sm:table-cell">Priority</TableHead>
+ <TableHead className="hidden md:table-cell">Asset</TableHead>
+ <TableHead className="hidden lg:table-cell">Assignee</TableHead>
+ <TableHead className="hidden md:table-cell">Due Date</TableHead>
+ <TableHead>Actions</TableHead>
+ </TableRow>
+ </TableHeader>
+ <TableBody>
+ {workOrders.map((workOrder) => (
+ <TableRow key={workOrder.id} className="">
+ <TableCell className="font-medium">
+ <Link to={`/work-orders/${workOrder.id}`} className="hover:underline">
+ {workOrder.title}
+ </Link>
+ </TableCell>
+ <TableCell>
+ <Badge className={getStatusColor(workOrder.status)}>
+ {workOrder.status?.replace("_", " ")}
+ </Badge>
+ </TableCell>
+ <TableCell className="hidden sm:table-cell">
+ <Badge className={getPriorityColor(workOrder.priority)}>
+ {workOrder.priority}
+ </Badge>
+ </TableCell>
+ <TableCell className="hidden md:table-cell">{workOrder.asset?.name || "—"}</TableCell>
+ <TableCell className="hidden lg:table-cell">
+ {workOrder.assignee ? 
+ `${workOrder.assignee.first_name || ''} ${workOrder.assignee.last_name || ''}`.trim() : 
+ "Unassigned"}
+ </TableCell>
+ <TableCell className="hidden md:table-cell">
+ {workOrder.due_date ? formatDate(workOrder.due_date) : "—"}
+ </TableCell>
+ <TableCell>
+ <Button variant="outline" size="sm" asChild className="">
+ <Link to={`/work-orders/${workOrder.id}`}>
+ View
+ </Link>
+ </Button>
+ </TableCell>
+ </TableRow>
+ ))}
+ </TableBody>
+ </Table>
+ </div>
+ );
 };
 
 export default WorkOrdersTable;

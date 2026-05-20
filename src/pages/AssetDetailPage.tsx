@@ -12,82 +12,82 @@ import ImageGallery from "@/components/common/ImageGallery";
 import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 
 const AssetDetailPage = () => {
-  const { assetId } = useParams<{ assetId: string }>();
-  const navigate = useNavigate();
+ const { assetId } = useParams<{ assetId: string }>();
+ const navigate = useNavigate();
 
-  const { data: asset, isLoading, error } = useQuery({
-    queryKey: ["asset", assetId],
-    queryFn: () => getAssetById(assetId as string),
-    enabled: !!assetId,
-    retry: false,
-  });
-  const heroImage = useSignedAssetImageUrl((asset as any)?.image_url ?? null);
+ const { data: asset, isLoading, error } = useQuery({
+ queryKey: ["asset", assetId],
+ queryFn: () => getAssetById(assetId as string),
+ enabled: !!assetId,
+ retry: false,
+ });
+ const heroImage = useSignedAssetImageUrl((asset as any)?.image_url ?? null);
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <PageHeader title="Loading equipment…" />
-        <div className="px-4 md:px-6 lg:px-8 py-6 text-sm text-muted-foreground">Loading…</div>
-      </DashboardLayout>
-    );
-  }
+ if (isLoading) {
+ return (
+ <DashboardLayout>
+ <PageHeader title="Loading equipment…" />
+ <div className="px-4 md:px-6 lg:px-8 py-6 text-sm text-muted-foreground">Loading…</div>
+ </DashboardLayout>
+ );
+ }
 
-  if (error || !asset) {
-    return <AssetNotFound />;
-  }
+ if (error || !asset) {
+ return <AssetNotFound />;
+ }
 
-  return (
-    <DashboardLayout>
-      <div className="px-4 md:px-6 lg:px-8 pt-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/assets")}>
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back to Equipment
-        </Button>
-      </div>
-      <PageHeader
-        title={asset.name}
-        description={asset.description || "Equipment details"}
-        actions={
-          <Button asChild variant="accent">
-            <Link to={`/assets/${asset.id}/edit`} aria-label="Edit asset">
-              <Pencil className="h-4 w-4 mr-1" /> Edit
-            </Link>
-          </Button>
-        }
-      />
-      <div className="px-4 md:px-6 lg:px-8 py-6">
-        <Card className="p-6 max-w-3xl space-y-6">
-          {heroImage && (
-            <img
-              src={heroImage}
-              alt={asset.name}
-              className="mb-4 w-full max-h-72 object-cover rounded-lg border"
-              loading="lazy"
-            />
-          )}
-          <div className="flex items-start gap-4">
-            <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-              <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
-            </div>
-            <div className="space-y-2 flex-1">
-              <h2 className="font-semibold text-lg">{asset.name}</h2>
-              {asset.location && (
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <MapPin className="h-3 w-3 mr-1" /> {asset.location}
-                </div>
-              )}
-              <dl className="grid grid-cols-2 gap-3 text-sm pt-2">
-                <div><dt className="text-muted-foreground">Status</dt><dd className="font-medium capitalize">{asset.status}</dd></div>
-                {asset.model && <div><dt className="text-muted-foreground">Model</dt><dd className="font-medium">{asset.model}</dd></div>}
-                {asset.serial_number && <div><dt className="text-muted-foreground">Serial</dt><dd className="font-medium">{asset.serial_number}</dd></div>}
-                {asset.purchase_date && <div><dt className="text-muted-foreground">Purchased</dt><dd className="font-medium">{asset.purchase_date}</dd></div>}
-              </dl>
-            </div>
-          </div>
-          <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
-        </Card>
-      </div>
-    </DashboardLayout>
-  );
+ return (
+ <DashboardLayout>
+ <div className="px-4 md:px-6 lg:px-8 pt-4">
+ <Button variant="ghost" size="sm" onClick={() => navigate("/assets")}>
+ <ArrowLeft className="h-4 w-4 mr-1" /> Back to Equipment
+ </Button>
+ </div>
+ <PageHeader
+ title={asset.name}
+ description={asset.description || "Equipment details"}
+ actions={
+ <Button asChild variant="accent">
+ <Link to={`/assets/${asset.id}/edit`} aria-label="Edit asset">
+ <Pencil className="h-4 w-4 mr-1" /> Edit
+ </Link>
+ </Button>
+ }
+ />
+ <div className="px-4 md:px-6 lg:px-8 py-6">
+ <Card className="p-6 max-w-3xl space-y-6">
+ {heroImage && (
+ <img
+ src={heroImage}
+ alt={asset.name}
+ className="mb-4 w-full max-h-72 object-cover rounded-lg border"
+ loading="lazy"
+ />
+ )}
+ <div className="flex items-start gap-4">
+ <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+ <Package className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+ </div>
+ <div className="space-y-2 flex-1">
+ <h2 className="font-semibold text-lg">{asset.name}</h2>
+ {asset.location && (
+ <div className="flex items-center text-sm text-muted-foreground">
+ <MapPin className="h-3 w-3 mr-1" /> {asset.location}
+ </div>
+ )}
+ <dl className="grid grid-cols-2 gap-3 text-sm pt-2">
+ <div><dt className="text-muted-foreground">Status</dt><dd className="font-medium capitalize">{asset.status}</dd></div>
+ {asset.model && <div><dt className="text-muted-foreground">Model</dt><dd className="font-medium">{asset.model}</dd></div>}
+ {asset.serial_number && <div><dt className="text-muted-foreground">Serial</dt><dd className="font-medium">{asset.serial_number}</dd></div>}
+ {asset.purchase_date && <div><dt className="text-muted-foreground">Purchased</dt><dd className="font-medium">{asset.purchase_date}</dd></div>}
+ </dl>
+ </div>
+ </div>
+ <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
+ </Card>
+ </div>
+ </DashboardLayout>
+ );
 };
 
 export default AssetDetailPage;

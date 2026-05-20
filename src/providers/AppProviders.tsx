@@ -9,19 +9,19 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const queryClient = new QueryClient();
 
 interface AppProvidersProps {
-  children: React.ReactNode;
+ children: React.ReactNode;
 }
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <Toaster />
-          <Sonner />
-          {children}
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
+ return (
+ <QueryClientProvider client={queryClient}>
+ <TooltipProvider>
+ <AuthProvider>
+ <Toaster />
+ <Sonner />
+ {children}
+ </AuthProvider>
+ </TooltipProvider>
+ </QueryClientProvider>
+ );
 };

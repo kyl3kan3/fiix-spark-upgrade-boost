@@ -8,101 +8,101 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { InspectionItem } from "@/types/inspections";
 
 interface InspectionChecklistProps {
-  items: InspectionItem[];
-  isCompleted: boolean;
-  handleItemPassChange: (itemId: string, passed: boolean) => void;
-  handleNoteChange: (itemId: string, notes: string) => void;
-  handleSaveChecklist: () => void;
+ items: InspectionItem[];
+ isCompleted: boolean;
+ handleItemPassChange: (itemId: string, passed: boolean) => void;
+ handleNoteChange: (itemId: string, notes: string) => void;
+ handleSaveChecklist: () => void;
 }
 
 const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
-  items,
-  isCompleted,
-  handleItemPassChange,
-  handleNoteChange,
-  handleSaveChecklist,
+ items,
+ isCompleted,
+ handleItemPassChange,
+ handleNoteChange,
+ handleSaveChecklist,
 }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Inspection Checklist</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="min-w-[160px] sm:w-[300px]">Item</TableHead>
-              <TableHead className="w-[100px] text-center">Pass/Fail</TableHead>
-              <TableHead className="hidden md:table-cell">Notes</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.map(item => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.name}</TableCell>
-                <TableCell className="text-center">
-                  <div className="flex justify-center space-x-4">
-                    <div className="flex items-center space-x-1">
-                      <Checkbox
-                        id={`${item.id}-pass`}
-                        checked={item.passed === true}
-                        disabled={isCompleted}
-                        onCheckedChange={() => handleItemPassChange(item.id, true)}
-                      />
-                      <label htmlFor={`${item.id}-pass`} className="text-sm text-green-600">Pass</label>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Checkbox
-                        id={`${item.id}-fail`}
-                        checked={item.passed === false}
-                        disabled={isCompleted}
-                        onCheckedChange={() => handleItemPassChange(item.id, false)}
-                      />
-                      <label htmlFor={`${item.id}-fail`} className="text-sm text-red-600">Fail</label>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  <Textarea
-                    value={item.notes}
-                    disabled={isCompleted}
-                    onChange={(e) => handleNoteChange(item.id, e.target.value)}
-                    placeholder="Enter notes"
-                    className="h-20 min-h-0"
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        </div>
-        {/* Mobile-only notes inputs */}
-        <div className="md:hidden mt-4 space-y-3">
-          {items.map(item => (
-            <div key={`m-${item.id}`} className="space-y-1">
-              <label className="text-xs font-semibold text-muted-foreground">
-                Notes — {item.name}
-              </label>
-              <Textarea
-                value={item.notes}
-                disabled={isCompleted}
-                onChange={(e) => handleNoteChange(item.id, e.target.value)}
-                placeholder="Enter notes"
-                className="h-16 min-h-0"
-              />
-            </div>
-          ))}
-        </div>
-        
-        {!isCompleted && items.length > 0 && (
-          <div className="mt-4 flex justify-end">
-            <Button onClick={handleSaveChecklist}>Save Checklist</Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
+ return (
+ <Card>
+ <CardHeader>
+ <CardTitle>Inspection Checklist</CardTitle>
+ </CardHeader>
+ <CardContent>
+ <div className="overflow-x-auto">
+ <Table>
+ <TableHeader>
+ <TableRow>
+ <TableHead className="min-w-[160px] sm:w-[300px]">Item</TableHead>
+ <TableHead className="w-[100px] text-center">Pass/Fail</TableHead>
+ <TableHead className="hidden md:table-cell">Notes</TableHead>
+ </TableRow>
+ </TableHeader>
+ <TableBody>
+ {items.map(item => (
+ <TableRow key={item.id}>
+ <TableCell className="font-medium">{item.name}</TableCell>
+ <TableCell className="text-center">
+ <div className="flex justify-center space-x-4">
+ <div className="flex items-center space-x-1">
+ <Checkbox
+ id={`${item.id}-pass`}
+ checked={item.passed === true}
+ disabled={isCompleted}
+ onCheckedChange={() => handleItemPassChange(item.id, true)}
+ />
+ <label htmlFor={`${item.id}-pass`} className="text-sm text-green-600">Pass</label>
+ </div>
+ <div className="flex items-center space-x-1">
+ <Checkbox
+ id={`${item.id}-fail`}
+ checked={item.passed === false}
+ disabled={isCompleted}
+ onCheckedChange={() => handleItemPassChange(item.id, false)}
+ />
+ <label htmlFor={`${item.id}-fail`} className="text-sm text-red-600">Fail</label>
+ </div>
+ </div>
+ </TableCell>
+ <TableCell className="hidden md:table-cell">
+ <Textarea
+ value={item.notes}
+ disabled={isCompleted}
+ onChange={(e) => handleNoteChange(item.id, e.target.value)}
+ placeholder="Enter notes"
+ className="h-20 min-h-0"
+ />
+ </TableCell>
+ </TableRow>
+ ))}
+ </TableBody>
+ </Table>
+ </div>
+ {/* Mobile-only notes inputs */}
+ <div className="md:hidden mt-4 space-y-3">
+ {items.map(item => (
+ <div key={`m-${item.id}`} className="space-y-1">
+ <label className="text-xs font-semibold text-muted-foreground">
+ Notes — {item.name}
+ </label>
+ <Textarea
+ value={item.notes}
+ disabled={isCompleted}
+ onChange={(e) => handleNoteChange(item.id, e.target.value)}
+ placeholder="Enter notes"
+ className="h-16 min-h-0"
+ />
+ </div>
+ ))}
+ </div>
+ 
+ {!isCompleted && items.length > 0 && (
+ <div className="mt-4 flex justify-end">
+ <Button onClick={handleSaveChecklist}>Save Checklist</Button>
+ </div>
+ )}
+ </CardContent>
+ </Card>
+ );
 };
 
 export default InspectionChecklist;

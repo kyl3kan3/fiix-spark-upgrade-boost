@@ -10,47 +10,47 @@ import { CompanyDetails } from "./company/CompanyDetails";
 import { useCompanyInfo } from "./company/useCompanyInfo";
 
 const CompanyInformation: React.FC = () => {
-  const { companyInfo, isLoading, setupCompleted, updateCompanyInfo } = useCompanyInfo();
-  const navigate = useNavigate();
+ const { companyInfo, isLoading, setupCompleted, updateCompanyInfo } = useCompanyInfo();
+ const navigate = useNavigate();
 
-  const handleEditClick = () => {
-    if (companyInfo) {
-      // Store current info in session storage so the setup page can access it
-      sessionStorage.setItem('edit_company_info', JSON.stringify(companyInfo));
-    }
-    
-    navigate('/setup');
-    toast.info("You can update your company information here");
-  };
+ const handleEditClick = () => {
+ if (companyInfo) {
+ // Store current info in session storage so the setup page can access it
+ sessionStorage.setItem('edit_company_info', JSON.stringify(companyInfo));
+ }
+ 
+ navigate('/setup');
+ toast.info("You can update your company information here");
+ };
 
-  if (isLoading) {
-    return <CompanyInfoLoading />;
-  }
+ if (isLoading) {
+ return <CompanyInfoLoading />;
+ }
 
-  // Handle case when there's no company info or it's incomplete
-  if (!companyInfo || !companyInfo.companyName) {
-    return <NoCompanyInfo setupCompleted={setupCompleted} />;
-  }
+ // Handle case when there's no company info or it's incomplete
+ if (!companyInfo || !companyInfo.companyName) {
+ return <NoCompanyInfo setupCompleted={setupCompleted} />;
+ }
 
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Company Information</CardTitle>
-          <CardDescription>Details of your organization</CardDescription>
-        </div>
-        <Button variant="outline" size="sm" onClick={handleEditClick}>
-          Edit
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <CompanyDetails 
-          companyInfo={companyInfo} 
-          handleEditClick={handleEditClick} 
-        />
-      </CardContent>
-    </Card>
-  );
+ return (
+ <Card>
+ <CardHeader className="flex flex-row items-center justify-between">
+ <div>
+ <CardTitle>Company Information</CardTitle>
+ <CardDescription>Details of your organization</CardDescription>
+ </div>
+ <Button variant="outline" size="sm" onClick={handleEditClick}>
+ Edit
+ </Button>
+ </CardHeader>
+ <CardContent>
+ <CompanyDetails 
+ companyInfo={companyInfo} 
+ handleEditClick={handleEditClick} 
+ />
+ </CardContent>
+ </Card>
+ );
 };
 
 export default CompanyInformation;
