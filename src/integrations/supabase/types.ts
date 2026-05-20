@@ -1603,6 +1603,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: {
+          _first_name?: string
+          _last_name?: string
+          _phone?: string
+          _token: string
+        }
+        Returns: Json
+      }
       company_within_limit: { Args: { _resource: string }; Returns: boolean }
       dispatch_notification_event: {
         Args: { _event_type: string; _payload: Json }
