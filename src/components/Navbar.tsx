@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import logo from '@/assets/maintenease-logo.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,7 +50,8 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="/" className="flex items-center">
+        <a href="/" className="flex items-center gap-2">
+          <img src={logo} alt="MaintenEase" className="h-9 w-9" />
           <span className="text-2xl font-bold text-maintenease-600">MaintenEase</span>
         </a>
 
