@@ -14,7 +14,7 @@ const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
 const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
-const FROM = "MaintenEase <noreply@maintain.rockcitydevelopment.com>";
+const FROM = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com>";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false },
