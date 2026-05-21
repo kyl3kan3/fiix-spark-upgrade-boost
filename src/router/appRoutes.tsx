@@ -67,6 +67,7 @@ export const AppRoutes = () => (
  <Suspense fallback={null}>
  <Routes>
  <Route path="/" element={<Index />} />
+ <Route path="/index" element={<Navigate to="/" replace />} />
  <Route path="/auth" element={<Auth />} />
  <Route path="/login" element={<Navigate to="/auth" replace />} />
  <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
