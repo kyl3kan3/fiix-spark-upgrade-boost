@@ -152,8 +152,8 @@ export default function BillingPage() {
  <Button onClick={openPortal} disabled={opening}>
  {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
  </Button>
- <Button variant="outline" onClick={openPortal} disabled={opening}>
-                 <Button asChild={false} variant="outline" onClick={() => setSeatsOpen(true)} className="!p-0 !h-auto !bg-transparent !border-0 !text-inherit hover:!bg-transparent" />
+ <Button variant="outline" onClick={() => setSeatsOpen(true)}>
+   <Users className="mr-2 h-4 w-4" /> Add seats ($15/seat/mo)
  </Button>
  </div>
  </CardContent>
