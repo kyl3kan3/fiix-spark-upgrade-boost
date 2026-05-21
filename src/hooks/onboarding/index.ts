@@ -64,13 +64,14 @@ export const useOnboarding = (): UseOnboardingReturn => {
  const { submitting, handleSubmit } = useOnboardingSubmit(state, isInvited, inviteDetails);
 
  // Form change handlers
- const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
- setState({ ...state, [e.target.name]: e.target.value });
- };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setState((prev) => ({ ...prev, [name]: value }));
+  };
 
- const handleCheckbox = (v: boolean) => {
- setState({ ...state, notifications: v });
- };
+  const handleCheckbox = (v: boolean) => {
+  setState((prev) => ({ ...prev, notifications: v }));
+  };
 
  return {
  state,
