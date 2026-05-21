@@ -1659,6 +1659,15 @@ export type Database = {
         Returns: Json
       }
       company_within_limit: { Args: { _resource: string }; Returns: boolean }
+      complete_owner_onboarding: {
+        Args: {
+          _company_name: string
+          _first_name?: string
+          _last_name?: string
+          _phone?: string
+        }
+        Returns: Json
+      }
       dispatch_notification_event: {
         Args: { _event_type: string; _payload: Json }
         Returns: undefined
