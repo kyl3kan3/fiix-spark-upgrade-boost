@@ -19,10 +19,11 @@ const Hero = () => {
  <div className="flex flex-col sm:flex-row gap-4">
  <Button
  size="lg"
- className="bg-fiix-600 hover:bg-fiix-700 text-white px-8"
+               className="bg-fiix-600 hover:bg-fiix-700 text-white px-8 shadow-lg shadow-fiix-600/30 hover:shadow-xl hover:shadow-fiix-600/40 hover:scale-[1.02] transition-all group"
  onClick={() => navigate("/auth?signup=true")}
  >
- Get Started Free
+               Get started free
+               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
  <Button
  size="lg"
