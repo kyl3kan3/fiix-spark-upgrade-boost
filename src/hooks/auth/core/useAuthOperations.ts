@@ -38,11 +38,11 @@ export function useAuthOperations() {
 
  const signUp = useCallback(async (email: string, password: string, userData?: SignUpData): Promise<AuthResult> => {
  try {
-      const hasPendingInvite =
+       const hasPendingInvite =
         typeof window !== "undefined" &&
         !!localStorage.getItem("pending_invite_token");
       const redirectPath = hasPendingInvite ? "/onboarding" : "/";
- const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
  email,
  password,
  options: {
@@ -55,6 +55,19 @@ export function useAuthOperations() {
  toast.error("Sign up failed", { description: error.message });
  return { success: false, error: error.message };
  }
+
+        // Supabase returns success with an empty identities array when the
+        // email is already registered (to prevent email enumeration). Detect
+        // that case and tell the user to sign in instead — otherwise they
+        // sit waiting for a verification email that will never arrive.
+        const identities = (data?.user as any)?.identities;
+        if (Array.isArray(identities) && identities.length === 0) {
+          const msg = hasPendingInvite
+            ? "An account with this email already exists. Please sign in to accept your invitation."
+            : "An account with this email already exists. Please sign in instead.";
+          toast.error("Account already exists", { description: msg });
+          return { success: false, error: msg };
+        }
 
  toast.success("Account created successfully!");
  return { success: true };
