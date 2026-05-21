@@ -183,6 +183,46 @@ export default function BillingPage() {
  </>
  )}
  </div>
+
+  {sub && (
+    <Dialog open={seatsOpen} onOpenChange={setSeatsOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add seats</DialogTitle>
+          <DialogDescription>
+            Extra seats are $15/seat/{sub.billing_interval === "year" ? "year" : "month"}. You'll be charged a prorated amount immediately.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 py-2">
+          <div className="text-sm text-muted-foreground">
+            Currently: <span className="font-medium text-foreground">{sub.total_seats} total seats</span>
+            {" "}({sub.included_seats} included + {sub.paid_seats} extra)
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seat-delta">Seats to add</Label>
+            <Input
+              id="seat-delta"
+              type="number"
+              min={1}
+              max={500 - sub.paid_seats}
+              value={seatDelta}
+              onChange={(e) => setSeatDelta(Math.max(1, parseInt(e.target.value || "1", 10)))}
+            />
+          </div>
+          <div className="rounded-md bg-muted px-3 py-2 text-sm">
+            New total: <span className="font-semibold">{sub.total_seats + Math.max(0, seatDelta)} seats</span>
+            {" "}· +${15 * Math.max(0, seatDelta)}/{sub.billing_interval === "year" ? "yr" : "mo"} prorated
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setSeatsOpen(false)} disabled={seatSaving}>Cancel</Button>
+          <Button onClick={submitAddSeats} disabled={seatSaving || seatDelta < 1}>
+            {seatSaving ? "Adding…" : `Add ${seatDelta} seat${seatDelta === 1 ? "" : "s"}`}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )}
  </div>
  );
 }
