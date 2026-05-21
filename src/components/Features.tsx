@@ -42,7 +42,7 @@ const Features = () => {
  Powerful Features for Maintenance Excellence
  </h2>
  <p className="text-xl text-foreground max-w-2xl mx-auto mb-8">
- Fiix brings everything you need to streamline your maintenance operations in one intuitive platform.
+ MaintenEase brings everything you need to streamline your maintenance operations in one intuitive platform.
  </p>
  
  <FeatureFilters
