@@ -82,17 +82,17 @@ export const saveToDatabase = async (
  return { success: false, error: new Error(checkError.message) };
  }
 
- const dbData = {
- company_info: setupData.companyInfo,
- user_roles: setupData.userRoles,
- asset_categories: setupData.assetCategories,
- locations: setupData.locations,
- maintenance_schedules: setupData.maintenanceSchedules,
- notifications: setupData.notifications,
- integrations: setupData.integrations,
- dashboard_customization: setupData.dashboardCustomization,
- setup_completed: isComplete
- };
+    const dbData = {
+      company_info: setupData.companyInfo as unknown as Json,
+      user_roles: setupData.userRoles as unknown as Json,
+      asset_categories: setupData.assetCategories as unknown as Json,
+      locations: setupData.locations as unknown as Json,
+      maintenance_schedules: setupData.maintenanceSchedules as unknown as Json,
+      notifications: setupData.notifications as unknown as Json,
+      integrations: setupData.integrations as unknown as Json,
+      dashboard_customization: setupData.dashboardCustomization as unknown as Json,
+      setup_completed: isComplete
+    };
 
  const result = existingData?.id
  ? await supabase.from('system_settings').update(dbData).eq('id', existingData.id)
