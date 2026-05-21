@@ -1,16 +1,17 @@
-
 /**
  * Type definitions for setup data
  */
+export type SetupSectionData = Record<string, unknown>;
+
 export interface SetupData {
- companyInfo: Record<string, any>;
- userRoles: Record<string, any>;
- assetCategories: Record<string, any>;
- locations: Record<string, any>;
- maintenanceSchedules: Record<string, any>;
- notifications: Record<string, any>;
- integrations: Record<string, any>;
- dashboardCustomization: Record<string, any>;
+ companyInfo: SetupSectionData;
+ userRoles: SetupSectionData;
+ assetCategories: SetupSectionData;
+ locations: SetupSectionData;
+ maintenanceSchedules: SetupSectionData;
+ notifications: SetupSectionData;
+ integrations: SetupSectionData;
+ dashboardCustomization: SetupSectionData;
 }
 
 export const initialSetupData: SetupData = {

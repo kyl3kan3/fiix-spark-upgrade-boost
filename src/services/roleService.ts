@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { logger } from "@/lib/logger";
+import { normalizeError } from "@/lib/errors";
 
 // Helper to wait for a few milliseconds
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -39,10 +40,10 @@ export const updateUserRole = async (userId: string, role: string) => {
  .from('user_roles')
  .insert([{
  user_id: userId,
- role: role as any,
+ role: role,
  company_id: profile.company_id,
  created_by: currentUser.data.user?.id
- }] as any);
+ }]);
 
  if (insertError) {
  console.error("Error inserting new role:", insertError);
@@ -81,9 +82,10 @@ export const updateUserRole = async (userId: string, role: string) => {
 
  logger.log("Role update confirmed:", updatedRole);
  return { success: true, data: { role: updatedRole.role } };
- } catch (error: any) {
- console.error("Error updating role:", error);
- toast(error.message || "Failed to update role. Please try again.");
- return { success: false, error };
+ } catch (error: unknown) {
+ const normalized = normalizeError(error, "Failed to update role. Please try again.");
+ console.error("Error updating role:", normalized.cause);
+ toast(normalized.message);
+ return { success: false, error: new Error(normalized.message) };
  }
 };
