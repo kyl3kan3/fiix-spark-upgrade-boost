@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, CheckboxField } from "./AuthFormFields";
 import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
@@ -37,6 +38,15 @@ export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  onChange={setRememberMe}
  disabled={isLoading}
  />
+
+  <div className="flex justify-end">
+    <Link
+      to="/forgot-password"
+      className="text-sm text-primary hover:underline"
+    >
+      Forgot password?
+    </Link>
+  </div>
 
  <Button
  type="submit"
