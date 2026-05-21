@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { SetupData } from "./setupTypes";
+import { SetupData, SetupSectionData } from "./setupTypes";
+import { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
 
 /**
@@ -30,14 +31,14 @@ export const loadSetupData = async (): Promise<SetupData> => {
  
  // Convert settings to our SetupData format with proper type checking
  const setupData: SetupData = {
- companyInfo: (settings.company_info as object) || {},
- userRoles: (settings.user_roles as object) || {},
- assetCategories: (settings.asset_categories as object) || {},
- locations: (settings.locations as object) || {},
- maintenanceSchedules: (settings.maintenance_schedules as object) || {},
- notifications: (settings.notifications as object) || {},
- integrations: (settings.integrations as object) || {},
- dashboardCustomization: (settings.dashboard_customization as object) || {}
+     companyInfo: (settings.company_info as SetupSectionData) || {},
+     userRoles: (settings.user_roles as SetupSectionData) || {},
+     assetCategories: (settings.asset_categories as SetupSectionData) || {},
+     locations: (settings.locations as SetupSectionData) || {},
+     maintenanceSchedules: (settings.maintenance_schedules as SetupSectionData) || {},
+     notifications: (settings.notifications as SetupSectionData) || {},
+     integrations: (settings.integrations as SetupSectionData) || {},
+     dashboardCustomization: (settings.dashboard_customization as SetupSectionData) || {}
  };
  
  // Also update localStorage for backup
@@ -105,17 +106,17 @@ export const saveSetupData = async (
  logger.log("User authenticated, saving to Supabase", setupData);
  
  // Convert setupData to database format
- const dbData = {
- company_info: setupData.companyInfo,
- user_roles: setupData.userRoles,
- asset_categories: setupData.assetCategories,
- locations: setupData.locations,
- maintenance_schedules: setupData.maintenanceSchedules,
- notifications: setupData.notifications,
- integrations: setupData.integrations,
- dashboard_customization: setupData.dashboardCustomization,
- setup_completed: isSetupComplete
- };
+    const dbData = {
+      company_info: setupData.companyInfo as unknown as Json,
+      user_roles: setupData.userRoles as unknown as Json,
+      asset_categories: setupData.assetCategories as unknown as Json,
+      locations: setupData.locations as unknown as Json,
+      maintenance_schedules: setupData.maintenanceSchedules as unknown as Json,
+      notifications: setupData.notifications as unknown as Json,
+      integrations: setupData.integrations as unknown as Json,
+      dashboard_customization: setupData.dashboardCustomization as unknown as Json,
+      setup_completed: isSetupComplete
+    };
  
  // Try to update existing record first
  const { data: existingSettings, error: fetchError } = await supabase

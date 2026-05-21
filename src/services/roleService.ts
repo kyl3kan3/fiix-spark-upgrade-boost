@@ -38,12 +38,12 @@ export const updateUserRole = async (userId: string, role: string) => {
  const currentUser = await supabase.auth.getUser();
  const { error: insertError } = await supabase
  .from('user_roles')
- .insert([{
- user_id: userId,
- role: role,
- company_id: profile.company_id,
- created_by: currentUser.data.user?.id
- }]);
+     .insert([{
+      user_id: userId,
+      role: role as "administrator" | "manager" | "super_admin" | "technician" | "viewer",
+      company_id: profile.company_id,
+      created_by: currentUser.data.user?.id
+     }]);
 
  if (insertError) {
  console.error("Error inserting new role:", insertError);
