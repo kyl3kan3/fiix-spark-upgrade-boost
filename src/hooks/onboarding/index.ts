@@ -33,12 +33,14 @@ export const useOnboarding = (): UseOnboardingReturn => {
 
     const syncSignedInEmail = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!isMounted || !user?.email) {
+      const signedInEmail = user?.email ?? "";
+
+      if (!isMounted || !signedInEmail) {
         return;
       }
 
       setState(prev => {
-        if (prev.email === user.email) {
+        if (prev.email === signedInEmail) {
           return prev;
         }
 
@@ -47,7 +49,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
           return prev;
         }
 
-        return { ...prev, email: user.email };
+        return { ...prev, email: signedInEmail };
       });
     };
 
