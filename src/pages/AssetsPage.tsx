@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Printer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import PageHeader from "@/components/shell/PageHeader";
 import AssetFilters from "@/components/assets/AssetFilters";
 import AssetGridView from "@/components/assets/AssetGridView";
@@ -115,9 +116,8 @@ const AssetsPage = () => {
  </div>
  }
  />
- <div className="px-4 md:px-6 lg:px-8 py-6">
- <div className="space-y-4 sm:space-y-6">
- <AssetFilters 
+ <PageContainer className="space-y-6">
+ <AssetFilters
  searchQuery={filters.search}
  onSearchChange={handleSearchChange}
  assetCategories={assetCategories}
@@ -137,8 +137,7 @@ const AssetsPage = () => {
  onDeleteAsset={() => {}}
  />
  )}
- </div>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

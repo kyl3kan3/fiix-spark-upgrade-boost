@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "next-themes";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
@@ -92,7 +93,7 @@ const Settings = () => {
 
  return (
  <DashboardLayout>
- <div className="space-y-4 sm:space-y-6">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
  
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -217,7 +218,7 @@ const Settings = () => {
  </Card>
  </TabsContent>
  </Tabs>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

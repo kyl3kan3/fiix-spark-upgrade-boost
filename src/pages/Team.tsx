@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import TeamHeader from "@/components/team/TeamHeader";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -75,19 +76,19 @@ const Team = () => {
  if (loading) {
  return (
  <DashboardLayout>
- <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4 sm:space-y-6">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
  <div className="flex items-center justify-center h-64">
  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
  </div>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
  }
 
  return (
  <DashboardLayout>
- <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4 sm:space-y-6">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
  
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -142,7 +143,7 @@ const Team = () => {
  <RolePermissionsOverview />
  </TabsContent>
  </Tabs>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

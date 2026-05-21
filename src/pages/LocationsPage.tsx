@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { LocationsHeader } from "@/pages/locations/components/LocationsHeader";
 import { LocationsTabContent } from "@/pages/locations/components/LocationsTabContent";
@@ -50,21 +51,21 @@ const LocationsPage = () => {
  if (isLoading) {
  return (
  <DashboardLayout>
- <div className="space-y-4 sm:space-y-6">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
  <div className="flex items-center justify-center h-64">
  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
  </div>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
  }
 
  return (
  <DashboardLayout>
- <div className="space-y-6">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
- 
+
  <LocationsHeader
  viewMode={viewMode}
  setViewMode={setViewMode}
@@ -108,7 +109,7 @@ const LocationsPage = () => {
  isCreating={isCreating}
  isUpdating={isUpdating}
  />
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

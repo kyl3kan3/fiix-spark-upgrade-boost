@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
+import PageContainer from "@/components/shell/PageContainer";
 import OverviewTab from "@/components/dashboard/tabs/OverviewTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TasksTab from "@/components/dashboard/tabs/TasksTab";
@@ -43,7 +44,7 @@ const Dashboard = () => {
  }
  />
 
- <div className="px-4 md:px-6 lg:px-8 py-6" data-tour="dashboard-home">
+ <PageContainer data-tour="dashboard-home">
  <OnboardingChecklist />
  <Tabs defaultValue="overview" className="w-full">
  <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
@@ -68,7 +69,7 @@ const Dashboard = () => {
  <TabsContent value="analytics" className="mt-0"><AnalyticsTab /></TabsContent>
  <TabsContent value="settings" className="mt-0"><SettingsTab /></TabsContent>
  </Tabs>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

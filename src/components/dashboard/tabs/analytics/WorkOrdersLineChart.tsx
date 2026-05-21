@@ -28,7 +28,7 @@ const WorkOrdersLineChart: React.FC<WorkOrdersChartProps> = ({
  onDataNotAvailable 
 }) => {
  return (
- <Card>
+ <Card className="min-w-0">
  <CardHeader>
  <CardTitle className="flex items-center gap-2">
  <LineChart className="h-5 w-5" />
@@ -36,7 +36,7 @@ const WorkOrdersLineChart: React.FC<WorkOrdersChartProps> = ({
  </CardTitle>
  </CardHeader>
  <CardContent>
- <div className="h-[300px]" onClick={onDataNotAvailable}>
+ <div className="aspect-[16/9] min-h-[260px]" onClick={onDataNotAvailable}>
  <ResponsiveContainer width="100%" height="100%">
  <RechartLineChart
  data={data}
