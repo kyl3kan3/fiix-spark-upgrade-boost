@@ -61,8 +61,8 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    // Require authenticated user (admin gating happens client-side; this endpoint
-    // only proxies to Search Console which is non-sensitive read data).
+    // Require an authenticated administrator. This endpoint consumes Google
+    // Search Console API quota, so role enforcement happens server-side.
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
@@ -79,6 +79,23 @@ Deno.serve(async (req) => {
     if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
         status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } },
+    );
+    const { data: roleRow } = await adminClient
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userData.user.id)
+      .eq('role', 'administrator')
+      .maybeSingle();
+    if (!roleRow) {
+      return new Response(JSON.stringify({ error: 'forbidden' }), {
+        status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
