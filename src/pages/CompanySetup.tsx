@@ -177,7 +177,7 @@ const CompanySetup: React.FC = () => {
  .upsert({
  id: user.id,
  company_id: companyId,
-  email: user.email || null
+  email: user.email || ""
  });
 
  if (updateProfileError) throw updateProfileError;
