@@ -23,7 +23,12 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
+      // "warn" with the conventional underscore-prefix escape for
+      // intentionally-unused callback args.
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
       // Downgraded to warn: ~300 pre-existing occurrences. Paid down
       // incrementally in later refactor phases; keeps CI lint green.
       "@typescript-eslint/no-explicit-any": "warn",
