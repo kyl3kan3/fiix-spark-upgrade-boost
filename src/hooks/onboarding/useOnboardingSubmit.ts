@@ -76,7 +76,7 @@ export const useOnboardingSubmit = (
 
       toast.success("Invitation accepted! Redirecting to dashboard...");
       setTimeout(() => {
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
       }, 800);
       return;
      } else if (state.company) {
@@ -160,7 +160,7 @@ export const useOnboardingSubmit = (
  
  toast.success("Onboarding complete! Redirecting to dashboard...");
  setTimeout(() => {
- navigate("/dashboard");
+  window.location.href = "/dashboard";
  }, 1000);
  } catch (error: any) {
  console.error("Error during onboarding:", error);
