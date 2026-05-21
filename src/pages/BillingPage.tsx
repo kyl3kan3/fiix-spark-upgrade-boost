@@ -5,6 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "sonner";
@@ -15,6 +25,9 @@ export default function BillingPage() {
  const { data: sub, isLoading, refetch } = useSubscription();
  const [params] = useSearchParams();
  const [opening, setOpening] = useState(false);
+  const [seatsOpen, setSeatsOpen] = useState(false);
+  const [seatDelta, setSeatDelta] = useState(1);
+  const [seatSaving, setSeatSaving] = useState(false);
  const [counts, setCounts] = useState<{ assets: number; workOrders: number; seats: number }>({ assets: 0, workOrders: 0, seats: 0 });
 
  useEffect(() => {
@@ -56,6 +69,28 @@ export default function BillingPage() {
  setOpening(false);
  }
  }
+
+  async function submitAddSeats() {
+    if (!sub) return;
+    const additional = Math.max(0, Math.floor(seatDelta));
+    const newTotal = sub.paid_seats + additional;
+    setSeatSaving(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("update-seats", {
+        body: { extraSeats: newTotal },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success(`Added ${additional} seat${additional === 1 ? "" : "s"}. Charges are prorated.`);
+      setSeatsOpen(false);
+      setSeatDelta(1);
+      setTimeout(() => refetch(), 1500);
+    } catch (e) {
+      toast.error((e as Error).message || "Could not update seats");
+    } finally {
+      setSeatSaving(false);
+    }
+  }
 
  if (isLoading) return <div className="container mx-auto p-8">Loading…</div>;
 
@@ -117,8 +152,8 @@ export default function BillingPage() {
  <Button onClick={openPortal} disabled={opening}>
  {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
  </Button>
- <Button variant="outline" onClick={openPortal} disabled={opening}>
- <Users className="mr-2 h-4 w-4" /> Add seats ($15/seat/mo)
+ <Button variant="outline" onClick={() => setSeatsOpen(true)}>
+   <Users className="mr-2 h-4 w-4" /> Add seats ($15/seat/mo)
  </Button>
  </div>
  </CardContent>
@@ -148,6 +183,46 @@ export default function BillingPage() {
  </>
  )}
  </div>
+
+  {sub && (
+    <Dialog open={seatsOpen} onOpenChange={setSeatsOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add seats</DialogTitle>
+          <DialogDescription>
+            Extra seats are $15/seat/{sub.billing_interval === "year" ? "year" : "month"}. You'll be charged a prorated amount immediately.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 py-2">
+          <div className="text-sm text-muted-foreground">
+            Currently: <span className="font-medium text-foreground">{sub.total_seats} total seats</span>
+            {" "}({sub.included_seats} included + {sub.paid_seats} extra)
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seat-delta">Seats to add</Label>
+            <Input
+              id="seat-delta"
+              type="number"
+              min={1}
+              max={500 - sub.paid_seats}
+              value={seatDelta}
+              onChange={(e) => setSeatDelta(Math.max(1, parseInt(e.target.value || "1", 10)))}
+            />
+          </div>
+          <div className="rounded-md bg-muted px-3 py-2 text-sm">
+            New total: <span className="font-semibold">{sub.total_seats + Math.max(0, seatDelta)} seats</span>
+            {" "}· +${15 * Math.max(0, seatDelta)}/{sub.billing_interval === "year" ? "yr" : "mo"} prorated
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setSeatsOpen(false)} disabled={seatSaving}>Cancel</Button>
+          <Button onClick={submitAddSeats} disabled={seatSaving || seatDelta < 1}>
+            {seatSaving ? "Adding…" : `Add ${seatDelta} seat${seatDelta === 1 ? "" : "s"}`}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )}
  </div>
  );
 }
