@@ -6,7 +6,6 @@ import { WorkOrderFormValues } from "../WorkOrderFormSchema";
 import { supabase } from "@/integrations/supabase/client";
 import { createWorkOrder, updateWorkOrder } from "@/services/workOrderService";
 import { ToastAction } from "@/components/ui/toast";
-import React from "react";
 
 type UseWorkOrderSubmitProps = {
  workOrderId?: string;
@@ -65,13 +64,10 @@ export const useWorkOrderSubmit = ({ workOrderId, onSuccess }: UseWorkOrderSubmi
   description:
   "Your current plan doesn't allow more work orders this month. Upgrade to keep going.",
   variant: "destructive",
-  action: React.createElement(
-  ToastAction,
-  {
-  altText: "Upgrade plan",
-  onClick: () => navigate("/billing"),
-  },
-  "Upgrade"
+  action: (
+  <ToastAction altText="Upgrade plan" onClick={() => navigate("/billing")}>
+  Upgrade
+  </ToastAction>
   ),
   });
   } else {
