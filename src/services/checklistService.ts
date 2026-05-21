@@ -31,9 +31,9 @@ export const checklistService = {
  .eq('is_active', true)
  .order('created_at', { ascending: false });
 
- if (error) throw error;
- return (data ?? []).map((row) => mapChecklistRow(row as ChecklistRow));
- },
+  if (error) throw error;
+  return (data ?? []).map((row) => mapChecklistRow(row as unknown as ChecklistRow));
+  },
 
  // Get checklist by ID
  async getChecklistById(id: string): Promise<Checklist | null> {
@@ -48,9 +48,9 @@ export const checklistService = {
  .eq('id', id)
  .single();
 
- if (error) throw error;
- if (!data) return null;
- return mapChecklistRow(data as ChecklistRow);
+  if (error) throw error;
+  if (!data) return null;
+  return mapChecklistRow(data as unknown as ChecklistRow);
  },
 
  // Create checklist - now includes frequency
@@ -317,9 +317,9 @@ export const checklistService = {
  .eq('is_active', true)
  .lte('schedule.next_due_at', nowIso)
  .order('created_at', { ascending: false });
- if (error) throw error;
- return (data ?? []).map((row) => mapChecklistRow(row as ChecklistRow));
- },
+  if (error) throw error;
+  return (data ?? []).map((row) => mapChecklistRow(row as unknown as ChecklistRow));
+  },
 
  /**
  * All scheduled checklists with their next-due time, sorted by soonest.
@@ -336,7 +336,7 @@ export const checklistService = {
  `)
  .eq('is_active', true)
  .order('next_due_at', { foreignTable: 'checklist_schedules', ascending: true });
- if (error) throw error;
- return (data ?? []).map((row) => mapChecklistRow(row as ChecklistRow));
- },
+  if (error) throw error;
+  return (data ?? []).map((row) => mapChecklistRow(row as unknown as ChecklistRow));
+  },
 };
