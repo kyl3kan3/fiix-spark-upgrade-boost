@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormState, UseOnboardingReturn } from "./types";
 import { getInitialEmail, getInitialCompanyName } from "./storageUtils";
 import { useInvitation } from "./useInvitation";
 import { useUserData } from "./useUserData";
 import { useOnboardingSubmit } from "./useOnboardingSubmit";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useOnboarding = (): UseOnboardingReturn => {
  const [state, setState] = useState<FormState>({
@@ -26,6 +27,36 @@ export const useOnboarding = (): UseOnboardingReturn => {
 
  // Fetch user data
  useUserData(setFullName);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncSignedInEmail = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!isMounted || !user?.email) {
+        return;
+      }
+
+      setState(prev => {
+        if (prev.email === user.email) {
+          return prev;
+        }
+
+        const hasPendingInvite = !!localStorage.getItem("pending_invite_token");
+        if (hasPendingInvite && prev.email.trim()) {
+          return prev;
+        }
+
+        return { ...prev, email: user.email };
+      });
+    };
+
+    syncSignedInEmail();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
  // Handle form submission
  const { submitting, handleSubmit } = useOnboardingSubmit(state, isInvited, inviteDetails);
