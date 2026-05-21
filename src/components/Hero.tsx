@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Wrench, ClipboardCheck, CalendarClock, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -42,20 +42,49 @@ const Hero = () => {
  <div className="relative">
  <div className="absolute inset-0 bg-gradient-to-r from-fiix-200 to-fiix-400 rounded-xl transform rotate-3 opacity-30"></div>
  <div className="relative bg-card p-4 rounded-lg shadow-xl">
- <div className="aspect-[16/9] bg-fiix-100 rounded-md flex items-center justify-center">
- <div className="p-8 text-center">
- <div className="mb-4 mx-auto w-16 h-16 bg-fiix-200 rounded-full flex items-center justify-center">
- <span className="text-fiix-600 text-2xl font-bold">F</span>
- </div>
- <div className="h-2 bg-fiix-200 rounded-full w-3/4 mx-auto mb-4"></div>
- <div className="h-2 bg-fiix-200 rounded-full w-1/2 mx-auto mb-4"></div>
- <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
- {[1, 2, 3, 4].map((item) => (
- <div key={item} className="h-16 bg-fiix-100 border border-fiix-200 rounded-md"></div>
- ))}
- </div>
- </div>
- </div>
+              <div className="aspect-[16/9] bg-fiix-50 rounded-md p-5 flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-md bg-fiix-600 flex items-center justify-center">
+                      <Wrench className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-foreground">Maintenance Dashboard</span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-fiix-300"></span>
+                    <span className="w-2 h-2 rounded-full bg-fiix-400"></span>
+                    <span className="w-2 h-2 rounded-full bg-fiix-600"></span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Open WOs", value: "24", Icon: ClipboardCheck },
+                    { label: "Due today", value: "7", Icon: CalendarClock },
+                    { label: "Assets", value: "318", Icon: Package },
+                  ].map(({ label, value, Icon }) => (
+                    <div key={label} className="bg-card border border-fiix-200 rounded-md p-3">
+                      <Icon className="h-4 w-4 text-fiix-600 mb-2" />
+                      <div className="text-lg font-bold text-foreground leading-none">{value}</div>
+                      <div className="text-[10px] text-muted-foreground mt-1">{label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex-1 bg-card border border-fiix-200 rounded-md p-3 space-y-2">
+                  {[
+                    { t: "Replace HVAC filter — Bldg A", s: "In progress" },
+                    { t: "Inspect generator #3", s: "Scheduled" },
+                    { t: "Lubricate conveyor belt", s: "Due soon" },
+                  ].map((row) => (
+                    <div key={row.t} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-fiix-600 shrink-0"></span>
+                        <span className="text-xs text-foreground truncate">{row.t}</span>
+                      </div>
+                      <span className="text-[10px] text-fiix-600 font-medium shrink-0 ml-2">{row.s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
  </div>
  </div>
  </div>
