@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { WorkOrderFormValues } from "../WorkOrderFormSchema";
 import { supabase } from "@/integrations/supabase/client";
 import { createWorkOrder, updateWorkOrder } from "@/services/workOrderService";
+import { ToastAction } from "@/components/ui/toast";
 
 type UseWorkOrderSubmitProps = {
  workOrderId?: string;
@@ -56,11 +57,26 @@ export const useWorkOrderSubmit = ({ workOrderId, onSuccess }: UseWorkOrderSubmi
  navigate("/work-orders");
  }
  } catch (error: any) {
- toast({
- title: "Error",
- description: error.message || "Something went wrong",
- variant: "destructive"
- });
+  const msg = String(error?.message || "");
+  if (msg.includes("plan_limit_reached")) {
+  toast({
+  title: "You've reached your plan limit",
+  description:
+  "Your current plan doesn't allow more work orders this month. Upgrade to keep going.",
+  variant: "destructive",
+  action: (
+  <ToastAction altText="Upgrade plan" onClick={() => navigate("/billing")}>
+  Upgrade
+  </ToastAction>
+  ),
+  });
+  } else {
+  toast({
+  title: "Error",
+  description: error.message || "Something went wrong",
+  variant: "destructive",
+  });
+  }
  } finally {
  setIsSubmitting(false);
  }
