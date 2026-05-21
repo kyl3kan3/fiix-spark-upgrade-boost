@@ -1564,6 +1564,7 @@ export type Database = {
         Row: {
           asset_id: string | null
           assigned_to: string | null
+          company_id: string | null
           created_at: string
           created_by: string
           description: string
@@ -1578,6 +1579,7 @@ export type Database = {
         Insert: {
           asset_id?: string | null
           assigned_to?: string | null
+          company_id?: string | null
           created_at?: string
           created_by: string
           description: string
@@ -1592,6 +1594,7 @@ export type Database = {
         Update: {
           asset_id?: string | null
           assigned_to?: string | null
+          company_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -1616,6 +1619,13 @@ export type Database = {
             columns: ["assigned_to"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
           {
