@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ const CompanySetup: React.FC = () => {
  const [isSubmitting, setIsSubmitting] = useState(false);
  const [error, setError] = useState<string | null>(null);
  const [existingCompanyId, setExistingCompanyId] = useState<string | null>(null);
+  const initializedForUserRef = useRef<string | null>(null);
 
  // Check if user is authenticated and if they already have a company
  useEffect(() => {
@@ -49,6 +50,10 @@ const CompanySetup: React.FC = () => {
  navigate("/auth");
  return;
  }
+
+  if (initializedForUserRef.current === user.id) {
+    return;
+  }
 
  try {
  // Check if user has a profile with company association
@@ -84,17 +89,13 @@ const CompanySetup: React.FC = () => {
  state: companyData.state || "",
  zipCode: companyData.zip_code || "",
  phone: companyData.phone || "",
- email: companyData.email || profile.email || "",
+  email: companyData.email || "",
  website: companyData.website || "",
  });
  }
- } else if (user.email) {
- // Pre-fill email if available
- setFormData(prev => ({
- ...prev,
- email: user.email || ""
- }));
  }
+
+  initializedForUserRef.current = user.id;
  } catch (err) {
  console.error("Error checking company association:", err);
  }
@@ -171,12 +172,12 @@ const CompanySetup: React.FC = () => {
 
  // Update user's profile with this company ID
  // (This will trigger the ensure_first_user_is_admin trigger we created)
- const { error: updateProfileError } = await supabase
+  const { error: updateProfileError } = await supabase
  .from("profiles")
  .upsert({
  id: user.id,
  company_id: companyId,
- email: user.email || formData.email
+  email: user.email || ""
  });
 
  if (updateProfileError) throw updateProfileError;

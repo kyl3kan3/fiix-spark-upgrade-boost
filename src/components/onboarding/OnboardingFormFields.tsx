@@ -87,7 +87,6 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
  required
  value={state.email}
  onChange={handleChange}
- readOnly={!!state.email}
  className="w-full"
  />
  </div>
