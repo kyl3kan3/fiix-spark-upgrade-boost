@@ -49,15 +49,12 @@ Deno.serve(async (req) => {
     const seatExternalId = sub.billing_interval === 'year' ? 'extra_seat_yearly' : 'extra_seat_monthly';
     const paddle = getPaddleClient(env);
 
-    // Resolve internal Paddle IDs from external IDs
-    const [seatPriceResp, planSub] = await Promise.all([
-      paddle.prices.list({ perPage: 200 }).next() as any,
-      paddle.subscriptions.get(sub.paddle_subscription_id),
-    ]);
+    // Get current subscription items
+    const planSub = await paddle.subscriptions.get(sub.paddle_subscription_id);
+
     // Find seat price by external_id
-    const allPrices = await paddle.prices.list({ perPage: 200 });
     let seatPriceId: string | null = null;
-    for await (const p of allPrices) {
+    for await (const p of paddle.prices.list({ perPage: 200 })) {
       const ext = (p as any).importMeta?.externalId;
       if (ext === seatExternalId) {
         seatPriceId = (p as any).id;
