@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 
 export interface Asset {
  id: string;
@@ -84,7 +85,7 @@ export const getAssetById = async (id: string): Promise<Asset | null> => {
 
 export const createAsset = async (assetData: CreateAssetData): Promise<Asset> => {
  try {
- const { data: { user } } = await supabase.auth.getUser();
+ const user = await getCurrentUser();
  if (!user) {
  toast.error('You must be signed in to create an asset.');
  throw new Error('Not authenticated');

@@ -1,20 +1,11 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { AssetFormValues } from "@/components/workOrders/assets/AssetFormSchema";
+import { requireUserCompany } from "@/services/supabaseHelpers";
 
 async function getCurrentUserCompanyId(): Promise<string> {
- const { data: { user } } = await supabase.auth.getUser();
- if (!user) throw new Error("You must be signed in to create an asset.");
- const { data: profile, error } = await supabase
- .from("profiles")
- .select("company_id")
- .eq("id", user.id)
- .maybeSingle();
- if (error) throw error;
- if (!profile?.company_id) {
- throw new Error("Your account is not linked to a company. Complete setup first.");
- }
- return profile.company_id;
+ const { companyId } = await requireUserCompany();
+ return companyId;
 }
 
 export async function createAsset(assetData: Partial<AssetFormValues>) {

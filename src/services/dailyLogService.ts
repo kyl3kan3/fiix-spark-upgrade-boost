@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { Json } from "@/integrations/supabase/types";
+import { requireUser } from "@/services/supabaseHelpers";
 
 export interface DailyLogEntry {
  id?: string;
@@ -76,11 +77,7 @@ export class DailyLogService {
  }
 
  static async saveDailyLog(logEntry: DailyLogEntry): Promise<DailyLogEntry> {
- const { data: { user } } = await supabase.auth.getUser();
- 
- if (!user) {
- throw new Error('User not authenticated');
- }
+ const user = await requireUser();
 
  // Clean up time fields - if empty, set to null
  const cleanShiftStart = logEntry.shift_start?.trim() || null;

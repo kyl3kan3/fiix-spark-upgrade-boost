@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSchedule } from "@/types/checklists";
 import { nextDueAt } from "@/lib/checklists/scheduling";
+import { getCurrentUser, requireUserCompany } from "@/services/supabaseHelpers";
 
 export const checklistService = {
  // Get all checklists
@@ -55,19 +56,14 @@ export const checklistService = {
 
  // Create checklist - now includes frequency
  async createChecklist(checklist: Pick<Checklist, 'name' | 'description' | 'type' | 'frequency' | 'is_active'>): Promise<Checklist> {
- const { data: { user } } = await supabase.auth.getUser();
- const { data: profile } = await supabase
- .from('profiles')
- .select('company_id')
- .eq('id', user?.id)
- .single();
+ const { userId, companyId } = await requireUserCompany();
 
  const { data, error } = await supabase
  .from('checklists')
  .insert({
  ...checklist,
- company_id: profile?.company_id,
- created_by: user?.id,
+ company_id: companyId,
+ created_by: userId,
  })
  .select()
  .single();
@@ -142,7 +138,7 @@ export const checklistService = {
  items: Array<{ item_id: string; response_value?: string; is_checked?: boolean; notes?: string; asset_id?: string | null }>,
  notes?: string
  ): Promise<ChecklistSubmission> {
- const { data: { user } } = await supabase.auth.getUser();
+ const user = await getCurrentUser();
 
  // Create submission
  const { data: submission, error: submissionError } = await supabase
