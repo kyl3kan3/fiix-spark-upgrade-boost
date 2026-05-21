@@ -6,7 +6,11 @@ import { toast } from "sonner";
 /**
  * Fetches inspections with the given filters
  */
-export const fetchInspections = async (filters: any = {}): Promise<{
+export interface InspectionFilters {
+ [key: string]: unknown;
+}
+
+export const fetchInspections = async (_filters: InspectionFilters = {}): Promise<{
  data: Inspection[],
  error: Error | null
 }> => {

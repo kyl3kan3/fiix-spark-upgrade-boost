@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
 import { logger } from "@/lib/logger";
+import { normalizeError } from "@/lib/errors";
 
 interface UseProfileFetchProps {
  setLoadingState: (loading: boolean) => void;
@@ -58,10 +59,11 @@ export function useProfileFetch({
  logger.log("Profile found:", data);
  return data;
  }
- } catch (error: any) {
- console.error("Error in fetchProfile:", error);
- setErrorState(error.message || "Failed to load profile");
- throw error;
+ } catch (error: unknown) {
+ const normalized = normalizeError(error, "Failed to load profile");
+ console.error("Error in fetchProfile:", normalized.cause);
+ setErrorState(normalized.message);
+ throw normalized.cause instanceof Error ? normalized.cause : new Error(normalized.message);
  } finally {
  setLoadingState(false);
  }

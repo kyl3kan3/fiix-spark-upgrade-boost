@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeError } from "@/lib/errors";
 
 /**
  * Updates a user's profile with company information
@@ -43,9 +44,10 @@ export const updateUserProfileCompany = async (userId: string, companyId: string
  }
  
  return data;
- } catch (error: any) {
- console.error("Error in updateUserProfileCompany:", error);
- throw error;
+ } catch (error: unknown) {
+ const normalized = normalizeError(error, "Failed to update user profile company");
+ console.error("Error in updateUserProfileCompany:", normalized.cause);
+ throw normalized.cause instanceof Error ? normalized.cause : new Error(normalized.message);
  }
 };
 
@@ -65,8 +67,9 @@ export const getUserProfile = async (userId: string) => {
  }
  
  return data;
- } catch (error: any) {
- console.error("Error in getUserProfile:", error);
- throw error;
+ } catch (error: unknown) {
+ const normalized = normalizeError(error, "Failed to fetch profile");
+ console.error("Error in getUserProfile:", normalized.cause);
+ throw normalized.cause instanceof Error ? normalized.cause : new Error(normalized.message);
  }
 };
