@@ -103,15 +103,15 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  <div className="space-y-2">
  <Label htmlFor="parent_id">Parent Location</Label>
  <Select
- value={parentIdValue || ""}
- onValueChange={(value) => setValue("parent_id", value)}
+    value={parentIdValue || "none"}
+    onValueChange={(value) => setValue("parent_id", value === "none" ? "" : value)}
  disabled={isLoading}
  >
  <SelectTrigger>
  <SelectValue placeholder="Select parent location (optional)" />
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="">No parent (root location)</SelectItem>
+      <SelectItem value="none">No parent (root location)</SelectItem>
  {locations
  .filter(location => mode === "edit" ? location.id !== initialData?.parent_id : true)
  .map((location) => (
