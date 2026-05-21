@@ -3,7 +3,6 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { createCompany } from "@/services/company";
 import { FormState, InviteDetails } from "./types";
 import { clearOnboardingStorage, setSetupComplete } from "./storageUtils";
 import { logger } from "@/lib/logger";
@@ -80,50 +79,41 @@ export const useOnboardingSubmit = (
         navigate("/dashboard");
       }, 800);
       return;
-    } else if (state.company) {
- // Create new company since it's required
- try {
- logger.log("Creating new company:", state.company);
- // Fix: Pass company name in the expected format
- const newCompany = await createCompany({
- companyName: state.company // Use companyName instead of company
- });
+     } else if (state.company) {
+  try {
+  logger.log("Completing owner onboarding for company:", state.company);
 
- if (!newCompany.id) throw new Error("Company created without an id");
- const newCompanyId = newCompany.id;
- companyId = newCompanyId;
+  const { data: onboardingResult, error: onboardingError } = await supabase.rpc(
+    "complete_owner_onboarding",
+    {
+      _company_name: state.company,
+      _first_name: firstName,
+      _last_name: lastName,
+      _phone: state.phoneNumber?.trim() || undefined,
+    }
+  );
 
- // Make sure there's a matching organization record
- // First check if organization already exists
- const { data: existingOrg } = await supabase
- .from("organizations")
- .select("id")
- .eq("id", newCompanyId)
- .maybeSingle();
+  if (onboardingError) {
+    console.error("Owner onboarding error:", onboardingError);
+    toast.error(onboardingError.message || "Failed to create company");
+    setSubmitting(false);
+    return;
+  }
 
- if (!existingOrg) {
- // Only insert if it doesn't exist
- const { error: insertError } = await supabase
- .from("organizations")
- .insert({
- id: newCompanyId,
- name: state.company
- });
- 
- if (insertError) {
- console.error("Error creating organization record:", insertError);
- } else {
- logger.log("Created organization record for new company");
- }
- }
- 
- toast.success("Company created successfully!");
- } catch (err: any) {
- console.error("Company creation error:", err);
- toast.error(err.message || "Failed to create company");
- setSubmitting(false);
- return;
- }
+  companyId = (onboardingResult as any)?.company_id;
+
+  if (!companyId) {
+    throw new Error("Company created without an id");
+  }
+
+  logger.log("Owner onboarding completed for company:", companyId);
+  toast.success("Company created successfully!");
+  } catch (err: any) {
+  console.error("Company creation error:", err);
+  toast.error(err.message || "Failed to create company");
+  setSubmitting(false);
+  return;
+  }
  } else {
  // Company is now required
  toast.error("Company information is required");
@@ -131,22 +121,22 @@ export const useOnboardingSubmit = (
  return;
  }
  
- // Now update the profile with all information including company_id
- const { error: profileError } = await supabase
- .from("profiles")
- .update({
- first_name: firstName,
- last_name: lastName,
- role: isInvited ? inviteDetails?.role : "administrator",
- company_id: companyId,
- phone_number: state.phoneNumber?.trim() || null,
- })
- .eq("id", user.id);
+  if (isInvited) {
+  // Now update the profile with non-restricted fields for invited users only.
+  const { error: profileError } = await supabase
+  .from("profiles")
+  .update({
+  first_name: firstName,
+  last_name: lastName,
+  phone_number: state.phoneNumber?.trim() || null,
+  })
+  .eq("id", user.id);
  
- if (profileError) {
- console.error("Profile update error:", profileError);
- throw profileError;
- }
+  if (profileError) {
+  console.error("Profile update error:", profileError);
+  throw profileError;
+  }
+  }
 
  if (isInvited && inviteDetails) {
  // Update invitation status
