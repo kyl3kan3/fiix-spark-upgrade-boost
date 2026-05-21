@@ -1,6 +1,7 @@
 
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "@/assets/maintenease-logo.png";
 
 const Footer = () => {
  const currentYear = new Date().getFullYear();
@@ -76,9 +77,10 @@ const Footer = () => {
  <div className="container mx-auto px-4 py-12 md:py-16">
  <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
  <div className="col-span-2">
- <div className="mb-4">
- <span className="text-2xl font-bold text-maintenease-600">MaintenEase</span>
- </div>
+          <div className="mb-4 flex items-center gap-2">
+            <img src={logo} alt="MaintenEase" className="h-9 w-9" />
+            <span className="text-2xl font-bold text-maintenease-600">MaintenEase</span>
+          </div>
  <p className="text-foreground mb-6 max-w-xs">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
