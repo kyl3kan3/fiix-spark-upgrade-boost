@@ -52,7 +52,7 @@ const OverviewTab: React.FC = () => {
  {/* Summary cards */}
  <section>
  <h2 className="font-display font-bold text-lg mb-3">How things are going</h2>
- <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
  <Summary icon={ListTodo} value={stats.total} label="All jobs" />
  <Summary icon={AlertCircle} value={stats.open} label="Need attention" tone="warning" />
  <Summary icon={Clock} value={stats.inProgress} label="Being worked on" tone="info" />
@@ -69,7 +69,7 @@ const OverviewTab: React.FC = () => {
  {/* Activities + Tasks */}
  <section>
  <h2 className="font-display font-bold text-lg mb-3">What's happening</h2>
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+ <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
  <DashboardRecentActivities />
  <DashboardTasksOverview />
  </div>

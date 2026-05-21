@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import VendorPageHeader from "@/components/vendors/VendorPageHeader";
 import VendorFilters from "@/components/vendors/VendorFilters";
@@ -94,12 +95,12 @@ const VendorsPage = () => {
  if (isLoading) {
  return (
  <DashboardLayout>
- <div className="space-y-4 px-4 pb-6 pt-4 sm:space-y-6 md:px-6 lg:px-8">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
  <div className="flex items-center justify-center h-64">
  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
  </div>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
  }
@@ -114,9 +115,9 @@ const VendorsPage = () => {
  <meta property="og:description" content="Manage maintenance vendors and contractors in one place." />
  <meta property="og:url" content="https://maintenease.com/vendors" />
  </Helmet>
- <div className="space-y-4 px-4 pb-6 pt-4 sm:space-y-6 md:px-6 lg:px-8">
+ <PageContainer className="space-y-6">
  <BackToDashboard />
- 
+
  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
  <VendorPageHeader />
  <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto lg:justify-end">
@@ -164,7 +165,7 @@ const VendorsPage = () => {
  />
  )}
  </div>
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };

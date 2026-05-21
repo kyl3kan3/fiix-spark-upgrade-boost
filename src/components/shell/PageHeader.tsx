@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { PAGE_MAX_WIDTH } from "./PageContainer";
 
 interface PageHeaderProps {
  /** Mono code shown above title, e.g. "DSH · 001" */
@@ -17,7 +18,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
  return (
  <div className={cn("hairline-b bg-background", className)}>
- <div className="px-4 md:px-6 lg:px-8 pt-5 pb-4">
+ <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 pt-6 pb-4")}>
  <div className="flex items-start justify-between gap-4 flex-wrap">
  <div className="min-w-0">
  <h1 className="font-display text-2xl md:text-3xl lg:text-[34px] font-extrabold tracking-tight leading-tight">

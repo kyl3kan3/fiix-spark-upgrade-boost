@@ -9,12 +9,12 @@ interface MetricCardProps {
 
 const MetricCard: React.FC<MetricCardProps> = ({ title, children }) => {
  return (
- <Card>
+ <Card className="min-w-0">
  <CardHeader className="pb-2">
  <CardTitle className="text-sm font-medium">{title}</CardTitle>
  </CardHeader>
  <CardContent>
- <div className="flex items-center justify-center h-[180px]">
+ <div className="flex items-center justify-center min-h-[180px]">
  {children}
  </div>
  </CardContent>

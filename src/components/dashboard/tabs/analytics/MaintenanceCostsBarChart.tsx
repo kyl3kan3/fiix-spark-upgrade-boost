@@ -27,7 +27,7 @@ const MaintenanceCostsBarChart: React.FC<MaintenanceCostsChartProps> = ({
  onDataNotAvailable 
 }) => {
  return (
- <Card>
+ <Card className="min-w-0">
  <CardHeader>
  <CardTitle className="flex items-center gap-2">
  <BarChart3 className="h-5 w-5" />
@@ -35,7 +35,7 @@ const MaintenanceCostsBarChart: React.FC<MaintenanceCostsChartProps> = ({
  </CardTitle>
  </CardHeader>
  <CardContent>
- <div className="h-[250px]" onClick={onDataNotAvailable}>
+ <div className="aspect-[16/9] min-h-[240px]" onClick={onDataNotAvailable}>
  <ResponsiveContainer width="100%" height="100%">
  <RechartBarChart
  data={data}

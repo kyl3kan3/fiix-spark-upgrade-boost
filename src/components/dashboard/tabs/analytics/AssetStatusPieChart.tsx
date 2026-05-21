@@ -25,7 +25,7 @@ const AssetStatusPieChart: React.FC<AssetStatusChartProps> = ({
  onDataNotAvailable 
 }) => {
  return (
- <Card>
+ <Card className="min-w-0">
  <CardHeader>
  <CardTitle className="flex items-center gap-2">
  <PieChart className="h-5 w-5" />
@@ -33,7 +33,7 @@ const AssetStatusPieChart: React.FC<AssetStatusChartProps> = ({
  </CardTitle>
  </CardHeader>
  <CardContent>
- <div className="h-[250px]" onClick={onDataNotAvailable}>
+ <div className="aspect-square min-h-[240px] max-h-[320px] mx-auto" onClick={onDataNotAvailable}>
  <ResponsiveContainer width="100%" height="100%">
  <RechartPieChart>
  <Pie

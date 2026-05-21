@@ -158,9 +158,11 @@
 
   ::selection { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
 
-  /* Bigger comfortable tap targets on touch devices */
+  /* Bigger comfortable tap targets on touch devices.
+     Excludes [role="switch"] — Radix's Switch renders as a <button> and the
+     44px floor would stretch its 24px rounded-full pill into a circle. */
   @media (hover: none) and (pointer: coarse) {
-    button, a, [role="button"] { min-height: 44px; }
+    button:not([role="switch"]), a, [role="button"] { min-height: 44px; }
   }
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import PageHeader from "@/components/shell/PageHeader";
 import ReportsContent from "@/components/features/ReportsContent";
 import { Helmet } from "react-helmet-async";
@@ -21,9 +22,9 @@ const ReportsPage = () => {
  <Button variant="accent" size="lg"><Download className="h-4 w-4" />Download</Button>
  }
  />
- <div className="px-4 md:px-6 lg:px-8 py-6">
+ <PageContainer>
  <ReportsContent />
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };
