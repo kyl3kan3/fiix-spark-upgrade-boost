@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormState, UseOnboardingReturn } from "./types";
 import { getInitialEmail, getInitialCompanyName } from "./storageUtils";
 import { useInvitation } from "./useInvitation";
@@ -21,9 +21,9 @@ export const useOnboarding = (): UseOnboardingReturn => {
  const { isInvited, inviteDetails } = useInvitation(state.email);
 
  // Set fullName function for the useUserData hook
- const setFullName = (fullName: string) => {
- setState(prev => ({ ...prev, fullName }));
- };
+ const setFullName = useCallback((fullName: string) => {
+ setState(prev => (prev.fullName === fullName ? prev : { ...prev, fullName }));
+ }, []);
 
  // Fetch user data
  useUserData(setFullName);
