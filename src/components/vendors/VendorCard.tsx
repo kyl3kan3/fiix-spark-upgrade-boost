@@ -85,7 +85,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
  </div>
  <div className="min-w-0 flex-1">
- <Link to={`/vendors/edit/${vendor.id}`} className="block">
+ <Link to={`/vendors/${vendor.id}/edit`} className="block">
  <h3 className="cursor-pointer break-words font-medium text-foreground transition-colors hover:text-blue-600 dark:hover:text-blue-400">{vendor.name}</h3>
  </Link>
  
