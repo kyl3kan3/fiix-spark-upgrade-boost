@@ -1743,7 +1743,12 @@ export type Database = {
       migrate_company_data: { Args: never; Returns: undefined }
     }
     Enums: {
-      app_role: "administrator" | "manager" | "technician" | "viewer"
+      app_role:
+        | "administrator"
+        | "manager"
+        | "technician"
+        | "viewer"
+        | "super_admin"
       billing_interval: "month" | "year"
       subscription_status:
         | "trialing"
@@ -1881,7 +1886,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["administrator", "manager", "technician", "viewer"],
+      app_role: [
+        "administrator",
+        "manager",
+        "technician",
+        "viewer",
+        "super_admin",
+      ],
       billing_interval: ["month", "year"],
       subscription_status: [
         "trialing",
