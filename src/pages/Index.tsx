@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import RequestPortalSection from "@/components/RequestPortalSection";
 import Testimonials from "@/components/Testimonials";
+import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
@@ -35,6 +36,7 @@ const Index = () => {
  <Features />
  <RequestPortalSection />
  <Testimonials />
+ <Pricing />
  <CTA />
  <section className="container mx-auto px-4 py-10 max-w-5xl">
  <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card px-6 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
