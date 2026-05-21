@@ -4,7 +4,7 @@ import { logger } from "@/lib/logger";
 
 export async function sendInvitationEmail(
  inviteEmail: string, 
- companyName: string, 
+ companyName: string | null,
  token: string, 
  userId: string, 
  invitationId: string

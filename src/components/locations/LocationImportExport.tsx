@@ -45,7 +45,7 @@ export const LocationImportExport: React.FC<LocationImportExportProps> = ({
 
  try {
  // Find parent ID if parent name is provided
- let parentId = null;
+ let parentId: string | null = null;
  if (parentName) {
  const allLocations = await getAllLocations();
  const parentLocation = allLocations.find(loc => loc.name === parentName);

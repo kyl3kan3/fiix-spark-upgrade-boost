@@ -25,7 +25,7 @@ export const useCompanyInfo = () => {
  
  if (company) {
  logger.log("Retrieved company from Supabase:", company);
- setCompanyId(company.id);
+ setCompanyId(company.id ?? null);
  setCompanyInfo(mapCompanyToCompanyInfo(company));
  
  // Ensure setup is marked as complete if we have company data
@@ -97,7 +97,7 @@ export const useCompanyInfo = () => {
  // Create new company
  const company = await createCompany(data);
  if (company) {
- setCompanyId(company.id);
+ setCompanyId(company.id ?? null);
  }
  }
  

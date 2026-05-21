@@ -85,7 +85,15 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  const companyName = company ? company.name : '';
  
  // Count unread messages for each user
- const users = await Promise.all(profiles.map(async (profile) => {
+ const users = await Promise.all(profiles.map(async (profile: {
+ id: string;
+ email: string;
+ first_name: string | null;
+ last_name: string | null;
+ role: string | null;
+ avatar_url: string | null;
+ phone_number: string | null;
+ }) => {
  const { count, error: countError } = await supabase
  .from("messages")
  .select("*", { count: "exact", head: true })

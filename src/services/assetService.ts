@@ -6,14 +6,16 @@ import { getCurrentUser } from "@/services/supabaseHelpers";
 export interface Asset {
  id: string;
  name: string;
- description?: string;
- model?: string;
- serial_number?: string;
- location_id?: string;
- location?: string;
- parent_id?: string;
+ description?: string | null;
+ model?: string | null;
+ serial_number?: string | null;
+ location_id?: string | null;
+ location?: string | null;
+ parent_id?: string | null;
  status: 'active' | 'inactive' | 'maintenance' | 'retired';
- purchase_date?: string;
+ purchase_date?: string | null;
+ image_url?: string | null;
+ company_id?: string | null;
  created_at: string;
  updated_at: string;
 }

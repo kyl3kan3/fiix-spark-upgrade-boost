@@ -1,18 +1,13 @@
 
 import React from "react";
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { LocationForm } from "@/components/locations/LocationForm";
+import { LocationForm, type LocationFormData } from "@/components/locations/LocationForm";
 import { Location } from "@/services/locationService";
 
 interface LocationsDialogProps {
  selectedParentId: string;
  allLocations: Location[];
- onSubmit: (data: {
- name: string;
- description: string;
- parent_id: string | null;
- image_url?: string | null;
- }) => Promise<void>;
+ onSubmit: (data: LocationFormData) => Promise<void>;
  onCancel: () => void;
  isCreating: boolean;
 }

@@ -53,8 +53,8 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
  ...(updates.phone !== undefined && { phone: updates.phone }),
  ...(updates.firstName !== undefined || updates.lastName !== undefined ? { 
  name: `${updates.firstName || member.firstName} ${updates.lastName || member.lastName}`.trim() || member.email,
- avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ? 
- `${(updates.firstName || member.firstName)[0]}${(updates.lastName || member.lastName)[0]}`.toUpperCase() : 
+ avatar: (updates.firstName || member.firstName) && (updates.lastName || member.lastName) ?
+ `${(updates.firstName || member.firstName || "")[0]}${(updates.lastName || member.lastName || "")[0]}`.toUpperCase() :
  (updates.firstName || member.firstName || updates.email || member.email).substring(0, 2).toUpperCase()
  } : {})
  };

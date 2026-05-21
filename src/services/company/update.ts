@@ -20,7 +20,8 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  
  // Check if company with the same name already exists (except for this company)
  if (updateData.name) {
- logger.log("Checking for name conflicts with:", updateData.name);
+ const newName = updateData.name;
+ logger.log("Checking for name conflicts with:", newName);
  
  // Get the current company's name first
  const { data: currentCompany, error: currentCompanyError } = await supabase
@@ -37,7 +38,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  logger.log("Current company name:", currentCompany?.name);
  
  // Only check for conflicts if the name is actually changing
- if (currentCompany && currentCompany.name.toLowerCase() !== updateData.name.toLowerCase()) {
+ if (currentCompany && currentCompany.name.toLowerCase() !== newName.toLowerCase()) {
  logger.log("Name is changing, checking for conflicts...");
  
  const { data: existingCompanies, error: searchError } = await supabase
@@ -54,7 +55,7 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  
  // Check for case-insensitive name conflicts
  const nameConflict = existingCompanies?.find(
- company => company.name.toLowerCase() === updateData.name.toLowerCase()
+ company => company.name.toLowerCase() === newName.toLowerCase()
  );
  
  if (nameConflict) {
@@ -75,9 +76,10 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  };
  
  // Remove undefined values
- Object.keys(finalUpdateData).forEach(key => 
- finalUpdateData[key] === undefined && delete finalUpdateData[key]
- );
+ const mutableUpdate = finalUpdateData as Record<string, unknown>;
+ Object.keys(mutableUpdate).forEach(key => {
+ if (mutableUpdate[key] === undefined) delete mutableUpdate[key];
+ });
  
  logger.log("Final update data:", finalUpdateData);
  

@@ -5,9 +5,10 @@ export interface ProfileData {
  first_name: string | null;
  last_name: string | null;
  role: string;
- company_id: string;
+ company_id: string | null;
  company_name: string | null;
  created_at: string;
+ updated_at?: string;
  avatar_url: string | null;
  phone_number: string | null;
 }

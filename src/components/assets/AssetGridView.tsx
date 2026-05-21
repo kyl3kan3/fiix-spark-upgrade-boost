@@ -23,7 +23,7 @@ import { logger } from "@/lib/logger";
 interface Asset {
  id: string;
  name: string;
- location?: string;
+ location?: string | null;
  status: string;
 }
 
