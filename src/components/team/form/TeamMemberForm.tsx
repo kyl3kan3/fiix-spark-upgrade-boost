@@ -16,6 +16,7 @@ import {
 import { TeamMemberFormValues } from "../types";
 import { teamMemberFormSchema } from "./teamMemberFormSchema";
 import { DialogFooter } from "@/components/ui/dialog";
+import { logger } from "@/lib/logger";
 
 interface TeamMemberFormProps {
  onSubmit: (data: TeamMemberFormValues) => Promise<boolean>;
@@ -40,19 +41,19 @@ const TeamMemberForm: React.FC<TeamMemberFormProps> = ({
  });
 
  const handleSubmit = async (data: TeamMemberFormValues) => {
- console.log("=== FORM SUBMISSION START ===");
- console.log("TeamMemberForm handleSubmit called with:", data);
- console.log("Form state:", { isSubmitting, isDisabled });
+ logger.log("=== FORM SUBMISSION START ===");
+ logger.log("TeamMemberForm handleSubmit called with:", data);
+ logger.log("Form state:", { isSubmitting, isDisabled });
  
  try {
  const result = await onSubmit(data);
- console.log("Form submission result:", result);
+ logger.log("Form submission result:", result);
  
  if (result) {
- console.log("Form submission successful, resetting form");
+ logger.log("Form submission successful, resetting form");
  form.reset();
  } else {
- console.log("Form submission failed");
+ logger.log("Form submission failed");
  }
  
  return result;

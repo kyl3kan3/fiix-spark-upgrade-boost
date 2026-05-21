@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useParams, Navigate } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getGlossaryTerm, glossary } from "@/data/glossary";

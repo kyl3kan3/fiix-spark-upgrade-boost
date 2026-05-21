@@ -1,13 +1,18 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 
 export interface Location {
  id: string;
  name: string;
- description?: string;
- parent_id?: string;
+ description?: string | null;
+ parent_id?: string | null;
  image_url?: string | null;
+ latitude?: number | null;
+ longitude?: number | null;
+ weather_alerts_enabled?: boolean;
+ company_id?: string | null;
  created_at: string;
  updated_at: string;
 }
@@ -18,8 +23,8 @@ export interface LocationWithChildren extends Location {
 
 export interface CreateLocationData {
  name: string;
- description?: string;
- parent_id?: string;
+ description?: string | null;
+ parent_id?: string | null;
  image_url?: string | null;
 }
 
@@ -91,7 +96,7 @@ export const getLocationPath = async (id: string): Promise<string> => {
 
 export const createLocation = async (locationData: CreateLocationData): Promise<Location> => {
  try {
- const { data: { user } } = await supabase.auth.getUser();
+ const user = await getCurrentUser();
  if (!user) {
  toast.error('You must be signed in to create a location.');
  throw new Error('Not authenticated');
@@ -153,7 +158,7 @@ export const updateLocation = async (id: string, updates: Partial<CreateLocation
 export const deleteLocation = async (id: string): Promise<void> => {
  try {
  // Get the current user's company_id
- const { data: { user } } = await supabase.auth.getUser();
+ const user = await getCurrentUser();
  if (!user) {
  toast.error('User not authenticated');
  throw new Error('User not authenticated');

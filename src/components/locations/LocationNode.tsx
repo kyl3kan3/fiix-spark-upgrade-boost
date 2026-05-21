@@ -151,7 +151,7 @@ export const LocationNode: React.FC<LocationNodeProps> = ({
  </div>
  {hasChildren && (
  <AccordionContent className="pl-4">
- {location.children.map((child) => (
+ {(location.children ?? []).map((child) => (
  <LocationNode 
  key={child.id} 
  location={child} 

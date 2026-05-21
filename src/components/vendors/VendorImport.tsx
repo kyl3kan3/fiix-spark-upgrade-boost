@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { logger } from "@/lib/logger";
 
 const VendorImport: React.FC = () => {
  const [expectedCount, setExpectedCount] = useState<number | undefined>();
@@ -18,18 +19,18 @@ const VendorImport: React.FC = () => {
 
  const handleFileWithContext = (e: React.ChangeEvent<HTMLInputElement>) => {
  // Clear previous results immediately when new file is selected
- console.log('🔄 NEW FILE SELECTED - Clearing previous results');
+ logger.log('🔄 NEW FILE SELECTED - Clearing previous results');
  clearResults();
  
  // Add timestamp to ensure fresh processing
  const timestamp = Date.now();
- console.log('⏰ Processing timestamp:', timestamp);
+ logger.log('⏰ Processing timestamp:', timestamp);
  
  handleFile(e, expectedCount, importInstructions, timestamp);
  };
 
  const handleClearFile = () => {
- console.log('🧹 CLEARING FILE INPUT AND RESULTS');
+ logger.log('🧹 CLEARING FILE INPUT AND RESULTS');
  clearResults();
  setFileKey(Date.now()); // Force file input to reset
  };

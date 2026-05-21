@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useSetup } from "./SetupContext";
 import { saveSetupData } from "@/services/setup";
 import { setSetupComplete } from "@/hooks/onboarding/storageUtils";
+import { logger } from "@/lib/logger";
 
 const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {
  const navigate = useNavigate();
@@ -26,7 +27,7 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
  // Triple-check the localStorage flag is set directly
  localStorage.setItem('maintenease_setup_complete', 'true');
  
- console.log("Setup marked as complete on component mount");
+ logger.log("Setup marked as complete on component mount");
  } catch (error) {
  console.error("Error finalizing setup:", error);
  }

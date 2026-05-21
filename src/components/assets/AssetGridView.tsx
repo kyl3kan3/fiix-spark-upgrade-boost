@@ -18,11 +18,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import AssetEmptyState from "./AssetEmptyState";
 import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { logger } from "@/lib/logger";
 
 interface Asset {
  id: string;
  name: string;
- location?: string;
+ location?: string | null;
  status: string;
 }
 
@@ -48,9 +49,9 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
  const canEdit = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
  // Debug logging
- console.log('🔍 AssetGridView - Current user role:', currentUserRole);
- console.log('🔍 AssetGridView - Can delete:', canDelete);
- console.log('🔍 AssetGridView - Can edit:', canEdit);
+ logger.log('🔍 AssetGridView - Current user role:', currentUserRole);
+ logger.log('🔍 AssetGridView - Can delete:', canDelete);
+ logger.log('🔍 AssetGridView - Can edit:', canEdit);
 
  if (isLoading) {
  return (

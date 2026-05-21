@@ -7,7 +7,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
 import PageHeader from "@/components/shell/PageHeader";
 import { getWorkOrderById } from "@/services/workOrderService";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const WorkOrderFormPage: React.FC = () => {
  const { workOrderId } = useParams<{ workOrderId: string }>();
@@ -46,8 +46,8 @@ const WorkOrderFormPage: React.FC = () => {
  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
  </div>
  ) : (
- <WorkOrderForm 
- initialData={workOrderData} 
+ <WorkOrderForm
+ initialData={workOrderData ?? undefined}
  workOrderId={workOrderId}
  onSuccess={handleSuccess}
  />

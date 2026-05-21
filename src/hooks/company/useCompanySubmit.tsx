@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
 import { createCompany, updateCompany } from "@/services/company";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const useCompanySubmit = (
  checkAndFixUserProfile: (companyId: string) => Promise<boolean>
@@ -16,10 +17,10 @@ export const useCompanySubmit = (
  companyId: string | null,
  onUpdate: (data: any) => void
  ): Promise<string | null> => {
- console.log("=== COMPANY SUBMIT START ===");
- console.log("Values:", values);
- console.log("Company ID:", companyId);
- console.log("Logo Preview:", logoPreview ? "Present" : "None");
+ logger.log("=== COMPANY SUBMIT START ===");
+ logger.log("Values:", values);
+ logger.log("Company ID:", companyId);
+ logger.log("Logo Preview:", logoPreview ? "Present" : "None");
  
  // Validate required fields
  if (!values.name?.trim()) {
@@ -51,17 +52,17 @@ export const useCompanySubmit = (
  return null;
  }
  
- console.log("User authenticated:", authData.user.id);
+ logger.log("User authenticated:", authData.user.id);
  
  let resultCompanyId = companyId;
  let operationSuccess = false;
  
  if (companyId) {
  // Update existing company
- console.log("Updating existing company with ID:", companyId);
+ logger.log("Updating existing company with ID:", companyId);
  try {
  const updatedCompany = await updateCompany(companyId, formData);
- console.log("Company updated successfully:", updatedCompany);
+ logger.log("Company updated successfully:", updatedCompany);
  operationSuccess = true;
  toast.success("Company information updated successfully!");
  } catch (updateError: any) {
@@ -71,12 +72,12 @@ export const useCompanySubmit = (
  }
  } else {
  // Create new company
- console.log("Creating new company...");
+ logger.log("Creating new company...");
  try {
  const company = await createCompany(formData);
  if (company?.id) {
  resultCompanyId = company.id;
- console.log("New company created with ID:", company.id);
+ logger.log("New company created with ID:", company.id);
  operationSuccess = true;
  toast.success("Company created successfully!");
  } else {
@@ -93,7 +94,7 @@ export const useCompanySubmit = (
 
  // Handle post-operation tasks
  if (operationSuccess && resultCompanyId) {
- console.log("Linking profile to company:", resultCompanyId);
+ logger.log("Linking profile to company:", resultCompanyId);
  
  try {
  // Update user profile with company_id
@@ -106,13 +107,13 @@ export const useCompanySubmit = (
  console.error("Profile update error:", profileError);
  toast.warning("Company saved but had trouble linking it to your profile. Please try signing out and back in.");
  } else {
- console.log("Profile successfully linked to company");
+ logger.log("Profile successfully linked to company");
  }
  
  // Run additional profile checks
  try {
  const profileFixed = await checkAndFixUserProfile(resultCompanyId);
- console.log("Profile check result:", profileFixed);
+ logger.log("Profile check result:", profileFixed);
  } catch (profileCheckError) {
  console.error("Profile check error:", profileCheckError);
  // Don't fail the whole operation for this
@@ -160,7 +161,7 @@ export const useCompanySubmit = (
  return null;
  } finally {
  setIsSubmitting(false);
- console.log("=== COMPANY SUBMIT END ===");
+ logger.log("=== COMPANY SUBMIT END ===");
  }
  };
 

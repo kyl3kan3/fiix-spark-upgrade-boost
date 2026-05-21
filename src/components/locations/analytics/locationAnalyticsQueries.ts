@@ -24,6 +24,7 @@ export const useAssetCountsQuery = () => {
  
  // Count assets per location
  const counts = data.reduce((acc: Record<string, number>, asset) => {
+ if (!asset.location_id) return acc;
  acc[asset.location_id] = (acc[asset.location_id] || 0) + 1;
  return acc;
  }, {});

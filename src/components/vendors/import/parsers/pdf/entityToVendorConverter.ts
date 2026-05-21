@@ -21,7 +21,7 @@ export function entityToVendor(entity: EntityClassification): VendorImportData {
  };
  
  // Combine products, services, and notes into a description
- const descriptionParts = [];
+ const descriptionParts: string[] = [];
  if (entity.products && entity.products.length > 0) {
  descriptionParts.push(`Products: ${entity.products.join(', ')}`);
  }

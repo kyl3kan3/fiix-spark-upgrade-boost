@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VITE_SUPABASE_URL: https://example.supabase.co
+      VITE_SUPABASE_PUBLISHABLE_KEY: build-only-placeholder
+      VITE_SUPABASE_PROJECT_ID: example
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Uses `npm install` rather than `npm ci` because package-lock.json
+      # is currently out of sync with package.json (several deps — vitest,
+      # tsx, jsbarcode, react-joyride, testing-library — are missing from
+      # the lockfile). Regenerate the lockfile with `npm install` locally
+      # and commit it, then this can be switched back to `npm ci`.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build

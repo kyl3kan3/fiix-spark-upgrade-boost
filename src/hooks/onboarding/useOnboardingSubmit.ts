@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { createCompany } from "@/services/company";
 import { FormState, InviteDetails } from "./types";
 import { clearOnboardingStorage, setSetupComplete } from "./storageUtils";
+import { logger } from "@/lib/logger";
 
 export const useOnboardingSubmit = (
  state: FormState,
@@ -20,7 +21,7 @@ export const useOnboardingSubmit = (
  setSubmitting(true);
 
  try {
- console.log("Starting onboarding submission with state:", state);
+ logger.log("Starting onboarding submission with state:", state);
  const { data: { user } } = await supabase.auth.getUser();
  
  if (!user) {
@@ -34,7 +35,7 @@ export const useOnboardingSubmit = (
  const firstName = names[0];
  const lastName = names.slice(1).join(' ');
  
- console.log("Updating user profile with name:", { firstName, lastName, role: state.role });
+ logger.log("Updating user profile with name:", { firstName, lastName, role: state.role });
  
  // Handle company assignment first to satisfy the NOT NULL constraint
  let companyId: string | undefined;
@@ -56,7 +57,7 @@ export const useOnboardingSubmit = (
           _token: token,
           _first_name: firstName,
           _last_name: lastName,
-          _phone: state.phoneNumber?.trim() || null,
+          _phone: state.phoneNumber?.trim() || undefined,
         }
       );
 
@@ -68,7 +69,7 @@ export const useOnboardingSubmit = (
       }
 
       companyId = (acceptResult as any)?.company_id ?? inviteDetails.organization_id;
-      console.log("Invitation accepted, linked to company:", companyId);
+      logger.log("Invitation accepted, linked to company:", companyId);
 
       setSetupComplete();
       clearOnboardingStorage();
@@ -82,35 +83,37 @@ export const useOnboardingSubmit = (
     } else if (state.company) {
  // Create new company since it's required
  try {
- console.log("Creating new company:", state.company);
+ logger.log("Creating new company:", state.company);
  // Fix: Pass company name in the expected format
  const newCompany = await createCompany({
  companyName: state.company // Use companyName instead of company
  });
- 
- companyId = newCompany.id;
- 
+
+ if (!newCompany.id) throw new Error("Company created without an id");
+ const newCompanyId = newCompany.id;
+ companyId = newCompanyId;
+
  // Make sure there's a matching organization record
  // First check if organization already exists
  const { data: existingOrg } = await supabase
  .from("organizations")
  .select("id")
- .eq("id", newCompany.id)
+ .eq("id", newCompanyId)
  .maybeSingle();
- 
+
  if (!existingOrg) {
  // Only insert if it doesn't exist
  const { error: insertError } = await supabase
  .from("organizations")
  .insert({
- id: newCompany.id,
+ id: newCompanyId,
  name: state.company
  });
  
  if (insertError) {
  console.error("Error creating organization record:", insertError);
  } else {
- console.log("Created organization record for new company");
+ logger.log("Created organization record for new company");
  }
  }
  

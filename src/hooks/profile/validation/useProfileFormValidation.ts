@@ -22,7 +22,7 @@ export function useProfileFormValidation() {
 
  // Validate phone number (optional but must be valid if provided)
  if (data.phone_number && data.phone_number.trim()) {
- const phoneRegex = /^[\d\s\-\+\(\)\.]+$/;
+ const phoneRegex = /^[\d\s\-+().]+$/;
  if (!phoneRegex.test(data.phone_number)) {
  errors.phone_number = "Please enter a valid phone number";
  }

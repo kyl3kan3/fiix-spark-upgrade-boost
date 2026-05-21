@@ -10,10 +10,12 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import AddTeamMemberDialog from "@/components/team/AddTeamMemberDialog";
 import TeamMembersList from "@/components/team/TeamMembersList";
 import TeamMembersGrid from "@/components/team/TeamMembersGrid";
+import type { TeamMember } from "@/components/team/types";
 import PendingInvitationsSection from "@/components/team/PendingInvitationsSection";
 import RolePermissionsOverview from "@/components/team/RolePermissionsOverview";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 import { usePendingInvitations } from "@/hooks/team/usePendingInvitations";
+import { logger } from "@/lib/logger";
 
 const Team = () => {
  const [filters, setFilters] = useState({
@@ -38,10 +40,10 @@ const Team = () => {
  });
 
  // Transform chat users to team members format
- const transformedMembers = filteredMembers.map(member => ({
+ const transformedMembers: TeamMember[] = filteredMembers.map(member => ({
  ...member,
- first_name: member.firstName,
- last_name: member.lastName,
+ first_name: member.firstName ?? "",
+ last_name: member.lastName ?? "",
  joined: new Date().toISOString(),
  lastActive: new Date().toISOString(),
  status: 'active' as const,
@@ -66,7 +68,7 @@ const Team = () => {
  phone?: string;
  companyName?: string;
  }) => {
- console.log('Member updated:', userId, updates);
+ logger.log('Member updated:', userId, updates);
  // This would typically update the member data
  };
 

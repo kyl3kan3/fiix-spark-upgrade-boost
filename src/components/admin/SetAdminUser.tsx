@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { setUserAsAdmin } from "@/utils/adminUtils";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface SetAdminUserProps {
  email?: string;
@@ -48,7 +49,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  if (error) throw error;
 
  setCurrentRole(data?.role || null);
- console.log(`Current role for ${currentUserEmail}: ${data?.role}`);
+ logger.log(`Current role for ${currentUserEmail}: ${data?.role}`);
  } catch (error) {
  console.error("Error checking role:", error);
  setCurrentRole(null);

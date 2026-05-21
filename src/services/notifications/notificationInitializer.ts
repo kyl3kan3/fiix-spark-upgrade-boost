@@ -1,18 +1,19 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Notification as NotificationType } from "./types";
+import { logger } from "@/lib/logger";
 
 // Function to setup push notifications
 export const setupPushNotifications = async (): Promise<void> => {
  if (!("Notification" in window)) {
- console.log("This browser does not support push notifications");
+ logger.log("This browser does not support push notifications");
  return;
  }
 
  const permission = await Notification.requestPermission();
  
  if (permission !== "granted") {
- console.log("Notification permission not granted");
+ logger.log("Notification permission not granted");
  return;
  }
 
@@ -21,7 +22,7 @@ export const setupPushNotifications = async (): Promise<void> => {
  // For simplicity, we're just generating a mock token here
  const mockToken = `web-${Math.random().toString(36).substring(2, 15)}`;
  await registerDeviceToken(mockToken, 'web');
- console.log("Push notification token registered");
+ logger.log("Push notification token registered");
  } catch (error) {
  console.error("Failed to register for push notifications:", error);
  }

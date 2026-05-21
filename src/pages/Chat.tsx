@@ -2,7 +2,7 @@ import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import ChatInterface from "@/components/chat/ChatInterface";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const Chat = () => {
  return (

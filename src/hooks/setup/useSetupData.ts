@@ -58,9 +58,10 @@ export function useSetupData() {
  .single();
 
  if (profileData?.company_name) {
+ const companyName = profileData.company_name;
  setSetupData(prev => ({
  ...prev,
- companyName: profileData.company_name
+ companyName,
  }));
  }
 

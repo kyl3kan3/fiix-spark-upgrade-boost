@@ -1,11 +1,12 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export async function getOrCreateOrganization(userId: string, addStatusUpdate?: (message: string) => void) {
- console.log("🏢 Getting organization for user:", userId);
+ logger.log("🏢 Getting organization for user:", userId);
  addStatusUpdate?.("🏢 Starting organization setup...");
  
- console.log("👤 Fetching user profile...");
+ logger.log("👤 Fetching user profile...");
  addStatusUpdate?.("👤 Fetching your user profile...");
  const { data: profile, error: profileError } = await supabase
  .from("profiles")
@@ -25,10 +26,10 @@ export async function getOrCreateOrganization(userId: string, addStatusUpdate?: 
  throw new Error("No company associated with your account");
  }
 
- console.log("✅ User profile fetched, company_id:", profile.company_id);
+ logger.log("✅ User profile fetched, company_id:", profile.company_id);
  addStatusUpdate?.("✅ Found your company ID");
 
- console.log("🏢 Fetching company information...");
+ logger.log("🏢 Fetching company information...");
  addStatusUpdate?.("🏢 Getting company information...");
  const { data: company, error: companyError } = await supabase
  .from("companies")
@@ -42,10 +43,10 @@ export async function getOrCreateOrganization(userId: string, addStatusUpdate?: 
  throw new Error(`Failed to fetch company information: ${companyError.message}`);
  }
 
- console.log("✅ Company information fetched:", company?.name);
+ logger.log("✅ Company information fetched:", company?.name);
  addStatusUpdate?.("✅ Got company details");
 
- console.log("🔍 Checking if organization exists...");
+ logger.log("🔍 Checking if organization exists...");
  addStatusUpdate?.("🔍 Checking organization record...");
  const { data: existingOrg, error: orgCheckError } = await supabase
  .from("organizations")
@@ -62,7 +63,7 @@ export async function getOrCreateOrganization(userId: string, addStatusUpdate?: 
  let organizationId = profile.company_id;
 
  if (!existingOrg) {
- console.log("➕ Organization doesn't exist, creating it...");
+ logger.log("➕ Organization doesn't exist, creating it...");
  addStatusUpdate?.("➕ Creating organization record...");
  
  const { data: newOrg, error: createOrgError } = await supabase
@@ -81,10 +82,10 @@ export async function getOrCreateOrganization(userId: string, addStatusUpdate?: 
  }
  
  organizationId = newOrg.id;
- console.log("✅ Created organization:", organizationId);
+ logger.log("✅ Created organization:", organizationId);
  addStatusUpdate?.("✅ Organization created successfully");
  } else {
- console.log("✅ Organization exists:", existingOrg.id);
+ logger.log("✅ Organization exists:", existingOrg.id);
  addStatusUpdate?.("✅ Organization already exists");
  }
 

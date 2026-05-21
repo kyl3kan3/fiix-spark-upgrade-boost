@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/marketing/MarketingLayout";

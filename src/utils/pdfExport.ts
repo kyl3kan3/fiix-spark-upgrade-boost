@@ -65,7 +65,9 @@ export const exportReportToPdf = async (
  const tableHeaders = Object.keys(data[0]).map(key => 
  key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
  );
- const tableRows = data.map(item => Object.values(item));
+ const tableRows = data.map(item =>
+ Object.values(item).map((v) => (v == null ? "" : String(v))),
+ );
  
  autoTable(doc, {
  head: [tableHeaders],

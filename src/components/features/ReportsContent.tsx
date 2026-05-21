@@ -15,6 +15,7 @@ import ShareReportDialog from "./reports/ShareReportDialog";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { PaywallGate } from "@/components/billing/PaywallGate";
+import { logger } from "@/lib/logger";
 
 // Stable UUIDs per built-in report type so we can attach photos via the attachments table
 const REPORT_ENTITY_IDS: Record<string, string> = {
@@ -41,14 +42,14 @@ const ReportsContent: React.FC = () => {
  }, []);
  
  const handleGenerateReport = (reportType: string) => {
- console.log("Generating report:", reportType);
+ logger.log("Generating report:", reportType);
  setSelectedReport(reportType);
  toast.success(`${reportType} report generated successfully`);
  };
 
  const handleGenerateCustomReport = (e: React.FormEvent) => {
  e.preventDefault();
- console.log("Generating custom report");
+ logger.log("Generating custom report");
  setSelectedReport("Custom Report");
  toast.success("Custom report generated successfully");
  };

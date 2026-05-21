@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
@@ -62,6 +63,7 @@ const ApiKeysPage = lazy(() => import("@/pages/ApiKeysPage"));
 const SsoPage = lazy(() => import("@/pages/SsoPage"));
 
 export const AppRoutes = () => (
+ <ErrorBoundary>
  <Suspense fallback={null}>
  <Routes>
  <Route path="/" element={<Index />} />
@@ -143,4 +145,5 @@ export const AppRoutes = () => (
  <Route path="*" element={<NotFound />} />
  </Routes>
  </Suspense>
+ </ErrorBoundary>
 );

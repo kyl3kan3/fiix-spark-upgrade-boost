@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 interface UseProfileFormProps {
  initialData: ProfileData | null;
- onSave: (data: Partial<ProfileData>) => Promise<ProfileData>;
+ onSave: (data: Partial<ProfileData>) => Promise<ProfileData | undefined>;
 }
 
 export function useProfileForm({ initialData, onSave }: UseProfileFormProps) {

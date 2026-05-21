@@ -3,23 +3,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { CompanyInfo } from "@/components/profile/company/types";
 import { CompanyData } from "./types";
 import { mapCompanyInfoToCompanyData } from "./utils";
+import { logger } from "@/lib/logger";
 
 /**
  * Updates an existing company
  */
 export const updateCompany = async (companyId: string, companyInfo: Partial<CompanyInfo>): Promise<CompanyData> => {
- console.log("=== UPDATE COMPANY START ===");
- console.log("Company ID:", companyId);
- console.log("Company Info to update:", companyInfo);
+ logger.log("=== UPDATE COMPANY START ===");
+ logger.log("Company ID:", companyId);
+ logger.log("Company Info to update:", companyInfo);
  
  try {
  // Convert CompanyInfo to CompanyData format
  const updateData = mapCompanyInfoToCompanyData(companyInfo);
- console.log("Mapped update data:", updateData);
+ logger.log("Mapped update data:", updateData);
  
  // Check if company with the same name already exists (except for this company)
  if (updateData.name) {
- console.log("Checking for name conflicts with:", updateData.name);
+ const newName = updateData.name;
+ logger.log("Checking for name conflicts with:", newName);
  
  // Get the current company's name first
  const { data: currentCompany, error: currentCompanyError } = await supabase
@@ -33,11 +35,11 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  throw new Error(`Unable to verify company information: ${currentCompanyError.message}`);
  }
  
- console.log("Current company name:", currentCompany?.name);
+ logger.log("Current company name:", currentCompany?.name);
  
  // Only check for conflicts if the name is actually changing
- if (currentCompany && currentCompany.name.toLowerCase() !== updateData.name.toLowerCase()) {
- console.log("Name is changing, checking for conflicts...");
+ if (currentCompany && currentCompany.name.toLowerCase() !== newName.toLowerCase()) {
+ logger.log("Name is changing, checking for conflicts...");
  
  const { data: existingCompanies, error: searchError } = await supabase
  .from("companies")
@@ -49,11 +51,11 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  throw new Error(`Failed to check for duplicate company names: ${searchError.message}`);
  }
  
- console.log("Existing companies:", existingCompanies);
+ logger.log("Existing companies:", existingCompanies);
  
  // Check for case-insensitive name conflicts
  const nameConflict = existingCompanies?.find(
- company => company.name.toLowerCase() === updateData.name.toLowerCase()
+ company => company.name.toLowerCase() === newName.toLowerCase()
  );
  
  if (nameConflict) {
@@ -61,9 +63,9 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  throw new Error("A company with this name already exists. Please choose a different name.");
  }
  
- console.log("No name conflicts found");
+ logger.log("No name conflicts found");
  } else {
- console.log("Name is not changing, skipping conflict check");
+ logger.log("Name is not changing, skipping conflict check");
  }
  }
  
@@ -74,11 +76,12 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  };
  
  // Remove undefined values
- Object.keys(finalUpdateData).forEach(key => 
- finalUpdateData[key] === undefined && delete finalUpdateData[key]
- );
+ const mutableUpdate = finalUpdateData as Record<string, unknown>;
+ Object.keys(mutableUpdate).forEach(key => {
+ if (mutableUpdate[key] === undefined) delete mutableUpdate[key];
+ });
  
- console.log("Final update data:", finalUpdateData);
+ logger.log("Final update data:", finalUpdateData);
  
  const { data, error } = await supabase
  .from("companies")
@@ -110,8 +113,8 @@ export const updateCompany = async (companyId: string, companyInfo: Partial<Comp
  throw new Error("Company update completed but no data was returned. Please refresh and try again.");
  }
  
- console.log("Company updated successfully:", data);
- console.log("=== UPDATE COMPANY SUCCESS ===");
+ logger.log("Company updated successfully:", data);
+ logger.log("=== UPDATE COMPANY SUCCESS ===");
  return data;
  } catch (error) {
  console.error("=== UPDATE COMPANY ERROR ===");

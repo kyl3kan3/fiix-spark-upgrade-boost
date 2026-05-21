@@ -18,7 +18,7 @@ const locationSchema = z.object({
  image_url: z.string().url().nullable().optional(),
 });
 
-type LocationFormData = z.infer<typeof locationSchema>;
+export type LocationFormData = z.infer<typeof locationSchema>;
 
 interface LocationFormProps {
  locations: Location[];
