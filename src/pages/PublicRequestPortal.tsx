@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 import { AlertTriangle, CheckCircle2, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";

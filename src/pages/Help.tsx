@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import { HelpCircle } from "lucide-react";
 import { HelpSearchBar } from "@/components/help/components/HelpSearchBar";

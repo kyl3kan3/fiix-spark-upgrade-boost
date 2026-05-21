@@ -7,7 +7,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
 import PageHeader from "@/components/shell/PageHeader";
 import { getWorkOrderById } from "@/services/workOrderService";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const WorkOrderFormPage: React.FC = () => {
  const { workOrderId } = useParams<{ workOrderId: string }>();

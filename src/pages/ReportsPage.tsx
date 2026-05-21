@@ -2,7 +2,7 @@ import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import ReportsContent from "@/components/features/ReportsContent";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 

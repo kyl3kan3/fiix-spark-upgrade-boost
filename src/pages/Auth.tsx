@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { AuthContainer } from "@/components/auth/AuthContainer";
 
 const Auth: React.FC = () => {
