@@ -3,6 +3,12 @@ import { getStorageItem, removeStorageItem, setStorageItem } from "@/utils/stora
 import { logger } from "@/lib/logger";
 
 export const getInitialEmail = (): string => {
+  const hasPendingInvite = !!getStorageItem("pending_invite_token");
+  if (!hasPendingInvite) {
+    removeStorageItem("pending_auth_email");
+    return "";
+  }
+
  return getStorageItem("pending_auth_email") || "";
 };
 
