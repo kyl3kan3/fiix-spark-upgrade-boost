@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import logo from "@/assets/maintenease-logo.png";
 
 const NavbarApp = () => {
  const navigate = useNavigate();
@@ -32,10 +33,11 @@ const NavbarApp = () => {
  <header className="bg-card border-b border-border sticky top-0 z-50">
  <div className="container mx-auto px-4">
  <div className="flex justify-between items-center h-16">
- {/* Logo */}
- <Link to="/dashboard" className="flex items-center">
- <span className="text-xl font-bold text-maintenease-600">MaintenEase</span>
- </Link>
+          {/* Logo */}
+          <Link to="/dashboard" className="flex items-center gap-2">
+            <img src={logo} alt="MaintenEase" className="h-8 w-8" />
+            <span className="text-xl font-bold text-maintenease-600">MaintenEase</span>
+          </Link>
 
  {/* Mobile menu button */}
  <div className="flex md:hidden">
