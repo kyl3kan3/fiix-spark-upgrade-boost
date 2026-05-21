@@ -62,6 +62,8 @@ const RequestsInboxPage = lazy(() => import("@/pages/RequestsInboxPage"));
 const AutomationsPage = lazy(() => import("@/pages/AutomationsPage"));
 const ApiKeysPage = lazy(() => import("@/pages/ApiKeysPage"));
 const SsoPage = lazy(() => import("@/pages/SsoPage"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 
 export const AppRoutes = () => (
  <ErrorBoundary>
@@ -72,6 +74,8 @@ export const AppRoutes = () => (
  <Route path="/auth" element={<Auth />} />
  <Route path="/login" element={<Navigate to="/auth" replace />} />
  <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
+ <Route path="/forgot-password" element={<ForgotPassword />} />
+ <Route path="/reset-password" element={<ResetPassword />} />
  <Route path="/feature/:title" element={<FeatureDemoPage />} />
  <Route path="/pricing" element={<PricingPage />} />
  <Route path="/privacy" element={<PrivacyPolicy />} />
