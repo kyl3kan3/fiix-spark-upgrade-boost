@@ -16,7 +16,7 @@ import {
   MousePointerClick,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import { useAuth } from "@/hooks/auth";
 import {
   Bar,
   BarChart,
@@ -68,11 +68,22 @@ const RANGE_OPTIONS = [7, 14, 30, 60, 90];
 
 const AdminAnalyticsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAdminUser, isLoading: roleLoading } = useAdminStatus();
+  const { user } = useAuth();
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean | null>(null);
   const [days, setDays] = useState(30);
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!user?.id) { setIsSuperAdmin(false); return; }
+      const { data, error } = await supabase.rpc("is_super_admin", { _user_id: user.id });
+      if (!cancelled) setIsSuperAdmin(!error && data === true);
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   const load = async (range: number) => {
     setLoading(true);
@@ -107,9 +118,9 @@ const AdminAnalyticsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!roleLoading && isAdminUser) load(days);
+    if (isSuperAdmin) load(days);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [days, roleLoading, isAdminUser]);
+  }, [days, isSuperAdmin]);
 
   const fmtDate = (s: string) => s.slice(5);
 
@@ -129,7 +140,7 @@ const AdminAnalyticsPage: React.FC = () => {
     [data],
   );
 
-  if (roleLoading) {
+  if (isSuperAdmin === null) {
     return (
       <DashboardLayout>
         <div className="flex h-64 items-center justify-center">
@@ -139,13 +150,13 @@ const AdminAnalyticsPage: React.FC = () => {
     );
   }
 
-  if (!isAdminUser) {
+  if (!isSuperAdmin) {
     return (
       <DashboardLayout>
         <div className="mx-auto max-w-xl py-16 text-center">
-          <h1 className="text-2xl font-semibold mb-2">Admin access required</h1>
+          <h1 className="text-2xl font-semibold mb-2">Super admin access required</h1>
           <p className="text-muted-foreground mb-6">
-            You need administrator permissions to view site analytics.
+            Only the platform super admin can view site analytics.
           </p>
           <Button onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
         </div>
