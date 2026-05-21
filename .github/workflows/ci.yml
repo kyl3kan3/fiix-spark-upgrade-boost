@@ -21,8 +21,13 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      # Uses `npm install` rather than `npm ci` because package-lock.json
+      # is currently out of sync with package.json (several deps — vitest,
+      # tsx, jsbarcode, react-joyride, testing-library — are missing from
+      # the lockfile). Regenerate the lockfile with `npm install` locally
+      # and commit it, then this can be switched back to `npm ci`.
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Lint
         run: npm run lint

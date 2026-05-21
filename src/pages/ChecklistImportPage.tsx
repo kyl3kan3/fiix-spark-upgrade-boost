@@ -158,7 +158,7 @@ const ChecklistImportPage: React.FC = () => {
  const result = await mammoth.extractRawText({ arrayBuffer: buf });
  return result.value
  .split(/\r?\n/)
- .map((l) => l.replace(/^[\s\-\*\u2022\d\.\)\(]+/, "").trim())
+ .map((l) => l.replace(/^[\s\-*\u2022\d.)(]+/, "").trim())
  .filter((l) => l.length > 0)
  .map<DraftItem>((title) => ({ title, is_required: false, sourceFile: file.name }));
  };
@@ -283,7 +283,7 @@ const ChecklistImportPage: React.FC = () => {
 
  // Bulk selection / actions
  const toggleSelect = (i: number) =>
- setSelected((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+ setSelected((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; });
  const toggleSelectAll = () =>
  setSelected((prev) => prev.size === items.length ? new Set() : new Set(items.map((_, i) => i)));
  const bulkMarkRequired = (required: boolean) => {

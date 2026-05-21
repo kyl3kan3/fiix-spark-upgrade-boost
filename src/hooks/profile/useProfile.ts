@@ -32,8 +32,6 @@ export function useProfile() {
  const updatedProfile = await saveProfileAction(profile.id, updates);
  handleProfileUpdate(updatedProfile);
  return updatedProfile;
- } catch (error) {
- throw error;
  } finally {
  setSavingState(false);
  }
@@ -47,8 +45,6 @@ export function useProfile() {
  const updatedProfile = await updateAvatarAction(profile.id, file);
  handleProfileUpdate(updatedProfile);
  return updatedProfile;
- } catch (error) {
- throw error;
  } finally {
  setSavingState(false);
  }
