@@ -14,6 +14,7 @@ import {
  SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
  useSidebar,
 } from "@/components/ui/sidebar";
+import logo from "@/assets/maintenease-logo.png";
 
 interface DashboardSidebarProps {
  isOpen?: boolean;
@@ -83,9 +84,9 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = () => {
  <Sidebar collapsible="icon" className="border-r border-sidebar-border">
  <SidebarHeader className="border-b border-sidebar-border">
  <div className={cn("flex items-center gap-2.5 px-2 py-2", collapsed && "justify-center px-0")}>
- <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-primary shadow-glow">
- <Sparkles className="h-4 w-4 text-primary-foreground" />
- </div>
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-gradient-primary shadow-glow">
+            <img src={logo} alt="MaintenEase" className="h-9 w-9 object-contain" />
+          </div>
  {!collapsed && (
  <div className="flex flex-col leading-tight">
  <span className="font-semibold tracking-tight text-sidebar-foreground">MaintenEase</span>
