@@ -14,6 +14,7 @@ import {
  SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
  useSidebar,
 } from "@/components/ui/sidebar";
+import logo from "@/assets/maintenease-logo.png";
 
 interface DashboardSidebarProps {
  isOpen?: boolean;
