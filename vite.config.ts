@@ -19,13 +19,6 @@ export default defineConfig(({ mode }) => ({
         manualChunks: (id) => {
           if (!id.includes("node_modules")) return undefined;
           if (id.includes("/react-router")) return "vendor-router";
-          if (
-            id.includes("/react-dom") ||
-            id.includes("/scheduler/") ||
-            id.includes("/react/") ||
-            id.includes("/react/jsx-runtime") ||
-            id.includes("/react/jsx-dev-runtime")
-          ) return "vendor-react";
           if (id.includes("/@supabase/")) return "vendor-supabase";
           if (id.includes("/recharts/") || id.includes("/d3-")) return "vendor-charts";
           if (id.includes("/jspdf") || id.includes("/html2canvas")) return "vendor-pdf";
