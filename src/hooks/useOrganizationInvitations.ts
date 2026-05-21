@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface OrganizationInvitation {
  id: string;
@@ -113,7 +114,7 @@ export const useOrganizationInvitations = (
  throw new Error(`Error creating organization: ${createOrgError.message}`);
  }
  
- console.log("Created missing organization record for company:", organizationId);
+ logger.log("Created missing organization record for company:", organizationId);
  }
  }
 

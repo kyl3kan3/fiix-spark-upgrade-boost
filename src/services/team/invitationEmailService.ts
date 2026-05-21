@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export async function sendInvitationEmail(
  inviteEmail: string, 
@@ -8,7 +9,7 @@ export async function sendInvitationEmail(
  userId: string, 
  invitationId: string
 ) {
- console.log("Sending invitation email...");
+ logger.log("Sending invitation email...");
 
   // Always send invitations pointing at the production domain so recipients
   // never land on a preview/lovable.app/lovable.dev URL. If the app is being
@@ -45,7 +46,7 @@ export async function sendInvitationEmail(
  </div>
  `;
 
- console.log("📧 Invoking send-email edge function for invitation...");
+ logger.log("📧 Invoking send-email edge function for invitation...");
 
  try {
  const { data, error } = await supabase.functions.invoke("send-email", {
@@ -62,7 +63,7 @@ export async function sendInvitationEmail(
  if (!data || !data.success) {
  throw new Error(data?.error || "Email sending failed");
  }
- console.log("Invitation email sent successfully");
+ logger.log("Invitation email sent successfully");
  } catch (error) {
  console.error("❌ Invitation email sending failed:", error);
  throw error;

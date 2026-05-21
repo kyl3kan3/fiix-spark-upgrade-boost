@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { logger } from "@/lib/logger";
 
 interface UserInfoEditorProps {
  open: boolean;
@@ -51,7 +52,7 @@ const UserInfoEditor: React.FC<UserInfoEditorProps> = ({
  const handleSubmit = (data: any) => {
  setIsSaving(true);
  try {
- console.log("Submitting user info update:", data);
+ logger.log("Submitting user info update:", data);
  
  // Call the onUserUpdated callback with all form data including phone
  onUserUpdated({

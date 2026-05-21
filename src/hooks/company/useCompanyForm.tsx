@@ -5,10 +5,11 @@ import { useCompanyData } from "./useCompanyData";
 import { useUserProfile } from "./useUserProfile";
 import { useCompanySubmit } from "./useCompanySubmit";
 import { useCompanyFormSubmit } from "./useCompanyFormSubmit";
+import { logger } from "@/lib/logger";
 
 export const useCompanyForm = (initialData: any, onUpdate: (data: any) => void) => {
- console.log("=== useCompanyForm initialized ===");
- console.log("Initial data:", initialData);
+ logger.log("=== useCompanyForm initialized ===");
+ logger.log("Initial data:", initialData);
  
  const { form, logoPreview, handleLogoChange, setLogoPreview, isInitialized } = useCompanyFormCore(initialData, onUpdate);
  const { companyId: dataCompanyId, isLoading: isDataLoading } = useCompanyData(form, setLogoPreview);
@@ -21,7 +22,7 @@ export const useCompanyForm = (initialData: any, onUpdate: (data: any) => void) 
  // Sync company ID when data loads
  useEffect(() => {
  if (dataCompanyId !== companyId) {
- console.log("Syncing company ID:", dataCompanyId);
+ logger.log("Syncing company ID:", dataCompanyId);
  setCompanyId(dataCompanyId);
  }
  }, [dataCompanyId, companyId]);
@@ -34,11 +35,11 @@ export const useCompanyForm = (initialData: any, onUpdate: (data: any) => void) 
  setCompanyId
  );
 
- console.log("=== useCompanyForm state ===");
- console.log("Company ID:", companyId);
- console.log("Is submitting:", isSubmitting);
- console.log("Is data loading:", isDataLoading);
- console.log("Is initialized:", isInitialized);
+ logger.log("=== useCompanyForm state ===");
+ logger.log("Company ID:", companyId);
+ logger.log("Is submitting:", isSubmitting);
+ logger.log("Is data loading:", isDataLoading);
+ logger.log("Is initialized:", isInitialized);
 
  return {
  form,

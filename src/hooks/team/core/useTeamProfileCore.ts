@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TeamProfileData, TeamProfileResult } from "../types";
+import { logger } from "@/lib/logger";
 
 /**
  * Core hook for team profile data fetching and management
@@ -17,7 +18,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  setIsLoading(true);
  setError(null);
  
- console.log("Starting profile fetch...");
+ logger.log("Starting profile fetch...");
  
  // Get current user with better error handling
  const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -25,7 +26,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  if (userError) {
  // Handle specific auth errors more gracefully
  if (userError.message.includes("Auth session missing")) {
- console.log("No active session found - user needs to log in");
+ logger.log("No active session found - user needs to log in");
  setError("Please log in to access this feature");
  setProfileData(null);
  setUserId(null);
@@ -41,21 +42,21 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  }
  
  if (!user) {
- console.log("No authenticated user found");
+ logger.log("No authenticated user found");
  setProfileData(null);
  setUserId(null);
  setIsLoading(false);
  return null;
  }
  
- console.log("User authenticated:", user.id);
+ logger.log("User authenticated:", user.id);
  setUserId(user.id);
  
  // Make sure required fields are included
  const fieldsToFetch = [...new Set([...fields, 'company_id'])];
  const selectFields = fieldsToFetch.join(', ');
  
- console.log("Fetching profile with fields:", selectFields);
+ logger.log("Fetching profile with fields:", selectFields);
  
  // Get profile data
  const { data, error: fetchError } = await supabase
@@ -73,7 +74,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  }
 
  if (!data) {
- console.log("No profile data found for user");
+ logger.log("No profile data found for user");
  setError("No profile found for user");
  setProfileData(null);
  setIsLoading(false);
@@ -94,7 +95,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  // Use role from user_roles if available, fallback to profiles.role
  const userRole = roleData?.role || (data as any).role || null;
  
- console.log("Profile data fetched successfully:", data, "Role:", userRole);
+ logger.log("Profile data fetched successfully:", data, "Role:", userRole);
  
  // Process and validate the profile data
  if (typeof data === 'object' && data !== null) {
@@ -111,7 +112,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  };
  setProfileData(profileData);
  setError(null);
- console.log("Profile processed successfully");
+ logger.log("Profile processed successfully");
  } else {
  console.warn("Invalid profile data: missing company_id", data);
  setError("Profile missing required company information");

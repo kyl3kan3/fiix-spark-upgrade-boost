@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Ban } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 const DeleteAccountButton: React.FC = () => {
  const [open, setOpen] = useState(false);
@@ -16,9 +17,9 @@ const DeleteAccountButton: React.FC = () => {
  setIsDeleting(true);
 
     try {
-      console.log("[delete-account] starting");
+      logger.log("[delete-account] starting");
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      console.log("[delete-account] session", { hasSession: !!session, sessionError });
+      logger.log("[delete-account] session", { hasSession: !!session, sessionError });
 
       if (sessionError || !session) {
         // No session — nothing to delete on the client side. Just bounce to /auth.
@@ -38,7 +39,7 @@ const DeleteAccountButton: React.FC = () => {
         "delete-user",
         { method: "POST" }
       );
-      console.log("[delete-account] invoke result", { body, invokeError });
+      logger.log("[delete-account] invoke result", { body, invokeError });
 
       // Detect 401 from FunctionsHttpError — the user was already deleted in a
       // prior attempt and the stale JWT is no longer valid. Treat as success.

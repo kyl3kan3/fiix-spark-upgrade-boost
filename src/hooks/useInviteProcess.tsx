@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { logger } from "@/lib/logger";
 
 export const useInviteProcess = () => {
  const navigate = useNavigate();
@@ -111,7 +112,7 @@ export const useInviteProcess = () => {
  if (createOrgError) {
  console.error("Error creating organization:", createOrgError);
  } else {
- console.log("Created organization from company for invitation");
+ logger.log("Created organization from company for invitation");
  }
  }
  }

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { isSetupCompleted, resetSetupData } from "@/services/setup";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const useSetupPageState = () => {
  const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const useSetupPageState = () => {
  useEffect(() => {
  const forceSetup = searchParams.get('forceSetup');
  if (forceSetup === 'true') {
- console.log("Force setup mode activated");
+ logger.log("Force setup mode activated");
  setForceSetupMode(true);
  
  // Clear setup flag in localStorage when force setup is enabled
@@ -40,7 +41,7 @@ export const useSetupPageState = () => {
  
  setIsAuthenticated(!!data.user);
  if (!data.user) {
- console.log("No authenticated user found in setup page, redirecting to auth");
+ logger.log("No authenticated user found in setup page, redirecting to auth");
  navigate('/auth');
  }
  } catch (err) {
@@ -61,7 +62,7 @@ export const useSetupPageState = () => {
  setIsLoading(true);
  try {
  if (forceSetupMode) {
- console.log("Force setup mode active, bypassing setup completion check");
+ logger.log("Force setup mode active, bypassing setup completion check");
  setShowWelcomeBack(false);
  } else {
  const setupComplete = await isSetupCompleted();
@@ -70,7 +71,7 @@ export const useSetupPageState = () => {
  setShowWelcomeBack(true);
  toast.info("Setup has already been completed. You can edit your settings here.");
  } else {
- console.log("Setup not completed");
+ logger.log("Setup not completed");
  setShowWelcomeBack(false);
  }
  }

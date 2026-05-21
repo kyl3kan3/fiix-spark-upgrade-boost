@@ -5,6 +5,7 @@ import { useProfileActions } from "./useProfileActions";
 import { useProfileState } from "./useProfileState";
 import { useProfileFetch } from "./useProfileFetch";
 import { ProfileData } from "@/components/profile/types";
+import { logger } from "@/lib/logger";
 
 export function useProfile() {
  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -58,7 +59,7 @@ export function useProfile() {
 
  // Only fetch if user is authenticated and available
  if (!isAuthenticated || !user?.id) {
- console.log("useProfile: User not authenticated, clearing profile");
+ logger.log("useProfile: User not authenticated, clearing profile");
  setLoadingState(false);
  setProfile(null);
  clearError();
@@ -66,7 +67,7 @@ export function useProfile() {
  }
 
  try {
- console.log("Fetching profile for user:", user.id);
+ logger.log("Fetching profile for user:", user.id);
  const profileData = await fetchProfile(user.id, user.email);
  setProfile(profileData);
  clearError();
@@ -79,15 +80,15 @@ export function useProfile() {
  useEffect(() => {
  // Wait for auth to finish loading before making decisions
  if (authLoading) {
- console.log("useProfile: Auth still loading, waiting...");
+ logger.log("useProfile: Auth still loading, waiting...");
  return;
  }
 
  if (isAuthenticated && user?.id) {
- console.log("useProfile: User authenticated, fetching profile");
+ logger.log("useProfile: User authenticated, fetching profile");
  refreshProfile();
  } else {
- console.log("useProfile: User not authenticated or no user ID");
+ logger.log("useProfile: User not authenticated or no user ID");
  setLoadingState(false);
  setProfile(null);
  clearError();

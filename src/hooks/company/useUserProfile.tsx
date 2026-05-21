@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const useUserProfile = () => {
  const [userId, setUserId] = useState<string | null>(null);
@@ -11,7 +12,7 @@ export const useUserProfile = () => {
  const { data: { user } } = await supabase.auth.getUser();
  if (user) {
  setUserId(user.id);
- console.log("Current user ID:", user.id);
+ logger.log("Current user ID:", user.id);
  }
  };
  
@@ -35,14 +36,14 @@ export const useUserProfile = () => {
  return false;
  }
  
- console.log("Current user profile:", profile);
+ logger.log("Current user profile:", profile);
  
  const { data: { user } } = await supabase.auth.getUser();
  const email = user?.email || '';
  
  // If profile doesn't exist or company_id is not set
  if (!profile || !profile.company_id) {
- console.log("Fixing user profile - setting company_id and role");
+ logger.log("Fixing user profile - setting company_id and role");
  
  // Try to update/create profile
  const { error: updateError } = await supabase
@@ -59,7 +60,7 @@ export const useUserProfile = () => {
  
  // If RLS error, try a workaround by having the user sign out and back in
  if (updateError.message.includes("violates row-level security policy")) {
- console.log("Detected RLS error, will try refreshing auth session");
+ logger.log("Detected RLS error, will try refreshing auth session");
  
  // Try to refresh the session
  const { data: sessionData, error: refreshError } = await supabase.auth.refreshSession();
@@ -70,7 +71,7 @@ export const useUserProfile = () => {
  }
  
  if (sessionData.session) {
- console.log("Session refreshed, trying profile update again");
+ logger.log("Session refreshed, trying profile update again");
  
  // Try update again after session refresh
  const { error: retryError } = await supabase
@@ -93,7 +94,7 @@ export const useUserProfile = () => {
  
  return false;
  } else {
- console.log("User profile fixed successfully");
+ logger.log("User profile fixed successfully");
  return true;
  }
  }

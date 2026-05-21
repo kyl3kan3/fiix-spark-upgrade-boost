@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { SetupData } from "./setupTypes";
+import { logger } from "@/lib/logger";
 
 /**
  * Load setup data from Supabase (if authenticated) or localStorage
@@ -11,7 +12,7 @@ export const loadSetupData = async (): Promise<SetupData> => {
  const { data, error } = await supabase.auth.getUser();
  
  if (!error && data.user) {
- console.log("User authenticated, loading from Supabase");
+ logger.log("User authenticated, loading from Supabase");
  
  // Fetch system settings from Supabase
  const { data: settings, error: settingsError } = await supabase
@@ -25,7 +26,7 @@ export const loadSetupData = async (): Promise<SetupData> => {
  }
  
  if (settings) {
- console.log("Found settings in Supabase:", settings);
+ logger.log("Found settings in Supabase:", settings);
  
  // Convert settings to our SetupData format with proper type checking
  const setupData: SetupData = {
@@ -47,7 +48,7 @@ export const loadSetupData = async (): Promise<SetupData> => {
  } 
  
  // Fallback to localStorage
- console.log("User not authenticated, loading from localStorage only");
+ logger.log("User not authenticated, loading from localStorage only");
  const savedData = localStorage.getItem('maintenease_setup');
  
  if (savedData) {
@@ -97,11 +98,11 @@ export const saveSetupData = async (
  const { data, error } = await supabase.auth.getUser();
  
  if (error || !data.user) {
- console.log("User not authenticated, saving to localStorage only");
+ logger.log("User not authenticated, saving to localStorage only");
  return;
  }
  
- console.log("User authenticated, saving to Supabase", setupData);
+ logger.log("User authenticated, saving to Supabase", setupData);
  
  // Convert setupData to database format
  const dbData = {
@@ -128,7 +129,7 @@ export const saveSetupData = async (
  
  if (existingSettings?.id) {
  // Update existing record
- console.log("Updating existing settings");
+ logger.log("Updating existing settings");
  const { error: updateError } = await supabase
  .from("system_settings")
  .update(dbData)
@@ -140,7 +141,7 @@ export const saveSetupData = async (
  }
  } else {
  // Insert new record
- console.log("Creating new settings");
+ logger.log("Creating new settings");
  const { error: insertError } = await supabase
  .from("system_settings")
  .insert([dbData]);
@@ -151,8 +152,8 @@ export const saveSetupData = async (
  }
  }
  
- console.log("Setup data saved successfully");
- console.log("Updated completion status:", isSetupComplete);
+ logger.log("Setup data saved successfully");
+ logger.log("Updated completion status:", isSetupComplete);
  } catch (error) {
  console.error("Error saving setup data:", error);
  throw error;
@@ -208,7 +209,7 @@ export const resetSetupData = async (): Promise<void> => {
  }
  }
  
- console.log("Setup data reset successfully");
+ logger.log("Setup data reset successfully");
  } catch (error) {
  console.error("Error resetting setup data:", error);
  throw error;

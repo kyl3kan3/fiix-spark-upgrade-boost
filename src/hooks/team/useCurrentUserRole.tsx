@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useUserProfile } from "./useUserProfile";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export const useCurrentUserRole = () => {
  const { profileData, isLoading: isProfileLoading, error: profileError, refreshProfile } = useUserProfile(['role']);
@@ -28,9 +29,9 @@ export const useCurrentUserRole = () => {
  setCurrentUserRole(role);
  
  if (role) {
- console.log(`User role loaded: ${role}`);
+ logger.log(`User role loaded: ${role}`);
  } else {
- console.log("No role data found for user");
+ logger.log("No role data found for user");
  // Set a default role to prevent blocking UI completely
  setCurrentUserRole('user');
  }

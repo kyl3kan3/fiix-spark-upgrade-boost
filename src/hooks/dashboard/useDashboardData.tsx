@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/auth";
 import { useProfile } from "@/hooks/profile/useProfile";
 import { fetchUserCompany } from "@/services/company";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export function useDashboardData() {
  const { user, isLoading: authLoading } = useAuth();
@@ -51,7 +52,7 @@ export function useDashboardData() {
  
  timeoutRef.current = setTimeout(() => {
  if (isMounted.current && isLoading) {
- console.log("Dashboard data loading timeout triggered");
+ logger.log("Dashboard data loading timeout triggered");
  setLoadingError("Loading timed out. Please refresh the page.");
  toast.error("Loading timed out", {
  description: "Dashboard data couldn't be loaded. Please refresh and try again."

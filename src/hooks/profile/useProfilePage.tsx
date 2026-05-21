@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useUserProfile } from "@/hooks/team/useUserProfile";
+import { logger } from "@/lib/logger";
 
 export const useProfilePage = () => {
  const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -55,7 +56,7 @@ export const useProfilePage = () => {
  if (isMounted) setLoading(true);
  if (isMounted) setError(null);
  
- console.log("Fetching user data for profile page");
+ logger.log("Fetching user data for profile page");
  
  // Get current user directly without using hooks
  const { data, error: userError } = await supabase.auth.getUser();
@@ -75,7 +76,7 @@ export const useProfilePage = () => {
  }
  
  if (isMounted) setUserEmail(data.user?.email ?? null);
- console.log("User email loaded:", data.user?.email);
+ logger.log("User email loaded:", data.user?.email);
  
  } catch (err) {
  console.error("Error in profile page initialization:", err);

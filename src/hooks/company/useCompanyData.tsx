@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { fetchUserCompany, mapCompanyToCompanyInfo } from "@/services/company";
+import { logger } from "@/lib/logger";
 
 export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) => void) => {
  const [companyId, setCompanyId] = useState<string | null>(null);
@@ -15,7 +16,7 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  if (editData) {
  try {
  const parsedEditData = JSON.parse(editData);
- console.log("Loading stored edit data:", parsedEditData);
+ logger.log("Loading stored edit data:", parsedEditData);
  
  if (parsedEditData && Object.keys(parsedEditData).length > 0) {
  setHasLoadedEditData(true);
@@ -34,11 +35,11 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  const loadCompanyData = useCallback(async () => {
  try {
  setIsLoading(true);
- console.log("Loading company data from database...");
+ logger.log("Loading company data from database...");
  
  const company = await fetchUserCompany();
  if (company) {
- console.log("Found existing company:", company);
+ logger.log("Found existing company:", company);
  setCompanyId(company.id);
  
  const companyInfo = mapCompanyToCompanyInfo(company);
@@ -50,7 +51,7 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  
  return companyInfo;
  } else {
- console.log("No existing company found");
+ logger.log("No existing company found");
  }
  } catch (error) {
  console.error("Error loading company data:", error);
@@ -65,7 +66,7 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  // First check for edit data
  const editData = loadStoredEditData();
  if (editData) {
- console.log("Using edit data, skipping database load");
+ logger.log("Using edit data, skipping database load");
  form.reset(editData);
  if (editData.logo) {
  setLogoPreview(editData.logo);

@@ -8,6 +8,7 @@ import { getAllLocations, createLocation } from "@/services/locationService";
 import { BasicAssetFields } from "./components/BasicAssetFields";
 import { ParentAssetSelector } from "./components/ParentAssetSelector";
 import { ParentAssetFields } from "./components/ParentAssetFields";
+import { logger } from "@/lib/logger";
 
 type AssetFormFieldsProps = {
  form: UseFormReturn<AssetFormValues>;
@@ -17,7 +18,7 @@ type AssetFormFieldsProps = {
 export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentAssetId }) => {
  const [showParentFields, setShowParentFields] = useState(false);
  
- console.log("AssetFormFields rendering with currentAssetId:", currentAssetId);
+ logger.log("AssetFormFields rendering with currentAssetId:", currentAssetId);
  
  // Fetch all assets for parent selection
  const { data: assetsData, isLoading: assetsLoading } = useQuery({
@@ -35,8 +36,8 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
  const assets = Array.isArray(assetsData) ? assetsData : [];
  const locations = Array.isArray(locationsData) ? locationsData : [];
 
- console.log("Assets loaded:", assets.length);
- console.log("Locations loaded:", locations.length);
+ logger.log("Assets loaded:", assets.length);
+ logger.log("Locations loaded:", locations.length);
 
  // Filter out the current asset (we can't set an asset as its own parent)
  const availableParentAssets = assets.filter(asset => asset.id !== currentAssetId);
@@ -53,7 +54,7 @@ export const AssetFormFields: React.FC<AssetFormFieldsProps> = ({ form, currentA
 
  // Handle parent asset selection change
  const handleParentChange = (value: string) => {
- console.log("Parent asset selection changed to:", value);
+ logger.log("Parent asset selection changed to:", value);
  form.setValue("parent_id", value);
  setShowParentFields(value === "new");
  

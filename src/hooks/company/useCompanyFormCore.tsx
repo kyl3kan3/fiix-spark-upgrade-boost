@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { companyInfoSchema, CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
+import { logger } from "@/lib/logger";
 
 export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => void) => {
  const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
  // Initialize form with data only once
  useEffect(() => {
  if (initialData && Object.keys(initialData).length > 0 && !isInitialized) {
- console.log("Initializing form with data:", initialData);
+ logger.log("Initializing form with data:", initialData);
  
  const formData = {
  name: initialData.name || "",
@@ -70,7 +71,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
  }, [form, logoPreview, onUpdate, isInitialized]);
 
  const handleLogoChange = (logoData: string | null) => {
- console.log("Logo change:", logoData ? "Present" : "None");
+ logger.log("Logo change:", logoData ? "Present" : "None");
  setLogoPreview(logoData);
  
  if (isInitialized && typeof onUpdate === 'function') {

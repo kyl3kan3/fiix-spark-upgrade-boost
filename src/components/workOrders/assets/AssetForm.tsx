@@ -13,6 +13,7 @@ import { AssetFormValues, assetFormSchema } from "./AssetFormSchema";
 import { ImageUploadField } from "@/components/common/ImageUploadField";
 import { createAsset, createParentAsset, updateAsset } from "@/services/assets/assetMutations";
 import { getAssetById } from "@/services/assets/assetQueries";
+import { logger } from "@/lib/logger";
 
 interface AssetFormProps {
  assetId?: string;
@@ -23,7 +24,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  const queryClient = useQueryClient();
  const navigate = useNavigate();
  
- console.log("AssetForm rendering with assetId:", assetId);
+ logger.log("AssetForm rendering with assetId:", assetId);
 
  // Get existing asset data if editing
  const { data: existingAsset, isLoading: assetLoading, error: assetError } = useQuery({
@@ -55,7 +56,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  // Update form with existing asset data when it loads
  useEffect(() => {
  if (existingAsset) {
- console.log("Loading existing asset data:", existingAsset);
+ logger.log("Loading existing asset data:", existingAsset);
  form.reset({
  name: existingAsset.name || "",
  description: existingAsset.description || "",
@@ -78,7 +79,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  const onSubmit = async (data: AssetFormValues) => {
  setIsSubmitting(true);
  try {
- console.log("Submitting asset data:", data);
+ logger.log("Submitting asset data:", data);
 
  // If creating a new parent asset
  if (data.parent_id === "new" && data.parent_name) {
@@ -89,7 +90,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  status: "active"
  };
  
- console.log("Creating parent asset:", parentAssetData);
+ logger.log("Creating parent asset:", parentAssetData);
  const parentResult = await createParentAsset(parentAssetData);
  
  if (parentResult.error) {
@@ -103,10 +104,10 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  // Create or update the main asset
  let result;
  if (assetId) {
- console.log("Updating asset:", assetId, data);
+ logger.log("Updating asset:", assetId, data);
  result = await updateAsset(assetId, data);
  } else {
- console.log("Creating new asset:", data);
+ logger.log("Creating new asset:", data);
  result = await createAsset(data);
  }
 
@@ -115,7 +116,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  throw new Error(result.error.message);
  }
 
- console.log("Asset operation successful:", result);
+ logger.log("Asset operation successful:", result);
  toast.success(assetId ? "Asset updated successfully!" : "Asset created successfully!");
  
  // Invalidate and refetch assets

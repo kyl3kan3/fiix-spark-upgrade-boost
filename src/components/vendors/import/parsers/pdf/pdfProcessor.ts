@@ -2,6 +2,7 @@
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
+import { logger } from "@/lib/logger";
 
 export function processSingleVendor(text: string, instructions?: string): any[] {
  const entity = analyzeAndCategorizeText(text, instructions);
@@ -9,34 +10,34 @@ export function processSingleVendor(text: string, instructions?: string): any[] 
 }
 
 export function processMultipleVendors(text: string, pageTexts: string[], expectedCount?: number, instructions?: string): any[] {
- console.log('🔍 Processing multiple vendors with page grouping');
- console.log('📄 Page texts:', pageTexts.length, 'pages');
- console.log('📝 Instructions provided:', instructions || 'None');
- console.log('🎯 Expected count:', expectedCount || 'Not specified');
+ logger.log('🔍 Processing multiple vendors with page grouping');
+ logger.log('📄 Page texts:', pageTexts.length, 'pages');
+ logger.log('📝 Instructions provided:', instructions || 'None');
+ logger.log('🎯 Expected count:', expectedCount || 'Not specified');
  
  // ALWAYS check instructions first, regardless of other factors
  const shouldTreatPagesAsVendors = shouldTreatEachPageAsVendor(instructions, expectedCount, pageTexts.length);
  
- console.log('🚨 DECISION: shouldTreatPagesAsVendors =', shouldTreatPagesAsVendors);
- console.log('🚨 This means each page will be treated as:', shouldTreatPagesAsVendors ? 'ONE VENDOR' : 'POTENTIALLY MULTIPLE VENDORS');
+ logger.log('🚨 DECISION: shouldTreatPagesAsVendors =', shouldTreatPagesAsVendors);
+ logger.log('🚨 This means each page will be treated as:', shouldTreatPagesAsVendors ? 'ONE VENDOR' : 'POTENTIALLY MULTIPLE VENDORS');
  
  // Group vendors by page
  const vendorsByPage = pageTexts.map((pageText, pageIndex) => {
- console.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
+ logger.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
  
  let sections: string[];
  
  if (shouldTreatPagesAsVendors) {
  // Treat the entire page as one vendor
- console.log(`📋 ✅ TREATING ENTIRE PAGE ${pageIndex + 1} AS SINGLE VENDOR based on analysis`);
+ logger.log(`📋 ✅ TREATING ENTIRE PAGE ${pageIndex + 1} AS SINGLE VENDOR based on analysis`);
  sections = [pageText];
  } else {
  // Split the page into sections as before
- console.log(`📋 ❌ SPLITTING PAGE ${pageIndex + 1} INTO MULTIPLE SECTIONS`);
+ logger.log(`📋 ❌ SPLITTING PAGE ${pageIndex + 1} INTO MULTIPLE SECTIONS`);
  sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
  }
  
- console.log(`📊 Page ${pageIndex + 1} resulted in ${sections.length} sections`);
+ logger.log(`📊 Page ${pageIndex + 1} resulted in ${sections.length} sections`);
  
  // Analyze each section and convert to vendor format
  const pageVendors = sections.map(section => {
@@ -48,7 +49,7 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
  return vendor;
  });
  
- console.log(`✅ Found ${pageVendors.length} vendors on page ${pageIndex + 1}`);
+ logger.log(`✅ Found ${pageVendors.length} vendors on page ${pageIndex + 1}`);
  return {
  pageNumber: pageIndex + 1,
  vendors: pageVendors,
@@ -59,8 +60,8 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
  // Flatten all vendors but keep page grouping info
  const allVendors = vendorsByPage.flatMap(page => page.vendors);
  
- console.log('📊 Total vendors found:', allVendors.length);
- console.log('📄 Pages processed:', vendorsByPage.length);
+ logger.log('📊 Total vendors found:', allVendors.length);
+ logger.log('📄 Pages processed:', vendorsByPage.length);
  
  // Create a result object with typed properties
  const result = allVendors.length > 0 ? allVendors : [entityToVendor(analyzeAndCategorizeText(text, instructions))];
@@ -75,20 +76,20 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
 }
 
 function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: number, pageCount?: number): boolean {
- console.log('🔍 === INSTRUCTION ANALYSIS START ===');
- console.log('📝 Raw instructions:', instructions);
- console.log('🔢 Expected count:', expectedCount);
- console.log('📄 Page count:', pageCount);
+ logger.log('🔍 === INSTRUCTION ANALYSIS START ===');
+ logger.log('📝 Raw instructions:', instructions);
+ logger.log('🔢 Expected count:', expectedCount);
+ logger.log('📄 Page count:', pageCount);
  
  if (!instructions) {
- console.log('❌ No instructions provided, checking count fallback');
+ logger.log('❌ No instructions provided, checking count fallback');
  const result = expectedCount === pageCount;
- console.log('🎯 Count fallback result:', result);
+ logger.log('🎯 Count fallback result:', result);
  return result;
  }
  
  const instructionsLower = instructions.toLowerCase();
- console.log('🔍 Analyzing instructions for page handling:', instructionsLower);
+ logger.log('🔍 Analyzing instructions for page handling:', instructionsLower);
  
  // Look for explicit instructions about pages being vendors - more comprehensive patterns
  const pageVendorPatterns = [
@@ -121,13 +122,13 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
  /full pages? (are|is) vendors?/
  ];
  
- console.log('🔍 Testing patterns against instructions...');
+ logger.log('🔍 Testing patterns against instructions...');
  for (let i = 0; i < pageVendorPatterns.length; i++) {
  const pattern = pageVendorPatterns[i];
  const matches = pattern.test(instructionsLower);
- console.log(`Pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
+ logger.log(`Pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
  if (matches) {
- console.log('✅ Instructions clearly indicate each page should be treated as a vendor');
+ logger.log('✅ Instructions clearly indicate each page should be treated as a vendor');
  return true;
  }
  }
@@ -143,26 +144,26 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
  /parse pages? for multiple/
  ];
  
- console.log('🔍 Testing split patterns...');
+ logger.log('🔍 Testing split patterns...');
  for (let i = 0; i < splitPatterns.length; i++) {
  const pattern = splitPatterns[i];
  const matches = pattern.test(instructionsLower);
- console.log(`Split pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
+ logger.log(`Split pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
  if (matches) {
- console.log('📋 Instructions indicate pages should be split into multiple vendors');
+ logger.log('📋 Instructions indicate pages should be split into multiple vendors');
  return false;
  }
  }
  
  // If expected count matches page count and no conflicting instructions, treat pages as vendors
  if (expectedCount === pageCount) {
- console.log('📋 Expected count matches page count, treating each page as vendor');
+ logger.log('📋 Expected count matches page count, treating each page as vendor');
  return true;
  }
  
  // Default to splitting if unclear
- console.log('📋 Instructions unclear, defaulting to splitting pages');
- console.log('🔍 === INSTRUCTION ANALYSIS END ===');
+ logger.log('📋 Instructions unclear, defaulting to splitting pages');
+ logger.log('🔍 === INSTRUCTION ANALYSIS END ===');
  return false;
 }
 

@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { SetupData } from './setupTypes';
+import { logger } from "@/lib/logger";
 
 /**
  * Loads setup data from Supabase database
@@ -135,7 +136,7 @@ export const resetDatabaseSetupData = async (): Promise<{ success: boolean; erro
  return { success: false, error };
  }
  
- console.log("Reset setup data in database");
+ logger.log("Reset setup data in database");
  return { success: true, error: null };
  } catch (error) {
  console.error("Error in resetDatabaseSetupData:", error);

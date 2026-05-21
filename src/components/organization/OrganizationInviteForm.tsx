@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useOrganizationInvitations } from "@/hooks/useOrganizationInvitations";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface OrganizationInviteFormProps {
  organizationId: string;
@@ -62,7 +63,7 @@ export const OrganizationInviteForm: React.FC<OrganizationInviteFormProps> = ({ 
  name: company.name
  });
  
- console.log("Created missing organization record for company:", organizationId);
+ logger.log("Created missing organization record for company:", organizationId);
  }
  }
  } catch (err) {
@@ -77,7 +78,7 @@ export const OrganizationInviteForm: React.FC<OrganizationInviteFormProps> = ({ 
 
  // Log fetched invitations for debugging
  useEffect(() => {
- console.log('[OrganizationInviteForm] Fetched invitations:', invitations);
+ logger.log('[OrganizationInviteForm] Fetched invitations:', invitations);
  }, [invitations]);
 
  const handleSubmit = async (e: React.FormEvent) => {

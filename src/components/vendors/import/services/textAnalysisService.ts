@@ -2,6 +2,7 @@
 import { EntityClassification } from './types';
 import { extractStructuredData } from './structuredDataExtractor';
 import { analyzeUnstructuredText } from './unstructuredTextAnalyzer';
+import { logger } from "@/lib/logger";
 
 export type { EntityClassification } from './types';
 
@@ -10,7 +11,7 @@ export function analyzeAndCategorizeText(text: string, instructions?: string): E
  
  // If instructions are provided, log them for debugging
  if (instructions) {
- console.log('📝 Using import instructions:', instructions);
+ logger.log('📝 Using import instructions:', instructions);
  }
  
  // First, try to extract structured data using labels

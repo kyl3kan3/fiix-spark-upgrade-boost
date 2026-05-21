@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatUser } from "@/types/chat";
+import { logger } from "@/lib/logger";
 
 export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  const [teamMembers, setTeamMembers] = useState<ChatUser[]>([]);
@@ -11,7 +12,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  const fetchTeamMembers = useCallback(async () => {
  try {
  setLoading(true);
- console.log("Fetching team members...", new Date().toISOString());
+ logger.log("Fetching team members...", new Date().toISOString());
  
  // Get current user
  const { data: currentUserData, error: userError } = await supabase.auth.getUser();
@@ -61,10 +62,10 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  throw error;
  }
  
- console.log(`Fetched ${profiles ? profiles.length : 0} profiles:`, profiles);
+ logger.log(`Fetched ${profiles ? profiles.length : 0} profiles:`, profiles);
  
  if (!profiles || profiles.length === 0) {
- console.log("No team members found in database");
+ logger.log("No team members found in database");
  setTeamMembers([]);
  setLoading(false);
  return;
@@ -116,7 +117,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  }));
 
  const filteredUsers = users.filter(Boolean) as ChatUser[];
- console.log("Processed team members:", filteredUsers);
+ logger.log("Processed team members:", filteredUsers);
  setTeamMembers(filteredUsers);
  } catch (error) {
  console.error("Error fetching team members:", error);

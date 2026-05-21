@@ -1,13 +1,14 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export async function checkExistingInvitation(email: string, organizationId: string) {
- console.log("=== CHECKING EXISTING INVITATIONS ===");
- console.log("Checking for existing invitations with:", { email, organizationId });
+ logger.log("=== CHECKING EXISTING INVITATIONS ===");
+ logger.log("Checking for existing invitations with:", { email, organizationId });
  
  // Force a fresh query by adding a timestamp to prevent caching
  const timestamp = Date.now();
- console.log("Query timestamp:", timestamp);
+ logger.log("Query timestamp:", timestamp);
  
  const { data: existingInvites, error: inviteCheckError } = await supabase
  .from("organization_invitations")
@@ -16,8 +17,8 @@ export async function checkExistingInvitation(email: string, organizationId: str
  .eq("organization_id", organizationId)
  .order('created_at', { ascending: false }); // Get latest first
 
- console.log("Raw query result:", { existingInvites, inviteCheckError });
- console.log("Total invitations found:", existingInvites?.length || 0);
+ logger.log("Raw query result:", { existingInvites, inviteCheckError });
+ logger.log("Total invitations found:", existingInvites?.length || 0);
 
  if (inviteCheckError) {
  console.error("Database error checking existing invitations:", inviteCheckError);
@@ -27,7 +28,7 @@ export async function checkExistingInvitation(email: string, organizationId: str
  // Log all invitations found
  if (existingInvites && existingInvites.length > 0) {
  existingInvites.forEach((invite, index) => {
- console.log(`Invitation ${index + 1}:`, {
+ logger.log(`Invitation ${index + 1}:`, {
  id: invite.id,
  status: invite.status,
  created_at: invite.created_at
@@ -37,21 +38,21 @@ export async function checkExistingInvitation(email: string, organizationId: str
 
  // Filter for pending invitations
  const pendingInvites = existingInvites?.filter(invite => invite.status === "pending") || [];
- console.log("Pending invitations found:", pendingInvites);
- console.log("Number of pending invitations:", pendingInvites.length);
+ logger.log("Pending invitations found:", pendingInvites);
+ logger.log("Number of pending invitations:", pendingInvites.length);
 
  if (pendingInvites.length > 0) {
- console.log("Found pending invitation, throwing error");
- console.log("Pending invitation details:", pendingInvites[0]);
+ logger.log("Found pending invitation, throwing error");
+ logger.log("Pending invitation details:", pendingInvites[0]);
  throw new Error("An invitation for this email is already pending");
  }
 
- console.log("No pending invitations found, proceeding");
+ logger.log("No pending invitations found, proceeding");
 }
 
 export async function getExistingInvitation(email: string, organizationId: string) {
- console.log("=== GETTING EXISTING INVITATION FOR RESEND ===");
- console.log("Looking for existing invitation with:", { email, organizationId });
+ logger.log("=== GETTING EXISTING INVITATION FOR RESEND ===");
+ logger.log("Looking for existing invitation with:", { email, organizationId });
  
  const { data: existingInvite, error: inviteGetError } = await supabase
  .from("organization_invitations")
@@ -62,7 +63,7 @@ export async function getExistingInvitation(email: string, organizationId: strin
  .order('created_at', { ascending: false })
  .maybeSingle();
 
- console.log("Existing invitation query result:", { existingInvite, inviteGetError });
+ logger.log("Existing invitation query result:", { existingInvite, inviteGetError });
 
  if (inviteGetError) {
  console.error("Database error getting existing invitation:", inviteGetError);
@@ -73,7 +74,7 @@ export async function getExistingInvitation(email: string, organizationId: strin
 }
 
 export async function createInvitation(email: string, organizationId: string, userId: string) {
- console.log("=== CREATING NEW INVITATION ===");
+ logger.log("=== CREATING NEW INVITATION ===");
  const invitationData = {
  email,
  organization_id: organizationId,
@@ -83,7 +84,7 @@ export async function createInvitation(email: string, organizationId: string, us
  status: "pending"
  };
 
- console.log("About to insert invitation with data:", invitationData);
+ logger.log("About to insert invitation with data:", invitationData);
 
  const { data: inviteData, error: inviteError } = await supabase
  .from("organization_invitations")
@@ -107,13 +108,13 @@ export async function createInvitation(email: string, organizationId: string, us
  throw new Error("Failed to create invitation - no data returned");
  }
 
- console.log("Invitation created successfully:", inviteData);
+ logger.log("Invitation created successfully:", inviteData);
  return inviteData;
 }
 
 export async function deleteInvitation(invitationId: string): Promise<void> {
- console.log("=== DELETING INVITATION ===");
- console.log("Deleting invitation with ID:", invitationId);
+ logger.log("=== DELETING INVITATION ===");
+ logger.log("Deleting invitation with ID:", invitationId);
  
  const { error } = await supabase
  .from("organization_invitations")
@@ -125,7 +126,7 @@ export async function deleteInvitation(invitationId: string): Promise<void> {
  throw new Error(`Failed to delete invitation: ${error.message}`);
  }
 
- console.log("Successfully deleted invitation:", invitationId);
+ logger.log("Successfully deleted invitation:", invitationId);
  
  // Add a small delay to ensure the deletion is processed
  await new Promise(resolve => setTimeout(resolve, 100));
@@ -142,6 +143,6 @@ export async function deleteInvitation(invitationId: string): Promise<void> {
  } else if (verifyDeleted) {
  console.error("WARNING: Invitation still exists after deletion attempt:", verifyDeleted);
  } else {
- console.log("CONFIRMED: Invitation successfully deleted from database");
+ logger.log("CONFIRMED: Invitation successfully deleted from database");
  }
 }
