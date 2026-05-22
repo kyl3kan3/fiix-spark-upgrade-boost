@@ -57,11 +57,27 @@ const RequestsInboxPage = () => {
 
  const updateStatus = useMutation({
  mutationFn: async ({ id, status }: { id: string; status: PublicRequest["status"] }) => {
+ if (status === "resolved") {
+ const { data, error } = await supabase.functions.invoke("resolve-public-request", {
+ body: { requestId: id },
+ });
+ if (error) throw error;
+ return data as { emailSent?: boolean; reason?: string | null } | null;
+ }
  const { error } = await supabase.from("public_requests").update({ status }).eq("id", id);
  if (error) throw error;
+ return null;
  },
- onSuccess: () => {
+ onSuccess: (data, variables) => {
  queryClient.invalidateQueries({ queryKey: ["public_requests"] });
+ if (variables.status === "resolved") {
+ if (data?.emailSent) {
+ toast.success("Resolved and client notified");
+ } else {
+ toast.success("Marked resolved");
+ }
+ return;
+ }
  toast.success("Updated");
  },
  });
