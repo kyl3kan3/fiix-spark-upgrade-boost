@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,11 +14,11 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
 const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
 const FROM = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com>";
+const RESEND_GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false },
 });
-const resend = new Resend(RESEND_API_KEY);
 
 // Escape user-controlled values before interpolating into HTML email bodies
 function esc(s: unknown): string {
@@ -111,12 +110,30 @@ async function deliver(opts: {
   // Email
   if (recipient.email_enabled && recipient.email) {
     try {
-      const sendRes = await resend.emails.send({
-        from: FROM,
-        to: [recipient.email],
-        subject: opts.title,
-        html: `<p>${opts.body}</p>`,
+      if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
+        throw new Error("Email gateway configuration is missing");
+      }
+
+      const gatewayRes = await fetch(`${RESEND_GATEWAY_URL}/emails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "X-Connection-Api-Key": RESEND_API_KEY,
+        },
+        body: JSON.stringify({
+          from: FROM,
+          to: [recipient.email],
+          subject: opts.title,
+          html: opts.body,
+        }),
       });
+
+      const sendRes = await gatewayRes.json().catch(() => ({}));
+      if (!gatewayRes.ok) {
+        throw new Error((sendRes as any)?.message || (sendRes as any)?.error || `Gateway HTTP ${gatewayRes.status}`);
+      }
+
       const providerMessageId =
         (sendRes as any)?.data?.id || (sendRes as any)?.id || null;
       await admin.from("notifications").insert({
