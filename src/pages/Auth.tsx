@@ -14,7 +14,13 @@ const Auth: React.FC = () => {
  <meta property="og:description" content="Sign in or create a MaintenEase account to manage your maintenance operations." />
  <meta property="og:url" content="https://maintenease.com/auth" />
  <meta property="og:type" content="website" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png" />
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="twitter:title" content="Sign in to MaintenEase" />
+ <meta name="twitter:description" content="Sign in or create a MaintenEase account to manage your maintenance operations." />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
  </Helmet>
+ <h1 className="sr-only">Sign in or create your MaintenEase account</h1>
  <AuthContainer />
  </>
  );

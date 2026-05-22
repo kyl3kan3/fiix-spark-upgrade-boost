@@ -14,6 +14,11 @@ export default function RefundPolicy() {
  <meta property="og:description" content="30-day money-back guarantee. How to request a refund through Paddle." />
  <meta property="og:url" content="https://maintenease.com/refund-policy" />
  <meta property="og:type" content="article" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png" />
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="twitter:title" content="Refund Policy | MaintenEase" />
+ <meta name="twitter:description" content="30-day money-back guarantee. How to request a refund through Paddle." />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
  </Helmet>
  <div className="container mx-auto max-w-3xl px-4 py-12">
  <Button asChild variant="ghost" size="sm" className="mb-6">
