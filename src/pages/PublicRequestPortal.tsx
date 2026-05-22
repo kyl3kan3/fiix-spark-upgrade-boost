@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
-import { AlertTriangle, CheckCircle2, Wrench } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Wrench, ImagePlus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ const PublicRequestPortal = () => {
  const [type, setType] = useState<"standard" | "urgent">("standard");
  const [submitted, setSubmitted] = useState(false);
  const [submitting, setSubmitting] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
  const [form, setForm] = useState({
  title: "", description: "", location_text: "",
  contact_name: "", contact_email: "", contact_phone: "",
@@ -45,6 +46,20 @@ const PublicRequestPortal = () => {
  })();
  }, [slug]);
 
+  const addPhotos = (files: FileList | null) => {
+    if (!files) return;
+    const next: File[] = [];
+    for (const f of Array.from(files)) {
+      if (!f.type.startsWith("image/")) continue;
+      if (f.size > 10 * 1024 * 1024) {
+        toast.error(`${f.name} is too large (max 10 MB)`);
+        continue;
+      }
+      next.push(f);
+    }
+    setPhotos((prev) => [...prev, ...next].slice(0, 6));
+  };
+
  const onSubmit = async (e: React.FormEvent) => {
  e.preventDefault();
  if (!company) return;
@@ -55,7 +70,27 @@ const PublicRequestPortal = () => {
  return;
  }
  setSubmitting(true);
- const { error } = await supabase.from("public_requests").insert({
+
+    // Upload photos first (best-effort — failures are surfaced but don't block submission)
+    const uploadedUrls: string[] = [];
+    if (photos.length > 0) {
+      const folder = `${company.id}/${crypto.randomUUID()}`;
+      for (const file of photos) {
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().slice(0, 5);
+        const path = `${folder}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("public-request-photos")
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (upErr) {
+          console.error("photo upload failed", upErr);
+          continue;
+        }
+        const { data: pub } = supabase.storage.from("public-request-photos").getPublicUrl(path);
+        if (pub?.publicUrl) uploadedUrls.push(pub.publicUrl);
+      }
+    }
+
+    const { error } = await supabase.from("public_requests").insert({
  company_id: company.id,
  type,
  title: parsed.data.title,
@@ -64,6 +99,7 @@ const PublicRequestPortal = () => {
  contact_name: parsed.data.contact_name || null,
  contact_email: parsed.data.contact_email || null,
  contact_phone: parsed.data.contact_phone || null,
+      photos: uploadedUrls,
  user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
  });
  setSubmitting(false);
@@ -72,6 +108,7 @@ const PublicRequestPortal = () => {
  return;
  }
  setSubmitted(true);
+    setPhotos([]);
  };
 
  if (loading) {
@@ -195,6 +232,39 @@ const PublicRequestPortal = () => {
  <Input id="contact_email" type="email" maxLength={255} value={form.contact_email}
  onChange={(e) => setForm({ ...form, contact_email: e.target.value })} />
  </div>
+
+              <div className="space-y-2">
+                <Label>Photos (optional)</Label>
+                <div className="flex flex-wrap gap-3">
+                  {photos.map((f, i) => (
+                    <div key={i} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
+                      <img src={URL.createObjectURL(f)} alt={`Photo ${i + 1}`} className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="absolute top-0.5 right-0.5 bg-foreground/70 text-background rounded-full p-0.5"
+                        aria-label="Remove photo"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < 6 && (
+                    <label className="h-20 w-20 rounded-md border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer text-muted-foreground hover:border-maintenease-600 hover:text-foreground transition">
+                      <ImagePlus className="h-5 w-5" />
+                      <span className="text-[10px] mt-1">Add</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
+                      />
+                    </label>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">Up to 6 images, 10 MB each. Helps the team diagnose faster.</p>
+              </div>
 
  <Button type="submit" size="lg" disabled={submitting}
  className={type === "urgent" ? "w-full bg-red-600 hover:bg-red-700" : "w-full"}>
