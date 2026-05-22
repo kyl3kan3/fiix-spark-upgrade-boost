@@ -178,11 +178,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId: null }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   } catch (error) {
     console.error("resolve-public-request error:", error);
     return new Response(JSON.stringify({ error: String(error) }), {
