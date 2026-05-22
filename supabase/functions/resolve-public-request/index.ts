@@ -134,6 +134,13 @@ serve(async (req) => {
       });
     }
 
+    if (request.status === "resolved") {
+      return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "already_resolved" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (request.status !== "resolved") {
       const { error: updateError } = await admin
         .from("public_requests")
