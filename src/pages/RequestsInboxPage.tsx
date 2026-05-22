@@ -24,6 +24,7 @@ type PublicRequest = {
  contact_phone: string | null;
  status: "new" | "in_progress" | "resolved";
  created_at: string;
+  photos: string[] | null;
 };
 
 const RequestsInboxPage = () => {
@@ -66,9 +67,17 @@ const RequestsInboxPage = () => {
  });
 
  const convertToWorkOrder = (r: PublicRequest) => {
+    const photoLines = (r.photos ?? []).length > 0 ? [`Photos:`, ...(r.photos ?? []).map((u) => `- ${u}`)] : [];
  const params = new URLSearchParams({
  title: r.title,
- description: [r.description, r.location_text && `Location: ${r.location_text}`, r.contact_name && `From: ${r.contact_name}`, r.contact_email && `Email: ${r.contact_email}`, r.contact_phone && `Phone: ${r.contact_phone}`].filter(Boolean).join("\n"),
+      description: [
+        r.description,
+        r.location_text && `Location: ${r.location_text}`,
+        r.contact_name && `From: ${r.contact_name}`,
+        r.contact_email && `Email: ${r.contact_email}`,
+        r.contact_phone && `Phone: ${r.contact_phone}`,
+        ...photoLines,
+      ].filter(Boolean).join("\n"),
  priority: r.type === "urgent" ? "high" : "medium",
  });
  updateStatus.mutate({ id: r.id, status: "in_progress" });
@@ -142,6 +151,15 @@ const RequestsInboxPage = () => {
  </div>
  <h3 className="font-semibold text-foreground mb-1">{r.title}</h3>
  {r.description && <p className="text-sm text-foreground mb-2 whitespace-pre-wrap">{r.description}</p>}
+                {(r.photos ?? []).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {(r.photos ?? []).map((url, idx) => (
+                      <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block h-20 w-20 rounded-md overflow-hidden border border-border">
+                        <img src={url} alt={`Request photo ${idx + 1}`} className="h-full w-full object-cover" loading="lazy" />
+                      </a>
+                    ))}
+                  </div>
+                )}
  <div className="text-xs text-foreground space-x-3 mb-3">
  {r.location_text && <span>📍 {r.location_text}</span>}
  {r.contact_name && <span>👤 {r.contact_name}</span>}
