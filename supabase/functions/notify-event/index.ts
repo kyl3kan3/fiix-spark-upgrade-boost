@@ -323,7 +323,7 @@ async function handleWeatherAlert(p: any) {
 }
 
 async function handleUrgentPublicRequest(p: any) {
-  const { request_id, company_id, title, description, location, contact_name, contact_email, contact_phone } = p;
+  const { request_id, company_id, title, description, location, contact_name, contact_email, contact_phone, photos } = p;
   if (!company_id || !request_id) return;
 
   const { data: roles } = await admin
@@ -335,6 +335,7 @@ async function handleUrgentPublicRequest(p: any) {
   const targets = Array.from(new Set((roles ?? []).map((r: any) => r.user_id))).filter(Boolean);
 
   const subject = `🚨 Urgent request: ${title}`;
+  const photoArr: string[] = Array.isArray(photos) ? photos : [];
   const bodyHtml = `
     <p><strong>An urgent maintenance request was just submitted via your public portal.</strong></p>
     <p><strong>Title:</strong> ${esc(title)}</p>
@@ -343,6 +344,7 @@ async function handleUrgentPublicRequest(p: any) {
     <p><strong>Submitted by:</strong> ${esc(contact_name || "Anonymous")}${
       contact_email ? ` &lt;${esc(contact_email)}&gt;` : ""
     }${contact_phone ? ` · ${esc(contact_phone)}` : ""}</p>
+    ${photoArr.length > 0 ? `<p><strong>Photos:</strong></p><p>${photoArr.map((u) => `<a href="${esc(u)}"><img src="${esc(u)}" alt="Request photo" style="max-width:140px;max-height:140px;margin:4px;border-radius:6px;border:1px solid #ddd"/></a>`).join("")}</p>` : ""}
     <p>Open the <a href="https://maintenease.com/requests">request inbox</a> to triage.</p>
   `.trim();
   const smsBody = `URGENT request: ${title}${location ? ` @ ${location}` : ""}. Open the inbox to triage.`;
