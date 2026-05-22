@@ -1024,6 +1024,7 @@ export type Database = {
           description: string
           id: string
           location_text: string | null
+          photos: Json
           status: string
           submitter_ip: string | null
           title: string
@@ -1040,6 +1041,7 @@ export type Database = {
           description?: string
           id?: string
           location_text?: string | null
+          photos?: Json
           status?: string
           submitter_ip?: string | null
           title: string
@@ -1056,6 +1058,7 @@ export type Database = {
           description?: string
           id?: string
           location_text?: string | null
+          photos?: Json
           status?: string
           submitter_ip?: string | null
           title?: string
