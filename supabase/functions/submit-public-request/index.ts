@@ -86,37 +86,6 @@ async function sendEmail(to: string, subject: string, html: string) {
   return (data as any)?.data?.id || (data as any)?.id || null;
 }
 
-function buildRequestDetailsHtml(payload: {
-  title: string;
-  description?: string | null;
-  location_text?: string | null;
-  contact_name?: string | null;
-  contact_email?: string | null;
-  contact_phone?: string | null;
-  photos?: string[];
-}) {
-  return `
-      <p><strong>Title:</strong> ${esc(payload.title)}</p>
-      ${payload.description ? `<p><strong>Description:</strong><br/>${esc(payload.description)}</p>` : ""}
-      ${payload.location_text ? `<p><strong>Location:</strong> ${esc(payload.location_text)}</p>` : ""}
-      <p><strong>Submitted by:</strong> ${esc(payload.contact_name || "Anonymous")}${payload.contact_email ? ` &lt;${esc(payload.contact_email)}&gt;` : ""}${payload.contact_phone ? ` · ${esc(payload.contact_phone)}` : ""}</p>
-      ${(payload.photos ?? []).length ? `<p><strong>Photos:</strong></p><p>${(payload.photos ?? []).map((u) => `<a href="${esc(u)}">${esc(u)}</a>`).join("<br/>")}</p>` : ""}
-    `.trim();
-}
-
-async function sendSubmitterConfirmationEmail(payload: z.infer<typeof BodySchema>) {
-  if (!payload.contact_email) return null;
-
-  const subject = `We received your request: ${payload.title}`;
-  const html = `
-    <p><strong>Thanks — your maintenance request has been received.</strong></p>
-    <p>We’ve shared it with the property team and they’ll review it shortly.</p>
-    ${buildRequestDetailsHtml(payload)}
-  `.trim();
-
-  return await sendEmail(payload.contact_email, subject, html);
-}
-
 async function sendSms(to: string, body: string) {
   if (!LOVABLE_API_KEY || !TWILIO_API_KEY || !TWILIO_FROM_NUMBER) return;
   const response = await fetch("https://connector-gateway.lovable.dev/twilio/Messages.json", {
@@ -172,7 +141,11 @@ serve(async (req) => {
     const title = payload.type === "urgent" ? `🚨 Urgent request: ${payload.title}` : `New request: ${payload.title}`;
     const bodyHtml = `
       <p><strong>${payload.type === "urgent" ? "An urgent maintenance request" : "A new maintenance request"} was just submitted via your public portal.</strong></p>
-      ${buildRequestDetailsHtml(payload)}
+      <p><strong>Title:</strong> ${esc(payload.title)}</p>
+      ${payload.description ? `<p><strong>Description:</strong><br/>${esc(payload.description)}</p>` : ""}
+      ${payload.location_text ? `<p><strong>Location:</strong> ${esc(payload.location_text)}</p>` : ""}
+      <p><strong>Submitted by:</strong> ${esc(payload.contact_name || "Anonymous")}${payload.contact_email ? ` &lt;${esc(payload.contact_email)}&gt;` : ""}${payload.contact_phone ? ` · ${esc(payload.contact_phone)}` : ""}</p>
+      ${payload.photos.length ? `<p><strong>Photos:</strong></p><p>${payload.photos.map((u) => `<a href="${esc(u)}">${esc(u)}</a>`).join("<br/>")}</p>` : ""}
       <p>Open the request inbox to triage.</p>
     `.trim();
 
@@ -220,20 +193,6 @@ serve(async (req) => {
           company_id: recipient.company_id ?? null,
         });
       }
-    }
-
-    if (payload.contact_email) {
-      const providerMessageId = await sendSubmitterConfirmationEmail(payload);
-      await admin.from("notifications").insert({
-        user_id: (roles?.[0] as any)?.user_id ?? request.id,
-        title: `Submitter confirmation: ${payload.title}`,
-        body: `Confirmation email sent to ${payload.contact_email}`,
-        type: "email",
-        reference_id: request.id,
-        event_type: "public_request_submitter_confirmation",
-        company_id: payload.companyId,
-        provider_message_id: providerMessageId,
-      });
     }
 
     return new Response(JSON.stringify({ ok: true, requestId: request.id }), {
