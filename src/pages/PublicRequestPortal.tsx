@@ -90,18 +90,20 @@ const PublicRequestPortal = () => {
       }
     }
 
-    const { error } = await supabase.from("public_requests").insert({
- company_id: company.id,
- type,
- title: parsed.data.title,
- description: parsed.data.description ?? "",
- location_text: parsed.data.location_text || null,
- contact_name: parsed.data.contact_name || null,
- contact_email: parsed.data.contact_email || null,
- contact_phone: parsed.data.contact_phone || null,
-      photos: uploadedUrls,
- user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
- });
+    const { error } = await supabase.functions.invoke("submit-public-request", {
+      body: {
+        companyId: company.id,
+        type,
+        title: parsed.data.title,
+        description: parsed.data.description ?? "",
+        location_text: parsed.data.location_text || null,
+        contact_name: parsed.data.contact_name || null,
+        contact_email: parsed.data.contact_email || null,
+        contact_phone: parsed.data.contact_phone || null,
+        photos: uploadedUrls,
+        user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
+      },
+    });
  setSubmitting(false);
  if (error) {
  toast.error("Couldn't submit — please try again");
