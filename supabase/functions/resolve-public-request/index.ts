@@ -165,9 +165,21 @@ serve(async (req) => {
       <p>If the issue still isn’t fixed, reply to this email or submit a new request.</p>
     `.trim();
 
-    const providerMessageId = await sendEmail(request.contact_email, subject, html);
+    try {
+      const providerMessageId = await sendEmail(request.contact_email, subject, html);
+      return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } catch (emailError) {
+      console.error("resolve-public-request email error:", emailError);
+      return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "email_send_failed" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId }), {
+    return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId: null }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
