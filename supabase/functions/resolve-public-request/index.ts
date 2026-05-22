@@ -70,7 +70,7 @@ serve(async (req) => {
       auth: { persistSession: false },
     });
 
-    const { data: userData, error: userError } = await userClient.auth.getUser(jwt);
+    const { data: userData, error: userError } = await userClient.auth.getUser();
     const actorId = userData?.user?.id;
     if (userError || !actorId) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
