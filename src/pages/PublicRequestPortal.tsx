@@ -233,6 +233,39 @@ const PublicRequestPortal = () => {
  onChange={(e) => setForm({ ...form, contact_email: e.target.value })} />
  </div>
 
+              <div className="space-y-2">
+                <Label>Photos (optional)</Label>
+                <div className="flex flex-wrap gap-3">
+                  {photos.map((f, i) => (
+                    <div key={i} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
+                      <img src={URL.createObjectURL(f)} alt={`Photo ${i + 1}`} className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="absolute top-0.5 right-0.5 bg-foreground/70 text-background rounded-full p-0.5"
+                        aria-label="Remove photo"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < 6 && (
+                    <label className="h-20 w-20 rounded-md border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer text-muted-foreground hover:border-maintenease-600 hover:text-foreground transition">
+                      <ImagePlus className="h-5 w-5" />
+                      <span className="text-[10px] mt-1">Add</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
+                      />
+                    </label>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">Up to 6 images, 10 MB each. Helps the team diagnose faster.</p>
+              </div>
+
  <Button type="submit" size="lg" disabled={submitting}
  className={type === "urgent" ? "w-full bg-red-600 hover:bg-red-700" : "w-full"}>
  {submitting ? "Sending…" : type === "urgent" ? "Send urgent alert" : "Submit request"}
