@@ -322,7 +322,7 @@ async function handleWeatherAlert(p: any) {
   }
 }
 
-async function handleUrgentPublicRequest(p: any) {
+async function handleNewPublicRequest(p: any, urgent: boolean) {
   const { request_id, company_id, title, description, location, contact_name, contact_email, contact_phone, photos } = p;
   if (!company_id || !request_id) return;
 
@@ -334,10 +334,10 @@ async function handleUrgentPublicRequest(p: any) {
 
   const targets = Array.from(new Set((roles ?? []).map((r: any) => r.user_id))).filter(Boolean);
 
-  const subject = `🚨 Urgent request: ${title}`;
+  const subject = urgent ? `🚨 Urgent request: ${title}` : `New request: ${title}`;
   const photoArr: string[] = Array.isArray(photos) ? photos : [];
   const bodyHtml = `
-    <p><strong>An urgent maintenance request was just submitted via your public portal.</strong></p>
+    <p><strong>${urgent ? "An urgent maintenance request" : "A new maintenance request"} was just submitted via your public portal.</strong></p>
     <p><strong>Title:</strong> ${esc(title)}</p>
     ${description ? `<p><strong>Description:</strong><br/>${esc(description)}</p>` : ""}
     ${location ? `<p><strong>Location:</strong> ${esc(location)}</p>` : ""}
@@ -347,7 +347,9 @@ async function handleUrgentPublicRequest(p: any) {
     ${photoArr.length > 0 ? `<p><strong>Photos:</strong></p><p>${photoArr.map((u) => `<a href="${esc(u)}"><img src="${esc(u)}" alt="Request photo" style="max-width:140px;max-height:140px;margin:4px;border-radius:6px;border:1px solid #ddd"/></a>`).join("")}</p>` : ""}
     <p>Open the <a href="https://maintenease.com/requests">request inbox</a> to triage.</p>
   `.trim();
-  const smsBody = `URGENT request: ${title}${location ? ` @ ${location}` : ""}. Open the inbox to triage.`;
+  const smsBody = urgent
+    ? `URGENT request: ${title}${location ? ` @ ${location}` : ""}. Open the inbox to triage.`
+    : `New request: ${title}${location ? ` @ ${location}` : ""}.`;
 
   for (const userId of targets) {
     await deliver({
@@ -355,9 +357,9 @@ async function handleUrgentPublicRequest(p: any) {
       title: subject,
       body: bodyHtml,
       referenceId: request_id,
-      eventType: "urgent_public_request",
+      eventType: urgent ? "urgent_public_request" : "new_public_request",
       dedupeKey: request_id,
-      smsBody,
+      smsBody: urgent ? smsBody : undefined,
     });
   }
 }
@@ -399,7 +401,10 @@ serve(async (req) => {
         await handleWeatherAlert(payload);
         break;
       case "urgent_public_request":
-        await handleUrgentPublicRequest(payload);
+        await handleNewPublicRequest(payload, true);
+        break;
+      case "new_public_request":
+        await handleNewPublicRequest(payload, false);
         break;
       default:
         return new Response(
