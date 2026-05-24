@@ -88,6 +88,7 @@ async function deliver(opts: {
   eventType: string;
   dedupeKey?: string;
   smsBody?: string;
+  inAppBody?: string;
 }) {
   const recipient = await getRecipient(opts.userId);
   if (!recipient) return;
@@ -100,7 +101,7 @@ async function deliver(opts: {
   await admin.from("notifications").insert({
     user_id: opts.userId,
     title: opts.title,
-    body: opts.body,
+    body: opts.inAppBody ?? opts.body,
     type: "in_app",
     reference_id: opts.referenceId,
     event_type: opts.eventType,
@@ -139,7 +140,7 @@ async function deliver(opts: {
       await admin.from("notifications").insert({
         user_id: opts.userId,
         title: opts.title,
-        body: opts.body,
+        body: opts.inAppBody ?? opts.body,
         type: "email",
         reference_id: opts.referenceId,
         event_type: opts.eventType,
@@ -368,11 +369,21 @@ async function handleNewPublicRequest(p: any, urgent: boolean) {
     ? `URGENT request: ${title}${location ? ` @ ${location}` : ""}. Open the inbox to triage.`
     : `New request: ${title}${location ? ` @ ${location}` : ""}.`;
 
+  const inAppBody = [
+    `${urgent ? "An urgent maintenance request" : "A new maintenance request"} was just submitted via your public portal.`,
+    `Title: ${title}`,
+    description ? `Description: ${description}` : null,
+    location ? `Location: ${location}` : null,
+    `Submitted by: ${contact_name || "Anonymous"}${contact_email ? ` <${contact_email}>` : ""}${contact_phone ? ` · ${contact_phone}` : ""}`,
+    `Open the request inbox to triage.`,
+  ].filter(Boolean).join("\n\n");
+
   for (const userId of targets) {
     await deliver({
       userId,
       title: subject,
       body: bodyHtml,
+      inAppBody,
       referenceId: request_id,
       eventType: urgent ? "urgent_public_request" : "new_public_request",
       dedupeKey: request_id,
