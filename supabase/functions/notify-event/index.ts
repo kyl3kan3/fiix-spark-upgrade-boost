@@ -369,11 +369,21 @@ async function handleNewPublicRequest(p: any, urgent: boolean) {
     ? `URGENT request: ${title}${location ? ` @ ${location}` : ""}. Open the inbox to triage.`
     : `New request: ${title}${location ? ` @ ${location}` : ""}.`;
 
+  const inAppBody = [
+    `${urgent ? "An urgent maintenance request" : "A new maintenance request"} was just submitted via your public portal.`,
+    `Title: ${title}`,
+    description ? `Description: ${description}` : null,
+    location ? `Location: ${location}` : null,
+    `Submitted by: ${contact_name || "Anonymous"}${contact_email ? ` <${contact_email}>` : ""}${contact_phone ? ` · ${contact_phone}` : ""}`,
+    `Open the request inbox to triage.`,
+  ].filter(Boolean).join("\n\n");
+
   for (const userId of targets) {
     await deliver({
       userId,
       title: subject,
       body: bodyHtml,
+      inAppBody,
       referenceId: request_id,
       eventType: urgent ? "urgent_public_request" : "new_public_request",
       dedupeKey: request_id,
