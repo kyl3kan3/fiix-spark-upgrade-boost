@@ -88,6 +88,7 @@ async function deliver(opts: {
   eventType: string;
   dedupeKey?: string;
   smsBody?: string;
+  inAppBody?: string;
 }) {
   const recipient = await getRecipient(opts.userId);
   if (!recipient) return;
@@ -100,7 +101,7 @@ async function deliver(opts: {
   await admin.from("notifications").insert({
     user_id: opts.userId,
     title: opts.title,
-    body: opts.body,
+    body: opts.inAppBody ?? opts.body,
     type: "in_app",
     reference_id: opts.referenceId,
     event_type: opts.eventType,
@@ -139,7 +140,7 @@ async function deliver(opts: {
       await admin.from("notifications").insert({
         user_id: opts.userId,
         title: opts.title,
-        body: opts.body,
+        body: opts.inAppBody ?? opts.body,
         type: "email",
         reference_id: opts.referenceId,
         event_type: opts.eventType,
