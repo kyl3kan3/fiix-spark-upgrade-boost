@@ -11,8 +11,11 @@ import * as Sentry from "@sentry/react";
  * Only runs in production builds when VITE_SENTRY_DSN is set, so local
  * dev noise doesn't get reported.
  */
+const DEFAULT_DSN =
+  "https://5f17b84d2162eb3cb462f3e83a63bc98@o4510413979451392.ingest.us.sentry.io/4511444115193856";
+
 export function initSentry() {
-  const dsn = import.meta.env.VITE_SENTRY_DSN as string | undefined;
+  const dsn = (import.meta.env.VITE_SENTRY_DSN as string | undefined) || DEFAULT_DSN;
   if (!dsn || import.meta.env.DEV) return;
 
   Sentry.init({
