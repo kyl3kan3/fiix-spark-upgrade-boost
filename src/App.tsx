@@ -8,6 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppRoutes } from "@/router/appRoutes";
+import { SentryContextSync } from "@/components/SentryContextSync";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
  <Sonner />
  <BrowserRouter>
  <AuthProvider>
+ <SentryContextSync />
  <AppRoutes />
  </AuthProvider>
  </BrowserRouter>
