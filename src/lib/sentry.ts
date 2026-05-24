@@ -29,6 +29,12 @@ export function initSentry() {
     dsn,
     environment: import.meta.env.MODE,
     release,
+    // Send default PII (IP address, user-agent, etc.) — needed for accurate
+    // user counts on release-health metrics.
+    sendDefaultPii: true,
+    // Auto session tracking is on by default in the browser SDK; combined
+    // with `release` above, this powers crash-free-session/user stats on
+    // the Releases dashboard.
     // Sample 10% of transactions; we mostly care about errors.
     tracesSampleRate: 0.1,
     // Capture replays only when an error occurs.
