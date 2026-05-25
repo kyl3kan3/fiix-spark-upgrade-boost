@@ -13,6 +13,10 @@ jobs:
       VITE_SUPABASE_URL: https://example.supabase.co
       VITE_SUPABASE_PUBLISHABLE_KEY: build-only-placeholder
       VITE_SUPABASE_PROJECT_ID: example
+      # Tag every build with the commit SHA so Sentry can group errors by
+      # release and power crash-free-session/user metrics on the Releases
+      # dashboard. Read by src/lib/sentry.ts via import.meta.env.
+      VITE_APP_VERSION: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
