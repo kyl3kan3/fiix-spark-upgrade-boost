@@ -65,10 +65,6 @@ export function initSentry() {
       Sentry.httpClientIntegration(),
       Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
     ],
-    // Opt-in for httpClientIntegration to actually capture network errors.
-    sendDefaultPii: true,
-    // Treat 5xx / 429 responses as failed requests Sentry should report.
-    // (httpClientIntegration default is 500-599; include 429 for rate limits.)
     // Strip noisy/expected errors before they ship.
     ignoreErrors: [
       "ResizeObserver loop limit exceeded",
