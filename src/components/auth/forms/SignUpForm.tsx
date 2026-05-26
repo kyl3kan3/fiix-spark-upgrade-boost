@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, NameField, CompanyNameField } from "./AuthFormFields";
 import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
+import { TurnstileWidget } from "../TurnstileWidget";
 
 export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  const {
@@ -19,9 +20,14 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  isLoading,
  handleSubmit
  } = useAuthForm({ isSignUp: true, onError });
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const onVerify = useCallback((t: string) => setTurnstileToken(t), []);
+  const onExpire = useCallback(() => setTurnstileToken(null), []);
+
+  const onSubmit = (e: React.FormEvent) => handleSubmit(e, turnstileToken || undefined);
 
  return (
- <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4">
  <NameField
  value={name}
  onChange={setName}
@@ -48,10 +54,12 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  disabled={isLoading}
  />
 
+      <TurnstileWidget onVerify={onVerify} onExpire={onExpire} />
+
  <Button
  type="submit"
  className={`w-full bg-${AUTH_COLORS.PRIMARY} hover:bg-${AUTH_COLORS.PRIMARY_HOVER}`}
- disabled={isLoading}
+        disabled={isLoading || !turnstileToken}
  >
  {isLoading ? AUTH_BUTTON_TEXT.CREATING_ACCOUNT : AUTH_BUTTON_TEXT.CREATE_ACCOUNT}
  </Button>

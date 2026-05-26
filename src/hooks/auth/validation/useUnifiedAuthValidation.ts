@@ -57,9 +57,6 @@ export function useUnifiedAuthValidation() {
  const nameValidation = validateName(name);
  if (!nameValidation.isValid) return nameValidation;
  
- const companyValidation = validateCompanyName(companyName);
- if (!companyValidation.isValid) return companyValidation;
- 
  return { isValid: true };
  }, [validateEmailField, validatePassword, validateName, validateCompanyName]);
 
