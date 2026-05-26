@@ -445,7 +445,7 @@ const AdminAnalyticsPage: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                {data.incompleteSignups.length === 0 ? (
+                {(data.incompleteSignups ?? []).length === 0 ? (
                   <div className="p-6"><Empty label="No incomplete signups" /></div>
                 ) : (
                   <table className="w-full text-sm">
@@ -458,7 +458,7 @@ const AdminAnalyticsPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.incompleteSignups.map((s) => (
+                      {(data.incompleteSignups ?? []).map((s) => (
                         <tr key={s.id} className="border-t border-border">
                           <td className="px-4 py-2 font-mono text-xs">{s.email}</td>
                           <td className="px-4 py-2 text-xs text-muted-foreground">
