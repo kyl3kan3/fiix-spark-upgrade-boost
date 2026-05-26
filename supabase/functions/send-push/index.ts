@@ -54,6 +54,23 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Verify the FCM token is registered to this user
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const { data: deviceRow } = await admin
+      .from("device_tokens")
+      .select("id")
+      .eq("user_id", authUserId)
+      .eq("token", token)
+      .maybeSingle();
+    if (!deviceRow) {
+      return new Response(JSON.stringify({ success: false, error: "Token not registered to this user" }), {
+        status: 403, headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     // Firebase server key
     const firebaseServerKey = Deno.env.get("FIREBASE_SERVER_KEY");
     if (!firebaseServerKey) {
