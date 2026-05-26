@@ -21,6 +21,8 @@ import {
   Clock,
   Sparkles,
   Globe,
+  UserX,
+  AlertTriangle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/auth";
@@ -52,6 +54,8 @@ interface AnalyticsResponse {
     total_assets: number;
     total_work_orders: number;
     new_companies_in_range: number;
+    incomplete_signups: number;
+    incomplete_signups_disposable: number;
     active_subscriptions: number;
     live_subscriptions: number;
     trialing_subscriptions: number;
@@ -79,6 +83,13 @@ interface AnalyticsResponse {
     days_remaining: number;
   }[];
   recentCompanies: { id: string; name: string; created_at: string }[];
+  incompleteSignups: {
+    id: string;
+    email: string;
+    created_at: string;
+    age_hours: number;
+    disposable: boolean;
+  }[];
   generatedAt: string;
 }
 
