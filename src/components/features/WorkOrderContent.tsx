@@ -12,7 +12,7 @@ import {
  SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, Clock, CheckCircle2, AlertCircle, Signal, SignalOff, Smartphone } from "lucide-react";
+import { Wrench, Clock, CheckCircle2, AlertCircle, Signal, WifiOff, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
 type Priority = "high" | "medium" | "low";
@@ -169,7 +169,7 @@ const WorkOrderContent: React.FC = () => {
  <Smartphone className="h-4 w-4 text-fiix-600" />
  <span className="font-medium">Mobile Technician Mode</span>
  <Badge variant="outline" className={isOffline ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-green-50 text-green-700 border-green-200"}>
- {isOffline ? <SignalOff className="h-3.5 w-3.5 mr-1" /> : <Signal className="h-3.5 w-3.5 mr-1" />}
+ {isOffline ? <WifiOff className="h-3.5 w-3.5 mr-1" /> : <Signal className="h-3.5 w-3.5 mr-1" />}
  {isOffline ? "Offline" : "Online"}
  </Badge>
  </div>
