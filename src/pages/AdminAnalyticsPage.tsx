@@ -14,6 +14,13 @@ import {
   XCircle,
   Mail,
   MousePointerClick,
+  Eye,
+  MapPin,
+  Wrench,
+  ClipboardList,
+  Clock,
+  Sparkles,
+  Globe,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/auth";
@@ -41,6 +48,10 @@ interface AnalyticsResponse {
     total_users: number;
     total_companies: number;
     total_leads: number;
+    total_locations: number;
+    total_assets: number;
+    total_work_orders: number;
+    new_companies_in_range: number;
     active_subscriptions: number;
     live_subscriptions: number;
     trialing_subscriptions: number;
@@ -54,8 +65,20 @@ interface AnalyticsResponse {
   cancelsDaily: DailyPoint[];
   leadsDaily: DailyPoint[];
   eventsDaily: DailyPoint[];
+  visitorsDaily: DailyPoint[];
+  companiesCreatedDaily: DailyPoint[];
+  uniqueVisitors: number;
   eventBreakdown: { event_type: string; count: number }[];
   topPages: { page_slug: string; count: number }[];
+  topReferrers: { referrer: string; count: number }[];
+  trialsEndingSoon: {
+    company_id: string;
+    company_name: string;
+    tier: string;
+    trial_ends_at: string;
+    days_remaining: number;
+  }[];
+  recentCompanies: { id: string; name: string; created_at: string }[];
   generatedAt: string;
 }
 
@@ -134,11 +157,22 @@ const AdminAnalyticsPage: React.FC = () => {
       trialsStarted: data.trialsStartedDaily?.[i]?.count ?? 0,
       cancels: data.cancelsDaily[i]?.count ?? 0,
       leads: data.leadsDaily[i]?.count ?? 0,
+      companies: data.companiesCreatedDaily?.[i]?.count ?? 0,
     }));
   }, [data]);
 
   const eventsSeries = useMemo(
     () => (data?.eventsDaily ?? []).map((d) => ({ date: fmtDate(d.date), events: d.count })),
+    [data],
+  );
+
+  const visitorsSeries = useMemo(
+    () =>
+      (data?.visitorsDaily ?? []).map((d, i) => ({
+        date: fmtDate(d.date),
+        visitors: d.count,
+        pageviews: data?.eventsDaily[i]?.count ?? 0,
+      })),
     [data],
   );
 
@@ -240,12 +274,17 @@ const AdminAnalyticsPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               <KpiCard icon={Users} label="Total Users" value={data.totals.total_users} tone="text-blue-600 bg-blue-50" />
               <KpiCard icon={Building2} label="Companies" value={data.totals.total_companies} tone="text-indigo-600 bg-indigo-50" />
+              <KpiCard icon={Sparkles} label={`New Cos (${days}d)`} value={data.totals.new_companies_in_range} tone="text-fuchsia-600 bg-fuchsia-50" />
+              <KpiCard icon={Eye} label={`Unique Visitors (${days}d)`} value={data.uniqueVisitors} tone="text-cyan-600 bg-cyan-50" />
               <KpiCard icon={CreditCard} label="Active Subs (live)" value={data.totals.live_subscriptions} tone="text-emerald-600 bg-emerald-50" />
               <KpiCard icon={CreditCard} label="Trialing" value={data.totals.trialing_subscriptions} tone="text-amber-600 bg-amber-50" />
               <KpiCard icon={XCircle} label="Canceled" value={data.totals.canceled_subscriptions} tone="text-rose-600 bg-rose-50" />
               <KpiCard icon={XCircle} label="Past Due" value={data.totals.past_due_subscriptions} tone="text-orange-600 bg-orange-50" />
               <KpiCard icon={Mail} label="Marketing Leads" value={data.totals.total_leads} tone="text-violet-600 bg-violet-50" />
               <KpiCard icon={CreditCard} label="All Active+Trial" value={data.totals.active_subscriptions} tone="text-teal-600 bg-teal-50" />
+              <KpiCard icon={MapPin} label="Locations" value={data.totals.total_locations} tone="text-lime-600 bg-lime-50" />
+              <KpiCard icon={Wrench} label="Assets" value={data.totals.total_assets} tone="text-sky-600 bg-sky-50" />
+              <KpiCard icon={ClipboardList} label="Work Orders" value={data.totals.total_work_orders} tone="text-purple-600 bg-purple-50" />
             </div>
 
             {/* Activity over time */}
@@ -267,11 +306,113 @@ const AdminAnalyticsPage: React.FC = () => {
                       <Line type="monotone" dataKey="trialsStarted" name="Trials started" stroke="#F59E0B" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="cancels" name="Cancellations" stroke="#EF4444" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="leads" name="Leads" stroke="#8B5CF6" strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="companies" name="New companies" stroke="#EC4899" strokeWidth={2} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Visitor traffic */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Eye className="h-4 w-4" /> Visitors & Pageviews — Last {days} Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div style={{ width: "100%", height: 280 }}>
+                  {visitorsSeries.length === 0 ? (
+                    <Empty label="No visitor data in this range" />
+                  ) : (
+                    <ResponsiveContainer>
+                      <LineChart data={visitorsSeries}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                        <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                        <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="visitors" name="Unique visitors" stroke="#06B6D4" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="pageviews" name="Pageviews/events" stroke="#6366F1" strokeWidth={2} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Trials ending + recent companies */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Clock className="h-4 w-4" /> Trials Ending in Next 7 Days
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {data.trialsEndingSoon.length === 0 ? (
+                    <div className="p-6"><Empty label="No trials ending in the next 7 days" /></div>
+                  ) : (
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                        <tr>
+                          <th className="px-4 py-2 text-left">Company</th>
+                          <th className="px-4 py-2 text-left">Tier</th>
+                          <th className="px-4 py-2 text-right">Ends</th>
+                          <th className="px-4 py-2 text-right">Days left</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.trialsEndingSoon.map((t) => (
+                          <tr key={t.company_id + t.trial_ends_at} className="border-t border-border">
+                            <td className="px-4 py-2">{t.company_name}</td>
+                            <td className="px-4 py-2 capitalize">{t.tier}</td>
+                            <td className="px-4 py-2 text-right text-xs text-muted-foreground">
+                              {new Date(t.trial_ends_at).toLocaleDateString()}
+                            </td>
+                            <td className={`px-4 py-2 text-right font-semibold ${t.days_remaining <= 2 ? 'text-rose-600' : 'text-foreground'}`}>
+                              {t.days_remaining}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Building2 className="h-4 w-4" /> Recently Created Companies ({days}d)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {data.recentCompanies.length === 0 ? (
+                    <div className="p-6"><Empty label="No new companies in this range" /></div>
+                  ) : (
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                        <tr>
+                          <th className="px-4 py-2 text-left">Company</th>
+                          <th className="px-4 py-2 text-right">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.recentCompanies.map((c) => (
+                          <tr key={c.id} className="border-t border-border">
+                            <td className="px-4 py-2">{c.name}</td>
+                            <td className="px-4 py-2 text-right text-xs text-muted-foreground">
+                              {new Date(c.created_at).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Two-column row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -384,6 +525,38 @@ const AdminAnalyticsPage: React.FC = () => {
                           <tr key={p.page_slug} className="border-t border-border">
                             <td className="px-4 py-2 font-mono text-xs">{p.page_slug}</td>
                             <td className="px-4 py-2 text-right font-semibold">{p.count}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Globe className="h-4 w-4" /> Top Referrers
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {data.topReferrers.length === 0 ? (
+                    <div className="p-6"><Empty label="No external referrers tracked yet" /></div>
+                  ) : (
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                        <tr>
+                          <th className="px-4 py-2 text-left">Referrer</th>
+                          <th className="px-4 py-2 text-right">Visits</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.topReferrers.map((r) => (
+                          <tr key={r.referrer} className="border-t border-border">
+                            <td className="px-4 py-2 font-mono text-xs">{r.referrer}</td>
+                            <td className="px-4 py-2 text-right font-semibold">{r.count}</td>
                           </tr>
                         ))}
                       </tbody>
