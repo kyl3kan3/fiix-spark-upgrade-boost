@@ -87,24 +87,39 @@ Deno.serve(async (req) => {
       leadsRecent,
       eventsRecent,
       companiesTotal,
+      companiesRecent,
+      locationsTotal,
+      assetsTotal,
+      workOrdersTotal,
+      trialsAll,
     ] = await Promise.all([
       admin.from('profiles').select('id', { count: 'exact', head: true }),
       admin.from('profiles').select('created_at').gte('created_at', since),
-      admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end'),
+      admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end,trial_ends_at,company_id'),
       admin.from('subscriptions').select('created_at,updated_at,status,environment').gte('updated_at', since),
       admin.from('marketing_leads').select('id', { count: 'exact', head: true }),
       admin.from('marketing_leads').select('created_at,source_slug').gte('created_at', since),
-      admin.from('marketing_page_events').select('event_type,page_slug,created_at').gte('created_at', since),
+      admin.from('marketing_page_events').select('event_type,page_slug,created_at,user_agent,referrer').gte('created_at', since),
       admin.from('companies').select('id', { count: 'exact', head: true }),
+      admin.from('companies').select('id,name,created_at').gte('created_at', since).order('created_at', { ascending: false }),
+      admin.from('locations').select('id', { count: 'exact', head: true }),
+      admin.from('assets').select('id', { count: 'exact', head: true }),
+      admin.from('work_orders').select('id', { count: 'exact', head: true }),
+      admin.from('subscriptions').select('company_id,trial_ends_at,tier').eq('status', 'trialing').not('trial_ends_at', 'is', null),
     ]);
 
     const subs = subsAll.data ?? [];
     const events = eventsRecent.data ?? [];
+    const newCompanies = companiesRecent.data ?? [];
 
     const totals = {
       total_users: profilesTotal.count ?? 0,
       total_companies: companiesTotal.count ?? 0,
       total_leads: leadsTotal.count ?? 0,
+      total_locations: locationsTotal.count ?? 0,
+      total_assets: assetsTotal.count ?? 0,
+      total_work_orders: workOrdersTotal.count ?? 0,
+      new_companies_in_range: newCompanies.length,
       active_subscriptions: subs.filter((s) => s.status === 'active' || s.status === 'trialing').length,
       live_subscriptions: subs.filter((s) => s.environment === 'live' && (s.status === 'active' || s.status === 'trialing')).length,
       trialing_subscriptions: subs.filter((s) => s.status === 'trialing').length,
@@ -155,6 +170,68 @@ Deno.serve(async (req) => {
 
     const eventsDaily = bucketByDay(events, days);
 
+    // Unique visitors (rough fingerprint: user_agent + referrer)
+    const fp = (e: { user_agent?: string | null; referrer?: string | null }) =>
+      `${e.user_agent ?? ''}|${e.referrer ?? ''}`;
+    const visitorBuckets = new Map<string, Set<string>>();
+    for (const e of events) {
+      const key = (e.created_at ?? '').slice(0, 10);
+      if (!key) continue;
+      if (!visitorBuckets.has(key)) visitorBuckets.set(key, new Set());
+      visitorBuckets.get(key)!.add(fp(e));
+    }
+    const visitorsDaily = buildDailySeries(days).map((d) => ({
+      date: d.date,
+      count: visitorBuckets.get(d.date)?.size ?? 0,
+    }));
+    const uniqueVisitors = new Set(events.map(fp)).size;
+
+    const companiesCreatedDaily = bucketByDay(newCompanies, days);
+
+    // Trials ending in next 7 days
+    const nowMs = Date.now();
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    const trialsRaw = (trialsAll.data ?? []).filter((t: any) => {
+      const ts = new Date(t.trial_ends_at).getTime();
+      return ts >= nowMs && ts - nowMs <= sevenDays;
+    });
+    const trialCompanyIds = Array.from(new Set(trialsRaw.map((t: any) => t.company_id)));
+    let companyNameMap = new Map<string, string>();
+    if (trialCompanyIds.length > 0) {
+      const { data: cdata } = await admin.from('companies').select('id,name').in('id', trialCompanyIds);
+      companyNameMap = new Map((cdata ?? []).map((c: any) => [c.id, c.name]));
+    }
+    const trialsEndingSoon = trialsRaw
+      .map((t: any) => ({
+        company_id: t.company_id,
+        company_name: companyNameMap.get(t.company_id) ?? '—',
+        tier: String(t.tier),
+        trial_ends_at: t.trial_ends_at,
+        days_remaining: Math.ceil((new Date(t.trial_ends_at).getTime() - nowMs) / (24 * 60 * 60 * 1000)),
+      }))
+      .sort((a, b) => a.days_remaining - b.days_remaining);
+
+    const recentCompanies = newCompanies.slice(0, 20).map((c: any) => ({
+      id: c.id,
+      name: c.name,
+      created_at: c.created_at,
+    }));
+
+    // Top referrers (by hostname)
+    const referrerCounts: Record<string, number> = {};
+    for (const e of events) {
+      const r = (e.referrer ?? '').trim();
+      if (!r) continue;
+      try {
+        const host = new URL(r).hostname.replace(/^www\./, '');
+        referrerCounts[host] = (referrerCounts[host] ?? 0) + 1;
+      } catch { /* ignore */ }
+    }
+    const topReferrers = Object.entries(referrerCounts)
+      .map(([referrer, count]) => ({ referrer, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
     return json({
       days,
       totals,
@@ -165,8 +242,14 @@ Deno.serve(async (req) => {
       cancelsDaily,
       leadsDaily,
       eventsDaily,
+      visitorsDaily,
+      companiesCreatedDaily,
+      uniqueVisitors,
       eventBreakdown,
       topPages,
+      topReferrers,
+      trialsEndingSoon,
+      recentCompanies,
       generatedAt: new Date().toISOString(),
     });
   } catch (e) {
