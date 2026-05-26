@@ -28,22 +28,31 @@ export function useNotificationsData(
 
  // Set up realtime listener for new notifications
  useEffect(() => {
- setupNotificationListener();
+  let cancelled = false;
+  setupNotificationListener(() => cancelled);
  return () => {
+  cancelled = true;
  if (channelRef.current) {
  supabase.removeChannel(channelRef.current);
+  channelRef.current = null;
  }
  };
  }, []);
 
  // Setup notification listener
- const setupNotificationListener = async () => {
+  const setupNotificationListener = async (isCancelled?: () => boolean) => {
  const { data } = await supabase.auth.getUser();
  const user = data?.user;
  if (!user) return;
+  if (isCancelled?.()) return;
+  // Remove any prior channel before creating a new one (StrictMode double-invoke safety)
+  if (channelRef.current) {
+  supabase.removeChannel(channelRef.current);
+  channelRef.current = null;
+  }
 
  const channel = supabase
- .channel('notifications-changes')
+  .channel(`notifications-changes-${user.id}-${Math.random().toString(36).slice(2, 8)}`)
  .on(
  'postgres_changes',
  {
