@@ -638,6 +638,10 @@ const AdminAnalyticsPage: React.FC = () => {
             </div>
           </>
         )}
+
+        <div className="mt-6">
+          <GoogleAdsPanel />
+        </div>
       </div>
     </DashboardLayout>
   );
