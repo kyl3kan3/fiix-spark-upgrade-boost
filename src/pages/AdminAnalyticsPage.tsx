@@ -285,6 +285,12 @@ const AdminAnalyticsPage: React.FC = () => {
             {/* KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               <KpiCard icon={Users} label="Total Users" value={data.totals.total_users} tone="text-blue-600 bg-blue-50" />
+              <KpiCard
+                icon={Users}
+                label={`New Signups (${days}d)`}
+                value={data.signupsDaily.reduce((sum, d) => sum + d.count, 0)}
+                tone="text-blue-600 bg-blue-50"
+              />
               <KpiCard icon={Building2} label="Companies" value={data.totals.total_companies} tone="text-indigo-600 bg-indigo-50" />
               <KpiCard icon={Sparkles} label={`New Cos (${days}d)`} value={data.totals.new_companies_in_range} tone="text-fuchsia-600 bg-fuchsia-50" />
               <KpiCard icon={Eye} label={`Unique Visitors (${days}d)`} value={data.uniqueVisitors} tone="text-cyan-600 bg-cyan-50" />
