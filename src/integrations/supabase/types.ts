@@ -598,6 +598,69 @@ export type Database = {
         }
         Relationships: []
       }
+      google_ads_connections: {
+        Row: {
+          access_token: string | null
+          account_descriptive_name: string | null
+          company_id: string | null
+          connected_by: string
+          created_at: string
+          customer_id: string | null
+          id: string
+          login_customer_id: string | null
+          refresh_token: string
+          scope: string | null
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          account_descriptive_name?: string | null
+          company_id?: string | null
+          connected_by: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          login_customer_id?: string | null
+          refresh_token: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          account_descriptive_name?: string | null
+          company_id?: string | null
+          connected_by?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          login_customer_id?: string | null
+          refresh_token?: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      google_ads_oauth_states: {
+        Row: {
+          created_at: string
+          state: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          state: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           company_id: string | null
