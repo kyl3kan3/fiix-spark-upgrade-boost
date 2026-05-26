@@ -124,6 +124,11 @@ Deno.serve(async (req) => {
     // Daily series
     const signupsDaily = bucketByDay(profilesRecent.data ?? [], days);
     const subsCreatedDaily = bucketByDay(subsRecent.data ?? [], days);
+    const trialsStartedDaily = bucketByDay(
+      (subsRecent.data ?? []).filter((s) => s.status === 'trialing'),
+      days,
+      (r) => r.created_at,
+    );
     const cancelsDaily = bucketByDay(
       (subsRecent.data ?? []).filter((s) => s.status === 'canceled'),
       days,
@@ -156,6 +161,7 @@ Deno.serve(async (req) => {
       byTier,
       signupsDaily,
       subsCreatedDaily,
+      trialsStartedDaily,
       cancelsDaily,
       leadsDaily,
       eventsDaily,
