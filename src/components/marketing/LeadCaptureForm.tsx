@@ -82,6 +82,13 @@ const LeadCaptureForm = ({
  });
  if (error) throw error;
  setSubmitted(true);
+     // Google Ads conversion
+     try {
+       const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+       w.gtag?.("event", "conversion", { send_to: "AW-18051376894/FvR5CNm6sZIcEP7NyJ9D" });
+     } catch {
+       // never break UX on analytics failures
+     }
  void trackMarketingEvent({
  eventType: "lead_submit",
  pageSlug: sourceSlug,
