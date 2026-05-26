@@ -431,6 +431,59 @@ const AdminAnalyticsPage: React.FC = () => {
               </Card>
             </div>
 
+            {/* Incomplete signups */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <UserX className="h-4 w-4" /> Incomplete Signups
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                    Users who signed up but never created a company
+                    {data.totals.incomplete_signups_disposable > 0 && (
+                      <> · {data.totals.incomplete_signups_disposable} use disposable email</>
+                    )}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {data.incompleteSignups.length === 0 ? (
+                  <div className="p-6"><Empty label="No incomplete signups" /></div>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                      <tr>
+                        <th className="px-4 py-2 text-left">Email</th>
+                        <th className="px-4 py-2 text-left">Signed up</th>
+                        <th className="px-4 py-2 text-right">Age</th>
+                        <th className="px-4 py-2 text-center">Flag</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.incompleteSignups.map((s) => (
+                        <tr key={s.id} className="border-t border-border">
+                          <td className="px-4 py-2 font-mono text-xs">{s.email}</td>
+                          <td className="px-4 py-2 text-xs text-muted-foreground">
+                            {new Date(s.created_at).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-2 text-right text-xs">
+                            {s.age_hours < 24
+                              ? `${s.age_hours}h`
+                              : `${Math.floor(s.age_hours / 24)}d`}
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            {s.disposable && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                                <AlertTriangle className="h-3 w-3" /> Disposable
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Two-column row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <Card className="lg:col-span-2">
