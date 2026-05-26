@@ -43,16 +43,16 @@ const CTA = () => {
  </div>
  <div className="md:w-1/2 bg-card/10 p-8 md:p-16 flex items-center justify-center">
  <div className="bg-card rounded-lg p-6 md:p-8 shadow-xl w-full max-w-md">
- <h3 className="text-2xl font-bold mb-2 text-foreground">Enterprise Plan</h3>
- <p className="text-foreground mb-6">For organizations with complex maintenance needs</p>
+              <h3 className="text-2xl font-bold mb-2 text-foreground">Business Plan</h3>
+              <p className="text-foreground mb-6">For larger organizations with advanced needs</p>
  <div className="mb-8">
- <span className="text-4xl font-bold text-foreground">$89</span>
- <span className="text-foreground">/month per user</span>
+                <span className="text-4xl font-bold text-foreground">$299</span>
+                <span className="text-foreground">/month</span>
  </div>
  <ul className="mb-8 space-y-3">
  <li className="flex items-center text-foreground">
  <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
- <span>All Fiix features included</span>
+                  <span>All MaintenEase features included</span>
  </li>
  <li className="flex items-center text-foreground">
  <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
@@ -60,11 +60,11 @@ const CTA = () => {
  </li>
  <li className="flex items-center text-foreground">
  <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
- <span>Premium 24/7 support</span>
+                  <span>Email + chat support</span>
  </li>
  <li className="flex items-center text-foreground">
  <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
- <span>Custom integrations</span>
+                  <span>SSO + API access</span>
  </li>
  </ul>
  <Button
