@@ -37,7 +37,37 @@ serve(async (req) => {
       });
     }
 
+    // Role check: only administrator or manager may invoke (avoids API cost abuse)
+    const userId = claimsData.claims.sub as string;
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    );
+    const { data: roleRows } = await admin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+    const roles = (roleRows ?? []).map((r: { role: string }) => r.role);
+    const allowed = roles.some((r) => r === 'administrator' || r === 'manager' || r === 'super_admin');
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const { base64Image } = await req.json();
+    if (typeof base64Image !== 'string' || base64Image.length === 0) {
+      return new Response(JSON.stringify({ error: 'base64Image is required' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    // Cap base64 payload at ~6.7MB (≈5MB decoded)
+    const MAX_BASE64_BYTES = 7_000_000;
+    if (base64Image.length > MAX_BASE64_BYTES) {
+      return new Response(JSON.stringify({ error: 'Image too large (max ~5MB)' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
     if (!openAIApiKey) {
