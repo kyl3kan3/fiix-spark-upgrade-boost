@@ -50,6 +50,7 @@ interface AnalyticsResponse {
   byTier: { tier: string; count: number }[];
   signupsDaily: DailyPoint[];
   subsCreatedDaily: DailyPoint[];
+  trialsStartedDaily: DailyPoint[];
   cancelsDaily: DailyPoint[];
   leadsDaily: DailyPoint[];
   eventsDaily: DailyPoint[];
@@ -130,6 +131,7 @@ const AdminAnalyticsPage: React.FC = () => {
       date: fmtDate(s.date),
       signups: s.count,
       purchases: data.subsCreatedDaily[i]?.count ?? 0,
+      trialsStarted: data.trialsStartedDaily?.[i]?.count ?? 0,
       cancels: data.cancelsDaily[i]?.count ?? 0,
       leads: data.leadsDaily[i]?.count ?? 0,
     }));
@@ -262,6 +264,7 @@ const AdminAnalyticsPage: React.FC = () => {
                       <Legend />
                       <Line type="monotone" dataKey="signups" name="Signups" stroke="#3B82F6" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="purchases" name="New subscriptions" stroke="#10B981" strokeWidth={2} dot={false} />
+                      <Line type="monotone" dataKey="trialsStarted" name="Trials started" stroke="#F59E0B" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="cancels" name="Cancellations" stroke="#EF4444" strokeWidth={2} dot={false} />
                       <Line type="monotone" dataKey="leads" name="Leads" stroke="#8B5CF6" strokeWidth={2} dot={false} />
                     </LineChart>
