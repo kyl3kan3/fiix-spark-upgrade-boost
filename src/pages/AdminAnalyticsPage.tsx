@@ -296,6 +296,12 @@ const AdminAnalyticsPage: React.FC = () => {
               <KpiCard icon={MapPin} label="Locations" value={data.totals.total_locations} tone="text-lime-600 bg-lime-50" />
               <KpiCard icon={Wrench} label="Assets" value={data.totals.total_assets} tone="text-sky-600 bg-sky-50" />
               <KpiCard icon={ClipboardList} label="Work Orders" value={data.totals.total_work_orders} tone="text-purple-600 bg-purple-50" />
+              <KpiCard
+                icon={UserX}
+                label="Incomplete Signups"
+                value={data.totals.incomplete_signups}
+                tone="text-rose-600 bg-rose-50"
+              />
             </div>
 
             {/* Activity over time */}
