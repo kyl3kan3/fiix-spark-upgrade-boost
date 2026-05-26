@@ -44,6 +44,7 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  value={companyName}
  onChange={setCompanyName}
  disabled={isLoading}
+        optional
  />
  
  <PasswordField
