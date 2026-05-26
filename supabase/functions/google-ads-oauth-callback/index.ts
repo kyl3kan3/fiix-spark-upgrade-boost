@@ -13,6 +13,15 @@ function html(body: string, status = 200) {
   });
 }
 
+function esc(s: string) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
@@ -20,7 +29,7 @@ Deno.serve(async (req) => {
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
     const errParam = url.searchParams.get('error');
-    if (errParam) return html(`<h2>Google Ads connection failed</h2><p>${errParam}</p>`, 400);
+    if (errParam) return html(`<h2>Google Ads connection failed</h2><p>${esc(errParam)}</p>`, 400);
     if (!code || !state) return html('<h2>Missing code or state</h2>', 400);
 
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
@@ -45,7 +54,7 @@ Deno.serve(async (req) => {
       }),
     });
     const tokenJson = await tokenRes.json();
-    if (!tokenRes.ok) return html(`<h2>Token exchange failed</h2><pre>${JSON.stringify(tokenJson)}</pre>`, 400);
+    if (!tokenRes.ok) return html(`<h2>Token exchange failed</h2><pre>${esc(JSON.stringify(tokenJson))}</pre>`, 400);
 
     const refresh_token = tokenJson.refresh_token;
     const access_token = tokenJson.access_token;
@@ -94,6 +103,6 @@ Deno.serve(async (req) => {
 <script>setTimeout(()=>window.close(), 1500);</script>`);
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
-    return html(`<h2>Error</h2><pre>${msg}</pre>`, 500);
+    return html(`<h2>Error</h2><pre>${esc(msg)}</pre>`, 500);
   }
 });
