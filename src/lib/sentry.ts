@@ -73,6 +73,17 @@ export function initSentry() {
       // Auth/session expiry — handled by app, no need to alert.
       "JWT expired",
       "Auth session missing",
+      // Stale chunks after deploy — handled by lazyWithRetry which
+      // hard-reloads the page. The error fires once before the reload.
+      "Failed to fetch dynamically imported module",
+      "Importing a module script failed",
+      "error loading dynamically imported module",
+      // Browser-extension / translation DOM races we cannot fix.
+      "Failed to execute 'removeChild' on 'Node'",
+      "The node to be removed is not a child of this node",
+      // Third-party (Lovable badge / flock.js analytics) errors.
+      "e.replaceAll is not a function",
+      "Cannot read properties of undefined (reading 'outerHTML')",
     ],
   });
 
