@@ -373,11 +373,11 @@ const AdminAnalyticsPage: React.FC = () => {
                     <Clock className="h-4 w-4" /> Trials Ending in Next 7 Days
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-x-auto">
                   {data.trialsEndingSoon.length === 0 ? (
                     <div className="p-6"><Empty label="No trials ending in the next 7 days" /></div>
                   ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full min-w-[480px] text-sm">
                       <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2 text-left">Company</th>
@@ -411,11 +411,11 @@ const AdminAnalyticsPage: React.FC = () => {
                     <Building2 className="h-4 w-4" /> Recently Created Companies ({days}d)
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-x-auto">
                   {data.recentCompanies.length === 0 ? (
                     <div className="p-6"><Empty label="No new companies in this range" /></div>
                   ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full min-w-[360px] text-sm">
                       <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2 text-left">Company</th>
@@ -451,11 +451,11 @@ const AdminAnalyticsPage: React.FC = () => {
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent className="p-0 overflow-x-auto">
                 {(data.incompleteSignups ?? []).length === 0 ? (
                   <div className="p-6"><Empty label="No incomplete signups" /></div>
                 ) : (
-                  <table className="w-full text-sm">
+                  <table className="w-full min-w-[560px] text-sm">
                     <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                       <tr>
                         <th className="px-4 py-2 text-left">Email</th>
@@ -558,11 +558,11 @@ const AdminAnalyticsPage: React.FC = () => {
                 <CardHeader>
                   <CardTitle className="text-base">Event Type Breakdown</CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-x-auto">
                   {data.eventBreakdown.length === 0 ? (
                     <div className="p-6"><Empty label="No events tracked yet" /></div>
                   ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full min-w-[360px] text-sm">
                       <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2 text-left">Event</th>
@@ -586,11 +586,11 @@ const AdminAnalyticsPage: React.FC = () => {
                 <CardHeader>
                   <CardTitle className="text-base">Top Pages (Views)</CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-x-auto">
                   {data.topPages.length === 0 ? (
                     <div className="p-6"><Empty label="No page views tracked yet" /></div>
                   ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full min-w-[360px] text-sm">
                       <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2 text-left">Page</th>
@@ -618,11 +618,11 @@ const AdminAnalyticsPage: React.FC = () => {
                     <Globe className="h-4 w-4" /> Top Referrers
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-x-auto">
                   {data.topReferrers.length === 0 ? (
                     <div className="p-6"><Empty label="No external referrers tracked yet" /></div>
                   ) : (
-                    <table className="w-full text-sm">
+                    <table className="w-full min-w-[360px] text-sm">
                       <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                         <tr>
                           <th className="px-4 py-2 text-left">Referrer</th>
