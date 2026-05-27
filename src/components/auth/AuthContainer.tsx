@@ -51,7 +51,7 @@ export const AuthContainer: React.FC = () => {
  const token = params.get("token");
  if (token) {
  setIsSignUp(true);
- localStorage.setItem("pending_invite_token", token);
+      setStorageItem("pending_invite_token", token);
  (async () => {
  const { data: invitations } = await supabase
  .rpc("get_invitation_by_token", { _token: token });
@@ -61,16 +61,16 @@ export const AuthContainer: React.FC = () => {
  toast.error("Invitation not found", {
  description: "This link is invalid or has already been used.",
  });
- localStorage.removeItem("pending_invite_token");
+          removeStorageItem("pending_invite_token");
  return;
  }
  if (invitation.status !== "pending") {
  toast.info("This invitation has already been accepted.");
- localStorage.removeItem("pending_invite_token");
+          removeStorageItem("pending_invite_token");
  return;
  }
  if (invitation.email) {
- localStorage.setItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, invitation.email);
+          setStorageItem(AUTH_STORAGE_KEYS.PENDING_EMAIL, invitation.email);
         // Notify the auth form that a pending email is now available,
         // since useFormState only reads localStorage on its first render.
         if (typeof window !== "undefined") {
@@ -81,7 +81,7 @@ export const AuthContainer: React.FC = () => {
  }
           const companyName = (invitation as any).company_name as string | null;
           if (companyName) {
-            localStorage.setItem("pending_invite_company", companyName);
+            setStorageItem("pending_invite_company", companyName);
             if (typeof window !== "undefined") {
               window.dispatchEvent(
                 new CustomEvent("pending-invite-company-resolved", { detail: companyName })
