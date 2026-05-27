@@ -80,7 +80,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({ onVerify, onEx
         "expired-callback": () => onExpire?.(),
         "error-callback": () => onExpire?.(),
         theme: "auto",
-        appearance: "interaction-only",
+        appearance: "always",
       });
     })();
     return () => {
