@@ -65,8 +65,9 @@ serve(async (req) => {
       .eq("created_by", userId);
       
     if (updateError) {
+      console.error('delete-user update companies error', updateError);
       return new Response(
-        JSON.stringify({ error: "Unable to update company references: " + updateError.message }),
+        JSON.stringify({ error: "Unable to delete account" }),
         { status: 500, headers: jsonHeaders }
       );
     }
@@ -75,8 +76,9 @@ serve(async (req) => {
     const { error } = await adminClient.auth.admin.deleteUser(userId);
 
     if (error) {
+      console.error('delete-user deleteUser error', error);
       return new Response(
-        JSON.stringify({ error: "Unable to delete account: " + error.message }),
+        JSON.stringify({ error: "Unable to delete account" }),
         { status: 500, headers: jsonHeaders }
       );
     }
@@ -86,8 +88,9 @@ serve(async (req) => {
       headers: jsonHeaders,
     });
   } catch (err) {
+    console.error('delete-user error', err);
     return new Response(
-      JSON.stringify({ error: "Server error: " + err.message }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       { status: 500, headers: jsonHeaders }
     );
   }
