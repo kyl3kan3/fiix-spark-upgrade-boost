@@ -283,6 +283,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('admin-analytics error', e);
-    return json({ error: String((e as Error).message ?? e) }, 500);
+    return json({ error: 'An internal error occurred. Please try again.' }, 500);
   }
 });
