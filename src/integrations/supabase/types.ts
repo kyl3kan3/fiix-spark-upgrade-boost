@@ -1857,6 +1857,10 @@ export type Database = {
         Returns: Json
       }
       company_within_limit: { Args: { _resource: string }; Returns: boolean }
+      company_within_limit_for: {
+        Args: { _company: string; _resource: string }
+        Returns: boolean
+      }
       complete_owner_onboarding: {
         Args: {
           _company_name: string
