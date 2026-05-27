@@ -1,64 +1,39 @@
-# Plan
+## Mobile Responsiveness Fixes
 
-## 1. Personal / Company toggle in onboarding
+Three parallel fixes to address mobile audit findings.
 
-**Frontend (`src/components/onboarding/`):**
-- Add `accountType: "personal" | "company"` to `FormState` (default `company`).
-- Add a segmented toggle at the top of `OnboardingFormFields` (hidden when `isInvited`).
-- When `personal` is selected, hide the Company field; when `company`, show it as required.
+### 1. Wrap tables in horizontal scroll
 
-**Submit flow (`useOnboardingSubmit.ts`):**
-- If invited → unchanged.
-- If `accountType === "company"` → existing `complete_owner_onboarding` flow.
-- If `accountType === "personal"` → call new RPC `complete_personal_onboarding(_first_name, _last_name, _phone)` that only updates the profile (no company). User lands on dashboard; the existing `CompanyRequiredWrapper` banner nudges them to create a company later.
+Wrap each `<table>` in a `<div className="overflow-x-auto">` so dense tables can't overflow viewport on phones:
 
-**Migration:** add `complete_personal_onboarding` SECURITY DEFINER function.
+- `src/components/admin/GoogleAdsPanel.tsx`
+- `src/components/team/RolePermissionsOverview.tsx`
+- `src/pages/AdminAnalyticsPage.tsx`
+- `src/pages/AdminSeoIndexPage.tsx`
 
-## 2. Hourly abandoned-signup reminder emails
+(`AssetManagementContent` and `ImportDataPreview` already have wrappers — verify and skip if so.)
 
-Two drop-off points, both addressed:
+### 2. Mobile search trigger in top bar
 
-| Stage | Trigger | When |
-|---|---|---|
-| `unverified_1h` | `auth.users.email_confirmed_at IS NULL` | ≥1h after signup |
-| `unverified_24h` | same | ≥24h, ≤7d |
-| `onboarding_24h` | confirmed user, `profiles.company_id IS NULL`, not personal | ≥24h |
-| `onboarding_72h` | same | ≥72h, ≤14d |
+Edit `src/components/dashboard/header/SearchBar.tsx`:
 
-**Migration:**
-- New table `signup_reminders_sent (user_id uuid, stage text, sent_at timestamptz, PRIMARY KEY (user_id, stage))` — service-role only, RLS denies everything else.
-- Add `account_type text` column to `profiles` (`'personal' | 'company'`) so we don't pester personal users about company setup.
+- Keep desktop inline search (`hidden md:flex`)
+- On mobile (`md:hidden`), render a `Search` icon `Button` that opens a shadcn `Sheet` (top side) containing the same search input, auto-focused on open
+- Wire `Esc` / overlay click to close (sheet handles this)
 
-**Templates** (`supabase/functions/_shared/transactional-email-templates/`):
-- `signup-verify-reminder.tsx` — "Confirm your email to start using MaintenEase" + resend link to `/auth?email=...`.
-- `onboarding-reminder.tsx` — "Finish setting up your account" + link to `/onboarding`.
-- Register both in `registry.ts`.
+No changes to header layout — `SearchBar` already sits in `DashboardHeader`.
 
-**Edge function `send-signup-reminders`** (service role, `verify_jwt = false`, scheduled — no public input):
-- Query `auth.admin.listUsers()` (or direct `auth.users` via service role) for candidates per stage.
-- Skip rows already in `signup_reminders_sent` for that stage.
-- For each: invoke `send-transactional-email` with the right template; on success insert into `signup_reminders_sent`.
-- Cap per run (e.g. 200 emails) to avoid bursts.
+### 3. Redesign WeekView for phones
 
-**Schedule (pg_cron via insert tool, not migration — contains project ref/anon key):**
-```sql
-select cron.schedule(
-  'send-signup-reminders-hourly',
-  '0 * * * *',
-  $$ select net.http_post(
-       url:='https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/send-signup-reminders',
-       headers:='{"Content-Type":"application/json","Authorization":"Bearer <anon>"}'::jsonb,
-       body:='{}'::jsonb
-     ); $$
-);
-```
+Edit `src/components/calendar/WeekView.tsx`:
 
-## Files
+- Below `sm:` (≤640px): render a day selector (Mon–Fri pill tabs) plus a vertical list of that day's time slots and events — no table, no horizontal scroll
+- At `sm:` and above: keep the existing 5-day table inside the current `overflow-x-auto` wrapper
 
-- migration: `complete_personal_onboarding`, `signup_reminders_sent` table, `profiles.account_type`
-- `src/hooks/onboarding/types.ts`, `OnboardingFormFields.tsx`, `useOnboardingSubmit.ts`, `useOnboarding.ts` (state init)
-- `supabase/functions/_shared/transactional-email-templates/signup-verify-reminder.tsx` + `onboarding-reminder.tsx` + `registry.ts`
-- `supabase/functions/send-signup-reminders/index.ts` (+ config.toml entry with `verify_jwt = false`)
-- pg_cron schedule via insert tool
+Uses mock data already in the file; no data-layer changes.
 
-Proceed?
+### Out of scope
+
+- No business-logic changes
+- No backend/migration changes
+- Admin-only screens already lower priority; only the listed tables get wrappers
