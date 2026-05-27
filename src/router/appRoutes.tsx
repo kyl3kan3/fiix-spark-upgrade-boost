@@ -1,4 +1,5 @@
-import React, { lazy, Suspense } from "react";
+import React, { Suspense } from "react";
+import { lazyWithRetry as lazy } from "@/lib/lazyWithRetry";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
