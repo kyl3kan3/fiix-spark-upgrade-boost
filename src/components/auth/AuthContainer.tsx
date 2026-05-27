@@ -10,6 +10,7 @@ import { useAuthErrorHandler } from "@/hooks/auth/useAuthErrorHandler";
 import { useAuthNavigation } from "@/hooks/auth/useAuthNavigation";
 import AuthLoader from "./AuthLoader";
 import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
+import { getStorageItem, removeStorageItem, setStorageItem } from "@/utils/storageUtils";
 
 export const AuthContainer: React.FC = () => {
  const location = useLocation();
@@ -24,7 +25,7 @@ export const AuthContainer: React.FC = () => {
  if (!isLoading && isAuthenticated) {
  // If a pending invite token is present, send the user to onboarding
  // so the invitation can be accepted before landing on the dashboard.
- const hasPendingInvite = !!localStorage.getItem("pending_invite_token");
+      const hasPendingInvite = !!getStorageItem("pending_invite_token");
  const from = location.state?.from?.pathname || "/dashboard";
  navigate(hasPendingInvite ? "/onboarding" : from, { replace: true });
  }
@@ -32,10 +33,10 @@ export const AuthContainer: React.FC = () => {
 
  // Check for stored auth errors
  useEffect(() => {
- const storedError = localStorage.getItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
+    const storedError = getStorageItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
  if (storedError) {
  handleError(storedError);
- localStorage.removeItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
+      removeStorageItem(AUTH_STORAGE_KEYS.AUTH_ERROR);
  }
  }, [handleError]);
 
