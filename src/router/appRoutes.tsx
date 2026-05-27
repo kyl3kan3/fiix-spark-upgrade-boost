@@ -64,6 +64,7 @@ const ApiKeysPage = lazy(() => import("@/pages/ApiKeysPage"));
 const SsoPage = lazy(() => import("@/pages/SsoPage"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const UnsubscribePage = lazy(() => import("@/pages/UnsubscribePage"));
 
 export const AppRoutes = () => (
  <ErrorBoundary>
@@ -76,6 +77,7 @@ export const AppRoutes = () => (
  <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
  <Route path="/forgot-password" element={<ForgotPassword />} />
  <Route path="/reset-password" element={<ResetPassword />} />
+ <Route path="/unsubscribe" element={<UnsubscribePage />} />
  <Route path="/feature/:title" element={<FeatureDemoPage />} />
  <Route path="/pricing" element={<PricingPage />} />
  <Route path="/privacy" element={<PrivacyPolicy />} />
