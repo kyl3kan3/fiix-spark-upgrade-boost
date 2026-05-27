@@ -62,7 +62,8 @@ const RolePermissionsOverview: React.FC = () => {
  </TabsContent>
  
  <TabsContent value="detailed">
- <table className="w-full border-collapse">
+ <div className="overflow-x-auto">
+ <table className="w-full min-w-[560px] border-collapse">
  <thead>
  <tr className="bg-muted">
  <th className="border p-2 text-left">Feature</th>
@@ -96,6 +97,7 @@ const RolePermissionsOverview: React.FC = () => {
  ))}
  </tbody>
  </table>
+ </div>
  </TabsContent>
  </Tabs>
  </CardContent>
