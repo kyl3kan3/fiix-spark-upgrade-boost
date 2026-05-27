@@ -25,7 +25,7 @@ const RoleEditMode: React.FC<RoleEditModeProps> = ({
  return (
  <>
  <Select value={role} onValueChange={handleRoleChange}>
- <SelectTrigger className="w-[140px]">
+ <SelectTrigger className="w-full sm:w-[140px]">
  <SelectValue placeholder="Select role" />
  </SelectTrigger>
  <SelectContent>
