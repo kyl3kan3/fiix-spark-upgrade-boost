@@ -598,6 +598,156 @@ export type Database = {
         }
         Relationships: []
       }
+      email_send_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          message_id: string | null
+          metadata: Json | null
+          recipient_email: string
+          status: string
+          template_name: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email: string
+          status: string
+          template_name: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          message_id?: string | null
+          metadata?: Json | null
+          recipient_email?: string
+          status?: string
+          template_name?: string
+        }
+        Relationships: []
+      }
+      email_send_state: {
+        Row: {
+          auth_email_ttl_minutes: number
+          batch_size: number
+          id: number
+          retry_after_until: string | null
+          send_delay_ms: number
+          transactional_email_ttl_minutes: number
+          updated_at: string
+        }
+        Insert: {
+          auth_email_ttl_minutes?: number
+          batch_size?: number
+          id?: number
+          retry_after_until?: string | null
+          send_delay_ms?: number
+          transactional_email_ttl_minutes?: number
+          updated_at?: string
+        }
+        Update: {
+          auth_email_ttl_minutes?: number
+          batch_size?: number
+          id?: number
+          retry_after_until?: string | null
+          send_delay_ms?: number
+          transactional_email_ttl_minutes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      email_unsubscribe_tokens: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
+      google_ads_connections: {
+        Row: {
+          access_token: string | null
+          account_descriptive_name: string | null
+          company_id: string | null
+          connected_by: string
+          created_at: string
+          customer_id: string | null
+          id: string
+          login_customer_id: string | null
+          refresh_token: string
+          scope: string | null
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          account_descriptive_name?: string | null
+          company_id?: string | null
+          connected_by: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          login_customer_id?: string | null
+          refresh_token: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          account_descriptive_name?: string | null
+          company_id?: string | null
+          connected_by?: string
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          login_customer_id?: string | null
+          refresh_token?: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      google_ads_oauth_states: {
+        Row: {
+          created_at: string
+          state: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          state: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           company_id: string | null
@@ -966,6 +1116,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: string
           avatar_url: string | null
           company_id: string | null
           company_name: string | null
@@ -979,6 +1130,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          account_type?: string
           avatar_url?: string | null
           company_id?: string | null
           company_name?: string | null
@@ -992,6 +1144,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          account_type?: string
           avatar_url?: string | null
           company_id?: string | null
           company_name?: string | null
@@ -1065,6 +1218,24 @@ export type Database = {
           type?: string
           updated_at?: string
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      signup_reminders_sent: {
+        Row: {
+          sent_at: string
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          sent_at?: string
+          stage: string
+          user_id: string
+        }
+        Update: {
+          sent_at?: string
+          stage?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1155,6 +1326,30 @@ export type Database = {
           tier?: Database["public"]["Enums"]["subscription_tier"]
           trial_ends_at?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      suppressed_emails: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          metadata: Json | null
+          reason: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          metadata?: Json | null
+          reason: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          metadata?: Json | null
+          reason?: string
         }
         Relationships: []
       }
@@ -1662,6 +1857,10 @@ export type Database = {
         Returns: Json
       }
       company_within_limit: { Args: { _resource: string }; Returns: boolean }
+      company_within_limit_for: {
+        Args: { _company: string; _resource: string }
+        Returns: boolean
+      }
       complete_owner_onboarding: {
         Args: {
           _company_name: string
@@ -1671,9 +1870,21 @@ export type Database = {
         }
         Returns: Json
       }
+      complete_personal_onboarding: {
+        Args: { _first_name?: string; _last_name?: string; _phone?: string }
+        Returns: Json
+      }
+      delete_email: {
+        Args: { message_id: number; queue_name: string }
+        Returns: boolean
+      }
       dispatch_notification_event: {
         Args: { _event_type: string; _payload: Json }
         Returns: undefined
+      }
+      enqueue_email: {
+        Args: { payload: Json; queue_name: string }
+        Returns: number
       }
       get_company_directory: {
         Args: never
@@ -1754,6 +1965,23 @@ export type Database = {
         Returns: undefined
       }
       migrate_company_data: { Args: never; Returns: undefined }
+      move_to_dlq: {
+        Args: {
+          dlq_name: string
+          message_id: number
+          payload: Json
+          source_queue: string
+        }
+        Returns: number
+      }
+      read_email_batch: {
+        Args: { batch_size: number; queue_name: string; vt: number }
+        Returns: {
+          message: Json
+          msg_id: number
+          read_ct: number
+        }[]
+      }
     }
     Enums: {
       app_role:

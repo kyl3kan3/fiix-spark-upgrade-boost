@@ -6,6 +6,7 @@ export interface FormState {
  email: string;
  phoneNumber: string;
  notifications: boolean;
+ accountType: "personal" | "company";
 }
 
 export interface InviteDetails {
@@ -23,4 +24,5 @@ export interface UseOnboardingReturn {
  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
  handleCheckbox: (v: boolean) => void;
  handleSubmit: (e: React.FormEvent) => void;
+ setAccountType: (type: "personal" | "company") => void;
 }

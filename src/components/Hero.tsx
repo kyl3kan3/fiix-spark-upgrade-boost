@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, SignalOff, Smartphone, TriangleAlert, Wrench, CheckCircle2 } from "lucide-react";
+import { ArrowRight, WifiOff, Smartphone, TriangleAlert, Wrench, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -24,6 +24,15 @@ const Hero = () => {
  Get started free
  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
+ <Button
+ size="lg"
+ variant="outline"
+ className="group"
+ onClick={() => navigate("/auth")}
+ >
+ Book a Demo
+ <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+ </Button>
  </div>
  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
  <div className="rounded-lg border border-fiix-200 bg-card p-3">
@@ -31,7 +40,7 @@ const Hero = () => {
  <p className="text-muted-foreground mt-1">Designed for floor teams, not desk workflows.</p>
  </div>
  <div className="rounded-lg border border-fiix-200 bg-card p-3">
- <div className="flex items-center gap-2 font-semibold text-foreground"><SignalOff className="h-4 w-4 text-fiix-600" /> Offline capable</div>
+ <div className="flex items-center gap-2 font-semibold text-foreground"><WifiOff className="h-4 w-4 text-fiix-600" /> Offline capable</div>
  <p className="text-muted-foreground mt-1">Work offline and auto-sync when connection returns.</p>
  </div>
  <div className="rounded-lg border border-fiix-200 bg-card p-3">

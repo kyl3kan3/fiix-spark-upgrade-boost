@@ -112,6 +112,32 @@ Deno.serve(async (req) => {
     const events = eventsRecent.data ?? [];
     const newCompanies = companiesRecent.data ?? [];
 
+    // Incomplete signups: users with a profile but no company_id
+    const { data: incompleteRows, count: incompleteCount } = await admin
+      .from('profiles')
+      .select('id,email,created_at', { count: 'exact' })
+      .is('company_id', null)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    const DISPOSABLE_DOMAINS = new Set([
+      'wshu.net','mailinator.com','tempmail.com','guerrillamail.com','10minutemail.com',
+      'yopmail.com','trashmail.com','sharklasers.com','getnada.com','maildrop.cc',
+    ]);
+    const isDisposable = (email: string) => {
+      const domain = email.split('@')[1]?.toLowerCase() ?? '';
+      return DISPOSABLE_DOMAINS.has(domain);
+    };
+    const incompleteSignups = (incompleteRows ?? []).map((p: any) => {
+      const ageHours = Math.floor((Date.now() - new Date(p.created_at).getTime()) / (60 * 60 * 1000));
+      return {
+        id: p.id,
+        email: p.email,
+        created_at: p.created_at,
+        age_hours: ageHours,
+        disposable: isDisposable(p.email ?? ''),
+      };
+    });
+
     const totals = {
       total_users: profilesTotal.count ?? 0,
       total_companies: companiesTotal.count ?? 0,
@@ -120,6 +146,8 @@ Deno.serve(async (req) => {
       total_assets: assetsTotal.count ?? 0,
       total_work_orders: workOrdersTotal.count ?? 0,
       new_companies_in_range: newCompanies.length,
+      incomplete_signups: incompleteCount ?? 0,
+      incomplete_signups_disposable: incompleteSignups.filter((s) => s.disposable).length,
       active_subscriptions: subs.filter((s) => s.status === 'active' || s.status === 'trialing').length,
       live_subscriptions: subs.filter((s) => s.environment === 'live' && (s.status === 'active' || s.status === 'trialing')).length,
       trialing_subscriptions: subs.filter((s) => s.status === 'trialing').length,
@@ -250,6 +278,7 @@ Deno.serve(async (req) => {
       topReferrers,
       trialsEndingSoon,
       recentCompanies,
+      incompleteSignups,
       generatedAt: new Date().toISOString(),
     });
   } catch (e) {

@@ -1,4 +1,5 @@
-import React, { lazy, Suspense } from "react";
+import React, { Suspense } from "react";
+import { lazyWithRetry as lazy } from "@/lib/lazyWithRetry";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -64,6 +65,7 @@ const ApiKeysPage = lazy(() => import("@/pages/ApiKeysPage"));
 const SsoPage = lazy(() => import("@/pages/SsoPage"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const UnsubscribePage = lazy(() => import("@/pages/UnsubscribePage"));
 
 export const AppRoutes = () => (
  <ErrorBoundary>
@@ -76,6 +78,7 @@ export const AppRoutes = () => (
  <Route path="/signup" element={<Navigate to="/auth?signup=true" replace />} />
  <Route path="/forgot-password" element={<ForgotPassword />} />
  <Route path="/reset-password" element={<ResetPassword />} />
+ <Route path="/unsubscribe" element={<UnsubscribePage />} />
  <Route path="/feature/:title" element={<FeatureDemoPage />} />
  <Route path="/pricing" element={<PricingPage />} />
  <Route path="/privacy" element={<PrivacyPolicy />} />

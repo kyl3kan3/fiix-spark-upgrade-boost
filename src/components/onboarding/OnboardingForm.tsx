@@ -14,11 +14,16 @@ const OnboardingForm: React.FC = () => {
  handleChange,
  handleCheckbox,
  handleSubmit,
+ setAccountType,
  } = useOnboarding();
 
- // Check if required fields are filled
- const isFormValid = state.fullName.trim() && state.role.trim() && 
- (isInvited || state.company.trim()) && state.email.trim();
+  // Check if required fields are filled
+  const requiresCompany = !isInvited && state.accountType === "company";
+  const isFormValid =
+    state.fullName.trim() &&
+    state.role.trim() &&
+    (!requiresCompany || state.company.trim()) &&
+    state.email.trim();
 
  return (
  <form onSubmit={handleSubmit} className="space-y-6">
@@ -28,6 +33,7 @@ const OnboardingForm: React.FC = () => {
  inviteDetails={inviteDetails}
  handleChange={handleChange}
  handleCheckbox={handleCheckbox}
+  setAccountType={setAccountType}
  />
 
  {/* Validation messages */}
@@ -37,7 +43,7 @@ const OnboardingForm: React.FC = () => {
  </div>
  )}
  
- {!isInvited && !state.company && (
+      {requiresCompany && !state.company && (
  <div className="text-red-500 text-sm">
  A company name is required
  </div>

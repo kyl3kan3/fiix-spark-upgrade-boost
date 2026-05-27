@@ -2,6 +2,8 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { User, Building2 } from "lucide-react";
 import { FormState, InviteDetails } from "@/hooks/onboarding/types";
 
 interface FormFieldsProps {
@@ -10,6 +12,7 @@ interface FormFieldsProps {
  inviteDetails: InviteDetails | null;
  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
  handleCheckbox: (checked: boolean) => void;
+ setAccountType?: (type: "personal" | "company") => void;
 }
 
 const OnboardingFormFields: React.FC<FormFieldsProps> = ({
@@ -17,10 +20,44 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
  isInvited,
  inviteDetails,
  handleChange,
- handleCheckbox
+ handleCheckbox,
+ setAccountType,
 }) => {
  return (
  <>
+ {!isInvited && setAccountType && (
+   <div>
+     <label className="block text-sm font-medium text-foreground mb-2">
+       Account type
+     </label>
+     <div className="grid grid-cols-2 gap-2">
+       <Button
+         type="button"
+         variant={state.accountType === "personal" ? "default" : "outline"}
+         onClick={() => setAccountType("personal")}
+         className="justify-start"
+       >
+         <User className="mr-2 h-4 w-4" />
+         Personal
+       </Button>
+       <Button
+         type="button"
+         variant={state.accountType === "company" ? "default" : "outline"}
+         onClick={() => setAccountType("company")}
+         className="justify-start"
+       >
+         <Building2 className="mr-2 h-4 w-4" />
+         Company
+       </Button>
+     </div>
+     <p className="text-xs text-muted-foreground mt-1">
+       {state.accountType === "personal"
+         ? "Use MaintenEase solo. You can create a company later."
+         : "Set up a company workspace and invite your team."}
+     </p>
+   </div>
+ )}
+
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">
  Full Name <span className="text-red-500">*</span>
@@ -61,7 +98,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
  Complete the onboarding to join.
  </p>
  </div>
- ) : (
+  ) : state.accountType === "company" ? (
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">
  Company/Organization Name <span className="text-red-500">*</span>
@@ -75,7 +112,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
  className="w-full"
  />
  </div>
- )}
+  ) : null}
  
  <div>
  <label className="block text-sm font-medium text-foreground mb-1">
