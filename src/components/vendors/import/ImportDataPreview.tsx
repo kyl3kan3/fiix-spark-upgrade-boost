@@ -12,8 +12,8 @@ const ImportDataPreview: React.FC<ImportDataPreviewProps> = ({ parsedData }) => 
  return (
  <div className="border rounded-lg p-4">
  <h4 className="font-medium mb-2">Preview ({parsedData.length} vendors found)</h4>
- <div className="max-h-40 overflow-y-auto">
- <table className="w-full text-sm">
+ <div className="max-h-40 overflow-y-auto overflow-x-auto">
+ <table className="w-full min-w-[520px] text-sm">
  <thead>
  <tr className="border-b">
  <th className="text-left p-2">Name</th>

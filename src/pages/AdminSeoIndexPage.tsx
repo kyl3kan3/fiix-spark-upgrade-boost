@@ -179,14 +179,14 @@ const AdminSeoIndexPage: React.FC = () => {
  <Card>
  <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
  <CardTitle>URL status</CardTitle>
- <div className="flex items-center gap-2">
- <div className="relative">
+ <div className="flex w-full sm:w-auto flex-col sm:flex-row sm:items-center gap-2">
+ <div className="relative w-full sm:w-auto">
  <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
  <Input
  value={filter}
  onChange={(e) => setFilter(e.target.value)}
  placeholder="Filter URLs"
- className="h-9 w-56 pl-8"
+ className="h-9 w-full sm:w-56 pl-8"
  />
  </div>
  <label className="flex items-center gap-2 text-sm text-foreground">

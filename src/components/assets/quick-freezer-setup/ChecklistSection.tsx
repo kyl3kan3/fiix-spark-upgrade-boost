@@ -78,7 +78,7 @@ export const ChecklistSection: React.FC<ChecklistSectionProps> = ({
             <p className="text-xs text-muted-foreground">{getTemplateById(g.templateId).description}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor={`cl-name-${g.id}`}>Checklist name</Label>
               <Input
