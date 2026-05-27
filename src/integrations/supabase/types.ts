@@ -1116,6 +1116,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: string
           avatar_url: string | null
           company_id: string | null
           company_name: string | null
@@ -1129,6 +1130,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          account_type?: string
           avatar_url?: string | null
           company_id?: string | null
           company_name?: string | null
@@ -1142,6 +1144,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          account_type?: string
           avatar_url?: string | null
           company_id?: string | null
           company_name?: string | null
@@ -1215,6 +1218,24 @@ export type Database = {
           type?: string
           updated_at?: string
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      signup_reminders_sent: {
+        Row: {
+          sent_at: string
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          sent_at?: string
+          stage: string
+          user_id: string
+        }
+        Update: {
+          sent_at?: string
+          stage?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1843,6 +1864,10 @@ export type Database = {
           _last_name?: string
           _phone?: string
         }
+        Returns: Json
+      }
+      complete_personal_onboarding: {
+        Args: { _first_name?: string; _last_name?: string; _phone?: string }
         Returns: Json
       }
       delete_email: {

@@ -1,60 +1,64 @@
-# Public Request Portal + Urgent Lane
+# Plan
 
-Give every company a branded public URL (e.g. `maintenease.com/r/acme-facilities`) they can link from their own website footer. Two submission types: **Standard request** and **Urgent — needs fixing now**. Drives backlinks (the original goal) and gives customers a real product surface.
+## 1. Personal / Company toggle in onboarding
 
-## What gets built
+**Frontend (`src/components/onboarding/`):**
+- Add `accountType: "personal" | "company"` to `FormState` (default `company`).
+- Add a segmented toggle at the top of `OnboardingFormFields` (hidden when `isInvited`).
+- When `personal` is selected, hide the Company field; when `company`, show it as required.
 
-### 1. Database — `public_requests` table
-- Fields: `company_id`, `type` (`'standard' | 'urgent'`), `title`, `description`, `location_text`, `contact_name`, `contact_email`, `contact_phone`, `status` (`'new' | 'in_progress' | 'resolved'`), `submitter_ip`, `user_agent`
-- Add `public_slug` (text, unique) to `companies` so each tenant has a stable, brandable URL. Auto-generate from name on first publish.
-- RLS:
-  - `anon + authenticated` can **INSERT** (rate-limited via edge function, not direct table grant — actually allow direct insert with a CHECK that required fields are non-empty and length-capped; rate limit handled via IP tracking + later cleanup if abused)
-  - Company members can **SELECT / UPDATE** rows where `company_id = get_user_company(auth.uid())`
-  - Admins can **DELETE**
-- Index on `(company_id, status, created_at desc)` and `(company_id, type)` for the urgent filter.
+**Submit flow (`useOnboardingSubmit.ts`):**
+- If invited → unchanged.
+- If `accountType === "company"` → existing `complete_owner_onboarding` flow.
+- If `accountType === "personal"` → call new RPC `complete_personal_onboarding(_first_name, _last_name, _phone)` that only updates the profile (no company). User lands on dashboard; the existing `CompanyRequiredWrapper` banner nudges them to create a company later.
 
-### 2. Public submission page — `/r/:slug`
-- Resolves slug → company; 404 if not found.
-- Branded header: company logo + name (pulled from `companies` row).
-- Two big buttons at top: **Submit a request** / **Urgent — needs fixing now** (red, prominent).
-- Form fields: title, description, location (free text), your name, email, phone (optional). Zod-validated client + length caps.
-- On submit → insert into `public_requests` with chosen `type`. Success state: "Thanks — the team has been notified."
-- If `type === 'urgent'`, edge function fires a notification (email + push to admins/managers of that company) via existing `notify-event` infra.
-- SEO: unique title/description per company, `noindex` (these are tenant portals, not search-targets), canonical to the company's own URL.
+**Migration:** add `complete_personal_onboarding` SECURITY DEFINER function.
 
-### 3. In-app inbox — `/requests`
-- New sidebar entry under work management.
-- List view: filter by `type` (all / urgent / standard) and `status`. Urgent rows badged red.
-- Row actions: convert to work order (prefills WO form with request data), mark resolved, delete.
-- Empty state explains the public URL and how to share it.
+## 2. Hourly abandoned-signup reminder emails
 
-### 4. Marketing surface
-- **Landing page (`/`):** new section "Give your customers a way to report problems" — screenshot of the portal, highlight the urgent lane, CTA "Get your branded portal".
-- **Solutions/Work Order page:** add the portal as a listed feature.
-- **New `/solutions/maintenance-request-portal` page** (data row in `src/data/solutions.ts`) — targets "maintenance request software" / "public maintenance request form" keywords.
-- Footer link under Product → "Request portal".
-- Settings page gets a "Public request portal" card showing the live URL with copy button + embed-link snippet for customers' own sites.
+Two drop-off points, both addressed:
 
-## Technical details
+| Stage | Trigger | When |
+|---|---|---|
+| `unverified_1h` | `auth.users.email_confirmed_at IS NULL` | ≥1h after signup |
+| `unverified_24h` | same | ≥24h, ≤7d |
+| `onboarding_24h` | confirmed user, `profiles.company_id IS NULL`, not personal | ≥24h |
+| `onboarding_72h` | same | ≥72h, ≤14d |
 
-```text
-public route:           /r/:slug                  → PublicRequestPortal.tsx
-in-app inbox:           /requests                 → RequestsInboxPage.tsx
-marketing landing:      / (new section)           → Hero or new component
-new solution page:      /solutions/maintenance-request-portal
-settings card:          existing Settings page
+**Migration:**
+- New table `signup_reminders_sent (user_id uuid, stage text, sent_at timestamptz, PRIMARY KEY (user_id, stage))` — service-role only, RLS denies everything else.
+- Add `account_type text` column to `profiles` (`'personal' | 'company'`) so we don't pester personal users about company setup.
+
+**Templates** (`supabase/functions/_shared/transactional-email-templates/`):
+- `signup-verify-reminder.tsx` — "Confirm your email to start using MaintenEase" + resend link to `/auth?email=...`.
+- `onboarding-reminder.tsx` — "Finish setting up your account" + link to `/onboarding`.
+- Register both in `registry.ts`.
+
+**Edge function `send-signup-reminders`** (service role, `verify_jwt = false`, scheduled — no public input):
+- Query `auth.admin.listUsers()` (or direct `auth.users` via service role) for candidates per stage.
+- Skip rows already in `signup_reminders_sent` for that stage.
+- For each: invoke `send-transactional-email` with the right template; on success insert into `signup_reminders_sent`.
+- Cap per run (e.g. 200 emails) to avoid bursts.
+
+**Schedule (pg_cron via insert tool, not migration — contains project ref/anon key):**
+```sql
+select cron.schedule(
+  'send-signup-reminders-hourly',
+  '0 * * * *',
+  $$ select net.http_post(
+       url:='https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/send-signup-reminders',
+       headers:='{"Content-Type":"application/json","Authorization":"Bearer <anon>"}'::jsonb,
+       body:='{}'::jsonb
+     ); $$
+);
 ```
 
-- New table `public_requests` + `companies.public_slug` column via migration.
-- Slug generation: lowercase, hyphenated, with random 4-char suffix on collision.
-- Anonymous insert RLS: `WITH CHECK (company_id IS NOT NULL AND length(title) BETWEEN 1 AND 200 AND length(description) <= 5000)`.
-- Urgent notification: reuse `notify-event` edge function with new `event_type = 'urgent_public_request'`; admins/managers receive email + push.
-- Sitemap: add `/solutions/maintenance-request-portal`; do NOT add `/r/*` (tenant pages, noindex).
+## Files
 
-## Not in scope
+- migration: `complete_personal_onboarding`, `signup_reminders_sent` table, `profiles.account_type`
+- `src/hooks/onboarding/types.ts`, `OnboardingFormFields.tsx`, `useOnboardingSubmit.ts`, `useOnboarding.ts` (state init)
+- `supabase/functions/_shared/transactional-email-templates/signup-verify-reminder.tsx` + `onboarding-reminder.tsx` + `registry.ts`
+- `supabase/functions/send-signup-reminders/index.ts` (+ config.toml entry with `verify_jwt = false`)
+- pg_cron schedule via insert tool
 
-- Captcha / abuse protection beyond simple length caps and IP logging (can add hCaptcha later if spam hits).
-- Customer-facing status tracking page ("see where my request is").
-- Multi-language portal.
-
-Approve and I'll ship it.
+Proceed?
