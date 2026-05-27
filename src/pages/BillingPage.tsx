@@ -33,6 +33,16 @@ export default function BillingPage() {
  useEffect(() => {
  if (params.get("success") === "1") {
  toast.success("Subscription started — welcome!");
+  // Fire Google Ads conversion (deduped by transaction_id if provided)
+  try {
+    const txnId = params.get("transaction_id") || params.get("_ptxn") || "";
+    (window as any).gtag?.("event", "conversion", {
+      send_to: "AW-18190364490/CLjYCLDM3LMcEMre6-FD",
+      transaction_id: txnId,
+    });
+  } catch (e) {
+    console.warn("gtag conversion failed", e);
+  }
  // Refetch after a beat to let webhook land
  setTimeout(() => refetch(), 2000);
  }
