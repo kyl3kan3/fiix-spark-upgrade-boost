@@ -6,6 +6,7 @@ import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
 import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
 import { TurnstileWidget } from "../TurnstileWidget";
+import { GoogleSignInButton } from "../GoogleSignInButton";
 
 export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  const {
@@ -63,6 +64,17 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  >
  {isLoading ? AUTH_BUTTON_TEXT.CREATING_ACCOUNT : AUTH_BUTTON_TEXT.CREATE_ACCOUNT}
  </Button>
+
+      <div className="relative my-2">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">Or</span>
+        </div>
+      </div>
+
+      <GoogleSignInButton label="Sign up with Google" disabled={isLoading} />
  </form>
  );
 };
