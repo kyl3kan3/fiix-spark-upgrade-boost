@@ -15,6 +15,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
  email: getInitialEmail(),
  phoneNumber: "",
  notifications: true,
+ accountType: "company",
  });
 
  // Check if user is invited
@@ -73,6 +74,10 @@ export const useOnboarding = (): UseOnboardingReturn => {
   setState((prev) => ({ ...prev, notifications: v }));
   };
 
+   const setAccountType = (accountType: "personal" | "company") => {
+   setState((prev) => ({ ...prev, accountType }));
+   };
+
  return {
  state,
  submitting,
@@ -80,6 +85,7 @@ export const useOnboarding = (): UseOnboardingReturn => {
  inviteDetails,
  handleChange,
  handleCheckbox,
- handleSubmit
+  handleSubmit,
+  setAccountType,
  };
 };

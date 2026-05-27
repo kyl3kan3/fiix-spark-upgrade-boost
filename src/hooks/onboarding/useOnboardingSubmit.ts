@@ -79,7 +79,37 @@ export const useOnboardingSubmit = (
         window.location.href = "/dashboard";
       }, 800);
       return;
-     } else if (state.company) {
+      } else if (state.accountType === "personal") {
+        try {
+          logger.log("Completing personal onboarding");
+          const { error: personalError } = await supabase.rpc(
+            "complete_personal_onboarding",
+            {
+              _first_name: firstName,
+              _last_name: lastName,
+              _phone: state.phoneNumber?.trim() || undefined,
+            }
+          );
+          if (personalError) {
+            console.error("Personal onboarding error:", personalError);
+            toast.error(personalError.message || "Failed to complete onboarding");
+            setSubmitting(false);
+            return;
+          }
+          setSetupComplete();
+          clearOnboardingStorage();
+          toast.success("You're all set! Redirecting...");
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 800);
+          return;
+        } catch (err: any) {
+          console.error("Personal onboarding error:", err);
+          toast.error(err.message || "Failed to complete onboarding");
+          setSubmitting(false);
+          return;
+        }
+      } else if (state.company) {
   try {
   logger.log("Completing owner onboarding for company:", state.company);
 
