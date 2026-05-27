@@ -1,8 +1,5 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,36 +15,33 @@ interface EmailNotificationRequest {
   referenceId?: string;
 }
 
+// Backwards-compatible shim: existing callers keep invoking `send-email` with
+// raw subject+HTML, but we now forward to the managed Lovable Cloud
+// transactional email pipeline (queue + verified sender domain). Resend is no
+// longer used.
 const handler = async (req: Request): Promise<Response> => {
-  console.log("=== EDGE FUNCTION START ===");
-  console.log("Request method:", req.method);
-  
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    console.log("Handling CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log("Processing email request...");
-
-    // Verify caller JWT
     const authHeader = req.headers.get("authorization") ?? "";
     const jwt = authHeader.replace("Bearer ", "");
     if (!jwt) {
       return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 401, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-    if (!supabaseUrl || !anonKey) {
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !anonKey || !serviceKey) {
       return new Response(JSON.stringify({ success: false, error: "Server misconfigured" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 500, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
+
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: `Bearer ${jwt}` } },
       auth: { persistSession: false },
@@ -56,80 +50,31 @@ const handler = async (req: Request): Promise<Response> => {
     const authedUserId = userData?.user?.id;
     if (userError || !authedUserId) {
       return new Response(JSON.stringify({ success: false, error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-    
-    // Check if API key exists
-    const apiKey = Deno.env.get("RESEND_API_KEY");
-    console.log("Checking for RESEND_API_KEY...", apiKey ? "✓ Found" : "✗ Missing");
-    
-    if (!apiKey) {
-      console.error("RESEND_API_KEY environment variable is not set");
-      const errorResponse = {
-        success: false,
-        error: "Email service not configured - missing API key"
-      };
-      return new Response(JSON.stringify(errorResponse), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 401, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: "LOVABLE_API_KEY not configured" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-
-    console.log("Parsing request body...");
-    const requestData = await req.json() as EmailNotificationRequest;
-    console.log("Request data received:", {
-      to: requestData.to,
-      subject: requestData.subject,
-      userId: requestData.userId,
-      notificationType: requestData.notificationType,
-      bodyLength: requestData.body?.length || 0
-    });
-
-    const { to, subject, body, userId, notificationType, referenceId } = requestData;
+    const { to, subject, body, userId, notificationType, referenceId } =
+      (await req.json()) as EmailNotificationRequest;
 
     if (!to || !subject || !body || !userId) {
-      console.error("Missing required fields:", { to: !!to, subject: !!subject, body: !!body, userId: !!userId });
-      const errorResponse = {
+      return new Response(JSON.stringify({
         success: false,
-        error: "Missing required fields: to, subject, body, userId"
-      };
-      return new Response(JSON.stringify(errorResponse), {
-        status: 400,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
+        error: "Missing required fields: to, subject, body, userId",
+      }), { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    // Ensure callers can only send notifications on behalf of themselves
     if (userId !== authedUserId) {
       return new Response(JSON.stringify({ success: false, error: "Forbidden" }), {
-        status: 403,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        status: 403, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    // Restrict recipient to the authenticated user's own email addresses to
-    // prevent abuse of the verified sender domain for arbitrary outbound mail.
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!serviceKey) {
-      return new Response(JSON.stringify({ success: false, error: "Server misconfigured" }), {
-        status: 500, headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
+    // Restrict recipient: own email, or invitee for invitation notifications
     const adminClient = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
     const recipientLower = String(to).trim().toLowerCase();
     let recipientAllowed = false;
 
-    // Allow: sending to your own email (profile or notification preferences)
     const { data: profile } = await adminClient
       .from("profiles").select("email").eq("id", authedUserId).maybeSingle();
     const { data: prefs } = await adminClient
@@ -139,12 +84,8 @@ const handler = async (req: Request): Promise<Response> => {
         .filter(Boolean)
         .map((e: string) => e.trim().toLowerCase()),
     );
-    if (ownEmails.has(recipientLower)) {
-      recipientAllowed = true;
-    }
+    if (ownEmails.has(recipientLower)) recipientAllowed = true;
 
-    // Allow: sending an invitation email to the invitee, provided the
-    // authenticated user created the invitation and it matches the recipient.
     if (!recipientAllowed && notificationType === "invitation" && referenceId) {
       const { data: invite } = await adminClient
         .from("organization_invitations")
@@ -167,86 +108,36 @@ const handler = async (req: Request): Promise<Response> => {
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    const fromAddress = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com>";
-    console.log("Sending email via Resend gateway...");
-    console.log("Email details:", { from: fromAddress, to, subject, bodyLength: body.length });
-
-    // Send via Lovable connector gateway (RESEND_API_KEY is a connection key, not a raw Resend key)
-    const gatewayRes = await fetch(`${GATEWAY_URL}/emails`, {
+    // Forward to the managed transactional email pipeline
+    const forwardRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": apiKey,
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
       },
       body: JSON.stringify({
-        from: fromAddress,
-        to: [to],
-        subject: subject,
-        html: body,
+        templateName: "generic",
+        recipientEmail: to,
+        templateData: { subject, html: body },
       }),
     });
-    const gatewayJson = await gatewayRes.json().catch(() => ({}));
-    const emailResponse = gatewayRes.ok
-      ? { data: gatewayJson, error: null as any }
-      : { data: null as any, error: { message: gatewayJson?.message || gatewayJson?.error || `Gateway HTTP ${gatewayRes.status}` } };
-
-    console.log("Resend API response received:", JSON.stringify(emailResponse, null, 2));
-
-    if (emailResponse.error) {
-      console.error("Resend returned error:", JSON.stringify(emailResponse.error, null, 2));
-      const errorResponse = {
+    const forwardJson = await forwardRes.json().catch(() => ({}));
+    if (!forwardRes.ok) {
+      return new Response(JSON.stringify({
         success: false,
-        error: `Resend error: ${emailResponse.error.message || JSON.stringify(emailResponse.error)}`
-      };
-      return new Response(JSON.stringify(errorResponse), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
+        error: forwardJson?.error || `Email pipeline error (HTTP ${forwardRes.status})`,
+      }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    if (!emailResponse.data) {
-      console.error("No data returned from Resend API");
-      const errorResponse = {
-        success: false,
-        error: "No data returned from email service"
-      };
-      return new Response(JSON.stringify(errorResponse), {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-
-    console.log("Email sent successfully! Message ID:", emailResponse.data.id);
-    console.log("=== EDGE FUNCTION SUCCESS ===");
-
-    const successResponse = {
-      success: true,
-      data: emailResponse.data
-    };
-
-    return new Response(JSON.stringify(successResponse), {
-      status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+    return new Response(JSON.stringify({ success: true, data: forwardJson }), {
+      status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
     });
-  } catch (error) {
-    console.error("=== EDGE FUNCTION ERROR ===");
-    console.error("Error type:", typeof error);
-    console.error("Error name:", error?.name);
-    console.error("Error message:", error?.message);
-    console.error("Error details:", JSON.stringify(error, null, 2));
-    console.error("Error stack:", error?.stack);
-    
-    const errorResponse = {
+  } catch (error: any) {
+    return new Response(JSON.stringify({
       success: false,
-      error: `Email sending failed: ${error?.message || 'Unknown error occurred'}`,
-      details: error?.name || 'UnknownError'
-    };
-    
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+      error: `Email sending failed: ${error?.message || "Unknown error"}`,
+    }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
   }
 };
 
