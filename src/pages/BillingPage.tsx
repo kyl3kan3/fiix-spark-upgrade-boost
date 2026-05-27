@@ -20,9 +20,12 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
+import { trackPurchaseConversion } from "@/lib/gtag";
+import { useAuth } from "@/hooks/auth";
 
 export default function BillingPage() {
  const { data: sub, isLoading, refetch } = useSubscription();
+ const { user } = useAuth();
  const [params] = useSearchParams();
  const [opening, setOpening] = useState(false);
   const [seatsOpen, setSeatsOpen] = useState(false);
@@ -33,20 +36,15 @@ export default function BillingPage() {
  useEffect(() => {
  if (params.get("success") === "1") {
  toast.success("Subscription started — welcome!");
-  // Fire Google Ads conversion (deduped by transaction_id if provided)
-  try {
-    const txnId = params.get("transaction_id") || params.get("_ptxn") || "";
-    (window as any).gtag?.("event", "conversion", {
-      send_to: "AW-18190364490/CLjYCLDM3LMcEMre6-FD",
-      transaction_id: txnId,
-    });
-  } catch (e) {
-    console.warn("gtag conversion failed", e);
-  }
+  // Fire Google Ads purchase conversion w/ enhanced-conversion email
+  trackPurchaseConversion({
+    transactionId: params.get("transaction_id") || params.get("_ptxn") || "",
+    email: user?.email ?? null,
+  });
  // Refetch after a beat to let webhook land
  setTimeout(() => refetch(), 2000);
  }
- }, [params, refetch]);
+  }, [params, refetch, user?.email]);
 
  useEffect(() => {
  (async () => {

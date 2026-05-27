@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppRoutes } from "@/router/appRoutes";
 import { SentryContextSync } from "@/components/SentryContextSync";
+import { GtagRouterTracker } from "@/components/analytics/GtagRouterTracker";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
  <BrowserRouter>
  <AuthProvider>
  <SentryContextSync />
+  <GtagRouterTracker />
  <AppRoutes />
  </AuthProvider>
  </BrowserRouter>
