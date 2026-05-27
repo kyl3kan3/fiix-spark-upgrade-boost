@@ -100,7 +100,7 @@ const TIER_COLORS: Record<string, string> = {
   business: "#10B981",
 };
 
-const RANGE_OPTIONS = [7, 14, 30, 60, 90];
+const RANGE_OPTIONS = [1, 7, 14, 30, 60, 90];
 
 const AdminAnalyticsPage: React.FC = () => {
   const navigate = useNavigate();
