@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, RefreshCw, Link2, Unlink, MousePointerClick, Eye, DollarSign, Target } from "lucide-react";
+import { Loader2, RefreshCw, Link2, Unlink, MousePointerClick, Eye, DollarSign, Target, Users, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 type Campaign = {
@@ -27,6 +27,7 @@ const GoogleAdsPanel = () => {
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [data, setData] = useState<Metrics | null>(null);
+  const [syncing, setSyncing] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -69,6 +70,25 @@ const GoogleAdsPanel = () => {
       load();
     } catch (e) {
       toast.error("Failed to disconnect");
+    }
+  };
+
+  const syncAudience = async (segment: "all_users" | "trial_users" | "paying_users" | "churned_users") => {
+    setSyncing(segment);
+    try {
+      const { data, error } = await supabase.functions.invoke("google-ads-audience-sync", {
+        method: "POST",
+        body: { segment },
+      });
+      if (error) throw error;
+      const r = data as { emails_count?: number; list_name?: string; error?: string };
+      if (r?.error) throw new Error(r.error);
+      toast.success(`Synced ${r.emails_count ?? 0} users → "${r.list_name}"`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      toast.error(`Audience sync failed: ${msg}`);
+    } finally {
+      setSyncing(null);
     }
   };
 
@@ -154,6 +174,34 @@ const GoogleAdsPanel = () => {
             ) : (
               <p className="text-sm text-muted-foreground">No campaign activity in the last 30 days.</p>
             )}
+
+            <div className="mt-6 border-t border-border pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold">Customer-match audiences</h3>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Push hashed user emails to Google Ads as remarketing lists. Lists auto-create on first sync.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(["all_users", "trial_users", "paying_users", "churned_users"] as const).map((seg) => (
+                  <Button
+                    key={seg}
+                    size="sm"
+                    variant="outline"
+                    disabled={syncing !== null}
+                    onClick={() => syncAudience(seg)}
+                  >
+                    {syncing === seg ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                    ) : (
+                      <Upload className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    {seg.replace("_", " ")}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </>
         )}
       </CardContent>
