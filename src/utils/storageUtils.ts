@@ -1,11 +1,12 @@
 
 import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
+import { logger } from "@/lib/logger";
 
 export const setStorageItem = (key: string, value: string): void => {
  try {
  localStorage.setItem(key, value);
  } catch (error) {
- console.warn(`Failed to set localStorage item: ${key}`, error);
+ logger.warn(`Failed to set localStorage item: ${key}`, error);
  }
 };
 
@@ -13,7 +14,7 @@ export const getStorageItem = (key: string): string | null => {
  try {
  return localStorage.getItem(key);
  } catch (error) {
- console.warn(`Failed to get localStorage item: ${key}`, error);
+ logger.warn(`Failed to get localStorage item: ${key}`, error);
  return null;
  }
 };
@@ -22,7 +23,7 @@ export const removeStorageItem = (key: string): void => {
  try {
  localStorage.removeItem(key);
  } catch (error) {
- console.warn(`Failed to remove localStorage item: ${key}`, error);
+ logger.warn(`Failed to remove localStorage item: ${key}`, error);
  }
 };
 
