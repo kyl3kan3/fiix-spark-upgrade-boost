@@ -132,8 +132,9 @@ export default function SmsOptIn() {
  not liable for delayed or undelivered messages.
  </p>
  <p>
- Reply <strong>HELP</strong> for help or email support through
- the app. Reply <strong>STOP</strong> at any time to cancel.
+ Reply <strong>HELP</strong> for help, or email{" "}
+ <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>.
+ Reply <strong>STOP</strong> at any time to cancel.
  You can also unsubscribe from your{" "}
  <Link to="/settings/notifications" className="underline">
  notification preferences

@@ -59,7 +59,7 @@ const Footer = () => {
  { label: "Blog", to: "#" },
  { label: "Careers", to: "#" },
  { label: "Customers", to: "#" },
- { label: "Contact", to: "#" },
+          { label: "Contact", to: "mailto:info@decent4.com" },
  ],
  },
  {

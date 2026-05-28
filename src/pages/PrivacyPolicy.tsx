@@ -41,7 +41,8 @@ export default function PrivacyPolicy() {
  <p>
  This Privacy Notice is issued by <strong>Decent4</strong> ("we", "us", "our"), trading as MaintenEase.
  Decent4 is the data controller responsible for personal data processed through the MaintenEase service
- (the "Service"). If you have questions about this notice, contact us through the support channels in the app.
+ (the "Service"). If you have questions about this notice, contact us at{" "}
+ <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>.
  </p>
  </section>
 
@@ -94,7 +95,8 @@ export default function PrivacyPolicy() {
  <h2 className="text-2xl font-semibold">6. Your rights</h2>
  <p>Subject to applicable law, you may have the right to access, correct, delete, restrict or object to processing
  of your personal data, to data portability, and to withdraw consent at any time. You may also have the right to
- lodge a complaint with a data protection supervisory authority. To exercise these rights, contact us through the app.</p>
+ lodge a complaint with a data protection supervisory authority. To exercise these rights, contact us at{" "}
+ <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>.</p>
  </section>
 
  <section>
