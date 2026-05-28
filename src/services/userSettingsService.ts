@@ -1,19 +1,10 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 
 export const getUserSettings = async () => {
  try {
- // Check if user is authenticated first
- const { data: { user }, error: authError } = await supabase.auth.getUser();
- 
- if (authError) {
- console.error("Auth error:", authError);
- throw new Error("User not authenticated");
- }
- 
- if (!user) {
- throw new Error("User not authenticated");
- }
+ const user = await requireUser();
 
  const { data, error } = await supabase
  .from('user_settings')
@@ -52,12 +43,7 @@ export const getUserSettings = async () => {
 
 export const updateUserSettings = async (settings: any) => {
  try {
- // Check if user is authenticated first
- const { data: { user }, error: authError } = await supabase.auth.getUser();
- 
- if (authError || !user) {
- throw new Error("User not authenticated");
- }
+ const user = await requireUser();
 
  const { data, error } = await supabase
  .from('user_settings')

@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 import { CompanyInfo } from "@/components/profile/company/types";
 import { CompanyData } from "./types";
 import { mapCompanyInfoToCompanyData } from "./utils";
@@ -12,21 +13,7 @@ export const createCompany = async (companyData: Partial<CompanyInfo>): Promise<
  try {
  logger.log("Creating company with data:", companyData);
  
- // Get the current user - with better error handling
- const { data, error: userError } = await supabase.auth.getUser();
- 
- if (userError) {
- console.error("Error fetching user:", userError);
- throw new Error("Failed to get current user");
- }
- 
- const user = data?.user;
- if (!user) {
- console.error("No authenticated user found");
- throw new Error("User not authenticated");
- }
- 
- // Get user email for profile updates
+ const user = await requireUser();
  const email = user.email || '';
  
  // Convert CompanyInfo to CompanyData format
