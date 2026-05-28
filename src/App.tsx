@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppRoutes } from "@/router/appRoutes";
 import { SentryContextSync } from "@/components/SentryContextSync";
 import { GtagRouterTracker } from "@/components/analytics/GtagRouterTracker";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
  <AuthProvider>
  <SentryContextSync />
   <GtagRouterTracker />
+  <ScrollToTop />
  <AppRoutes />
  </AuthProvider>
  </BrowserRouter>
