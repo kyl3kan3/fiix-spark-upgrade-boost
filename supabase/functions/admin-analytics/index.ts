@@ -94,12 +94,8 @@ Deno.serve(async (req) => {
     );
     const excludedUserCount = excludedUserIds.length;
     const excludedCompanyCount = excludedCompanyIds.length;
-    const notInUsers = excludedUserIds.length
-      ? `(${excludedUserIds.map((i) => `"${i}"`).join(',')})`
-      : null;
-    const notInCompanies = excludedCompanyIds.length
-      ? `(${excludedCompanyIds.map((i) => `"${i}"`).join(',')})`
-      : null;
+    const notInUsers = excludedUserIds.length ? `(${excludedUserIds.join(',')})` : null;
+    const notInCompanies = excludedCompanyIds.length ? `(${excludedCompanyIds.join(',')})` : null;
 
     const excludeUsers = <T>(q: T): T => {
       if (!notInUsers) return q;
