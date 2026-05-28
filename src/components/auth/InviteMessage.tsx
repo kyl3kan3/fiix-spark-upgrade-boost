@@ -1,13 +1,18 @@
 
 import { useEffect, useState } from "react";
 
+const safeGetItem = (key: string): string | null => {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return null;
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
 const InviteMessage = () => {
-  const [token, setToken] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("pending_invite_token") : null
-  );
-  const [company, setCompany] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("pending_invite_company") : null
-  );
+  const [token, setToken] = useState<string | null>(() => safeGetItem("pending_invite_token"));
+  const [company, setCompany] = useState<string | null>(() => safeGetItem("pending_invite_company"));
 
   useEffect(() => {
     const onCompany = (e: Event) => {
@@ -15,8 +20,8 @@ const InviteMessage = () => {
       if (detail) setCompany(detail);
     };
     const onStorage = () => {
-      setToken(localStorage.getItem("pending_invite_token"));
-      setCompany(localStorage.getItem("pending_invite_company"));
+      setToken(safeGetItem("pending_invite_token"));
+      setCompany(safeGetItem("pending_invite_company"));
     };
     window.addEventListener("pending-invite-company-resolved", onCompany);
     window.addEventListener("storage", onStorage);
