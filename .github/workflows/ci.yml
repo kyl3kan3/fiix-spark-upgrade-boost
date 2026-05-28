@@ -36,6 +36,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Responsive-layout ratchet
+        run: npm run check:responsive
+
       - name: Typecheck
         run: npm run typecheck
 
