@@ -1,39 +1,35 @@
-## Mobile Responsiveness Fixes
+## Problem
 
-Three parallel fixes to address mobile audit findings.
+Uploading a photo on the Asset form returns "new row violates row-level security policy" and a 400 from `POST /storage/v1/object/asset-images/...`.
 
-### 1. Wrap tables in horizontal scroll
+Two different uploaders write to the `asset-images` bucket:
 
-Wrap each `<table>` in a `<div className="overflow-x-auto">` so dense tables can't overflow viewport on phones:
+- **`ImageUploadField`** (the single "Equipment photo" preview on the form) uses path `{userId}/assets/{uuid}.ext` — matches existing RLS.
+- **Gallery uploader** (`useGalleryData.ts`, used by the asset photo gallery on detail pages and through the form area) uses path `{companyId}/{entityType}/{entityId}/{uuid}.ext`.
 
-- `src/components/admin/GoogleAdsPanel.tsx`
-- `src/components/team/RolePermissionsOverview.tsx`
-- `src/pages/AdminAnalyticsPage.tsx`
-- `src/pages/AdminSeoIndexPage.tsx`
+The current `asset-images: uploader can insert` policy requires:
+```
+(storage.foldername(name))[1] = auth.uid()::text
+```
+i.e. the first segment must be the user's UID. The gallery uses the **company id** as the first segment, so every gallery upload is rejected. SELECT/UPDATE/DELETE on those same paths would also be broken because the existing policies only match the user-id-prefixed or same-company-user-prefixed shapes.
 
-(`AssetManagementContent` and `ImportDataPreview` already have wrappers — verify and skip if so.)
+## Fix
 
-### 2. Mobile search trigger in top bar
+Add a parallel set of storage RLS policies that accept paths prefixed with the uploader's `company_id`, while keeping the existing user-folder policies intact (so `ImageUploadField` keeps working).
 
-Edit `src/components/dashboard/header/SearchBar.tsx`:
+New migration adds these policies on `storage.objects` for `bucket_id = 'asset-images'`:
 
-- Keep desktop inline search (`hidden md:flex`)
-- On mobile (`md:hidden`), render a `Search` icon `Button` that opens a shadcn `Sheet` (top side) containing the same search input, auto-focused on open
-- Wire `Esc` / overlay click to close (sheet handles this)
+1. **INSERT** — authenticated user whose `get_user_company(auth.uid())::text = (storage.foldername(name))[1]`.
+2. **SELECT** — same condition (company members can read any object under their company folder).
+3. **UPDATE** — same as INSERT, plus matching USING clause.
+4. **DELETE** — uploader (owner column = auth.uid()) or company administrator, scoped to the same company folder.
 
-No changes to header layout — `SearchBar` already sits in `DashboardHeader`.
+The existing `asset-images: uploader can insert / update`, `asset-images: company members can read`, and `asset-images: uploader or same-company admin can delete` policies stay in place so legacy user-prefixed paths still work.
 
-### 3. Redesign WeekView for phones
+No application code changes are needed — both upload paths will succeed after the migration.
 
-Edit `src/components/calendar/WeekView.tsx`:
+## Verification
 
-- Below `sm:` (≤640px): render a day selector (Mon–Fri pill tabs) plus a vertical list of that day's time slots and events — no table, no horizontal scroll
-- At `sm:` and above: keep the existing 5-day table inside the current `overflow-x-auto` wrapper
-
-Uses mock data already in the file; no data-layer changes.
-
-### Out of scope
-
-- No business-logic changes
-- No backend/migration changes
-- Admin-only screens already lower priority; only the listed tables get wrappers
+- Pick an image in the asset form → upload returns 200, preview renders.
+- Open an existing asset's photo gallery → previously-uploaded items still load via signed URL.
+- Confirm a second user in the same company can view the same images, and a user from a different company cannot (SELECT policy).
