@@ -84,6 +84,13 @@ export function initSentry() {
       // Third-party (Lovable badge / flock.js analytics) errors.
       "e.replaceAll is not a function",
       "Cannot read properties of undefined (reading 'outerHTML')",
+      // Lovable badge analytics (flock.js) — third-party 5xx noise we can't fix.
+      "HTTP Client Error with status code: 500",
+    ],
+    denyUrls: [
+      // Lovable badge / flock.js analytics script.
+      /\/~flock\.js/i,
+      /\/~api\/analytics/i,
     ],
   });
 
