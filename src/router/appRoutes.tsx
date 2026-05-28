@@ -15,6 +15,7 @@ const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const UnsubscribePage = lazy(() => import("@/pages/UnsubscribePage"));
 const FeatureDemoPage = lazy(() => import("@/pages/FeatureDemoPage"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
+const FeaturesPage = lazy(() => import("@/pages/FeaturesPage"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
@@ -39,6 +40,7 @@ export const AppRoutes = () => (
         <Route path="/unsubscribe" element={<UnsubscribePage />} />
         <Route path="/feature/:title" element={<FeatureDemoPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
         <Route path="/terms" element={<TermsOfService />} />

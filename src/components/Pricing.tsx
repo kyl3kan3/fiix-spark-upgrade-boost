@@ -52,9 +52,12 @@ const plans = [
   },
 ];
 
+// Keep these claims consistent with PricingPage.tsx and the Stripe checkout
+// flow. The trial requires a card and auto-converts to paid on day 15 unless
+// cancelled — say so plainly here instead of contradicting the pricing page.
 const comparison = [
   "14-day free trial on every plan",
-  "No credit card required to start",
+  "Card required — cancel before day 15, no charge",
   "Cancel or change plans anytime",
   "Free onboarding & data import",
 ];
