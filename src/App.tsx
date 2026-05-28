@@ -1,38 +1,16 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { AppProviders } from "@/providers/AppProviders";
 import { AppRoutes } from "@/router/appRoutes";
 import { SentryContextSync } from "@/components/SentryContextSync";
 import { GtagRouterTracker } from "@/components/analytics/GtagRouterTracker";
 import ScrollToTop from "@/components/ScrollToTop";
 
-const queryClient = new QueryClient();
-
 const App = () => (
- <HelmetProvider>
- <QueryClientProvider client={queryClient}>
- <ThemeProvider>
- <TooltipProvider>
- <Toaster />
- <Sonner />
- <BrowserRouter>
- <AuthProvider>
- <SentryContextSync />
-  <GtagRouterTracker />
-  <ScrollToTop />
- <AppRoutes />
- </AuthProvider>
- </BrowserRouter>
- </TooltipProvider>
- </ThemeProvider>
- </QueryClientProvider>
- </HelmetProvider>
+  <AppProviders>
+    <SentryContextSync />
+    <GtagRouterTracker />
+    <ScrollToTop />
+    <AppRoutes />
+  </AppProviders>
 );
 
 export default App;
