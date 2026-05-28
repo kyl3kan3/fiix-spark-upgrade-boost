@@ -7,7 +7,7 @@ import { SetupStepComponentProps } from "./SetupContent";
 import { toast } from "sonner";
 import { useSetup } from "./SetupContext";
 import { saveSetupData } from "@/services/setup";
-import { setSetupComplete } from "@/hooks/onboarding/storageUtils";
+import { setSetupComplete } from "@/features/onboarding/hooks/storageUtils";
 import { logger } from "@/lib/logger";
 
 const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) => {

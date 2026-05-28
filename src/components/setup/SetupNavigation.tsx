@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
-import { setSetupComplete as setLocalSetupComplete } from "@/hooks/onboarding/storageUtils";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { setSetupComplete as setLocalSetupComplete } from "@/features/onboarding/hooks/storageUtils";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
 import { logger } from "@/lib/logger";
 
 interface SetupNavigationProps {

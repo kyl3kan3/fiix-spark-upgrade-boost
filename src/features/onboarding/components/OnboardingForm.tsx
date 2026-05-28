@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useOnboarding } from "@/hooks/onboarding";
+import { useOnboarding } from "@/features/onboarding/hooks";
 import OnboardingFormFields from "./OnboardingFormFields";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";

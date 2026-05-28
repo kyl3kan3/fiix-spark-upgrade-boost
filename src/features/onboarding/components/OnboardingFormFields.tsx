@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { User, Building2 } from "lucide-react";
-import { FormState, InviteDetails } from "@/hooks/onboarding/types";
+import { FormState, InviteDetails } from "@/features/onboarding/hooks/types";
 
 interface FormFieldsProps {
  state: FormState;

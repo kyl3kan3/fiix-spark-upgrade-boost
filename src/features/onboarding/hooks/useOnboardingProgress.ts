@@ -6,7 +6,7 @@ import {
  updateOnboardingProgress,
  OnboardingProgress,
  OnboardingTaskKey,
-} from "@/services/onboarding/onboardingService";
+} from "@/features/onboarding/services/onboardingService";
 
 export function useOnboardingProgress() {
  const { user, isAuthenticated } = useAuth();

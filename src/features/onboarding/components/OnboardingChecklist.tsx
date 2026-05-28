@@ -4,9 +4,9 @@ import { Check, Circle, X, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
-import { useTaskAutoComplete } from "@/hooks/onboarding/useTaskAutoComplete";
-import { OnboardingTaskKey } from "@/services/onboarding/onboardingService";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
+import { useTaskAutoComplete } from "@/features/onboarding/hooks/useTaskAutoComplete";
+import { OnboardingTaskKey } from "@/features/onboarding/services/onboardingService";
 
 interface TaskDef {
  key: OnboardingTaskKey;

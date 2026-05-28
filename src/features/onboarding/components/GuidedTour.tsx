@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Joyride, { STATUS, type CallBackProps, type Step } from "react-joyride";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const STEPS: Step[] = [

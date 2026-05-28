@@ -5,7 +5,7 @@ import { SetupProgress } from "./SetupProgress";
 import { SetupNavigation } from "./SetupNavigation";
 import { steps } from "./setupSteps";
 import { useSetupNavigationSimple } from "@/hooks/setup/useSetupNavigationSimple";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Save } from "lucide-react";

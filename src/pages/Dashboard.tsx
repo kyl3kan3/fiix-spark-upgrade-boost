@@ -11,8 +11,8 @@ import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
-import GuidedTour from "@/components/onboarding/GuidedTour";
+import OnboardingChecklist from "@/features/onboarding/components/OnboardingChecklist";
+import GuidedTour from "@/features/onboarding/components/GuidedTour";
 
 const Dashboard = () => {
  const navigate = useNavigate();
