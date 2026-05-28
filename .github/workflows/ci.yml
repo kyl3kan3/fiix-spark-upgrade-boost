@@ -39,6 +39,9 @@ jobs:
       - name: Responsive-layout ratchet
         run: npm run check:responsive
 
+      - name: Structure check
+        run: npm run check:structure
+
       - name: Typecheck
         run: npm run typecheck
 

@@ -14,6 +14,7 @@
     "verify:demo": "tsx scripts/verify-demo-tenant.ts",
     "lint": "eslint .",
     "check:responsive": "node scripts/check-responsive.mjs",
+    "check:structure": "node scripts/check-structure.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "test": "vitest run",
     "preview": "vite preview"
