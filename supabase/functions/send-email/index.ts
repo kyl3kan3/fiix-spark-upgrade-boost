@@ -124,9 +124,10 @@ const handler = async (req: Request): Promise<Response> => {
     });
     const forwardJson = await forwardRes.json().catch(() => ({}));
     if (!forwardRes.ok) {
+      console.error("send-email pipeline error", forwardRes.status, forwardJson);
       return new Response(JSON.stringify({
         success: false,
-        error: forwardJson?.error || `Email pipeline error (HTTP ${forwardRes.status})`,
+        error: "Email sending failed.",
       }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
@@ -134,9 +135,10 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
+    console.error("send-email error", error);
     return new Response(JSON.stringify({
       success: false,
-      error: `Email sending failed: ${error?.message || "Unknown error"}`,
+      error: "Email sending failed.",
     }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
   }
 };

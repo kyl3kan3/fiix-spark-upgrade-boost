@@ -17,6 +17,18 @@ const FROM = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
 
+// Only allow photo URLs hosted in our own public storage bucket. This prevents
+// anonymous submitters from injecting attacker-controlled URLs that, when
+// rendered in admin notification emails, would leak IP/UA via auto-loaded images.
+const ALLOWED_PHOTO_PREFIX = `${SUPABASE_URL}/storage/v1/object/public/public-request-photos/`;
+const photoUrlSchema = z
+  .string()
+  .url()
+  .max(1000)
+  .refine((u) => u.startsWith(ALLOWED_PHOTO_PREFIX), {
+    message: "Photo URL must be hosted in the public-request-photos bucket",
+  });
+
 const BodySchema = z.object({
   companyId: z.string().uuid(),
   type: z.enum(["standard", "urgent"]),
@@ -26,7 +38,7 @@ const BodySchema = z.object({
   contact_name: z.string().trim().max(120).optional().nullable(),
   contact_email: z.string().trim().email().max(255).optional().or(z.literal("")).nullable(),
   contact_phone: z.string().trim().max(40).optional().nullable(),
-  photos: z.array(z.string().url()).max(6).optional().default([]),
+  photos: z.array(photoUrlSchema).max(6).optional().default([]),
   user_agent: z.string().max(500).optional().nullable(),
 });
 
