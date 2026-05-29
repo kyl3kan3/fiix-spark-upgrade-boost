@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
       .from('user_roles')
       .select('role')
       .eq('user_id', userData.user.id)
-      .eq('role', 'administrator')
+      .eq('role', 'super_admin')
       .maybeSingle();
     if (!roleRow) {
       return new Response(JSON.stringify({ error: 'forbidden' }), {
@@ -132,7 +132,7 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('seo-index-status error', msg);
-    return new Response(JSON.stringify({ error: msg }), {
+    return new Response(JSON.stringify({ error: 'An unexpected error occurred.' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
