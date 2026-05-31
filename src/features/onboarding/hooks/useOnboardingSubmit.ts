@@ -138,6 +138,40 @@ export const useOnboardingSubmit = (
 
   logger.log("Owner onboarding completed for company:", companyId);
   toast.success("Company created successfully!");
+
+  // Notify ops that a new trial signup happened. Fire-and-forget — never block onboarding.
+  try {
+    const escape = (s: string) =>
+      String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    const html = `
+      <p>A new company just started a MaintenEase trial.</p>
+      <ul>
+        <li><strong>Company:</strong> ${escape(state.company)}</li>
+        <li><strong>Name:</strong> ${escape(`${firstName} ${lastName}`.trim())}</li>
+        <li><strong>Email:</strong> ${escape(user.email ?? "")}</li>
+        <li><strong>Phone:</strong> ${escape(state.phoneNumber?.trim() ?? "")}</li>
+        <li><strong>Company ID:</strong> ${escape(companyId)}</li>
+        <li><strong>When:</strong> ${escape(new Date().toISOString())}</li>
+      </ul>
+    `;
+    void supabase.functions.invoke("send-transactional-email", {
+      body: {
+        templateName: "generic",
+        recipientEmail: "Kyle@decent4.com",
+        idempotencyKey: `trial-signup-${companyId}`,
+        templateData: {
+          subject: `New trial signup: ${state.company}`,
+          preheader: `${state.company} just started a trial`,
+          html,
+        },
+      },
+    }).catch((err) => logger.log("Trial signup notification failed:", err));
+  } catch (notifyErr) {
+    logger.log("Trial signup notification error:", notifyErr);
+  }
   } catch (err: any) {
   console.error("Company creation error:", err);
   toast.error(err.message || "Failed to create company");
