@@ -4,7 +4,7 @@ import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/providers/AuthContext";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./navConfig";
 import { useSubscription, TIER_FEATURES } from "@/hooks/useSubscription";

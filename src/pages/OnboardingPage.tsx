@@ -1,7 +1,7 @@
 
 import React from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import OnboardingForm from "@/components/onboarding/OnboardingForm";
+import OnboardingForm from "@/features/onboarding/components/OnboardingForm";
 
 const OnboardingPage = () => (
  <DashboardLayout>

@@ -11,7 +11,7 @@ import { useHelpSearch } from "@/components/help/hooks/useHelpSearch";
 import { Button } from "@/components/ui/button";
 import { Compass, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
 import { toast } from "sonner";
 import { faqItems } from "@/components/help/data/helpData";
 

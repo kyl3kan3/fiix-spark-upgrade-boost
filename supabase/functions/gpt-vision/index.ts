@@ -116,7 +116,7 @@ serve(async (req) => {
   } catch (err) {
     console.error('GPT Vision error:', err);
     return new Response(
-      JSON.stringify({ error: 'Failed to process GPT Vision', details: String(err) }),
+      JSON.stringify({ error: 'Failed to process image' }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

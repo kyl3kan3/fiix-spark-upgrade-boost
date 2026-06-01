@@ -25,7 +25,7 @@ const LEAD_FORM_COPY: Record<string, { title: string; subtitle: string; cta: str
  subtitle: "Send us the rough shape of your asset register and we'll show you how MaintenEase would handle PMs, warranties, and lifecycle reporting on day one.",
  cta: "Book a tailored demo",
  ctaHeadline: "Turn your asset register into a system of record.",
- ctaBody: "Free trial, no credit card. Or book a 20-minute call and we'll map your assets, PMs, and reports together.",
+ ctaBody: "Start a 14-day free trial — card required, cancel anytime before day 15. Or book a 20-minute call and we'll map your assets, PMs, and reports together.",
  },
 };
 
@@ -161,7 +161,7 @@ const SolutionPage = () => {
  {(() => {
  const lead = LEAD_FORM_COPY[solution.slug];
  const headline = lead?.ctaHeadline ?? `Ready to see ${solution.name} in action?`;
- const body = lead?.ctaBody ?? "Start free — no credit card required. Most teams have their first work orders running within an hour.";
+ const body = lead?.ctaBody ?? "Start a 14-day free trial. Most teams have their first work orders running within an hour.";
  return (
  <section className="container mx-auto px-4 pb-20 max-w-5xl">
  <div className="p-10 rounded-2xl bg-maintenease-600 text-white text-center">

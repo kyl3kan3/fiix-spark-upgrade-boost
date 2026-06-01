@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 import { Database } from "@/integrations/supabase/types";
 
 export type Vendor = Database['public']['Tables']['vendors']['Row'];
@@ -68,8 +69,7 @@ export const getVendorById = async (id: string): Promise<VendorWithContracts | n
 };
 
 export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> => {
- const { data: { user } } = await supabase.auth.getUser();
- if (!user) throw new Error("You must be signed in to create a vendor.");
+ const user = await requireUser();
 
  const { data: profile, error: profileError } = await supabase
  .from("profiles")

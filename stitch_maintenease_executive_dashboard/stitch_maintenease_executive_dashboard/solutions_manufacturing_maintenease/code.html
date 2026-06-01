@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MaintenEase - Solutions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-tint": "#3d57ba",
+                        "surface-variant": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "tertiary": "#1e2020",
+                        "on-secondary-container": "#606365",
+                        "container-blue": "#e5eeff",
+                        "success": "#10B981",
+                        "on-tertiary-container": "#9c9d9d",
+                        "outline-variant": "#c5c5d4",
+                        "on-surface-variant": "#444652",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "secondary-container": "#dee0e2",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-blue": "#f8f9ff",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "primary": "#00175c",
+                        "secondary-fixed": "#e1e3e5",
+                        "outline": "#757684",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#00288e",
+                        "inverse-surface": "#213145",
+                        "on-primary-container": "#7e97fe",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-container": "#333535",
+                        "on-surface": "#0b1c30",
+                        "warning": "#F59E0B",
+                        "surface": "#f8f9ff",
+                        "inverse-primary": "#b8c4ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary": "#5c5f61",
+                        "surface-container-low": "#eff4ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-primary-fixed": "#001453",
+                        "on-primary-fixed-variant": "#213da0",
+                        "primary-fixed": "#dde1ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "tertiary-fixed-dim": "#c6c6c6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container_padding": "32px",
+                        "gutter": "24px",
+                        "sidebar_expanded": "240px",
+                        "card_padding": "24px",
+                        "base_unit": "8px",
+                        "sidebar_collapsed": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopNavBar -->
+<nav class="bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-container_padding max-w-7xl mx-auto h-16">
+<div class="font-headline-md text-headline-md font-bold text-primary">MaintenEase</div>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Solutions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg px-2 py-1 font-label-md text-label-md" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg px-2 py-1 font-label-md text-label-md" href="#">Pricing</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg px-2 py-1 font-label-md text-label-md" href="#">Resources</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block font-label-md text-label-md text-primary hover:underline px-4 py-2">Log In</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg hover:bg-primary-container transition-colors shadow-sm">Get Started</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center w-full">
+<!-- Hero Section -->
+<section class="w-full max-w-7xl px-container_padding py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+<div class="flex flex-col gap-6">
+<div class="inline-flex items-center gap-2 bg-surface-container px-3 py-1 rounded-full w-fit">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Manufacturing Solutions</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-background">Eliminate Downtime. Maximize Output.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">MaintenEase brings pristine control to complex industrial environments. Predict failures before they happen, ensure strict compliance, and keep your production lines running flawlessly with our enterprise CMMS.</p>
+<div class="flex gap-4 pt-4">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-4 rounded-lg hover:bg-primary-container transition-colors shadow-md hover:translate-y-[-2px] duration-200">Request Demo</button>
+<button class="text-primary font-label-md text-label-md px-6 py-4 rounded-lg hover:bg-surface-container transition-colors flex items-center gap-2">
+                        View Case Study <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-lg border border-outline-variant/20">
+<img alt="Manufacturing Floor" class="w-full h-full object-cover" data-alt="A modern, high-tech manufacturing floor seen through a pristine glassmorphic overlay. The facility is brightly lit with clean white light, showcasing precision machinery. The overall aesthetic is highly professional, corporate, and minimalist, utilizing a color palette of deep navy blues, pristine whites, and subtle silver accents to convey reliability and advanced technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH4A8DHVBvNQItxkt4DTQrXB1UeQYmCcrqgTkLvHB8sQkC1XA7WbRnOQure-HHBdlCFMjkKh8AdOG6qMKzyaQaiSe88bBw3uae3ntqbqym0U2qAEBQLBj_EKVDMHsKIV6_miJhNMc2YxxcPNBaG20JsGDF8ZymNZdW4APlGjdPsEZ8_rElJgv0x1AYsrHCcu1XnDa7n6xKZCmNIxIgUabCP8dX9rxmAK_Ok6pQR67IZTj_N1N0QzDbKvXtCvoDgIGbgZw0Z9mWPB0"/>
+<!-- Floating Metric -->
+<div class="absolute bottom-6 left-6 bg-surface/90 backdrop-blur-md p-4 rounded-lg shadow-md border border-outline-variant/20 flex items-center gap-4">
+<div class="bg-success/10 p-3 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-success" style="font-variation-settings: 'FILL' 1;">trending_down</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-background font-bold">-20%</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Average Downtime Reduction</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features -->
+<section class="w-full bg-surface-container-low py-16 md:py-24">
+<div class="max-w-7xl mx-auto px-container_padding">
+<h2 class="font-headline-lg text-headline-lg text-center mb-12">Precision Tools for Critical Operations</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Feature 1: Predictive -->
+<div class="col-span-1 md:col-span-2 bg-surface rounded-xl p-card_padding border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between min-h-[300px]">
+<div>
+<div class="bg-surface-container w-12 h-12 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary">online_prediction</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-3">Predictive Maintenance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Leverage real-time IoT data to forecast component wear. Schedule repairs precisely when needed, preventing catastrophic failures and costly emergency line stops.</p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">IoT Integration</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">arrow_outward</span>
+</div>
+</div>
+<!-- Feature 2: Compliance -->
+<div class="col-span-1 bg-surface rounded-xl p-card_padding border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between min-h-[300px]">
+<div>
+<div class="bg-error-container/50 w-12 h-12 rounded-lg flex items-center justify-center mb-6 group-hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined text-error">fact_check</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-3">Strict Compliance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Automated logging and audit trails ensure you effortlessly meet OSHA, ISO, and FDA standards.</p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">Audit Ready</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">arrow_outward</span>
+</div>
+</div>
+<!-- Feature 3: Inventory -->
+<div class="col-span-1 bg-surface rounded-xl p-card_padding border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between min-h-[300px]">
+<div>
+<div class="bg-surface-container w-12 h-12 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-3">Parts Optimization</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Intelligent min/max thresholds ensure you never run out of critical spares while reducing carrying costs.</p>
+</div>
+</div>
+<!-- Feature 4: Work Orders -->
+<div class="col-span-1 md:col-span-2 bg-surface rounded-xl p-card_padding border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between min-h-[300px]">
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="flex-1">
+<div class="bg-surface-container w-12 h-12 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary">build</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-3">Streamlined Dispatch</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Route work orders instantly to the right technician with full documentation, schematics, and safety protocols attached.</p>
+</div>
+<!-- Mock UI Element -->
+<div class="w-full md:w-48 bg-surface-container-low rounded-lg p-4 border border-outline-variant/30 flex-shrink-0">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-sm text-label-sm">WO-2948</span>
+<span class="bg-warning/20 text-warning px-2 py-0.5 rounded text-[10px] font-bold uppercase">High</span>
+</div>
+<div class="h-2 bg-surface-variant rounded-full mb-2"></div>
+<div class="h-2 bg-surface-variant rounded-full w-2/3 mb-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-primary">person</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Assigned</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-on-background w-full py-12 border-t border-outline/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-container_padding max-w-7xl mx-auto gap-gutter">
+<div class="font-headline-md text-headline-md font-bold text-surface-bright">MaintenEase</div>
+<div class="flex gap-6 items-center">
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright hover:underline transition-colors duration-300" href="#">Product</a>
+<a class="font-label-sm text-label-sm text-surface-bright font-bold hover:underline transition-colors duration-300" href="#">Solutions</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright hover:underline transition-colors duration-300" href="#">Privacy</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright hover:underline transition-colors duration-300" href="#">Compliance</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright hover:underline transition-colors duration-300" href="#">Status</a>
+</div>
+<div class="font-body-md text-body-md text-outline-variant">
+                © 2024 MaintenEase CMMS. Precision Facility Management.
+            </div>
+</div>
+</footer>
+</body></html>

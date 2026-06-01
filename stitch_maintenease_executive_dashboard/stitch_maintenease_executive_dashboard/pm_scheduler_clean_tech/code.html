@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MaintenEase - Preventive Maintenance Scheduler</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .deep-shadow {
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.02);
+        }
+        .deep-shadow-hover:hover {
+            box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "inverse-primary": "#b8c4ff",
+                        "tertiary": "#333535",
+                        "on-primary-fixed-variant": "#173bab",
+                        "surface-variant": "#d3e4fe",
+                        "primary-fixed": "#dde1ff",
+                        "outline-variant": "#c4c5d5",
+                        "on-secondary-fixed-variant": "#444749",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "outline": "#757684",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#a8b8ff",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-tertiary-container": "#babbbb",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#e0e3e5",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#494b4c",
+                        "on-primary-fixed": "#001453",
+                        "surface-tint": "#3755c3",
+                        "primary-container": "#1e40af",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "secondary": "#5c5f61",
+                        "background": "#f8f9ff",
+                        "primary": "#00288e",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "on-surface": "#0b1c30",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-container": "#e0e3e5",
+                        "on-secondary-container": "#626567",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#444653",
+                        "surface-container": "#e5eeff",
+                        "surface-container-high": "#dce9ff",
+                        "surface": "#f8f9ff",
+                        "tertiary-fixed": "#e2e2e2",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_width_expanded": "240px",
+                        "sidebar_width_collapsed": "64px",
+                        "gutter": "24px",
+                        "card_padding": "24px",
+                        "base_unit": "8px",
+                        "container_padding": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen overflow-hidden flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Semantic Shell: Work Orders intent fallback) -->
+<nav class="bg-surface-container-lowest dark:bg-inverse-surface fixed left-0 top-0 h-full w-sidebar_width_collapsed hover:w-sidebar_width_expanded transition-all duration-300 z-50 border-r border-outline-variant/10 shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between py-base_unit group overflow-hidden">
+<div>
+<!-- Brand -->
+<div class="flex items-center h-16 px-4 mb-4 whitespace-nowrap">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">build</span>
+</div>
+<div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">MaintenEase</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">CMMS Workspace</p>
+</div>
+</div>
+<!-- Tabs -->
+<ul class="space-y-2 px-2">
+<li>
+<a class="flex items-center h-12 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1">dashboard</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Dashboard</span>
+</a>
+</li>
+<li>
+<!-- Active State Fallback (Work Orders -> Schedule) -->
+<a class="flex items-center h-12 px-2 rounded-lg text-primary font-bold border-l-4 border-primary bg-primary/5 hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-[2px]">assignment</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Work Orders</span>
+</a>
+</li>
+<li>
+<a class="flex items-center h-12 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1">inventory_2</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center h-12 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1">bar_chart</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center h-12 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1">settings</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="px-2 space-y-4">
+<!-- CTA -->
+<button class="w-full flex items-center justify-center h-12 bg-primary-container text-on-primary-container rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap overflow-hidden hover:shadow-[0_4px_14px_0_rgba(30,64,175,0.39)]">
+<span class="material-symbols-outlined mr-2 text-[20px]">add</span>
+<span class="font-label-md text-label-md">Report a Problem</span>
+</button>
+<!-- Footer Tabs -->
+<ul class="space-y-2 border-t border-outline-variant/20 pt-4">
+<li>
+<a class="flex items-center h-10 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1 text-[20px]">contact_support</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center h-10 px-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200 whitespace-nowrap overflow-hidden" href="#">
+<span class="material-symbols-outlined shrink-0 ml-1 text-[20px]">logout</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Log Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<div class="flex-1 flex flex-col ml-sidebar_width_collapsed transition-all duration-300 overflow-hidden relative w-full h-full">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md docked full-width top-0 z-40 no-border shadow-sm flex justify-between items-center h-16 px-gutter w-full shrink-0">
+<div class="flex items-center space-x-4">
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary hidden md:block">MaintenEase</h2>
+</div>
+<!-- Search (on_left logic implemented in header cluster) -->
+<div class="flex-1 max-w-md mx-8 relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border-none rounded-lg focus:ring-2 focus:ring-primary focus:outline-none shadow-sm font-body-md text-body-md text-on-surface placeholder:text-outline transition-shadow" placeholder="Search PMs, Assets, Work Orders..." type="text"/>
+</div>
+<div class="flex items-center space-x-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full transition-colors duration-200 active:scale-95 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full transition-colors duration-200 active:scale-95 ease-in-out">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center ml-4 border border-primary/10 overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a facility manager, clean background, modern high-key lighting, communicating an organized and systematic approach consistent with a Clean Tech CMMS UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDsEGbkcvWlfHG5QpsmR9kchX8NZrAmFexz3V2QHrMyUES1wQSWJcYAFMKfqNYF_iRewWpRT8C4jU2HLmAt9ujwndnxuhcTfvMk9E6MKqQNsuEYXvGCZYb14-qh1v4LmFHvrnMUZEw0Bx2DGcbcTK0B5xKD07aNzdV-gYy9I0Gngdr7562TIVFRNSJ3tPBtYVbsnqJGmNExxBWZ77lkuXNsGcz9iNiOnvcfF0zPFxQUJh_QC8oL5JNpk9krysusEc6w519buj8Gpo"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Workspace -->
+<main class="flex-1 overflow-y-auto overflow-x-hidden p-container_padding bg-[#F8FAFC]">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">PM Scheduler</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Manage and forecast preventive maintenance tasks.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:shadow-[0_4px_14px_0_rgba(30,64,175,0.39)] transition-all duration-300 px-6 py-3 rounded-lg font-label-md text-label-md flex items-center group active:scale-95">
+<span class="material-symbols-outlined mr-2 transition-transform group-hover:rotate-90">calendar_add_on</span>
+                    Create New Schedule
+                </button>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Main Calendar View (Spans 8 cols) -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Calendar Controls -->
+<div class="bg-surface-container-lowest rounded-xl deep-shadow p-4 flex items-center justify-between border border-transparent">
+<div class="flex items-center space-x-4">
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<h3 class="font-headline-md text-headline-md text-on-surface">October 2023</h3>
+<button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="flex bg-surface-container-low rounded-lg p-1">
+<button class="px-4 py-1.5 rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface">Week</button>
+<button class="px-4 py-1.5 rounded-md font-label-sm text-label-sm bg-surface-container-lowest shadow-sm text-primary font-bold">Month</button>
+<button class="px-4 py-1.5 rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface">Year</button>
+</div>
+</div>
+<!-- Calendar Grid (Simplified visual representation) -->
+<div class="bg-surface-container-lowest rounded-xl deep-shadow p-card_padding border border-transparent min-h-[600px] flex flex-col">
+<div class="grid grid-cols-7 gap-4 mb-4 text-center border-b border-outline-variant/20 pb-2">
+<div class="font-label-md text-label-md text-outline">Sun</div>
+<div class="font-label-md text-label-md text-outline">Mon</div>
+<div class="font-label-md text-label-md text-outline">Tue</div>
+<div class="font-label-md text-label-md text-outline">Wed</div>
+<div class="font-label-md text-label-md text-outline">Thu</div>
+<div class="font-label-md text-label-md text-outline">Fri</div>
+<div class="font-label-md text-label-md text-outline">Sat</div>
+</div>
+<div class="flex-1 grid grid-cols-7 grid-rows-5 gap-2">
+<!-- Generate a few sample days with varying tasks to show clean tech style -->
+<!-- Empty/Past days -->
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50 opacity-50"><span class="font-label-sm text-outline">1</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50 opacity-50"><span class="font-label-sm text-outline">2</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50 opacity-50"><span class="font-label-sm text-outline">3</span></div>
+<!-- Active days with tasks -->
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative group">
+<span class="font-label-sm text-on-surface">4</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded truncate border border-primary/20">HVAC Check</div>
+</div>
+</div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative group">
+<span class="font-label-sm text-on-surface">5</span>
+</div>
+<div class="p-2 border border-outline-variant/10 rounded-lg ring-2 ring-primary bg-primary/5 relative group">
+<span class="font-label-sm text-primary font-bold">6</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-error/10 text-error px-2 py-1 rounded truncate border border-error/20 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-error mr-1"></span>Generator Test</div>
+<div class="text-[10px] bg-primary/10 text-primary px-2 py-1 rounded truncate border border-primary/20">Pump Lubrica...</div>
+</div>
+</div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative group">
+<span class="font-label-sm text-on-surface">7</span>
+</div>
+<!-- Row 2 -->
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">8</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">9</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">10</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative group">
+<span class="font-label-sm text-on-surface">11</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-surface-tint/10 text-surface-tint px-2 py-1 rounded truncate border border-surface-tint/20">Fire Extingui...</div>
+</div>
+</div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">12</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">13</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg hover:border-primary/30 transition-colors relative"><span class="font-label-sm text-on-surface">14</span></div>
+<!-- Fill rest generically to indicate structure -->
+<div class="col-span-7 row-span-3 grid grid-cols-7 grid-rows-3 gap-2 opacity-60 pointer-events-none">
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">15</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">16</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">17</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">18</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">19</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">20</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">21</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">22</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">23</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">24</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">25</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">26</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">27</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">28</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">29</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">30</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg"><span class="font-label-sm text-on-surface">31</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50"><span class="font-label-sm text-outline">1</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50"><span class="font-label-sm text-outline">2</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50"><span class="font-label-sm text-outline">3</span></div>
+<div class="p-2 border border-outline-variant/10 rounded-lg bg-surface-bright/50"><span class="font-label-sm text-outline">4</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Panel (Spans 4 cols) -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter flex flex-col h-full">
+<!-- PM Health Summary (Bento-style card) -->
+<div class="bg-surface-container-lowest rounded-xl deep-shadow p-card_padding border border-transparent">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 font-bold tracking-tight">Schedule Health</h3>
+<div class="flex items-center justify-between mb-6">
+<!-- Custom Progress Ring implementation -->
+<div class="relative w-24 h-24 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-primary/10" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute flex flex-col items-center justify-center">
+<span class="font-display-lg text-[24px] text-on-surface leading-none font-bold">85%</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center">
+<span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+<span class="font-label-md text-label-md text-on-surface-variant w-20">On Track</span>
+<span class="font-body-md text-body-md font-medium text-on-surface ml-auto">42</span>
+</div>
+<div class="flex items-center">
+<span class="w-2 h-2 rounded-full bg-error mr-2"></span>
+<span class="font-label-md text-label-md text-on-surface-variant w-20">Overdue</span>
+<span class="font-body-md text-body-md font-medium text-on-surface ml-auto">3</span>
+</div>
+<div class="flex items-center">
+<span class="w-2 h-2 rounded-full bg-outline-variant mr-2"></span>
+<span class="font-label-md text-label-md text-on-surface-variant w-20">Skipped</span>
+<span class="font-body-md text-body-md font-medium text-on-surface ml-auto">1</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming PMs List -->
+<div class="bg-surface-container-lowest rounded-xl deep-shadow p-card_padding border border-transparent flex-1 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">Upcoming</h3>
+<button class="text-primary font-label-md text-label-md hover:underline decoration-2 underline-offset-4">View All</button>
+</div>
+<div class="space-y-4 overflow-y-auto scrollbar-hide pr-2 -mr-2">
+<!-- Task Item 1 -->
+<div class="group p-4 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/20 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-sm text-label-sm text-error bg-error/10 px-2 py-0.5 rounded">High Priority</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Today</span>
+</div>
+<h4 class="font-label-md text-[16px] text-on-surface mb-1">Monthly Generator Test</h4>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-3">Asset: GEN-002 • Main Building</p>
+<div class="flex items-center text-primary font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                    View Details <span class="material-symbols-outlined text-[16px] ml-1">arrow_forward</span>
+</div>
+</div>
+<hr class="border-outline-variant/10"/>
+<!-- Task Item 2 -->
+<div class="group p-4 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/20 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-primary bg-primary/10 px-2 py-0.5 rounded">Routine</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tomorrow</span>
+</div>
+<h4 class="font-label-md text-[16px] text-on-surface mb-1">Quarterly HVAC Check</h4>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-3">Asset: HVAC-RTU-1 • Roof Level</p>
+<div class="flex items-center text-primary font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                    View Details <span class="material-symbols-outlined text-[16px] ml-1">arrow_forward</span>
+</div>
+</div>
+<hr class="border-outline-variant/10"/>
+<!-- Task Item 3 -->
+<div class="group p-4 rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/20 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-surface-tint"></span>
+<span class="font-label-sm text-label-sm text-surface-tint bg-surface-tint/10 px-2 py-0.5 rounded">Inspection</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Oct 11</span>
+</div>
+<h4 class="font-label-md text-[16px] text-on-surface mb-1">Fire Extinguisher Certification</h4>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-3">Multiple Assets • All Floors</p>
+<div class="flex items-center text-primary font-label-sm text-label-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                    View Details <span class="material-symbols-outlined text-[16px] ml-1">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

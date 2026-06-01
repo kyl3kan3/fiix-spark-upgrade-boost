@@ -19,7 +19,7 @@ export const solutions: Solution[] = [
  h1: "Work Order Software that turns requests into completed work",
  tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
  metaTitle: "Work Order Software — Capture & Close Faster | MaintenEase",
- metaDescription: "Work order software for maintenance teams. Submit, assign, prioritize, and close work from any device. Free trial — no credit card.",
+ metaDescription: "Work order software for maintenance teams. Submit, assign, prioritize, and close work from any device. 14-day free trial.",
  intro:
  "MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
  benefits: [
@@ -178,7 +178,7 @@ export const solutions: Solution[] = [
  h1: "Asset Tracking Software that always knows where every asset lives",
  tagline: "QR codes, locations, custody, and full service history — for every asset you own.",
  metaTitle: "Asset Tracking Software — QR Codes & Locations | MaintenEase",
- metaDescription: "Asset tracking software with QR codes, nested locations, custody logs, and full service history. Free trial — no credit card.",
+ metaDescription: "Asset tracking software with QR codes, nested locations, custody logs, and full service history. 14-day free trial.",
  intro:
  "MaintenEase gives every asset a unique QR code, a permanent home in your location hierarchy, and a full service history that travels with it. Scan a QR code to see the asset's manual, warranty, open work orders, and PM schedule. Move an asset between rooms or buildings and the audit trail updates itself. No more spreadsheets, no more lost equipment.",
  benefits: [
@@ -212,7 +212,7 @@ export const solutions: Solution[] = [
  h1: "Asset Management Software that turns your asset register into a working system",
  tagline: "Register, schedule, maintain, and report on every asset — in one place.",
  metaTitle: "Asset Management Software for Maintenance Teams | MaintenEase",
- metaDescription: "Asset management software with PM scheduling, work orders, warranty tracking, and lifecycle reporting. Free trial — no credit card.",
+ metaDescription: "Asset management software with PM scheduling, work orders, warranty tracking, and lifecycle reporting. 14-day free trial.",
  intro:
  "MaintenEase is asset management software built for the teams who actually maintain the assets. Register every asset with its location, warranty, parts, and manuals. Layer PM schedules and work orders directly on top. Report on cost, downtime, and lifecycle — per asset, per location, per category. Your asset register stops being a spreadsheet and starts being the system of record for everything that happens to your equipment.",
  benefits: [

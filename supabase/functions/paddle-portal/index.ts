@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('paddle-portal error', e);
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
+    return new Response(JSON.stringify({ error: 'An unexpected error occurred.' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Team Chat - MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "on-surface-variant": "#444652",
+                        "secondary-container": "#dee0e2",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-container": "#7e97fe",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e2e2e2",
+                        "primary-container": "#00288e",
+                        "background": "#f8f9ff",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-tertiary-container": "#9c9d9d",
+                        "inverse-primary": "#b8c4ff",
+                        "on-background": "#0b1c30",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary-fixed": "#e1e3e5",
+                        "primary": "#00175c",
+                        "outline-variant": "#c5c5d4",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "warning": "#F59E0B",
+                        "surface-tint": "#3d57ba",
+                        "on-surface": "#0b1c30",
+                        "on-primary-fixed-variant": "#213da0",
+                        "inverse-surface": "#213145",
+                        "on-secondary-fixed-variant": "#444749",
+                        "secondary": "#5c5f61",
+                        "surface-blue": "#f8f9ff",
+                        "tertiary-container": "#333535",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary": "#1e2020",
+                        "surface-variant": "#d3e4fe",
+                        "success": "#10B981",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-container": "#606365",
+                        "error-container": "#ffdad6",
+                        "outline": "#757684",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "container-blue": "#e5eeff",
+                        "on-primary-fixed": "#001453"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_collapsed": "64px",
+                        "base_unit": "8px",
+                        "card_padding": "24px",
+                        "gutter": "24px",
+                        "sidebar_expanded": "240px",
+                        "container_padding": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen flex overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container-lowest dark:bg-surface-dim border-r border-outline-variant/20 shadow-sm flex flex-col h-screen py-gutter gap-base_unit fixed left-0 top-0 w-sidebar_expanded z-40 hidden md:flex">
+<!-- Header -->
+<div class="px-gutter mb-6 flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center font-bold font-headline-md text-headline-md">
+                    M
+                </div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">MaintenEase</h1>
+<span class="font-label-sm text-label-sm text-secondary">Facility Management</span>
+</div>
+</div>
+<button class="mt-4 w-full bg-primary text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg hover:bg-on-primary-fixed transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Work Order
+            </button>
+</div>
+<!-- Main Nav Links -->
+<div class="flex-1 px-4 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-label-md text-label-md">Work Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-md text-label-md">Preventive</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 border-primary dark:border-primary-fixed-dim bg-primary/5 dark:bg-primary-fixed-dim/5 text-primary dark:text-primary-fixed-dim font-bold transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="chat" data-weight="fill">chat</span>
+<span class="font-label-md text-label-md">Team Chat</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Reporting</span>
+</a>
+</div>
+<!-- Footer Nav -->
+<div class="px-4 mt-auto border-t border-outline-variant/20 pt-4 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-[240px] h-screen relative bg-surface">
+<!-- TopAppBar (Shared Component) -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm flex justify-between items-center w-full px-container_padding py-4 z-50 sticky top-0 full-width docked">
+<!-- Mobile Menu Toggle (Hidden on Desktop) -->
+<button class="md:hidden text-primary p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Search Bar -->
+<div class="flex-1 max-w-md hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-transparent focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-secondary mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md w-full placeholder-secondary" placeholder="Search messages, channels..." type="text"/>
+</div>
+<div class="md:hidden font-headline-md text-headline-md text-primary tracking-tight">
+                MaintenEase
+            </div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-high cursor-pointer">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a facility administrator. The lighting is bright and modern, conveying reliability and approachability. The color palette aligns with a clean corporate aesthetic, utilizing subtle blues and crisp whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM5vvxuj4-pSI7iq4jPkDkTftObQ6wkLZdQ1zDp95_c4oVoYDJAk6rgx9jHu7f-ypAbyJl8zK8xo7lQSwFq7_C4Ja7EFtil8hjC9kM1Nh1-Kdta360fDKbK376Ludtcw8WNGk4vNdliCdsIhQRUkmFA4uVxMakw8NXA9XITp1Y9oQwpEB90RPYcGe_C10An6z4juHGjqWGrGWpdH9vD6dDRQWiVfIP5t8YlBp0UPjkdxNujH2G-7d8ySPBr8snjPRFYUotg94D6zw"/>
+</div>
+</div>
+</header>
+<!-- Chat Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Channels Sidebar (Inner) -->
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant/20 flex flex-col hidden lg:flex overflow-y-auto shadow-[10px_0_30px_rgba(0,0,0,0.02)]">
+<div class="p-4 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="font-headline-md text-[18px] font-semibold text-on-surface">Channels</h2>
+<button class="text-primary hover:bg-primary-container/10 p-1 rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+<div class="py-2 px-3 flex flex-col gap-1">
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md group relative" href="#">
+<span class="material-symbols-outlined text-[18px]">tag</span>
+<span>General</span>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/4 bg-primary rounded-r-full"></div>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">tag</span>
+<span>Maintenance</span>
+</div>
+<span class="bg-error text-on-error text-[10px] px-1.5 py-0.5 rounded-full font-bold">3</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">tag</span>
+<span>Inspections</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">tag</span>
+<span>Emergency</span>
+</a>
+</div>
+<div class="p-4 border-b border-outline-variant/10 border-t flex justify-between items-center mt-4">
+<h2 class="font-headline-md text-[18px] font-semibold text-on-surface">Direct Messages</h2>
+<button class="text-primary hover:bg-primary-container/10 p-1 rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+<div class="py-2 px-3 flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<div class="relative">
+<img alt="User" class="w-6 h-6 rounded-full object-cover" data-alt="Small avatar of a team member. Clean lighting, professional setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1OLfNkgZCd-eGAJzE37yWpJxD1flEG7__0ECAojHL6i4zsCLwkNWLhiepbCCcqZ55i_uBLwwfdJJrbU9AgdE-PkD-DlrwiE-_ISWVZlGap3sqyCBvK8HlWrC-hkx8s9LUNf8EElTX67DeZ7mwp9NAwzhOo0sbDJbatK5ulj5p8zJ8NNZOMi0kE9ABmsrwa1czp_t7MpA55pyAj5GV2LzLnrwk6bGf5OCrDvJnSUkbVpMzOEF0PMxttKrVHr0BfYJYBKoBv0cFFlE"/>
+<div class="absolute bottom-0 right-0 w-2 h-2 bg-success rounded-full border border-surface-container-lowest"></div>
+</div>
+<span>Sarah Jenkins</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface font-label-md text-label-md transition-colors" href="#">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="User" class="w-6 h-6 rounded-full object-cover" data-alt="Small avatar of a team member. Clean lighting, professional setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5eIQflaUuP4b7A4wjlmzYgbXoHAyhilZ5TEtBVeN8G10DRfYuwr-BUeT31z--Fm1rJMhYaQBfw39GIYYweC0Y4ADgy9DQiOV7jk8b8QWmBWy-bfR7HLh5oVz76aTEnhSYdpZc_VbeJfojgcA88L5oUioHwHu0EmfotKgvBJlq94n7869e3PvxlUSGIpEc04NnGe-tIbJykgkGLnIUqcF4f3maw_yq6OMwRdz7AV2Kus4UFgteIRFsiZJjm9CFkHmQgMCBKR1JMxw"/>
+<div class="absolute bottom-0 right-0 w-2 h-2 bg-warning rounded-full border border-surface-container-lowest"></div>
+</div>
+<span class="font-bold text-on-surface">Mike Ross (Tech)</span>
+</div>
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+</a>
+</div>
+</aside>
+<!-- Chat Area -->
+<section class="flex-1 flex flex-col bg-background relative">
+<!-- Chat Header -->
+<div class="px-6 py-4 border-b border-outline-variant/10 bg-surface/50 backdrop-blur-sm flex justify-between items-center sticky top-0 z-10">
+<div class="flex items-center gap-3">
+<div class="lg:hidden">
+<button class="text-secondary p-1">
+<span class="material-symbols-outlined">menu_open</span>
+</button>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">tag</span>
+                                General
+                            </h2>
+<p class="font-body-md text-[14px] text-secondary mt-0.5">Company-wide announcements and general chatter.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2 mr-2">
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="Small team member avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU1QOQPmGl5pCef5Jrkv2iYAXoKRYoDUAOV_iUbxkAEVgwRNroJ6Z5PxwT-S25cOmD2lJLFXY-7to-YPsMPk13LEQhMDvcoSPA7Tu3a06Yk9S3AiLwFCjwR8UaxD8pp6fON3bWYbhuMSil8M7enxSvIeoXVdzBxV38QwSlIf63WNjwA0zWxbC9GdGZtzbM7oNz5KCShhiJ_xCZKFrJv8yy3NsxjXK6uPbV10nK9SgCofsrjrMRfKTxznDiTNoJyezl-w6_mDxpTlc"/>
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="Small team member avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHucpZ87cdsUXwQKTPVcYJVVkXXK61kUMfSOKw8Yegc9TUDMdLs8yTIVFKmWG3_bo7xf-LSeTJwcZU964yzM71ohs_yDQMPsb0yuYPlpGAJG3X55JjR9N2LNvwdgDbFbeE2nXiHjuXFH0z2-JqmhdkMJr3cr2a_x7jC9m-GuFCxHPaTxhvgRJLm0wC1wT4Q5Pqn8a5CUAbjI-0ko2ZzqeiL2d1ngPD4aY7ekEOxYlH43VqG8zLC0kToUnaFnB1GXmH4m-7i37WGZM"/>
+<img alt="Member" class="w-8 h-8 rounded-full border-2 border-surface object-cover" data-alt="Small team member avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCExZMwRywKBc-Yup5kfoO-8JP905ZNk4vkOh7o-Sv5yoYQhgbfP0v3QH4KwO_awKTfU1vgFavysj02sLwI79jUYxYBcDtWuSlKAzSNvUoMnE63dsC3WApyyakvgx97hyFoASlTbGNjGU-Ci72_Kto1JrqwqpDCvSz5w6qTOvg39xAJ4IX7XwElR_lcZ11OAW1T1hZk-WYFoCtR8YVaxOqiftPTQ9el0c1TMaP3zSt3WfaRhIhu7PNK23eqyQ6NJ-5iWbtYongZJBQ"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-container-high flex items-center justify-center text-xs font-bold text-primary">+12</div>
+</div>
+<button class="text-secondary hover:text-primary transition-colors p-2 bg-surface-container-lowest rounded-full shadow-sm hover:shadow-md">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</div>
+<!-- Messages Container -->
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 custom-scrollbar">
+<!-- Date Separator -->
+<div class="flex items-center justify-center relative my-2">
+<div class="absolute w-full h-px bg-outline-variant/20"></div>
+<span class="relative bg-background px-4 font-label-sm text-label-sm text-secondary uppercase tracking-wider">Today</span>
+</div>
+<!-- Message: Status Update -->
+<div class="flex gap-4 group">
+<img alt="Mike Ross" class="w-10 h-10 rounded-full object-cover mt-1" data-alt="Avatar for Mike Ross." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHDJYYRn0tcZtqsCjFqJ0VeE0VjXhN5pcL_CEkiie6kCgyezIS4BvMvPeG2NDX1abp3weGGwWr-k5fXuOBO37a5yVwcJvtr0xY4LiTGvgj-NGI_MWeQaOym-zk9Cs0xwxZIWzhsPgkioYXq_tTPBflfLtxmGXk2BkPnuhl4TN7UdfRKNKxl2mxNUG7wKJqnzgOu93yS0auuvPRTbifxZPRmUu8KTkT3bap9itWVWycs5bbY4v1UIzpKgayPj9f-or4uoAG4_1fMU"/>
+<div class="flex-1">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-label-md text-label-md text-on-surface">Mike Ross</span>
+<span class="font-body-md text-[12px] text-secondary">09:15 AM</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant bg-surface-container-lowest p-3 rounded-lg rounded-tl-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] border border-outline-variant/5 inline-block">
+<p>Just wrapped up the quarterly inspection on HVAC Unit B in the East Wing.</p>
+<!-- Attached Card -->
+<div class="mt-3 border border-outline-variant/20 rounded-lg p-3 bg-surface flex items-start gap-3 hover:border-primary/30 transition-colors cursor-pointer">
+<div class="bg-success/10 text-success p-2 rounded flex-shrink-0">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface mb-0.5">WO-2049: HVAC Inspection</div>
+<div class="font-body-md text-[13px] text-secondary mb-2">Status: Completed • Duration: 1h 45m</div>
+<span class="inline-block bg-success/10 text-success font-bold text-[10px] uppercase px-2 py-1 rounded">Passed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Message: Text & Image Attachment -->
+<div class="flex gap-4 group">
+<img alt="Sarah Jenkins" class="w-10 h-10 rounded-full object-cover mt-1" data-alt="Avatar for Sarah Jenkins." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQhwqhWEuwDrIaJerVrKVgJAafgJ7dfpAKRaHhYb3f2vFI31wn8DNb-uFsyLkfybmmFmEJP-QxowBwgOwTHTuqEpiyl064sX2cwrbnLvBjgzmX_wjpHSGrG1w4AK6WpkHFOKGfTv_2nk2fb7FhvuksBetIe3DorqZayDvCcG820v3KqUkHYy_B2Yi_2WndsbUZEKfR48M-7qGY3EeT3InFZtElbEvH14JSuVYIkjNm8q5NiUB84Hc62RVKHYSo19lWJw7hQpn2xeI"/>
+<div class="flex-1">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-label-md text-label-md text-on-surface">Sarah Jenkins</span>
+<span class="font-body-md text-[12px] text-secondary">10:30 AM</span>
+</div>
+<div class="font-body-md text-body-md text-on-surface-variant bg-surface-container-lowest p-3 rounded-lg rounded-tl-none shadow-[0_4px_12px_rgba(0,0,0,0.02)] border border-outline-variant/5 inline-block">
+<p class="mb-3">Hey team, noticed a minor leak in the lobby water feature. Doesn't seem urgent but we should schedule a look before the weekend.</p>
+<div class="relative w-64 h-40 rounded-lg overflow-hidden border border-outline-variant/20 group cursor-pointer">
+<img alt="Water Leak" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="A close up shot of a modern indoor water feature in a corporate lobby. A small puddle of water is visible on the polished stone floor next to it. The lighting is bright architectural lighting. The aesthetic is clean, industrial modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZv7fsEKaDGwadObCKWPCfz2UKcgr5RhflLLplUMh4ys2eyx2KGK8yIdlGk95npcjvrWjq-m6GiZWAVUH9o_mduBsIQhydSNLXO01Q1T_LCcmjON_L81MmxPGrUL7Xxy_-0HZ0_yVoilgnFdX2mi2Sxau8Iby5T1DktnfuPOxptqZwggRIODZhaJA9PKDmWxQhxHa2pbklpm0CFCi0FA_DIr1pC7f1q5KRdxqomH-Wqx64HuWDEP8xVzndkuZk6tttjQhGecaeJAg"/>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md">zoom_in</span>
+</div>
+</div>
+<!-- Reactions -->
+<div class="flex gap-2 mt-2">
+<button class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded-full border border-outline-variant/20 hover:bg-surface-variant transition-colors">
+<span class="text-[14px]">👀</span>
+<span class="font-label-sm text-[11px] text-secondary">2</span>
+</button>
+<button class="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full border border-primary/30 text-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">build</span>
+<span class="font-label-sm text-[11px] font-bold">1</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Message: System Alert (Bento Style) -->
+<div class="flex gap-4 group">
+<div class="w-10 h-10 rounded-full bg-warning/20 text-warning flex items-center justify-center mt-1 flex-shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1 max-w-2xl">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-label-md text-label-md text-on-surface">System Alert</span>
+<span class="font-body-md text-[12px] text-secondary">11:05 AM</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-shadow duration-300 transform hover:-translate-y-1">
+<h4 class="font-headline-md text-[16px] text-on-surface mb-2 flex items-center gap-2">
+                                    Inventory Low Warning
+                                </h4>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<div class="bg-surface p-3 rounded-lg border border-outline-variant/10">
+<div class="font-body-md text-[12px] text-secondary mb-1">Item</div>
+<div class="font-label-md text-on-surface">HEPA Filters (Type A)</div>
+</div>
+<div class="bg-surface p-3 rounded-lg border border-outline-variant/10">
+<div class="font-body-md text-[12px] text-secondary mb-1">Stock Level</div>
+<div class="font-label-md text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+                                            4 Units Left
+                                        </div>
+</div>
+</div>
+<div class="flex justify-end gap-2 border-t border-outline-variant/10 pt-3">
+<button class="text-primary font-label-md text-label-md px-4 py-2 hover:bg-primary/5 rounded transition-colors">Dismiss</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-on-primary-fixed transition-colors shadow-sm">Reorder Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Current User Message -->
+<div class="flex gap-4 group flex-row-reverse">
+<img alt="Me" class="w-10 h-10 rounded-full object-cover mt-1" data-alt="User's own profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxIub9Q9AlQdQQ34H42NW0gjVfJ3bEdiCuIw3mIp-fzHa94qNgHd7CxIqQdTPAV511emrhiAPPtqVwpkSEZ8Pz1b3iyVacxiMY_wj-znIfo_lRu_d3bcAuZ9nlQ7oXMXRF-Cw27QdwBrPPM6qouPLo4snxusV_mQKQZRDViFEu3tw73VBwkGUresfC-5z6QRcIlGrJT11yZeVPOzZK_2bRq9TznT_miTjqkwW6TMW6PKau3lGr7N_TksIF9DeVdVDoI6h_ihxHOF0"/>
+<div class="flex-1 flex flex-col items-end">
+<div class="flex items-baseline gap-2 mb-1 flex-row-reverse">
+<span class="font-label-md text-label-md text-on-surface">Me</span>
+<span class="font-body-md text-[12px] text-secondary">Just now</span>
+</div>
+<div class="font-body-md text-body-md text-on-primary bg-primary p-3 rounded-lg rounded-tr-none shadow-sm inline-block max-w-[80%]">
+<p>I'll take a look at the lobby leak after lunch. Creating a quick ticket for it now to track time.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 bg-surface-container-lowest border-t border-outline-variant/20 z-10">
+<div class="max-w-4xl mx-auto flex items-end gap-2 bg-surface-container-low rounded-xl p-2 border border-outline-variant/20 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-sm">
+<button class="p-2 text-secondary hover:text-primary transition-colors rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 resize-none max-h-32 min-h-[44px] py-3 text-body-md font-body-md text-on-surface placeholder-secondary" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="Message #General..." rows="1"></textarea>
+<div class="flex items-center gap-1 pb-1">
+<button class="p-2 text-secondary hover:text-primary transition-colors rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+<button class="p-2 text-secondary hover:text-primary transition-colors rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<button class="p-2 bg-primary text-on-primary rounded-lg hover:bg-on-primary-fixed transition-colors shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+<div class="max-w-4xl mx-auto mt-2 px-2 flex items-center justify-between">
+<span class="font-body-md text-[11px] text-secondary"><b>Return</b> to send, <b>Shift + Return</b> for new line</span>
+<span class="font-body-md text-[11px] text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> Encrypted Workspace</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<style>
+        /* Custom Scrollbar for Chat */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(196, 199, 201, 0.5); /* secondary-fixed-dim */
+            border-radius: 20px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(117, 118, 132, 0.8); /* outline */
+        }
+    </style>
+</body></html>

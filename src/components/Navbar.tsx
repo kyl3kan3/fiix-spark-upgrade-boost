@@ -58,9 +58,8 @@ const Navbar = () => {
  {/* Desktop Navigation */}
  <div className="hidden md:flex items-center space-x-8">
  <div className="flex space-x-6">
- <a href="#features" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Features</a>
- <a href="#testimonials" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Testimonials</a>
- <a href="#pricing" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Pricing</a>
+ <a href="/features" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Features</a>
+ <a href="/pricing" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Pricing</a>
  {isLoggedIn && (
  <a href="/debug-vendor" className="text-foreground hover:text-maintenease-600 font-medium transition-colors">Debug Vendor</a>
  )}
@@ -112,9 +111,8 @@ const Navbar = () => {
  <img src={logo} alt="MaintenEase" className="h-7 w-7 shrink-0" />
  <span className="text-lg font-bold text-maintenease-600 leading-none">MaintenEase</span>
  </a>
- <a href="#features" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Features</a>
- <a href="#testimonials" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Testimonials</a>
- <a href="#pricing" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
+ <a href="/features" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Features</a>
+ <a href="/pricing" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Pricing</a>
  {isLoggedIn && (
  <a href="/debug-vendor" className="text-foreground hover:text-maintenease-600 font-medium py-2 transition-colors">Debug Vendor</a>
  )}

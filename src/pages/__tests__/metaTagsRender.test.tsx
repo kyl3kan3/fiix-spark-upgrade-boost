@@ -46,7 +46,7 @@ vi.mock("@/integrations/supabase/client", () => {
  };
 });
 
-vi.mock("@/contexts/AuthContext", () => ({
+vi.mock("@/providers/AuthContext", () => ({
  AuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
  useAuth: () => ({ user: null, session: null, loading: false, signOut: () => Promise.resolve() }),
 }));

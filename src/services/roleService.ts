@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 import { toast } from "@/components/ui/use-toast";
 import { logger } from "@/lib/logger";
 import { normalizeError } from "@/lib/errors";
@@ -35,14 +36,14 @@ export const updateUserRole = async (userId: string, role: string) => {
  }
 
  // Insert new role
- const currentUser = await supabase.auth.getUser();
+ const currentUser = await requireUser();
  const { error: insertError } = await supabase
  .from('user_roles')
      .insert([{
       user_id: userId,
       role: role as "administrator" | "manager" | "super_admin" | "technician" | "viewer",
       company_id: profile.company_id,
-      created_by: currentUser.data.user?.id
+      created_by: currentUser.id
      }]);
 
  if (insertError) {

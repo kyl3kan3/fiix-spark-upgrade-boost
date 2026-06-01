@@ -2,6 +2,7 @@
 import React from "react";
 import { CompanyInfo } from "./types";
 import { Building2, Globe, Mail, Phone, MapPin } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 interface CompanyDetailsProps {
  companyInfo: CompanyInfo;
@@ -28,7 +29,7 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo, han
  className="w-24 h-24 object-contain rounded-md border"
  onError={(e) => {
  e.currentTarget.src = 'https://via.placeholder.com/100x100?text=Logo';
- console.warn("Failed to load company logo");
+ logger.warn("Failed to load company logo");
  }}
  />
  </div>

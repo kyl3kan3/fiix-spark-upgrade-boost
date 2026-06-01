@@ -69,6 +69,19 @@ const alerts = [
   { title: "Low stock: Hydraulic Fluid", time: "1 hours ago", tone: "warning" },
   { title: "PM overdue for Elevator 1", time: "2 mins ago", tone: "critical" },
 ];
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PageHeader from "@/components/shell/PageHeader";
+import PageContainer from "@/components/shell/PageContainer";
+import OverviewTab from "@/components/dashboard/tabs/OverviewTab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TasksTab from "@/components/dashboard/tabs/TasksTab";
+import AnalyticsTab from "@/components/dashboard/tabs/AnalyticsTab";
+import SettingsTab from "@/components/dashboard/tabs/SettingsTab";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import OnboardingChecklist from "@/features/onboarding/components/OnboardingChecklist";
+import GuidedTour from "@/features/onboarding/components/GuidedTour";
 
 const Dashboard = () => {
   return (

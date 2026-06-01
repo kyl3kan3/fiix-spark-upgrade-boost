@@ -1,103 +1,60 @@
+import { Button } from "@/components/ui/button";
+import { Quote, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-
-const testimonials = [
- {
- quote: "Fiix has revolutionized how we approach maintenance at our manufacturing plant. We've reduced downtime by 35% since implementation.",
- author: "Sarah Johnson",
- position: "Maintenance Manager",
- company: "Global Manufacturing Inc.",
- rating: 5,
- },
- {
- quote: "The preventive maintenance features have saved us thousands in repair costs. The platform is intuitive and our team adopted it quickly.",
- author: "Michael Chen",
- position: "Operations Director",
- company: "Pacific Industrial",
- rating: 5,
- },
- {
- quote: "Customer support is exceptional. Any time we've needed help, the Fiix team has been responsive and knowledgeable.",
- author: "Emma Rodriguez",
- position: "Facility Manager",
- company: "City Hospital",
- rating: 5,
- },
-];
-
+/**
+ * Social-proof placeholder section.
+ *
+ * The previous version of this file shipped fabricated testimonials —
+ * including one signed by "Sarah Johnson, Global Manufacturing Inc." that
+ * referenced a competitor product ("Fiix has revolutionized..."). That is
+ * brand-damaging and dishonest, so it has been removed.
+ *
+ * Until we have signed permission from real customers, this section is an
+ * honest "early customers" prompt instead of a fake quote carousel.
+ *
+ * To restore testimonials: replace this component's body with a quote carousel
+ * once real, attributable quotes exist (with company name + role + permission).
+ */
 const Testimonials = () => {
- const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const navigate = useNavigate();
 
- const nextTestimonial = () => {
- setActiveTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
- };
-
- const prevTestimonial = () => {
- setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
- };
-
- return (
- <section id="testimonials" className="py-20 bg-fiix-50">
- <div className="container mx-auto px-4">
- <div className="text-center mb-16">
- <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
- Trusted by Maintenance Teams Everywhere
- </h2>
- <p className="text-xl text-foreground max-w-2xl mx-auto">
- Hear what our customers have to say about their experience with Fiix.
- </p>
- </div>
-
- <div className="max-w-4xl mx-auto">
- <div className="relative bg-card p-8 md:p-12 rounded-2xl shadow-lg">
- <div className="flex justify-center mb-6">
- {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
- <Star key={i} className="h-6 w-6 fill-fiix-400 text-fiix-400" />
- ))}
- </div>
- <blockquote className="text-xl md:text-2xl text-center text-foreground italic mb-8">
- "{testimonials[activeTestimonial].quote}"
- </blockquote>
- <div className="text-center">
- <p className="font-semibold text-foreground">{testimonials[activeTestimonial].author}</p>
- <p className="text-foreground">{testimonials[activeTestimonial].position}, {testimonials[activeTestimonial].company}</p>
- </div>
- 
- <div className="absolute top-1/2 -left-4 -translate-y-1/2">
- <button 
- onClick={prevTestimonial} 
- className="bg-card rounded-full p-2 shadow-md hover:bg-fiix-50 transition-colors"
- aria-label="Previous testimonial"
- >
- <ChevronLeft className="h-6 w-6 text-fiix-600" />
- </button>
- </div>
- <div className="absolute top-1/2 -right-4 -translate-y-1/2">
- <button 
- onClick={nextTestimonial} 
- className="bg-card rounded-full p-2 shadow-md hover:bg-fiix-50 transition-colors"
- aria-label="Next testimonial"
- >
- <ChevronRight className="h-6 w-6 text-fiix-600" />
- </button>
- </div>
- </div>
-
- <div className="flex justify-center mt-8">
- {testimonials.map((_, index) => (
- <button
- key={index}
- onClick={() => setActiveTestimonial(index)}
- className={`h-2 w-2 mx-1 rounded-full transition-all ${ activeTestimonial === index ? "bg-fiix-600 w-8" : "bg-fiix-300" }`}
- aria-label={`Go to testimonial ${index + 1}`}
- />
- ))}
- </div>
- </div>
- </div>
- </section>
- );
+  return (
+    <section id="testimonials" className="py-20 bg-fiix-50">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-fiix-100 text-fiix-600 mb-6">
+            <Quote className="h-6 w-6" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+            Be one of our first customer stories
+          </h2>
+          <p className="text-lg text-foreground/80 max-w-2xl mx-auto mb-8">
+            MaintenEase is brand-new and we're working hand-in-hand with our
+            earliest teams. Start a trial and we'll personally onboard your
+            assets, PMs, and reports — free.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-fiix-600 hover:bg-fiix-700 text-white px-8 group"
+              onClick={() => navigate("/auth?signup=true")}
+            >
+              Start your trial
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate("/pricing")}
+            >
+              See pricing
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Testimonials;

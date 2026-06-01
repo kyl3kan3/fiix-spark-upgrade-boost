@@ -38,6 +38,19 @@ Deno.serve(async (req) => {
       .from('profiles').select('company_id').eq('id', user.id).maybeSingle();
     if (!profile?.company_id) return json({ error: 'No company' }, 400);
 
+    // Explicit administrator role check (defence-in-depth beyond RLS)
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    );
+    const { data: roleRows } = await adminClient
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .eq('company_id', profile.company_id)
+      .in('role', ['administrator']);
+    if (!roleRows?.length) return json({ error: 'Forbidden' }, 403);
+
     const { data: sub } = await userClient
       .from('subscriptions')
       .select('paddle_subscription_id, paddle_price_id, billing_interval, environment, paid_seats')
@@ -81,6 +94,6 @@ Deno.serve(async (req) => {
     return json({ ok: true, extraSeats: desired });
   } catch (e) {
     console.error('update-seats error', e);
-    return json({ error: (e as Error).message || 'Failed to update seats' }, 500);
+    return json({ error: 'Failed to update seats' }, 500);
   }
 });
