@@ -27,17 +27,15 @@ const MemberCardBody: React.FC<MemberCardBodyProps> = ({
  handleUserInfoUpdated
 }) => {
  return (
- <div className="p-6 relative">
+ <div className="p-6 relative flex flex-col items-center text-center gap-3 flex-1">
  <MemberActions onEditClick={() => setIsEditing(true)} />
- 
- <div className="flex items-start gap-4">
- <MemberAvatar 
- avatar={member.avatar} 
- online={member.online ?? false} // Use optional chaining with fallback
+
+ <MemberAvatar
+ avatar={member.avatar}
+ online={member.online ?? false}
  />
  <MemberInfo member={member} roleColorMap={roleColorMap} />
- </div>
- 
+
  <UserInfoEditor
  open={isEditing}
  onOpenChange={setIsEditing}

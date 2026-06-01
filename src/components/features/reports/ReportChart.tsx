@@ -58,24 +58,24 @@ const ReportChart: React.FC<ReportChartProps> = ({
  };
 
  return (
- <Card id="report-chart-container">
+ <Card id="report-chart-container" className="bg-card border border-border shadow-sm">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
- <CardTitle className="text-xl font-bold">{reportType}</CardTitle>
+ <CardTitle className="font-headline text-xl font-bold text-foreground">{reportType}</CardTitle>
  <div className="flex items-center gap-2">
  <Button
  variant="outline"
  size="sm"
  onClick={handlePrint}
- className="hidden md:flex items-center gap-2"
+ className="hidden md:flex items-center gap-2 border-border"
  >
  <Printer className="h-4 w-4" />
  Print
  </Button>
- <Button 
+ <Button
  size="sm"
  onClick={onExport}
  disabled={isExporting}
- className="bg-maintenease-500 hover:bg-maintenease-600 text-white"
+ className="bg-primary hover:bg-primary-variant text-primary-foreground"
  >
  <Download className="h-4 w-4 mr-2" />
  {isExporting ? "Exporting..." : "Export PDF"}
@@ -84,11 +84,11 @@ const ReportChart: React.FC<ReportChartProps> = ({
  </CardHeader>
  <CardContent className="pt-4">
  {renderChart()}
- 
- <div className="mt-4">
- <h4 className="font-medium text-sm mb-2">Report Summary</h4>
- <p className="text-sm text-foreground">
- This {reportType.toLowerCase()} report shows data from the last 30 days. 
+
+ <div className="mt-4 p-4 bg-background rounded-lg border border-border">
+ <h4 className="font-semibold text-sm text-foreground mb-2">Report Summary</h4>
+ <p className="text-sm text-muted-foreground">
+ This {reportType.toLowerCase()} report shows data from the last 30 days.
  {reportType === "Work Order Statistics" && " Work orders have increased by 12% compared to the previous period."}
  {reportType === "Asset Performance" && " Asset performance has improved with 8% less downtime compared to the previous period."}
  {reportType === "Maintenance Trends" && " Preventive maintenance has increased by 15% while corrective maintenance has decreased."}

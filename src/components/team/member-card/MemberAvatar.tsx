@@ -8,10 +8,14 @@ interface MemberAvatarProps {
 
 const MemberAvatar: React.FC<MemberAvatarProps> = ({ avatar, online }) => {
  return (
- <div className="h-12 w-12 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-lg relative">
+ <div className="relative shrink-0 mb-1">
+ <div className="h-20 w-20 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl border-2 border-primary/20">
  {avatar}
- {online && (
- <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+ </div>
+ {online !== undefined && (
+ <span
+ className={`absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-card ${online ? "bg-success" : "bg-muted-foreground"}`}
+ />
  )}
  </div>
  );

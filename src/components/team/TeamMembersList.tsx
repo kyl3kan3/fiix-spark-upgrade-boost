@@ -45,9 +45,9 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
  const { currentUserRole, checkingPermissions } = useUserRolePermissions();
  
  return (
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Team Directory</CardTitle>
+ <CardTitle className="font-headline text-xl text-foreground">Team Directory</CardTitle>
  <CardDescription>
  View and manage permissions for all maintenance team members
  </CardDescription>
@@ -56,7 +56,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
  {loading ? (
  <TeamMembersLoading />
  ) : members.length > 0 ? (
- <TeamMembersGrid 
+ <TeamMembersGrid
  members={members}
  roleColorMap={roleColorMap}
  onMemberUpdated={onMemberUpdated}
@@ -65,7 +65,7 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({
  <TeamMembersEmpty />
  )}
  </CardContent>
- 
+
  <TeamMembersPermissionFooter currentUserRole={currentUserRole || 'viewer'} />
  </Card>
  );
