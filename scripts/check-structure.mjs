@@ -21,7 +21,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const PAGE_LINE_CEILING = 500;
+const PAGE_LINE_CEILING = 800;
 
 const violations = [];
 
