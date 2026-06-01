@@ -25,7 +25,6 @@ const TeamFilters: React.FC<TeamFiltersProps> = ({
  setRoleFilter,
 }) => {
  return (
- <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
  <FilterBar className="mb-6">
  <div className="flex-1 relative min-w-0">
  <Input
@@ -37,7 +36,6 @@ const TeamFilters: React.FC<TeamFiltersProps> = ({
  <Users className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
  </div>
  <Select value={roleFilter} onValueChange={setRoleFilter}>
- <SelectTrigger className="w-full sm:w-[180px]">
  <SelectTrigger className={FILTER_CONTROL_WIDTH}>
  <Filter className="h-4 w-4 mr-2" />
  <SelectValue placeholder="Filter by role" />
