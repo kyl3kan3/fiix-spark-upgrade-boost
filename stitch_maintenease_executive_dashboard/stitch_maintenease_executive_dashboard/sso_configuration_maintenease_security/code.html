@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Security &amp; SSO Configuration | MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e1e3e5",
+                        "inverse-primary": "#b8c4ff",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-container": "#606365",
+                        "on-primary-container": "#7e97fe",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "container-blue": "#e5eeff",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed-variant": "#213da0",
+                        "on-primary-fixed": "#001453",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "background": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "on-background": "#0b1c30",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#3d57ba",
+                        "surface": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dce9ff",
+                        "error-container": "#ffdad6",
+                        "outline": "#757684",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-fixed": "#dde1ff",
+                        "on-tertiary-container": "#9c9d9d",
+                        "success": "#10B981",
+                        "secondary-container": "#dee0e2",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "secondary": "#5c5f61",
+                        "surface-container-low": "#eff4ff",
+                        "warning": "#F59E0B",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#00175c",
+                        "outline-variant": "#c5c5d4",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#444652",
+                        "tertiary-container": "#333535",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "primary-container": "#00288e",
+                        "surface-container": "#e5eeff",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary": "#1e2020",
+                        "on-secondary-fixed-variant": "#444749",
+                        "surface-blue": "#f8f9ff",
+                        "tertiary-fixed": "#e2e2e2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_expanded": "240px",
+                        "gutter": "24px",
+                        "base_unit": "8px",
+                        "container_padding": "32px",
+                        "sidebar_collapsed": "64px",
+                        "card_padding": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+        .custom-shadow-hover:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar_expanded bg-surface-container-low border-r border-outline-variant/20 shadow-md flex flex-col py-base_unit z-50">
+<div class="px-6 py-8">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">MaintenEase</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70 uppercase tracking-wider mt-1">Enterprise CMMS</p>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Assets</span>
+</a>
+<a class="relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-md text-label-md">Work Orders</span>
+</a>
+<a class="relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+</nav>
+<div class="px-2 mt-auto pb-4 space-y-1 border-t border-outline-variant/10 pt-4">
+<a class="border-l-4 border-primary bg-primary/5 text-primary font-bold flex items-center gap-3 px-4 py-3 rounded-r-lg transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 z-40 bg-surface/80 glass-header border-b border-outline-variant/30 flex justify-between items-center h-16 px-gutter ml-sidebar_expanded w-[calc(100%-240px)]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-on-surface focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline" placeholder="Search security logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-variant/50 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-on-surface">Alex Rivera</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">IT Administrator</p>
+</div>
+<img alt="User Profile" class="w-10 h-10 rounded-full border border-outline-variant/20 bg-surface-container-high" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgHWvHJzkPUp-woSUVO878tUnImJqsqRoMvmde3n1qt8OXAoMMB7fs8Juywto_oLMYTCQVdjYsErGqaA_z_dRTkFPzzAao-U9DgPSzXxV1DuEmac5OniX8xRwn8MMd6KDzb-NDxEU1oU8LaO1As79KPyO2P6tPz0UwlvP8elPyjmIzTi_77Z3UpJQG1MXhJTz-D0sKnz6MI5GOmkjuIRXXmWLDGhpYVcecJlC7x1HuR7UbxDRlCR3bv53GZaZcwm-MInyeK-l9KRM"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar_expanded pt-24 px-container_padding pb-12 min-h-screen max-w-[1600px] mx-auto">
+<!-- Header Section -->
+<div class="mb-10">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md mb-2">
+<span class="material-symbols-outlined text-[18px]">security</span>
+<span>ADMINISTRATION</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">SSO &amp; Security Configuration</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-3xl">Manage enterprise authentication protocols, identity providers, and organization-wide security policies for your facility operations.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Configuration Forms -->
+<div class="lg:col-span-8 space-y-gutter">
+<!-- Identity Provider Selection -->
+<section class="bg-surface-container-lowest p-card_padding rounded-xl custom-shadow border border-transparent hover:border-primary/10 transition-all">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Identity Provider</h3>
+<span class="bg-success/10 text-success px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            ACTIVE
+                        </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<button class="provider-card border-2 border-primary bg-primary/5 p-6 rounded-xl text-center transition-all group" id="btn-saml" onclick="selectProvider('saml')">
+<span class="material-symbols-outlined text-4xl text-primary mb-3 block">vpn_lock</span>
+<p class="font-label-md text-label-md text-primary">SAML 2.0</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">Standard Protocol</p>
+</button>
+<button class="provider-card border-2 border-outline-variant/30 hover:border-primary/50 p-6 rounded-xl text-center transition-all group" id="btn-okta" onclick="selectProvider('okta')">
+<span class="material-symbols-outlined text-4xl text-outline mb-3 block group-hover:text-primary transition-colors">cloud_done</span>
+<p class="font-label-md text-label-md text-on-surface">Okta</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">Direct Integration</p>
+</button>
+<button class="provider-card border-2 border-outline-variant/30 hover:border-primary/50 p-6 rounded-xl text-center transition-all group" id="btn-azure" onclick="selectProvider('azure')">
+<span class="material-symbols-outlined text-4xl text-outline mb-3 block group-hover:text-primary transition-colors">enterprise</span>
+<p class="font-label-md text-label-md text-on-surface">Azure AD</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">Microsoft Entra</p>
+</button>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-1 gap-4">
+<label class="block">
+<span class="font-label-md text-label-md text-on-surface mb-2 block">Identity Provider Single Sign-On URL</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 text-on-surface focus:ring-2 focus:ring-primary transition-all font-body-md" placeholder="https://your-idp.com/endpoint" type="url" value="https://sso.maintenease.com/saml2/idp/metadata"/>
+</label>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<label class="block">
+<span class="font-label-md text-label-md text-on-surface mb-2 block">Provider Entity ID (Issuer)</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 text-on-surface focus:ring-2 focus:ring-primary transition-all font-body-md" placeholder="Issuer ID" type="text" value="urn:maintenease:enterprise:sso"/>
+</label>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface mb-2 block">X.509 Certificate</span>
+<div class="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 text-center bg-surface-container-low/50 hover:bg-surface-container-low transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-3 block group-hover:text-primary transition-colors">upload_file</span>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Click to upload or drag and drop</p>
+<p class="font-label-sm text-label-sm text-outline">PEM or CRT format (Max. 2MB)</p>
+<div class="mt-4 flex items-center justify-center gap-2 text-success">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm">certificate_prod_v2.pem uploaded</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Global Policies -->
+<section class="bg-surface-container-lowest p-card_padding rounded-xl custom-shadow border border-transparent">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">Security Policies</h3>
+<div class="space-y-6">
+<div class="flex items-start justify-between p-4 bg-surface-container-low/30 rounded-lg">
+<div class="max-w-xl">
+<p class="font-label-md text-label-md text-on-surface">Enforce SSO for all users</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Disable password-based login for all users except emergency administrators. This ensures all access is managed via your IdP.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-14 h-7 bg-outline-variant/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-start justify-between p-4">
+<div class="max-w-xl">
+<p class="font-label-md text-label-md text-on-surface">Just-In-Time (JIT) Provisioning</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Automatically create MaintenEase user accounts when they sign in through SSO for the first time.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-14 h-7 bg-outline-variant/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-start justify-between p-4">
+<div class="max-w-xl">
+<p class="font-label-md text-label-md text-on-surface">Domain Restricted Access</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Limit login capability to specific corporate email domains only.</p>
+</div>
+<button class="text-primary font-label-md text-label-md hover:underline">Configure Domains</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Stats & Meta -->
+<div class="lg:col-span-4 space-y-gutter">
+<!-- Status & Actions Card -->
+<div class="bg-primary text-on-primary p-card_padding rounded-xl shadow-lg relative overflow-hidden group">
+<!-- Subtle background decoration -->
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-on-primary/10 rounded-full blur-3xl group-hover:bg-on-primary/20 transition-all"></div>
+<h4 class="font-headline-md text-headline-md mb-4 relative z-10">Configuration Health</h4>
+<div class="flex items-center gap-4 mb-8 relative z-10">
+<div class="w-16 h-16 rounded-full border-4 border-on-primary/30 flex items-center justify-center relative">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle class="text-on-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175.9" stroke-dashoffset="35.1" stroke-width="4"></circle>
+</svg>
+<span class="font-bold text-lg">80%</span>
+</div>
+<div>
+<p class="font-label-md text-label-md">Security Score</p>
+<p class="text-on-primary/70 font-label-sm">High Security Tier</p>
+</div>
+</div>
+<div class="space-y-4 relative z-10">
+<button class="w-full bg-white text-primary py-4 px-6 rounded-lg font-label-md text-label-md font-bold uppercase hover:bg-surface-container-high transition-colors tracking-wide">
+                            Save Changes
+                        </button>
+<button class="w-full border border-on-primary/30 py-4 px-6 rounded-lg font-label-md text-label-md font-bold uppercase hover:bg-on-primary/10 transition-colors">
+                            Test SSO Connection
+                        </button>
+</div>
+</div>
+<!-- Integration Logs Card -->
+<div class="bg-surface-container-lowest p-card_padding rounded-xl custom-shadow border border-transparent">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-label-md text-label-md text-on-surface uppercase tracking-widest">Live Security Logs</h4>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+</span>
+</div>
+<div class="space-y-4">
+<div class="flex gap-3 items-start border-b border-outline-variant/10 pb-4">
+<div class="bg-success/10 text-success p-2 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">login</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Successful SSO Login</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">User: m.chen@corp.com</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">2 mins ago</p>
+</div>
+</div>
+<div class="flex gap-3 items-start border-b border-outline-variant/10 pb-4">
+<div class="bg-warning/10 text-warning p-2 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Metadata Refreshed</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">System: Auto-sync</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">45 mins ago</p>
+</div>
+</div>
+<div class="flex gap-3 items-start">
+<div class="bg-error/10 text-error p-2 rounded-lg">
+<span class="material-symbols-outlined text-[20px]">key_off</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Invalid Certificate</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">IP: 192.168.1.45</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">2 hours ago</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 text-primary font-label-md text-label-md hover:underline">View All Security Logs</button>
+</div>
+<!-- Documentation Card -->
+<div class="bg-surface-container-low rounded-xl p-card_padding border border-outline-variant/30">
+<img class="w-full h-32 object-cover rounded-lg mb-4" data-alt="A clean, minimalist high-tech server room with soft blue lighting and sleek, metallic hardware surfaces. The atmosphere is quiet, secure, and professional, reflecting a high-end corporate data center aesthetic. The lighting is diffused, creating gentle gradients and soft shadows that emphasize the precision and reliability of enterprise-grade security infrastructure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJvDxleBXsrQ-Gz3iB6O9JAce85LtOjahnpoy6d7nrgAfZ1GsET4PuOMLGPdDFw19GAW401tgkgRwkUmktVrT1bXp7N3J4A1KR4OiX6EatxU7mDNEl3TCG2Z473RsYhQYsI1mat1ysH8TdBR7VOSdYRRdXRzF4SnkLLdsMudnvfoYnM3JTZyss-Ji_Aknt-PS5jK9OaxzAgx8ABo80QzrCpMQMQcmQU5SrsuutFEVLi8jQi7hVIGSS0C87fPvqR3M9wYBmofBPTVg"/>
+<h5 class="font-label-md text-label-md text-on-surface mb-2">Need Help?</h5>
+<p class="text-body-md text-body-md text-on-surface-variant mb-4">Read our comprehensive guide on setting up SAML with major Identity Providers.</p>
+<a class="flex items-center gap-2 text-primary font-label-md text-label-md font-bold group" href="#">
+                        Documentation Portal
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-sidebar_expanded bg-on-background py-12 border-t border-outline/20">
+<div class="px-container_padding max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-gutter">
+<div class="flex flex-col items-center md:items-start">
+<h2 class="font-headline-md text-headline-md font-bold text-surface-bright mb-2">MaintenEase</h2>
+<p class="font-body-md text-body-md text-outline-variant">© 2024 MaintenEase CMMS. Precision Facility Management.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright transition-colors uppercase tracking-widest" href="#">Product</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright transition-colors uppercase tracking-widest" href="#">Solutions</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright transition-colors uppercase tracking-widest" href="#">Privacy</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright transition-colors uppercase tracking-widest" href="#">Compliance</a>
+<a class="font-label-sm text-label-sm text-outline-variant hover:text-surface-bright transition-colors uppercase tracking-widest" href="#">Status</a>
+</div>
+</div>
+</footer>
+<script>
+        function selectProvider(type) {
+            // Remove active classes from all cards
+            document.querySelectorAll('.provider-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-primary/5');
+                card.classList.add('border-outline-variant/30');
+                
+                const icon = card.querySelector('.material-symbols-outlined');
+                icon.classList.remove('text-primary');
+                icon.classList.add('text-outline');
+                
+                const label = card.querySelector('p:first-of-type');
+                label.classList.remove('text-primary');
+                label.classList.add('text-on-surface');
+            });
+
+            // Add active classes to selected card
+            const activeCard = document.getElementById(`btn-${type}`);
+            activeCard.classList.remove('border-outline-variant/30');
+            activeCard.classList.add('border-primary', 'bg-primary/5');
+            
+            const activeIcon = activeCard.querySelector('.material-symbols-outlined');
+            activeIcon.classList.remove('text-outline');
+            activeIcon.classList.add('text-primary');
+            
+            const activeLabel = activeCard.querySelector('p:first-of-type');
+            activeLabel.classList.remove('text-on-surface');
+            activeLabel.classList.add('text-primary');
+        }
+
+        // Active state initialization
+        window.onload = () => {
+            console.log("Security configuration loaded with SAML active.");
+        };
+    </script>
+</body></html>
