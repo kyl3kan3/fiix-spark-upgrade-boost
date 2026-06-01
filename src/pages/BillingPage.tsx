@@ -133,7 +133,7 @@ export default function BillingPage() {
  </div>
  </CardHeader>
  <CardContent className="space-y-4">
- <div className="grid grid-cols-2 gap-4 text-sm">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
  <div>
  <div className="text-muted-foreground">Billing</div>
  <div className="font-medium capitalize">{sub.billing_interval}ly</div>

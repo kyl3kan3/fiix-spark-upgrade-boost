@@ -82,14 +82,14 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
  if (isLoading) {
  return (
  <div className="flex items-center gap-2">
- <span className="w-[140px] text-sm">Loading permissions...</span>
+ <span className="w-full sm:w-[140px] text-sm">Loading permissions...</span>
  <Loader2 className="h-4 w-4 animate-spin" />
  </div>
  );
  }
 
  return (
- <div className="flex items-center gap-2">
+ <div className="flex flex-col sm:flex-row sm:items-center gap-2">
  {isEditing ? (
  <RoleEditMode
  role={role}

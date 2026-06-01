@@ -49,7 +49,7 @@ const WorkOrderFilters: React.FC<WorkOrderFiltersProps> = ({
  value={filters.statusFilter}
  onValueChange={(value) => updateFilters({ statusFilter: value as "all" | WorkOrderStatus })}
  >
- <SelectTrigger className="w-[130px]">
+ <SelectTrigger className="w-full sm:w-[130px]">
  <SelectValue placeholder="Status" />
  </SelectTrigger>
  <SelectContent>
@@ -65,7 +65,7 @@ const WorkOrderFilters: React.FC<WorkOrderFiltersProps> = ({
  value={filters.priorityFilter}
  onValueChange={(value) => updateFilters({ priorityFilter: value as "all" | WorkOrderPriority })}
  >
- <SelectTrigger className="w-[130px]">
+ <SelectTrigger className="w-full sm:w-[130px]">
  <SelectValue placeholder="Priority" />
  </SelectTrigger>
  <SelectContent>
