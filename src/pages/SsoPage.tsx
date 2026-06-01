@@ -1,36 +1,42 @@
-import React from "react";
-import { ShieldCheck, ExternalLink, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
+import { Helmet } from "react-helmet-async";
 import { PaywallGate } from "@/components/billing/PaywallGate";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import PageContainer from "@/components/shell/PageContainer";
+import MaterialIcon from "@/components/ui/material-icon";
 
 const PROVIDERS = [
-  { id: "saml", label: "SAML 2.0", sub: "Standard Protocol" },
-  { id: "okta", label: "Okta", sub: "Direct Integration" },
-  { id: "azure", label: "Azure AD", sub: "Microsoft Entra" },
+  { id: "saml", label: "SAML 2.0", sub: "Standard Protocol", icon: "vpn_lock" },
+  { id: "okta", label: "Okta", sub: "Direct Integration", icon: "cloud_done" },
+  { id: "azure", label: "Azure AD", sub: "Microsoft Entra", icon: "enterprise" },
 ];
 
 const SsoPage: React.FC = () => {
+  const [selectedProvider, setSelectedProvider] = useState<string>("saml");
+
   return (
     <DashboardLayout>
-      <PageContainer className="space-y-8">
-        <BackToDashboard />
+      <Helmet>
+        <title>Security &amp; SSO Configuration | MaintenEase</title>
+        <meta
+          name="description"
+          content="Manage enterprise authentication protocols, identity providers, and organization-wide security policies for your facility operations."
+        />
+        <link rel="canonical" href="https://maintenease.com/sso" />
+      </Helmet>
 
-        {/* Page Header */}
-        <div>
-          <div className="flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider mb-2">
-            <ShieldCheck className="h-4 w-4" />
-            <span>Administration</span>
+      <div className="p-4 md:p-container_padding flex-1 overflow-y-auto bg-surface-blue">
+        {/* Header Section */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 text-primary font-label-md text-label-md mb-2">
+            <MaterialIcon name="security" className="text-[18px]" />
+            <span>ADMINISTRATION</span>
           </div>
-          <h1 className="font-headline text-3xl font-bold text-foreground">
+          <h2 className="font-headline-lg text-headline-lg text-on-surface mb-2">
             SSO &amp; Security Configuration
-          </h1>
-          <p className="text-base text-muted-foreground mt-1 max-w-2xl">
-            Let your team sign in with your corporate identity provider. Manage enterprise
-            authentication protocols and organization-wide security policies.
+          </h2>
+          <p className="text-body-lg font-body-lg text-on-surface-variant max-w-3xl">
+            Manage enterprise authentication protocols, identity providers, and
+            organization-wide security policies for your facility operations.
           </p>
         </div>
 
@@ -39,189 +45,300 @@ const SsoPage: React.FC = () => {
           title="SSO is a Business feature"
           description="Upgrade to Business to enable SAML SSO with Okta, Azure AD, Google Workspace, or any SAML 2.0 provider."
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left column: config forms */}
-            <div className="lg:col-span-8 space-y-6">
-              {/* Identity Provider */}
-              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-                <CardHeader className="border-b border-border pb-4">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="font-headline text-xl text-foreground">
-                      Identity Provider
-                    </CardTitle>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success/10 text-success text-xs font-semibold">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Active
-                    </span>
-                  </div>
-                  <CardDescription className="text-muted-foreground mt-1">
-                    Configure your identity provider to allow team members to sign in
-                    without a separate password.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-6">
-                  {/* Provider picker */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {PROVIDERS.map((p, i) => (
-                      <div
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+            {/* Left Column: Configuration Forms */}
+            <div className="lg:col-span-8 space-y-gutter">
+              {/* Identity Provider Selection */}
+              <section className="bg-surface-container-lowest p-card_padding rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-transparent hover:border-primary/10 transition-all">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-headline-md text-headline-md text-on-surface">
+                    Identity Provider
+                  </h3>
+                  <span className="bg-success/10 text-success px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+                    <MaterialIcon name="check_circle" className="text-[16px]" filled />
+                    ACTIVE
+                  </span>
+                </div>
+
+                {/* Provider Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  {PROVIDERS.map((p) => {
+                    const isActive = selectedProvider === p.id;
+                    return (
+                      <button
                         key={p.id}
-                        className={`p-5 rounded-xl text-center border-2 cursor-pointer transition-all ${
-                          i === 0
+                        onClick={() => setSelectedProvider(p.id)}
+                        className={`border-2 p-6 rounded-xl text-center transition-all group ${
+                          isActive
                             ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50"
+                            : "border-outline-variant/30 hover:border-primary/50"
                         }`}
                       >
-                        <ShieldCheck
-                          className={`h-8 w-8 mx-auto mb-2 ${i === 0 ? "text-primary" : "text-muted-foreground"}`}
+                        <MaterialIcon
+                          name={p.icon}
+                          className={`text-4xl mb-3 block ${isActive ? "text-primary" : "text-outline group-hover:text-primary transition-colors"}`}
                         />
-                        <p className={`text-sm font-semibold ${i === 0 ? "text-primary" : "text-foreground"}`}>
+                        <p className={`font-label-md text-label-md ${isActive ? "text-primary" : "text-on-surface"}`}>
                           {p.label}
                         </p>
-                        <p className="text-xs text-muted-foreground">{p.sub}</p>
-                      </div>
-                    ))}
-                  </div>
+                        <p className="font-label-sm text-label-sm text-on-surface-variant/60">
+                          {p.sub}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
 
-                  {/* Supported providers info */}
-                  <div className="rounded-lg bg-muted/50 border border-border p-4">
-                    <p className="text-sm font-semibold text-foreground mb-2">Supported providers</p>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                      {[
-                        "Okta",
-                        "Microsoft Entra ID (Azure AD)",
-                        "Google Workspace",
-                        "OneLogin",
-                        "Any SAML 2.0 identity provider",
-                      ].map((item) => (
-                        <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+                {/* Config Inputs */}
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 gap-4">
+                    <label className="block">
+                      <span className="font-label-md text-label-md text-on-surface mb-2 block">
+                        Identity Provider Single Sign-On URL
+                      </span>
+                      <input
+                        type="url"
+                        className="w-full bg-surface-container-low border-none rounded-lg p-4 text-on-surface focus:ring-2 focus:ring-primary transition-all font-body-md"
+                        placeholder="https://your-idp.com/endpoint"
+                        defaultValue="https://sso.maintenease.com/saml2/idp/metadata"
+                      />
+                    </label>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="grid grid-cols-1 gap-4">
+                    <label className="block">
+                      <span className="font-label-md text-label-md text-on-surface mb-2 block">
+                        Provider Entity ID (Issuer)
+                      </span>
+                      <input
+                        type="text"
+                        className="w-full bg-surface-container-low border-none rounded-lg p-4 text-on-surface focus:ring-2 focus:ring-primary transition-all font-body-md"
+                        placeholder="Issuer ID"
+                        defaultValue="urn:maintenease:enterprise:sso"
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <span className="font-label-md text-label-md text-on-surface mb-2 block">
+                      X.509 Certificate
+                    </span>
+                    <div className="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 text-center bg-surface-container-low/50 hover:bg-surface-container-low transition-all cursor-pointer group">
+                      <MaterialIcon
+                        name="upload_file"
+                        className="text-4xl text-outline-variant mb-3 block group-hover:text-primary transition-colors"
+                      />
+                      <p className="font-label-md text-label-md text-on-surface-variant mb-1">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="font-label-sm text-label-sm text-outline">
+                        PEM or CRT format (Max. 2MB)
+                      </p>
+                      <div className="mt-4 flex items-center justify-center gap-2 text-success">
+                        <MaterialIcon name="verified" className="text-[18px]" />
+                        <span className="font-label-sm text-label-sm">
+                          certificate_prod_v2.pem uploaded
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
 
               {/* Security Policies */}
-              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-                <CardHeader className="border-b border-border pb-4">
-                  <CardTitle className="font-headline text-xl text-foreground">
-                    Security Policies
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground mt-1">
-                    Configure organization-wide authentication and access policies.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-4 divide-y divide-border">
-                  {[
-                    {
-                      title: "Enforce SSO for all users",
-                      description:
-                        "Disable password-based login for all users except emergency administrators.",
-                    },
-                    {
-                      title: "Just-In-Time (JIT) Provisioning",
-                      description:
-                        "Automatically create MaintenEase accounts when users sign in through SSO for the first time.",
-                    },
-                    {
-                      title: "Domain Restricted Access",
-                      description:
-                        "Limit login capability to specific corporate email domains only.",
-                    },
-                  ].map((policy) => (
-                    <div
-                      key={policy.title}
-                      className="flex items-start justify-between gap-4 py-4"
-                    >
-                      <div className="max-w-xl">
-                        <p className="text-sm font-semibold text-foreground">{policy.title}</p>
-                        <p className="text-sm text-muted-foreground mt-0.5">{policy.description}</p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="shrink-0 border-border text-primary hover:bg-primary/5 text-xs uppercase tracking-wide font-semibold"
-                      >
-                        Configure
-                      </Button>
+              <section className="bg-surface-container-lowest p-card_padding rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-transparent">
+                <h3 className="font-headline-md text-headline-md text-on-surface mb-6">
+                  Security Policies
+                </h3>
+                <div className="space-y-6">
+                  {/* Enforce SSO — toggle ON */}
+                  <div className="flex items-start justify-between p-4 bg-surface-container-low/30 rounded-lg">
+                    <div className="max-w-xl">
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Enforce SSO for all users
+                      </p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
+                        Disable password-based login for all users except emergency
+                        administrators. This ensures all access is managed via your IdP.
+                      </p>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input defaultChecked className="sr-only peer" type="checkbox" />
+                      <div className="w-14 h-7 bg-outline-variant/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+                  {/* JIT Provisioning — toggle OFF */}
+                  <div className="flex items-start justify-between p-4">
+                    <div className="max-w-xl">
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Just-In-Time (JIT) Provisioning
+                      </p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
+                        Automatically create MaintenEase user accounts when they sign in
+                        through SSO for the first time.
+                      </p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input className="sr-only peer" type="checkbox" />
+                      <div className="w-14 h-7 bg-outline-variant/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+                  {/* Domain Restricted Access — configure link */}
+                  <div className="flex items-start justify-between p-4">
+                    <div className="max-w-xl">
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Domain Restricted Access
+                      </p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
+                        Limit login capability to specific corporate email domains only.
+                      </p>
+                    </div>
+                    <button className="text-primary font-label-md text-label-md hover:underline">
+                      Configure Domains
+                    </button>
+                  </div>
+                </div>
+              </section>
             </div>
 
-            {/* Right column: actions + docs */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Actions card — navy CTA */}
-              <div className="bg-primary text-primary-foreground rounded-xl shadow-lg p-6 relative overflow-hidden">
-                <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-                <div className="relative z-10">
-                  <h4 className="font-headline text-xl font-semibold mb-4">Request SSO Setup</h4>
-                  <p className="text-sm text-primary-foreground/80 mb-6">
-                    Contact support with your identity provider's metadata URL and the email
-                    domains you'd like to enable.
-                  </p>
-                  <Button
-                    asChild
-                    className="w-full bg-white text-primary hover:bg-white/90 uppercase tracking-wide text-xs font-semibold mb-3"
-                  >
-                    <a href="mailto:support@maintenease.com?subject=SAML%20SSO%20Setup">
-                      Request SSO Setup
-                      <ExternalLink className="h-4 w-4 ml-2" />
-                    </a>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full border-white/30 text-primary-foreground hover:bg-white/10 uppercase tracking-wide text-xs font-semibold"
-                  >
+            {/* Right Column: Stats & Meta */}
+            <div className="lg:col-span-4 space-y-gutter">
+              {/* Configuration Health Card */}
+              <div className="bg-primary text-on-primary p-card_padding rounded-xl shadow-lg relative overflow-hidden group">
+                <div className="absolute -right-12 -top-12 w-48 h-48 bg-on-primary/10 rounded-full blur-3xl group-hover:bg-on-primary/20 transition-all"></div>
+                <h4 className="font-headline-md text-headline-md mb-4 relative z-10">
+                  Configuration Health
+                </h4>
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className="w-16 h-16 rounded-full border-4 border-on-primary/30 flex items-center justify-center relative">
+                    <svg className="absolute inset-0 w-full h-full -rotate-90">
+                      <circle
+                        className="text-on-primary"
+                        cx="32"
+                        cy="32"
+                        fill="transparent"
+                        r="28"
+                        stroke="currentColor"
+                        strokeDasharray="175.9"
+                        strokeDashoffset="35.1"
+                        strokeWidth="4"
+                      />
+                    </svg>
+                    <span className="font-bold text-lg">80%</span>
+                  </div>
+                  <div>
+                    <p className="font-label-md text-label-md">Security Score</p>
+                    <p className="text-on-primary/70 font-label-sm text-label-sm">
+                      High Security Tier
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4 relative z-10">
+                  <button className="w-full bg-white text-primary py-4 px-6 rounded-lg font-label-md text-label-md font-bold uppercase hover:bg-surface-container-high transition-colors tracking-wide">
+                    Save Changes
+                  </button>
+                  <button className="w-full border border-on-primary/30 py-4 px-6 rounded-lg font-label-md text-label-md font-bold uppercase hover:bg-on-primary/10 transition-colors">
                     Test SSO Connection
-                  </Button>
+                  </button>
                 </div>
               </div>
 
-              {/* Docs / help card */}
-              <Card className="bg-card border border-border rounded-lg shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
-                    Documentation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Read our comprehensive guide on setting up SAML with major Identity Providers.
-                  </p>
-                  {[
-                    "SAML 2.0 Setup Guide",
-                    "Okta Integration",
-                    "Azure AD Configuration",
-                  ].map((doc) => (
-                    <a
-                      key={doc}
-                      href="#"
-                      className="flex items-center gap-2 text-primary text-sm font-semibold hover:underline group"
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      {doc}
-                    </a>
-                  ))}
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="w-full mt-2 text-primary hover:bg-primary/5 text-xs font-semibold uppercase tracking-wide"
-                  >
-                    <a href="#">
-                      Documentation Portal
-                      <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
+              {/* Live Security Logs Card */}
+              <div className="bg-surface-container-lowest p-card_padding rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-transparent">
+                <div className="flex justify-between items-center mb-6">
+                  <h4 className="font-label-md text-label-md text-on-surface uppercase tracking-widest">
+                    Live Security Logs
+                  </h4>
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+                  </span>
+                </div>
+                <div className="space-y-4">
+                  {/* Log: success */}
+                  <div className="flex gap-3 items-start border-b border-outline-variant/10 pb-4">
+                    <div className="bg-success/10 text-success p-2 rounded-lg">
+                      <MaterialIcon name="login" className="text-[20px]" />
+                    </div>
+                    <div>
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Successful SSO Login
+                      </p>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant">
+                        User: m.chen@corp.com
+                      </p>
+                      <p className="text-[10px] text-outline mt-1 uppercase font-bold">
+                        2 mins ago
+                      </p>
+                    </div>
+                  </div>
+                  {/* Log: warning */}
+                  <div className="flex gap-3 items-start border-b border-outline-variant/10 pb-4">
+                    <div className="bg-warning/10 text-warning p-2 rounded-lg">
+                      <MaterialIcon name="sync" className="text-[20px]" />
+                    </div>
+                    <div>
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Metadata Refreshed
+                      </p>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant">
+                        System: Auto-sync
+                      </p>
+                      <p className="text-[10px] text-outline mt-1 uppercase font-bold">
+                        45 mins ago
+                      </p>
+                    </div>
+                  </div>
+                  {/* Log: error */}
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-error/10 text-error p-2 rounded-lg">
+                      <MaterialIcon name="key_off" className="text-[20px]" />
+                    </div>
+                    <div>
+                      <p className="font-label-md text-label-md text-on-surface">
+                        Invalid Certificate
+                      </p>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant">
+                        IP: 192.168.1.45
+                      </p>
+                      <p className="text-[10px] text-outline mt-1 uppercase font-bold">
+                        2 hours ago
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button className="w-full mt-6 text-primary font-label-md text-label-md hover:underline">
+                  View All Security Logs
+                </button>
+              </div>
+
+              {/* Documentation Card */}
+              <div className="bg-surface-container-low rounded-xl p-card_padding border border-outline-variant/30">
+                <img
+                  className="w-full h-32 object-cover rounded-lg mb-4"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJvDxleBXsrQ-Gz3iB6O9JAce85LtOjahnpoy6d7nrgAfZ1GsET4PuOMLGPdDFw19GAW401tgkgRwkUmktVrT1bXp7N3J4A1KR4OiX6EatxU7mDNEl3TCG2Z473RsYhQYsI1mat1ysH8TdBR7VOSdYRRdXRzF4SnkLLdsMudnvfoYnM3JTZyss-Ji_Aknt-PS5jK9OaxzAgx8ABo80QzrCpMQMQcmQU5SrsuutFEVLi8jQi7hVIGSS0C87fPvqR3M9wYBmofBPTVg"
+                  alt="High-tech server room with soft blue lighting, enterprise security infrastructure"
+                />
+                <h5 className="font-label-md text-label-md text-on-surface mb-2">
+                  Need Help?
+                </h5>
+                <p className="text-body-md font-body-md text-on-surface-variant mb-4">
+                  Read our comprehensive guide on setting up SAML with major Identity
+                  Providers.
+                </p>
+                <a
+                  href="#"
+                  className="flex items-center gap-2 text-primary font-label-md text-label-md font-bold group"
+                >
+                  Documentation Portal
+                  <MaterialIcon
+                    name="arrow_forward"
+                    className="text-[18px] group-hover:translate-x-1 transition-transform"
+                  />
+                </a>
+              </div>
             </div>
           </div>
         </PaywallGate>
-      </PageContainer>
+      </div>
     </DashboardLayout>
   );
 };

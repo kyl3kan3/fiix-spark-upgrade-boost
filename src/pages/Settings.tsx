@@ -1,25 +1,25 @@
 
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings as SettingsIcon, User, Bell, Shield, Palette, Send, Loader2 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Loader2, Send } from "lucide-react";
 import { useTheme } from "next-themes";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import PageContainer from "@/components/shell/PageContainer";
-import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import ProfileInformation from "@/components/profile/ProfileInformation";
 import WeatherAlertsCard from "@/components/dashboard/tabs/settings/WeatherAlertsCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import MaterialIcon from "@/components/ui/material-icon";
+import { Helmet } from "react-helmet-async";
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
   const [sendingTest, setSendingTest] = useState(false);
   const [sendingTestSms, setSendingTestSms] = useState(false);
+  const [activeSection, setActiveSection] = useState("company");
   const { theme, setTheme } = useTheme();
 
   const handleDarkModeToggle = () => {
@@ -102,201 +102,230 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <PageContainer className="space-y-8">
-        <BackToDashboard />
+      <Helmet>
+        <title>Settings | MaintenEase</title>
+        <meta name="description" content="Manage your workspace preferences and organizational profile." />
+        <link rel="canonical" href="https://maintenease.com/settings" />
+      </Helmet>
 
-        {/* Page Header */}
-        <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <SettingsIcon className="h-8 w-8" />
-            Settings
-          </h1>
-          <p className="text-base text-muted-foreground mt-1">
-            Manage your workspace preferences and organizational profile.
-          </p>
+      <main className="flex-1 p-gutter md:p-container_padding max-w-7xl mx-auto w-full">
+        <div className="mb-8">
+          <h1 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Settings</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant">Manage your workspace preferences and organizational profile.</p>
         </div>
 
-        <Tabs defaultValue="profile" className="w-full">
-          {/* Tab List */}
-          <div className="overflow-x-auto pb-1">
-            <TabsList className="inline-flex h-auto gap-1 bg-card border border-border rounded-lg p-1 mb-8 min-w-[300px] shadow-sm">
-              <TabsTrigger
-                value="profile"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Settings Navigation Sidebar */}
+          <aside className="w-full lg:w-64 shrink-0">
+            <nav className="space-y-1 bg-surface-container-lowest rounded-lg p-2 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10">
+              <button
+                onClick={() => setActiveSection("account")}
+                className={`w-full flex items-center px-4 py-3 rounded-md transition-colors ${activeSection === "account" ? "text-primary bg-primary/5 font-bold relative" : "text-on-surface-variant hover:bg-surface-container-low"}`}
               >
-                <User className="h-4 w-4" />
-                <span>Profile</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="notifications"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                {activeSection === "account" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>}
+                <MaterialIcon name="person" className="mr-3" />
+                <span className="font-label-md text-label-md">Account</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("company")}
+                className={`w-full flex items-center px-4 py-3 rounded-md transition-colors ${activeSection === "company" ? "text-primary bg-primary/5 font-bold relative" : "text-on-surface-variant hover:bg-surface-container-low"}`}
               >
-                <Bell className="h-4 w-4" />
-                <span className="hidden sm:inline">Notifications</span>
-                <span className="sm:hidden">Alerts</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="security"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                {activeSection === "company" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>}
+                <MaterialIcon name="domain" className="mr-3" filled={activeSection === "company"} />
+                <span className="font-label-md text-label-md">Company Profile</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("notifications")}
+                className={`w-full flex items-center px-4 py-3 rounded-md transition-colors ${activeSection === "notifications" ? "text-primary bg-primary/5 font-bold relative" : "text-on-surface-variant hover:bg-surface-container-low"}`}
               >
-                <Shield className="h-4 w-4" />
-                <span>Security</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="appearance"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                {activeSection === "notifications" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>}
+                <MaterialIcon name="notifications_active" className="mr-3" />
+                <span className="font-label-md text-label-md">Notifications</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("security")}
+                className={`w-full flex items-center px-4 py-3 rounded-md transition-colors ${activeSection === "security" ? "text-primary bg-primary/5 font-bold relative" : "text-on-surface-variant hover:bg-surface-container-low"}`}
               >
-                <Palette className="h-4 w-4" />
-                <span className="hidden sm:inline">Appearance</span>
-                <span className="sm:hidden">Theme</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
+                {activeSection === "security" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>}
+                <MaterialIcon name="security" className="mr-3" />
+                <span className="font-label-md text-label-md">Security</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("integrations")}
+                className={`w-full flex items-center px-4 py-3 rounded-md transition-colors ${activeSection === "integrations" ? "text-primary bg-primary/5 font-bold relative" : "text-on-surface-variant hover:bg-surface-container-low"}`}
+              >
+                {activeSection === "integrations" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>}
+                <MaterialIcon name="api" className="mr-3" />
+                <span className="font-label-md text-label-md">Integrations</span>
+              </button>
+            </nav>
+          </aside>
 
-          {/* Profile Tab */}
-          <TabsContent value="profile" className="mt-0">
-            <ProfileInformation />
-          </TabsContent>
+          {/* Settings Content Area */}
+          <div className="flex-1 space-y-8">
+            {/* Account / Profile section */}
+            {activeSection === "account" && (
+              <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+                <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4 mb-6">Account</h2>
+                <ProfileInformation />
+              </div>
+            )}
 
-          {/* Notifications Tab */}
-          <TabsContent value="notifications" className="mt-0 space-y-6">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-              <CardHeader className="border-b border-border pb-4">
-                <CardTitle className="font-headline text-xl text-foreground">
-                  Notification Preferences
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Control how and when you receive notifications.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-3">
-                {/* Email Notifications Toggle */}
-                <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border hover:border-primary/20 transition-colors">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="emailNotifications" className="text-sm font-semibold text-foreground">
-                      Email Notifications
-                    </Label>
-                    <p className="text-sm text-muted-foreground">Receive updates via email</p>
+            {/* Company Profile section */}
+            {activeSection === "company" && (
+              <>
+                <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+                  <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4 mb-6">Company Profile</h2>
+                  <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
+                    <div className="shrink-0 flex flex-col items-center gap-4">
+                      <div className="w-32 h-32 bg-surface-container-low rounded-lg border-2 border-dashed border-outline-variant flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                        <div className="flex flex-col items-center gap-2 text-on-surface-variant">
+                          <MaterialIcon name="upload" />
+                          <span className="font-label-sm text-label-sm uppercase">Upload Logo</span>
+                        </div>
+                      </div>
+                      <button className="text-primary font-label-md text-label-md hover:underline decoration-2 underline-offset-4">Remove Logo</button>
+                    </div>
+                    <div className="flex-1 space-y-5 w-full">
+                      <div>
+                        <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Company Name</label>
+                        <input className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="text" defaultValue="Acme Industrial Solutions" />
+                      </div>
+                      <div>
+                        <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Industry</label>
+                        <div className="relative">
+                          <select className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+                            <option>Manufacturing &amp; Facility Management</option>
+                            <option>Energy &amp; Utilities</option>
+                            <option>Logistics &amp; Warehousing</option>
+                          </select>
+                          <MaterialIcon name="expand_more" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <Switch
-                    id="emailNotifications"
-                    checked={emailNotifications}
-                    onCheckedChange={setEmailNotifications}
-                  />
                 </div>
 
-                {/* Push Notifications Toggle */}
-                <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border hover:border-primary/20 transition-colors">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="pushNotifications" className="text-sm font-semibold text-foreground">
-                      Push Notifications
-                    </Label>
-                    <p className="text-sm text-muted-foreground">Receive browser notifications</p>
+                {/* Contact Information */}
+                <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+                  <h3 className="font-headline-md text-headline-md text-on-surface mb-6">Primary Contact Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Email Address</label>
+                      <input className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="email" defaultValue="admin@acmeindustrial.com" />
+                    </div>
+                    <div>
+                      <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Phone Number</label>
+                      <input className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="tel" defaultValue="+1 (555) 019-2834" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Corporate Address</label>
+                      <input className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="text" defaultValue="4500 Industrial Pkwy, Tech District" />
+                    </div>
                   </div>
-                  <Switch
-                    id="pushNotifications"
-                    checked={pushNotifications}
-                    onCheckedChange={setPushNotifications}
-                  />
                 </div>
 
-                <div className="flex flex-wrap gap-3 pt-4 border-t border-border mt-2">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
-                    Save Preferences
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={sendTestEmail}
-                    disabled={sendingTest || !emailNotifications}
-                    className="border-border text-primary hover:bg-primary/5"
-                  >
-                    {sendingTest ? (
-                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4 mr-1" />
-                    )}
+                {/* Localization */}
+                <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+                  <h3 className="font-headline-md text-headline-md text-on-surface mb-6">Localization</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Time Zone</label>
+                      <div className="relative">
+                        <select className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+                          <option>(GMT-05:00) Eastern Time (US &amp; Canada)</option>
+                          <option>(GMT-06:00) Central Time (US &amp; Canada)</option>
+                          <option>(GMT-08:00) Pacific Time (US &amp; Canada)</option>
+                        </select>
+                        <MaterialIcon name="expand_more" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block font-label-md text-label-md text-on-surface-variant mb-1">Date Format</label>
+                      <div className="relative">
+                        <select className="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+                          <option>MM/DD/YYYY</option>
+                          <option>DD/MM/YYYY</option>
+                          <option>YYYY-MM-DD</option>
+                        </select>
+                        <MaterialIcon name="expand_more" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Footer */}
+                <div className="flex justify-end gap-4 mt-8 border-t border-outline-variant/20 pt-6">
+                  <button className="px-6 py-3 font-label-md text-label-md text-primary bg-transparent hover:bg-surface-container-low rounded uppercase transition-colors">Cancel</button>
+                  <button className="px-6 py-3 font-label-md text-label-md text-on-primary bg-primary rounded uppercase shadow-md hover:bg-primary-container hover:shadow-lg transition-all transform active:scale-95">Save Changes</button>
+                </div>
+              </>
+            )}
+
+            {/* Notifications section */}
+            {activeSection === "notifications" && (
+              <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding space-y-6">
+                <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4">Notification Preferences</h2>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-surface-container-low/30">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="emailNotifications" className="font-label-md text-label-md text-on-surface">Email Notifications</Label>
+                    <p className="font-body-md text-body-md text-on-surface-variant">Receive updates via email</p>
+                  </div>
+                  <Switch id="emailNotifications" checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-surface-container-low/30">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="pushNotifications" className="font-label-md text-label-md text-on-surface">Push Notifications</Label>
+                    <p className="font-body-md text-body-md text-on-surface-variant">Receive browser notifications</p>
+                  </div>
+                  <Switch id="pushNotifications" checked={pushNotifications} onCheckedChange={setPushNotifications} />
+                </div>
+                <div className="flex flex-wrap gap-3 pt-4 border-t border-outline-variant/20">
+                  <button className="px-6 py-3 font-label-md text-label-md text-on-primary bg-primary rounded uppercase shadow-md hover:bg-primary-container transition-all">Save Preferences</button>
+                  <Button variant="outline" onClick={sendTestEmail} disabled={sendingTest || !emailNotifications} className="border-outline-variant text-primary hover:bg-primary/5">
+                    {sendingTest ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
                     Send test email
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={sendTestSms}
-                    disabled={sendingTestSms}
-                    className="border-border text-primary hover:bg-primary/5"
-                  >
-                    {sendingTestSms ? (
-                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                    ) : (
-                      <Send className="h-4 w-4 mr-1" />
-                    )}
+                  <Button variant="outline" onClick={sendTestSms} disabled={sendingTestSms} className="border-outline-variant text-primary hover:bg-primary/5">
+                    {sendingTestSms ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}
                     Send test SMS
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+                <WeatherAlertsCard />
+              </div>
+            )}
 
-            <WeatherAlertsCard />
-          </TabsContent>
-
-          {/* Security Tab */}
-          <TabsContent value="security" className="mt-0">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-              <CardHeader className="border-b border-border pb-4">
-                <CardTitle className="font-headline text-xl text-foreground">
-                  Security Settings
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Manage your account security and privacy settings.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border hover:border-primary/20 transition-colors">
+            {/* Security section */}
+            {activeSection === "security" && (
+              <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding space-y-6">
+                <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4">Security Settings</h2>
+                <div className="flex items-center justify-between p-4 rounded-lg bg-surface-container-low/30">
                   <div className="space-y-0.5">
-                    <p className="text-sm font-semibold text-foreground">Password</p>
-                    <p className="text-sm text-muted-foreground">Update your account password</p>
+                    <p className="font-label-md text-label-md text-on-surface">Password</p>
+                    <p className="font-body-md text-body-md text-on-surface-variant">Update your account password</p>
                   </div>
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
-                    Update Password
-                  </Button>
+                  <button className="px-6 py-3 font-label-md text-label-md text-on-primary bg-primary rounded uppercase shadow-md hover:bg-primary-container transition-all">Update Password</button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Appearance Tab */}
-          <TabsContent value="appearance" className="mt-0">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
-              <CardHeader className="border-b border-border pb-4">
-                <CardTitle className="font-headline text-xl text-foreground">
-                  Appearance Settings
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  Customize the look and feel of your dashboard.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-background border border-border hover:border-primary/20 transition-colors">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-surface-container-low/30">
                   <div className="space-y-0.5">
-                    <Label htmlFor="darkMode" className="text-sm font-semibold text-foreground">
-                      Dark Mode
-                    </Label>
-                    <p className="text-sm text-muted-foreground">Switch to dark theme</p>
+                    <p className="font-label-md text-label-md text-on-surface">Dark Mode</p>
+                    <p className="font-body-md text-body-md text-on-surface-variant">Switch to dark theme</p>
                   </div>
-                  <Switch
-                    id="darkMode"
-                    checked={theme === "dark"}
-                    onCheckedChange={handleDarkModeToggle}
-                  />
+                  <Switch id="darkMode" checked={theme === "dark"} onCheckedChange={handleDarkModeToggle} />
                 </div>
-                <div className="flex justify-end pt-2 border-t border-border">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
-                    Save Appearance
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </PageContainer>
+              </div>
+            )}
+
+            {/* Integrations section */}
+            {activeSection === "integrations" && (
+              <div className="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+                <h2 className="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4 mb-6">Integrations</h2>
+                <p className="font-body-md text-body-md text-on-surface-variant">Manage API keys and third-party integrations from the <a href="/api-keys" className="text-primary hover:underline">API &amp; Integrations</a> page.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </DashboardLayout>
   );
 };
