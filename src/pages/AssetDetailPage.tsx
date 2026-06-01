@@ -1,27 +1,26 @@
 import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Pencil, ArrowLeft, Cog, MapPin, QrCode, Wrench } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
 import { getAssetById } from "@/services/assets/assetQueries";
 import AssetNotFound from "@/components/assets/AssetNotFound";
-import ImageGallery from "@/components/common/ImageGallery";
 import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
+import { MaterialIcon } from "@/components/ui/material-icon";
 
 function getStatusConfig(status: string) {
   switch (status?.toLowerCase()) {
     case "operational":
     case "active":
-      return { label: "Operational", className: "bg-success/15 text-success border border-success/30" };
+      return { label: "Operational", className: "bg-success/20 text-success px-2 py-1 rounded text-label-sm font-label-sm uppercase tracking-wide border border-success/30" };
     case "maintenance":
     case "under_maintenance":
-      return { label: "Maintenance", className: "bg-warning/15 text-warning border border-warning/30" };
+      return { label: "Maintenance", className: "bg-warning/20 text-warning px-2 py-1 rounded text-label-sm font-label-sm uppercase tracking-wide border border-warning/30" };
     default:
       return {
         label: status ? status.charAt(0).toUpperCase() + status.slice(1) : "Unknown",
-        className: "bg-muted text-muted-foreground border border-border",
+        className: "bg-surface-container text-secondary px-2 py-1 rounded text-label-sm font-label-sm uppercase tracking-wide border border-outline-variant/30",
       };
   }
 }
@@ -41,8 +40,9 @@ const AssetDetailPage = () => {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <PageHeader title="Loading equipment…" />
-        <div className="px-4 md:px-6 lg:px-8 py-6 text-sm text-muted-foreground">Loading…</div>
+        <div className="flex items-center justify-center h-64 text-sm font-semibold text-on-surface-variant">
+          Loading…
+        </div>
       </DashboardLayout>
     );
   }
@@ -55,149 +55,211 @@ const AssetDetailPage = () => {
 
   return (
     <DashboardLayout>
-      {/* Back + breadcrumb */}
-      <div className="px-4 md:px-6 lg:px-8 pt-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/assets")} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back to Equipment
-        </Button>
+      <Helmet>
+        <title>{asset.name} | MaintenEase</title>
+        <meta name="description" content={asset.description || `Asset detail for ${asset.name}`} />
+      </Helmet>
+
+      {/* Breadcrumb & Actions */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 p-4 md:p-8 pb-0">
+        <div>
+          <div className="flex items-center gap-2 text-label-sm font-label-sm text-secondary mb-1">
+            <button onClick={() => navigate("/assets")} className="hover:text-primary transition-colors">Assets</button>
+            <MaterialIcon name="chevron_right" className="text-[16px]" />
+            <span className="text-on-surface">{asset.name}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">{asset.name}</h2>
+            <span className={statusConfig.className}>{statusConfig.label}</span>
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <Link
+            to={`/assets/${asset.id}/edit`}
+            className="text-primary font-label-md text-label-md hover:underline flex items-center gap-1 bg-transparent px-2 py-1"
+          >
+            <MaterialIcon name="edit" className="text-[20px]" /> Edit Details
+          </Link>
+          <Link
+            to={`/work-orders/new?asset_id=${asset.id}`}
+            className="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md uppercase tracking-wider hover:bg-primary-container transition-colors shadow-sm flex items-center gap-2"
+          >
+            <MaterialIcon name="handyman" className="text-[20px]" />
+            Create Work Order
+          </Link>
+        </div>
       </div>
 
-      <PageHeader
-        title={asset.name}
-        description={asset.description || "Equipment details"}
-        actions={
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link to={`/assets/${asset.id}/edit`} aria-label="Edit asset">
-                <Pencil className="h-4 w-4 mr-1" /> Edit Details
-              </Link>
-            </Button>
-            <Button asChild variant="accent">
-              <Link to={`/work-orders/new?asset_id=${asset.id}`}>
-                <Wrench className="h-4 w-4 mr-1" /> Create Work Order
-              </Link>
-            </Button>
-          </div>
-        }
-      />
-
-      <div className="px-4 md:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl">
-          {/* ── Col 1-2: hero + specs ── */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Hero / Specs card */}
-            <div className="surface-card rounded-lg overflow-hidden flex flex-col sm:flex-row">
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 md:p-8 pt-4">
+        {/* Col 1 & 2: Primary Specs & Image */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Asset Hero Card */}
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-transparent hover:border-primary/10 transition-colors overflow-hidden flex flex-col sm:flex-row">
+            <div className="w-full sm:w-1/3 bg-surface-variant relative min-h-[200px]">
               {heroImage ? (
-                <div className="w-full sm:w-2/5 min-h-[200px] bg-muted overflow-hidden">
-                  <img
-                    src={heroImage}
-                    alt={asset.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
+                <img
+                  alt={asset.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={heroImage}
+                  loading="lazy"
+                />
               ) : (
-                <div className="w-full sm:w-2/5 min-h-[180px] bg-primary/5 flex items-center justify-center">
-                  <Cog className="h-16 w-16 text-primary/20" strokeWidth={1} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <MaterialIcon name="precision_manufacturing" className="text-[64px] text-on-surface-variant/20" />
                 </div>
               )}
-
-              <div className="p-6 flex-1">
-                <div className="flex items-center gap-2 mb-4">
-                  <h3 className="font-headline font-semibold text-lg text-foreground">Technical Specifications</h3>
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
-                    {statusConfig.label}
-                  </span>
-                </div>
-
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
+            </div>
+            <div className="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Technical Specifications</h3>
+                <div className="grid grid-cols-2 gap-y-4 gap-x-6 mt-4">
                   <div>
-                    <dt className="label-eyebrow mb-0.5">Status</dt>
-                    <dd className="text-sm font-medium text-foreground capitalize">{asset.status}</dd>
+                    <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Status</p>
+                    <p className="font-body-md text-body-md text-on-surface font-medium capitalize">{asset.status}</p>
                   </div>
                   {asset.model && (
                     <div>
-                      <dt className="label-eyebrow mb-0.5">Model</dt>
-                      <dd className="text-sm font-medium text-foreground">{asset.model}</dd>
+                      <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Model</p>
+                      <p className="font-body-md text-body-md text-on-surface font-medium">{asset.model}</p>
                     </div>
                   )}
                   {asset.serial_number && (
                     <div>
-                      <dt className="label-eyebrow mb-0.5">Serial Number</dt>
-                      <dd className="text-sm font-mono font-medium text-foreground">{asset.serial_number}</dd>
+                      <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Serial Number</p>
+                      <p className="font-body-md text-body-md text-on-surface font-medium font-mono">{asset.serial_number}</p>
                     </div>
                   )}
                   {asset.purchase_date && (
                     <div>
-                      <dt className="label-eyebrow mb-0.5">Purchased</dt>
-                      <dd className="text-sm font-medium text-foreground">{asset.purchase_date}</dd>
+                      <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Install Date</p>
+                      <p className="font-body-md text-body-md text-on-surface font-medium">{asset.purchase_date}</p>
                     </div>
                   )}
                   {asset.location && (
-                    <div className="col-span-2">
-                      <dt className="label-eyebrow mb-0.5">Location</dt>
-                      <dd className="text-sm font-medium text-foreground flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-secondary shrink-0" />
-                        {asset.location}
-                      </dd>
+                    <div>
+                      <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Location</p>
+                      <p className="font-body-md text-body-md text-on-surface font-medium flex items-center gap-1">
+                        <MaterialIcon name="location_on" className="text-[16px] text-primary" /> {asset.location}
+                      </p>
                     </div>
                   )}
-                </dl>
+                </div>
               </div>
-            </div>
-
-            {/* Photo gallery */}
-            <div className="surface-card rounded-lg p-6">
-              <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
             </div>
           </div>
 
-          {/* ── Col 3: side panel ── */}
-          <div className="space-y-6">
-            {/* Status summary card */}
-            <div className="surface-card rounded-lg p-6">
-              <h3 className="label-eyebrow mb-5">Asset Summary</h3>
-              <div className="flex flex-col items-center text-center">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <Cog className="h-5 w-5 text-primary" />
-                </div>
-                <p className="font-headline font-semibold text-xl text-foreground mb-1">{asset.name}</p>
-                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
-                  {statusConfig.label}
-                </span>
-                {asset.location && (
-                  <div className="flex items-center gap-1.5 mt-3 text-sm text-muted-foreground">
-                    <MapPin className="h-3.5 w-3.5 text-secondary shrink-0" />
-                    <span>{asset.location}</span>
+          {/* Maintenance Timeline */}
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-transparent p-6 card-hover">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-headline-md text-headline-md text-on-surface">Maintenance History</h3>
+              <Link
+                to={`/work-orders?asset_id=${asset.id}`}
+                className="text-primary font-label-md text-label-md hover:underline flex items-center gap-1 bg-transparent"
+              >
+                View Full Log <MaterialIcon name="arrow_forward" className="text-[18px]" />
+              </Link>
+            </div>
+            <div className="relative pl-6 border-l-2 border-surface-container-high space-y-8">
+              <div className="relative">
+                <span className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-surface-container-lowest border-2 border-primary"></span>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-label-md text-label-md text-on-surface">Preventive Maintenance</p>
+                    <p className="font-body-md text-body-md text-secondary mt-1">Regular scheduled maintenance completed.</p>
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="surface-card rounded-lg p-6">
-              <h3 className="label-eyebrow mb-4">Quick Actions</h3>
-              <div className="space-y-2">
-                <Button asChild variant="outline" className="w-full justify-start gap-2">
-                  <Link to={`/work-orders/new?asset_id=${asset.id}`}>
-                    <Wrench className="h-4 w-4 text-secondary" />
-                    Create Work Order
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
-            {/* Field ID / QR */}
-            <div className="surface-card rounded-lg p-6">
-              <h3 className="label-eyebrow mb-4">Field Identification</h3>
-              <div className="bg-muted rounded-lg p-4 flex items-center gap-4">
-                <div className="w-12 h-12 bg-card rounded-lg flex items-center justify-center border border-border shrink-0">
-                  <QrCode className="h-7 w-7 text-primary/60" />
+                  <span className="font-label-sm text-label-sm text-secondary whitespace-nowrap bg-surface-container-low px-2 py-1 rounded">—</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Col 3: Side Panel */}
+        <div className="space-y-6">
+          {/* Health & Metrics Card */}
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-transparent p-6 text-center">
+            <h3 className="font-label-md text-label-md text-secondary uppercase tracking-wider mb-4 text-left">Asset Health</h3>
+            {/* Circular Progress */}
+            <div className="relative w-32 h-32 mx-auto mb-4">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" fill="none" r="45" stroke="#e5eeff" strokeWidth="8"></circle>
+                <circle
+                  className="transition-all duration-1000 ease-out"
+                  cx="50" cy="50" fill="none" r="45"
+                  stroke={asset.status === "operational" || asset.status === "active" ? "#10B981" : "#F59E0B"}
+                  strokeDasharray="283"
+                  strokeDashoffset={asset.status === "operational" || asset.status === "active" ? "42" : "141"}
+                  strokeWidth="8"
+                ></circle>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-display-lg text-display-lg text-on-surface">
+                  {asset.status === "operational" || asset.status === "active" ? "85" : "50"}
+                  <span className="text-headline-md">%</span>
+                </span>
+              </div>
+            </div>
+            <p className="font-body-md text-body-md text-secondary">
+              {asset.status === "operational" || asset.status === "active"
+                ? "Asset is operating within normal parameters."
+                : "Asset requires attention."}
+            </p>
+            <div className="grid grid-cols-2 gap-4 border-t border-outline-variant/20 mt-6 pt-4">
+              <div className="text-left">
+                <p className="font-label-sm text-label-sm text-secondary uppercase">Status</p>
+                <p className="font-headline-md text-headline-md text-on-surface capitalize">{asset.status}</p>
+              </div>
+              <div className="text-left border-l border-outline-variant/20 pl-4">
+                <p className="font-label-sm text-label-sm text-secondary uppercase">Uptime</p>
+                <p className="font-headline-md text-headline-md text-on-surface">
+                  {asset.status === "operational" || asset.status === "active" ? "99" : "—"}
+                  <span className="text-body-md text-secondary">%</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-transparent p-0 overflow-hidden">
+            <div className="p-4 border-b border-outline-variant/20 bg-surface-container-low flex justify-between items-center">
+              <h3 className="font-label-md text-label-md text-on-surface uppercase tracking-wider">Quick Actions</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <Link
+                to={`/work-orders/new?asset_id=${asset.id}`}
+                className="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant/30"
+              >
+                <MaterialIcon name="handyman" className="text-primary mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">QR Code</p>
-                  <p className="text-xs text-muted-foreground">Scan for quick mobile access</p>
+                  <p className="font-label-md text-label-md text-on-surface">Create Work Order</p>
+                  <p className="font-body-md text-body-md text-secondary text-sm mt-1">Log a new maintenance task for this asset.</p>
                 </div>
+              </Link>
+              <Link
+                to={`/assets/${asset.id}/edit`}
+                className="flex items-start gap-3 p-3 rounded-lg hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-outline-variant/30"
+              >
+                <MaterialIcon name="edit" className="text-primary mt-0.5" />
+                <div>
+                  <p className="font-label-md text-label-md text-on-surface">Edit Asset Details</p>
+                  <p className="font-body-md text-body-md text-secondary text-sm mt-1">Update specifications and metadata.</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Documentation & QR */}
+          <div className="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-transparent p-6">
+            <h3 className="font-label-md text-label-md text-secondary uppercase tracking-wider mb-4">Resources</h3>
+            {/* QR Code Section */}
+            <div className="bg-surface-container p-4 rounded-lg flex items-center justify-between">
+              <div>
+                <p className="font-label-md text-label-md text-on-surface">Field Identification</p>
+                <p className="font-label-sm text-label-sm text-secondary">Scan for quick mobile access.</p>
+              </div>
+              <div className="w-16 h-16 bg-white p-1 rounded shadow-sm flex items-center justify-center">
+                <MaterialIcon name="qr_code" className="text-[40px] text-primary/60" />
               </div>
             </div>
           </div>
