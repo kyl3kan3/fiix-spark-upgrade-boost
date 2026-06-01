@@ -240,7 +240,7 @@ const PublicRequestPortal = () => {
                 <div className="flex flex-wrap gap-3">
                   {photos.map((f, i) => (
                     <div key={i} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
-                      <img src={URL.createObjectURL(f)} alt={`Photo ${i + 1}`} className="h-full w-full object-cover" />
+                      <img src={URL.createObjectURL(f)} alt={`Maintenance issue attachment ${i + 1}: ${f.name}`} className="h-full w-full object-cover" />
                       <button
                         type="button"
                         onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
