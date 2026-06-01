@@ -20,7 +20,7 @@ const Dashboard: React.FC = () => {
   const { teamMembers } = useTeamMembers();
 
   const totalTechs = teamMembers.length;
-  const activeTechs = teamMembers.filter((m) => m.isOnline).length;
+  const activeTechs = teamMembers.filter((m) => m.online).length;
 
   const completed = stats.completed;
   const totalForRate = stats.completed + stats.open + stats.inProgress;
