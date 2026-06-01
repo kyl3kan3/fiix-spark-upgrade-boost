@@ -100,6 +100,8 @@ const AssetsPage = () => {
        <meta property="og:title" content="Equipment & Assets | MaintenEase" />
        <meta property="og:description" content="Track every tool, vehicle, and machine in one place." />
        <meta property="og:url" content="https://maintenease.com/assets" />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png" />
      </Helmet>
      <PageHeader
        title="Asset Registry"
