@@ -21,9 +21,9 @@ const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({
  onDelete
 }) => {
  const statusColumns = [
- { key: 'pending', label: 'Pending', color: 'bg-yellow-50 border-yellow-200' },
- { key: 'in_progress', label: 'In Progress', color: 'bg-blue-50 border-blue-200' },
- { key: 'completed', label: 'Completed', color: 'bg-green-50 border-green-200' },
+ { key: 'pending', label: 'Pending', color: 'bg-warning/10 border-warning/30' },
+ { key: 'in_progress', label: 'In Progress', color: 'bg-primary/10 border-primary/30' },
+ { key: 'completed', label: 'Completed', color: 'bg-success/10 border-success/30' },
  { key: 'cancelled', label: 'Cancelled', color: 'bg-muted border-border' },
  ];
 
@@ -115,7 +115,7 @@ const WorkOrderBoardView: React.FC<WorkOrderBoardViewProps> = ({
  variant="outline"
  size="sm"
  onClick={() => onDelete(workOrder.id)}
- className="h-8 px-2 text-red-600 hover:text-red-700"
+ className="h-8 px-2 text-destructive hover:text-destructive"
  >
  <Trash2 className="h-3 w-3" />
  </Button>

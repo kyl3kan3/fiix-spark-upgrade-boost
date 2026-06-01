@@ -37,9 +37,9 @@ export const ProfileTabContent: React.FC<ProfileTabContentProps> = ({ refreshKey
  <CompanyInformation key={`company-info-${refreshKey}`} />
  
  {/* Administrator Access */}
- <Alert className="mb-4 bg-blue-50 border-blue-200">
- <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />
- <AlertDescription className="text-blue-700">
+ <Alert className="mb-4 bg-primary/10 border-primary/30">
+ <InfoIcon className="h-4 w-4 text-primary mr-2" />
+ <AlertDescription className="text-primary">
  Administrator access lets you manage all users and system settings
  </AlertDescription>
  </Alert>

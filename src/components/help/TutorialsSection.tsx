@@ -22,7 +22,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Getting Started with MaintenEase",
  description: "Learn the basics of navigating and using MaintenEase",
- icon: <BookOpen className="h-10 w-10 p-2 bg-blue-100 text-blue-600 rounded-lg" />,
+ icon: <BookOpen className="h-10 w-10 p-2 bg-primary/10 text-primary rounded-lg" />,
  duration: "15 min",
  difficulty: "Beginner",
  category: "Basics"
@@ -30,7 +30,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Creating and Managing Work Orders",
  description: "Master the work order lifecycle from creation to completion",
- icon: <Wrench className="h-10 w-10 p-2 bg-green-100 text-green-600 rounded-lg" />,
+ icon: <Wrench className="h-10 w-10 p-2 bg-success/10 text-success rounded-lg" />,
  duration: "20 min",
  difficulty: "Beginner",
  category: "Work Orders"
@@ -38,7 +38,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Setting Up Preventive Maintenance Schedules",
  description: "Learn how to create and manage recurring maintenance tasks",
- icon: <Calendar className="h-10 w-10 p-2 bg-purple-100 text-purple-600 rounded-lg" />,
+ icon: <Calendar className="h-10 w-10 p-2 bg-primary/10 text-primary rounded-lg" />,
  duration: "25 min",
  difficulty: "Intermediate",
  category: "Preventive Maintenance"
@@ -46,7 +46,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Asset Management Best Practices",
  description: "Tips and tricks for effective asset lifecycle management",
- icon: <Wrench className="h-10 w-10 p-2 bg-yellow-100 text-yellow-600 rounded-lg" />,
+ icon: <Wrench className="h-10 w-10 p-2 bg-warning/10 text-warning rounded-lg" />,
  duration: "30 min",
  difficulty: "Intermediate",
  category: "Assets"
@@ -54,7 +54,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Creating Custom Reports",
  description: "Design and save custom reports for your specific needs",
- icon: <FileText className="h-10 w-10 p-2 bg-red-100 text-red-600 rounded-lg" />,
+ icon: <FileText className="h-10 w-10 p-2 bg-destructive/10 text-destructive rounded-lg" />,
  duration: "35 min",
  difficulty: "Advanced",
  category: "Reports"
@@ -62,7 +62,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {
  title: "Analyzing Maintenance Performance",
  description: "Using analytics to improve maintenance effectiveness",
- icon: <BarChart2 className="h-10 w-10 p-2 bg-indigo-100 text-indigo-600 rounded-lg" />,
+ icon: <BarChart2 className="h-10 w-10 p-2 bg-primary/10 text-primary rounded-lg" />,
  duration: "40 min",
  difficulty: "Advanced",
  category: "Analytics"
@@ -92,7 +92,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {beginnerTutorials.length > 0 && (
  <div>
  <h2 className="text-xl font-bold mb-4 flex items-center">
- <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+ <span className="inline-block w-3 h-3 bg-success rounded-full mr-2"></span>
  Beginner Tutorials
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -106,7 +106,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {intermediateTutorials.length > 0 && (
  <div>
  <h2 className="text-xl font-bold mb-4 flex items-center">
- <span className="inline-block w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+ <span className="inline-block w-3 h-3 bg-warning rounded-full mr-2"></span>
  Intermediate Tutorials
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -120,7 +120,7 @@ const TutorialsSection: React.FC<TutorialsSectionProps> = ({ searchQuery }) => {
  {advancedTutorials.length > 0 && (
  <div>
  <h2 className="text-xl font-bold mb-4 flex items-center">
- <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+ <span className="inline-block w-3 h-3 bg-destructive rounded-full mr-2"></span>
  Advanced Tutorials
  </h2>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

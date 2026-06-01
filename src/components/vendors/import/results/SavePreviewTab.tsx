@@ -61,7 +61,7 @@ export const SavePreviewTab: React.FC<SavePreviewTabProps> = ({ vendors }) => {
  
  <div className="grid gap-4">
  {formattedVendors.map((vendor, index) => (
- <Card key={index} className="border-l-4 border-l-blue-500">
+ <Card key={index} className="border-l-4 border-l-primary">
  <CardContent className="p-4">
  <div className="flex items-center justify-between mb-3">
  <h5 className="font-medium text-lg">

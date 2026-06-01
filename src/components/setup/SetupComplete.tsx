@@ -58,8 +58,8 @@ const SetupComplete: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =>
  
  return (
  <div className="flex flex-col items-center py-12 text-center">
- <div className="rounded-full bg-green-100 p-3 mb-6">
- <CheckCircle className="h-12 w-12 text-green-600" />
+ <div className="rounded-full bg-success/10 p-3 mb-6">
+ <CheckCircle className="h-12 w-12 text-success" />
  </div>
  
  <h2 className="text-2xl font-bold mb-2">Setup Complete!</h2>

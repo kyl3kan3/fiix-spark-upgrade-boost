@@ -22,21 +22,21 @@ const ChecklistDetailPage = () => {
 
  const getTypeColor = (type: string) => {
  switch(type) {
- case 'safety': return 'bg-red-100 text-red-800';
- case 'equipment': return 'bg-blue-100 text-blue-800';
- case 'maintenance': return 'bg-yellow-100 text-yellow-800';
- case 'quality': return 'bg-green-100 text-green-800';
+ case 'safety': return 'bg-destructive/10 text-destructive';
+ case 'equipment': return 'bg-primary/10 text-primary';
+ case 'maintenance': return 'bg-warning/10 text-warning';
+ case 'quality': return 'bg-success/10 text-success';
  default: return 'bg-muted text-foreground';
  }
  };
 
  const getFrequencyColor = (frequency: string) => {
  switch(frequency) {
- case 'daily': return 'bg-blue-100 text-blue-800';
- case 'weekly': return 'bg-green-100 text-green-800';
- case 'monthly': return 'bg-purple-100 text-purple-800';
- case 'quarterly': return 'bg-orange-100 text-orange-800';
- case 'annually': return 'bg-red-100 text-red-800';
+ case 'daily': return 'bg-primary/10 text-primary';
+ case 'weekly': return 'bg-success/10 text-success';
+ case 'monthly': return 'bg-primary/10 text-primary';
+ case 'quarterly': return 'bg-warning/10 text-warning';
+ case 'annually': return 'bg-destructive/10 text-destructive';
  default: return 'bg-muted text-foreground';
  }
  };
@@ -169,7 +169,7 @@ const ChecklistDetailPage = () => {
  key={item.id} 
  className="flex items-start gap-4 p-4 bg-muted rounded-lg"
  >
- <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm font-medium text-blue-600 dark:text-blue-300">
+ <div className="flex-shrink-0 w-8 h-8 bg-primary/10 dark:bg-primary rounded-full flex items-center justify-center text-sm font-medium text-primary dark:text-primary">
  {index + 1}
  </div>
  

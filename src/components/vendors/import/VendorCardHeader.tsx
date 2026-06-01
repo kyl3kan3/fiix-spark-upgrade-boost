@@ -53,7 +53,7 @@ export const VendorCardHeader: React.FC<VendorCardHeaderProps> = ({
  variant="ghost"
  size="sm"
  onClick={onRemoveVendor}
- className="text-red-500 hover:text-red-700 h-8 w-8 p-0"
+ className="text-destructive hover:text-destructive h-8 w-8 p-0"
  >
  <Trash2 className="h-4 w-4" />
  </Button>

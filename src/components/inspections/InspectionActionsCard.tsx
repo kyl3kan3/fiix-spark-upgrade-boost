@@ -40,7 +40,7 @@ const InspectionActionsCard: React.FC<InspectionActionsCardProps> = ({
  </Button>
  
  <Button 
- className="w-full justify-start bg-green-600 hover:bg-green-700" 
+ className="w-full justify-start bg-success hover:bg-success" 
  variant={status === 'completed' ? 'default' : 'outline'}
  onClick={() => handleUpdateStatus('completed')}
  >
@@ -49,7 +49,7 @@ const InspectionActionsCard: React.FC<InspectionActionsCardProps> = ({
  </Button>
  
  <Button 
- className="w-full justify-start bg-red-600 hover:bg-red-700" 
+ className="w-full justify-start bg-destructive hover:bg-destructive" 
  variant={status === 'failed' ? 'default' : 'outline'}
  onClick={() => handleUpdateStatus('failed')}
  >

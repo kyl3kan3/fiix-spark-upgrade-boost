@@ -36,12 +36,12 @@ export const SetupProgress: React.FC<SetupProgressProps> = ({
  key={step.id}
  onClick={() => onStepClick && index <= currentStep && onStepClick(index)}
  disabled={!onStepClick || index > currentStep}
- className={`w-full text-left flex items-center gap-3 p-2 rounded transition-colors ${ index === currentStep ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' : index < currentStep ? 'text-green-600 dark:text-green-400 hover:bg-muted/50' : 'text-muted-foreground cursor-default' }`}
+ className={`w-full text-left flex items-center gap-3 p-2 rounded transition-colors ${ index === currentStep ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : index < currentStep ? 'text-success dark:text-success hover:bg-muted/50' : 'text-muted-foreground cursor-default' }`}
  >
  {index < currentStep ? (
  <CheckCircle2 className="h-5 w-5" />
  ) : (
- <div className={`w-5 h-5 rounded-full border-2 ${ index === currentStep ? 'border-blue-500 bg-blue-500' : 'border-border ' }`} />
+ <div className={`w-5 h-5 rounded-full border-2 ${ index === currentStep ? 'border-primary bg-primary' : 'border-border ' }`} />
  )}
  <span className="font-medium">{step.label}</span>
  </button>

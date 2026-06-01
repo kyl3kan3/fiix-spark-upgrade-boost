@@ -33,13 +33,13 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="first_name"
  value={formData.first_name}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${ errors.first_name ? 'border-red-500' : 'border-border' }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.first_name ? 'border-destructive' : 'border-border' }`}
  disabled={isSaving}
  aria-required="true"
  aria-label="First Name"
  />
  {errors.first_name && (
- <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>
+ <p className="text-destructive text-xs mt-1">{errors.first_name}</p>
  )}
  </div>
  
@@ -53,13 +53,13 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="last_name"
  value={formData.last_name}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${ errors.last_name ? 'border-red-500' : 'border-border' }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.last_name ? 'border-destructive' : 'border-border' }`}
  disabled={isSaving}
  aria-required="true"
  aria-label="Last Name"
  />
  {errors.last_name && (
- <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>
+ <p className="text-destructive text-xs mt-1">{errors.last_name}</p>
  )}
  </div>
  
@@ -90,12 +90,12 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
  name="phone_number"
  value={formData.phone_number}
  onChange={onInputChange}
- className={`w-full border rounded py-2 px-3 ${ errors.phone_number ? 'border-red-500' : 'border-border' }`}
+ className={`w-full border rounded py-2 px-3 ${ errors.phone_number ? 'border-destructive' : 'border-border' }`}
  disabled={isSaving}
  aria-label="Phone Number"
  />
  {errors.phone_number && (
- <p className="text-red-500 text-xs mt-1">{errors.phone_number}</p>
+ <p className="text-destructive text-xs mt-1">{errors.phone_number}</p>
  )}
  </div>
  </div>

@@ -42,8 +42,8 @@ const BUCKETS: BucketDef[] = [
  label: "Up next",
  hint: "Waiting to be picked up",
  icon: Clock,
- accent: "bg-amber-500 text-white",
- surface: "bg-amber-500/5 border-amber-500/20",
+ accent: "bg-warning text-white",
+ surface: "bg-warning/5 border-warning/20",
  },
  {
  key: "in_progress",
@@ -58,8 +58,8 @@ const BUCKETS: BucketDef[] = [
  label: "Done",
  hint: "Finished — keep for the record",
  icon: CheckCircle2,
- accent: "bg-emerald-600 text-white",
- surface: "bg-emerald-600/5 border-emerald-600/20",
+ accent: "bg-success text-white",
+ surface: "bg-success/5 border-success/20",
  },
 ];
 

@@ -226,7 +226,7 @@ const NavbarApp = () => {
  setIsOpen(false);
  handleSignOut();
  }}
- className="w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50 rounded-md flex items-center"
+ className="w-full text-left px-3 py-2 text-base font-medium text-destructive hover:bg-destructive/10 rounded-md flex items-center"
  >
  <LogOut className="mr-2 h-4 w-4" />
  Sign out

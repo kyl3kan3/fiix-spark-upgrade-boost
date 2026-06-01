@@ -139,7 +139,7 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
  return (
  <Card className="max-w-2xl mx-auto">
  <CardContent className="p-6">
- <div className="text-center text-red-600">
+ <div className="text-center text-destructive">
  Error loading asset: {assetError.message}
  </div>
  </CardContent>

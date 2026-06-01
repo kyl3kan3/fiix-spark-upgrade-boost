@@ -28,7 +28,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
  {formattedTime}
  {isOwnMessage && (
  <CheckCheck 
- className={`h-3 w-3 ${message.read ? 'text-green-400' : 'text-primary-foreground'}`} 
+ className={`h-3 w-3 ${message.read ? 'text-success' : 'text-primary-foreground'}`} 
  />
  )}
  </div>

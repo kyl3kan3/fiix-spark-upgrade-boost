@@ -52,7 +52,7 @@ const AddTeamMemberDialog = () => {
  </DialogHeader>
  
  {error && (
- <div className="text-red-600 text-sm mb-4 p-3 bg-red-50 rounded-md">
+ <div className="text-destructive text-sm mb-4 p-3 bg-destructive/10 rounded-md">
  <strong>Error:</strong> {error}
  </div>
  )}

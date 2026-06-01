@@ -41,7 +41,7 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
  <Shield className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
  <span>
  <span className="font-medium">Role:</span>{" "}
- <span className={`${profileData.role === 'administrator' ? 'text-blue-600' : 'text-foreground'}`}>
+ <span className={`${profileData.role === 'administrator' ? 'text-primary' : 'text-foreground'}`}>
  {formatRole(profileData.role)}
  </span>
  </span>

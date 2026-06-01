@@ -119,7 +119,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
  variant === "compact" ? "h-8 w-8 p-0" : "h-9 px-3",
  )}
  >
- {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Link2 className="h-4 w-4" />}
+ {copied ? <Check className="h-4 w-4 text-success" /> : <Link2 className="h-4 w-4" />}
  {variant === "default" && (
  <span className="ml-2 text-sm">{copied ? "Copied" : "Copy link"}</span>
  )}

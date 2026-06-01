@@ -28,13 +28,13 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
  const getStatusColor = (status: string) => {
  switch(status) {
  case 'scheduled':
- return 'bg-blue-100 text-blue-800';
+ return 'bg-primary/10 text-primary';
  case 'in-progress':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning';
  case 'completed':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success';
  case 'failed':
- return 'bg-red-100 text-red-800';
+ return 'bg-destructive/10 text-destructive';
  case 'cancelled':
  return 'bg-muted text-foreground';
  default:
@@ -45,13 +45,13 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
  const getPriorityColor = (priority: string) => {
  switch(priority) {
  case 'low':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success';
  case 'medium':
- return 'bg-blue-100 text-blue-800';
+ return 'bg-primary/10 text-primary';
  case 'high':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning';
  case 'critical':
- return 'bg-red-100 text-red-800';
+ return 'bg-destructive/10 text-destructive';
  default:
  return 'bg-muted text-foreground';
  }
@@ -76,7 +76,7 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
  {status !== 'completed' && (
  <Button 
  variant="outline" 
- className="border-green-500 text-green-600 hover:bg-green-50"
+ className="border-success text-success hover:bg-success/10"
  onClick={() => handleUpdateStatus('completed')}
  >
  <Check className="h-4 w-4 mr-2" />

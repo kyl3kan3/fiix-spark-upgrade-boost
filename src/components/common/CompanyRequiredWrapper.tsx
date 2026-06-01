@@ -42,9 +42,9 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
   return (
     <>
       {needsCompany && !bannerDismissed && (
-        <div className="sticky top-0 z-40 bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800">
+        <div className="sticky top-0 z-40 bg-warning/10 dark:bg-warning/30 border-b border-warning/30 dark:border-warning">
           <div className="px-4 md:px-6 lg:px-8 py-3 flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-2 text-sm text-amber-900 dark:text-amber-100">
+            <div className="flex items-center gap-2 text-sm text-warning dark:text-warning">
               <Building2 className="h-4 w-4 shrink-0" />
               <span>
                 You're exploring MaintenEase. Set up your company to start creating work orders, assets, and inviting your team.
@@ -60,7 +60,7 @@ const CompanyRequiredWrapper: React.FC<CompanyRequiredWrapperProps> = ({ childre
               <button
                 aria-label="Dismiss"
                 onClick={() => setBannerDismissed(true)}
-                className="p-1 text-amber-900 dark:text-amber-100 hover:opacity-70"
+                className="p-1 text-warning dark:text-warning hover:opacity-70"
               >
                 <X className="h-4 w-4" />
               </button>

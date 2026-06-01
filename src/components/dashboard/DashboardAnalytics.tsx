@@ -15,15 +15,15 @@ const DashboardAnalytics: React.FC = () => {
  <CardContent>
  <div className="space-y-4">
  <div className="grid grid-cols-2 gap-4">
- <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
- <div className="font-semibold text-sm text-blue-700 dark:text-blue-300">Avg. Response</div>
+ <div className="p-4 bg-primary/10 dark:bg-primary/20 rounded-lg">
+ <div className="font-semibold text-sm text-primary dark:text-primary">Avg. Response</div>
  <div className="text-2xl font-bold mt-1 flex items-baseline">
  24<span className="text-sm ml-1 font-normal text-muted-foreground">min</span>
  </div>
  </div>
  
- <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
- <div className="font-semibold text-sm text-green-700 dark:text-green-300">Completion Rate</div>
+ <div className="p-4 bg-success/10 dark:bg-success/20 rounded-lg">
+ <div className="font-semibold text-sm text-success dark:text-success">Completion Rate</div>
  <div className="text-2xl font-bold mt-1 flex items-baseline">
  92<span className="text-sm ml-1 font-normal text-muted-foreground">%</span>
  </div>

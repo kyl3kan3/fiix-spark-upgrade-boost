@@ -279,7 +279,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  variant="ghost"
  size="sm"
  onClick={() => handleToggleWidget(widget.id, false)}
- className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+ className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
  >
  <Trash2 className="h-4 w-4" />
  <span className="sr-only">Remove</span>
@@ -368,7 +368,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  
  {enabledWidgets.length > 0 && (
  <div className="mt-3 text-center">
- <Check className="h-5 w-5 mx-auto text-green-500" />
+ <Check className="h-5 w-5 mx-auto text-success" />
  <p className="text-xs text-muted-foreground mt-1">
  Your dashboard layout is saved
  </p>

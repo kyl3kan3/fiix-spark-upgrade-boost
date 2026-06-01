@@ -49,7 +49,7 @@ const AssetManagementContent: React.FC = () => {
  <td className="p-3">{asset.type}</td>
  <td className="p-3">{asset.location}</td>
  <td className="p-3">
- <span className={`px-2 py-1 text-xs rounded-full ${ asset.status === "Operational" ? "bg-green-100 text-green-800" : asset.status === "Maintenance Required" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800" }`}>
+ <span className={`px-2 py-1 text-xs rounded-full ${ asset.status === "Operational" ? "bg-success/10 text-success" : asset.status === "Maintenance Required" ? "bg-warning/10 text-warning" : "bg-destructive/10 text-destructive" }`}>
  {asset.status}
  </span>
  </td>

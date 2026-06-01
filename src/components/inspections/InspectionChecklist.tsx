@@ -50,7 +50,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
  disabled={isCompleted}
  onCheckedChange={() => handleItemPassChange(item.id, true)}
  />
- <label htmlFor={`${item.id}-pass`} className="text-sm text-green-600">Pass</label>
+ <label htmlFor={`${item.id}-pass`} className="text-sm text-success">Pass</label>
  </div>
  <div className="flex items-center space-x-1">
  <Checkbox
@@ -59,7 +59,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
  disabled={isCompleted}
  onCheckedChange={() => handleItemPassChange(item.id, false)}
  />
- <label htmlFor={`${item.id}-fail`} className="text-sm text-red-600">Fail</label>
+ <label htmlFor={`${item.id}-fail`} className="text-sm text-destructive">Fail</label>
  </div>
  </div>
  </TableCell>

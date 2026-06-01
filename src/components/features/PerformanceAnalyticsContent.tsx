@@ -23,10 +23,10 @@ const PerformanceAnalyticsContent: React.FC = () => {
 
  // Mock data for analytics
  const kpiData = [
- { name: "MTTR", value: "2.5h", change: "-12%", trend: "down", color: "text-green-600" },
- { name: "MTBF", value: "45d", change: "+8%", trend: "up", color: "text-green-600" },
- { name: "Uptime", value: "98.5%", change: "+2%", trend: "up", color: "text-green-600" },
- { name: "Cost per Hour", value: "$125", change: "-5%", trend: "down", color: "text-green-600" },
+ { name: "MTTR", value: "2.5h", change: "-12%", trend: "down", color: "text-success" },
+ { name: "MTBF", value: "45d", change: "+8%", trend: "up", color: "text-success" },
+ { name: "Uptime", value: "98.5%", change: "+2%", trend: "up", color: "text-success" },
+ { name: "Cost per Hour", value: "$125", change: "-5%", trend: "down", color: "text-success" },
  ];
 
  const performanceData = [
@@ -183,7 +183,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  <div className="flex items-center gap-2">
  <div className="w-32 bg-secondary rounded-full h-2">
  <div 
- className="bg-blue-600 h-2 rounded-full" 
+ className="bg-primary h-2 rounded-full" 
  style={{ width: `${asset.efficiency}%` }}
  ></div>
  </div>
@@ -230,26 +230,26 @@ const PerformanceAnalyticsContent: React.FC = () => {
  </CardHeader>
  <CardContent>
  <div className="space-y-4">
- <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+ <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
  <div className="flex items-center gap-2">
- <DollarSign className="h-5 w-5 text-blue-600" />
+ <DollarSign className="h-5 w-5 text-primary" />
  <span className="font-medium">Total Monthly Cost</span>
  </div>
- <span className="text-lg font-bold text-blue-600">$14,100</span>
+ <span className="text-lg font-bold text-primary">$14,100</span>
  </div>
- <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+ <div className="flex items-center justify-between p-3 bg-success/10 rounded-lg">
  <div className="flex items-center gap-2">
- <TrendingUp className="h-5 w-5 text-green-600" />
+ <TrendingUp className="h-5 w-5 text-success" />
  <span className="font-medium">Cost Savings</span>
  </div>
- <span className="text-lg font-bold text-green-600">$1,320</span>
+ <span className="text-lg font-bold text-success">$1,320</span>
  </div>
- <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+ <div className="flex items-center justify-between p-3 bg-warning/10 rounded-lg">
  <div className="flex items-center gap-2">
- <Clock className="h-5 w-5 text-orange-600" />
+ <Clock className="h-5 w-5 text-warning" />
  <span className="font-medium">Cost per Hour</span>
  </div>
- <span className="text-lg font-bold text-orange-600">$125</span>
+ <span className="text-lg font-bold text-warning">$125</span>
  </div>
  </div>
  </CardContent>

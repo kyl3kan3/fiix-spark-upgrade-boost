@@ -33,13 +33,13 @@ const AssetNode: React.FC<AssetNodeProps> = ({
  const getStatusColor = (status: string) => {
  switch (status) {
  case 'active':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success';
  case 'inactive':
  return 'bg-muted text-foreground';
  case 'maintenance':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning';
  case 'retired':
- return 'bg-red-100 text-red-800';
+ return 'bg-destructive/10 text-destructive';
  default:
  return 'bg-muted text-foreground';
  }
@@ -114,7 +114,7 @@ const AssetNode: React.FC<AssetNodeProps> = ({
  variant="outline"
  size="sm"
  onClick={() => onDeleteAsset(asset.id)}
- className="text-red-600 hover:text-red-700"
+ className="text-destructive hover:text-destructive"
  >
  <Trash2 className="h-4 w-4" />
  </Button>

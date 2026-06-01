@@ -51,7 +51,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                       <td className="px-4 py-2 text-right text-xs text-muted-foreground">
                         {new Date(t.trial_ends_at).toLocaleDateString()}
                       </td>
-                      <td className={`px-4 py-2 text-right font-semibold ${t.days_remaining <= 2 ? 'text-rose-600' : 'text-foreground'}`}>
+                      <td className={`px-4 py-2 text-right font-semibold ${t.days_remaining <= 2 ? 'text-destructive' : 'text-foreground'}`}>
                         {t.days_remaining}
                       </td>
                     </tr>
@@ -132,7 +132,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                     </td>
                     <td className="px-4 py-2 text-center">
                       {s.disposable && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning">
                           <AlertTriangle className="h-3 w-3" /> Disposable
                         </span>
                       )}

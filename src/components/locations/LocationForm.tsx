@@ -85,7 +85,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  disabled={isLoading}
  />
  {errors.name && (
- <p className="text-sm text-red-600">{errors.name.message}</p>
+ <p className="text-sm text-destructive">{errors.name.message}</p>
  )}
  </div>
 

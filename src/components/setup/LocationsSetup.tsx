@@ -106,7 +106,7 @@ const LocationsSetup: React.FC<SetupStepComponentProps> = ({ data, onUpdate }) =
  variant="ghost" 
  size="icon" 
  onClick={() => handleDeleteLocation(location.id)}
- className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+ className="text-destructive hover:text-destructive hover:bg-destructive/10 dark:hover:bg-destructive"
  >
  <Trash2 className="h-4 w-4" />
  </Button>

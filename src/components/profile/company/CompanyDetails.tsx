@@ -76,7 +76,7 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo, han
  <Mail className="h-5 w-5 text-muted-foreground" />
  <a
  href={`mailto:${companyInfo.email}`}
- className="text-blue-600 hover:underline"
+ className="text-primary hover:underline"
  >
  {companyInfo.email}
  </a>
@@ -90,7 +90,7 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo, han
  href={websiteUrl}
  target="_blank"
  rel="noopener noreferrer"
- className="text-blue-600 hover:underline"
+ className="text-primary hover:underline"
  >
  {displayWebsite}
  </a>

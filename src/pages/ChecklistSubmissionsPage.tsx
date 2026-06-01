@@ -30,18 +30,18 @@ const ChecklistSubmissionsPage = () => {
 
  const getTypeColor = (type: string) => {
  switch(type) {
- case 'safety': return 'bg-red-100 text-red-800';
- case 'equipment': return 'bg-blue-100 text-blue-800';
- case 'maintenance': return 'bg-yellow-100 text-yellow-800';
- case 'quality': return 'bg-green-100 text-green-800';
+ case 'safety': return 'bg-destructive/10 text-destructive';
+ case 'equipment': return 'bg-primary/10 text-primary';
+ case 'maintenance': return 'bg-warning/10 text-warning';
+ case 'quality': return 'bg-success/10 text-success';
  default: return 'bg-muted text-foreground';
  }
  };
 
  const getStatusColor = (status: string) => {
  switch(status) {
- case 'completed': return 'bg-green-100 text-green-800';
- case 'in-progress': return 'bg-yellow-100 text-yellow-800';
+ case 'completed': return 'bg-success/10 text-success';
+ case 'in-progress': return 'bg-warning/10 text-warning';
  default: return 'bg-muted text-foreground';
  }
  };

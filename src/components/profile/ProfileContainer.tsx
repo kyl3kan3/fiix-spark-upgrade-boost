@@ -77,9 +77,9 @@ const ProfileContainer: React.FC = () => {
  <CardDescription>Error loading profile data</CardDescription>
  </CardHeader>
  <CardContent>
- <Alert className="mb-4 bg-red-50 border-red-200">
- <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
- <AlertDescription className="text-red-700">
+ <Alert className="mb-4 bg-destructive/10 border-destructive/30">
+ <AlertTriangle className="h-4 w-4 text-destructive mr-2" />
+ <AlertDescription className="text-destructive">
  {error}
  </AlertDescription>
  </Alert>

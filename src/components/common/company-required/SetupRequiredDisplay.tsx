@@ -22,8 +22,8 @@ export const SetupRequiredDisplay: React.FC<SetupRequiredDisplayProps> = ({
  <div className="flex items-center justify-center min-h-screen bg-muted p-4 transition-colors">
  <div className="max-w-md w-full bg-card rounded-lg shadow-lg p-8 border border-border">
  <div className="mb-6 flex flex-col items-center">
- <div className="rounded-full bg-amber-100 dark:bg-amber-900/30 p-3 mb-4">
- <Building2 className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+ <div className="rounded-full bg-warning/10 dark:bg-warning/30 p-3 mb-4">
+ <Building2 className="h-8 w-8 text-warning dark:text-warning" />
  </div>
  <h1 className="text-2xl font-bold text-center text-foreground">Company Setup Required</h1>
  <p className="mt-2 text-center text-foreground">
@@ -32,9 +32,9 @@ export const SetupRequiredDisplay: React.FC<SetupRequiredDisplayProps> = ({
  </div>
 
  {profileError && (
- <Alert className="mb-6 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
- <AlertTriangle className="h-4 w-4 text-red-500 dark:text-red-400 mr-2" />
- <AlertDescription className="text-red-700 dark:text-red-300">
+ <Alert className="mb-6 bg-destructive/10 dark:bg-destructive/20 border-destructive/30 dark:border-destructive">
+ <AlertTriangle className="h-4 w-4 text-destructive dark:text-destructive mr-2" />
+ <AlertDescription className="text-destructive dark:text-destructive">
  {profileError.message}
  </AlertDescription>
  </Alert>

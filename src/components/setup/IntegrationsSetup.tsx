@@ -53,7 +53,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  {
  id: "email",
  name: "Email Service",
- icon: <Mail className="h-6 w-6 text-blue-500" />,
+ icon: <Mail className="h-6 w-6 text-primary" />,
  description: "Send email notifications and reports",
  connected: false,
  apiKeyLabel: "SMTP Settings",
@@ -63,7 +63,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  {
  id: "erp",
  name: "ERP System",
- icon: <FileJson className="h-6 w-6 text-orange-500" />,
+ icon: <FileJson className="h-6 w-6 text-warning" />,
  description: "Connect to your ERP for inventory and purchasing",
  connected: false,
  apiKeyLabel: "API Endpoint",
@@ -74,7 +74,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  {
  id: "webhook",
  name: "Webhooks",
- icon: <Link className="h-6 w-6 text-purple-500" />,
+ icon: <Link className="h-6 w-6 text-primary" />,
  description: "Send data to external systems when events happen",
  connected: false,
  hasApiKey: false
@@ -161,7 +161,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  {integration.connected ? (
  <Badge 
  variant="outline" 
- className="bg-green-50 text-green-700 border-green-200"
+ className="bg-success/10 text-success border-success/30"
  >
  Connected
  </Badge>

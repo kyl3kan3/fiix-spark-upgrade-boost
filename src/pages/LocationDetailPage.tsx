@@ -149,7 +149,7 @@ const LocationDetailPage = () => {
  <Card>
  <CardContent className="p-6">
  <div className="flex items-center">
- <Package className="h-8 w-8 text-blue-600" />
+ <Package className="h-8 w-8 text-primary" />
  <div className="ml-4">
  <p className="text-sm font-medium text-foreground">Assets</p>
  <p className="text-2xl font-bold">{assets.length}</p>
@@ -161,7 +161,7 @@ const LocationDetailPage = () => {
  <Card>
  <CardContent className="p-6">
  <div className="flex items-center">
- <Wrench className="h-8 w-8 text-green-600" />
+ <Wrench className="h-8 w-8 text-success" />
  <div className="ml-4">
  <p className="text-sm font-medium text-foreground">Work Orders</p>
  <p className="text-2xl font-bold">{workOrders.length}</p>
@@ -173,7 +173,7 @@ const LocationDetailPage = () => {
  <Card>
  <CardContent className="p-6">
  <div className="flex items-center">
- <MapPin className="h-8 w-8 text-purple-600" />
+ <MapPin className="h-8 w-8 text-primary" />
  <div className="ml-4">
  <p className="text-sm font-medium text-foreground">Sub-locations</p>
  <p className="text-2xl font-bold">{subLocations.length}</p>
@@ -185,7 +185,7 @@ const LocationDetailPage = () => {
  <Card>
  <CardContent className="p-6">
  <div className="flex items-center">
- <Calendar className="h-8 w-8 text-orange-600" />
+ <Calendar className="h-8 w-8 text-warning" />
  <div className="ml-4">
  <p className="text-sm font-medium text-foreground">Created</p>
  <p className="text-lg font-bold">
