@@ -108,7 +108,7 @@ const DocumentationSection: React.FC<DocumentationSectionProps> = ({ searchQuery
  <p className="text-sm text-foreground line-clamp-3">{article.content}</p>
  <div className="mt-4">
  <a href="#" className="text-sm font-medium text-primary hover:underline">
- Read more
+ Read the full {article.title} article
  </a>
  </div>
  </CardContent>
