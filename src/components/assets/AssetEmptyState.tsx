@@ -14,7 +14,7 @@ const AssetEmptyState: React.FC<AssetEmptyStateProps> = ({ hasFilters }) => {
  const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
  return (
-   <div className="flex flex-col items-center justify-center py-20 surface-card rounded-2xl border border-dashed border-border">
+   <div className="flex flex-col items-center justify-center py-20 surface-card rounded-lg border border-dashed border-border">
      <div className="w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mb-5">
        <Cog className="h-8 w-8 text-primary/60" strokeWidth={1.5} />
      </div>

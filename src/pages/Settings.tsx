@@ -160,7 +160,7 @@ const Settings = () => {
 
           {/* Notifications Tab */}
           <TabsContent value="notifications" className="mt-0 space-y-6">
-            <Card className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Notification Preferences
@@ -239,7 +239,7 @@ const Settings = () => {
 
           {/* Security Tab */}
           <TabsContent value="security" className="mt-0">
-            <Card className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Security Settings
@@ -264,7 +264,7 @@ const Settings = () => {
 
           {/* Appearance Tab */}
           <TabsContent value="appearance" className="mt-0">
-            <Card className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Appearance Settings

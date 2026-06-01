@@ -59,7 +59,7 @@ const InspectionsPage = () => {
  <div className="px-4 md:px-6 lg:px-8 py-6 space-y-6">
  {/* Stats bento grid */}
  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
- <div className="bg-card border border-border rounded-xl shadow-sm p-6 hover:border-primary/10 transition-colors">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6 hover:border-primary/10 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div className="p-3 rounded-lg bg-primary/10 text-primary">
  <ClipboardCheck className="h-5 w-5" />
@@ -71,7 +71,7 @@ const InspectionsPage = () => {
  {String(scheduledCount).padStart(2, "0")}
  </h4>
  </div>
- <div className="bg-card border border-border rounded-xl shadow-sm p-6 hover:border-primary/10 transition-colors">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6 hover:border-primary/10 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div className="p-3 rounded-lg bg-destructive/10 text-destructive">
  <AlertTriangle className="h-5 w-5" />
@@ -83,7 +83,7 @@ const InspectionsPage = () => {
  {String(overdueCount).padStart(2, "0")}
  </h4>
  </div>
- <div className="bg-card border border-border rounded-xl shadow-sm p-6 hover:border-primary/10 transition-colors">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6 hover:border-primary/10 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div className="p-3 rounded-lg bg-muted text-primary">
  <CheckCircle2 className="h-5 w-5" />

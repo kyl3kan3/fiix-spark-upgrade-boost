@@ -23,7 +23,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
  hasEvents,
 }) => {
  return (
- <Card className="w-full bg-card border border-border rounded-xl shadow-sm">
+ <Card className="w-full bg-card border border-border rounded-lg shadow-sm">
  <CardHeader className="pb-3 px-5 border-b border-border">
  <CardTitle className="font-headline text-lg text-foreground">Schedule</CardTitle>
  <CardDescription className="text-xs text-muted-foreground mt-0.5">Select a date to view events</CardDescription>

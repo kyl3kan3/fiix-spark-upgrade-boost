@@ -101,7 +101,7 @@ const PreventiveMaintenanceContent: React.FC = () => {
  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
  {/* Calendar View */}
  <div className="lg:col-span-8">
- <Card className="bg-card border border-border rounded-xl shadow-sm">
+ <Card className="bg-card border border-border rounded-lg shadow-sm">
  <CardHeader className="border-b border-border pb-4">
  <CardTitle className="font-headline text-xl text-foreground">Maintenance Calendar</CardTitle>
  </CardHeader>
@@ -127,7 +127,7 @@ const PreventiveMaintenanceContent: React.FC = () => {
 
  {/* Create Schedule Form */}
  <div className="lg:col-span-4">
- <Card className="bg-card border border-border rounded-xl shadow-sm">
+ <Card className="bg-card border border-border rounded-lg shadow-sm">
  <CardHeader className="border-b border-border pb-4">
  <CardTitle className="font-headline text-xl text-foreground">Create PM Schedule</CardTitle>
  </CardHeader>

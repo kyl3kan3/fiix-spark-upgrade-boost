@@ -3,7 +3,7 @@ import React from "react";
 
 export const LocationLoadingState: React.FC = () => {
  return (
-   <div className="surface-card rounded-xl overflow-hidden">
+   <div className="surface-card rounded-lg overflow-hidden">
      <div className="px-5 py-4 border-b border-border bg-muted/30">
        <div className="h-5 w-40 bg-muted animate-pulse rounded" />
      </div>

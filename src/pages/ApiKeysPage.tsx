@@ -156,7 +156,7 @@ const ApiKeysPage: React.FC = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Active API Keys — spans 2 cols */}
-            <Card className="lg:col-span-2 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col">
+            <Card className="lg:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col">
               <CardHeader className="border-b border-border pb-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -276,7 +276,7 @@ const ApiKeysPage: React.FC = () => {
             </Card>
 
             {/* Developer Docs sidebar */}
-            <Card className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col relative overflow-hidden">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col relative overflow-hidden">
               <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
               <CardHeader className="border-b border-border pb-4 relative z-10">
                 <CardTitle className="font-headline text-xl text-foreground flex items-center gap-2">

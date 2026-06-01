@@ -88,7 +88,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
    return (
      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
        {[...Array(6)].map((_, i) => (
-         <div key={i} className="surface-card rounded-2xl overflow-hidden">
+         <div key={i} className="surface-card rounded-lg overflow-hidden">
            <Skeleton className="h-10 w-full mb-4" />
            <div className="p-5 space-y-3">
              <Skeleton className="h-5 w-3/4" />
@@ -103,7 +103,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
 
  if (error) {
    return (
-     <div className="text-center py-12 surface-card rounded-xl">
+     <div className="text-center py-12 surface-card rounded-lg">
        <AlertTriangle className="mx-auto h-10 w-10 text-destructive mb-3" />
        <p className="text-destructive font-medium">Error loading assets.</p>
      </div>
@@ -125,7 +125,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
              className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
              aria-label={`Open ${asset.name}`}
            >
-             <div className="bg-card border border-border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col h-full">
+             <div className="bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col h-full">
                {/* Card header strip */}
                <div className="bg-primary/5 px-5 pt-5 pb-4 flex items-start justify-between gap-3">
                  <div className="flex items-center gap-3 min-w-0">

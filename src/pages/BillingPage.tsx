@@ -143,7 +143,7 @@ export default function BillingPage() {
         </div>
 
         {noSubscription ? (
-          <div className="bg-card border border-border rounded-xl shadow-sm p-12 text-center">
+          <div className="bg-card border border-border rounded-lg shadow-sm p-12 text-center">
             <p className="mb-4 text-muted-foreground">You don't have an active subscription yet.</p>
             <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
               <Link to="/pricing">Choose a plan</Link>
@@ -154,7 +154,7 @@ export default function BillingPage() {
             {/* Bento grid: current plan + upgrade CTA */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Current Plan — spans 2 cols */}
-              <div className="md:col-span-2 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-col relative">
+              <div className="md:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-col relative">
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div>

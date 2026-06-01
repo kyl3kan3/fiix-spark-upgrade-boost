@@ -132,7 +132,7 @@ const CalendarPage = () => {
  {date ? (
  <DailyLog selectedDate={date} />
  ) : (
- <div className="bg-card border border-border rounded-xl p-12 text-center text-muted-foreground">
+ <div className="bg-card border border-border rounded-lg p-12 text-center text-muted-foreground">
  <p className="text-sm">Please select a date to view or create a daily log entry.</p>
  </div>
  )}

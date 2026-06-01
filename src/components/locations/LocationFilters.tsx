@@ -34,7 +34,7 @@ export const LocationFilters: React.FC<LocationFiltersProps> = ({
  const hasActiveFilters = searchQuery || parentFilter !== "all" || dateFilter !== "all";
 
  return (
-   <div className="surface-card rounded-xl p-4 space-y-3 border border-border">
+   <div className="surface-card rounded-lg p-4 space-y-3 border border-border">
      <div className="flex flex-col sm:flex-row gap-3">
        {/* Search Input */}
        <div className="flex-1 relative">

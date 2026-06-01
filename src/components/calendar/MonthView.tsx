@@ -35,7 +35,7 @@ const MonthView: React.FC<MonthViewProps> = ({ events }) => {
  return (
  <div
  key={event.id}
- className={`bg-card border border-border border-l-4 ${accent.border} rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all`}
+ className={`bg-card border border-border border-l-4 ${accent.border} rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all`}
  >
  {/* Header */}
  <div className="p-4 pb-3">

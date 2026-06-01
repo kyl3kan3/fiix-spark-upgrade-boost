@@ -93,7 +93,7 @@ const ChecklistsPage = () => {
 
       <div className="px-4 md:px-6 lg:px-8 py-6 space-y-5">
         {/* Filter / Controls bar */}
-        <div className="bg-card border border-border rounded-xl shadow-sm p-4 flex flex-wrap gap-4 items-center justify-between">
+        <div className="bg-card border border-border rounded-lg shadow-sm p-4 flex flex-wrap gap-4 items-center justify-between">
           <div className="flex flex-wrap gap-2">
             {[["all", "All"], ...ChecklistTypes.map((t) => [t.value, t.label])].map(
               ([value, label]) => (
@@ -140,7 +140,7 @@ const ChecklistsPage = () => {
 
         {/* Table / Empty state */}
         {filteredChecklists.length === 0 ? (
-          <div className="bg-card border border-border rounded-xl shadow-sm text-center py-16">
+          <div className="bg-card border border-border rounded-lg shadow-sm text-center py-16">
             <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="font-headline text-lg font-semibold text-foreground mb-2">
               {checklists.length === 0 ? "No checklists yet" : "No checklists match your search"}
@@ -158,7 +158,7 @@ const ChecklistsPage = () => {
             )}
           </div>
         ) : (
-          <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden hover:border-primary/10 transition-colors">
+          <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden hover:border-primary/10 transition-colors">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>

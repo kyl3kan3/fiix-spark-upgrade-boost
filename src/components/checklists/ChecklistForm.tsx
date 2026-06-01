@@ -301,7 +301,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
 
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Basic info */}
- <div className="bg-card border border-border rounded-xl shadow-sm p-6">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6">
  <BasicInformationSection
  formData={formData}
  onUpdate={handleBasicInfoUpdate}
@@ -309,7 +309,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  </div>
 
  {/* Items builder */}
- <div className="bg-card border border-border rounded-xl shadow-sm p-6">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6">
  <ChecklistItemsSection
  items={formData.items}
  onAddItem={addItem}
@@ -320,7 +320,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  </div>
 
  {/* Asset selector */}
- <div className="bg-card border border-border rounded-xl shadow-sm p-6">
+ <div className="bg-card border border-border rounded-lg shadow-sm p-6">
  <ChecklistAssetsSelector
  selectedAssetIds={formData.assetIds}
  onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}

@@ -24,7 +24,7 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
  filteredEvents,
 }) => {
  return (
- <Card className="w-full bg-card border border-border rounded-xl shadow-sm">
+ <Card className="w-full bg-card border border-border rounded-lg shadow-sm">
  <CardHeader className="pb-4 px-5 border-b border-border">
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
  <div className="min-w-0 flex-1">

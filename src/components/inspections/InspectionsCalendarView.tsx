@@ -86,7 +86,7 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
  };
 
  return (
- <Card className="bg-card border border-border rounded-xl shadow-sm p-5">
+ <Card className="bg-card border border-border rounded-lg shadow-sm p-5">
  <h2 className="font-headline text-xl font-semibold text-foreground mb-5">
  {format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}
  </h2>

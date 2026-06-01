@@ -26,7 +26,7 @@ export const LocationsListView: React.FC<LocationsListViewProps> = ({
    return (
      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
        {[...Array(6)].map((_, i) => (
-         <div key={i} className="surface-card rounded-xl p-5 space-y-3">
+         <div key={i} className="surface-card rounded-lg p-5 space-y-3">
            <Skeleton className="h-5 w-3/4" />
            <Skeleton className="h-4 w-1/2" />
            <Skeleton className="h-4 w-full" />
@@ -38,7 +38,7 @@ export const LocationsListView: React.FC<LocationsListViewProps> = ({
 
  if (locations.length === 0) {
    return (
-     <div className="flex flex-col items-center justify-center py-16 surface-card rounded-xl border border-dashed border-border">
+     <div className="flex flex-col items-center justify-center py-16 surface-card rounded-lg border border-dashed border-border">
        <div className="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mb-4">
          <Building2 className="h-7 w-7 text-primary/50" strokeWidth={1.5} />
        </div>
@@ -66,7 +66,7 @@ export const LocationsListView: React.FC<LocationsListViewProps> = ({
      {locations.map((location) => (
        <div
          key={location.id}
-         className="surface-card rounded-xl overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+         className="surface-card rounded-lg overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
        >
          {/* Card header */}
          <div className="bg-primary/5 px-5 pt-5 pb-4 flex items-start justify-between gap-3">

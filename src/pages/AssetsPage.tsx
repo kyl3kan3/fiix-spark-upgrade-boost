@@ -128,7 +128,7 @@ const AssetsPage = () => {
        {totalAssets > 0 && (
          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
            {/* Total assets */}
-           <div className="surface-card rounded-xl p-5 flex flex-col justify-between min-h-[120px]">
+           <div className="surface-card rounded-lg p-5 flex flex-col justify-between min-h-[120px]">
              <div className="flex items-center justify-between mb-3">
                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
                  <Cog className="h-4 w-4 text-primary" />
@@ -147,7 +147,7 @@ const AssetsPage = () => {
            </div>
 
            {/* Urgent attention */}
-           <div className="surface-card rounded-xl p-5 flex flex-col justify-between min-h-[120px]">
+           <div className="surface-card rounded-lg p-5 flex flex-col justify-between min-h-[120px]">
              <div className="flex items-center justify-between mb-3">
                <div className="w-9 h-9 rounded-lg bg-destructive/10 flex items-center justify-center">
                  <AlertTriangle className="h-4 w-4 text-destructive" />

@@ -32,7 +32,7 @@ export const LocationHierarchyView: React.FC<LocationHierarchyViewProps> = ({
  }
 
  return (
-   <div className="surface-card rounded-xl border border-border overflow-hidden">
+   <div className="surface-card rounded-lg border border-border overflow-hidden">
      <div className="px-5 py-4 border-b border-border bg-muted/30 flex items-center justify-between">
        <h2 className="font-headline font-semibold text-base text-foreground">Location Hierarchy</h2>
        <span className="label-eyebrow">{locations.length} site{locations.length !== 1 ? "s" : ""}</span>

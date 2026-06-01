@@ -45,7 +45,7 @@ const DayView: React.FC<DayViewProps> = ({ events }) => {
  return (
  <div className="space-y-3">
  {events.map((event) => (
- <div key={event.id} className={`bg-card border border-border border-l-4 ${getTypeBorderAccent(event.type)} rounded-xl p-5 hover:shadow-md transition-shadow`}>
+ <div key={event.id} className={`bg-card border border-border border-l-4 ${getTypeBorderAccent(event.type)} rounded-lg p-5 hover:shadow-md transition-shadow`}>
  <div className="flex items-start justify-between mb-3">
  <div>
  <h4 className="font-headline text-base font-semibold text-foreground">{event.title}</h4>

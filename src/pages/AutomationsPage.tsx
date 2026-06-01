@@ -70,7 +70,7 @@ const AutomationsPage: React.FC = () => {
           title="Automations is a Pro feature"
           description="Upgrade to Pro or Business to schedule recurring checklists, automated reminders, and routine work."
         >
-          <Card className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+          <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
             <CardHeader className="border-b border-border pb-4">
               <CardTitle className="font-headline text-xl text-foreground">
                 Recurring Checklists

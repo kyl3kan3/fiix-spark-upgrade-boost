@@ -86,7 +86,7 @@ const AssetDetailPage = () => {
           {/* ── Col 1-2: hero + specs ── */}
           <div className="lg:col-span-2 space-y-6">
             {/* Hero / Specs card */}
-            <div className="surface-card rounded-xl overflow-hidden flex flex-col sm:flex-row">
+            <div className="surface-card rounded-lg overflow-hidden flex flex-col sm:flex-row">
               {heroImage ? (
                 <div className="w-full sm:w-2/5 min-h-[200px] bg-muted overflow-hidden">
                   <img
@@ -147,7 +147,7 @@ const AssetDetailPage = () => {
             </div>
 
             {/* Photo gallery */}
-            <div className="surface-card rounded-xl p-6">
+            <div className="surface-card rounded-lg p-6">
               <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
             </div>
           </div>
@@ -155,7 +155,7 @@ const AssetDetailPage = () => {
           {/* ── Col 3: side panel ── */}
           <div className="space-y-6">
             {/* Status summary card */}
-            <div className="surface-card rounded-xl p-6">
+            <div className="surface-card rounded-lg p-6">
               <h3 className="label-eyebrow mb-5">Asset Summary</h3>
               <div className="flex flex-col items-center text-center">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -175,7 +175,7 @@ const AssetDetailPage = () => {
             </div>
 
             {/* Quick actions */}
-            <div className="surface-card rounded-xl p-6">
+            <div className="surface-card rounded-lg p-6">
               <h3 className="label-eyebrow mb-4">Quick Actions</h3>
               <div className="space-y-2">
                 <Button asChild variant="outline" className="w-full justify-start gap-2">
@@ -188,7 +188,7 @@ const AssetDetailPage = () => {
             </div>
 
             {/* Field ID / QR */}
-            <div className="surface-card rounded-xl p-6">
+            <div className="surface-card rounded-lg p-6">
               <h3 className="label-eyebrow mb-4">Field Identification</h3>
               <div className="bg-muted rounded-lg p-4 flex items-center gap-4">
                 <div className="w-12 h-12 bg-card rounded-lg flex items-center justify-center border border-border shrink-0">

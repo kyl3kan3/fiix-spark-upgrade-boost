@@ -51,7 +51,7 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  return (
  <div className="space-y-4">
  {[1, 2, 3].map((index) => (
- <div key={index} className="bg-card border border-border rounded-xl p-6">
+ <div key={index} className="bg-card border border-border rounded-lg p-6">
  <div className="flex flex-col lg:flex-row lg:items-center gap-6">
  <div className="space-y-2 flex-1">
  <Skeleton className="h-5 w-3/4" />
@@ -70,7 +70,7 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
 
  if (inspections.length === 0) {
  return (
- <div className="bg-card border border-border rounded-xl shadow-sm text-center py-16">
+ <div className="bg-card border border-border rounded-lg shadow-sm text-center py-16">
  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
  <h3 className="font-headline text-lg font-semibold text-foreground mb-2">No inspections found</h3>
  <p className="text-muted-foreground mb-6 text-sm">
@@ -89,7 +89,7 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  {inspections.map((inspection) => (
  <div
  key={inspection.id}
- className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/10 transition-all cursor-pointer group overflow-hidden"
+ className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/10 transition-all cursor-pointer group overflow-hidden"
  onClick={() => navigate(`/inspections/${inspection.id}`)}
  >
  <div className="p-6 flex flex-col lg:flex-row lg:items-center gap-6">

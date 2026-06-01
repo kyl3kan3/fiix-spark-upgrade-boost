@@ -75,7 +75,7 @@ const LocationsPage = () => {
        {/* Summary bento — only when data exists */}
        {totalLocations > 0 && (
          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-           <div className="surface-card rounded-xl p-5 flex flex-col justify-between min-h-[100px]">
+           <div className="surface-card rounded-lg p-5 flex flex-col justify-between min-h-[100px]">
              <span className="label-eyebrow mb-2">Total Facilities</span>
              <div>
                <p className="font-headline text-3xl font-bold text-foreground leading-none mb-1">
@@ -88,7 +88,7 @@ const LocationsPage = () => {
              </div>
            </div>
 
-           <div className="surface-card rounded-xl p-5 flex flex-col justify-between min-h-[100px]">
+           <div className="surface-card rounded-lg p-5 flex flex-col justify-between min-h-[100px]">
              <span className="label-eyebrow mb-2">Site Hierarchy</span>
              <div>
                <p className="font-headline text-3xl font-bold text-foreground leading-none mb-1">
