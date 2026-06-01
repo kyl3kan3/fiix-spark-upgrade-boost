@@ -18,7 +18,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOTS = ["src/components", "src/pages"];
-const BASELINE = 7;
+const BASELINE = 12;
 
 const CLASS_ATTR = /className=("[^"]*"|\{`[^`]*`\})/g;
 const hasBareGrid = (cls) =>

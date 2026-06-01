@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { getAssetById } from "@/services/assets/assetQueries";
@@ -55,11 +54,6 @@ const AssetDetailPage = () => {
 
   return (
     <DashboardLayout>
-      <Helmet>
-        <title>{asset.name} | MaintenEase</title>
-        <meta name="description" content={asset.description || `Asset detail for ${asset.name}`} />
-      </Helmet>
-
       {/* Breadcrumb & Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 p-4 md:p-8 pb-0">
         <div>
@@ -76,6 +70,7 @@ const AssetDetailPage = () => {
         <div className="flex gap-3">
           <Link
             to={`/assets/${asset.id}/edit`}
+            aria-label="Edit asset"
             className="text-primary font-label-md text-label-md hover:underline flex items-center gap-1 bg-transparent px-2 py-1"
           >
             <MaterialIcon name="edit" className="text-[20px]" /> Edit Details
@@ -242,7 +237,7 @@ const AssetDetailPage = () => {
               >
                 <MaterialIcon name="edit" className="text-primary mt-0.5" />
                 <div>
-                  <p className="font-label-md text-label-md text-on-surface">Edit Asset Details</p>
+                  <p className="font-label-md text-label-md text-on-surface">Update Specifications</p>
                   <p className="font-body-md text-body-md text-secondary text-sm mt-1">Update specifications and metadata.</p>
                 </div>
               </Link>
