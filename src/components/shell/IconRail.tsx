@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { LogOut, Moon, Plus, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -50,26 +50,31 @@ const IconRail: React.FC<IconRailProps> = () => {
  });
 
  return (
- <aside className="hidden lg:flex flex-col w-[248px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen fixed left-0 top-0 z-40">
- {/* Brand */}
- <div className="h-20 flex items-center gap-3 px-5 border-b border-sidebar-border">
- <NavLink
- to="/dashboard"
- className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground font-display font-extrabold text-xl flex items-center justify-center shadow-soft"
- >
- M
+ <aside className="hidden lg:flex flex-col w-[240px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen fixed left-0 top-0 z-40">
+ {/* Brand — Clean Tech: serif headline, no gradient block */}
+ <div className="px-6 pt-6 pb-4">
+ <NavLink to="/dashboard" className="block">
+ <h1 className="font-headline text-2xl font-bold text-primary tracking-tight">MaintenEase</h1>
+ <p className="text-xs text-muted-foreground font-medium mt-0.5">Facility Management</p>
  </NavLink>
- <div className="flex flex-col leading-tight">
- <span className="font-display font-extrabold text-lg text-foreground tracking-tight">MaintenEase</span>
- <span className="text-xs text-muted-foreground font-medium">Easy maintenance</span>
  </div>
+
+ {/* Primary CTA — Clean Tech */}
+ <div className="px-6 mb-4">
+ <button
+ onClick={() => navigate("/work-orders/new")}
+ className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-lg text-sm font-semibold shadow-sm hover:bg-primary-variant transition-colors"
+ >
+ <Plus className="h-4 w-4" />
+ New Work Order
+ </button>
  </div>
 
  {/* Nav */}
- <nav className="flex-1 min-h-0 overflow-y-auto py-4 px-3">
+ <nav className="flex-1 min-h-0 overflow-y-auto px-3 pb-4">
  {grouped.map((group) => (
- <div key={group.name} className="mb-5 last:mb-0">
- <div className="label-eyebrow px-3 mb-2">{group.name}</div>
+ <div key={group.name} className="mb-4 last:mb-0">
+ <div className="label-eyebrow px-3 mb-1.5">{group.name}</div>
  {group.items.map((item) => {
  const Icon = item.icon;
  return (
@@ -79,18 +84,14 @@ const IconRail: React.FC<IconRailProps> = () => {
  data-tour={`nav-${item.href.replace(/^\//, "").replace(/\//g, "-")}`}
  className={({ isActive }) =>
  cn(
- "flex items-center gap-3 h-12 px-3 my-1 rounded-2xl transition-all duration-200 text-base font-bold",
- "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
- isActive && "bg-gradient-primary text-primary-foreground shadow-soft hover:bg-gradient-primary hover:text-primary-foreground"
+ "flex items-center gap-3 h-10 pl-3 pr-3 my-0.5 rounded-r-lg transition-colors duration-200 text-sm font-medium border-l-4 border-transparent",
+ "text-sidebar-foreground hover:bg-sidebar-accent",
+ isActive && "border-primary bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
  )
  }
  >
- {({ isActive }) => (
- <>
- <Icon className="h-5 w-5 shrink-0" strokeWidth={isActive ? 2.5 : 2.2} />
+ <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} />
  <span className="truncate">{item.label}</span>
- </>
- )}
  </NavLink>
  );
  })}
@@ -98,37 +99,37 @@ const IconRail: React.FC<IconRailProps> = () => {
  ))}
  </nav>
 
- {/* Footer */}
+ {/* Footer — Clean Tech: profile + Support/Logout slots */}
  <div className="border-t border-sidebar-border p-3 space-y-1">
  <button
  onClick={() => navigate("/profile")}
- className="w-full flex items-center gap-3 p-2 rounded-2xl hover:bg-sidebar-accent transition-colors"
+ className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent transition-colors"
  >
- <Avatar className="h-11 w-11 ring-2 ring-sidebar-border">
+ <Avatar className="h-9 w-9">
  <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "User"} />
- <AvatarFallback className="bg-gradient-primary text-primary-foreground font-extrabold">
+ <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">
  {initial}
  </AvatarFallback>
  </Avatar>
  <div className="flex flex-col items-start leading-tight min-w-0 flex-1">
- <span className="text-sm font-bold text-foreground truncate w-full text-left">
+ <span className="text-sm font-semibold text-foreground truncate w-full text-left">
  {profile?.first_name || profile?.email?.split("@")[0] || "Welcome"}
  </span>
- <span className="text-xs text-muted-foreground">View profile</span>
+ <span className="text-xs text-muted-foreground truncate w-full text-left">View profile</span>
  </div>
  </button>
 
  <div className="flex gap-1">
  <button
  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
- className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+ className="flex-1 h-9 flex items-center justify-center gap-2 rounded-lg text-xs font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
  >
  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
  <span>{theme === "dark" ? "Light" : "Dark"}</span>
  </button>
  <button
  onClick={handleLogout}
- className="flex-1 h-11 flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-sidebar-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
+ className="flex-1 h-9 flex items-center justify-center gap-2 rounded-lg text-xs font-medium text-sidebar-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
  >
  <LogOut className="h-4 w-4" />
  <span>Sign out</span>
