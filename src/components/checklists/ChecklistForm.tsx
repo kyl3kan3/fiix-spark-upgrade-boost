@@ -275,27 +275,41 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
 
  return (
  <DashboardLayout>
- <div className="p-6">
- <Button 
- variant="outline" 
+ <div className="px-4 md:px-6 lg:px-8 py-6">
+ <Button
+ variant="ghost"
+ size="sm"
  onClick={() => navigate("/checklists")}
- className="mb-4"
+ className="mb-5 text-muted-foreground hover:text-foreground"
  >
  <ArrowLeft className="mr-2 h-4 w-4" />
  Back to Checklists
  </Button>
 
  <div className="max-w-4xl mx-auto">
- <h1 className="text-3xl font-bold mb-6">
- {mode === "create" ? "Create New Checklist" : "Edit Checklist"}
+ {/* Page heading */}
+ <div className="mb-7">
+ <h1 className="font-headline text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+ {mode === "create" ? "New PM Checklist" : "Edit Checklist"}
  </h1>
+ <p className="text-muted-foreground text-sm mt-1">
+ {mode === "create"
+ ? "Build a reusable inspection checklist for recurring maintenance tasks."
+ : "Update the checklist template details and items."}
+ </p>
+ </div>
 
  <form onSubmit={handleSubmit} className="space-y-6">
+ {/* Basic info */}
+ <div className="bg-card border border-border rounded-xl shadow-sm p-6">
  <BasicInformationSection
  formData={formData}
  onUpdate={handleBasicInfoUpdate}
  />
+ </div>
 
+ {/* Items builder */}
+ <div className="bg-card border border-border rounded-xl shadow-sm p-6">
  <ChecklistItemsSection
  items={formData.items}
  onAddItem={addItem}
@@ -303,7 +317,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  onUpdateItem={updateItem}
  onMoveItem={moveItem}
  />
+ </div>
 
+ {/* Asset selector */}
+ <div className="bg-card border border-border rounded-xl shadow-sm p-6">
  <ChecklistAssetsSelector
  selectedAssetIds={formData.assetIds}
  onChange={(ids) => setFormData(prev => ({ ...prev, assetIds: ids }))}
@@ -312,9 +329,10 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  setFormData((prev) => ({ ...prev, assetOffsets: offsets }))
  }
  />
+ </div>
 
- {/* Submit Button */}
- <div className="flex justify-end gap-4">
+ {/* Action row */}
+ <div className="flex justify-end gap-3 pt-2 pb-8">
  <Button
  type="button"
  variant="outline"
@@ -330,7 +348,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  {createMutation.isPending || updateMutation.isPending
  ? "Saving..."
  : mode === "create"
- ? "Create Checklist"
+ ? "Publish"
  : "Update Checklist"
  }
  </Button>

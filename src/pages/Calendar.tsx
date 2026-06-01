@@ -60,25 +60,40 @@ const CalendarPage = () => {
  return (
  <DashboardLayout>
  <PageHeader
- title="Calendar"
- description="See what's planned this week — jobs, check-ups, and recurring tasks."
+ title="PM Scheduler"
+ description="Manage and forecast preventive maintenance tasks."
  actions={
- <Button variant="accent" size="lg" onClick={handleScheduleEvent}>
- <CalendarIcon className="h-4 w-4" />
- Add to calendar
+ <Button size="lg" onClick={handleScheduleEvent}>
+ <CalendarIcon className="h-4 w-4 mr-1.5" />
+ Add to Calendar
  </Button>
  }
  />
  <div className="px-4 md:px-6 lg:px-8 py-6">
  <Tabs defaultValue="calendar" className="w-full">
- <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
- <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendar</TabsTrigger>
- <TabsTrigger value="daily-log" className="text-xs sm:text-sm">Today's notes</TabsTrigger>
- <TabsTrigger value="logs-list" className="text-xs sm:text-sm">All notes</TabsTrigger>
+ <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
+ <TabsTrigger
+ value="calendar"
+ className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground -mb-px"
+ >
+ Calendar
+ </TabsTrigger>
+ <TabsTrigger
+ value="daily-log"
+ className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground -mb-px"
+ >
+ Today's Notes
+ </TabsTrigger>
+ <TabsTrigger
+ value="logs-list"
+ className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground -mb-px"
+ >
+ All Notes
+ </TabsTrigger>
  </TabsList>
- 
+
  <TabsContent value="calendar" className="mt-0">
- <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
+ <div className="flex flex-col lg:grid lg:grid-cols-4 gap-5">
  <div className="lg:col-span-1 order-2 lg:order-1">
  <CalendarSidebar
  date={date}
@@ -89,7 +104,6 @@ const CalendarPage = () => {
  hasEvents={hasEvents}
  />
  </div>
-
  <div className="lg:col-span-3 order-1 lg:order-2">
  <CalendarContent
  date={date}
@@ -101,9 +115,9 @@ const CalendarPage = () => {
  </div>
  </div>
  </TabsContent>
- 
+
  <TabsContent value="daily-log" className="mt-0">
- <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
+ <div className="flex flex-col lg:grid lg:grid-cols-4 gap-5">
  <div className="lg:col-span-1 order-2 lg:order-1">
  <CalendarSidebar
  date={date}
@@ -114,19 +128,18 @@ const CalendarPage = () => {
  hasEvents={hasEvents}
  />
  </div>
- 
  <div className="lg:col-span-3 order-1 lg:order-2">
  {date ? (
  <DailyLog selectedDate={date} />
  ) : (
- <div className="text-center py-8 text-muted-foreground">
- <p className="text-sm sm:text-base">Please select a date to view or create a daily log entry.</p>
+ <div className="bg-card border border-border rounded-xl p-12 text-center text-muted-foreground">
+ <p className="text-sm">Please select a date to view or create a daily log entry.</p>
  </div>
  )}
  </div>
  </div>
  </TabsContent>
- 
+
  <TabsContent value="logs-list" className="mt-0">
  <DailyLogsList onViewLog={handleViewLogFromList} />
  </TabsContent>

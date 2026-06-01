@@ -71,7 +71,7 @@ const WeekView: React.FC = () => {
                     {time}
                   </span>
                   {event ? (
-                    <span className="flex-1 text-right text-sm px-2 py-1 bg-blue-50 border border-blue-200 rounded">
+                    <span className="flex-1 text-right text-sm px-2 py-1 bg-primary/10 border border-primary/20 rounded text-primary">
                       {event}
                     </span>
                   ) : (
@@ -106,7 +106,7 @@ const WeekView: React.FC = () => {
                       return (
                         <td key={`${day}-${time}`} className="border p-1 sm:p-2 min-w-[100px]">
                           {event ? (
-                            <div className="p-1 bg-blue-50 border border-blue-200 rounded text-xs">
+                            <div className="p-1 bg-primary/10 border border-primary/20 rounded text-xs text-primary">
                               {event}
                             </div>
                           ) : null}

@@ -75,58 +75,60 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
  });
 
  const getStatusColor = (status: string) => {
- switch(status) {
- case 'scheduled':
- return 'border-blue-300 bg-blue-50';
- case 'in-progress':
- return 'border-yellow-300 bg-yellow-50';
- case 'completed':
- return 'border-green-300 bg-green-50';
- case 'failed':
- return 'border-red-300 bg-red-50';
- case 'cancelled':
- return 'border-border bg-muted';
- default:
- return 'border-border bg-muted';
+ switch (status) {
+ case 'scheduled': return 'border-primary/30 bg-primary/8 text-primary';
+ case 'in-progress': return 'border-warning/30 bg-warning/8 text-warning';
+ case 'completed': return 'border-success/30 bg-success/8 text-success';
+ case 'failed': return 'border-destructive/30 bg-destructive/8 text-destructive';
+ case 'cancelled': return 'border-border bg-muted text-muted-foreground';
+ default: return 'border-border bg-muted text-muted-foreground';
  }
  };
- 
+
  return (
- <Card className="p-4">
- <h2 className="text-xl font-semibold mb-4">
+ <Card className="bg-card border border-border rounded-xl shadow-sm p-5">
+ <h2 className="font-headline text-xl font-semibold text-foreground mb-5">
  {format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}
  </h2>
- 
- <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
+
+ <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3">
  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
- <div key={day} className="text-center text-[10px] sm:text-sm font-medium">
- <span className="sm:hidden">{day.charAt(0)}</span>
- <span className="hidden sm:inline">{day}</span>
+ <div key={day} className="text-center">
+ <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider sm:hidden">{day.charAt(0)}</span>
+ <span className="hidden sm:inline text-xs font-semibold text-muted-foreground uppercase tracking-wider">{day}</span>
  </div>
  ))}
  </div>
- 
- <div className="grid grid-cols-7 gap-1 sm:gap-2">
+
+ <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
  {Array.from({ length: daysInMonth }, (_, i) => {
  const day = i + 1;
  const date = new Date(currentYear, currentMonth, day);
  const dayInspections = inspectionsByDay[day] || [];
- 
+ const isToday = date.getDate() === currentDate.getDate() &&
+ date.getMonth() === currentDate.getMonth() &&
+ date.getFullYear() === currentDate.getFullYear();
+
  return (
- <div 
- key={day} 
- className={`min-h-16 sm:min-h-24 border rounded-md p-0.5 sm:p-1 text-[10px] sm:text-xs ${ date.getDate() === currentDate.getDate() ? 'border-blue-500 bg-blue-50' : 'border-border' }`}
+ <div
+ key={day}
+ className={`min-h-14 sm:min-h-20 border rounded-lg p-0.5 sm:p-1 text-[10px] sm:text-xs hover:border-primary/30 transition-colors ${
+ isToday
+ ? 'border-primary bg-primary/5'
+ : 'border-border/60 hover:bg-muted/30'
+ }`}
  >
- <div className="text-right text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">{day}</div>
- 
- <div className="space-y-1">
+ <div className={`text-right text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1 ${isToday ? 'text-primary' : 'text-foreground'}`}>
+ {day}
+ </div>
+ <div className="space-y-0.5">
  {dayInspections.map(inspection => (
- <div 
- key={inspection.id} 
- className={`p-1 text-xs rounded border ${getStatusColor(inspection.status)}`}
+ <div
+ key={inspection.id}
+ className={`p-0.5 sm:p-1 text-[9px] sm:text-xs rounded border ${getStatusColor(inspection.status)}`}
  >
- <div className="font-medium truncate">{inspection.title}</div>
- <div className="text-muted-foreground truncate">{inspection.assetName}</div>
+ <div className="font-semibold truncate">{inspection.title}</div>
+ <div className="truncate opacity-70">{inspection.assetName}</div>
  </div>
  ))}
  </div>

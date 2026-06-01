@@ -24,14 +24,14 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
  filteredEvents,
 }) => {
  return (
- <Card className="w-full">
- <CardHeader className="pb-2 px-4 sm:px-6">
+ <Card className="w-full bg-card border border-border rounded-xl shadow-sm">
+ <CardHeader className="pb-4 px-5 border-b border-border">
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
  <div className="min-w-0 flex-1">
- <CardTitle className="text-lg sm:text-xl truncate">
+ <CardTitle className="font-headline text-xl text-foreground truncate">
  {date ? format(date, "MMMM d, yyyy") : "Scheduled Events"}
  </CardTitle>
- <CardDescription className="text-xs sm:text-sm">
+ <CardDescription className="text-sm text-muted-foreground mt-0.5">
  {technicianFilter === "all"
  ? "All technicians"
  : `Technician: ${technicianFilter}`}
@@ -40,27 +40,27 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
  <Tabs
  value={activeView}
  onValueChange={setActiveView}
- className="w-full sm:w-auto sm:min-w-[260px]"
+ className="w-full sm:w-auto sm:min-w-[240px]"
  >
- <TabsList className="grid w-full grid-cols-3">
- <TabsTrigger value="day" className="text-xs sm:text-sm">Day</TabsTrigger>
- <TabsTrigger value="week" className="text-xs sm:text-sm">Week</TabsTrigger>
- <TabsTrigger value="month" className="text-xs sm:text-sm">Month</TabsTrigger>
+ <TabsList className="bg-muted/60 rounded-lg p-1">
+ <TabsTrigger value="day" className="text-xs sm:text-sm rounded-md data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm font-semibold">Day</TabsTrigger>
+ <TabsTrigger value="week" className="text-xs sm:text-sm rounded-md data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm font-semibold">Week</TabsTrigger>
+ <TabsTrigger value="month" className="text-xs sm:text-sm rounded-md data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm font-semibold">Month</TabsTrigger>
  </TabsList>
  </Tabs>
  </div>
  </CardHeader>
- 
- <CardContent className="px-4 sm:px-6">
+
+ <CardContent className="px-5 pt-5">
  <Tabs value={activeView}>
  <TabsContent value="day" className="mt-0">
  <DayView events={filteredEvents} />
  </TabsContent>
- 
+
  <TabsContent value="week" className="mt-0">
  <WeekView />
  </TabsContent>
- 
+
  <TabsContent value="month" className="mt-0">
  <MonthView events={filteredEvents} />
  </TabsContent>
