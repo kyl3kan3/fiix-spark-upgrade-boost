@@ -18,13 +18,10 @@ export const AssignmentField = ({ form, technicians = [] }: AssignmentFieldProps
  name="assigned_to"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Assign To</FormLabel>
- <Select 
- onValueChange={field.onChange} 
- value={field.value || "none"}
- >
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Assign To Technician</FormLabel>
+ <Select onValueChange={field.onChange} value={field.value || "none"}>
  <FormControl>
- <SelectTrigger>
+ <SelectTrigger className="bg-muted/30 border-border/60 focus:ring-primary/30">
  <SelectValue placeholder="Assign to technician (optional)" />
  </SelectTrigger>
  </FormControl>

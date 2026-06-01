@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -111,6 +109,21 @@ interface JobCardProps {
  isUpdating: boolean;
 }
 
+const priorityPillClasses = (p: WorkOrderPriority): string => {
+ switch (p) {
+ case "urgent":
+ return "bg-destructive/10 text-destructive border-destructive/30";
+ case "high":
+ return "bg-destructive/10 text-destructive border-destructive/30";
+ case "medium":
+ return "bg-warning/10 text-warning border-warning/30";
+ case "low":
+ return "bg-muted text-muted-foreground border-border";
+ default:
+ return "bg-muted text-muted-foreground border-border";
+ }
+};
+
 const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating }) => {
  const navigate = useNavigate();
  const due = job.due_date ? new Date(job.due_date) : null;
@@ -121,72 +134,87 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating }) => {
  : "Unassigned";
 
  return (
- <Card
+ <div
  onClick={() => navigate(`/work-orders/${job.id}`)}
- className="group cursor-pointer border-2 hover:border-primary/40 transition-all p-4 shadow-soft"
+ className="group cursor-pointer rounded-xl bg-surface-container-lowest border border-transparent hover:border-primary/10 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
  >
- <div className="flex items-start justify-between gap-3">
- <div className="min-w-0 flex-1">
- <div className="font-display font-extrabold text-base leading-tight line-clamp-2">
- {job.title}
- </div>
- {job.description && (
- <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
- {job.description}
- </p>
- )}
- </div>
- <ChevronRight className="h-5 w-5 text-muted-foreground/40 group-hover:text-primary shrink-0 mt-1" />
- </div>
-
- <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold text-muted-foreground">
- {job.asset?.name && (
- <span className="inline-flex items-center gap-1.5">
- <MapPin className="h-3.5 w-3.5" />
- <span className="truncate max-w-[140px]">{job.asset.name}</span>
+ {/* Card body */}
+ <div className="p-6">
+ <div className="flex justify-between items-start mb-4">
+ <span className="text-xs font-medium text-muted-foreground tracking-wider uppercase">
+ #{job.id.split("-")[0].toUpperCase()}
  </span>
- )}
- <span className="inline-flex items-center gap-1.5">
- <User className="h-3.5 w-3.5" />
- {assignee}
- </span>
- {due && (
  <span className={cn(
- "inline-flex items-center gap-1.5",
- overdue && "text-destructive",
+ "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border",
+ priorityPillClasses(job.priority),
  )}>
- <CalendarIcon className="h-3.5 w-3.5" />
- {overdue ? "Overdue · " : ""}{format(due, "MMM d")}
+ {priorityLabel(job.priority)}
  </span>
- )}
  </div>
 
- <div className="mt-3 flex items-center justify-between gap-2">
- <Badge
- variant="outline"
- className={cn(
- "font-bold",
- (job.priority === "urgent" || job.priority === "high") && "border-destructive/40 text-destructive",
+ <h4 className="font-headline font-semibold text-base leading-snug text-foreground mb-1.5 line-clamp-2">
+ {job.title}
+ </h4>
+ {job.description && (
+ <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{job.description}</p>
  )}
+
+ <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border/60 pt-5">
+ <div>
+ <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Assigned</p>
+ <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+ <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+ <span className="truncate">{assignee}</span>
+ </p>
+ </div>
+ <div>
+ <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Due</p>
+ {due ? (
+ <p className={cn(
+ "text-sm font-semibold flex items-center gap-1.5",
+ overdue ? "text-destructive" : "text-foreground",
+ )}>
+ <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
+ {overdue ? "Overdue · " : ""}{format(due, "MMM d")}
+ </p>
+ ) : (
+ <p className="text-sm text-muted-foreground">—</p>
+ )}
+ </div>
+ {job.asset?.name && (
+ <div className="col-span-2">
+ <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Asset</p>
+ <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+ <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+ <span className="truncate">{job.asset.name}</span>
+ </p>
+ </div>
+ )}
+ </div>
+ </div>
+
+ {/* Card footer */}
+ <div className="bg-muted/20 px-6 py-3.5 flex justify-between items-center group-hover:bg-muted/40 transition-colors border-t border-border/40">
+ <button
+ className="text-xs font-bold text-primary hover:underline flex items-center gap-1 uppercase tracking-wider"
+ onClick={(e) => { e.stopPropagation(); navigate(`/work-orders/${job.id}`); }}
  >
- {priorityLabel(job.priority)}
- </Badge>
+ <ChevronRight className="h-3.5 w-3.5" /> View
+ </button>
  {next && (
  <Button
  size="sm"
- variant={job.status === "in_progress" ? "default" : "secondary"}
+ variant={job.status === "in_progress" ? "default" : "outline"}
  disabled={isUpdating}
- onClick={(e) => {
- e.stopPropagation();
- onAdvance(job);
- }}
+ onClick={(e) => { e.stopPropagation(); onAdvance(job); }}
+ className="h-7 text-xs"
  >
- <NextIcon status={job.status} className="h-4 w-4" />
+ <NextIcon status={job.status} className="h-3.5 w-3.5" />
  {nextStatusLabel(job.status)}
  </Button>
  )}
  </div>
- </Card>
+ </div>
  );
 };
 
@@ -238,29 +266,29 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const visibleBuckets = activeBucket === "all" ? BUCKETS : BUCKETS.filter(b => b.key === activeBucket);
 
  return (
- <div className="space-y-6">
+ <div className="space-y-8">
  {/* Search + bucket filter chips */}
- <div className="space-y-3">
- <div className="relative">
- <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+ <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+ <div className="relative flex-1 max-w-md">
+ <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
  <Input
  value={search}
  onChange={(e) => setSearch(e.target.value)}
- placeholder="Search a job, place, or thing…"
- className="pl-10 h-12 text-base"
+ placeholder="Search jobs, assets, or locations…"
+ className="pl-10 h-11 bg-surface-container-lowest border-border/60 focus-visible:ring-primary/30"
  />
  </div>
  <div className="flex flex-wrap gap-2">
  <button
  onClick={() => setActiveBucket("all")}
  className={cn(
- "px-4 py-2 rounded-full text-sm font-bold border-2 transition-colors",
+ "px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200",
  activeBucket === "all"
- ? "bg-foreground text-background border-foreground"
- : "bg-card text-foreground border-border hover:border-foreground/40",
+ ? "bg-primary text-primary-foreground border-primary shadow-sm"
+ : "bg-surface-container-lowest text-foreground border-border hover:border-primary/40 hover:bg-muted/30",
  )}
  >
- Everything · {filtered.length}
+ All · {filtered.length}
  </button>
  {BUCKETS.map((b) => {
  const count = grouped[b.key].length;
@@ -271,13 +299,13 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  key={b.key}
  onClick={() => setActiveBucket(active ? "all" : b.key)}
  className={cn(
- "px-4 py-2 rounded-full text-sm font-bold border-2 transition-colors inline-flex items-center gap-2",
+ "px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 inline-flex items-center gap-1.5",
  active
- ? "bg-foreground text-background border-foreground"
- : "bg-card text-foreground border-border hover:border-foreground/40",
+ ? "bg-primary text-primary-foreground border-primary shadow-sm"
+ : "bg-surface-container-lowest text-foreground border-border hover:border-primary/40 hover:bg-muted/30",
  )}
  >
- <Icon className="h-4 w-4" />
+ <Icon className="h-3.5 w-3.5" />
  {b.label} · {count}
  </button>
  );
@@ -286,27 +314,28 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  </div>
 
  {/* Buckets */}
- <div className="space-y-6">
+ <div className="space-y-8">
  {visibleBuckets.map((b) => {
  const items = grouped[b.key];
  const Icon = b.icon;
  return (
- <section key={b.key} className="space-y-3">
+ <section key={b.key} className="space-y-4">
+ {/* Bucket header */}
  <div className={cn(
- "flex items-center gap-3 rounded-2xl border-2 px-4 py-3",
+ "flex items-center gap-3 rounded-xl border px-4 py-3",
  b.surface,
  )}>
- <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", b.accent)}>
- <Icon className="h-5 w-5" />
+ <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center shrink-0", b.accent)}>
+ <Icon className="h-4.5 w-4.5" />
  </div>
  <div className="flex-1 min-w-0">
- <div className="font-display font-extrabold text-lg leading-tight">
+ <div className="font-headline font-bold text-base leading-tight">
  {b.label}
  </div>
- <div className="text-xs font-semibold text-muted-foreground">{b.hint}</div>
+ <div className="text-xs text-muted-foreground">{b.hint}</div>
  </div>
  <div className={cn(
- "h-9 min-w-9 px-2.5 rounded-full flex items-center justify-center font-display font-extrabold",
+ "h-8 min-w-8 px-2.5 rounded-full flex items-center justify-center text-sm font-bold",
  b.accent,
  )}>
  {items.length}
@@ -314,11 +343,11 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  </div>
 
  {items.length === 0 ? (
- <div className="text-sm text-muted-foreground italic px-2">
+ <div className="text-sm text-muted-foreground italic px-1 py-2">
  Nothing here right now.
  </div>
  ) : (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
  {items.map((job) => (
  <JobCard
  key={job.id}

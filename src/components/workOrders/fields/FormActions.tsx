@@ -12,16 +12,21 @@ export const FormActions = ({ isSubmitting, isEditing }: FormActionsProps) => {
  const navigate = useNavigate();
  
  return (
- <div className="flex justify-end space-x-2">
- <Button 
- type="button" 
- variant="outline" 
+ <div className="flex justify-end gap-3 pt-2">
+ <Button
+ type="button"
+ variant="outline"
  onClick={() => navigate("/work-orders")}
  disabled={isSubmitting}
+ className="uppercase tracking-wide font-semibold text-xs px-6"
  >
  Cancel
  </Button>
- <Button type="submit" disabled={isSubmitting}>
+ <Button
+ type="submit"
+ disabled={isSubmitting}
+ className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+ >
  {isEditing ? "Update Work Order" : "Create Work Order"}
  </Button>
  </div>
