@@ -3,20 +3,30 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 interface FormActionsProps {
- isLoading: boolean;
+  isLoading: boolean;
 }
 
 const FormActions: React.FC<FormActionsProps> = ({ isLoading }) => {
- return (
- <div className="flex justify-end space-x-4 pt-6 border-t">
- <Button type="button" variant="outline" onClick={() => window.history.back()}>
- Cancel
- </Button>
- <Button type="submit" disabled={isLoading}>
- {isLoading ? "Saving..." : "Save Vendor"}
- </Button>
- </div>
- );
+  return (
+    <div className="flex justify-end gap-3 pt-2">
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={() => window.history.back()}
+        disabled={isLoading}
+        className="uppercase tracking-wide font-semibold text-xs px-6"
+      >
+        Cancel
+      </Button>
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+      >
+        {isLoading ? "Saving…" : "Save Vendor"}
+      </Button>
+    </div>
+  );
 };
 
 export default FormActions;
