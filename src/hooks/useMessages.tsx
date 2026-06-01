@@ -19,6 +19,7 @@ export const useMessages = (recipientId: string | undefined) => {
  }
 
  let subscription: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
 
  const fetchMessages = async () => {
  try {
@@ -42,7 +43,8 @@ export const useMessages = (recipientId: string | undefined) => {
  // Mark messages from this recipient as read
  markAsRead();
 
-      subscription = supabase
+          if (cancelled) return;
+          subscription = supabase
         .channel(getUserMessagesChannelTopic(currentUserId, recipientId), {
  config: { private: true },
  })
@@ -81,6 +83,7 @@ export const useMessages = (recipientId: string | undefined) => {
  fetchMessages();
 
  return () => {
+      cancelled = true;
  if (subscription) {
  supabase.removeChannel(subscription);
  }
