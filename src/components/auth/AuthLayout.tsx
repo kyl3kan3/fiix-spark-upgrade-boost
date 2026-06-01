@@ -1,106 +1,60 @@
 import React, { ReactNode } from "react";
-import { Wrench } from "lucide-react";
+import { Building2 } from "lucide-react";
 
 interface AuthLayoutProps {
- children: ReactNode;
+  children: ReactNode;
 }
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
- return (
- <div className="min-h-screen w-full grid lg:grid-cols-[1.1fr,1fr] bg-background">
- {/* Industrial blueprint panel */}
- <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-foreground text-background">
- {/* Blueprint grid backdrop */}
- <div aria-hidden className="absolute inset-0 bg-blueprint-grid opacity-[0.08]" />
- <div aria-hidden className="absolute inset-0 bg-blueprint-grid-fine opacity-[0.04]" />
+  return (
+    <main className="w-full h-screen flex flex-col md:flex-row">
+      {/* Left side: Brand imagery & quote — hidden on mobile */}
+      <div className="hidden md:flex flex-1 relative overflow-hidden bg-primary">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/70 to-primary/40 z-10" />
 
- {/* Corner registration marks */}
- <div aria-hidden className="absolute top-6 right-6 text-background/30 font-mono text-[10px] tracking-[0.3em] uppercase">
- ME · OPS / V.04
- </div>
- <div aria-hidden className="absolute bottom-6 right-6 text-background/30 font-mono text-[10px] tracking-[0.3em] uppercase">
- AUTH · 001
- </div>
+        {/* Brand logo top-left */}
+        <div className="relative z-20 p-8 flex flex-col justify-between h-full w-full">
+          <div className="flex items-center gap-2 text-primary-foreground">
+            <Building2 className="h-7 w-7" strokeWidth={1.5} />
+            <span className="font-headline text-xl font-bold tracking-tight">MaintenEase</span>
+          </div>
 
- {/* Brand */}
- <div className="relative flex items-center gap-3">
- <div className="h-9 w-9 border border-background/30 flex items-center justify-center">
- <Wrench className="h-4 w-4 text-accent" strokeWidth={1.5} />
- </div>
- <div className="leading-none">
- <div className="font-display font-bold text-lg tracking-tight">MaintenEase</div>
- <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-background/50 mt-1">
- Maintenance Operations
- </div>
- </div>
- </div>
+          {/* Quote / value proposition */}
+          <div className="mb-12 max-w-lg">
+            <h1 className="font-headline text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+              Precision Facility Management.
+            </h1>
+            <p className="text-base text-primary-foreground/85 leading-relaxed">
+              "MaintenEase transformed our operations. We moved from reactive fixes to
+              proactive maintenance, saving thousands in downtime and extending asset life
+              significantly."
+            </p>
+            <div className="mt-8 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground font-semibold text-sm">
+                SJ
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-primary-foreground">Sarah Jenkins</p>
+                <p className="text-xs text-primary-foreground/70">Director of Operations, Nexus Industrial</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
- {/* Schematic-style hero */}
- <div className="relative space-y-8 max-w-lg">
- <div className="label-eyebrow text-background/50">SECTION 01 — OVERVIEW</div>
- <h1 className="font-display text-5xl xl:text-6xl font-bold tracking-tight leading-[0.95]">
- Built for the
- <br />
- <span className="text-accent">field</span>, not the
- <br />
- boardroom.
- </h1>
- <div className="divider-ticked" />
- <p className="text-base text-background/70 leading-relaxed font-sans">
- Track equipment, dispatch work orders, and keep your crew aligned —
- with the precision of an engineer's notebook.
- </p>
+      {/* Right side: Auth form */}
+      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 bg-background relative overflow-y-auto">
+        {/* Mobile brand header */}
+        <div className="md:hidden absolute top-6 left-6 flex items-center gap-2 text-primary">
+          <Building2 className="h-6 w-6" strokeWidth={1.5} />
+          <span className="font-headline text-lg font-bold tracking-tight">MaintenEase</span>
+        </div>
 
- {/* Spec-sheet style feature list */}
- <div className="space-y-2 pt-2">
- {[
- ["WO·SYS", "Real-time work order dispatch"],
- ["RBAC", "Role-based access · multi-tenant"],
- ["INSP", "Templated checklists & inspections"],
- ["AST", "Asset hierarchy with QR identifiers"],
- ].map(([code, label]) => (
- <div key={code} className="flex items-center gap-4 py-1.5 border-t border-background/10">
- <span className="font-mono text-[11px] tracking-[0.18em] text-accent w-16 shrink-0">{code}</span>
- <span className="text-sm text-background/85">{label}</span>
- </div>
- ))}
- </div>
- </div>
-
- <div className="relative flex items-end justify-between text-[10px] font-mono uppercase tracking-[0.3em] text-background/40">
- <span>© {new Date().getFullYear()} MAINTENEASE</span>
- <span>SHEET 01 / 01</span>
- </div>
- </div>
-
- {/* Form panel */}
- <main className="flex items-center justify-center p-6 sm:p-10 lg:p-14 relative">
- <div aria-hidden className="absolute inset-0 bg-blueprint-grid opacity-[0.4] pointer-events-none" />
-
- <div className="relative w-full max-w-[420px]">
- {/* Mobile brand */}
- <div className="flex items-center gap-3 mb-8 lg:hidden">
- <div className="h-9 w-9 border border-foreground flex items-center justify-center">
- <Wrench className="h-4 w-4 text-accent" strokeWidth={1.5} />
- </div>
- <span className="font-display text-lg font-bold tracking-tight">MaintenEase</span>
- </div>
-
- {/* Ticket-style form card */}
- <div className="ticket-card-accent p-7 sm:p-9 space-y-7">
- <div className="label-eyebrow flex items-center justify-between">
- <span>FORM · ACCESS-001</span>
- <span className="text-accent">●</span>
- </div>
- {children}
- </div>
-
- <div className="mt-4 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
- <span>REV. 04 · 2026</span>
- <span>SECURE / TLS</span>
- </div>
- </div>
- </main>
- </div>
- );
+        <div className="w-full max-w-md mt-14 md:mt-0 space-y-8">
+          {children}
+        </div>
+      </div>
+    </main>
+  );
 };

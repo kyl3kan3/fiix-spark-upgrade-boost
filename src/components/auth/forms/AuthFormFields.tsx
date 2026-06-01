@@ -6,50 +6,50 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AUTH_FIELD_LABELS, AUTH_PLACEHOLDERS, AUTH_AUTOCOMPLETE } from "@/constants/authConstants";
 
 interface FormFieldProps {
- id: string;
- name: string;
- type: string;
- label: string;
- value: string;
- onChange: (value: string) => void;
- placeholder?: string;
- autoComplete?: string;
- required?: boolean;
- disabled?: boolean;
+  id: string;
+  name: string;
+  type: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  autoComplete?: string;
+  required?: boolean;
+  disabled?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
- id,
- name,
- type,
- label,
- value,
- onChange,
- placeholder,
- autoComplete,
- required = false,
- disabled = false,
+  id,
+  name,
+  type,
+  label,
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+  required = false,
+  disabled = false,
 }) => {
- return (
- <div className="space-y-2">
- <Label htmlFor={id} className="text-sm font-medium text-foreground">
- {label}
- {required && <span className="text-red-500 ml-1">*</span>}
- </Label>
- <Input
- id={id}
- name={name}
- type={type}
- value={value}
- onChange={(e) => onChange(e.target.value)}
- placeholder={placeholder}
- autoComplete={autoComplete}
- required={required}
- disabled={disabled}
- className="w-full"
- />
- </div>
- );
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+        {label}
+        {required && <span className="text-destructive ml-1">*</span>}
+      </Label>
+      <Input
+        id={id}
+        name={name}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        required={required}
+        disabled={disabled}
+        className="w-full bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+      />
+    </div>
+  );
 };
 
 interface CheckboxFieldProps {

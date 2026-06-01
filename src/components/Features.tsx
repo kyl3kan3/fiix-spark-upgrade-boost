@@ -35,13 +35,13 @@ const Features = () => {
  };
 
  return (
- <section id="features" className="py-20 bg-card">
+ <section id="features" className="py-20 bg-card border-y border-border">
  <div className="container mx-auto px-4">
  <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground animate-fade-in">
+ <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
  Powerful Features for Maintenance Excellence
  </h2>
- <p className="text-xl text-foreground max-w-2xl mx-auto mb-8">
+ <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
  MaintenEase brings everything you need to streamline your maintenance operations in one intuitive platform.
  </p>
  
@@ -75,8 +75,8 @@ const Features = () => {
  )}
 
  <div className="mt-16 text-center">
- <Button 
- className="bg-fiix-600 hover:bg-fiix-700 text-white px-8 py-6 text-lg group animate-fade-in"
+ <Button
+ className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 py-6 text-base group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
  onClick={handleExploreAll}
  >
  Explore All Features

@@ -20,16 +20,16 @@ const Testimonials = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="testimonials" className="py-20 bg-fiix-50">
+    <section id="testimonials" className="py-20 bg-muted/40 border-y border-border">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-fiix-100 text-fiix-600 mb-6">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-6">
             <Quote className="h-6 w-6" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
             Be one of our first customer stories
           </h2>
-          <p className="text-lg text-foreground/80 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             MaintenEase is brand-new and we're working hand-in-hand with our
             earliest teams. Start a trial and we'll personally onboard your
             assets, PMs, and reports — free.
@@ -37,7 +37,7 @@ const Testimonials = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-fiix-600 hover:bg-fiix-700 text-white px-8 group"
+              className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
               onClick={() => navigate("/auth?signup=true")}
             >
               Start your trial
@@ -46,6 +46,7 @@ const Testimonials = () => {
             <Button
               size="lg"
               variant="outline"
+              className="border-primary/20 text-primary hover:bg-primary/5"
               onClick={() => navigate("/pricing")}
             >
               See pricing

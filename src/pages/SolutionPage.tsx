@@ -86,93 +86,105 @@ const SolutionPage = () => {
  </Helmet>
  <MarketingJsonLd />
 
+ {/* Hero section */}
  <section className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
  <nav className="text-sm text-muted-foreground mb-6">
- <Link to="/solutions" className="hover:text-maintenease-600">Solutions</Link>
+ <Link to="/solutions" className="hover:text-primary transition-colors">Solutions</Link>
  <span className="mx-2">/</span>
  <span className="text-foreground">{solution.name}</span>
  </nav>
- <p className="text-sm font-medium text-maintenease-600 mb-3">{solution.name}</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-3xl">{solution.h1}</h1>
- <p className="text-xl text-foreground max-w-3xl mb-8">{solution.tagline}</p>
+ <p className="text-sm font-semibold text-secondary mb-3 uppercase tracking-wide">{solution.name}</p>
+ <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-3xl text-foreground">{solution.h1}</h1>
+ <p className="text-xl text-muted-foreground max-w-3xl mb-8 leading-relaxed">{solution.tagline}</p>
  <div className="flex flex-wrap gap-3 mb-12">
- <Button asChild size="lg"><Link to="/auth?signup=true">Start free</Link></Button>
+ <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-all">
+   <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
+ </Button>
  {LEAD_FORM_SLUGS.has(solution.slug) ? (
- <Button asChild size="lg" variant="outline"><a href="#talk-to-us">Talk to a specialist</a></Button>
+ <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
+   <a href="#talk-to-us">Talk to a specialist</a>
+ </Button>
  ) : (
- <Button asChild size="lg" variant="outline"><Link to="/pricing">See pricing</Link></Button>
+ <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
+   <Link to="/pricing">See pricing</Link>
+ </Button>
  )}
  </div>
- <p className="text-lg text-foreground leading-relaxed max-w-3xl">{solution.intro}</p>
+ <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{solution.intro}</p>
  </section>
 
- <section className="bg-muted border-y border-border py-16">
+ {/* Benefits section */}
+ <section className="bg-muted/40 border-y border-border py-16">
  <div className="container mx-auto px-4 max-w-5xl">
- <h2 className="text-3xl font-bold mb-10">Why teams switch to MaintenEase</h2>
+ <h2 className="font-headline text-3xl font-bold mb-10 text-foreground">Why teams switch to MaintenEase</h2>
  <div className="grid md:grid-cols-3 gap-6">
  {solution.benefits.map((b) => (
- <div key={b.title} className="p-6 rounded-lg bg-card border border-border">
+ <div key={b.title} className="p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
  <h3 className="text-lg font-semibold mb-2 text-foreground">{b.title}</h3>
- <p className="text-foreground">{b.body}</p>
+ <p className="text-muted-foreground text-sm leading-relaxed">{b.body}</p>
  </div>
  ))}
  </div>
  </div>
  </section>
 
+ {/* Features section */}
  <section className="container mx-auto px-4 py-16 max-w-5xl">
- <h2 className="text-3xl font-bold mb-10">What's included</h2>
+ <h2 className="font-headline text-3xl font-bold mb-10 text-foreground">What's included</h2>
  <div className="grid md:grid-cols-2 gap-6">
  {solution.features.map((f) => (
- <div key={f.title} className="p-6 rounded-lg border border-border bg-card">
+ <div key={f.title} className="p-6 rounded-xl border border-border bg-card shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
  <h3 className="text-lg font-semibold mb-2 text-foreground">{f.title}</h3>
- <p className="text-foreground">{f.body}</p>
+ <p className="text-muted-foreground text-sm leading-relaxed">{f.body}</p>
  </div>
  ))}
  </div>
  </section>
 
- <section className="bg-muted border-y border-border py-16">
+ {/* Use cases section */}
+ <section className="bg-muted/40 border-y border-border py-16">
  <div className="container mx-auto px-4 max-w-5xl">
- <h2 className="text-3xl font-bold mb-8">Built for teams like these</h2>
+ <h2 className="font-headline text-3xl font-bold mb-8 text-foreground">Built for teams like these</h2>
  <ul className="grid sm:grid-cols-2 gap-4">
  {solution.useCases.map((u) => (
  <li key={u} className="flex gap-3 items-start text-foreground">
- <Check className="h-5 w-5 text-maintenease-600 mt-0.5 shrink-0" />
- <span>{u}</span>
+ <Check className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+ <span className="text-sm">{u}</span>
  </li>
  ))}
  </ul>
  </div>
  </section>
 
+ {/* FAQ section */}
  <section className="container mx-auto px-4 py-16 max-w-3xl">
- <h2 className="text-3xl font-bold mb-8">Frequently asked questions</h2>
+ <h2 className="font-headline text-3xl font-bold mb-8 text-foreground">Frequently asked questions</h2>
  <div className="space-y-4">
  {solution.faqs.map((f) => (
- <div key={f.q} className="p-5 rounded-lg border border-border bg-card">
+ <div key={f.q} className="p-6 rounded-xl border border-border bg-card shadow-sm">
  <h3 className="font-semibold text-foreground mb-2">{f.q}</h3>
- <p className="text-foreground">{f.a}</p>
+ <p className="text-muted-foreground text-sm leading-relaxed">{f.a}</p>
  </div>
  ))}
  </div>
  </section>
 
+ {/* CTA banner */}
  {(() => {
  const lead = LEAD_FORM_COPY[solution.slug];
  const headline = lead?.ctaHeadline ?? `Ready to see ${solution.name} in action?`;
  const body = lead?.ctaBody ?? "Start a 14-day free trial. Most teams have their first work orders running within an hour.";
  return (
  <section className="container mx-auto px-4 pb-20 max-w-5xl">
- <div className="p-10 rounded-2xl bg-maintenease-600 text-white text-center">
- <h2 className="text-3xl md:text-4xl font-bold mb-3">{headline}</h2>
- <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto">{body}</p>
+ <div className="p-10 rounded-2xl text-center text-primary-foreground" style={{ background: "linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 18%))" }}>
+ <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3">{headline}</h2>
+ <p className="text-lg text-primary-foreground/85 mb-8 max-w-2xl mx-auto">{body}</p>
  <div className="flex flex-wrap gap-3 justify-center">
- <Button asChild size="lg" variant="secondary">
+ <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
  <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
  </Button>
  {LEAD_FORM_SLUGS.has(solution.slug) && (
- <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white/40 hover:bg-card/10 hover:text-white">
+ <Button asChild size="lg" variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground/30 hover:bg-primary-foreground/10">
  <a href="#talk-to-us">Talk to a specialist</a>
  </Button>
  )}
@@ -193,22 +205,23 @@ const SolutionPage = () => {
  </section>
  )}
 
+ {/* Related solutions */}
  <section className="container mx-auto px-4 pb-16 max-w-5xl">
- <h2 className="text-2xl font-semibold mb-6">Explore other solutions</h2>
+ <h2 className="font-headline text-2xl font-semibold mb-6 text-foreground">Explore other solutions</h2>
  <div className="grid sm:grid-cols-3 gap-4">
  {others.map((o) => (
  <Link
  key={o.slug}
  to={`/solutions/${o.slug}`}
- className="block p-5 rounded-lg border border-border bg-card hover:border-maintenease-500 hover:shadow-md transition-all"
+ className="block p-5 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-md transition-all group"
  >
- <h3 className="font-semibold text-foreground mb-1">{o.name}</h3>
- <p className="text-sm text-foreground">{o.tagline}</p>
+ <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{o.name}</h3>
+ <p className="text-sm text-muted-foreground">{o.tagline}</p>
  </Link>
  ))}
  </div>
  <div className="mt-10 flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
- <p className="text-sm text-foreground">Share this page</p>
+ <p className="text-sm text-muted-foreground">Share this page</p>
  <ShareButtons url={url} title={solution.metaTitle} description={solution.tagline} />
  </div>
  </section>

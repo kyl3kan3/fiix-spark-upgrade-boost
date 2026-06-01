@@ -38,22 +38,18 @@ const OnboardingForm: React.FC = () => {
 
  {/* Validation messages */}
  {!state.fullName && (
- <div className="text-red-500 text-sm">
- Please enter your full name
- </div>
- )}
- 
-      {requiresCompany && !state.company && (
- <div className="text-red-500 text-sm">
- A company name is required
- </div>
+ <p className="text-destructive text-sm">Please enter your full name</p>
  )}
 
- <div className="mt-6">
+      {requiresCompany && !state.company && (
+ <p className="text-destructive text-sm">A company name is required</p>
+ )}
+
+ <div className="pt-2">
  <Button
  disabled={submitting || !isFormValid}
  type="submit"
- className="w-full"
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-all"
  >
  {submitting ? (
  <>
@@ -61,7 +57,7 @@ const OnboardingForm: React.FC = () => {
  Setting up your account...
  </>
  ) : (
- "Complete Setup"
+ "Get Started with My Workspace"
  )}
  </Button>
  </div>

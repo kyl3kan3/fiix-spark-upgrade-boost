@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Check, ArrowLeft } from "lucide-react";
+import { Check, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -108,51 +108,98 @@ export default function PricingPage() {
  </Helmet>
  <MarketingJsonLd />
  <PaymentTestModeBanner />
+
+ {/* Hero section */}
+ <section className="pt-16 pb-12 px-4 text-center bg-background border-b border-border">
+   <div className="max-w-2xl mx-auto">
+     <Button asChild variant="ghost" size="sm" className="mb-6 text-muted-foreground hover:text-primary">
+       <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
+     </Button>
+     <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-tight">
+       Simple, transparent pricing
+     </h1>
+     <p className="text-lg text-muted-foreground mb-8">
+       Choose the plan that fits your facility's needs. 14-day free trial on every plan.
+     </p>
+     <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
+       <span
+         className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+           interval === "month" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
+         }`}
+         onClick={() => setInterval("month")}
+       >
+         Monthly
+       </span>
+       <Switch
+         checked={interval === "year"}
+         onCheckedChange={(c) => setInterval(c ? "year" : "month")}
+         className="mx-1"
+       />
+       <span
+         className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+           interval === "year" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
+         }`}
+         onClick={() => setInterval("year")}
+       >
+         Annual <span className="text-success text-xs ml-1">-17%</span>
+       </span>
+     </div>
+   </div>
+ </section>
+
  <div className="container mx-auto max-w-6xl px-4 py-12">
- <Button asChild variant="ghost" size="sm" className="mb-6">
- <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
- </Button>
-
- <div className="mb-10 text-center">
- <h1 className="text-4xl font-bold tracking-tight">Simple, transparent pricing</h1>
- <p className="mt-3 text-lg text-muted-foreground">14-day free trial on every plan. Cancel anytime.</p>
-
- <div className="mt-6 inline-flex items-center gap-3 rounded-full border bg-card px-4 py-2">
- <span className={interval === "month" ? "font-medium" : "text-muted-foreground"}>Monthly</span>
- <Switch checked={interval === "year"} onCheckedChange={(c) => setInterval(c ? "year" : "month")} />
- <span className={interval === "year" ? "font-medium" : "text-muted-foreground"}>Annual</span>
- <Badge variant="secondary">Save ~17%</Badge>
- </div>
- </div>
-
- <div className="grid gap-6 md:grid-cols-3">
+ <div className="grid gap-6 md:grid-cols-3 items-center mb-10">
  {PLANS.map((plan) => {
  const price = interval === "month" ? plan.monthly : Math.round(plan.yearly / 12);
  return (
- <Card key={plan.tier} className={plan.popular ? "border-primary shadow-lg" : ""}>
+ <Card
+   key={plan.tier}
+   className={`relative transition-all duration-300 hover:-translate-y-1 ${
+     plan.popular
+       ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
+       : "border-border shadow-sm hover:border-primary/20 hover:shadow-md"
+   }`}
+ >
+   {plan.popular && (
+     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide shadow-md">
+       Most popular
+     </div>
+   )}
  <CardHeader>
  <div className="flex items-center justify-between">
- <CardTitle>{plan.name}</CardTitle>
- {plan.popular && <Badge>Most popular</Badge>}
+   <CardTitle className={`font-headline text-xl ${plan.popular ? "text-primary-foreground" : "text-primary"}`}>
+     {plan.name}
+   </CardTitle>
+   {plan.popular && <Badge className="bg-secondary text-secondary-foreground">Best Value</Badge>}
  </div>
- <p className="text-sm text-muted-foreground">{plan.blurb}</p>
- <div className="mt-4">
- <span className="text-4xl font-bold">${price}</span>
- <span className="text-muted-foreground">/mo</span>
- {interval === "year" && (
- <div className="text-xs text-muted-foreground">billed ${plan.yearly}/year</div>
- )}
+ <p className={`text-sm ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{plan.blurb}</p>
+ <div className="mt-4 pb-4 border-b border-current/10">
+   <span className={`text-4xl font-bold ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>${price}</span>
+   <span className={plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}>/mo</span>
+   {interval === "year" && (
+     <div className={`text-xs mt-1 ${plan.popular ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+       billed ${plan.yearly}/year
+     </div>
+   )}
  </div>
  </CardHeader>
  <CardContent className="space-y-4">
- <Button className="w-full" disabled={loadingTier === plan.tier} onClick={() => startCheckout(plan.tier)}>
+ <Button
+   className={
+     plan.popular
+       ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold uppercase tracking-wide"
+       : "w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold uppercase tracking-wide shadow-sm"
+   }
+   disabled={loadingTier === plan.tier}
+   onClick={() => startCheckout(plan.tier)}
+ >
  {loadingTier === plan.tier ? "Loading…" : "Start 14-day trial"}
  </Button>
  <ul className="space-y-2 text-sm">
  {plan.features.map((f) => (
  <li key={f} className="flex items-start gap-2">
- <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
- <span>{f}</span>
+   <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
+   <span className={plan.popular ? "text-primary-foreground" : "text-foreground"}>{f}</span>
  </li>
  ))}
  </ul>
@@ -162,10 +209,10 @@ export default function PricingPage() {
  })}
  </div>
 
- <p className="mt-10 text-center text-sm text-muted-foreground">
+ <p className="mt-4 text-center text-sm text-muted-foreground">
  All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 15 to avoid charges.
  </p>
- <div className="mt-10 flex flex-col items-center gap-3 border-t pt-8 sm:flex-row sm:justify-between">
+ <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between">
  <p className="text-sm text-muted-foreground">Share these plans</p>
  <ShareButtons
  url="https://maintenease.com/pricing"
