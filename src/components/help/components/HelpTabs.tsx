@@ -27,7 +27,7 @@ export const HelpTabs: React.FC<HelpTabsProps> = ({
  <TabsTrigger value="faq">
  Frequently Asked Questions
  {searchQuery && searchResults.faq.length > 0 && (
- <span className="ml-2 text-xs bg-maintenease-100 text-maintenease-700 px-2 py-0.5 rounded-full">
+ <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
  {searchResults.faq.length}
  </span>
  )}
@@ -35,7 +35,7 @@ export const HelpTabs: React.FC<HelpTabsProps> = ({
  <TabsTrigger value="documentation">
  Documentation
  {searchQuery && searchResults.documentation.length > 0 && (
- <span className="ml-2 text-xs bg-maintenease-100 text-maintenease-700 px-2 py-0.5 rounded-full">
+ <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
  {searchResults.documentation.length}
  </span>
  )}
@@ -43,7 +43,7 @@ export const HelpTabs: React.FC<HelpTabsProps> = ({
  <TabsTrigger value="tutorials">
  Tutorials
  {searchQuery && searchResults.tutorials.length > 0 && (
- <span className="ml-2 text-xs bg-maintenease-100 text-maintenease-700 px-2 py-0.5 rounded-full">
+ <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
  {searchResults.tutorials.length}
  </span>
  )}

@@ -65,26 +65,26 @@ const UserList: React.FC<UserListProps> = ({
  sortedUsers.map((user) => (
  <div
  key={user.id}
- className={`flex items-center p-2 rounded cursor-pointer transition-colors ${ selectedUser?.id === user.id ? "bg-maintenease-100" : user.unread > 0 ? "bg-maintenease-50 hover:bg-maintenease-100" : "hover:bg-muted" }`}
+ className={`flex items-center p-2 rounded cursor-pointer transition-colors ${ selectedUser?.id === user.id ? "bg-primary/10" : user.unread > 0 ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted" }`}
  onClick={() => onSelectUser(user)}
  >
- <div className="h-10 w-10 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-sm mr-2">
+ <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mr-2">
  {user.avatar || user.name.substring(0, 2).toUpperCase()}
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center justify-between">
- <p className={`font-medium truncate ${user.unread > 0 ? "text-maintenease-800 font-semibold" : ""}`}>
+ <p className={`font-medium truncate ${user.unread > 0 ? "text-primary font-semibold" : ""}`}>
  {user.name}
  </p>
  {user.unread > 0 && (
- <Badge variant="default" className="ml-2 bg-maintenease-600">
+ <Badge variant="default" className="ml-2 bg-primary">
  {user.unread}
  </Badge>
  )}
  </div>
  <div className="flex items-center text-sm text-muted-foreground">
  {user.unread > 0 ? (
- <MessageCircle className="h-3 w-3 text-maintenease-600 mr-1" />
+ <MessageCircle className="h-3 w-3 text-primary mr-1" />
  ) : (
  <Circle className="h-3 w-3 text-muted-foreground mr-1" />
  )}

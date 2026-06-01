@@ -116,7 +116,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
  <>
  <div className="border-b p-4">
  <div className="flex items-center">
- <div className="h-10 w-10 rounded-full bg-maintenease-100 text-maintenease-600 flex items-center justify-center font-bold text-sm mr-2">
+ <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mr-2">
  {selectedUser.avatar || selectedUser.name.substring(0, 2).toUpperCase()}
  </div>
  <div>
@@ -129,7 +129,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
  <ScrollArea className="flex-1 p-4">
  {loading ? (
  <div className="flex justify-center items-center h-40">
- <Loader2 className="h-8 w-8 animate-spin text-maintenease-600" />
+ <Loader2 className="h-8 w-8 animate-spin text-primary" />
  </div>
  ) : messages.length === 0 ? (
  <div className="text-center py-10 text-muted-foreground">
@@ -169,7 +169,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
  value={newMessage}
  onChange={(e) => setNewMessage(e.target.value)}
  onKeyDown={handleKeyDown}
- className="resize-none min-h-[80px] focus-visible:ring-maintenease-500"
+ className="resize-none min-h-[80px] focus-visible:ring-primary"
  maxLength={5000}
  />
  <div className="flex flex-col gap-2">

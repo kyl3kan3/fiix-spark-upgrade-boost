@@ -53,7 +53,7 @@ export const AvatarSection: React.FC<AvatarSectionProps> = ({
  )}
  {isUploading && (
  <div className="absolute inset-0 bg-card/70 flex justify-center items-center">
- <svg className="animate-spin h-8 w-8 text-maintenease-700" fill="none" viewBox="0 0 24 24">
+ <svg className="animate-spin h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24">
  <circle
  className="opacity-25"
  cx="12"

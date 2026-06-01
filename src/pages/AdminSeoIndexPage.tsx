@@ -235,7 +235,7 @@ const AdminSeoIndexPage: React.FC = () => {
  href={r.inspectionResultLink}
  target="_blank"
  rel="noreferrer"
- className="inline-flex items-center gap-1 text-maintenease-600 hover:underline"
+ className="inline-flex items-center gap-1 text-primary hover:underline"
  >
  Open in GSC <ExternalLink className="h-3 w-3" />
  </a>

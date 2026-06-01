@@ -58,7 +58,7 @@ const UserRolesSetup: React.FC<UserRolesSetupProps> = ({ data, onUpdate }) => {
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <Users className="h-6 w-6 text-maintenease-600" />
+ <Users className="h-6 w-6 text-primary" />
  <h2 className="text-xl font-semibold">User Roles & Permissions</h2>
  </div>
  

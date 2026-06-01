@@ -97,7 +97,7 @@ const DocumentationSection: React.FC<DocumentationSectionProps> = ({ searchQuery
  <Card key={articleIndex} className="hover:shadow-md transition-shadow">
  <CardHeader className="pb-2">
  <div className="flex items-start">
- <FileText className="h-5 w-5 text-maintenease-600 mt-0.5 mr-2" />
+ <FileText className="h-5 w-5 text-primary mt-0.5 mr-2" />
  <div>
  <CardTitle className="text-lg">{article.title}</CardTitle>
  <CardDescription>{article.description}</CardDescription>
@@ -107,7 +107,7 @@ const DocumentationSection: React.FC<DocumentationSectionProps> = ({ searchQuery
  <CardContent>
  <p className="text-sm text-foreground line-clamp-3">{article.content}</p>
  <div className="mt-4">
- <a href="#" className="text-sm font-medium text-maintenease-600 hover:underline">
+ <a href="#" className="text-sm font-medium text-primary hover:underline">
  Read more
  </a>
  </div>

@@ -72,7 +72,7 @@ export const LoadingDisplay: React.FC<LoadingDisplayProps> = ({ message = "Loadi
  return (
  <div className="flex flex-col items-center justify-center min-h-screen bg-muted">
  <div className="text-center p-8 rounded-lg bg-card shadow-md max-w-md w-full">
- <Loader2 className="h-12 w-12 animate-spin text-maintenease-600 mx-auto" />
+ <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
  <p className="mt-4 text-lg font-medium text-foreground">{message}</p>
  <p className="mt-2 text-sm text-muted-foreground">This has been loading for {loadingTime} seconds</p>
  

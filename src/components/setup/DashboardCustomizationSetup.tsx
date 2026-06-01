@@ -186,7 +186,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <LayoutDashboard className="h-6 w-6 text-maintenease-600" />
+ <LayoutDashboard className="h-6 w-6 text-primary" />
  <h2 className="text-xl font-semibold">Dashboard Customization</h2>
  </div>
  
@@ -340,7 +340,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  
  {showQuickActions && (
  <div className="flex flex-wrap gap-2 mb-4">
- <div className="h-8 w-28 rounded-md bg-maintenease-600"></div>
+ <div className="h-8 w-28 rounded-md bg-primary"></div>
  <div className="h-8 w-28 rounded-md bg-muted"></div>
  <div className="h-8 w-28 rounded-md bg-muted"></div>
  </div>
@@ -351,7 +351,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  enabledWidgets.map((widget) => (
  <div key={widget.id} className={`border rounded bg-muted p-3 ${widget.size === "small" ? "h-20" : widget.size === "medium" ? "h-32" : "h-56"}`}>
  <div className="flex items-center gap-2">
- <div className="h-3 w-3 bg-maintenease-600 rounded-full"></div>
+ <div className="h-3 w-3 bg-primary rounded-full"></div>
  <div className="font-medium text-sm">{widget.name}</div>
  </div>
  <div className={`mt-2 flex items-center justify-center ${widget.size === "small" ? "h-12" : widget.size === "medium" ? "h-24" : "h-44"}`}>

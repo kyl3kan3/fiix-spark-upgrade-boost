@@ -72,7 +72,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
  rel="noopener noreferrer"
  aria-label="Share on X (Twitter)"
  className={cn(
- "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-maintenease-500 hover:text-maintenease-600",
+ "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-primary hover:text-primary",
  btnClass,
  )}
  >
@@ -85,7 +85,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
  rel="noopener noreferrer"
  aria-label="Share on LinkedIn"
  className={cn(
- "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-maintenease-500 hover:text-maintenease-600",
+ "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-primary hover:text-primary",
  btnClass,
  )}
  >
@@ -98,7 +98,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
  rel="noopener noreferrer"
  aria-label="Share on Facebook"
  className={cn(
- "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-maintenease-500 hover:text-maintenease-600",
+ "inline-flex items-center justify-center rounded-md border border-border bg-card text-foreground transition hover:border-primary hover:text-primary",
  btnClass,
  )}
  >
@@ -115,7 +115,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
  }}
  aria-label={copied ? "Link copied" : "Copy link"}
  className={cn(
- "border-border text-foreground hover:border-maintenease-500 hover:text-maintenease-600",
+ "border-border text-foreground hover:border-primary hover:text-primary",
  variant === "compact" ? "h-8 w-8 p-0" : "h-9 px-3",
  )}
  >

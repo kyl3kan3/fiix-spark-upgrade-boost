@@ -113,7 +113,7 @@ const LeadCaptureForm = ({
  if (submitted) {
  return (
  <div className="p-8 rounded-2xl border border-border bg-card text-center">
- <CheckCircle2 className="h-10 w-10 text-maintenease-600 mx-auto mb-3" />
+ <CheckCircle2 className="h-10 w-10 text-primary mx-auto mb-3" />
  <h3 className="text-2xl font-semibold text-foreground mb-2">Thanks — message received.</h3>
  <p className="text-foreground">A MaintenEase specialist will reach out within one business day.</p>
  </div>

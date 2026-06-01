@@ -12,7 +12,7 @@ const DashboardErrorState: React.FC<DashboardErrorStateProps> = ({ errorMessage 
  const navigate = useNavigate();
  
  return (
- <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-maintenease-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+ <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary/10 to-blue-50 dark:from-gray-900 dark:to-gray-800">
  <div className="text-center glass-morphism dark:glass-morphism-dark p-10 rounded-xl max-w-md">
  <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto" />
  <p className="mt-4 text-xl font-medium text-red-600">Dashboard Error</p>

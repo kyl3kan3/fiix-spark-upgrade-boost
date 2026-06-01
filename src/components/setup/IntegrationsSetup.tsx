@@ -133,7 +133,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <IterationCw className="h-6 w-6 text-maintenease-600" />
+ <IterationCw className="h-6 w-6 text-primary" />
  <h2 className="text-xl font-semibold">Integrations</h2>
  </div>
  
@@ -143,7 +143,7 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {integrations.map((integration) => (
- <Card key={integration.id} className={integration.connected ? "border-maintenease-600/30" : ""}>
+ <Card key={integration.id} className={integration.connected ? "border-primary/30" : ""}>
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <div className="flex items-center gap-3">
  {integration.icon}
@@ -328,7 +328,7 @@ const Checkbox = ({ id, checked, onCheckedChange }: {
  id={id}
  checked={checked}
  onChange={(e) => onCheckedChange && onCheckedChange(e.target.checked)}
- className="h-4 w-4 rounded border-border text-maintenease-600 focus:ring-maintenease-500"
+ className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
  />
  </div>
  );

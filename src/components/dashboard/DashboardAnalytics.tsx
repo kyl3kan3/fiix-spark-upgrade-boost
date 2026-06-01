@@ -8,7 +8,7 @@ const DashboardAnalytics: React.FC = () => {
  <Card className="bg-card border-border shadow-sm animate-entry">
  <CardHeader>
  <CardTitle className="flex items-center gap-2">
- <Activity className="h-5 w-5 text-maintenease-500" />
+ <Activity className="h-5 w-5 text-primary" />
  Key Metrics
  </CardTitle>
  </CardHeader>
@@ -33,7 +33,7 @@ const DashboardAnalytics: React.FC = () => {
  <div className="mt-4 pt-4 border-t border-border">
  <h4 className="text-sm font-semibold mb-2">Monthly Progress</h4>
  <div className="w-full bg-secondary rounded-full h-2.5 mb-2">
- <div className="bg-maintenease-500 h-2.5 rounded-full" style={{ width: '68%' }}></div>
+ <div className="bg-primary h-2.5 rounded-full" style={{ width: '68%' }}></div>
  </div>
  <div className="flex justify-between text-xs text-muted-foreground">
  <span>68% Complete</span>

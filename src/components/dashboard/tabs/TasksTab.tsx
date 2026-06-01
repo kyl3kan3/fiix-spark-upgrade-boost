@@ -12,7 +12,7 @@ const TasksTab: React.FC = () => {
  <CardTitle>My Tasks</CardTitle>
  <CardDescription>Manage your pending tasks</CardDescription>
  </div>
- <Button size="sm" className="bg-maintenease-600 hover:bg-maintenease-700">
+ <Button size="sm" className="bg-primary hover:bg-primary/90">
  <PlusCircle className="h-4 w-4 mr-2" />
  Add Task
  </Button>

@@ -57,7 +57,7 @@ export const LiveChatSheet: React.FC<LiveChatSheetProps> = ({
  className={`mb-4 flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
  >
  <div 
- className={`rounded-lg px-4 py-2 max-w-[80%] ${ msg.isUser ? 'bg-maintenease-600 text-white' : 'bg-muted text-foreground' }`}
+ className={`rounded-lg px-4 py-2 max-w-[80%] ${ msg.isUser ? 'bg-primary text-white' : 'bg-muted text-foreground' }`}
  >
  {msg.text}
  </div>

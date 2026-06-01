@@ -68,7 +68,7 @@ const Help = () => {
  })}</script>
  </Helmet>
  <div className="flex items-center mb-6">
- <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
+ <HelpCircle className="h-6 w-6 text-primary mr-2" />
  <h1 className="text-2xl font-bold text-foreground">Help Center</h1>
  </div>
 

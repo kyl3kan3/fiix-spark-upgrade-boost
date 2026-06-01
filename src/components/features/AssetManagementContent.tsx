@@ -16,7 +16,7 @@ const AssetManagementContent: React.FC = () => {
  <h2 className="text-2xl font-bold">Asset Management</h2>
  <Button 
  onClick={() => navigate('/assets/new')}
- className="bg-fiix-500 hover:bg-fiix-600"
+ className="bg-primary hover:bg-primary/90"
  >
  <Plus className="mr-2 h-4 w-4" />
  Add Asset
@@ -112,8 +112,8 @@ const AssetManagementContent: React.FC = () => {
  </div>
  
  <div className="flex space-x-2">
- <Button onClick={handleScheduleMaintenance} className="bg-fiix-500 hover:bg-fiix-600">Schedule Maintenance</Button>
- <Button variant="outline" className="border-fiix-300 text-fiix-600 hover:bg-fiix-50">View Documents</Button>
+ <Button onClick={handleScheduleMaintenance} className="bg-primary hover:bg-primary/90">Schedule Maintenance</Button>
+ <Button variant="outline" className="border-primary/20 text-primary hover:bg-primary/10">View Documents</Button>
  </div>
  </div>
  </div>
