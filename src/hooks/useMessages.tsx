@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Message } from "@/types/chat";
 import { toast } from "@/hooks/use-toast";
 
-const getUserMessagesChannelTopic = (userId: string) => `user:${userId}:messages`;
+const getUserMessagesChannelTopic = (userId: string, recipientId: string) =>
+  `user:${userId}:messages:${recipientId}`;
 
 export const useMessages = (recipientId: string | undefined) => {
  const [messages, setMessages] = useState<Message[]>([]);
@@ -18,6 +19,7 @@ export const useMessages = (recipientId: string | undefined) => {
  }
 
  let subscription: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
 
  const fetchMessages = async () => {
  try {
@@ -41,8 +43,9 @@ export const useMessages = (recipientId: string | undefined) => {
  // Mark messages from this recipient as read
  markAsRead();
 
- subscription = supabase
- .channel(getUserMessagesChannelTopic(currentUserId), {
+          if (cancelled) return;
+          subscription = supabase
+        .channel(getUserMessagesChannelTopic(currentUserId, recipientId), {
  config: { private: true },
  })
  .on('postgres_changes', 
@@ -80,6 +83,7 @@ export const useMessages = (recipientId: string | undefined) => {
  fetchMessages();
 
  return () => {
+      cancelled = true;
  if (subscription) {
  supabase.removeChannel(subscription);
  }
