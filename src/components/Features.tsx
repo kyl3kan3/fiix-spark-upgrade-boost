@@ -1,91 +1,109 @@
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/sonner";
-import FeatureCard from "./features/FeatureCard";
-import FeatureFilters from "./features/FeatureFilters";
-import { featureItems } from "./features/FeaturesData";
+import MaterialIcon from '@/components/ui/material-icon';
 
 const Features = () => {
- const navigate = useNavigate();
- const [selectedCategory, setSelectedCategory] = useState("all");
- const [viewType, setViewType] = useState("grid");
- const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
- 
- // Filter features based on selected category
- const filteredFeatures = selectedCategory === "all" 
- ? featureItems 
- : featureItems.filter(item => item.category === selectedCategory);
-
- const handleDemoClick = (title: string, demoEnabled: boolean) => {
- setSelectedFeature(title);
- 
- if (demoEnabled) {
- // Navigate to the feature demo page
- navigate(`/feature/${encodeURIComponent(title)}`);
- } else {
- toast(`${title} demo is coming soon. Please check back later.`);
- }
- };
- 
- const handleExploreAll = () => {
- navigate('/feature/Work%20Order%20Management');
- };
-
- return (
- <section id="features" className="py-20 bg-card border-y border-border">
- <div className="container mx-auto px-4">
- <div className="text-center mb-12">
- <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4 text-foreground">
- Powerful Features for Maintenance Excellence
- </h2>
- <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
- MaintenEase brings everything you need to streamline your maintenance operations in one intuitive platform.
- </p>
- 
- <FeatureFilters
- selectedCategory={selectedCategory}
- viewType={viewType}
- onCategoryChange={setSelectedCategory}
- onViewTypeChange={setViewType}
- />
- </div>
-
- <div className={viewType === "grid" 
- ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
- : "flex flex-col space-y-6"
- }>
- {filteredFeatures.map((item, index) => (
- <FeatureCard
- key={index}
- item={item}
- selectedFeature={selectedFeature}
- viewType={viewType}
- onSelectFeature={handleDemoClick}
- />
- ))}
- </div>
-
- {filteredFeatures.length === 0 && (
- <div className="text-center py-12">
- <p className="text-xl text-foreground">No features found in this category.</p>
- </div>
- )}
-
- <div className="mt-16 text-center">
- <Button
- className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 py-6 text-base group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
- onClick={handleExploreAll}
- >
- Explore All Features
- <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
- </Button>
- </div>
- </div>
- </section>
- );
+  return (
+    <section className="py-24 bg-surface" id="features">
+      <div className="max-w-7xl mx-auto px-container_padding">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <h2 className="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Core Capabilities</h2>
+          <p className="font-body-md text-body-md text-on-surface-variant">
+            Everything you need to manage assets, coordinate teams, and maintain operational continuity in one unified platform.
+          </p>
+        </div>
+        {/* Bento Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
+          {/* Feature 1: Large Span */}
+          <div className="md:col-span-2 bg-surface-container-lowest rounded-xl p-card_padding border border-outline-variant/20 shadow-level-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-level-2 hover:border-primary/10 flex flex-col justify-between overflow-hidden relative group">
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-lg bg-container-blue text-primary flex items-center justify-center mb-6">
+                <MaterialIcon name="calendar_month" />
+              </div>
+              <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Intelligent Scheduling</h3>
+              <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
+                Automate preventative maintenance schedules based on real-time asset usage and historical performance data. Minimize unplanned downtime.
+              </p>
+            </div>
+            {/* Decorative Graphic */}
+            <div className="mt-8 flex gap-2 w-full h-24 items-end opacity-80 group-hover:opacity-100 transition-opacity">
+              <div className="w-1/6 h-[40%] bg-surface-container-high rounded-t-sm"></div>
+              <div className="w-1/6 h-[60%] bg-surface-container-high rounded-t-sm"></div>
+              <div className="w-1/6 h-[80%] bg-surface-tint/40 rounded-t-sm"></div>
+              <div className="w-1/6 h-[50%] bg-surface-container-high rounded-t-sm"></div>
+              <div className="w-1/6 h-[100%] bg-primary rounded-t-sm relative">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-on-primary text-[10px] py-1 px-2 rounded">Today</div>
+              </div>
+              <div className="w-1/6 h-[30%] bg-surface-container-high rounded-t-sm"></div>
+            </div>
+          </div>
+          {/* Feature 2: Standard Card */}
+          <div className="bg-surface-container-lowest rounded-xl p-card_padding border border-outline-variant/20 shadow-level-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-level-2 hover:border-primary/10 flex flex-col">
+            <div className="w-12 h-12 rounded-lg bg-surface-container text-primary flex items-center justify-center mb-6">
+              <MaterialIcon name="precision_manufacturing" />
+            </div>
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Asset Tracking</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant flex-grow">
+              Maintain a comprehensive digital twin of your facility. Track lifecycle costs, warranty info, and repair history effortlessly.
+            </p>
+            <a className="mt-6 font-label-md text-label-md text-primary flex items-center gap-1 hover:underline w-fit" href="#">
+              Explore Assets <MaterialIcon name="arrow_forward" style={{ fontSize: '16px' }} />
+            </a>
+          </div>
+          {/* Feature 3: Standard Card */}
+          <div className="bg-surface-container-lowest rounded-xl p-card_padding border border-outline-variant/20 shadow-level-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-level-2 hover:border-primary/10 flex flex-col">
+            <div className="w-12 h-12 rounded-lg bg-surface-container text-primary flex items-center justify-center mb-6">
+              <MaterialIcon name="group" />
+            </div>
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Team Performance</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant flex-grow">
+              Monitor technician workload, response times, and completion rates. Allocate resources dynamically based on skill sets and location.
+            </p>
+          </div>
+          {/* Feature 4: Wide Interactive Span */}
+          <div className="md:col-span-2 bg-surface-container-lowest rounded-xl p-card_padding border border-outline-variant/20 shadow-level-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-level-2 hover:border-primary/10 flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1">
+              <div className="inline-flex px-2 py-1 bg-error-container text-on-error-container font-label-sm text-[10px] rounded uppercase font-bold tracking-wider mb-4">Mobile Ready</div>
+              <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Field Technician App</h3>
+              <p className="font-body-md text-body-md text-on-surface-variant mb-6">
+                Equip your team with a powerful mobile tool. Scan QR codes to pull up asset history, snap photos of issues, and close out work orders instantly from the facility floor.
+              </p>
+              <div className="flex gap-4">
+                <button className="bg-surface-container hover:bg-surface-container-high text-on-surface p-2 rounded flex items-center gap-2 font-label-sm transition-colors border border-outline-variant/30">
+                  <MaterialIcon name="ios" /> iOS App
+                </button>
+                <button className="bg-surface-container hover:bg-surface-container-high text-on-surface p-2 rounded flex items-center gap-2 font-label-sm transition-colors border border-outline-variant/30">
+                  <MaterialIcon name="android" /> Android App
+                </button>
+              </div>
+            </div>
+            {/* Decorative Mobile Mockup Element */}
+            <div className="w-48 h-64 bg-surface-bright rounded-2xl border-4 border-on-surface/10 overflow-hidden relative shadow-inner flex-shrink-0 hidden sm:block">
+              {/* Screen Header */}
+              <div className="bg-primary text-on-primary p-3 flex justify-between items-center">
+                <MaterialIcon name="menu" className="text-[16px]" />
+                <span className="font-label-sm text-xs font-semibold">Work Order #492</span>
+                <MaterialIcon name="search" className="text-[16px]" />
+              </div>
+              {/* Screen Content */}
+              <div className="p-3 space-y-3">
+                <div className="h-4 bg-outline-variant/30 w-3/4 rounded"></div>
+                <div className="h-3 bg-outline-variant/20 w-1/2 rounded"></div>
+                <div className="flex gap-2 pt-2">
+                  <div className="w-8 h-8 rounded bg-surface-container-high"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-2 bg-outline-variant/20 w-full rounded"></div>
+                    <div className="h-2 bg-outline-variant/20 w-4/5 rounded"></div>
+                  </div>
+                </div>
+                <div className="mt-auto absolute bottom-4 left-3 right-3 h-8 bg-success rounded flex items-center justify-center text-on-primary font-label-sm text-[10px]">
+                  COMPLETE TASK
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Features;

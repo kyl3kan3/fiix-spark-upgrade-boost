@@ -1,9 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Menu, X, User, Building2 } from "lucide-react";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import MaterialIcon from '@/components/ui/material-icon';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,7 +12,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
 
     const checkAuth = async () => {
@@ -28,114 +27,151 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  const navLinkClass =
-    "text-sm font-semibold text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg px-3 py-2 transition-colors";
-
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/90 backdrop-blur-md shadow-md py-2'
-          : 'bg-background/80 backdrop-blur-sm shadow-sm py-3'
-      } border-b border-border/50`}
+      className={`docked full-width top-0 sticky bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md border-b border-outline-variant/30 dark:border-outline/30 z-50 transition-all duration-300 ${isScrolled ? 'shadow-md' : 'shadow-sm'}`}
+      id="main-nav"
     >
-      <div className="container mx-auto px-4 max-w-7xl flex justify-between items-center gap-3">
-        <a href="/" className="flex items-center gap-2 min-w-0 shrink">
-          <Building2 className="h-6 w-6 text-primary shrink-0" strokeWidth={1.5} />
-          <span className="text-xl font-bold text-primary truncate leading-none font-headline">
-            MaintenEase
-          </span>
+      <div className="flex justify-between items-center w-full px-container_padding max-w-7xl mx-auto h-16">
+        {/* Brand Logo */}
+        <a
+          className="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary flex items-center gap-2"
+          href="/"
+        >
+          <MaterialIcon name="domain" filled className="text-primary" />
+          MaintenEase
         </a>
 
-        {/* Desktop Navigation */}
+        {/* Navigation Links (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-1">
-            <a href="/solutions" className={navLinkClass}>Solutions</a>
-            <a href="/features" className={navLinkClass}>Features</a>
-            <a href="/pricing" className={navLinkClass}>Pricing</a>
-          </div>
-          <div className="flex items-center gap-3">
-            {isLoggedIn ? (
-              <>
-                <Button
-                  onClick={() => navigate("/dashboard")}
-                  variant="outline"
-                  className="border-primary/20 text-primary hover:bg-primary/5"
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  onClick={() => navigate("/profile")}
-                  className="bg-primary text-primary-foreground hover:bg-primary-variant flex items-center gap-2"
-                >
-                  <User size={15} />
-                  Profile
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/auth">
-                  <Button variant="ghost" className="text-primary font-semibold hover:bg-primary/5">
-                    Log In
-                  </Button>
-                </Link>
-                <Link to="/auth?signup=true">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide text-xs font-bold px-6">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
+          <a
+            className="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 rounded-lg px-3 py-2 transition-colors"
+            href="/solutions"
+          >
+            Solutions
+          </a>
+          <a
+            className="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 rounded-lg px-3 py-2 transition-colors"
+            href="/#features"
+          >
+            Features
+          </a>
+          <a
+            className="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 rounded-lg px-3 py-2 transition-colors"
+            href="/pricing"
+          >
+            Pricing
+          </a>
+          <a
+            className="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary hover:bg-primary/5 dark:hover:bg-primary-fixed/10 rounded-lg px-3 py-2 transition-colors"
+            href="#resources"
+          >
+            Resources
+          </a>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Trailing Actions */}
+        <div className="hidden md:flex items-center gap-4">
+          {isLoggedIn ? (
+            <>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="font-label-md text-label-md text-primary hover:underline px-4 py-2"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/profile')}
+                className="font-label-md text-label-md bg-primary text-on-primary px-6 py-3 rounded-lg hover:bg-primary-container transition-colors uppercase active:scale-95 transition-transform"
+              >
+                Profile
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                className="font-label-md text-label-md text-primary hover:underline px-4 py-2"
+                to="/auth"
+              >
+                Log In
+              </Link>
+              <Link
+                className="font-label-md text-label-md bg-primary text-on-primary px-6 py-3 rounded-lg hover:bg-primary-container transition-colors uppercase active:scale-95 transition-transform"
+                to="/auth?signup=true"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-primary shrink-0 -mr-1 p-1"
+          aria-label="Toggle Menu"
+          className="md:hidden text-primary p-2"
           onClick={toggleMobileMenu}
-          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={isMobileMenuOpen}
         >
-          {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          <MaterialIcon name="menu" />
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-background absolute left-0 right-0 w-full p-4 shadow-lg border-t border-border">
-          <div className="flex flex-col space-y-1">
-            <a href="/solutions" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Solutions</a>
-            <a href="/features" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Features</a>
-            <a href="/pricing" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Pricing</a>
-            <div className="flex flex-col gap-2 pt-3">
+        <div className="md:hidden bg-surface border-b border-outline-variant/30">
+          <div className="flex flex-col px-container_padding py-4 gap-4">
+            <a
+              className="font-label-md text-label-md text-on-surface-variant py-2 border-b border-outline-variant/10"
+              href="/solutions"
+            >
+              Solutions
+            </a>
+            <a
+              className="font-label-md text-label-md text-on-surface-variant py-2 border-b border-outline-variant/10"
+              href="/#features"
+            >
+              Features
+            </a>
+            <a
+              className="font-label-md text-label-md text-on-surface-variant py-2 border-b border-outline-variant/10"
+              href="/pricing"
+            >
+              Pricing
+            </a>
+            <a
+              className="font-label-md text-label-md text-on-surface-variant py-2"
+              href="#resources"
+            >
+              Resources
+            </a>
+            <div className="flex flex-col gap-2 mt-4">
               {isLoggedIn ? (
                 <>
-                  <Button
-                    onClick={() => navigate("/dashboard")}
-                    variant="outline"
-                    className="border-primary/20 text-primary hover:bg-primary/5 w-full"
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="font-label-md text-label-md text-primary py-2 text-center border border-primary rounded-lg"
                   >
                     Dashboard
-                  </Button>
-                  <Button
-                    onClick={() => navigate("/profile")}
-                    className="bg-primary text-primary-foreground w-full flex items-center justify-center gap-2"
+                  </button>
+                  <button
+                    onClick={() => navigate('/profile')}
+                    className="font-label-md text-label-md bg-primary text-on-primary py-3 rounded-lg text-center uppercase"
                   >
-                    <User size={15} />
                     Profile
-                  </Button>
+                  </button>
                 </>
               ) : (
                 <>
-                  <Link to="/auth" className="w-full">
-                    <Button variant="outline" className="border-primary text-primary w-full">
-                      Log In
-                    </Button>
+                  <Link
+                    className="font-label-md text-label-md text-primary py-2 text-center border border-primary rounded-lg"
+                    to="/auth"
+                  >
+                    Log In
                   </Link>
-                  <Link to="/auth?signup=true" className="w-full">
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary-variant w-full uppercase tracking-wide text-xs font-bold">
-                      Get Started
-                    </Button>
+                  <Link
+                    className="font-label-md text-label-md bg-primary text-on-primary py-3 rounded-lg text-center uppercase"
+                    to="/auth?signup=true"
+                  >
+                    Get Started
                   </Link>
                 </>
               )}

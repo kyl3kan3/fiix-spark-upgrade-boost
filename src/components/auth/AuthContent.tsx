@@ -1,6 +1,5 @@
 
 import React from "react";
-import AuthHeader from "./AuthHeader";
 import AuthError from "./AuthError";
 import AuthForm from "./AuthForm";
 import InviteMessage from "./InviteMessage";
@@ -19,18 +18,28 @@ export const AuthContent: React.FC<AuthContentProps> = ({
   onToggleMode,
 }) => {
   return (
-    <div className="space-y-6">
-      <AuthHeader isSignUp={isSignUp} />
+    <div className="space-y-8">
+      {/* Form Header */}
+      <div className="text-center md:text-left space-y-2">
+        <h2 className="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-on-background">
+          {isSignUp ? "Create Account" : "Welcome back"}
+        </h2>
+        <p className="font-body-md text-body-md text-on-surface-variant">
+          {isSignUp
+            ? "Start managing your facilities with precision."
+            : "Enter your credentials to access your dashboard."}
+        </p>
+      </div>
 
-      {/* Tab toggle */}
-      <div className="flex p-1 bg-muted rounded-lg">
+      {/* Auth Toggle (Login / Sign Up) */}
+      <div className="flex p-1 bg-surface-container-low rounded-lg shadow-inner">
         <button
           type="button"
           onClick={() => isSignUp && onToggleMode()}
-          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+          className={`flex-1 py-2 font-label-md text-label-md rounded-md transition-all duration-200 ${
             !isSignUp
-              ? "bg-background shadow-sm text-primary"
-              : "text-muted-foreground hover:text-primary"
+              ? "bg-surface shadow-sm text-primary"
+              : "text-on-surface-variant hover:text-primary"
           }`}
         >
           Log In
@@ -38,10 +47,10 @@ export const AuthContent: React.FC<AuthContentProps> = ({
         <button
           type="button"
           onClick={() => !isSignUp && onToggleMode()}
-          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+          className={`flex-1 py-2 font-label-md text-label-md rounded-md transition-all duration-200 ${
             isSignUp
-              ? "bg-background shadow-sm text-primary"
-              : "text-muted-foreground hover:text-primary"
+              ? "bg-surface shadow-sm text-primary"
+              : "text-on-surface-variant hover:text-primary"
           }`}
         >
           Create Account

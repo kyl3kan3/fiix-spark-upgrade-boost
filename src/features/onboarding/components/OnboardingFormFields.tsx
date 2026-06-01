@@ -1,9 +1,7 @@
 
 import React from "react";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { User, Building2 } from "lucide-react";
+import MaterialIcon from "@/components/ui/material-icon";
 import { FormState, InviteDetails } from "@/features/onboarding/hooks/types";
 
 interface FormFieldsProps {
@@ -24,36 +22,42 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
   setAccountType,
 }) => {
   const fieldClass =
-    "bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all";
+    "bg-surface-container-low border-none focus:ring-2 focus:ring-primary transition-all font-body-md outline-none";
   const labelClass =
-    "block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5";
+    "block font-label-md text-label-md text-on-surface mb-2 transition-colors group-focus-within:text-primary";
 
   return (
     <>
       {!isInvited && setAccountType && (
-        <div>
+        <div className="group">
           <label className={labelClass}>Account type</label>
           <div className="grid grid-cols-2 gap-2">
-            <Button
+            <button
               type="button"
-              variant={state.accountType === "personal" ? "default" : "outline"}
               onClick={() => setAccountType("personal")}
-              className={state.accountType === "personal" ? "justify-start bg-primary text-primary-foreground" : "justify-start border-primary/20 text-primary hover:bg-primary/5"}
+              className={`py-3 px-4 rounded-lg border font-label-md text-label-md flex items-center gap-2 transition-all ${
+                state.accountType === "personal"
+                  ? "border-2 border-primary bg-primary/5 text-primary"
+                  : "border border-outline-variant hover:border-primary hover:bg-primary/5"
+              }`}
             >
-              <User className="mr-2 h-4 w-4" />
+              <MaterialIcon name="person" />
               Personal
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant={state.accountType === "company" ? "default" : "outline"}
               onClick={() => setAccountType("company")}
-              className={state.accountType === "company" ? "justify-start bg-primary text-primary-foreground" : "justify-start border-primary/20 text-primary hover:bg-primary/5"}
+              className={`py-3 px-4 rounded-lg border font-label-md text-label-md flex items-center gap-2 transition-all ${
+                state.accountType === "company"
+                  ? "border-2 border-primary bg-primary/5 text-primary"
+                  : "border border-outline-variant hover:border-primary hover:bg-primary/5"
+              }`}
             >
-              <Building2 className="mr-2 h-4 w-4" />
+              <MaterialIcon name="domain" />
               Company
-            </Button>
+            </button>
           </div>
-          <p className="text-xs text-muted-foreground mt-1.5">
+          <p className="font-label-sm text-label-sm text-on-surface-variant mt-1.5">
             {state.accountType === "personal"
               ? "Use MaintenEase solo. You can create a company later."
               : "Set up a company workspace and invite your team."}
@@ -61,42 +65,87 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
         </div>
       )}
 
-      <div>
-        <label className={labelClass}>Full Name <span className="text-destructive">*</span></label>
-        <Input name="fullName" placeholder="Enter your full name" value={state.fullName} required onChange={handleChange} className={"w-full " + fieldClass} />
+      <div className="group">
+        <label className={labelClass}>Full Name <span className="text-error">*</span></label>
+        <input
+          name="fullName"
+          placeholder="Enter your full name"
+          value={state.fullName}
+          required
+          onChange={handleChange}
+          className={`w-full h-12 px-4 rounded-lg ${fieldClass}`}
+        />
       </div>
 
-      <div>
-        <label className={labelClass}>Role / Title <span className="text-destructive">*</span></label>
-        <Input name="role" placeholder="e.g., Facilities Manager, Technician" value={state.role} required onChange={handleChange} className={"w-full " + fieldClass} />
+      <div className="group">
+        <label className={labelClass}>Role / Title <span className="text-error">*</span></label>
+        <input
+          name="role"
+          placeholder="e.g., Facilities Manager, Technician"
+          value={state.role}
+          required
+          onChange={handleChange}
+          className={`w-full h-12 px-4 rounded-lg ${fieldClass}`}
+        />
       </div>
 
       {isInvited ? (
         <div className="p-4 bg-success/10 border border-success/30 rounded-lg">
-          <p className="text-success font-semibold text-sm">You have been invited to join a company!</p>
-          <p className="text-sm text-muted-foreground mt-1">Complete the onboarding to join.</p>
+          <p className="font-label-md text-label-md text-success">You have been invited to join a company!</p>
+          <p className="font-body-md text-body-md text-on-surface-variant mt-1">Complete the onboarding to join.</p>
         </div>
       ) : state.accountType === "company" ? (
-        <div>
-          <label className={labelClass}>Company / Organization Name <span className="text-destructive">*</span></label>
-          <Input name="company" placeholder="Enter your company name" value={state.company} required onChange={handleChange} className={"w-full " + fieldClass} />
+        <div className="group">
+          <label className={labelClass}>Company / Organization Name <span className="text-error">*</span></label>
+          <input
+            name="company"
+            placeholder="Enter your company name"
+            value={state.company}
+            required
+            onChange={handleChange}
+            className={`w-full h-12 px-4 rounded-lg ${fieldClass}`}
+          />
         </div>
       ) : null}
 
-      <div>
-        <label className={labelClass}>Contact Email <span className="text-destructive">*</span></label>
-        <Input name="email" type="email" required value={state.email} onChange={handleChange} className={"w-full " + fieldClass} />
+      <div className="group">
+        <label className={labelClass}>Contact Email <span className="text-error">*</span></label>
+        <input
+          name="email"
+          type="email"
+          required
+          value={state.email}
+          onChange={handleChange}
+          className={`w-full h-12 px-4 rounded-lg ${fieldClass}`}
+        />
       </div>
 
-      <div>
-        <label className={labelClass}>Phone number <span className="normal-case font-normal text-muted-foreground tracking-normal">(optional, for SMS alerts)</span></label>
-        <Input name="phoneNumber" type="tel" placeholder="+15558675310" value={state.phoneNumber} onChange={handleChange} className={"w-full " + fieldClass} />
-        <p className="text-xs text-muted-foreground mt-1">Use E.164 format (start with +country code).</p>
+      <div className="group">
+        <label className={labelClass}>
+          Phone number{" "}
+          <span className="normal-case font-normal text-on-surface-variant tracking-normal">(optional, for SMS alerts)</span>
+        </label>
+        <input
+          name="phoneNumber"
+          type="tel"
+          placeholder="+15558675310"
+          value={state.phoneNumber}
+          onChange={handleChange}
+          className={`w-full h-12 px-4 rounded-lg ${fieldClass}`}
+        />
+        <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">Use E.164 format (start with +country code).</p>
       </div>
 
       <div className="flex items-center gap-3">
-        <Checkbox checked={state.notifications} onCheckedChange={handleCheckbox} id="onboarding-notifications" className="border-primary data-[state=checked]:bg-primary" />
-        <label htmlFor="onboarding-notifications" className="text-sm text-foreground cursor-pointer">Enable notifications about important updates</label>
+        <Checkbox
+          checked={state.notifications}
+          onCheckedChange={handleCheckbox}
+          id="onboarding-notifications"
+          className="border-primary data-[state=checked]:bg-primary"
+        />
+        <label htmlFor="onboarding-notifications" className="font-body-md text-body-md text-on-surface cursor-pointer">
+          Enable notifications about important updates
+        </label>
       </div>
     </>
   );
