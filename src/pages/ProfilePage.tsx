@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
-import { RefreshCw } from "lucide-react";
+import PageContainer from "@/components/shell/PageContainer";
+import { RefreshCw, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/auth";
@@ -14,7 +16,7 @@ const ProfilePage = () => {
  const location = useLocation();
  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
  const [refreshKey, setRefreshKey] = useState(0);
- 
+
  // Extract the tab from the URL search params
  const searchParams = new URLSearchParams(location.search);
  const tabParam = searchParams.get('tab');
@@ -23,11 +25,7 @@ const ProfilePage = () => {
  // Update URL when tab changes without page reload
  const handleTabChange = (value: string) => {
  setActiveTab(value);
- 
- const newUrl = value === 'settings' 
- ? '/profile?tab=settings' 
- : '/profile';
- 
+ const newUrl = value === 'settings' ? '/profile?tab=settings' : '/profile';
  navigate(newUrl, { replace: true });
  };
 
@@ -41,13 +39,17 @@ const ProfilePage = () => {
  if (authLoading) {
  return (
  <DashboardLayout>
- <div className="px-4 md:px-6 lg:px-8 py-6">
- <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
- <div className="animate-pulse space-y-4">
- <div className="h-12 bg-secondary rounded"></div>
- <div className="h-64 bg-secondary rounded"></div>
+ <PageContainer className="space-y-8">
+ <BackToDashboard />
+ <div>
+ <Skeleton className="h-9 w-64 mb-2" />
+ <Skeleton className="h-5 w-80" />
  </div>
+ <div className="space-y-4">
+ <Skeleton className="h-12 w-72 rounded-lg" />
+ <Skeleton className="h-64 rounded-lg" />
  </div>
+ </PageContainer>
  </DashboardLayout>
  );
  }
@@ -60,22 +62,32 @@ const ProfilePage = () => {
 
  return (
  <DashboardLayout>
+ <PageContainer className="space-y-8">
  <BackToDashboard />
- <div className="px-4 md:px-6 lg:px-8 py-6">
- <div className="flex justify-between items-center">
- <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
- <Button variant="ghost" size="sm" onClick={handleRefresh}>
+
+ {/* Page Header */}
+ <div className="flex items-center justify-between">
+ <div>
+ <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
+ <User className="h-8 w-8" />
+ Profile &amp; Settings
+ </h1>
+ <p className="text-base text-muted-foreground mt-1">
+ Manage your personal information and preferences.
+ </p>
+ </div>
+ <Button variant="outline" size="sm" onClick={handleRefresh} className="border-border text-primary hover:bg-primary/5">
  <RefreshCw className="h-4 w-4 mr-2" />
  Refresh
  </Button>
  </div>
- 
- <ProfileTabs 
- activeTab={activeTab} 
+
+ <ProfileTabs
+ activeTab={activeTab}
  onTabChange={handleTabChange}
  refreshKey={refreshKey}
  />
- </div>
+ </PageContainer>
  </DashboardLayout>
  );
 };
