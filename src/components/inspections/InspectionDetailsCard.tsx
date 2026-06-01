@@ -30,7 +30,7 @@ const InspectionDetailsCard: React.FC<InspectionDetailsCardProps> = ({
  <p className="mt-1">{description}</p>
  </div>
  
- <div className="grid grid-cols-2 gap-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
  <div>
  <h3 className="text-sm font-medium text-muted-foreground">Asset</h3>
  <p className="mt-1">{assetName}</p>
