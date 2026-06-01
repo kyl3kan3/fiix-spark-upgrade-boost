@@ -22,8 +22,9 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['"Inter"', 'system-ui', 'sans-serif'],
-				display: ['"Nunito"', '"Inter"', 'system-ui', 'sans-serif'],
-				serif: ['"Nunito"', '"Inter"', 'system-ui', 'sans-serif'],
+				display: ['"Playfair Display"', 'Georgia', 'serif'],
+				headline: ['"Playfair Display"', 'Georgia', 'serif'],
+				serif: ['"Playfair Display"', 'Georgia', 'serif'],
 				mono: ['"Inter"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
@@ -35,12 +36,19 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					glow: 'hsl(var(--primary-glow))'
+					glow: 'hsl(var(--primary-glow))',
+					variant: 'hsl(var(--primary-variant))',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
+				'surface': 'hsl(var(--background))',
+				'surface-container': 'hsl(var(--card))',
+				'surface-container-lowest': '#ffffff',
+				'on-surface': 'hsl(var(--foreground))',
+				'on-surface-variant': 'hsl(var(--muted-foreground))',
+				'outline-variant': 'rgba(0, 40, 142, 0.10)',
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
