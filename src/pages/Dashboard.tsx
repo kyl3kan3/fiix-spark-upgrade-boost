@@ -35,6 +35,11 @@ const Dashboard: React.FC = () => {
     <DashboardLayout>
       <Helmet>
         <title>Dashboard | MaintenEase</title>
+        <meta name="description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
+        <meta property="og:title" content="Dashboard | MaintenEase" />
+        <meta property="og:description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png" />
       </Helmet>
 
       <PageContainer>
