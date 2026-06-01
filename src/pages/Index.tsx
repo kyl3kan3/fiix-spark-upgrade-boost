@@ -6,6 +6,7 @@ import Features from "@/components/Features";
 import RequestPortalSection from "@/components/RequestPortalSection";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
+import FlatFeeAdvantage from "@/components/FlatFeeAdvantage";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
@@ -36,6 +37,7 @@ const Index = () => {
  <Features />
  <RequestPortalSection />
  <Testimonials />
+ <FlatFeeAdvantage />
  <Pricing />
  <CTA />
  <section className="container mx-auto px-4 py-10 max-w-5xl">
