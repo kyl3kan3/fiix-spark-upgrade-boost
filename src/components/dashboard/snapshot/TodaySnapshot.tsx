@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  HardHat,
+  TrendingUp,
+} from "lucide-react";
 import { AlertTriangle, ArrowRight, CheckCircle2, HardHat, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -6,6 +13,8 @@ import { cn } from "@/lib/utils";
 interface TodaySnapshotProps {
   completionRate: number | null;
   pendingJobs: number;
+  highPriorityPendingJobs?: number;
+  pendingAssetLabels?: string[];
   activeTechs: number;
   totalTechs: number;
   isLoading?: boolean;
@@ -23,10 +32,23 @@ export function TodaySnapshot({
   pendingJobs,
   activeTechs,
   totalTechs,
+  highPriorityPendingJobs = 0,
+  pendingAssetLabels = [],
   isLoading,
 }: TodaySnapshotProps) {
   return (
     <section>
+      <h3 className="font-headline text-xl text-foreground mb-4">
+        Today's Snapshot
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CompletionCard rate={completionRate} isLoading={isLoading} />
+        <PendingJobsCard
+          count={pendingJobs}
+          highPriorityCount={highPriorityPendingJobs}
+          assetLabels={pendingAssetLabels}
+          isLoading={isLoading}
+        />
       <h3 className="font-headline text-xl text-foreground mb-4">Today's Snapshot</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CompletionCard rate={completionRate} isLoading={isLoading} />
@@ -37,6 +59,17 @@ export function TodaySnapshot({
   );
 }
 
+function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-card rounded-xl p-6 border border-transparent shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary/10 flex flex-col relative overflow-hidden group",
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div
@@ -52,12 +85,20 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
+    <h4 className="text-sm font-semibold leading-snug tracking-[0.01em] text-muted-foreground uppercase">
     <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
       {children}
     </h4>
   );
 }
 
+function CompletionCard({
+  rate,
+  isLoading,
+}: {
+  rate: number | null;
+  isLoading?: boolean;
+}) {
 function CompletionCard({ rate, isLoading }: { rate: number | null; isLoading?: boolean }) {
   const display = rate === null ? (isLoading ? "—" : "n/a") : `${rate}%`;
   return (
@@ -68,6 +109,13 @@ function CompletionCard({ rate, isLoading }: { rate: number | null; isLoading?: 
       <div className="flex justify-between items-start mb-6 z-10">
         <div>
           <Label>Completion Rate</Label>
+          <p className="font-headline text-3xl font-bold leading-tight mt-1 text-foreground">
+            {display}
+          </p>
+        </div>
+        <ProgressRing percent={rate ?? 0} color="hsl(var(--success))" />
+      </div>
+      <div className="mt-auto pt-4 border-t border-border/70 z-10">
           <p className="font-headline text-3xl mt-1 text-foreground">{display}</p>
         </div>
         <ProgressRing percent={rate ?? 0} color="hsl(var(--success))" />
@@ -82,6 +130,19 @@ function CompletionCard({ rate, isLoading }: { rate: number | null; isLoading?: 
   );
 }
 
+function PendingJobsCard({
+  count,
+  highPriorityCount,
+  assetLabels,
+  isLoading,
+}: {
+  count: number;
+  highPriorityCount: number;
+  assetLabels: string[];
+  isLoading?: boolean;
+}) {
+  const chips =
+    assetLabels.length > 0 ? assetLabels : ["HVAC Unit B", "Plumbing L1"];
 function PendingJobsCard({ count, isLoading }: { count: number; isLoading?: boolean }) {
   return (
     <Card>
@@ -91,6 +152,30 @@ function PendingJobsCard({ count, isLoading }: { count: number; isLoading?: bool
       <div className="flex justify-between items-start mb-6 z-10">
         <div>
           <Label>Pending Jobs</Label>
+          <p className="font-headline text-3xl font-bold leading-tight mt-1 text-foreground">
+            {isLoading ? "—" : count}
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-1 rounded bg-warning/10 px-2 py-1 text-xs font-bold text-warning">
+          <AlertTriangle className="h-3 w-3" />
+          {highPriorityCount} High
+        </div>
+      </div>
+      <div className="mt-auto flex flex-wrap gap-2 border-t border-border/70 pt-4 z-10">
+        {chips.map((chip, index) => (
+          <Link
+            key={`${chip}-${index}`}
+            to="/work-orders"
+            className={cn(
+              "inline-flex items-center rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition-colors",
+              index === 0
+                ? "bg-destructive/10 text-destructive hover:bg-destructive/15"
+                : "bg-muted text-foreground hover:bg-muted/80",
+            )}
+          >
+            {chip}
+          </Link>
+        ))}
           <p className="font-headline text-3xl mt-1 text-foreground">{isLoading ? "—" : count}</p>
         </div>
         <Link
@@ -121,6 +206,14 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
       <div className="flex justify-between items-start mb-6 z-10">
         <div>
           <Label>Active Techs</Label>
+          <p className="font-headline text-3xl font-bold leading-tight mt-1 text-foreground">
+            {active}
+            {total > 0 && (
+              <span className="text-base text-muted-foreground font-normal">
+                {" "}
+                / {total}
+              </span>
+            )}
           <p className="font-headline text-3xl mt-1 text-foreground">
             {active}
             {total > 0 && <span className="text-base text-muted-foreground font-normal"> / {total}</span>}
@@ -138,6 +231,11 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
           </div>
         )}
       </div>
+      <div className="mt-auto pt-4 border-t border-border/70 z-10">
+        <Link
+          to="/team"
+          className="text-xs text-primary font-medium hover:underline flex items-center gap-1"
+        >
       <div className="mt-auto pt-4 border-t border-border z-10">
         <Link to="/team" className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
           View Schedule
@@ -151,6 +249,7 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
 function ProgressRing({ percent, color }: { percent: number; color: string }) {
   const offset = 100 - Math.max(0, Math.min(100, percent));
   return (
+    <div className="relative w-16 h-16">
     <div className="relative w-14 h-14">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
         <path

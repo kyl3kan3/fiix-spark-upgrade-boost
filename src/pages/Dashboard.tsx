@@ -449,6 +449,11 @@ import { TodaySnapshot } from "@/components/dashboard/snapshot/TodaySnapshot";
  */
 const Dashboard: React.FC = () => {
   const { userName, companyName, isLoading } = useDashboardData();
+  const {
+    workOrders,
+    stats,
+    isLoading: workOrdersLoading,
+  } = useWorkOrdersData();
   const { stats, isLoading: workOrdersLoading } = useWorkOrdersData();
   const { teamMembers } = useTeamMembers();
 
@@ -457,6 +462,18 @@ const Dashboard: React.FC = () => {
 
   const completed = stats.completed;
   const totalForRate = stats.completed + stats.open + stats.inProgress;
+  const completionRate =
+    totalForRate > 0 ? Math.round((completed / totalForRate) * 100) : null;
+  const highPriorityPendingJobs = workOrders.filter(
+    (wo) =>
+      wo.status === "pending" &&
+      ["high", "critical"].includes(wo.priority ?? ""),
+  ).length;
+  const pendingAssetLabels = workOrders
+    .filter((wo) => wo.status === "pending")
+    .map((wo) => wo.asset?.name || wo.title)
+    .filter(Boolean)
+    .slice(0, 2);
   const completionRate = totalForRate > 0 ? Math.round((completed / totalForRate) * 100) : null;
 
   const today = new Date().toLocaleDateString(undefined, {
@@ -468,6 +485,35 @@ const Dashboard: React.FC = () => {
     <DashboardLayout>
       <Helmet>
         <title>Dashboard | MaintenEase</title>
+        <meta
+          name="description"
+          content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance."
+        />
+        <meta property="og:title" content="Dashboard | MaintenEase" />
+        <meta
+          property="og:description"
+          content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://maintenease.com/og-image.png"
+        />
+      </Helmet>
+
+      <PageContainer>
+        <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="font-headline text-4xl font-bold leading-tight tracking-[-0.02em] text-foreground sm:text-5xl mb-2">
+              {isLoading
+                ? "Loading…"
+                : `Hello${userName ? `, ${userName.split(" ")[0]}` : ""}.`}
+            </h2>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              Here is your {companyName ? `${companyName} ` : ""}facility
+              overview for today, {today}.
+            </p>
+          </div>
         <meta name="description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
         <meta property="og:title" content="Dashboard | MaintenEase" />
         <meta property="og:description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
@@ -490,6 +536,10 @@ const Dashboard: React.FC = () => {
           pendingJobs={stats.open}
           activeTechs={activeTechs}
           totalTechs={totalTechs}
+          highPriorityPendingJobs={highPriorityPendingJobs}
+          pendingAssetLabels={pendingAssetLabels}
+          isLoading={workOrdersLoading}
+        />
           isLoading={workOrdersLoading}
         />
 
