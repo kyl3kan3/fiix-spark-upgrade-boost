@@ -6,6 +6,7 @@ import {
   HardHat,
   TrendingUp,
 } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle2, HardHat, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,10 @@ export function TodaySnapshot({
           assetLabels={pendingAssetLabels}
           isLoading={isLoading}
         />
+      <h3 className="font-headline text-xl text-foreground mb-4">Today's Snapshot</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CompletionCard rate={completionRate} isLoading={isLoading} />
+        <PendingJobsCard count={pendingJobs} isLoading={isLoading} />
         <ActiveTechsCard active={activeTechs} total={totalTechs} />
       </div>
     </section>
@@ -65,6 +70,11 @@ function Card({
     <div
       className={cn(
         "bg-card rounded-xl p-6 border border-transparent shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary/10 flex flex-col relative overflow-hidden group",
+function Card({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "bg-card rounded-lg p-6 border border-border shadow-sm transition-all hover:shadow-md hover:border-primary/10 flex flex-col relative overflow-hidden group",
         className,
       )}
     >
@@ -76,6 +86,7 @@ function Card({
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <h4 className="text-sm font-semibold leading-snug tracking-[0.01em] text-muted-foreground uppercase">
+    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
       {children}
     </h4>
   );
@@ -88,6 +99,7 @@ function CompletionCard({
   rate: number | null;
   isLoading?: boolean;
 }) {
+function CompletionCard({ rate, isLoading }: { rate: number | null; isLoading?: boolean }) {
   const display = rate === null ? (isLoading ? "—" : "n/a") : `${rate}%`;
   return (
     <Card>
@@ -104,6 +116,11 @@ function CompletionCard({
         <ProgressRing percent={rate ?? 0} color="hsl(var(--success))" />
       </div>
       <div className="mt-auto pt-4 border-t border-border/70 z-10">
+          <p className="font-headline text-3xl mt-1 text-foreground">{display}</p>
+        </div>
+        <ProgressRing percent={rate ?? 0} color="hsl(var(--success))" />
+      </div>
+      <div className="mt-auto pt-4 border-t border-border z-10">
         <p className="text-xs text-success flex items-center gap-1 font-medium">
           <TrendingUp className="h-3.5 w-3.5" />
           Last 30 days
@@ -126,6 +143,7 @@ function PendingJobsCard({
 }) {
   const chips =
     assetLabels.length > 0 ? assetLabels : ["HVAC Unit B", "Plumbing L1"];
+function PendingJobsCard({ count, isLoading }: { count: number; isLoading?: boolean }) {
   return (
     <Card>
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -158,6 +176,21 @@ function PendingJobsCard({
             {chip}
           </Link>
         ))}
+          <p className="font-headline text-3xl mt-1 text-foreground">{isLoading ? "—" : count}</p>
+        </div>
+        <Link
+          to="/work-orders"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold text-warning bg-warning/10 hover:bg-warning/20 transition-colors"
+        >
+          Open
+          <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+      <div className="mt-auto pt-4 border-t border-border z-10">
+        <Link to="/work-orders" className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
+          View queue
+          <ArrowRight className="h-3 w-3" />
+        </Link>
       </div>
     </Card>
   );
@@ -181,6 +214,9 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
                 / {total}
               </span>
             )}
+          <p className="font-headline text-3xl mt-1 text-foreground">
+            {active}
+            {total > 0 && <span className="text-base text-muted-foreground font-normal"> / {total}</span>}
           </p>
         </div>
         {total > 0 && (
@@ -200,6 +236,8 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
           to="/team"
           className="text-xs text-primary font-medium hover:underline flex items-center gap-1"
         >
+      <div className="mt-auto pt-4 border-t border-border z-10">
+        <Link to="/team" className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
           View Schedule
           <ArrowRight className="h-3 w-3" />
         </Link>
@@ -212,6 +250,7 @@ function ProgressRing({ percent, color }: { percent: number; color: string }) {
   const offset = 100 - Math.max(0, Math.min(100, percent));
   return (
     <div className="relative w-16 h-16">
+    <div className="relative w-14 h-14">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
         <path
           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"

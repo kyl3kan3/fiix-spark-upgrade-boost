@@ -17,6 +17,45 @@ const InspectionDetailsCard: React.FC<InspectionDetailsCardProps> = ({
   scheduledDate,
   completedDate,
 }) => {
+ return (
+ <Card className="md:col-span-2">
+ <CardHeader>
+ <CardTitle>Inspection Details</CardTitle>
+ </CardHeader>
+ <CardContent>
+ <div className="space-y-4">
+ <div>
+ <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
+ <p className="mt-1">{description}</p>
+ </div>
+ 
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+ <div>
+ <h3 className="text-sm font-medium text-muted-foreground">Asset</h3>
+ <p className="mt-1">{assetName}</p>
+ </div>
+ 
+ <div>
+ <h3 className="text-sm font-medium text-muted-foreground">Assigned To</h3>
+ <p className="mt-1">{assignedTo}</p>
+ </div>
+ 
+ <div>
+ <h3 className="text-sm font-medium text-muted-foreground">Scheduled Date</h3>
+ <p className="mt-1">{format(new Date(scheduledDate), "PPpp")}</p>
+ </div>
+ 
+ {completedDate && (
+ <div>
+ <h3 className="text-sm font-medium text-muted-foreground">Completed Date</h3>
+ <p className="mt-1">{format(new Date(completedDate), "PPpp")}</p>
+ </div>
+ )}
+ </div>
+ </div>
+ </CardContent>
+ </Card>
+ );
   return (
     <div className="surface-card rounded-lg p-6 md:col-span-2 space-y-6">
       <h3 className="font-headline font-semibold text-lg text-foreground">Inspection Details</h3>
