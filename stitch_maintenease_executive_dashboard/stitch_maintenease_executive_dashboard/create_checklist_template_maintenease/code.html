@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New PM Checklist Builder - MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dde1ff",
+                        "tertiary-fixed": "#e2e2e2",
+                        "primary-container": "#00288e",
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-tint": "#3d57ba",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "inverse-primary": "#b8c4ff",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "surface-container-high": "#dce9ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary-container": "#606365",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "on-primary": "#ffffff",
+                        "surface-blue": "#f8f9ff",
+                        "error": "#ba1a1a",
+                        "surface-container": "#e5eeff",
+                        "on-surface-variant": "#444652",
+                        "on-tertiary-container": "#9c9d9d",
+                        "container-blue": "#e5eeff",
+                        "primary": "#00175c",
+                        "success": "#10B981",
+                        "tertiary": "#1e2020",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-primary-container": "#7e97fe",
+                        "on-error-container": "#93000a",
+                        "secondary": "#5c5f61",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "outline": "#757684",
+                        "secondary-container": "#dee0e2",
+                        "inverse-on-surface": "#eaf1ff",
+                        "warning": "#F59E0B",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#333535",
+                        "on-secondary-fixed-variant": "#444749",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#213da0",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#e1e3e5",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container_padding": "32px",
+                        "card_padding": "24px",
+                        "sidebar_collapsed": "64px",
+                        "gutter": "24px",
+                        "sidebar_expanded": "240px",
+                        "base_unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Drag and drop styles */
+        .draggable {
+            cursor: grab;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        .drop-zone {
+            min-height: 100px;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.drag-over {
+            background-color: theme('colors.surface-container-high');
+            border: 2px dashed theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-full flex overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm flex justify-between items-center w-full px-container_padding py-4 z-50 docked full-width top-0 sticky hidden md:flex absolute top-0 left-sidebar_expanded right-0">
+<div class="flex items-center gap-4">
+<!-- Search hidden for builder view to focus on task -->
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim font-bold">New PM Checklist</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area - Full width since this is a focused task builder -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background pt-20">
+<!-- Multi-step Progress Bar -->
+<div class="w-full bg-surface-container-lowest border-b border-outline-variant/30 px-container_padding py-4">
+<div class="max-w-4xl mx-auto flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md">1</div>
+<span class="font-label-md text-label-md text-primary">Setup</span>
+</div>
+<div class="h-px flex-1 bg-primary mx-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full border-2 border-primary text-primary flex items-center justify-center font-label-md text-label-md">2</div>
+<span class="font-label-md text-label-md text-primary">Builder</span>
+</div>
+<div class="h-px flex-1 bg-outline-variant/50 mx-4"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant/50 text-on-surface-variant flex items-center justify-center font-label-md text-label-md">3</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Schedule</span>
+</div>
+</div>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Sidebar - Component Palette -->
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant/20 p-4 flex flex-col overflow-y-auto">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4">Question Types</h3>
+<div class="space-y-3">
+<!-- Component Items -->
+<div class="draggable bg-surface border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 hover:border-primary/50 hover:shadow-sm transition-all" draggable="true">
+<span class="material-symbols-outlined text-primary">check_box</span>
+<span class="font-label-md text-label-md text-on-surface">Yes/No</span>
+<span class="material-symbols-outlined text-outline-variant ml-auto text-sm">drag_indicator</span>
+</div>
+<div class="draggable bg-surface border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 hover:border-primary/50 hover:shadow-sm transition-all" draggable="true">
+<span class="material-symbols-outlined text-primary">pin</span>
+<span class="font-label-md text-label-md text-on-surface">Numeric Entry</span>
+<span class="material-symbols-outlined text-outline-variant ml-auto text-sm">drag_indicator</span>
+</div>
+<div class="draggable bg-surface border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 hover:border-primary/50 hover:shadow-sm transition-all" draggable="true">
+<span class="material-symbols-outlined text-primary">photo_camera</span>
+<span class="font-label-md text-label-md text-on-surface">Photo Proof</span>
+<span class="material-symbols-outlined text-outline-variant ml-auto text-sm">drag_indicator</span>
+</div>
+<div class="draggable bg-surface border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 hover:border-primary/50 hover:shadow-sm transition-all" draggable="true">
+<span class="material-symbols-outlined text-primary">draw</span>
+<span class="font-label-md text-label-md text-on-surface">Signature</span>
+<span class="material-symbols-outlined text-outline-variant ml-auto text-sm">drag_indicator</span>
+</div>
+</div>
+<div class="mt-8">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4">Logic</h3>
+<div class="draggable bg-surface-container-low border border-primary/20 rounded-lg p-3 flex items-center gap-3 hover:border-primary/50 hover:shadow-sm transition-all" draggable="true">
+<span class="material-symbols-outlined text-primary">call_split</span>
+<span class="font-label-md text-label-md text-on-surface">Conditional Branch</span>
+<span class="material-symbols-outlined text-outline-variant ml-auto text-sm">drag_indicator</span>
+</div>
+</div>
+</aside>
+<!-- Center Canvas - Builder Area -->
+<section class="flex-1 bg-background overflow-y-auto p-8">
+<div class="max-w-3xl mx-auto space-y-6">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-card_padding">
+<input class="w-full bg-transparent border-0 border-b-2 border-outline-variant/30 focus:border-primary focus:ring-0 font-headline-md text-headline-md text-on-surface px-0 py-2 mb-2 placeholder:text-on-surface-variant/50" placeholder="Checklist Title" type="text" value="HVAC Monthly Inspection"/>
+<input class="w-full bg-transparent border-0 focus:ring-0 font-body-md text-body-md text-on-surface-variant px-0 py-1" placeholder="Description (Optional)" type="text" value="Standard monthly preventive maintenance for rooftop HVAC units."/>
+</div>
+<!-- Drop Zone -->
+<div class="drop-zone space-y-4" id="builder-canvas">
+<!-- Existing Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/20 relative group hover:border-primary/30 transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-xl"></div>
+<div class="p-4 flex items-start gap-4">
+<div class="cursor-grab text-outline-variant hover:text-on-surface pt-2">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">
+<span class="material-symbols-outlined text-sm">check_box</span>
+                                            Yes/No
+                                        </div>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">content_copy</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<input class="w-full bg-surface-container-low border-0 rounded focus:ring-2 focus:ring-primary font-body-md text-body-md text-on-surface p-3" type="text" value="Is the area around the unit clear of debris?"/>
+</div>
+</div>
+</div>
+<!-- Existing Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/20 relative group hover:border-primary/30 transition-colors">
+<div class="p-4 flex items-start gap-4">
+<div class="cursor-grab text-outline-variant hover:text-on-surface pt-2">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md bg-surface-container-high px-2 py-1 rounded">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+                                            Photo Proof
+                                        </div>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">content_copy</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<input class="w-full bg-surface-container-low border-0 rounded focus:ring-2 focus:ring-primary font-body-md text-body-md text-on-surface p-3" type="text" value="Take a photo of the filter condition."/>
+<div class="flex items-center gap-2 mt-2">
+<label class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/> Required
+                                        </label>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty state placeholder for drop -->
+<div class="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 flex flex-col items-center justify-center text-on-surface-variant bg-surface/50">
+<span class="material-symbols-outlined text-3xl mb-2 text-outline-variant">add_circle</span>
+<p class="font-body-md text-body-md">Drag components here to build your checklist</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar - Settings -->
+<aside class="w-80 bg-surface-container-lowest border-l border-outline-variant/20 p-6 flex flex-col overflow-y-auto">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-6">Schedule Settings</h2>
+<div class="space-y-6">
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-2">Frequency</label>
+<select class="w-full bg-surface-container-low border-0 rounded-lg focus:ring-2 focus:ring-primary font-body-md text-body-md text-on-surface p-3">
+<option>Daily</option>
+<option>Weekly</option>
+<option selected="">Monthly</option>
+<option>Quarterly</option>
+<option>Annual</option>
+</select>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-2">Assign Default Team</label>
+<select class="w-full bg-surface-container-low border-0 rounded-lg focus:ring-2 focus:ring-primary font-body-md text-body-md text-on-surface p-3">
+<option>HVAC Specialists</option>
+<option>General Maintenance</option>
+<option>Electrical Team</option>
+</select>
+</div>
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-2">Estimated Duration (Mins)</label>
+<input class="w-full bg-surface-container-low border-0 rounded-lg focus:ring-2 focus:ring-primary font-body-md text-body-md text-on-surface p-3" type="number" value="45"/>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant/20 flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-lg font-label-md text-label-md text-primary bg-transparent border border-primary hover:bg-primary/5 transition-colors">Save Draft</button>
+<button class="flex-1 py-3 px-4 rounded-lg font-label-md text-label-md text-on-primary bg-primary hover:bg-primary-container transition-colors shadow-sm">Publish</button>
+</div>
+</aside>
+</div>
+</main>
+<script>
+        // Simple drag and drop visual feedback
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZone = document.getElementById('builder-canvas');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('opacity-50');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('opacity-50');
+            });
+        });
+
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            // In a real app, this would append a new component based on what was dragged
+        });
+    </script>
+</body></html>

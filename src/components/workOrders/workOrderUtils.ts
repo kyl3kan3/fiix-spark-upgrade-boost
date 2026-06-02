@@ -1,16 +1,16 @@
 
 export const statusColorMap: Record<string, string> = {
- pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
- in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
- completed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
- cancelled: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+ pending: "bg-warning/10 text-warning border border-warning/30",
+ in_progress: "bg-primary/10 text-primary border border-primary/30",
+ completed: "bg-success/10 text-success border border-success/30",
+ cancelled: "bg-muted text-muted-foreground border border-border",
 };
 
 export const priorityColorMap: Record<string, string> = {
- low: "bg-muted text-foreground  ",
- medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
- high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
- urgent: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+ low: "bg-muted text-muted-foreground border border-border",
+ medium: "bg-warning/10 text-warning border border-warning/30",
+ high: "bg-destructive/10 text-destructive border border-destructive/30",
+ urgent: "bg-destructive/15 text-destructive border border-destructive/40",
 };
 
 export const getStatusColor = (status: string) => {

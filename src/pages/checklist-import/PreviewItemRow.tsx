@@ -35,7 +35,7 @@ export const PreviewItemRow: React.FC<PreviewItemRowProps> = ({
     className={cn(
       "flex items-start gap-2 border rounded-md p-2",
       isEmpty && "border-destructive/60 bg-destructive/5",
-      !isEmpty && isDup && "border-yellow-500/60 bg-yellow-500/5",
+      !isEmpty && isDup && "border-warning/60 bg-warning/5",
     )}
   >
     <div className="flex flex-col items-center gap-2 pt-2">
@@ -57,7 +57,7 @@ export const PreviewItemRow: React.FC<PreviewItemRowProps> = ({
         />
         {isEmpty && <Badge variant="destructive">Empty</Badge>}
         {!isEmpty && isDup && (
-          <Badge className="bg-yellow-500 text-yellow-50 hover:bg-yellow-500">
+          <Badge className="bg-warning text-warning hover:bg-warning">
             {dupRow !== undefined ? `Duplicate of row ${dupRow + 1}` : "Duplicate"}
           </Badge>
         )}

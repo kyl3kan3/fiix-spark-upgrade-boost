@@ -91,7 +91,7 @@ const AssetCategoriesSetup: React.FC<AssetCategoriesSetupProps> = ({ data, onUpd
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Wrench className="h-6 w-6 text-maintenease-600" />
+        <Wrench className="h-6 w-6 text-primary" />
         <h2 className="text-xl font-semibold">Asset Categories</h2>
       </div>
 
@@ -124,7 +124,7 @@ const AssetCategoriesSetup: React.FC<AssetCategoriesSetupProps> = ({ data, onUpd
                   categories.map((category) => (
                     <div
                       key={category.id}
-                      className={`p-3 cursor-pointer hover:bg-muted ${selectedCategoryId === category.id ? "bg-muted border-l-4 border-l-maintenease-600" : ""}`}
+                      className={`p-3 cursor-pointer hover:bg-muted ${selectedCategoryId === category.id ? "bg-muted border-l-4 border-l-primary" : ""}`}
                       onClick={() => setSelectedCategoryId(category.id)}
                     >
                       <div className="flex justify-between items-center">

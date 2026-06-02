@@ -257,7 +257,7 @@ const EnhancedVendorPreview: React.FC<EnhancedVendorPreviewProps> = ({
  {vendor.website && (
  <p className="truncate">
  <a href={vendor.website} target="_blank" rel="noopener noreferrer" 
- className="text-blue-600 hover:underline">
+ className="text-primary hover:underline">
  {vendor.website}
  </a>
  </p>

@@ -273,9 +273,52 @@ export const filterLocationsByParent = (locations: Location[], parentId: string)
  return locations.filter(location => location.parent_id === parentId);
 };
 
+export const getAssetsByLocationId = async (locationId: string): Promise<{ id: string; name: string; description?: string | null; status: string }[]> => {
+ try {
+ const { data, error } = await supabase
+ .from('assets')
+ .select('id, name, description, status')
+ .eq('location_id', locationId);
+ if (error) throw error;
+ return data || [];
+ } catch (error) {
+ console.error('Error in getAssetsByLocationId:', error);
+ throw error;
+ }
+};
+
+export const getSubLocationsByParentId = async (parentId: string): Promise<Location[]> => {
+ try {
+ const { data, error } = await supabase
+ .from('locations')
+ .select('*')
+ .eq('parent_id', parentId)
+ .order('name');
+ if (error) throw error;
+ return data || [];
+ } catch (error) {
+ console.error('Error in getSubLocationsByParentId:', error);
+ throw error;
+ }
+};
+
+export const getWorkOrderCountByLocationId = async (locationId: string): Promise<number> => {
+ try {
+ const { data, error } = await supabase
+ .from('work_orders')
+ .select('id, assets!inner(location_id)')
+ .eq('assets.location_id', locationId);
+ if (error) throw error;
+ return (data || []).length;
+ } catch (error) {
+ console.error('Error in getWorkOrderCountByLocationId:', error);
+ return 0;
+ }
+};
+
 export const filterLocationsByDate = (locations: Location[], dateFilter: string): Location[] => {
  if (dateFilter === 'all') return locations;
- 
+
  const now = new Date();
  const filterDate = new Date();
  

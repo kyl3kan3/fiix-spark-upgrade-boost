@@ -24,20 +24,20 @@ const ImportFilePreview: React.FC<ImportFilePreviewProps> = ({
  <CardContent className="p-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center space-x-3">
- <FileText className="h-8 w-8 text-blue-500" />
+ <FileText className="h-8 w-8 text-primary" />
  <div>
  <p className="font-medium">{file.name}</p>
  <p className="text-sm text-muted-foreground">
  {(file.size / 1024 / 1024).toFixed(2)} MB
  </p>
  {isProcessing && (
- <p className="text-sm text-blue-600 flex items-center gap-1">
+ <p className="text-sm text-primary flex items-center gap-1">
  <RefreshCw className="h-3 w-3 animate-spin" />
  Processing...
  </p>
  )}
  {!isProcessing && parsedDataCount > 0 && (
- <p className="text-sm text-green-600">
+ <p className="text-sm text-success">
  Found {parsedDataCount} vendors
  </p>
  )}
@@ -60,7 +60,7 @@ const ImportFilePreview: React.FC<ImportFilePreviewProps> = ({
  variant="ghost"
  size="sm"
  onClick={onClearFile}
- className="text-red-500 hover:text-red-700"
+ className="text-destructive hover:text-destructive"
  >
  <X className="h-4 w-4" />
  </Button>

@@ -74,7 +74,7 @@ const MaintenanceScheduleSetup: React.FC<MaintenanceScheduleSetupProps> = ({ dat
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Calendar className="h-6 w-6 text-maintenease-600" />
+        <Calendar className="h-6 w-6 text-primary" />
         <h2 className="text-xl font-semibold">Maintenance Schedule Templates</h2>
       </div>
 
@@ -97,7 +97,7 @@ const MaintenanceScheduleSetup: React.FC<MaintenanceScheduleSetupProps> = ({ dat
             {schedules.map((schedule) => (
               <div
                 key={schedule.id}
-                className={`p-3 border rounded-md cursor-pointer hover:bg-muted ${selectedSchedule?.id === schedule.id ? "border-maintenease-600 bg-maintenease-50" : ""}`}
+                className={`p-3 border rounded-md cursor-pointer hover:bg-muted ${selectedSchedule?.id === schedule.id ? "border-primary bg-primary/5" : ""}`}
                 onClick={() => setSelectedSchedule(schedule)}
               >
                 <div className="flex items-center justify-between">

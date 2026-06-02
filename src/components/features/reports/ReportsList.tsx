@@ -29,8 +29,8 @@ const ReportsList: React.FC<ReportsListProps> = ({ onGenerateReport }) => {
  ];
 
  return (
- <div className="bg-muted p-6 rounded-lg">
- <h3 className="text-lg font-medium mb-4">Available Reports</h3>
+ <div className="bg-background rounded-lg p-0">
+ <h3 className="font-headline text-lg font-semibold text-foreground mb-4">Available Reports</h3>
  <div className="grid md:grid-cols-3 gap-4">
  {reportTypes.map((report) => (
  <ReportCard

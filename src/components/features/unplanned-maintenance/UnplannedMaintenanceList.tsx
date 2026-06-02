@@ -19,13 +19,13 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  const getUrgencyColor = (urgency: string) => {
  switch (urgency) {
  case 'critical':
- return 'bg-red-100 text-red-800 border-red-200';
+ return 'bg-destructive/10 text-destructive border-destructive/30';
  case 'high':
- return 'bg-orange-100 text-orange-800 border-orange-200';
+ return 'bg-warning/10 text-warning border-warning/30';
  case 'medium':
- return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+ return 'bg-warning/10 text-warning border-warning/30';
  case 'low':
- return 'bg-green-100 text-green-800 border-green-200';
+ return 'bg-success/10 text-success border-success/30';
  default:
  return 'bg-muted text-foreground border-border';
  }
@@ -34,13 +34,13 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  const getStatusColor = (status: string) => {
  switch (status) {
  case 'reported':
- return 'bg-blue-100 text-blue-800';
+ return 'bg-primary/10 text-primary';
  case 'in_progress':
- return 'bg-purple-100 text-purple-800';
+ return 'bg-primary/10 text-primary';
  case 'awaiting_parts':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning';
  case 'completed':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success';
  default:
  return 'bg-muted text-foreground';
  }
@@ -53,7 +53,7 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  <Button 
  size="sm" 
  onClick={() => onUpdateStatus(item.id, 'in_progress')}
- className="bg-blue-600 hover:bg-blue-700"
+ className="bg-primary hover:bg-primary"
  >
  <Wrench className="mr-1 h-3 w-3" />
  Start Work
@@ -73,7 +73,7 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  <Button 
  size="sm" 
  onClick={() => onUpdateStatus(item.id, 'completed')}
- className="bg-green-600 hover:bg-green-700"
+ className="bg-success hover:bg-success"
  >
  <CheckCircle className="mr-1 h-3 w-3" />
  Complete
@@ -85,7 +85,7 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  <Button 
  size="sm" 
  onClick={() => onUpdateStatus(item.id, 'in_progress')}
- className="bg-blue-600 hover:bg-blue-700"
+ className="bg-primary hover:bg-primary"
  >
  <Wrench className="mr-1 h-3 w-3" />
  Resume Work

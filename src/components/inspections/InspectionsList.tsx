@@ -2,10 +2,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Calendar, FileText, User } from "lucide-react";
+import { PlusCircle, Calendar, FileText, User, MoreVertical } from "lucide-react";
 import { Inspection } from "@/types/inspections";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -14,78 +12,71 @@ interface InspectionsListProps {
  loading: boolean;
 }
 
-const getStatusColor = (status: string) => {
- switch(status) {
+const getStatusBadge = (status: string) => {
+ switch (status) {
  case 'scheduled':
- return 'bg-blue-100 text-blue-800';
+ return 'bg-primary/10 text-primary border border-primary/20';
  case 'in-progress':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning border border-warning/20';
  case 'completed':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success border border-success/20';
  case 'failed':
- return 'bg-red-100 text-red-800';
+ return 'bg-destructive/10 text-destructive border border-destructive/20';
  case 'cancelled':
- return 'bg-muted text-foreground';
+ return 'bg-muted text-muted-foreground border border-border';
  default:
- return 'bg-muted text-foreground';
+ return 'bg-muted text-muted-foreground border border-border';
  }
 };
 
-const getPriorityColor = (priority: string) => {
- switch(priority) {
+const getPriorityBadge = (priority: string) => {
+ switch (priority) {
  case 'low':
- return 'bg-green-100 text-green-800';
+ return 'bg-success/10 text-success border border-success/20';
  case 'medium':
- return 'bg-blue-100 text-blue-800';
+ return 'bg-primary/10 text-primary border border-primary/20';
  case 'high':
- return 'bg-yellow-100 text-yellow-800';
+ return 'bg-warning/10 text-warning border border-warning/20';
  case 'critical':
- return 'bg-red-100 text-red-800';
+ return 'bg-destructive/10 text-destructive border border-destructive/20';
  default:
- return 'bg-muted text-foreground';
+ return 'bg-muted text-muted-foreground border border-border';
  }
 };
 
 const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading }) => {
  const navigate = useNavigate();
- 
- // Show loading state only when initially loading
+
  if (loading) {
  return (
  <div className="space-y-4">
  {[1, 2, 3].map((index) => (
- <Card key={index} className="p-4">
- <div className="flex flex-col md:flex-row md:justify-between gap-4">
+ <div key={index} className="bg-card border border-border rounded-lg p-6">
+ <div className="flex flex-col lg:flex-row lg:items-center gap-6">
  <div className="space-y-2 flex-1">
- <Skeleton className="h-6 w-3/4" />
+ <Skeleton className="h-5 w-3/4" />
  <Skeleton className="h-4 w-1/2" />
- <div className="mt-4">
- <Skeleton className="h-4 w-1/3" />
+ </div>
+ <div className="flex gap-2">
+ <Skeleton className="h-8 w-24 rounded-full" />
+ <Skeleton className="h-8 w-20 rounded-full" />
  </div>
  </div>
- <div className="flex flex-wrap gap-2">
- <Skeleton className="h-6 w-20" />
- <Skeleton className="h-6 w-20" />
  </div>
- </div>
- </Card>
  ))}
  </div>
  );
  }
 
- // Show empty state when no inspections and not loading
  if (inspections.length === 0) {
  return (
- <div className="text-center py-12">
- <h3 className="text-lg font-medium text-foreground mb-2">No inspections found</h3>
- <p className="text-muted-foreground mb-6">
+ <div className="bg-card border border-border rounded-lg shadow-sm text-center py-16">
+ <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+ <h3 className="font-headline text-lg font-semibold text-foreground mb-2">No inspections found</h3>
+ <p className="text-muted-foreground mb-6 text-sm">
  Start by creating your first inspection checklist
  </p>
- <Button
- onClick={() => navigate("/inspections/new")}
- className="bg-maintenease-600 hover:bg-maintenease-700"
- >
+ <Button onClick={() => navigate("/inspections/new")}>
  <PlusCircle className="mr-2 h-4 w-4" />
  Create New Inspection
  </Button>
@@ -93,44 +84,80 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  );
  }
 
- // Show inspection list when we have data
  return (
  <div className="space-y-4">
  {inspections.map((inspection) => (
- <Card
+ <div
  key={inspection.id}
- className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+ className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/10 transition-all cursor-pointer group overflow-hidden"
  onClick={() => navigate(`/inspections/${inspection.id}`)}
  >
- <div className="flex flex-col md:flex-row md:justify-between gap-2">
+ <div className="p-6 flex flex-col lg:flex-row lg:items-center gap-6">
+ {/* Title block */}
+ <div className="lg:w-1/4">
+ <h3 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
+ {inspection.title}
+ </h3>
+ <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+ <FileText className="h-3.5 w-3.5 shrink-0" />
+ {inspection.assetName}
+ </p>
+ </div>
+
+ {/* Meta grid */}
+ <div className="grid grid-cols-2 md:grid-cols-3 flex-1 gap-4 items-center">
  <div>
- <h3 className="font-medium">{inspection.title}</h3>
- <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{inspection.description}</p>
- <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-3 text-sm">
- <div className="flex items-center">
- <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
- <span className="">{format(new Date(inspection.scheduledDate), "MMM d, yyyy")}</span>
+ <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Scheduled</span>
+ <span className="text-sm text-foreground flex items-center gap-1.5">
+ <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+ {format(new Date(inspection.scheduledDate), "MMM d, yyyy")}
+ </span>
  </div>
- <div className="flex items-center">
- <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
- <span className="">{inspection.assetName}</span>
+ <div>
+ <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Assigned To</span>
+ <span className="text-sm text-foreground flex items-center gap-1.5">
+ <User className="h-3.5 w-3.5 text-muted-foreground" />
+ {inspection.assignedTo}
+ </span>
  </div>
- <div className="flex items-center">
- <User className="h-4 w-4 mr-2 text-muted-foreground" />
- <span className="">{inspection.assignedTo}</span>
- </div>
- </div>
- </div>
- <div className="flex flex-wrap gap-2 mt-3 md:mt-0">
- <Badge className={`font-normal ${getStatusColor(inspection.status)}`}>
+ <div className="flex flex-col items-start">
+ <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Status</span>
+ <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusBadge(inspection.status)}`}>
  {inspection.status.replace('-', ' ')}
- </Badge>
- <Badge className={`font-normal ${getPriorityColor(inspection.priority)}`}>
- {inspection.priority}
- </Badge>
+ </span>
  </div>
  </div>
- </Card>
+
+ {/* Actions */}
+ <div className="lg:ml-auto flex items-center gap-2 border-t lg:border-t-0 pt-4 lg:pt-0">
+ <Button
+ size="sm"
+ variant="outline"
+ className="border-primary text-primary hover:bg-primary/5 text-xs"
+ onClick={(e) => { e.stopPropagation(); navigate(`/inspections/${inspection.id}`); }}
+ >
+ View Details
+ </Button>
+ {inspection.status !== 'completed' && (
+ <Button
+ size="sm"
+ className="text-xs"
+ onClick={(e) => { e.stopPropagation(); navigate(`/inspections/${inspection.id}`); }}
+ >
+ Start Now
+ </Button>
+ )}
+ <Button
+ size="icon"
+ variant="ghost"
+ className="h-8 w-8 text-muted-foreground"
+ onClick={(e) => e.stopPropagation()}
+ >
+ <MoreVertical className="h-4 w-4" />
+ </Button>
+ </div>
+ </div>
+ </div>
  ))}
  </div>
  );

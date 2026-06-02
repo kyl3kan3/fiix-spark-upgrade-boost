@@ -186,7 +186,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <LayoutDashboard className="h-6 w-6 text-maintenease-600" />
+ <LayoutDashboard className="h-6 w-6 text-primary" />
  <h2 className="text-xl font-semibold">Dashboard Customization</h2>
  </div>
  
@@ -279,7 +279,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  variant="ghost"
  size="sm"
  onClick={() => handleToggleWidget(widget.id, false)}
- className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+ className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
  >
  <Trash2 className="h-4 w-4" />
  <span className="sr-only">Remove</span>
@@ -340,7 +340,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  
  {showQuickActions && (
  <div className="flex flex-wrap gap-2 mb-4">
- <div className="h-8 w-28 rounded-md bg-maintenease-600"></div>
+ <div className="h-8 w-28 rounded-md bg-primary"></div>
  <div className="h-8 w-28 rounded-md bg-muted"></div>
  <div className="h-8 w-28 rounded-md bg-muted"></div>
  </div>
@@ -351,7 +351,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  enabledWidgets.map((widget) => (
  <div key={widget.id} className={`border rounded bg-muted p-3 ${widget.size === "small" ? "h-20" : widget.size === "medium" ? "h-32" : "h-56"}`}>
  <div className="flex items-center gap-2">
- <div className="h-3 w-3 bg-maintenease-600 rounded-full"></div>
+ <div className="h-3 w-3 bg-primary rounded-full"></div>
  <div className="font-medium text-sm">{widget.name}</div>
  </div>
  <div className={`mt-2 flex items-center justify-center ${widget.size === "small" ? "h-12" : widget.size === "medium" ? "h-24" : "h-44"}`}>
@@ -368,7 +368,7 @@ const DashboardCustomizationSetup: React.FC<DashboardCustomizationSetupProps> = 
  
  {enabledWidgets.length > 0 && (
  <div className="mt-3 text-center">
- <Check className="h-5 w-5 mx-auto text-green-500" />
+ <Check className="h-5 w-5 mx-auto text-success" />
  <p className="text-xs text-muted-foreground mt-1">
  Your dashboard layout is saved
  </p>

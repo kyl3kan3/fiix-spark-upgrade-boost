@@ -35,7 +35,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ userName, onLogout }) => {
  >
  <Avatar className="h-8 w-8 border">
  <AvatarImage alt={userName} />
- <AvatarFallback className="text-xs bg-maintenease-50 text-maintenease-600">
+ <AvatarFallback className="text-xs bg-primary/5 text-primary">
  {userName
  .split(" ")
  .map((n) => n[0])

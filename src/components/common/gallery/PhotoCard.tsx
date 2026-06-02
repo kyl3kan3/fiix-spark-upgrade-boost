@@ -36,7 +36,7 @@ export const PhotoCard: React.FC<PhotoCardProps> = ({ item, readOnly, onZoom, on
       <div className="relative aspect-square">
         <img
           src={displayUrl ?? item.url}
-          alt={item.caption || item.file_name || "Photo"}
+          alt={item.caption || item.file_name || "Maintenance attachment photo"}
           className="h-full w-full object-cover cursor-zoom-in"
           loading="lazy"
           onClick={onZoom}

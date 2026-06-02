@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - MaintenEase Clean Tech</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#00288e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "secondary-container": "#dee0e2",
+                        "secondary-fixed": "#e1e3e5",
+                        "surface-blue": "#f8f9ff",
+                        "on-surface": "#0b1c30",
+                        "on-background": "#0b1c30",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "tertiary": "#1e2020",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "inverse-surface": "#213145",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-container": "#9c9d9d",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-primary-fixed-variant": "#213da0",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#444652",
+                        "primary": "#00175c",
+                        "warning": "#F59E0B",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c5c5d4",
+                        "surface-container-high": "#dce9ff",
+                        "success": "#10B981",
+                        "on-primary-container": "#7e97fe",
+                        "tertiary-container": "#333535",
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "secondary": "#5c5f61",
+                        "surface-container-low": "#eff4ff",
+                        "container-blue": "#e5eeff",
+                        "inverse-primary": "#b8c4ff",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#606365",
+                        "tertiary-fixed": "#e2e2e2",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-dim": "#cbdbf5",
+                        "outline": "#757684",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-tint": "#3d57ba",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "surface": "#f8f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar_expanded": "240px",
+                        "sidebar_collapsed": "64px",
+                        "container_padding": "32px",
+                        "gutter": "24px",
+                        "card_padding": "24px",
+                        "base_unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .sidebar-hover:hover { width: 240px; }
+        .sidebar-hover:hover .label-text { display: block; opacity: 1; }
+        .sidebar-hover .label-text { display: none; opacity: 0; transition: opacity 0.2s; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-inverse-surface fixed left-0 top-0 h-full w-sidebar_width_collapsed hover:w-sidebar_width_expanded transition-all duration-300 z-50 border-r border-outline-variant/10 shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between py-base_unit sidebar-hover group md:flex hidden">
+<div>
+<div class="px-4 py-4 flex items-center mb-8">
+<span class="material-symbols-outlined text-primary text-3xl">precision_manufacturing</span>
+<div class="ml-3 label-text whitespace-nowrap">
+<div class="font-headline-sm text-headline-sm font-bold text-primary">MaintenEase</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">CMMS Workspace</div>
+</div>
+</div>
+<ul class="space-y-2">
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Work Orders</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-primary font-bold border-l-4 border-primary bg-primary/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="ml-3 font-label-md text-label-md label-text whitespace-nowrap">Settings</span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<div class="px-4 mb-4 label-text">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md uppercase py-3 rounded hover:bg-primary-container transition-colors">Report a Problem</button>
+</div>
+<ul class="space-y-2">
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="ml-4 font-label-md text-label-md label-text whitespace-nowrap">Log Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 md:ml-sidebar_width_collapsed flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md docked full-width top-0 z-40 shadow-sm flex justify-between items-center h-16 px-gutter w-full sticky">
+<div class="flex items-center">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary mr-8 md:hidden">MaintenEase</div>
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded focus:ring-2 focus:ring-primary w-64 font-body-md text-body-md" placeholder="Search settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors duration-200 p-2 rounded-full active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-colors duration-200 p-2 rounded-full active:scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border-2 border-surface-container-high cursor-pointer" data-alt="A professional headshot of a facility manager in a well-lit industrial environment. The lighting is soft and bright, emphasizing a clean, modern aesthetic. The color palette features cool tones, deep blues, and crisp whites, aligning with a highly structured and reliable corporate brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAAEnBlDtbpOJU9TnMr4PLaToepwM24wcDeeOomFACzLiVfTzlDaOmbtv8B98U3G8QWKbNdxbMLHuMxKvrPx9sjwg7te3TaHCRajtz7YpeDYn2_blxSoY6hTK9as2TQqQgkxGPwMI-e-2LOr-4tys2IVxyfN6iZAFEAusgCGrKvS1KYuvjva6BuRCF1vtHTJcRC-Uvet4d7eA-4zZoo7-vfO0bTFsfpoXo7WDMa1Vk0dTlWJ8zeA30UFArPyHY6vgQT9F7Iz-mesA"/>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-gutter md:p-container_padding max-w-7xl mx-auto w-full">
+<div class="mb-8">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Settings</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Manage your workspace preferences and organizational profile.</p>
+</div>
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Settings Navigation Sidebar -->
+<aside class="w-full lg:w-64 shrink-0">
+<nav class="space-y-1 bg-surface-container-lowest rounded-lg p-2 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] border border-outline-variant/10">
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">person</span>
+<span class="font-label-md text-label-md">Account</span>
+</a>
+<a class="flex items-center px-4 py-3 text-primary bg-primary/5 font-bold rounded-md transition-colors relative" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md"></div>
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">domain</span>
+<span class="font-label-md text-label-md">Company Profile</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">notifications_active</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">security</span>
+<span class="font-label-md text-label-md">Security</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">api</span>
+<span class="font-label-md text-label-md">Integrations</span>
+</a>
+</nav>
+</aside>
+<!-- Settings Content Area (Company Profile) -->
+<div class="flex-1 space-y-8">
+<!-- Company Logo & Basic Info -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+<h2 class="font-headline-md text-headline-md text-on-surface border-b border-outline-variant/20 pb-4 mb-6">Company Profile</h2>
+<div class="flex flex-col md:flex-row gap-8 items-start mb-8">
+<div class="shrink-0 flex flex-col items-center gap-4">
+<div class="w-32 h-32 bg-surface-container-low rounded-lg border-2 border-dashed border-outline-variant flex items-center justify-center relative overflow-hidden group">
+<img alt="Company Logo" class="w-full h-full object-cover" data-alt="A polished, minimalist corporate logo set against a clean white background. The logo features abstract geometric shapes in deep navy blue and subtle grey. The lighting is pristine and shadowless, perfectly fitting a modern tech-forward industrial brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnxMqt_wNctRDYXptvuk1dzX5bxcfdis9b6YNS_sB53O8bhbEtydSREeZGIqrqhYnxjGALsvdiMXw-7y3XuhW5zqN53Iuwms4Aw_MQseXBCF5BWV4Hg6tMt8bgpsG-lHbQ26xq7wCvD1pzZY8F5TRRRtwAw-Nqw70dMu3kHmtJLbQN-d7XF2meCm5N84irZrzfkq348KEBUpKHKtg4oUoEDhuUZGdO-paMP6fer0gbUJAgG0n9c0gPxfNc580gRj_C710LIf7ix4c"/>
+<div class="absolute inset-0 bg-on-surface/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-white mb-1">upload</span>
+<span class="text-white font-label-sm text-label-sm uppercase">Change</span>
+</div>
+</div>
+<button class="text-primary font-label-md text-label-md hover:underline decoration-2 underline-offset-4">Remove Logo</button>
+</div>
+<div class="flex-1 space-y-5 w-full">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Company Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="text" value="Acme Industrial Solutions"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Industry</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+<option>Manufacturing &amp; Facility Management</option>
+<option>Energy &amp; Utilities</option>
+<option>Logistics &amp; Warehousing</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Contact Information -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">Primary Contact Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Email Address</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="email" value="admin@acmeindustrial.com"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Phone Number</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="tel" value="+1 (555) 019-2834"/>
+</div>
+<div class="md:col-span-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Corporate Address</label>
+<input class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none transition-shadow" type="text" value="4500 Industrial Pkwy, Tech District"/>
+</div>
+</div>
+</div>
+<!-- Localization -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10 hover:border-primary/20 transition-colors p-card_padding">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">Localization</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Time Zone</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+<option>(GMT-05:00) Eastern Time (US &amp; Canada)</option>
+<option>(GMT-06:00) Central Time (US &amp; Canada)</option>
+<option>(GMT-08:00) Pacific Time (US &amp; Canada)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Date Format</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-md px-4 py-2.5 font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-shadow">
+<option>MM/DD/YYYY</option>
+<option>DD/MM/YYYY</option>
+<option>YYYY-MM-DD</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="flex justify-end gap-4 mt-8 border-t border-outline-variant/20 pt-6">
+<button class="px-6 py-3 font-label-md text-label-md text-primary bg-transparent hover:bg-surface-container-low rounded uppercase transition-colors">Cancel</button>
+<button class="px-6 py-3 font-label-md text-label-md text-on-primary bg-primary rounded uppercase shadow-md hover:bg-primary-container hover:shadow-lg transition-all transform active:scale-95">Save Changes</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

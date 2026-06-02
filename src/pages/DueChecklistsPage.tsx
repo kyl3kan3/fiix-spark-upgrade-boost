@@ -1,12 +1,11 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Bell, ChevronRight, Clock, AlertTriangle, CalendarDays, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Bell, ChevronRight, AlertTriangle, CalendarDays, CheckCircle2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { checklistService } from "@/services/checklistService";
 import { Checklist, ChecklistFrequencies } from "@/types/checklists";
 import { format, formatDistanceToNowStrict, isToday, startOfDay, endOfDay } from "date-fns";
@@ -58,27 +57,31 @@ const ChecklistRow: React.FC<{ checklist: Checklist; bucket: Bucket }> = ({ chec
  return (
  <button
  onClick={() => navigate(`/checklists/${checklist.id}/submit`)}
- className="w-full flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-secondary/40 transition-colors text-left"
+ className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-primary/5 hover:border-primary/20 transition-colors text-left group"
  >
  <div className="flex-1 min-w-0">
- <div className="font-semibold truncate">{checklist.name}</div>
+ <div className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
+ {checklist.name}
+ </div>
  <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
- <Badge variant="outline" className="text-[10px]">{freqLabel(checklist.frequency)}</Badge>
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-muted text-muted-foreground border border-border">
+ {freqLabel(checklist.frequency)}
+ </span>
  {total > 0 && (
  <span className="text-muted-foreground">
  {readyNow}/{total} ready
  {waiting > 0 && bucket !== "upcoming" && (
- <span className="ml-1 text-info">· {waiting} staggered</span>
+ <span className="ml-1 text-primary">· {waiting} staggered</span>
  )}
  </span>
  )}
  <span className={`font-medium ${dueTone}`}>{dueLabel}</span>
  </div>
  </div>
- <Button size="sm" variant="outline" className="shrink-0 pointer-events-none">
+ <div className="shrink-0 flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/30 bg-primary/5 rounded-lg px-3 py-1.5 pointer-events-none">
  Start
- <ChevronRight className="h-4 w-4" />
- </Button>
+ <ChevronRight className="h-3.5 w-3.5" />
+ </div>
  </button>
  );
 };
@@ -91,23 +94,31 @@ const Section: React.FC<{
  items: Checklist[];
  emptyText: string;
 }> = ({ title, description, icon: Icon, tone, items, emptyText }) => {
- const toneClasses = {
- destructive: "border-destructive/40 bg-destructive/5 text-destructive",
- warning: "border-warning/40 bg-warning/5 text-warning",
- info: "border-info/40 bg-info/5 text-info",
+ const iconTone = {
+ destructive: "bg-destructive/10 text-destructive",
+ warning: "bg-warning/10 text-warning",
+ info: "bg-primary/10 text-primary",
+ }[tone];
+
+ const borderTone = {
+ destructive: "border-destructive/25",
+ warning: "border-warning/25",
+ info: "border-primary/15",
  }[tone];
 
  return (
- <Card className={`p-5 border-2 ${toneClasses.split(" ").filter(c => c.startsWith("border") || c.startsWith("bg")).join(" ")}`}>
+ <Card className={`p-5 border-2 ${borderTone} shadow-sm`}>
  <div className="flex items-start gap-3 mb-4">
- <div className={`h-10 w-10 rounded-2xl flex items-center justify-center shrink-0 ${toneClasses}`}>
+ <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${iconTone}`}>
  <Icon className="h-5 w-5" />
  </div>
  <div className="flex-1">
- <h2 className="font-display font-bold text-lg leading-tight">{title}</h2>
+ <h2 className="font-headline font-bold text-lg leading-tight">{title}</h2>
  <p className="text-sm text-muted-foreground">{description}</p>
  </div>
- <Badge variant="outline" className="shrink-0">{items.length}</Badge>
+ <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-muted text-muted-foreground border border-border">
+ {items.length}
+ </span>
  </div>
 
  {items.length === 0 ? (

@@ -1,22 +1,23 @@
 
 import React from "react";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users } from "lucide-react";
+import { UserPlus } from "lucide-react";
 
 interface TeamSetupHeaderProps {
- companyName?: string;
+  companyName?: string;
 }
 
 export const TeamSetupHeader: React.FC<TeamSetupHeaderProps> = ({ companyName }) => {
- return (
- <CardHeader className="text-center">
- <div className="mx-auto rounded-full bg-blue-100 p-3 mb-4">
- <Users className="h-8 w-8 text-blue-600" />
- </div>
- <CardTitle className="text-2xl">Invite Your Team</CardTitle>
- <CardDescription>
- {companyName ? `Add team members to ${companyName}` : "Invite colleagues to join your organization"}
- </CardDescription>
- </CardHeader>
- );
+  return (
+    <div className="flex items-center gap-4 p-6 border-b border-border bg-muted/30">
+      <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+        <UserPlus className="h-5 w-5 text-primary" />
+      </div>
+      <div>
+        <h2 className="font-headline text-lg font-bold text-foreground">Add Members</h2>
+        <p className="text-xs text-muted-foreground">
+          {companyName ? `Add team members to ${companyName}` : "Invite colleagues to join your organization"}
+        </p>
+      </div>
+    </div>
+  );
 };

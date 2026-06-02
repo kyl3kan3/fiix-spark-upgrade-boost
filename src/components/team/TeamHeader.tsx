@@ -1,29 +1,15 @@
 
 import React from "react";
-import { UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
- Dialog,
- DialogTrigger
-} from "@/components/ui/dialog";
-import AddTeamMemberDialog from "./AddTeamMemberDialog";
 
 const TeamHeader = () => {
  return (
- <div className="flex items-center justify-between mb-6">
  <div>
- <h1 className="text-2xl font-bold text-foreground">Team Members</h1>
- <p className="text-muted-foreground">Manage your maintenance team and permissions</p>
- </div>
- <Dialog>
- <DialogTrigger asChild>
- <Button className="bg-maintenease-600 hover:bg-maintenease-700">
- <UserPlus className="h-4 w-4 mr-2" />
- Add Team Member
- </Button>
- </DialogTrigger>
- <AddTeamMemberDialog />
- </Dialog>
+ <h1 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
+ Team Directory
+ </h1>
+ <p className="text-muted-foreground mt-1 text-sm">
+ Manage roles, access, and communication.
+ </p>
  </div>
  );
 };

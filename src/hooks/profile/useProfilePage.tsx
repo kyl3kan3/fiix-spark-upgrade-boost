@@ -91,7 +91,7 @@ export const useProfilePage = () => {
  // Set a timeout to prevent infinite loading
  const timeoutId = setTimeout(() => {
  if (isMounted && loading && Date.now() - loadStartTime > 5000) {
- console.warn("Loading timeout in profile page");
+ logger.warn("Loading timeout in profile page");
  setLoading(false);
  setError("Loading timed out. Please try refreshing.");
  }

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Work Order - MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#b8c4ff",
+                        "success": "#10B981",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "tertiary": "#1e2020",
+                        "outline-variant": "#c5c5d4",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-container": "#9c9d9d",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#7e97fe",
+                        "secondary-container": "#dee0e2",
+                        "surface-tint": "#3d57ba",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "surface-variant": "#d3e4fe",
+                        "on-primary-fixed-variant": "#213da0",
+                        "surface": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "primary-container": "#00288e",
+                        "on-secondary-container": "#606365",
+                        "on-surface-variant": "#444652",
+                        "on-background": "#0b1c30",
+                        "warning": "#F59E0B",
+                        "tertiary-fixed": "#e2e2e2",
+                        "primary": "#00175c",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed": "#001453",
+                        "tertiary-container": "#333535",
+                        "surface-blue": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "secondary": "#5c5f61",
+                        "surface-container-high": "#dce9ff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "secondary-fixed": "#e1e3e5",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-fixed-variant": "#444749",
+                        "inverse-surface": "#213145",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#dde1ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-fixed": "#191c1e",
+                        "container-blue": "#e5eeff",
+                        "on-error": "#ffffff",
+                        "outline": "#757684",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card_padding": "24px",
+                        "sidebar_collapsed": "64px",
+                        "gutter": "24px",
+                        "base_unit": "8px",
+                        "sidebar_expanded": "240px",
+                        "container_padding": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c5c5d4; border-radius: 10px; }
+        .glass-header { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface/80 glass-header border-b border-outline-variant/30 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-container_padding py-4">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md text-primary tracking-tight">MaintenEase</span>
+<div class="hidden md:flex bg-surface-container-low rounded-full px-4 py-2 items-center gap-2 w-64 border border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md w-full" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="hidden md:flex gap-6">
+<button class="font-label-md text-primary font-bold">Dashboard</button>
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors">History</button>
+<button class="font-label-md text-on-surface-variant hover:text-primary transition-colors">Resources</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="help">help</span>
+<div class="h-8 w-8 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border border-primary/10">
+<img alt="Administrator Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpgUgv2idM2BVSAyd_dwV3phU4LOtkbrfPNrafgXLe3N4G3nVn7JLvfTM2tfZqAAMpbOXUrSz-GP3KCGD7sBO8YR1tF2WVB7kFG1ga6ZorrMOEGQwqowyhaAczHBZpGVw4aiEblpoMtEBT-iBn3t4IfZ_jOycLq5ygZ6G92DR3xXEbdE_jqv0YBF1eqTZ_HtynoqEU0bngCNaSMB0xMPko5UtMBzPmJ1giH7u2Zl92ilo_FAknJ3R9LwYFEyt5URm7edRmosSrsWA"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex pt-20">
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col h-screen py-gutter gap-base_unit fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant/20 shadow-sm w-sidebar_expanded pt-24 z-40">
+<div class="px-6 mb-6">
+<div class="flex items-center gap-3 p-3 bg-primary/5 rounded-xl border border-primary/10">
+<span class="material-symbols-outlined text-primary" data-icon="precision_manufacturing">precision_manufacturing</span>
+<div>
+<p class="font-label-md text-primary font-bold">MaintenEase</p>
+<p class="text-[10px] text-secondary uppercase tracking-widest">Facility Mgmt</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 border-primary bg-primary/5 text-primary font-bold transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-label-md">Work Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-label-md">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-md">Preventive</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md">Reporting</span>
+</a>
+</nav>
+<div class="px-4 mt-auto border-t border-outline-variant/10 pt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-error hover:bg-error-container/20" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-sidebar_expanded px-container_padding py-gutter max-w-5xl mx-auto w-full">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 mb-6 text-secondary text-label-sm">
+<span>Work Orders</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-bold">New Work Order</span>
+</nav>
+<!-- Page Header -->
+<header class="mb-10">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Create New Work Order</h1>
+<p class="text-secondary max-w-2xl font-body-md">Initiate a new maintenance task. Please provide detailed information to ensure the technician can resolve the issue efficiently.</p>
+</header>
+<!-- Form Container -->
+<div class="space-y-gutter">
+<!-- Section 1: Basic Information -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-transparent hover:border-primary/10 transition-all p-card_padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-8 w-8 rounded-full bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="info">info</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">General Information</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="md:col-span-2 space-y-1.5">
+<label class="font-label-md text-on-surface-variant block">Work Order Title</label>
+<input class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md" placeholder="e.g. HVAC Unit 4 Overheating" type="text"/>
+</div>
+<div class="md:col-span-2 space-y-1.5">
+<label class="font-label-md text-on-surface-variant block">Detailed Description</label>
+<textarea class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md resize-none" placeholder="Describe the issue, symptoms, and any troubleshooting steps already taken..." rows="4"></textarea>
+</div>
+</div>
+</section>
+<!-- Section 2: Asset & Location -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-transparent hover:border-primary/10 transition-all p-card_padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-8 w-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="location_on">location_on</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Asset &amp; Location</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5 relative group">
+<label class="font-label-md text-on-surface-variant block">Select Asset</label>
+<div class="relative">
+<input class="w-full pl-10 pr-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md" placeholder="Search by name or serial..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary" data-icon="search">search</span>
+</div>
+<div class="absolute z-10 w-full mt-1 bg-surface-container-lowest border border-outline-variant shadow-xl rounded-lg hidden group-focus-within:block">
+<div class="p-3 border-b border-outline-variant/10 hover:bg-surface-container cursor-pointer flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="settings_input_component">settings_input_component</span>
+<div>
+<p class="font-label-md">HVAC-440-B1</p>
+<p class="text-[10px] text-secondary">Basement - Sector 4</p>
+</div>
+</div>
+<div class="p-3 border-b border-outline-variant/10 hover:bg-surface-container cursor-pointer flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+<div>
+<p class="font-label-md">Generator-AUX-02</p>
+<p class="text-[10px] text-secondary">External Yard - North</p>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-md text-on-surface-variant block">Building/Location</label>
+<select class="w-full px-4 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md appearance-none">
+<option>Main Manufacturing Plant</option>
+<option>Research &amp; Development Wing</option>
+<option>Warehouse A</option>
+<option>Administration Building</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Section 3: Assignment & Priority -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-transparent hover:border-primary/10 transition-all p-card_padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-8 w-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="priority_high">priority_high</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Priority &amp; Assignment</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<label class="font-label-md text-on-surface-variant block">Priority Level</label>
+<div class="flex flex-wrap gap-3">
+<button class="px-5 py-2 rounded-full border border-outline-variant text-label-md hover:bg-surface-container transition-colors">Low</button>
+<button class="px-5 py-2 rounded-full border border-outline-variant bg-warning/10 text-warning border-warning/30 font-bold text-label-md">Medium</button>
+<button class="px-5 py-2 rounded-full border border-outline-variant text-label-md hover:bg-surface-container transition-colors">High</button>
+<button class="px-5 py-2 rounded-full border border-error bg-error-container text-error font-bold text-label-md">Critical</button>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-md text-on-surface-variant block">Assign Technician</label>
+<div class="relative">
+<select class="w-full pl-4 pr-10 py-3 rounded-lg bg-surface-container-low border-none focus:ring-2 focus:ring-primary text-body-md appearance-none">
+<option>Select Specialist...</option>
+<option>Marcus Aurelius (HVAC Specialist)</option>
+<option>Elena Rodriguez (Electrical Engineer)</option>
+<option>Samir Kahn (Mechanical Tech)</option>
+<option>Auto-Assign (Based on load)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" data-icon="person_add">person_add</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Attachments -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-transparent hover:border-primary/10 transition-all p-card_padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="h-8 w-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="attachment">attachment</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Photos &amp; Attachments</h2>
+</div>
+<div class="border-2 border-dashed border-outline-variant/50 rounded-xl p-10 flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="h-14 w-14 rounded-full bg-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<p class="font-label-md text-on-surface mb-1">Drag and drop files here, or <span class="text-primary underline">browse computer</span></p>
+<p class="text-label-sm text-secondary">Supports JPG, PNG, PDF (Max 10MB per file)</p>
+</div>
+<!-- File Previews (Mock) -->
+<div class="mt-6 flex flex-wrap gap-4">
+<div class="w-24 h-24 rounded-lg bg-surface-container border border-outline-variant relative group overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Close-up photograph of industrial machinery with visible signs of surface wear and metallic textures under bright facility lighting. The image emphasizes professional detail and reliability in a high-tech maintenance context with a cool, corporate color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXt12r8goelXweMyL4V4ZXrUVcir84PjPePL7gQWYXEplnWg_HOGNFjPjw0A2Qbpz0pj0d7a9I9iFNRUVR2Aj06csZ-6B8EmdLuqylYA84Cnb5y4a_j6VYcvV_0b-_sZUGLDvsXDA6XB3YNPgqXUsVKogQRx_UtZZMeA4tKD8KJl8oFlWgVQjO4nLTKLZRJ5M9wsouoY4GuCwRPwVjdaszFIAkkQ_hnCt9Sf9HQMSXvCT8lEol3eHti0Cv7JXE1dyC8Ki_-3kRih4"/>
+<button class="absolute top-1 right-1 bg-error text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</button>
+</div>
+<div class="w-24 h-24 rounded-lg border-2 border-dashed border-outline-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="add">add</span>
+</div>
+</div>
+</section>
+<!-- Sticky Actions Bar -->
+<div class="flex items-center justify-end gap-gutter pt-8 border-t border-outline-variant/20">
+<button class="px-8 py-3 rounded-lg font-label-md text-secondary hover:bg-surface-container-high transition-colors">
+                        Cancel
+                    </button>
+<button class="px-10 py-3 rounded-lg bg-primary text-white font-label-md uppercase tracking-wide shadow-lg hover:shadow-xl active:scale-[0.98] transition-all">
+                        Create Work Order
+                    </button>
+</div>
+</div>
+</main>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        // Simple scroll behavior for the glass header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+
+        // Priority Selection Toggle
+        const priorityButtons = document.querySelectorAll('button.text-label-md');
+        priorityButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(e.target.innerText === "Cancel" || e.target.innerText === "Create Work Order") return;
+                // Deactivate others
+                priorityButtons.forEach(b => {
+                    if(b.innerText !== "Cancel" && b.innerText !== "Create Work Order") {
+                        b.classList.remove('bg-primary', 'text-white', 'border-primary');
+                        b.classList.add('border-outline-variant', 'text-on-surface-variant');
+                    }
+                });
+                // Activate clicked
+                btn.classList.add('bg-primary', 'text-white', 'border-primary');
+            });
+        });
+    </script>
+</body></html>

@@ -11,127 +11,127 @@ import { useProfileForm } from "@/hooks/profile/useProfileForm";
 import { useAvatarUpload } from "@/hooks/profile/useAvatarUpload";
 
 const ProfileContainer: React.FC = () => {
- const [editMode, setEditMode] = useState(false);
- const { profile, isLoading, error, refreshProfile, saveProfile } = useProfile();
- 
- // Only initialize form when profile is loaded
- const profileForm = useProfileForm({
- initialData: profile || {
- id: '',
- email: '',
- first_name: '',
- last_name: '',
- phone_number: '',
- role: 'user',
- company_id: '',
- company_name: '',
- created_at: '',
- avatar_url: null
- },
- onSave: saveProfile
- });
- 
- const avatarUpload = useAvatarUpload(profile?.id);
+  const [editMode, setEditMode] = useState(false);
+  const { profile, isLoading, error, refreshProfile, saveProfile } = useProfile();
 
- // Update avatar preview when profile data changes
- useEffect(() => {
- if (profile?.avatar_url) {
- avatarUpload.setPreviewUrl(profile.avatar_url);
- }
- }, [profile?.avatar_url, avatarUpload.setPreviewUrl]);
+  // Only initialize form when profile is loaded
+  const profileForm = useProfileForm({
+    initialData: profile || {
+      id: "",
+      email: "",
+      first_name: "",
+      last_name: "",
+      phone_number: "",
+      role: "user",
+      company_id: "",
+      company_name: "",
+      created_at: "",
+      avatar_url: null,
+    },
+    onSave: saveProfile,
+  });
 
- const handleSaveProfile = async (e: React.FormEvent) => {
- const success = await profileForm.handleSubmit(e);
- if (success) {
- setEditMode(false);
- }
- return success;
- };
+  const avatarUpload = useAvatarUpload(profile?.id);
 
- const handleCancelEdit = () => {
- profileForm.resetForm();
- setEditMode(false);
- };
+  // Update avatar preview when profile data changes
+  useEffect(() => {
+    if (profile?.avatar_url) {
+      avatarUpload.setPreviewUrl(profile.avatar_url);
+    }
+  }, [profile?.avatar_url, avatarUpload.setPreviewUrl]);
 
- const handleAvatarUpload = async (file: File | null) => {
- try {
- await avatarUpload.handleFileUpload(file);
- } catch (error) {
- console.error("Avatar upload failed:", error);
- }
- };
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    const success = await profileForm.handleSubmit(e);
+    if (success) {
+      setEditMode(false);
+    }
+    return success;
+  };
 
- const handleRetry = () => {
- refreshProfile();
- };
+  const handleCancelEdit = () => {
+    profileForm.resetForm();
+    setEditMode(false);
+  };
 
- if (isLoading) {
- return <ProfileSkeleton />;
- }
+  const handleAvatarUpload = async (file: File | null) => {
+    try {
+      await avatarUpload.handleFileUpload(file);
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+    }
+  };
 
- if (error) {
- return (
- <Card>
- <CardHeader>
- <CardTitle>User Profile</CardTitle>
- <CardDescription>Error loading profile data</CardDescription>
- </CardHeader>
- <CardContent>
- <Alert className="mb-4 bg-red-50 border-red-200">
- <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
- <AlertDescription className="text-red-700">
- {error}
- </AlertDescription>
- </Alert>
- <Button onClick={handleRetry} variant="outline">
- <RefreshCw className="h-4 w-4 mr-2" />
- Retry Loading Profile
- </Button>
- </CardContent>
- </Card>
- );
- }
+  const handleRetry = () => {
+    refreshProfile();
+  };
 
- if (!profile) {
- return (
- <Card>
- <CardHeader>
- <CardTitle>User Profile</CardTitle>
- <CardDescription>Unable to load profile data</CardDescription>
- </CardHeader>
- <CardContent>
- <p className="text-muted-foreground mb-4">
- There was an issue loading your profile information.
- </p>
- <Button onClick={handleRetry} variant="outline">
- <RefreshCw className="h-4 w-4 mr-2" />
- Try Again
- </Button>
- </CardContent>
- </Card>
- );
- }
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
 
- return (
- <Card>
- <CardHeader>
- <CardTitle tabIndex={0}>User Profile</CardTitle>
- <CardDescription>Your personal information</CardDescription>
- </CardHeader>
- <CardContent>
- <ProfileContent
- profile={profile}
- editMode={editMode}
- profileForm={profileForm}
- avatarUpload={avatarUpload}
- onSaveProfile={handleSaveProfile}
- onCancelEdit={handleCancelEdit}
- onAvatarUpload={handleAvatarUpload}
- onEditClick={() => setEditMode(true)}
- />
- </CardContent>
- </Card>
- );
+  if (error) {
+    return (
+      <Card className="bg-card border border-border rounded-lg shadow-sm">
+        <CardHeader className="border-b border-border pb-4">
+          <CardTitle className="font-headline text-xl text-foreground">User Profile</CardTitle>
+          <CardDescription className="text-muted-foreground">Error loading profile data</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <Alert className="bg-destructive/10 border-destructive/30">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="text-destructive">{error}</AlertDescription>
+          </Alert>
+          <Button onClick={handleRetry} variant="outline" className="border-border text-primary hover:bg-primary/5">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry Loading Profile
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <Card className="bg-card border border-border rounded-lg shadow-sm">
+        <CardHeader className="border-b border-border pb-4">
+          <CardTitle className="font-headline text-xl text-foreground">User Profile</CardTitle>
+          <CardDescription className="text-muted-foreground">Unable to load profile data</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <p className="text-muted-foreground">
+            There was an issue loading your profile information.
+          </p>
+          <Button onClick={handleRetry} variant="outline" className="border-border text-primary hover:bg-primary/5">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Try Again
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+      <CardHeader className="border-b border-border pb-4">
+        <CardTitle className="font-headline text-xl text-foreground" tabIndex={0}>
+          User Profile
+        </CardTitle>
+        <CardDescription className="text-muted-foreground">Your personal information</CardDescription>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <ProfileContent
+          profile={profile}
+          editMode={editMode}
+          profileForm={profileForm}
+          avatarUpload={avatarUpload}
+          onSaveProfile={handleSaveProfile}
+          onCancelEdit={handleCancelEdit}
+          onAvatarUpload={handleAvatarUpload}
+          onEditClick={() => setEditMode(true)}
+        />
+      </CardContent>
+    </Card>
+  );
 };
 
 export default ProfileContainer;

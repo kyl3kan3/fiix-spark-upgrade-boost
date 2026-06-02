@@ -40,7 +40,7 @@ const SetupResetDialog: React.FC<SetupResetDialogProps> = ({ isResetting, onRese
  </AlertDialogHeader>
  <AlertDialogFooter>
  <AlertDialogCancel>Cancel</AlertDialogCancel>
- <AlertDialogAction onClick={onReset} className="bg-red-600 hover:bg-red-700">
+ <AlertDialogAction onClick={onReset} className="bg-destructive hover:bg-destructive">
  Reset
  </AlertDialogAction>
  </AlertDialogFooter>

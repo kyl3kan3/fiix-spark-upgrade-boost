@@ -146,7 +146,7 @@ const PublicRequestPortal = () => {
  {company.logo ? (
  <img src={company.logo} alt={`${company.name} logo`} className="h-10 w-10 rounded object-cover" />
  ) : (
- <div className="h-10 w-10 rounded bg-maintenease-600 text-white flex items-center justify-center">
+ <div className="h-10 w-10 rounded bg-primary text-white flex items-center justify-center">
  <Wrench className="h-5 w-5" />
  </div>
  )}
@@ -160,7 +160,7 @@ const PublicRequestPortal = () => {
  <main className="container mx-auto px-4 py-10 max-w-3xl">
  {submitted ? (
  <div className="bg-card rounded-xl border border-border p-10 text-center">
- <CheckCircle2 className="h-12 w-12 text-green-600 mx-auto mb-4" />
+ <CheckCircle2 className="h-12 w-12 text-success mx-auto mb-4" />
  <h2 className="text-2xl font-bold mb-2">Thanks — the team has been notified</h2>
  <p className="text-foreground mb-6">
  {type === "urgent"
@@ -177,10 +177,10 @@ const PublicRequestPortal = () => {
  <button
  type="button"
  onClick={() => setType("standard")}
- className={`p-5 rounded-lg border-2 text-left transition-all ${type === "standard" ? "border-maintenease-600 bg-maintenease-50" : "border-border bg-card hover:border-border"}`}
+ className={`p-5 rounded-lg border-2 text-left transition-all ${type === "standard" ? "border-primary bg-primary/5" : "border-border bg-card hover:border-border"}`}
  >
  <div className="flex items-center gap-2 mb-1">
- <Wrench className="h-5 w-5 text-maintenease-600" />
+ <Wrench className="h-5 w-5 text-primary" />
  <span className="font-semibold">Submit a request</span>
  </div>
  <p className="text-sm text-foreground">Routine maintenance, repairs, or improvements.</p>
@@ -188,11 +188,11 @@ const PublicRequestPortal = () => {
  <button
  type="button"
  onClick={() => setType("urgent")}
- className={`p-5 rounded-lg border-2 text-left transition-all ${type === "urgent" ? "border-red-600 bg-red-50" : "border-border bg-card hover:border-red-300"}`}
+ className={`p-5 rounded-lg border-2 text-left transition-all ${type === "urgent" ? "border-destructive bg-destructive/10" : "border-border bg-card hover:border-destructive/30"}`}
  >
  <div className="flex items-center gap-2 mb-1">
- <AlertTriangle className="h-5 w-5 text-red-600" />
- <span className="font-semibold text-red-700">Urgent — needs fixing now</span>
+ <AlertTriangle className="h-5 w-5 text-destructive" />
+ <span className="font-semibold text-destructive">Urgent — needs fixing now</span>
  </div>
  <p className="text-sm text-foreground">Safety risk, leak, no heat/AC, power, equipment down.</p>
  </button>
@@ -240,7 +240,7 @@ const PublicRequestPortal = () => {
                 <div className="flex flex-wrap gap-3">
                   {photos.map((f, i) => (
                     <div key={i} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
-                      <img src={URL.createObjectURL(f)} alt={`Photo ${i + 1}`} className="h-full w-full object-cover" />
+                      <img src={URL.createObjectURL(f)} alt={`Maintenance issue attachment ${i + 1}: ${f.name}`} className="h-full w-full object-cover" />
                       <button
                         type="button"
                         onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
@@ -252,7 +252,7 @@ const PublicRequestPortal = () => {
                     </div>
                   ))}
                   {photos.length < 6 && (
-                    <label className="h-20 w-20 rounded-md border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer text-muted-foreground hover:border-maintenease-600 hover:text-foreground transition">
+                    <label className="h-20 w-20 rounded-md border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer text-muted-foreground hover:border-primary hover:text-foreground transition">
                       <ImagePlus className="h-5 w-5" />
                       <span className="text-[10px] mt-1">Add</span>
                       <input
@@ -269,7 +269,7 @@ const PublicRequestPortal = () => {
               </div>
 
  <Button type="submit" size="lg" disabled={submitting}
- className={type === "urgent" ? "w-full bg-red-600 hover:bg-red-700" : "w-full"}>
+ className={type === "urgent" ? "w-full bg-destructive hover:bg-destructive" : "w-full"}>
  {submitting ? "Sending…" : type === "urgent" ? "Send urgent alert" : "Submit request"}
  </Button>
  <p className="text-xs text-muted-foreground text-center">

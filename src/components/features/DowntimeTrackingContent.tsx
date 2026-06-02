@@ -105,10 +105,10 @@ const DowntimeTrackingContent: React.FC = () => {
 
  const getSeverityColor = (severity: string) => {
  switch (severity) {
- case 'critical': return 'bg-red-100 text-red-800 border-red-200';
- case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
- case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
- case 'low': return 'bg-green-100 text-green-800 border-green-200';
+ case 'critical': return 'bg-destructive/10 text-destructive border-destructive/30';
+ case 'high': return 'bg-warning/10 text-warning border-warning/30';
+ case 'medium': return 'bg-warning/10 text-warning border-warning/30';
+ case 'low': return 'bg-success/10 text-success border-success/30';
  default: return 'bg-muted text-foreground border-border';
  }
  };
@@ -159,7 +159,7 @@ const DowntimeTrackingContent: React.FC = () => {
  <Card>
  <CardContent className="p-4">
  <div className="flex items-center gap-2">
- <Timer className="h-5 w-5 text-blue-600" />
+ <Timer className="h-5 w-5 text-primary" />
  <div>
  <p className="text-sm font-medium text-foreground">Total Downtime</p>
  <p className="text-2xl font-bold">{totalDowntimeHours.toFixed(1)}h</p>
@@ -171,10 +171,10 @@ const DowntimeTrackingContent: React.FC = () => {
  <Card>
  <CardContent className="p-4">
  <div className="flex items-center gap-2">
- <AlertTriangle className="h-5 w-5 text-red-600" />
+ <AlertTriangle className="h-5 w-5 text-destructive" />
  <div>
  <p className="text-sm font-medium text-foreground">Active Incidents</p>
- <p className="text-2xl font-bold text-red-600">{activeIncidents}</p>
+ <p className="text-2xl font-bold text-destructive">{activeIncidents}</p>
  </div>
  </div>
  </CardContent>
@@ -183,7 +183,7 @@ const DowntimeTrackingContent: React.FC = () => {
  <Card>
  <CardContent className="p-4">
  <div className="flex items-center gap-2">
- <TrendingDown className="h-5 w-5 text-orange-600" />
+ <TrendingDown className="h-5 w-5 text-warning" />
  <div>
  <p className="text-sm font-medium text-foreground">Downtime Cost</p>
  <p className="text-2xl font-bold">${totalCost.toLocaleString()}</p>
@@ -195,7 +195,7 @@ const DowntimeTrackingContent: React.FC = () => {
  <Card>
  <CardContent className="p-4">
  <div className="flex items-center gap-2">
- <Calendar className="h-5 w-5 text-green-600" />
+ <Calendar className="h-5 w-5 text-success" />
  <div>
  <p className="text-sm font-medium text-foreground">MTTR</p>
  <p className="text-2xl font-bold">2.5h</p>

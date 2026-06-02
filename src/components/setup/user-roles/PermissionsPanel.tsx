@@ -50,7 +50,7 @@ const PermissionsPanel: React.FC<PermissionsPanelProps> = ({
  </div>
  
  {!selectedRole.isEditable && !isEditing && (
- <p className="text-sm text-amber-600">
+ <p className="text-sm text-warning">
  This is a system role and cannot be modified.
  </p>
  )}

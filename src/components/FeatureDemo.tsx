@@ -33,7 +33,7 @@ const FeatureDemo = () => {
 
  <div className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
  <div>
- <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-fiix-50 text-fiix-700 text-xs font-medium mb-3">
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 text-primary text-xs font-medium mb-3">
  <Sparkles className="h-3.5 w-3.5" />
  Interactive demo
  </div>
@@ -42,7 +42,7 @@ const FeatureDemo = () => {
  </div>
  <Button
  asChild
- className="bg-fiix-600 hover:bg-fiix-700 text-white shrink-0"
+ className="bg-primary hover:bg-primary/90 text-white shrink-0"
  >
  <Link to="/auth?signup=true">Start free trial</Link>
  </Button>
@@ -63,7 +63,7 @@ const FeatureDemo = () => {
  <Link
  key={k}
  to={`/feature/${encodeURIComponent(k)}`}
- className="px-4 py-2 rounded-full border border-border bg-card text-sm text-foreground hover:border-fiix-500 hover:text-fiix-700 transition-colors"
+ className="px-4 py-2 rounded-full border border-border bg-card text-sm text-foreground hover:border-primary hover:text-primary transition-colors"
  >
  {k}
  </Link>

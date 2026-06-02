@@ -112,7 +112,7 @@ const LearnArticle = () => {
  <MarketingJsonLd />
  <article className="container mx-auto px-4 py-12 md:py-16 max-w-3xl">
  <nav className="text-sm text-muted-foreground mb-6">
- <Link to="/learn" className="hover:text-maintenease-600">Learn</Link>
+ <Link to="/learn" className="hover:text-primary">Learn</Link>
  <span className="mx-2">/</span>
  <span className="text-foreground">{term.term}</span>
  </nav>
@@ -140,7 +140,7 @@ const LearnArticle = () => {
  </div>
  </section>
 
- <section className="mt-12 p-8 rounded-xl bg-maintenease-50 border border-maintenease-100">
+ <section className="mt-12 p-8 rounded-xl bg-primary/5 border border-primary/20">
  <h2 className="text-2xl font-semibold mb-2 text-foreground">Put this into practice with MaintenEase</h2>
  <p className="text-foreground mb-5">
  MaintenEase is modern maintenance management software built for teams that want to stop firefighting. Start free and see your work in one place in minutes.
@@ -158,7 +158,7 @@ const LearnArticle = () => {
  <Link
  key={r.slug}
  to={`/learn/${r.slug}`}
- className="block p-5 rounded-lg border border-border bg-card hover:border-maintenease-500 hover:shadow-md transition-all"
+ className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
  >
  <h3 className="font-semibold text-foreground mb-1">{r.term}</h3>
  <p className="text-sm text-foreground">{r.short}</p>
@@ -176,7 +176,7 @@ const LearnArticle = () => {
  <Link
  key={r.slug}
  to={`/solutions/${r.slug}`}
- className="block p-5 rounded-lg border border-border bg-card hover:border-maintenease-500 hover:shadow-md transition-all"
+ className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
  >
  <h3 className="font-semibold text-foreground mb-1">{r.anchor}</h3>
  <p className="text-sm text-foreground">{r.tagline}</p>

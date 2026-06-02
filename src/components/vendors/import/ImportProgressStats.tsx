@@ -25,7 +25,7 @@ const ImportProgressStats: React.FC<ImportProgressStatsProps> = ({
  return (
  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
  <div className="flex items-center gap-2">
- <FileText className="h-4 w-4 text-blue-500" />
+ <FileText className="h-4 w-4 text-primary" />
  <div>
  <p className="text-sm font-medium">{totalLines}</p>
  <p className="text-xs text-muted-foreground">Lines Processed</p>
@@ -33,7 +33,7 @@ const ImportProgressStats: React.FC<ImportProgressStatsProps> = ({
  </div>
  
  <div className="flex items-center gap-2">
- <Users className="h-4 w-4 text-green-500" />
+ <Users className="h-4 w-4 text-success" />
  <div>
  <p className="text-sm font-medium">{vendorsExtracted}</p>
  <p className="text-xs text-muted-foreground">Vendors Found</p>
@@ -41,7 +41,7 @@ const ImportProgressStats: React.FC<ImportProgressStatsProps> = ({
  </div>
  
  <div className="flex items-center gap-2">
- <CheckCircle className="h-4 w-4 text-emerald-500" />
+ <CheckCircle className="h-4 w-4 text-success" />
  <div>
  <p className="text-sm font-medium">{confidencePercentage}%</p>
  <p className="text-xs text-muted-foreground">Confidence</p>
@@ -49,7 +49,7 @@ const ImportProgressStats: React.FC<ImportProgressStatsProps> = ({
  </div>
  
  <div className="flex items-center gap-2">
- <AlertTriangle className="h-4 w-4 text-amber-500" />
+ <AlertTriangle className="h-4 w-4 text-warning" />
  <div>
  <p className="text-sm font-medium">{warningsCount}</p>
  <p className="text-xs text-muted-foreground">Warnings</p>

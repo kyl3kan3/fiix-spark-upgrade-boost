@@ -104,7 +104,7 @@ const DeleteAccountButton: React.FC = () => {
  <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
  </DialogHeader>
  <div>
- <p className="text-red-600 font-medium mb-2">
+ <p className="text-destructive font-medium mb-2">
  This action is irreversible. All your data will be permanently deleted.
  </p>
  <p>

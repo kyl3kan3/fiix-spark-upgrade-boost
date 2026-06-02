@@ -128,7 +128,7 @@ const CustomReportForm: React.FC<CustomReportFormProps> = ({ onSubmit }) => {
  
  <Button 
  type="submit" 
- className="w-full bg-fiix-500 hover:bg-fiix-600 text-white"
+ className="w-full bg-primary hover:bg-primary/90 text-white"
  >
  Generate Custom Report
  </Button>

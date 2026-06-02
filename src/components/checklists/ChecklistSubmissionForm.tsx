@@ -207,7 +207,7 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
  .map((item, index) => (
  <div key={item.id} className="space-y-3">
  <div className="flex items-start gap-4">
- <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-sm font-medium text-blue-600 dark:text-blue-300">
+ <div className="flex-shrink-0 w-8 h-8 bg-primary/10 dark:bg-primary rounded-full flex items-center justify-center text-sm font-medium text-primary dark:text-primary">
  {index + 1}
  </div>
  

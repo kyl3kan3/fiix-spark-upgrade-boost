@@ -38,7 +38,7 @@ export const CompanyAvatar: React.FC<CompanyAvatarProps> = ({
  className="object-contain"
  />
  )}
- <AvatarFallback className="bg-maintenease-100 text-maintenease-800">
+ <AvatarFallback className="bg-primary/10 text-primary">
  {logoUrl ? null : initials || <Building2 className="h-4 w-4" />}
  </AvatarFallback>
  </Avatar>

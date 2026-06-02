@@ -1,5 +1,6 @@
 // Google Ads / GA helper. The tags themselves are loaded in index.html.
 // We only push events from the SPA here.
+import { logger } from "@/lib/logger";
 
 const GOOGLE_ADS_ID = "AW-18190364490";
 const PURCHASE_CONVERSION = "AW-18190364490/CLjYCLDM3LMcEMre6-FD";
@@ -23,7 +24,7 @@ export function trackPageView(path: string): void {
       send_to: GOOGLE_ADS_ID,
     });
   } catch (e) {
-    console.warn("gtag page_view failed", e);
+    logger.warn("gtag page_view failed", e);
   }
 }
 
@@ -48,7 +49,7 @@ export function setUserData(opts: { userId?: string | null; email?: string | nul
       g("set", "user_data", { email: opts.email.trim().toLowerCase() });
     }
   } catch (e) {
-    console.warn("gtag setUserData failed", e);
+    logger.warn("gtag setUserData failed", e);
   }
 }
 
@@ -72,6 +73,6 @@ export function trackPurchaseConversion(opts: {
       currency: opts.currency ?? (opts.value != null ? "USD" : undefined),
     });
   } catch (e) {
-    console.warn("gtag conversion failed", e);
+    logger.warn("gtag conversion failed", e);
   }
 }

@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, NameField, CompanyNameField } from "./AuthFormFields";
 import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
-import { AUTH_BUTTON_TEXT, AUTH_COLORS, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
+import { AUTH_BUTTON_TEXT, AUTH_AUTOCOMPLETE, AUTH_FIELD_LABELS } from "@/constants/authConstants";
 import { FormSubmissionProps } from "@/types/forms";
 import { TurnstileWidget } from "../TurnstileWidget";
 import { GoogleSignInButton } from "../GoogleSignInButton";
@@ -59,7 +59,7 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
 
  <Button
  type="submit"
- className={`w-full bg-${AUTH_COLORS.PRIMARY} hover:bg-${AUTH_COLORS.PRIMARY_HOVER}`}
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant shadow-sm uppercase tracking-wide font-semibold transition-all hover:-translate-y-0.5"
         disabled={isLoading || !turnstileToken}
  >
  {isLoading ? AUTH_BUTTON_TEXT.CREATING_ACCOUNT : AUTH_BUTTON_TEXT.CREATE_ACCOUNT}

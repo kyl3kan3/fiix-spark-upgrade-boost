@@ -1,39 +1,27 @@
-## Mobile Responsiveness Fixes
+## Problem
 
-Three parallel fixes to address mobile audit findings.
+On a Chrome Mobile WebView (Android 12), `localStorage` is `null` (not undefined), so `localStorage.getItem(...)` throws `Cannot read properties of null (reading 'getItem')`. This crashes the `/auth` route via the error boundary. The current `typeof window !== "undefined"` guard does not catch this case because `window` exists but `window.localStorage` is null/blocked (private mode, restricted WebView, or storage disabled).
 
-### 1. Wrap tables in horizontal scroll
+## Fix
 
-Wrap each `<table>` in a `<div className="overflow-x-auto">` so dense tables can't overflow viewport on phones:
+Update `src/components/auth/InviteMessage.tsx` to safely read/write localStorage:
 
-- `src/components/admin/GoogleAdsPanel.tsx`
-- `src/components/team/RolePermissionsOverview.tsx`
-- `src/pages/AdminAnalyticsPage.tsx`
-- `src/pages/AdminSeoIndexPage.tsx`
+1. Add a small helper `safeGetItem(key)` that returns `null` if `window`, `localStorage`, or the call throws. Wrap access in `try/catch`.
+2. Use it for the two `useState` initializers (token, company).
+3. Use it inside the `storage` event handler too.
+4. No other behavior changes; component still renders nothing when no token.
 
-(`AssetManagementContent` and `ImportDataPreview` already have wrappers — verify and skip if so.)
+## Technical notes
 
-### 2. Mobile search trigger in top bar
+```ts
+const safeGetItem = (key: string): string | null => {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return null;
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+```
 
-Edit `src/components/dashboard/header/SearchBar.tsx`:
-
-- Keep desktop inline search (`hidden md:flex`)
-- On mobile (`md:hidden`), render a `Search` icon `Button` that opens a shadcn `Sheet` (top side) containing the same search input, auto-focused on open
-- Wire `Esc` / overlay click to close (sheet handles this)
-
-No changes to header layout — `SearchBar` already sits in `DashboardHeader`.
-
-### 3. Redesign WeekView for phones
-
-Edit `src/components/calendar/WeekView.tsx`:
-
-- Below `sm:` (≤640px): render a day selector (Mon–Fri pill tabs) plus a vertical list of that day's time slots and events — no table, no horizontal scroll
-- At `sm:` and above: keep the existing 5-day table inside the current `overflow-x-auto` wrapper
-
-Uses mock data already in the file; no data-layer changes.
-
-### Out of scope
-
-- No business-logic changes
-- No backend/migration changes
-- Admin-only screens already lower priority; only the listed tables get wrappers
+Scope is limited to this single file — the only one flagged by the Sentry stack trace. Other localStorage usages can be hardened separately if they show up in Sentry.

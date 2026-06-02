@@ -1,100 +1,83 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import PageHeader from "@/components/shell/PageHeader";
 import VendorForm from "@/components/vendors/VendorForm";
 import { useVendorForm } from "@/hooks/vendors/useVendorForm";
 
 const VendorFormPage: React.FC = () => {
- const { vendorId } = useParams();
- const navigate = useNavigate();
- const isEditing = !!vendorId;
- 
- const {
- vendor,
- isLoadingVendor,
- isSubmitting,
- handleSubmit
- } = useVendorForm();
+  const { vendorId } = useParams();
+  const isEditing = !!vendorId;
 
- // Convert vendor data to form data format
- const vendorFormData = vendor ? {
- name: vendor.name,
- email: vendor.email || "",
- phone: vendor.phone || "",
- contact_person: vendor.contact_person || "",
- contact_title: vendor.contact_title || "",
- vendor_type: vendor.vendor_type as "service" | "supplier" | "contractor" | "consultant",
- status: vendor.status as "active" | "inactive" | "suspended",
- address: vendor.address || "",
- city: vendor.city || "",
- state: vendor.state || "",
- zip_code: vendor.zip_code || "",
- website: vendor.website || "",
- description: vendor.description || "",
- rating: vendor.rating
- } : undefined;
+  const {
+    vendor,
+    isLoadingVendor,
+    isSubmitting,
+    handleSubmit,
+  } = useVendorForm();
 
- if (isEditing && isLoadingVendor) {
- return (
- <DashboardLayout>
- <div className="px-4 md:px-6 lg:px-8 py-6">
- <div className="animate-pulse">
- <div className="h-8 bg-secondary rounded w-1/4 mb-4"></div>
- <div className="h-4 bg-secondary rounded w-1/2 mb-8"></div>
- <div className="space-y-4">
- <div className="h-10 bg-secondary rounded"></div>
- <div className="h-10 bg-secondary rounded"></div>
- <div className="h-10 bg-secondary rounded"></div>
- </div>
- </div>
- </div>
- </DashboardLayout>
- );
- }
+  // Convert vendor data to form data format
+  const vendorFormData = vendor
+    ? {
+        name: vendor.name,
+        email: vendor.email || "",
+        phone: vendor.phone || "",
+        contact_person: vendor.contact_person || "",
+        contact_title: vendor.contact_title || "",
+        vendor_type: vendor.vendor_type as "service" | "supplier" | "contractor" | "consultant",
+        status: vendor.status as "active" | "inactive" | "suspended",
+        address: vendor.address || "",
+        city: vendor.city || "",
+        state: vendor.state || "",
+        zip_code: vendor.zip_code || "",
+        website: vendor.website || "",
+        description: vendor.description || "",
+        rating: vendor.rating,
+      }
+    : undefined;
 
- return (
- <DashboardLayout>
- <Helmet>
- <title>{isEditing ? 'Edit Vendor' : 'Add New Vendor'} | MaintenEase</title>
- </Helmet>
- 
- <div className="px-4 md:px-6 lg:px-8 py-6">
- <div className="flex items-center gap-4 mb-6">
- <Button
- variant="ghost"
- size="sm"
- onClick={() => navigate('/vendors')}
- className="flex items-center gap-2"
- >
- <ArrowLeft className="h-4 w-4" />
- Back to Vendors
- </Button>
- </div>
+  if (isEditing && isLoadingVendor) {
+    return (
+      <DashboardLayout>
+        <div className="px-4 md:px-6 lg:px-8 py-6 max-w-3xl">
+          <div className="bg-card border border-border rounded-lg shadow-sm p-6">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 bg-muted rounded w-1/3" />
+              <div className="h-10 bg-muted rounded" />
+              <div className="h-10 bg-muted rounded" />
+              <div className="h-10 bg-muted rounded" />
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
- <div className="space-y-6">
- <div>
- <h1 className="text-2xl font-bold text-foreground">
- {isEditing ? 'Edit Vendor' : 'Add New Vendor'}
- </h1>
- <p className="text-foreground mt-2">
- {isEditing ? 'Update vendor information' : 'Create a new vendor profile'}
- </p>
- </div>
+  return (
+    <DashboardLayout>
+      <Helmet>
+        <title>{isEditing ? "Edit Vendor" : "Add New Vendor"} | MaintenEase</title>
+      </Helmet>
 
- <div className="bg-card rounded-lg shadow p-6">
- <VendorForm
- initialData={vendorFormData}
- onSubmit={handleSubmit}
- isLoading={isSubmitting}
- />
- </div>
- </div>
- </div>
- </DashboardLayout>
- );
+      <PageHeader
+        title={isEditing ? "Edit Vendor" : "Add New Vendor"}
+        description={
+          isEditing
+            ? "Update the details for this vendor."
+            : "Create a new vendor profile for your organisation."
+        }
+      />
+
+      <div className="px-4 md:px-6 lg:px-8 py-6 max-w-3xl">
+        <VendorForm
+          initialData={vendorFormData}
+          onSubmit={handleSubmit}
+          isLoading={isSubmitting}
+        />
+      </div>
+    </DashboardLayout>
+  );
 };
 
 export default VendorFormPage;

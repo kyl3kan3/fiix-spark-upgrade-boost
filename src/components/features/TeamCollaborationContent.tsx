@@ -106,8 +106,8 @@ const TeamCollaborationContent: React.FC = () => {
 
  const getStatusColor = (status: string) => {
  switch (status) {
- case 'online': return 'bg-green-500';
- case 'away': return 'bg-yellow-500';
+ case 'online': return 'bg-success';
+ case 'away': return 'bg-warning';
  case 'offline': return 'bg-muted-foreground';
  default: return 'bg-muted-foreground';
  }
@@ -179,19 +179,19 @@ const TeamCollaborationContent: React.FC = () => {
  {notifications.map((notification) => (
  <Card 
  key={notification.id} 
- className={`cursor-pointer transition-colors hover:bg-muted ${ !notification.read ? 'border-blue-200 bg-blue-50/50' : '' }`}
+ className={`cursor-pointer transition-colors hover:bg-muted ${ !notification.read ? 'border-primary/30 bg-primary/10/50' : '' }`}
  onClick={() => handleMarkAsRead(notification.id)}
  >
  <CardContent className="p-4">
  <div className="flex items-start gap-3">
- <div className={`p-2 rounded-full ${ notification.type === 'task_assigned' ? 'bg-blue-100 text-blue-600' : notification.type === 'work_order_completed' ? 'bg-green-100 text-green-600' : notification.type === 'maintenance_due' ? 'bg-orange-100 text-orange-600' : 'bg-muted text-foreground' }`}>
+ <div className={`p-2 rounded-full ${ notification.type === 'task_assigned' ? 'bg-primary/10 text-primary' : notification.type === 'work_order_completed' ? 'bg-success/10 text-success' : notification.type === 'maintenance_due' ? 'bg-warning/10 text-warning' : 'bg-muted text-foreground' }`}>
  {getNotificationIcon(notification.type)}
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center justify-between">
  <h4 className="font-medium text-sm">{notification.title}</h4>
  {!notification.read && (
- <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+ <div className="w-2 h-2 bg-primary rounded-full"></div>
  )}
  </div>
  <p className="text-sm text-foreground mt-1">{notification.message}</p>

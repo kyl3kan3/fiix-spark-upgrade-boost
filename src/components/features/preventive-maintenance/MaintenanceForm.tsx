@@ -167,8 +167,8 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) =
  </div>
  )}
  
- <Button 
- className="w-full bg-fiix-500 hover:bg-fiix-600"
+ <Button
+ className="w-full"
  onClick={(e) => {
  e.preventDefault();
  handleCreateSchedule();

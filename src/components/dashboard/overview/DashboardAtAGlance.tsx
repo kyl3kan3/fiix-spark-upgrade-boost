@@ -12,7 +12,7 @@ const DashboardAtAGlance: React.FC = () => {
  <Card className="bg-card border-border shadow-sm animate-entry mb-4" style={{ animationDelay: "250ms" }}>
  <CardHeader className="p-3 md:p-4">
  <CardTitle className="text-base md:text-lg flex items-center gap-2">
- <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-maintenease-500" />
+ <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-primary" />
  At a Glance
  </CardTitle>
  </CardHeader>

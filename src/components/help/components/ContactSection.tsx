@@ -148,15 +148,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenChat }) =>
  <h3 className="font-medium mb-3">Popular Feature Requests</h3>
  <ul className="space-y-2">
  <li className="flex items-center gap-2 text-sm">
- <CheckCircle className="h-4 w-4 text-green-500" />
+ <CheckCircle className="h-4 w-4 text-success" />
  <span>Mobile app for field technicians</span>
  </li>
  <li className="flex items-center gap-2 text-sm">
- <CheckCircle className="h-4 w-4 text-green-500" />
+ <CheckCircle className="h-4 w-4 text-success" />
  <span>QR code scanning for assets</span>
  </li>
  <li className="flex items-center gap-2 text-sm">
- <CheckCircle className="h-4 w-4 text-green-500" />
+ <CheckCircle className="h-4 w-4 text-success" />
  <span>Custom dashboard widgets</span>
  </li>
  </ul>

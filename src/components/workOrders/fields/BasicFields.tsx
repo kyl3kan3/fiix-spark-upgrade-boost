@@ -12,38 +12,42 @@ type BasicFieldsProps = {
 
 export const BasicFields = ({ form }: BasicFieldsProps) => {
  return (
- <>
+ <div className="space-y-5">
  <FormField
  control={form.control}
  name="title"
  render={({ field }) => (
  <FormItem>
- <FormLabel>What's the problem?</FormLabel>
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Work Order Title</FormLabel>
  <FormControl>
- <Input placeholder="e.g. Leaky faucet in 2nd-floor bathroom" {...field} />
+ <Input
+ placeholder="e.g. HVAC Unit 4 Overheating"
+ className="bg-muted/30 border-border/60 focus-visible:ring-primary/30"
+ {...field}
+ />
  </FormControl>
  <FormMessage />
  </FormItem>
  )}
  />
- 
+
  <FormField
  control={form.control}
  name="description"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Tell us a bit more</FormLabel>
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Detailed Description</FormLabel>
  <FormControl>
- <Textarea 
- placeholder="When did it start? Anything else we should know?"
- className="min-h-[100px]"
- {...field} 
+ <Textarea
+ placeholder="Describe the issue, symptoms, and any troubleshooting steps already taken…"
+ className="min-h-[110px] bg-muted/30 border-border/60 focus-visible:ring-primary/30 resize-none"
+ {...field}
  />
  </FormControl>
  <FormMessage />
  </FormItem>
  )}
  />
- </>
+ </div>
  );
 };

@@ -17,7 +17,7 @@ const RoleDisplayMode: React.FC<RoleDisplayModeProps> = ({
 }) => {
  return (
  <>
- <span className="w-[140px] text-sm">{getRoleLabel(currentRole)}</span>
+ <span className="w-full sm:w-[140px] text-sm">{getRoleLabel(currentRole)}</span>
  <Button 
  size="sm" 
  variant="outline" 

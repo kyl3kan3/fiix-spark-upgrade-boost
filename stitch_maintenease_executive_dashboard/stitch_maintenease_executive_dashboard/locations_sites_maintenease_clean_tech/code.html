@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Facility Locations - MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dde1ff",
+                        "tertiary-fixed": "#e2e2e2",
+                        "primary-container": "#00288e",
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-tint": "#3d57ba",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "inverse-primary": "#b8c4ff",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "surface-container-high": "#dce9ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface": "#0b1c30",
+                        "outline-variant": "#c5c5d4",
+                        "on-secondary-container": "#606365",
+                        "on-background": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "background": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "on-primary": "#ffffff",
+                        "surface-blue": "#f8f9ff",
+                        "error": "#ba1a1a",
+                        "surface-container": "#e5eeff",
+                        "on-surface-variant": "#444652",
+                        "on-tertiary-container": "#9c9d9d",
+                        "container-blue": "#e5eeff",
+                        "primary": "#00175c",
+                        "success": "#10B981",
+                        "tertiary": "#1e2020",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "surface-container-highest": "#d3e4fe",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-primary-container": "#7e97fe",
+                        "on-error-container": "#93000a",
+                        "secondary": "#5c5f61",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "outline": "#757684",
+                        "secondary-container": "#dee0e2",
+                        "inverse-on-surface": "#eaf1ff",
+                        "warning": "#F59E0B",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#333535",
+                        "on-secondary-fixed-variant": "#444749",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#213da0",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed": "#e1e3e5",
+                        "surface-bright": "#f8f9ff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container_padding": "32px",
+                        "card_padding": "24px",
+                        "sidebar_collapsed": "64px",
+                        "gutter": "24px",
+                        "sidebar_expanded": "240px",
+                        "base_unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Subtle ambient shadow for high-end feel */
+        .ambient-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+        .ambient-shadow-hover:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<nav class="hidden md:flex flex-col bg-surface-container-lowest border-r border-outline-variant/20 shadow-sm docked h-full left-0 w-sidebar_expanded py-gutter gap-base_unit fixed left-0 top-0 translate-x-1 duration-300 ease-in-out z-40">
+<!-- Header -->
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold">M</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary">MaintenEase</h1>
+<p class="font-label-sm text-label-sm text-secondary">Facility Management</p>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-4 mb-6">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md uppercase tracking-wider hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                New Work Order
+            </button>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex-1 flex flex-col gap-1 px-3">
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-label-md text-label-md">Work Orders</span>
+</a>
+<!-- Active State: 'Assets' (Closest semantic match to Facilities/Locations) -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg border-l-4 border-primary bg-primary/5 text-primary font-bold" href="#">
+<span class="material-symbols-outlined fill" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-md text-label-md">Preventive</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Reporting</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="px-3 pb-6 mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-r-lg text-secondary hover:text-on-surface hover:bg-surface-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 md:ml-sidebar_expanded relative">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-container_padding py-4 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm docked full-width top-0 sticky">
+<!-- Mobile Brand (Visible only on mobile) -->
+<div class="md:hidden flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-primary tracking-tight">MaintenEase</span>
+</div>
+<!-- Contextual Title (Desktop) -->
+<div class="hidden md:block">
+<h2 class="font-headline-md text-headline-md text-on-surface">Facility Overview</h2>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 scale-95 active:opacity-80">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/30">
+<img alt="Administrator Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1mu0w-TuaC1ofX9ZgeEFOII7AS9GcGB1BiDh2TVG8ESgxl-1mp4wwfxqw0AI54qAiD79dgJqQGLv0vzRZeO2wF2p-HeII03_kCEb-p2UFmRN0iM8v_XQHaAqaSQ846HOqRXg55rR1luzAlqv2aEjE0YiIp82D7CCOQQa15FLUWIraKfC5eFQRXY4yakd_qUtiAOn2C-LGzywWB3L8NGy_eBQEmulEXOhBDlQxbjRRgPfVM5DKayIGh1IgyUM01bExW2Y12RTO5zo"/>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<div class="p-container_padding md:p-8 flex-1 overflow-y-auto space-y-8">
+<!-- Hero / Map Overview -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Map Area -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-xl ambient-shadow overflow-hidden border border-transparent hover:border-primary/10 transition-colors duration-300 h-96 relative group">
+<div class="absolute inset-0 bg-surface-container-low" data-alt="A clean, modern aerial map view of an industrial tech park with sleek corporate buildings. The map features a minimalist light-mode aesthetic with soft blue overlays and subtle white grid lines. Distinct facility zones are softly highlighted. The overall mood is precise, organized, and technologically advanced, fitting a high-end corporate dashboard." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXQ7It2CQ4AmAIqJvJcF_LcueQvI5NAgCAlJWIkppv0xEjAotXRMM-MbTZI3MeZzlfW3XhHTCBJZNC_9MRR4r8IwTEN8tGoHaGqpQLUIUGUPoO4xB4z1IXL8l6UfyODXx1DFrFA2YB-Z3i6oZKq-X-WO0StYi-uiUgUXADU5qwoF2eAUMr06M1ntmtMHnL6y27rr2qH0vpsEyxTBRDrEZnxVOraZHMqe0t2HaUkXS-9S_6_6vPkVtIdlHWt2Z4ICv_4tAtD59cF14'); background-size: cover; background-position: center;">
+<!-- Glassmorphic Map Controls -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2 bg-surface/80 backdrop-blur-md p-2 rounded-lg border border-outline-variant/30 shadow-sm">
+<button class="p-1 rounded text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined">add</span></button>
+<button class="p-1 rounded text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined">remove</span></button>
+<div class="h-px bg-outline-variant/30 my-1"></div>
+<button class="p-1 rounded text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined">layers</span></button>
+</div>
+<!-- Map Markers -->
+<div class="absolute top-1/3 left-1/4 flex flex-col items-center group/marker cursor-pointer">
+<div class="bg-success text-on-primary px-2 py-1 rounded shadow-sm font-label-sm text-label-sm mb-1 opacity-0 group-hover/marker:opacity-100 transition-opacity">Bldg A: 98%</div>
+<div class="w-4 h-4 bg-success rounded-full border-2 border-surface-container-lowest shadow-sm ring-4 ring-success/20"></div>
+</div>
+<div class="absolute top-1/2 left-2/3 flex flex-col items-center group/marker cursor-pointer">
+<div class="bg-warning text-on-primary px-2 py-1 rounded shadow-sm font-label-sm text-label-sm mb-1 opacity-0 group-hover/marker:opacity-100 transition-opacity">Bldg C: 72%</div>
+<div class="w-4 h-4 bg-warning rounded-full border-2 border-surface-container-lowest shadow-sm ring-4 ring-warning/20"></div>
+</div>
+</div>
+</div>
+<!-- High Level Stats Bento -->
+<div class="flex flex-col gap-6">
+<div class="bg-surface-container-lowest rounded-xl ambient-shadow p-card_padding border border-transparent hover:border-primary/10 transition-colors flex-1 flex flex-col justify-center">
+<p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-2">Network Health</p>
+<div class="flex items-end gap-3">
+<h3 class="font-display-lg text-display-lg text-primary">89<span class="text-headline-md">%</span></h3>
+<span class="text-success font-label-md flex items-center mb-2"><span class="material-symbols-outlined text-sm">trending_up</span> +2.1%</span>
+</div>
+<p class="font-body-sm text-secondary mt-2">Across 14 active facilities</p>
+</div>
+<div class="bg-surface-container-lowest rounded-xl ambient-shadow p-card_padding border border-transparent hover:border-primary/10 transition-colors flex-1 flex flex-col justify-center">
+<p class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-2">Active Incidents</p>
+<div class="flex items-end gap-3">
+<h3 class="font-display-lg text-display-lg text-error">12</h3>
+<span class="text-warning font-label-md flex items-center mb-2">3 Critical</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Hierarchical Facility List -->
+<section>
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Facilities</h3>
+<div class="flex gap-2">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 font-body-md focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Search facilities..." type="text"/>
+</div>
+<button class="bg-surface-container-low text-primary px-4 py-2 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+                            Filter
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Building A Card (Healthy) -->
+<div class="bg-surface-container-lowest rounded-xl ambient-shadow ambient-shadow-hover transition-all duration-300 border border-transparent hover:border-primary/10 flex flex-col">
+<!-- Primary Data -->
+<div class="p-card_padding flex-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">domain</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Building Alpha</h4>
+<p class="font-body-md text-secondary">North Campus</p>
+</div>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-success stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="98, 100" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-sm font-bold text-success">98</div>
+</div>
+</div>
+<!-- Hierarchy Preview -->
+<div class="ml-4 pl-4 border-l-2 border-surface-container space-y-3 mt-6">
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-sm text-secondary">layers</span>
+<span class="font-label-md">Floor 1 (Manufacturing)</span>
+</div>
+<span class="text-label-sm text-secondary group-hover:text-primary transition-colors">2 Zones</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-sm text-secondary">layers</span>
+<span class="font-label-md">Floor 2 (Offices)</span>
+</div>
+<span class="text-label-sm text-secondary group-hover:text-primary transition-colors">4 Zones</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Footer -->
+<div class="border-t border-outline-variant/20 p-4 bg-surface-bright rounded-b-xl flex justify-between items-center">
+<div class="flex gap-2">
+<span class="bg-surface-container-low text-secondary font-label-sm px-2 py-1 rounded text-xs uppercase tracking-wider">0 Open WO</span>
+</div>
+<button class="text-primary font-label-md hover:underline decoration-2 underline-offset-4 flex items-center gap-1">
+                                View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Building B Card (Warning) -->
+<div class="bg-surface-container-lowest rounded-xl ambient-shadow ambient-shadow-hover transition-all duration-300 border border-transparent hover:border-primary/10 flex flex-col">
+<div class="p-card_padding flex-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">factory</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Building Beta</h4>
+<p class="font-body-md text-secondary">East Industrial</p>
+</div>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-warning stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="72, 100" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-sm font-bold text-warning">72</div>
+</div>
+</div>
+<div class="ml-4 pl-4 border-l-2 border-surface-container space-y-3 mt-6">
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-sm text-warning">warning</span>
+<span class="font-label-md">HVAC Plant</span>
+</div>
+<span class="text-label-sm text-error font-bold">2 Critical</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-sm text-secondary">layers</span>
+<span class="font-label-md">Storage Depot</span>
+</div>
+<span class="text-label-sm text-secondary group-hover:text-primary transition-colors">1 Zone</span>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 p-4 bg-surface-bright rounded-b-xl flex justify-between items-center">
+<div class="flex gap-2">
+<span class="bg-error-container text-on-error-container font-label-sm px-2 py-1 rounded text-xs uppercase tracking-wider font-bold">5 Open WO</span>
+</div>
+<button class="text-primary font-label-md hover:underline decoration-2 underline-offset-4 flex items-center gap-1">
+                                View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

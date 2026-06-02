@@ -13,7 +13,7 @@ const NotFoundFeature: React.FC = () => {
  <p className="mb-8">The requested feature demo is not available.</p>
  <Button 
  onClick={() => navigate('/dashboard')} 
- className="bg-fiix-500 hover:bg-fiix-600"
+ className="bg-primary hover:bg-primary/90"
  >
  <ArrowLeft className="mr-2 h-4 w-4" />
  Return to Dashboard

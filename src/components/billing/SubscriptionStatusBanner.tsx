@@ -45,7 +45,7 @@ function Banner({ tone, icon, children }: { tone: "destructive" | "warning"; ico
  const cls =
  tone === "destructive"
  ? "bg-destructive/10 text-destructive border-destructive/30"
- : "bg-amber-100 text-amber-900 border-amber-300";
+ : "bg-warning/10 text-warning border-warning/30";
  return (
  <div className={`w-full border-b px-4 py-2 text-center text-sm flex items-center justify-center gap-2 ${cls}`}>
  {icon}

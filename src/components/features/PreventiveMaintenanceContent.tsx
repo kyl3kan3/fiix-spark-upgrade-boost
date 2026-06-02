@@ -98,42 +98,44 @@ const PreventiveMaintenanceContent: React.FC = () => {
 
  return (
  <div className="space-y-6">
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
  {/* Calendar View */}
- <Card className="md:col-span-2">
- <CardHeader>
- <CardTitle className="flex items-center justify-between">
- <span>Maintenance Calendar</span>
- </CardTitle>
+ <div className="lg:col-span-8">
+ <Card className="bg-card border border-border rounded-lg shadow-sm">
+ <CardHeader className="border-b border-border pb-4">
+ <CardTitle className="font-headline text-xl text-foreground">Maintenance Calendar</CardTitle>
  </CardHeader>
- <CardContent>
- <MaintenanceCalendar 
+ <CardContent className="pt-5">
+ <MaintenanceCalendar
  selectedDate={selectedDate}
  setSelectedDate={setSelectedDate}
  currentMonthTaskDays={currentMonthTaskDays}
  />
- 
- <TasksHeader 
+
+ <TasksHeader
  selectedDate={selectedDate}
  onClearSelection={handleClearDateSelection}
  />
- 
- <MaintenanceTaskList 
+
+ <MaintenanceTaskList
  tasks={maintenanceTasks}
  selectedDate={selectedDate}
  />
  </CardContent>
  </Card>
- 
+ </div>
+
  {/* Create Schedule Form */}
- <Card>
- <CardHeader>
- <CardTitle>Create PM Schedule</CardTitle>
+ <div className="lg:col-span-4">
+ <Card className="bg-card border border-border rounded-lg shadow-sm">
+ <CardHeader className="border-b border-border pb-4">
+ <CardTitle className="font-headline text-xl text-foreground">Create PM Schedule</CardTitle>
  </CardHeader>
- <CardContent>
+ <CardContent className="pt-5">
  <MaintenanceForm onCreateSchedule={handleCreateSchedule} />
  </CardContent>
  </Card>
+ </div>
  </div>
  </div>
  );

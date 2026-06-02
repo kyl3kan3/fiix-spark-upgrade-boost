@@ -20,7 +20,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
  return (
  <Card 
- className={`border border-border hover:shadow-lg transition-all duration-300 hover:border-fiix-300 group ${ selectedFeature === item.title ? "ring-2 ring-fiix-500" : "" } ${viewType === "list" ? "overflow-hidden" : ""}`}
+ className={`border border-border hover:shadow-lg transition-all duration-300 hover:border-primary/20 group ${ selectedFeature === item.title ? "ring-2 ring-primary" : "" } ${viewType === "list" ? "overflow-hidden" : ""}`}
  >
  <CardContent className={viewType === "grid" ? "p-6" : "p-6 flex flex-col md:flex-row md:items-center gap-6"}>
  <div className={viewType === "grid" 
@@ -37,14 +37,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
  <div className="mt-4 space-y-2">
  {item.benefits.map((benefit, idx) => (
  <div key={idx} className="flex items-center text-sm text-foreground">
- <Check className="h-4 w-4 text-fiix-500 mr-2 flex-shrink-0" />
+ <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
  <span>{benefit}</span>
  </div>
  ))}
  </div>
  
  <Button 
- className="mt-6 bg-fiix-500 hover:bg-fiix-600 text-white"
+ className="mt-6 bg-primary hover:bg-primary/90 text-white"
  onClick={() => onSelectFeature(item.title, item.demoEnabled)}
  >
  {item.demoEnabled ? "Try Demo" : "Coming Soon"}

@@ -37,7 +37,7 @@ const ImportFileInput: React.FC<ImportFileInputProps> = ({ onChange, onClear, lo
  />
  {loading && (
  <div className="absolute inset-0 bg-card/80 flex items-center justify-center">
- <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
+ <RefreshCw className="h-4 w-4 animate-spin text-primary" />
  </div>
  )}
  </div>
@@ -57,7 +57,7 @@ const ImportFileInput: React.FC<ImportFileInputProps> = ({ onChange, onClear, lo
  </div>
  
  {loading && (
- <div className="text-sm text-blue-600 flex items-center gap-1">
+ <div className="text-sm text-primary flex items-center gap-1">
  <RefreshCw className="h-3 w-3 animate-spin" />
  Processing file... This may take a moment for large PDFs.
  </div>

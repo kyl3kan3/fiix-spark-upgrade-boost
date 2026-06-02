@@ -29,7 +29,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({
  onUpdateField,
 }) => {
  return (
- <Card className="border-l-4 border-l-blue-500">
+ <Card className="border-l-4 border-l-primary">
  <CardContent className="p-4">
  {isEditing ? (
  <VendorEditForm

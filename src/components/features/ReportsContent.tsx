@@ -93,8 +93,8 @@ const ReportsContent: React.FC = () => {
 
  if (isLoading) {
  return (
- <Card className="w-full h-64 flex items-center justify-center">
- <Loader2 className="h-8 w-8 animate-spin text-maintenease-500" />
+ <Card className="w-full h-64 flex items-center justify-center bg-card border border-border shadow-sm">
+ <Loader2 className="h-8 w-8 animate-spin text-primary" />
  </Card>
  );
  }
@@ -108,15 +108,15 @@ const ReportsContent: React.FC = () => {
  >
  <AnalyticsOverview />
 
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Maintenance Analytics & Reports</CardTitle>
+ <CardTitle className="font-headline text-xl text-foreground">Maintenance Analytics &amp; Reports</CardTitle>
  </CardHeader>
  <CardContent>
- <p className="text-muted-foreground mb-4">
+ <p className="text-muted-foreground mb-6 text-sm">
  Generate reports based on your maintenance data to gain insights and make informed decisions.
  </p>
- 
+
  {/* Available Reports Section */}
  <ReportsList onGenerateReport={handleGenerateReport} />
  </CardContent>

@@ -44,7 +44,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
  <div className="flex min-h-screen w-full bg-background text-foreground">
  <IconRail onOpenPalette={() => setPaletteOpen(true)} />
 
- <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[248px]">
+ <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[240px]">
  {/* Subtle blueprint backdrop */}
  <div
  aria-hidden
@@ -57,7 +57,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
  onOpenPalette={() => setPaletteOpen(true)}
  />
 
- <main className="flex-1 w-full pt-16 lg:pt-20 pb-24 lg:pb-0">
+ <main className="flex-1 w-full pt-16 pb-24 lg:pb-0">
  <TrialBanner />
  {children}
  </main>

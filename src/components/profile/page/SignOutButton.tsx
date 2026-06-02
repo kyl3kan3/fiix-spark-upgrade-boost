@@ -16,17 +16,17 @@ const SignOutButton: React.FC = () => {
  }
  };
 
- return (
- <Button
- variant="outline"
- className="flex items-center gap-2"
- onClick={handleSignOut}
- disabled={isLoading}
- >
- <LogOut className="h-4 w-4" /> 
- {isLoading ? "Signing out..." : "Sign out"}
- </Button>
- );
+  return (
+    <Button
+      variant="outline"
+      className="flex items-center gap-2 border-border text-primary hover:bg-primary/5"
+      onClick={handleSignOut}
+      disabled={isLoading}
+    >
+      <LogOut className="h-4 w-4" />
+      {isLoading ? "Signing out..." : "Sign out"}
+    </Button>
+  );
 };
 
 export default SignOutButton;

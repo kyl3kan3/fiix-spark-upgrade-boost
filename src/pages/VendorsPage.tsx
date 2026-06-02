@@ -98,7 +98,7 @@ const VendorsPage = () => {
  <PageContainer className="space-y-6">
  <BackToDashboard />
  <div className="flex items-center justify-center h-64">
- <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+ <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
  </div>
  </PageContainer>
  </DashboardLayout>
@@ -118,17 +118,17 @@ const VendorsPage = () => {
  <PageContainer className="space-y-6">
  <BackToDashboard />
 
- <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+ <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
  <VendorPageHeader />
  <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto lg:justify-end">
  <Link to="/vendors/import" className="w-full sm:w-auto">
- <Button variant="outline" className="w-full sm:w-auto">
+ <Button variant="outline" className="w-full sm:w-auto border-border text-foreground hover:bg-accent">
  <Upload className="h-4 w-4 mr-2" />
  <span className="text-sm sm:text-base">Import</span>
  </Button>
  </Link>
  <Link to="/vendors/new" className="w-full sm:w-auto">
- <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+ <Button className="bg-primary hover:bg-primary-variant text-primary-foreground w-full sm:w-auto shadow-sm">
  <Plus className="h-4 w-4 mr-2" />
  <span className="text-sm sm:text-base">Add Vendor</span>
  </Button>

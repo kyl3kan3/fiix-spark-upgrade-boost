@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface ExportOptions {
  /** Entity id used to look up attachments in the `attachments` table (entity_type = 'report'). */
@@ -158,7 +159,7 @@ export const exportReportToPdf = async (
  }
  }
  } catch (err) {
- console.warn("Failed to embed report photos:", err);
+ logger.warn("Failed to embed report photos:", err);
  }
  }
 

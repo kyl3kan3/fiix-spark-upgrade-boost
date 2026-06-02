@@ -14,33 +14,34 @@ type DateAssetFieldsProps = {
 
 export const DateAssetFields = ({ form, assets = [] }: DateAssetFieldsProps) => {
  return (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
  <FormField
  control={form.control}
  name="due_date"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Due Date</FormLabel>
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Due Date</FormLabel>
  <FormControl>
- <Input type="date" {...field} />
+ <Input
+ type="date"
+ className="bg-muted/30 border-border/60 focus-visible:ring-primary/30"
+ {...field}
+ />
  </FormControl>
  <FormMessage />
  </FormItem>
  )}
  />
- 
+
  <FormField
  control={form.control}
  name="asset_id"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Asset</FormLabel>
- <Select 
- onValueChange={field.onChange} 
- value={field.value || "none"}
- >
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Related Asset</FormLabel>
+ <Select onValueChange={field.onChange} value={field.value || "none"}>
  <FormControl>
- <SelectTrigger>
+ <SelectTrigger className="bg-muted/30 border-border/60 focus:ring-primary/30">
  <SelectValue placeholder="Select asset (optional)" />
  </SelectTrigger>
  </FormControl>

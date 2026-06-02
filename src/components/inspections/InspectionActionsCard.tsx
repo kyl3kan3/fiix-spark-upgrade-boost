@@ -1,74 +1,68 @@
-
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Check, X } from "lucide-react";
 import { InspectionStatus } from "@/types/inspections";
 
 interface InspectionActionsCardProps {
- status: InspectionStatus;
- handleUpdateStatus: (status: InspectionStatus) => void;
+  status: InspectionStatus;
+  handleUpdateStatus: (status: InspectionStatus) => void;
 }
 
 const InspectionActionsCard: React.FC<InspectionActionsCardProps> = ({
- status,
- handleUpdateStatus,
+  status,
+  handleUpdateStatus,
 }) => {
- return (
- <Card>
- <CardHeader>
- <CardTitle>Actions</CardTitle>
- </CardHeader>
- <CardContent>
- <div className="space-y-2">
- <Button 
- className="w-full justify-start" 
- variant={status === 'scheduled' ? 'default' : 'outline'}
- onClick={() => handleUpdateStatus('scheduled')}
- >
- <Clock className="h-4 w-4 mr-2" />
- Set as Scheduled
- </Button>
- 
- <Button 
- className="w-full justify-start" 
- variant={status === 'in-progress' ? 'default' : 'outline'}
- onClick={() => handleUpdateStatus('in-progress')}
- >
- <Clock className="h-4 w-4 mr-2" />
- Set as In Progress
- </Button>
- 
- <Button 
- className="w-full justify-start bg-green-600 hover:bg-green-700" 
- variant={status === 'completed' ? 'default' : 'outline'}
- onClick={() => handleUpdateStatus('completed')}
- >
- <Check className="h-4 w-4 mr-2" />
- Complete Inspection
- </Button>
- 
- <Button 
- className="w-full justify-start bg-red-600 hover:bg-red-700" 
- variant={status === 'failed' ? 'default' : 'outline'}
- onClick={() => handleUpdateStatus('failed')}
- >
- <X className="h-4 w-4 mr-2" />
- Mark as Failed
- </Button>
- 
- <Button 
- className="w-full justify-start" 
- variant={status === 'cancelled' ? 'default' : 'outline'}
- onClick={() => handleUpdateStatus('cancelled')}
- >
- <X className="h-4 w-4 mr-2" />
- Cancel Inspection
- </Button>
- </div>
- </CardContent>
- </Card>
- );
+  return (
+    <div className="surface-card rounded-lg p-6">
+      <h3 className="font-headline font-semibold text-base text-foreground mb-4">Update Status</h3>
+      <div className="space-y-2">
+        <Button
+          className="w-full justify-start gap-2"
+          variant={status === "scheduled" ? "default" : "outline"}
+          onClick={() => handleUpdateStatus("scheduled")}
+        >
+          <Clock className="h-4 w-4" />
+          Set as Scheduled
+        </Button>
+
+        <Button
+          className="w-full justify-start gap-2"
+          variant={status === "in-progress" ? "default" : "outline"}
+          onClick={() => handleUpdateStatus("in-progress")}
+        >
+          <Clock className="h-4 w-4" />
+          Set as In Progress
+        </Button>
+
+        <Button
+          className={`w-full justify-start gap-2 ${status !== "completed" ? "border-success/40 text-success hover:bg-success/10" : ""}`}
+          variant={status === "completed" ? "default" : "outline"}
+          onClick={() => handleUpdateStatus("completed")}
+        >
+          <Check className="h-4 w-4" />
+          Complete Inspection
+        </Button>
+
+        <Button
+          className={`w-full justify-start gap-2 ${status !== "failed" ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""}`}
+          variant={status === "failed" ? "default" : "outline"}
+          onClick={() => handleUpdateStatus("failed")}
+        >
+          <X className="h-4 w-4" />
+          Mark as Failed
+        </Button>
+
+        <Button
+          className="w-full justify-start gap-2"
+          variant={status === "cancelled" ? "default" : "outline"}
+          onClick={() => handleUpdateStatus("cancelled")}
+        >
+          <X className="h-4 w-4" />
+          Cancel Inspection
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default InspectionActionsCard;

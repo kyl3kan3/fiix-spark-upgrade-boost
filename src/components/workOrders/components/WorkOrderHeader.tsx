@@ -29,47 +29,49 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
  };
 
  return (
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div>
- <h1 className="text-2xl font-bold">{workOrder.title}</h1>
- <div className="flex items-center gap-2 mt-2 text-muted-foreground">
- <span>Work Order #{workOrder.id.split('-')[0]}</span>
- <span>•</span>
- <span>Created {formatDate(workOrder.created_at)}</span>
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
+ <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+ <div className="flex-1 min-w-0">
+ <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+ Work Orders / <span className="text-primary">#{workOrder.id.split('-')[0].toUpperCase()}</span>
+ </p>
+ <h1 className="font-headline text-2xl md:text-3xl font-bold text-foreground leading-snug mb-3 truncate">
+ {workOrder.title}
+ </h1>
+ <p className="text-sm text-muted-foreground">
+ Created {formatDate(workOrder.created_at)}
+ </p>
  </div>
- </div>
- 
- <div className="flex flex-wrap items-center gap-2">
- <Button variant="outline" asChild>
- <Link to="/work-orders">
- Back
- </Link>
- </Button>
- <Button variant="outline" onClick={handleExportPdf}>
- <Download className="h-4 w-4 mr-2" />
+
+ <div className="flex flex-wrap items-center gap-2 shrink-0">
+ <Button variant="outline" size="sm" onClick={handleExportPdf} className="gap-1.5 text-xs">
+ <Download className="h-3.5 w-3.5" />
  PDF
  </Button>
- <Button variant="outline" onClick={handleExportCsv}>
- <FileSpreadsheet className="h-4 w-4 mr-2" />
+ <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5 text-xs">
+ <FileSpreadsheet className="h-3.5 w-3.5" />
  CSV
  </Button>
- <Button variant="outline" onClick={handleExportExcel}>
- <FileText className="h-4 w-4 mr-2" />
+ <Button variant="outline" size="sm" onClick={handleExportExcel} className="gap-1.5 text-xs">
+ <FileText className="h-3.5 w-3.5" />
  Excel
  </Button>
- <Button variant="outline" asChild>
+ <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
  <Link to={`/work-orders/${workOrder.id}/edit`}>
- <Pencil className="h-4 w-4 mr-2" />
+ <Pencil className="h-3.5 w-3.5" />
  Edit
  </Link>
  </Button>
- <Button 
- variant="destructive" 
+ <Button
+ variant="destructive"
+ size="sm"
  onClick={onDelete}
+ className="gap-1.5 text-xs"
  >
- <Trash2 className="h-4 w-4 mr-2" />
+ <Trash2 className="h-3.5 w-3.5" />
  Delete
  </Button>
+ </div>
  </div>
  </div>
  );

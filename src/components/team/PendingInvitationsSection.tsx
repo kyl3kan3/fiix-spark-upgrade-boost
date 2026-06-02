@@ -20,9 +20,9 @@ const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({
 }) => {
  if (loading) {
  return (
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Pending Invitations</CardTitle>
+ <CardTitle className="font-headline text-xl">Pending Invitations</CardTitle>
  <CardDescription>
  Team members who have been invited but haven't joined yet
  </CardDescription>
@@ -39,17 +39,19 @@ const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({
 
  if (invitations.length === 0) {
  return (
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Pending Invitations</CardTitle>
+ <CardTitle className="font-headline text-xl">Pending Invitations</CardTitle>
  <CardDescription>
  Team members who have been invited but haven't joined yet
  </CardDescription>
  </CardHeader>
  <CardContent>
- <div className="text-center py-8">
- <Mail className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
- <p className="text-muted-foreground">No pending invitations</p>
+ <div className="text-center py-10">
+ <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+ <Mail className="h-7 w-7 text-primary" />
+ </div>
+ <p className="font-medium text-foreground">No pending invitations</p>
  <p className="text-sm text-muted-foreground mt-1">
  All invited team members have already joined
  </p>
@@ -60,9 +62,9 @@ const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({
  }
 
  return (
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Pending Invitations ({invitations.length})</CardTitle>
+ <CardTitle className="font-headline text-xl">Pending Invitations ({invitations.length})</CardTitle>
  <CardDescription>
  Team members who have been invited but haven't joined yet
  </CardDescription>
@@ -70,8 +72,8 @@ const PendingInvitationsSection: React.FC<PendingInvitationsSectionProps> = ({
  <CardContent>
  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
  {invitations.map((invitation) => (
- <PendingInvitationCard 
- key={invitation.id} 
+ <PendingInvitationCard
+ key={invitation.id}
  invitation={invitation}
  roleColorMap={roleColorMap}
  onInvitationDeleted={onInvitationDeleted}

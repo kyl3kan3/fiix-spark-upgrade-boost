@@ -55,7 +55,7 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  <div className="h-9 w-12 flex items-center justify-center rounded-2xl">
  <Menu className="h-5 w-5" strokeWidth={2.2} />
  </div>
- <span className="text-[11px] font-bold leading-none">More</span>
+ <span className="text-[11px] font-bold leading-none" aria-label="More navigation options">More</span>
  </button>
  </div>
  </nav>

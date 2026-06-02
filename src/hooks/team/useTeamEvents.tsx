@@ -2,7 +2,8 @@
 import { useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const getUserMessagesChannelTopic = (userId: string) => `user:${userId}:messages`;
+const getUserMessagesChannelTopic = (userId: string) =>
+  `user:${userId}:team-messages`;
 
 export const useTeamEvents = (fetchTeamMembers: () => Promise<void>) => {
  useEffect(() => {
