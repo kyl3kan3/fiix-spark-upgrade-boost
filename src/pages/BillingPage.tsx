@@ -111,6 +111,127 @@ export default function BillingPage() {
     }
   }
 
+ if (isLoading) return <div className="container mx-auto p-8">Loading…</div>;
+
+ const noSubscription = !sub;
+
+ return (
+ <div>
+ <PaymentTestModeBanner />
+ <div className="container mx-auto max-w-5xl px-4 py-8">
+ <Button asChild variant="ghost" size="sm" className="mb-4">
+ <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
+ </Button>
+ <h1 className="text-3xl font-bold tracking-tight">Billing</h1>
+ <p className="mt-1 text-muted-foreground">Manage your subscription, seats, and invoices.</p>
+
+ {noSubscription ? (
+ <Card className="mt-6">
+ <CardContent className="py-8 text-center">
+ <p className="mb-4 text-muted-foreground">You don't have an active subscription yet.</p>
+ <Button asChild><Link to="/pricing">Choose a plan</Link></Button>
+ </CardContent>
+ </Card>
+ ) : (
+ <>
+ <Card className="mt-6">
+ <CardHeader>
+ <div className="flex items-center justify-between">
+ <CardTitle className="capitalize">{sub.tier} plan</CardTitle>
+ <Badge variant={sub.status === "active" ? "default" : sub.status === "trialing" ? "secondary" : "destructive"}>
+ {sub.status}
+ </Badge>
+ </div>
+ </CardHeader>
+ <CardContent className="space-y-4">
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+ <div>
+ <div className="text-muted-foreground">Billing</div>
+ <div className="font-medium capitalize">{sub.billing_interval}ly</div>
+ </div>
+ {sub.trial_ends_at && sub.status === "trialing" && (
+ <div>
+ <div className="text-muted-foreground">Trial ends</div>
+ <div className="font-medium">{format(new Date(sub.trial_ends_at), "MMM d, yyyy")}</div>
+ </div>
+ )}
+ {sub.current_period_end && (
+ <div>
+ <div className="text-muted-foreground">Next billing date</div>
+ <div className="font-medium">{format(new Date(sub.current_period_end), "MMM d, yyyy")}</div>
+ </div>
+ )}
+ {sub.cancel_at_period_end && (
+ <div className="col-span-2 rounded bg-destructive/10 p-2 text-destructive">
+ Subscription will cancel at the end of the current period.
+ </div>
+ )}
+ </div>
+ <div className="flex flex-wrap gap-2">
+ <Button onClick={openPortal} disabled={opening}>
+ {opening ? "Opening…" : <>Manage subscription <ExternalLink className="ml-2 h-4 w-4" /></>}
+ </Button>
+ <Button variant="outline" onClick={() => setSeatsOpen(true)}>
+   <Users className="mr-2 h-4 w-4" /> Add seats ($15/seat/mo)
+ </Button>
+ </div>
+ </CardContent>
+ </Card>
+
+ <div className="mt-6 grid gap-4 md:grid-cols-3">
+ <UsageCard
+ icon={<Users className="h-4 w-4" />}
+ label="Seats"
+ used={counts.seats}
+ limit={sub.total_seats}
+ hint={`${sub.included_seats} included + ${sub.paid_seats} extra`}
+ />
+ <UsageCard
+ icon={<Package className="h-4 w-4" />}
+ label="Assets"
+ used={counts.assets}
+ limit={sub.asset_limit}
+ />
+ <UsageCard
+ icon={<ClipboardList className="h-4 w-4" />}
+ label="Work orders this month"
+ used={counts.workOrders}
+ limit={sub.work_order_limit}
+ />
+ </div>
+ </>
+ )}
+ </div>
+
+  {sub && (
+    <Dialog open={seatsOpen} onOpenChange={setSeatsOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add seats</DialogTitle>
+          <DialogDescription>
+            Extra seats are $15/seat/{sub.billing_interval === "year" ? "year" : "month"}. You'll be charged a prorated amount immediately.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 py-2">
+          <div className="text-sm text-muted-foreground">
+            Currently: <span className="font-medium text-foreground">{sub.total_seats} total seats</span>
+            {" "}({sub.included_seats} included + {sub.paid_seats} extra)
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seat-delta">Seats to add</Label>
+            <Input
+              id="seat-delta"
+              type="number"
+              min={1}
+              max={500 - sub.paid_seats}
+              value={seatDelta}
+              onChange={(e) => setSeatDelta(Math.max(1, parseInt(e.target.value || "1", 10)))}
+            />
+          </div>
+          <div className="rounded-md bg-muted px-3 py-2 text-sm">
+            New total: <span className="font-semibold">{sub.total_seats + Math.max(0, seatDelta)} seats</span>
+            {" "}· +${15 * Math.max(0, seatDelta)}/{sub.billing_interval === "year" ? "yr" : "mo"} prorated
+          </div>
   if (isLoading)
     return (
       <DashboardLayout>
@@ -351,6 +472,22 @@ export default function BillingPage() {
   );
 }
 
+function UsageCard({ icon, label, used, limit, hint }: { icon: React.ReactNode; label: string; used: number; limit: number | null; hint?: string }) {
+ const pct = limit ? Math.min(100, (used / limit) * 100) : 0;
+ return (
+ <Card>
+ <CardHeader className="pb-2">
+ <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+ {icon}{label}
+ </CardTitle>
+ </CardHeader>
+ <CardContent className="space-y-2">
+ <div className="text-2xl font-bold">{used}<span className="text-base font-normal text-muted-foreground"> / {limit ?? "∞"}</span></div>
+ {limit !== null && <Progress value={pct} className="h-2" />}
+ {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+ </CardContent>
+ </Card>
+ );
 function UsageMetric({
   icon,
   label,
