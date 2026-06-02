@@ -334,8 +334,6 @@ export default function BillingPage() {
                 </Button>
               </div>
             </div>
-
-            <BillingSupportGrid />
           </>
         )}
       </PageContainer>
