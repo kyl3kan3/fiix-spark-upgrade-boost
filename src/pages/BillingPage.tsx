@@ -248,20 +248,20 @@ export default function BillingPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                     <UsageMetric
                       icon={<Users className="h-4 w-4" />}
-                      label="Seats"
+                      label="Active Users"
                       used={counts.seats}
                       limit={sub.total_seats}
                       hint={`${sub.included_seats} included + ${sub.paid_seats} extra`}
                     />
                     <UsageMetric
                       icon={<Package className="h-4 w-4" />}
-                      label="Assets"
+                      label="Managed Assets"
                       used={counts.assets}
                       limit={sub.asset_limit}
                     />
                     <UsageMetric
                       icon={<ClipboardList className="h-4 w-4" />}
-                      label="WOs this month"
+                      label="Work Orders"
                       used={counts.workOrders}
                       limit={sub.work_order_limit}
                     />
@@ -274,7 +274,7 @@ export default function BillingPage() {
                   )}
                 </div>
 
-                <div className="px-6 py-4 border-t border-border bg-muted/30 flex flex-wrap gap-3 justify-end">
+                <div className="px-6 py-4 border-t border-border/70 bg-background/50 backdrop-blur-sm flex flex-wrap gap-3 justify-end">
                   <Button
                     variant="outline"
                     onClick={() => setSeatsOpen(true)}
@@ -303,7 +303,7 @@ export default function BillingPage() {
               <div className="bg-primary text-primary-foreground rounded-xl shadow-lg p-6 flex flex-col justify-between relative overflow-hidden hover:-translate-y-1 transition-transform">
                 <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
                 <div className="relative z-10">
-                  <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-5 border border-white/20">
+                  <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 border border-white/20 backdrop-blur-md">
                     <Rocket className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <h3 className="font-headline text-xl font-semibold mb-2">
@@ -313,7 +313,7 @@ export default function BillingPage() {
                     Unlock unlimited assets, advanced API access, and dedicated
                     24/7 support.
                   </p>
-                  <ul className="space-y-2.5 mb-6">
+                  <ul className="space-y-3 mb-8">
                     {[
                       "Unlimited Managed Assets",
                       "Custom Reporting Dashboards",
@@ -334,6 +334,8 @@ export default function BillingPage() {
                 </Button>
               </div>
             </div>
+
+            <BillingSupportGrid />
           </>
         )}
       </PageContainer>
@@ -423,12 +425,12 @@ function UsageMetric({
   const isHigh = pct >= 80;
 
   return (
-    <div className="bg-background rounded-lg p-4 border border-border">
+    <div className="bg-muted/40 rounded-lg p-4">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-          {icon}
+        <span className="text-xs text-muted-foreground font-medium">
           {label}
         </span>
+        <span className="text-muted-foreground">{icon}</span>
       </div>
       <div className="flex items-end gap-1.5 mb-2">
         <span className="text-2xl font-bold text-foreground leading-none">
