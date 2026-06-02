@@ -1,9 +1,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { CalendarIcon } from "lucide-react";
 import { MaintenanceEvent } from "./types";
 
@@ -11,79 +9,75 @@ interface DayViewProps {
  events: MaintenanceEvent[];
 }
 
+const getStatusBadge = (status: string) => {
+ switch (status) {
+ case "scheduled": return "bg-primary/10 text-primary border border-primary/20";
+ case "in-progress": return "bg-warning/10 text-warning border border-warning/20";
+ case "completed": return "bg-success/10 text-success border border-success/20";
+ case "cancelled": return "bg-destructive/10 text-destructive border border-destructive/20";
+ default: return "bg-muted text-muted-foreground border border-border";
+ }
+};
+
+const getTypeBorderAccent = (type: string) => {
+ switch (type) {
+ case "preventive": return "border-l-primary";
+ case "corrective": return "border-l-warning";
+ case "inspection": return "border-l-secondary";
+ default: return "border-l-border";
+ }
+};
+
 const DayView: React.FC<DayViewProps> = ({ events }) => {
- // Status color mapping
- const statusColors: Record<string, string> = {
- scheduled: "bg-blue-100 text-blue-800",
- "in-progress": "bg-yellow-100 text-yellow-800",
- completed: "bg-green-100 text-green-800",
- cancelled: "bg-red-100 text-red-800",
- };
-
- // Type color mapping
- const typeColors: Record<string, string> = {
- preventive: "bg-purple-100 text-purple-800 border-purple-200",
- corrective: "bg-orange-100 text-orange-800 border-orange-200",
- inspection: "bg-teal-100 text-teal-800 border-teal-200",
- };
-
  if (events.length === 0) {
  return (
- <div className="text-center py-8">
- <CalendarIcon className="mx-auto h-12 w-12 text-muted-foreground" />
- <h3 className="mt-2 text-sm font-medium text-foreground">No events</h3>
- <p className="mt-1 text-sm text-muted-foreground">
+ <div className="text-center py-12">
+ <CalendarIcon className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+ <h3 className="font-headline text-base font-semibold text-foreground mb-1">No events scheduled</h3>
+ <p className="text-sm text-muted-foreground mb-5">
  No maintenance events scheduled for this day.
  </p>
- <div className="mt-6">
- <Button>Schedule New Event</Button>
- </div>
+ <Button size="sm">Schedule New Event</Button>
  </div>
  );
  }
 
  return (
- <div className="space-y-4">
+ <div className="space-y-3">
  {events.map((event) => (
- <Card key={event.id} className={`border-l-4 ${typeColors[event.type].split(' ')[2] || 'border-border'}`}>
- <CardHeader className="p-4 pb-2">
- <div className="flex items-start justify-between">
+ <div key={event.id} className={`bg-card border border-border border-l-4 ${getTypeBorderAccent(event.type)} rounded-lg p-5 hover:shadow-md transition-shadow`}>
+ <div className="flex items-start justify-between mb-3">
  <div>
- <CardTitle className="text-lg">{event.title}</CardTitle>
- <CardDescription className="mt-1">
- {event.description}
- </CardDescription>
+ <h4 className="font-headline text-base font-semibold text-foreground">{event.title}</h4>
+ <p className="text-sm text-muted-foreground mt-0.5">{event.description}</p>
  </div>
- <Badge className={statusColors[event.status]}>
+ <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase shrink-0 ${getStatusBadge(event.status)}`}>
  {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
- </Badge>
+ </span>
  </div>
- </CardHeader>
- <CardContent className="p-4 pt-0">
- <div className="grid grid-cols-2 gap-4 text-sm mt-2">
+ <div className="grid grid-cols-2 gap-3 text-sm">
  <div>
- <p className="text-muted-foreground">Technician</p>
- <p className="font-medium">{event.technician}</p>
+ <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Technician</p>
+ <p className="font-medium text-foreground">{event.technician}</p>
  </div>
  <div>
- <p className="text-muted-foreground">Time</p>
- <p className="font-medium">{format(event.date, "h:mm a")}</p>
+ <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Time</p>
+ <p className="font-medium text-foreground">{format(event.date, "h:mm a")}</p>
  </div>
  <div>
- <p className="text-muted-foreground">Type</p>
- <p className="font-medium capitalize">{event.type}</p>
+ <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Type</p>
+ <p className="font-medium text-foreground capitalize">{event.type}</p>
  </div>
  <div>
- <p className="text-muted-foreground">Duration</p>
- <p className="font-medium">{event.duration}</p>
+ <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Duration</p>
+ <p className="font-medium text-foreground">{event.duration}</p>
  </div>
  </div>
  <div className="mt-4 flex justify-end gap-2">
- <Button variant="outline" size="sm">View Details</Button>
- <Button size="sm">Update Status</Button>
+ <Button variant="outline" size="sm" className="text-xs border-primary text-primary hover:bg-primary/5">View Details</Button>
+ <Button size="sm" className="text-xs">Update Status</Button>
  </div>
- </CardContent>
- </Card>
+ </div>
  ))}
  </div>
  );

@@ -22,29 +22,29 @@ const UnplannedMaintenanceDashboard: React.FC<UnplannedMaintenanceDashboardProps
  title: "Critical Issues",
  value: stats.critical,
  icon: AlertTriangle,
- color: "text-red-600",
- bgColor: "bg-red-50 border-red-200"
+ color: "text-destructive",
+ bgColor: "bg-destructive/10 border-destructive/30"
  },
  {
  title: "In Progress",
  value: stats.inProgress,
  icon: Wrench,
- color: "text-blue-600",
- bgColor: "bg-blue-50 border-blue-200"
+ color: "text-primary",
+ bgColor: "bg-primary/10 border-primary/30"
  },
  {
  title: "Awaiting Parts",
  value: stats.awaitingParts,
  icon: Clock,
- color: "text-yellow-600",
- bgColor: "bg-yellow-50 border-yellow-200"
+ color: "text-warning",
+ bgColor: "bg-warning/10 border-warning/30"
  },
  {
  title: "Completed Today",
  value: stats.completed,
  icon: CheckCircle,
- color: "text-green-600",
- bgColor: "bg-green-50 border-green-200"
+ color: "text-success",
+ bgColor: "bg-success/10 border-success/30"
  }
  ];
 

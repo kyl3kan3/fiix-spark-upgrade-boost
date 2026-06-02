@@ -26,7 +26,7 @@ export const BulkDeleteDialog: React.FC<BulkDeleteDialogProps> = ({
  </DialogHeader>
  <div className="space-y-4">
  <p>Are you sure you want to delete {selectedCount} location(s)? This action cannot be undone.</p>
- <p className="text-sm text-red-600">
+ <p className="text-sm text-destructive">
  Note: Locations with sub-locations or assets cannot be deleted and will be skipped.
  </p>
  <div className="flex justify-end gap-2">

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
@@ -124,67 +123,69 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
  };
 
  return (
- <Card>
- <CardHeader>
- <CardTitle className="flex items-center">
- <MessageSquare className="h-5 w-5 mr-2" />
- Comments {commentsData?.totalCount ? `(${commentsData.totalCount})` : ''}
- </CardTitle>
- </CardHeader>
- <CardContent>
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
+ <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
+ <MessageSquare className="h-4 w-4" />
+ Comments {commentsData?.totalCount ? `(${commentsData.totalCount})` : ""}
+ </h3>
+
  {/* Add new comment */}
  <div className="mb-6">
- <h3 className="font-medium mb-2">Add Comment</h3>
- <div className="flex flex-col space-y-2">
- <Textarea 
- placeholder="Write your comment here..." 
- className="min-h-[100px]"
+ <div className="flex flex-col space-y-3">
+ <Textarea
+ placeholder="Write your comment here…"
+ className="min-h-[90px] bg-muted/30 border-border/60 resize-none focus-visible:ring-primary/30"
  value={newComment}
  onChange={(e) => setNewComment(e.target.value)}
  />
  <div className="flex justify-end">
- <Button 
- onClick={handleSubmitComment} 
+ <Button
+ onClick={handleSubmitComment}
  disabled={isSubmittingComment || !newComment.trim()}
+ size="sm"
+ className="gap-1.5"
  >
  {isSubmittingComment ? (
  <>
- <Loader2 className="h-4 w-4 mr-2 animate-spin" />
- Submitting...
+ <Loader2 className="h-3.5 w-3.5 animate-spin" />
+ Posting…
  </>
  ) : (
  <>
- <Send className="h-4 w-4 mr-2" />
- Add Comment
+ <Send className="h-3.5 w-3.5" />
+ Post Comment
  </>
  )}
  </Button>
  </div>
  </div>
  </div>
- 
- <Separator className="my-4" />
- 
+
+ <Separator className="my-5 border-border/60" />
+
  {/* Existing comments */}
- <div className="space-y-4 mb-4">
+ <div className="space-y-3 mb-4">
  {commentsData?.comments && commentsData.comments.length > 0 ? (
  commentsData.comments.map((comment) => (
- <div key={comment.id} className="rounded-lg bg-muted p-4">
+ <div key={comment.id} className="rounded-lg bg-muted/30 border border-border/40 p-4">
  <div className="flex justify-between items-start mb-2">
- <div className="font-medium">
+ <div className="flex items-center gap-2">
+ <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+ {(comment.user?.first_name?.[0] || "?")}
+ </div>
+ <span className="text-sm font-semibold text-foreground">
  {comment.user?.first_name} {comment.user?.last_name}
+ </span>
  </div>
- <div className="text-sm text-muted-foreground">
- {formatDate(comment.created_at)}
+ <span className="text-xs text-muted-foreground">{formatDate(comment.created_at)}</span>
  </div>
- </div>
- <p className="text-foreground whitespace-pre-wrap">{comment.comment}</p>
+ <p className="text-sm text-muted-foreground whitespace-pre-wrap ml-9">{comment.comment}</p>
  </div>
  ))
  ) : (
- <div className="text-center py-6 text-muted-foreground">
- <MessageSquare className="h-8 w-8 mx-auto opacity-30 mb-2" />
- <p>No comments yet</p>
+ <div className="text-center py-8 text-muted-foreground">
+ <MessageSquare className="h-8 w-8 mx-auto opacity-20 mb-2" />
+ <p className="text-sm">No comments yet. Be the first.</p>
  </div>
  )}
  </div>
@@ -222,7 +223,6 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
  </PaginationContent>
  </Pagination>
  )}
- </CardContent>
- </Card>
+ </div>
  );
 };

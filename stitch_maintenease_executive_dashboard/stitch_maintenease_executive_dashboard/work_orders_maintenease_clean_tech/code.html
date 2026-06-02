@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Work Orders | MaintenEase</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#b8c4ff",
+                      "success": "#10B981",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "surface-container-highest": "#d3e4fe",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "tertiary": "#1e2020",
+                      "outline-variant": "#c5c5d4",
+                      "surface-container-low": "#eff4ff",
+                      "on-tertiary-container": "#9c9d9d",
+                      "on-primary": "#ffffff",
+                      "on-primary-container": "#7e97fe",
+                      "secondary-container": "#dee0e2",
+                      "surface-tint": "#3d57ba",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "surface-variant": "#d3e4fe",
+                      "on-primary-fixed-variant": "#213da0",
+                      "surface": "#f8f9ff",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "primary-container": "#00288e",
+                      "on-secondary-container": "#606365",
+                      "on-surface-variant": "#444652",
+                      "on-background": "#0b1c30",
+                      "warning": "#F59E0B",
+                      "tertiary-fixed": "#e2e2e2",
+                      "primary": "#00175c",
+                      "surface-container": "#e5eeff",
+                      "on-primary-fixed": "#001453",
+                      "tertiary-container": "#333535",
+                      "surface-blue": "#f8f9ff",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "secondary": "#5c5f61",
+                      "surface-container-high": "#dce9ff",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#c4c7c9",
+                      "secondary-fixed": "#e1e3e5",
+                      "on-surface": "#0b1c30",
+                      "on-secondary-fixed-variant": "#444749",
+                      "inverse-surface": "#213145",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#dde1ff",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-fixed": "#191c1e",
+                      "container-blue": "#e5eeff",
+                      "on-error": "#ffffff",
+                      "outline": "#757684",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card_padding": "24px",
+                      "sidebar_collapsed": "64px",
+                      "gutter": "24px",
+                      "base_unit": "8px",
+                      "sidebar_expanded": "240px",
+                      "container_padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Playfair Display"],
+                      "headline-lg": ["Playfair Display"],
+                      "display-lg": ["Playfair Display"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg-mobile": ["Playfair Display"],
+                      "label-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dde1ff;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="flex flex-col h-screen py-gutter gap-base_unit fixed left-0 top-0 bg-surface-container-lowest dark:bg-surface-dim border-r border-outline-variant/20 shadow-sm w-sidebar_expanded z-50 hidden md:flex">
+<div class="px-6 mb-8">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">MaintenEase</h1>
+<p class="font-label-md text-label-md text-secondary">Facility Management</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg border-l-4 border-primary bg-primary/5 text-primary font-bold group" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-label-md text-label-md">Work Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-md text-label-md">Preventive</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary hover:bg-surface-container transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Reporting</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-2">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-label-md uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Work Order
+            </button>
+<div class="pt-4 border-t border-outline-variant/20">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 md:ml-sidebar_expanded bg-surface">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-container_padding py-4 z-40 sticky top-0 bg-surface/80 glass-nav backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary text-body-md transition-all" placeholder="Search work orders, assets, or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-primary hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-primary hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="p-2 text-primary hover:bg-surface-container-high rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/40 mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<img alt="Administrator Profile" class="w-9 h-9 rounded-full object-cover border-2 border-primary/10 group-hover:border-primary transition-all" data-alt="A professional headshot of a middle-aged male administrator with a confident expression, wearing a crisp navy suit in a brightly lit, modern corporate office setting. The lighting is soft and flattering, emphasizing a clean-tech professional aesthetic with cool blue tones and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHlduHMaGJIYIxuvPfF0k0xehRZsrzS_bflsmCSa-h_KF7zzX81cnKmkI60tot7MAvTO5wyG74vbeVAX-gp1czxkttl4HAyVE8nfb5S155J930hQjxn8yYK0Hf0nShIWUs3x6p9flbIG_Pe5NF-f-3m5bxAX7sG6mm3dimhV1Cb1JgnxChN8hk5Sif0C3-kJv2H7vcTMjPWn_QxXC4WJtZ8EvIsYb4SEJCf2JEi86-lXqfk_EdjxgCtrmARIrANIzyd_iHxShmerg"/>
+<div class="hidden sm:block">
+<p class="font-label-md text-label-md text-primary">Alex Sterling</p>
+<p class="text-[10px] uppercase tracking-tighter text-secondary">Admin</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-container_padding space-y-8 max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Work Orders</h2>
+<p class="font-body-md text-body-md text-secondary">Manage and track all facility maintenance tasks across site sectors.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-surface-container text-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="file_download">file_download</span>
+                        Export CSV
+                    </button>
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-2 hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                        NEW ORDER
+                    </button>
+</div>
+</div>
+<!-- Stats Overview (Bento Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bento-card bg-surface-container-lowest p-card_padding rounded-xl border border-outline-variant/10 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-secondary font-label-md">Total Open</span>
+<span class="material-symbols-outlined text-primary/40" data-icon="pending_actions">pending_actions</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="text-3xl font-bold text-primary">24</span>
+<span class="text-success text-xs font-bold bg-success/10 px-2 py-1 rounded">+12%</span>
+</div>
+</div>
+<div class="bento-card bg-surface-container-lowest p-card_padding rounded-xl border border-outline-variant/10 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-secondary font-label-md">In Progress</span>
+<span class="material-symbols-outlined text-warning/40" data-icon="motion_photos_on">motion_photos_on</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="text-3xl font-bold text-primary">18</span>
+<span class="text-secondary text-xs font-bold bg-secondary/10 px-2 py-1 rounded">Stable</span>
+</div>
+</div>
+<div class="bento-card bg-surface-container-lowest p-card_padding rounded-xl border border-outline-variant/10 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-secondary font-label-md">High Priority</span>
+<span class="material-symbols-outlined text-error/40" data-icon="priority_high">priority_high</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="text-3xl font-bold text-error">05</span>
+<span class="text-error text-xs font-bold bg-error/10 px-2 py-1 rounded">-2%</span>
+</div>
+</div>
+<div class="bento-card bg-surface-container-lowest p-card_padding rounded-xl border border-outline-variant/10 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="text-secondary font-label-md">Completed (24h)</span>
+<span class="material-symbols-outlined text-success/40" data-icon="task_alt">task_alt</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="text-3xl font-bold text-primary">31</span>
+<span class="text-success text-xs font-bold bg-success/10 px-2 py-1 rounded">+8%</span>
+</div>
+</div>
+</div>
+<!-- Filters & Table Wrapper -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
+<!-- Table Controls -->
+<div class="p-4 border-b border-outline-variant/20 flex flex-wrap items-center justify-between gap-4 bg-surface-container-low/30">
+<div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+<button class="px-4 py-1.5 rounded-full bg-primary text-on-primary text-label-md font-bold transition-all whitespace-nowrap">All Orders</button>
+<button class="px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container text-label-md font-medium transition-all whitespace-nowrap">Open</button>
+<button class="px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container text-label-md font-medium transition-all whitespace-nowrap">In Progress</button>
+<button class="px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container text-label-md font-medium transition-all whitespace-nowrap">On Hold</button>
+<button class="px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container text-label-md font-medium transition-all whitespace-nowrap">Completed</button>
+</div>
+<div class="flex items-center gap-4">
+<select class="bg-transparent border-none text-label-md text-secondary focus:ring-0 cursor-pointer">
+<option>Sort by: Newest</option>
+<option>Priority: High to Low</option>
+<option>Status</option>
+</select>
+<button class="p-2 text-secondary hover:bg-surface-container rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Table Content -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low/50">
+<tr>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">JOB ID</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">WORK ORDER TITLE</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">ASSET</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">PRIORITY</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">STATUS</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20">TECHNICIAN</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary border-b border-outline-variant/20"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-label-md text-primary">#WO-8842</td>
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">HVAC Compressor Vibration Check</p>
+<p class="text-[11px] text-secondary">Due: Oct 24, 2023</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary/60 text-[18px]" data-icon="ac_unit">ac_unit</span>
+<span class="text-body-md text-secondary">Main AHU-04</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-error-container text-on-error-container">High</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-warning"></div>
+<span class="text-body-md text-on-surface">In Progress</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img alt="Technician" class="w-7 h-7 rounded-full object-cover" data-alt="A close-up portrait of a young male technician with a focused and friendly expression, wearing a high-visibility safety vest over a clean grey work shirt. The background is a soft-focus industrial setting with clean white walls and professional blue accents, maintaining a high-tech reliability aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQPkzrnEU-6PLsoNAM52rRB_84tJMOboNAQ9Tg4p6oEyV96w1KcluK6eNsLmGp6rhSGnyHauClkUUbhW7V-sgEn9y-wHPnh8XmLvMJY-nGLDQNhOZLfsTAcmk2fByXNWYPoo-BHClKugmQtXr8IIbZGTKa-NVr9h2UKKxmo4kOACPdRXE0s5N6ViBfEfjmvnVR-LHV3o-3mcTxCLS6Pi2QGixyPBdbl8K9wcf8iXZIWIS_aiDLCqs61JuV0zEx6RsDSIKUzkc6UMQ"/>
+<span class="text-body-md text-on-surface">Mark J.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 text-outline opacity-0 group-hover:opacity-100 hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-label-md text-primary">#WO-8841</td>
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Lobby Lighting LED Retrofit</p>
+<p class="text-[11px] text-secondary">Due: Oct 28, 2023</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary/60 text-[18px]" data-icon="lightbulb">lightbulb</span>
+<span class="text-body-md text-secondary">North Wing Lobby</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-secondary-container text-on-secondary-container">Medium</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<span class="text-body-md text-on-surface">Open</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container border border-outline-variant/30 flex items-center justify-center">
+<span class="text-[10px] font-bold text-primary">UA</span>
+</div>
+<span class="text-body-md text-secondary italic">Unassigned</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 text-outline opacity-0 group-hover:opacity-100 hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-label-md text-primary">#WO-8839</td>
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Server Room Temp Sensor Fault</p>
+<p class="text-[11px] text-secondary">Due: Oct 22, 2023</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary/60 text-[18px]" data-icon="dns">dns</span>
+<span class="text-body-md text-secondary">Data Center C1</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-error-container text-on-error-container">High</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-body-md text-on-surface">On Hold</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img alt="Technician" class="w-7 h-7 rounded-full object-cover" data-alt="A profile photo of a female IT maintenance specialist in her 30s with a professional and sharp demeanor. She is wearing a dark navy company polo shirt. The lighting is crisp and modern, featuring a cool blue studio backdrop that suggests a high-tech facility environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3bN1dE1vQX7zJO6b11toLx6QM8nHrdrC5nN9AHt2Bdu89JLRkLxRPjzGnQua5UiamVLJrFDu9I0nbqasahp0N4loPJZCErY4jn3DntTbckHyR07ZJ56Zr0rUqyFL2IF2XhYAITG0wPMUCZlYsHfP_I-esE5gaNcbYzpZWcVfJyjAIWYZLU0MejOVdu6JuV9S41_dTgPYP_sY_pt4VzR16nEAQ4Q_H2OIlDrKgzcblKFisT5X7ov1VfjHdw10APkOKEfBvDjfMlC8"/>
+<span class="text-body-md text-on-surface">Sarah K.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 text-outline opacity-0 group-hover:opacity-100 hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/30 transition-colors cursor-pointer group">
+<td class="px-6 py-4 font-label-md text-primary">#WO-8835</td>
+<td class="px-6 py-4">
+<p class="font-label-md text-on-surface">Annual Fire Extinguisher Inspection</p>
+<p class="text-[11px] text-secondary">Due: Oct 20, 2023</p>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary/60 text-[18px]" data-icon="fire_extinguisher">fire_extinguisher</span>
+<span class="text-body-md text-secondary">All Floors</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-surface-container text-secondary">Low</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success"></div>
+<span class="text-body-md text-on-surface">Completed</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img alt="Technician" class="w-7 h-7 rounded-full object-cover" data-alt="A portrait of a male maintenance worker in his 40s with a trustworthy and experienced look, wearing a blue work jacket. The scene is brightly lit with natural light from a window in a clean industrial facility, creating a modern and professional ambiance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmFyPSLyEKGtWQxX6izMP_MBDfUSW2u5guYeebhEXtr0VDF-FqxLvcdJi_tO0hPjBVoEfjZTUH4TNUzuKMCYOZlffXHmeE4khEwX4Y8fy3sAMTTUBASrSNa1Fl6fFWr8wmWf1zBMp4jxpskbD22fDnHHfOMtMzCxui7I6qPmD0Dv6O3c2hnc7c6oUKOB3O3wqVCXxPDT4DAqIqKbCJ_l3leX6eQorruc7sabR0pKAnD-6QNXgtMBGV4QY_K9eAOX8gr0brWoTHtiA"/>
+<span class="text-body-md text-on-surface">David L.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="p-2 text-outline opacity-0 group-hover:opacity-100 hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-md text-secondary">Showing 1 to 4 of 128 results</span>
+<div class="flex items-center gap-1">
+<button class="p-2 text-secondary hover:bg-surface-container rounded-lg transition-all disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-3 py-1 bg-primary text-on-primary rounded font-bold text-label-md">1</button>
+<button class="px-3 py-1 hover:bg-surface-container rounded font-medium text-label-md">2</button>
+<button class="px-3 py-1 hover:bg-surface-container rounded font-medium text-label-md">3</button>
+<span class="px-2">...</span>
+<button class="px-3 py-1 hover:bg-surface-container rounded font-medium text-label-md">32</button>
+<button class="p-2 text-secondary hover:bg-surface-container rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Asymmetric Support Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Recent Activities (Glass Card) -->
+<div class="lg:col-span-2 bg-surface-container-lowest/50 backdrop-blur-sm p-card_padding rounded-xl border border-outline-variant/10 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Live Activity Log</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="mt-1 w-2 h-2 rounded-full bg-success ring-4 ring-success/10 flex-shrink-0"></div>
+<div>
+<p class="text-body-md text-on-surface"><span class="font-bold">David L.</span> marked <span class="text-primary">#WO-8835</span> as <span class="text-success font-bold">Completed</span>.</p>
+<p class="text-[12px] text-secondary">14 minutes ago • Site 12</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="mt-1 w-2 h-2 rounded-full bg-primary ring-4 ring-primary/10 flex-shrink-0"></div>
+<div>
+<p class="text-body-md text-on-surface"><span class="font-bold">Admin Alex</span> assigned <span class="text-primary">#WO-8842</span> to <span class="font-bold text-primary">Mark J.</span></p>
+<p class="text-[12px] text-secondary">2 hours ago • Main Building</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="mt-1 w-2 h-2 rounded-full bg-error ring-4 ring-error/10 flex-shrink-0"></div>
+<div>
+<p class="text-body-md text-on-surface"><span class="font-bold">Sarah K.</span> put <span class="text-primary">#WO-8839</span> on hold: <span class="italic text-secondary">"Awaiting replacement part SKU-9942"</span></p>
+<p class="text-[12px] text-secondary">5 hours ago • Server Farm</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Mini Asset View -->
+<div class="bg-primary text-on-primary p-card_padding rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[200px]" data-icon="engineering">engineering</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md mb-2">Technician Coverage</h3>
+<p class="text-primary-fixed text-body-md opacity-80">Current field team deployment across all zones.</p>
+</div>
+<div class="mt-8 space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-[12px] font-bold uppercase tracking-widest">
+<span>Zone A (Production)</span>
+<span>85%</span>
+</div>
+<div class="h-1.5 w-full bg-on-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-on-primary w-[85%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[12px] font-bold uppercase tracking-widest">
+<span>Zone B (Facility)</span>
+<span>42%</span>
+</div>
+<div class="h-1.5 w-full bg-on-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-on-primary w-[42%] rounded-full"></div>
+</div>
+</div>
+</div>
+<button class="mt-8 w-full py-3 bg-on-primary text-primary rounded-lg font-bold text-label-md hover:bg-primary-fixed transition-colors active:scale-95 z-10">
+                        Manage Shifts
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer Credits -->
+<footer class="mt-auto py-8 px-container_padding text-center">
+<p class="text-secondary text-[12px] uppercase tracking-[0.2em] font-medium">MaintenEase Cloud Platform v2.4.0 • Enterprise License Active</p>
+</footer>
+</main>
+<!-- Mobile Navigation (Floating Bottom Bar) -->
+<nav class="fixed bottom-4 left-4 right-4 bg-surface/90 glass-nav backdrop-blur-md rounded-2xl shadow-xl flex justify-around items-center py-3 px-4 md:hidden z-50 border border-outline-variant/30">
+<a class="flex flex-col items-center gap-1 text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Work</span>
+</a>
+<div class="-mt-12">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Assets</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Tools</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for table rows
+        document.querySelectorAll('tr.group').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.querySelector('.material-symbols-outlined[data-icon="more_vert"]').classList.add('opacity-100');
+            });
+            row.addEventListener('mouseleave', () => {
+                row.querySelector('.material-symbols-outlined[data-icon="more_vert"]').classList.remove('opacity-100');
+            });
+        });
+
+        // Simple Tab Filtering Logic
+        const tabs = document.querySelectorAll('.filter-tabs button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('bg-primary', 'text-on-primary'));
+                tabs.forEach(t => t.classList.add('text-secondary', 'hover:bg-surface-container'));
+                tab.classList.add('bg-primary', 'text-on-primary');
+                tab.classList.remove('text-secondary', 'hover:bg-surface-container');
+            });
+        });
+    </script>
+</body></html>

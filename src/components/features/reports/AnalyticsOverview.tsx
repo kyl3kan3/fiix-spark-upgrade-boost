@@ -137,20 +137,20 @@ const AnalyticsOverview: React.FC = () => {
 
  if (loading) {
  return (
- <Card className="h-48 flex items-center justify-center">
- <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+ <Card className="h-48 flex items-center justify-center bg-card border border-border shadow-sm">
+ <Loader2 className="h-6 w-6 animate-spin text-primary" />
  </Card>
  );
  }
 
  const kpis = [
- { label: "Total Work Orders", value: stats.total, icon: ClipboardList, tone: "text-blue-600 bg-blue-50" },
- { label: "Open", value: stats.open, icon: Activity, tone: "text-amber-600 bg-amber-50" },
- { label: "Completed", value: stats.completed, icon: CheckCircle2, tone: "text-emerald-600 bg-emerald-50" },
- { label: "Overdue", value: stats.overdue, icon: AlertTriangle, tone: "text-rose-600 bg-rose-50" },
- { label: "Completion Rate", value: `${stats.completionRate}%`, icon: TrendingUp, tone: "text-violet-600 bg-violet-50" },
- { label: "Assets Tracked", value: assetCount, icon: Package, tone: "text-teal-600 bg-teal-50" },
- { label: "Team Members", value: teamCount, icon: Users, tone: "text-indigo-600 bg-indigo-50" },
+ { label: "Total Work Orders", value: stats.total, icon: ClipboardList, tone: "text-primary bg-primary/10" },
+ { label: "Open", value: stats.open, icon: Activity, tone: "text-warning bg-warning/10" },
+ { label: "Completed", value: stats.completed, icon: CheckCircle2, tone: "text-success bg-success/10" },
+ { label: "Overdue", value: stats.overdue, icon: AlertTriangle, tone: "text-destructive bg-destructive/10" },
+ { label: "Completion Rate", value: `${stats.completionRate}%`, icon: TrendingUp, tone: "text-secondary bg-secondary/10" },
+ { label: "Assets Tracked", value: assetCount, icon: Package, tone: "text-secondary bg-secondary/10" },
+ { label: "Team Members", value: teamCount, icon: Users, tone: "text-primary bg-primary/10" },
  ];
 
  return (
@@ -159,11 +159,11 @@ const AnalyticsOverview: React.FC = () => {
  {kpis.map((k) => {
  const Icon = k.icon;
  return (
- <Card key={k.label} className="p-4">
+ <Card key={k.label} className="p-4 bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
  <div className={`inline-flex p-2 rounded-lg ${k.tone} mb-3`}>
  <Icon className="h-4 w-4" />
  </div>
- <div className="text-2xl font-bold leading-tight">{k.value}</div>
+ <div className="text-2xl font-bold leading-tight text-foreground">{k.value}</div>
  <div className="text-xs text-muted-foreground mt-1">{k.label}</div>
  </Card>
  );
@@ -171,9 +171,9 @@ const AnalyticsOverview: React.FC = () => {
  </div>
 
  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
- <Card className="lg:col-span-2">
+ <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle className="text-base">Work Orders — Last 6 Months</CardTitle>
+ <CardTitle className="font-headline text-base text-foreground">Work Orders — Last 6 Months</CardTitle>
  </CardHeader>
  <CardContent>
  <div style={{ width: "100%", height: 280 }}>
@@ -192,9 +192,9 @@ const AnalyticsOverview: React.FC = () => {
  </CardContent>
  </Card>
 
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle className="text-base">Status Breakdown</CardTitle>
+ <CardTitle className="font-headline text-base text-foreground">Status Breakdown</CardTitle>
  </CardHeader>
  <CardContent>
  <div style={{ width: "100%", height: 280 }}>
@@ -228,9 +228,9 @@ const AnalyticsOverview: React.FC = () => {
  </Card>
  </div>
 
- <Card>
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle className="text-base">Priority Distribution</CardTitle>
+ <CardTitle className="font-headline text-base text-foreground">Priority Distribution</CardTitle>
  </CardHeader>
  <CardContent>
  <div style={{ width: "100%", height: 220 }}>

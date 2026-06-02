@@ -152,18 +152,18 @@ const DailyLog: React.FC<DailyLogProps> = ({ selectedDate }) => {
 
  const getStatusColor = (status: string) => {
  switch (status) {
- case "normal": return "bg-green-100 text-green-800";
- case "warning": return "bg-yellow-100 text-yellow-800";
- case "critical": return "bg-red-100 text-red-800";
+ case "normal": return "bg-success/10 text-success";
+ case "warning": return "bg-warning/10 text-warning";
+ case "critical": return "bg-destructive/10 text-destructive";
  default: return "bg-muted text-foreground";
  }
  };
 
  const getSeverityColor = (severity: string) => {
  switch (severity) {
- case "low": return "bg-blue-100 text-blue-800";
- case "medium": return "bg-yellow-100 text-yellow-800";
- case "high": return "bg-red-100 text-red-800";
+ case "low": return "bg-primary/10 text-primary";
+ case "medium": return "bg-warning/10 text-warning";
+ case "high": return "bg-destructive/10 text-destructive";
  default: return "bg-muted text-foreground";
  }
  };

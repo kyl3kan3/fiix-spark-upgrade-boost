@@ -26,23 +26,20 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
  const name = profile?.first_name || "";
 
  return (
- <header className="fixed top-0 right-0 left-0 lg:left-[248px] z-30 bg-background/90 backdrop-blur-md border-b border-border">
- <div className="flex items-center justify-between gap-3 h-16 lg:h-20 px-4 md:px-6">
+ <header className="fixed top-0 right-0 left-0 lg:left-[240px] z-30 bg-background/80 backdrop-blur-md border-b border-border">
+ <div className="flex items-center justify-between gap-3 h-16 px-4 md:px-6">
  {/* Left: mobile menu + greeting/title */}
  <div className="flex items-center gap-3 min-w-0 flex-1">
  <Sheet>
  <SheetTrigger asChild>
- <button className="lg:hidden h-12 w-12 flex items-center justify-center rounded-2xl border-2 border-border bg-card hover:bg-secondary -ml-1">
- <Menu className="h-5 w-5" strokeWidth={2.4} />
+ <button className="lg:hidden h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted -ml-1 transition-colors">
+ <Menu className="h-5 w-5" />
  </button>
  </SheetTrigger>
  <SheetContent side="left" className="p-0 w-80 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
- <div className="p-5 border-b border-sidebar-border flex items-center gap-3">
- <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground font-display font-extrabold text-xl flex items-center justify-center shadow-soft">M</div>
- <div className="leading-tight">
- <div className="font-display font-extrabold text-lg text-foreground">MaintenEase</div>
- <div className="text-xs text-muted-foreground font-medium">Easy maintenance</div>
- </div>
+ <div className="px-6 py-5 border-b border-sidebar-border">
+ <h2 className="font-headline text-2xl font-bold text-primary tracking-tight">MaintenEase</h2>
+ <p className="text-xs text-muted-foreground font-medium mt-0.5">Facility Management</p>
  </div>
  <nav className="py-3 px-2 overflow-y-auto h-[calc(100vh-100px)]">
  {NAV_ITEMS.map((item) => {
@@ -53,13 +50,13 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
  key={item.href}
  onClick={() => navigate(item.href)}
  className={cn(
- "w-full flex items-center gap-3 px-3 h-14 text-base font-bold rounded-2xl transition-colors my-1",
+ "w-full flex items-center gap-3 px-3 h-11 text-sm font-medium rounded-r-lg border-l-4 border-transparent transition-colors my-0.5",
  active
- ? "bg-gradient-primary text-primary-foreground shadow-soft"
+ ? "border-primary bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
  : "text-sidebar-foreground hover:bg-sidebar-accent"
  )}
  >
- <Icon className="h-5 w-5" strokeWidth={2.4} />
+ <Icon className="h-[18px] w-[18px]" />
  <span className="flex-1 text-left">{item.label}</span>
  </button>
  );
@@ -71,41 +68,44 @@ const TopBar: React.FC<TopBarProps> = ({ unreadCount, onToggleNotifications, onO
  <div className="min-w-0 flex-1">
  {pathname === "/dashboard" || pathname === "/" ? (
  <>
- <div className="text-xs sm:text-sm text-muted-foreground font-semibold">{greeting}{name ? "," : "!"}</div>
- <div className="font-display font-extrabold text-xl sm:text-2xl text-foreground tracking-tight truncate">
+ <div className="text-xs text-muted-foreground font-medium">{greeting}{name ? "," : "!"}</div>
+ <div className="font-headline text-xl sm:text-2xl text-foreground tracking-tight truncate">
  {name ? `${name} 👋` : "Welcome 👋"}
  </div>
  </>
  ) : (
  <>
- <div className="text-xs sm:text-sm text-muted-foreground font-semibold">You're viewing</div>
- <div className="font-display font-extrabold text-xl sm:text-2xl text-foreground tracking-tight truncate">{pageTitle}</div>
+ <div className="text-xs text-muted-foreground font-medium">You're viewing</div>
+ <div className="font-headline text-xl sm:text-2xl text-foreground tracking-tight truncate">{pageTitle}</div>
  </>
  )}
  </div>
  </div>
 
- {/* Center: big friendly search */}
+ {/* Center: pill search per Clean Tech */}
  <button
  onClick={onOpenPalette}
- className="hidden md:flex items-center gap-3 h-12 px-5 rounded-2xl border-2 border-border bg-card hover:bg-secondary hover:border-primary transition-all text-base text-muted-foreground min-w-[280px] font-semibold"
+ className="hidden md:flex items-center gap-2 h-10 px-4 rounded-full bg-muted hover:bg-muted/80 transition-colors text-sm text-muted-foreground min-w-[280px] font-medium"
  >
- <Search className="h-5 w-5 text-primary" strokeWidth={2.4} />
- <span className="flex-1 text-left">What are you looking for?</span>
+ <Search className="h-4 w-4 text-muted-foreground" />
+ <span className="flex-1 text-left">Search orders, assets...</span>
  </button>
 
- {/* Right */}
- <div className="flex items-center gap-2">
- <button onClick={onOpenPalette} className="md:hidden h-12 w-12 flex items-center justify-center rounded-2xl border-2 border-border bg-card hover:bg-secondary">
- <Search className="h-5 w-5" strokeWidth={2.4} />
+ {/* Right: round icon buttons per Clean Tech */}
+ <div className="flex items-center gap-1">
+ <button
+ onClick={onOpenPalette}
+ className="md:hidden h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
+ >
+ <Search className="h-5 w-5" />
  </button>
  <button
  onClick={onToggleNotifications}
- className="relative h-12 w-12 flex items-center justify-center rounded-2xl border-2 border-border bg-card hover:bg-secondary transition-colors"
+ className="relative h-10 w-10 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
  >
- <Bell className="h-5 w-5" strokeWidth={2.4} />
+ <Bell className="h-5 w-5" />
  {unreadCount > 0 && (
- <span className="absolute -top-1 -right-1 h-5 min-w-5 px-1 rounded-full bg-accent text-accent-foreground text-[11px] font-extrabold flex items-center justify-center ring-2 ring-background">
+ <span className="absolute top-1 right-1 h-4 min-w-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center ring-2 ring-background">
  {unreadCount > 9 ? "9+" : unreadCount}
  </span>
  )}

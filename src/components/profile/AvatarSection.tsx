@@ -32,65 +32,65 @@ export const AvatarSection: React.FC<AvatarSectionProps> = ({
  inputRef.current?.click();
  };
 
- return (
- <div className="flex flex-col items-center">
- <div
- className="relative w-24 h-24 rounded-full bg-muted border-2 border-muted flex items-center justify-center overflow-hidden shadow cursor-pointer"
- onClick={handleClick}
- role="button"
- aria-label={ariaLabel || "Change profile picture"}
- tabIndex={0}
- onKeyDown={(e) => {
- if (e.key === 'Enter' || e.key === ' ') {
- handleClick();
- }
- }}
- >
- {displayUrl ? (
- <img src={displayUrl} alt="User avatar" className="w-24 h-24 object-cover" />
- ) : (
- <Image className="w-12 h-12 text-muted-foreground" />
- )}
- {isUploading && (
- <div className="absolute inset-0 bg-card/70 flex justify-center items-center">
- <svg className="animate-spin h-8 w-8 text-maintenease-700" fill="none" viewBox="0 0 24 24">
- <circle
- className="opacity-25"
- cx="12"
- cy="12"
- r="10"
- stroke="currentColor"
- strokeWidth="4"
- />
- <path
- className="opacity-75"
- fill="currentColor"
- d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
- />
- </svg>
- </div>
- )}
- </div>
- 
- <input
- ref={inputRef}
- type="file"
- accept="image/*"
- className="hidden"
- onChange={handleFileChange}
- disabled={isUploading}
- />
- 
- <Button
- variant="outline"
- size="sm"
- className="mt-2"
- onClick={handleClick}
- disabled={isUploading}
- >
- <Upload className="w-4 h-4 mr-1" />
- Change Avatar
- </Button>
- </div>
- );
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div
+        className="relative w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+        onClick={handleClick}
+        role="button"
+        aria-label={ariaLabel || "Change profile picture"}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleClick();
+          }
+        }}
+      >
+        {displayUrl ? (
+          <img src={displayUrl} alt="User avatar" className="w-24 h-24 object-cover" />
+        ) : (
+          <Image className="w-12 h-12 text-primary/40" />
+        )}
+        {isUploading && (
+          <div className="absolute inset-0 bg-card/70 flex justify-center items-center">
+            <svg className="animate-spin h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          </div>
+        )}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+        disabled={isUploading}
+      />
+
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleClick}
+        disabled={isUploading}
+        className="border-border text-primary hover:bg-primary/5"
+      >
+        <Upload className="w-4 h-4 mr-1" />
+        Change Avatar
+      </Button>
+    </div>
+  );
 };

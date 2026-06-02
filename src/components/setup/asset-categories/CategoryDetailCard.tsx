@@ -64,7 +64,7 @@ export const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{field.name}</span>
-                    {field.required && <span className="text-xs text-red-500">Required</span>}
+                    {field.required && <span className="text-xs text-destructive">Required</span>}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Badge variant="outline" className="font-normal">

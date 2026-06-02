@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -14,128 +13,115 @@ import InspectionLoading from "@/components/inspections/InspectionLoading";
 import InspectionNotFound from "@/components/inspections/InspectionNotFound";
 
 const InspectionDetailPage = () => {
- const { inspectionId } = useParams();
- const navigate = useNavigate();
- const { inspections, loading } = useInspections();
- 
- const [inspection, setInspection] = useState<Inspection | undefined>(undefined);
- const [inspectionItems, setInspectionItems] = useState<any[]>([]);
+  const { inspectionId } = useParams();
+  const navigate = useNavigate();
+  const { inspections, loading } = useInspections();
 
- // Find the inspection in our list when inspections load
- useEffect(() => {
- if (!loading && inspections.length > 0 && inspectionId) {
- const foundInspection = inspections.find(insp => insp.id === inspectionId);
- if (foundInspection) {
- setInspection(foundInspection);
- setInspectionItems([...foundInspection.items]);
- }
- }
- }, [inspectionId, inspections, loading]);
+  const [inspection, setInspection] = useState<Inspection | undefined>(undefined);
+  const [inspectionItems, setInspectionItems] = useState<any[]>([]);
 
- // Show loading state
- if (loading) {
- return (
- <DashboardLayout>
- <InspectionLoading />
- </DashboardLayout>
- );
- }
+  useEffect(() => {
+    if (!loading && inspections.length > 0 && inspectionId) {
+      const foundInspection = inspections.find((insp) => insp.id === inspectionId);
+      if (foundInspection) {
+        setInspection(foundInspection);
+        setInspectionItems([...foundInspection.items]);
+      }
+    }
+  }, [inspectionId, inspections, loading]);
 
- // Show not found state
- if (!loading && !inspection) {
- return (
- <DashboardLayout>
- <InspectionNotFound />
- </DashboardLayout>
- );
- }
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <InspectionLoading />
+      </DashboardLayout>
+    );
+  }
 
- // Handle functions
- const handleBackClick = () => {
- navigate("/inspections");
- };
+  if (!loading && !inspection) {
+    return (
+      <DashboardLayout>
+        <InspectionNotFound />
+      </DashboardLayout>
+    );
+  }
 
- const handleItemPassChange = (itemId: string, passed: boolean) => {
- if (!inspection) return;
- 
- const newItems = inspectionItems.map(item => 
- item.id === itemId ? { ...item, passed } : item
- );
- setInspectionItems(newItems);
- };
+  const handleBackClick = () => {
+    navigate("/inspections");
+  };
 
- const handleNoteChange = (itemId: string, notes: string) => {
- if (!inspection) return;
- 
- const newItems = inspectionItems.map(item => 
- item.id === itemId ? { ...item, notes } : item
- );
- setInspectionItems(newItems);
- };
+  const handleItemPassChange = (itemId: string, passed: boolean) => {
+    if (!inspection) return;
+    setInspectionItems((prev) => prev.map((item) => (item.id === itemId ? { ...item, passed } : item)));
+  };
 
- const handleUpdateStatus = (newStatus: 'scheduled' | 'in-progress' | 'completed' | 'failed' | 'cancelled') => {
- if (!inspection) return;
- 
- setInspection({
- ...inspection,
- status: newStatus,
- completedDate: newStatus === 'completed' ? new Date().toISOString() : inspection.completedDate
- });
- 
- toast.success(`Inspection status updated to ${newStatus}`);
- };
+  const handleNoteChange = (itemId: string, notes: string) => {
+    if (!inspection) return;
+    setInspectionItems((prev) => prev.map((item) => (item.id === itemId ? { ...item, notes } : item)));
+  };
 
- const handleSaveChecklist = () => {
- // In a real implementation, we would save to the database here
- toast.success("Inspection checklist saved successfully");
- };
- 
- // If we have an inspection, show the detail view
- return (
- <DashboardLayout>
- {inspection && (
- <>
- <Helmet>
- <title>{inspection.title} | MaintenEase</title>
- </Helmet>
+  const handleUpdateStatus = (newStatus: "scheduled" | "in-progress" | "completed" | "failed" | "cancelled") => {
+    if (!inspection) return;
+    setInspection({
+      ...inspection,
+      status: newStatus,
+      completedDate: newStatus === "completed" ? new Date().toISOString() : inspection.completedDate,
+    });
+    toast.success(`Inspection status updated to ${newStatus}`);
+  };
 
- <div className="space-y-6">
- <InspectionHeader 
- id={inspection.id}
- title={inspection.title}
- status={inspection.status}
- priority={inspection.priority}
- handleBackClick={handleBackClick}
- handleUpdateStatus={handleUpdateStatus}
- />
+  const handleSaveChecklist = () => {
+    toast.success("Inspection checklist saved successfully");
+  };
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
- <InspectionDetailsCard 
- description={inspection.description}
- assetName={inspection.assetName}
- assignedTo={inspection.assignedTo}
- scheduledDate={inspection.scheduledDate}
- completedDate={inspection.completedDate}
- />
- 
- <InspectionActionsCard 
- status={inspection.status}
- handleUpdateStatus={handleUpdateStatus}
- />
- </div>
+  return (
+    <DashboardLayout>
+      {inspection && (
+        <>
+          <Helmet>
+            <title>{inspection.title} | MaintenEase</title>
+          </Helmet>
 
- <InspectionChecklist 
- items={inspectionItems}
- isCompleted={inspection.status === 'completed'}
- handleItemPassChange={handleItemPassChange}
- handleNoteChange={handleNoteChange}
- handleSaveChecklist={handleSaveChecklist}
- />
- </div>
- </>
- )}
- </DashboardLayout>
- );
+          <div className="space-y-6 pb-8">
+            <InspectionHeader
+              id={inspection.id}
+              title={inspection.title}
+              status={inspection.status}
+              priority={inspection.priority}
+              handleBackClick={handleBackClick}
+              handleUpdateStatus={handleUpdateStatus}
+            />
+
+            <div className="px-4 md:px-6 lg:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <InspectionDetailsCard
+                  description={inspection.description}
+                  assetName={inspection.assetName}
+                  assignedTo={inspection.assignedTo}
+                  scheduledDate={inspection.scheduledDate}
+                  completedDate={inspection.completedDate}
+                />
+                <InspectionActionsCard
+                  status={inspection.status}
+                  handleUpdateStatus={handleUpdateStatus}
+                />
+              </div>
+            </div>
+
+            <div className="px-4 md:px-6 lg:px-8">
+              <InspectionChecklist
+                items={inspectionItems}
+                isCompleted={inspection.status === "completed"}
+                handleItemPassChange={handleItemPassChange}
+                handleNoteChange={handleNoteChange}
+                handleSaveChecklist={handleSaveChecklist}
+              />
+            </div>
+          </div>
+        </>
+      )}
+    </DashboardLayout>
+  );
 };
 
 export default InspectionDetailPage;

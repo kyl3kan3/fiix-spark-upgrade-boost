@@ -13,62 +13,57 @@ const features = [
 const CTA = () => {
  const navigate = useNavigate();
  return (
- <section id="pricing" className="py-20">
+ <section id="cta" className="py-20 bg-card border-y border-border">
  <div className="container mx-auto px-4">
- <div className="bg-gradient-to-br from-fiix-600 to-fiix-800 rounded-3xl overflow-hidden">
+ <div className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 18%))" }}>
  <div className="flex flex-col md:flex-row">
  <div className="md:w-1/2 p-8 md:p-16">
- <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+ <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-primary-foreground">
  Ready to transform your maintenance operations?
  </h2>
- <p className="text-fiix-100 text-lg mb-8 max-w-lg">
- Join thousands of companies that use Fiix to reduce downtime, extend equipment life, and make data-driven maintenance decisions.
+ <p className="text-primary-foreground/80 text-lg mb-8 max-w-lg">
+ Join teams that use MaintenEase to reduce downtime, extend equipment life, and make data-driven maintenance decisions.
  </p>
  <ul className="mb-10 space-y-3">
  {features.map((feature, index) => (
- <li key={index} className="flex items-center text-white">
- <CheckCircle className="h-5 w-5 mr-3 text-fiix-200" />
+ <li key={index} className="flex items-center text-primary-foreground">
+ <CheckCircle className="h-5 w-5 mr-3 text-primary-foreground/70 shrink-0" />
  <span>{feature}</span>
  </li>
  ))}
  </ul>
  <Button
  size="lg"
- className="bg-card text-fiix-700 hover:bg-fiix-50 group"
+ className="bg-background text-primary hover:bg-background/90 group font-semibold uppercase tracking-wide shadow-md"
  onClick={() => navigate("/auth?signup=true")}
  >
  Start Free Trial
  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
  </div>
- <div className="md:w-1/2 bg-card/10 p-8 md:p-16 flex items-center justify-center">
- <div className="bg-card rounded-lg p-6 md:p-8 shadow-xl w-full max-w-md">
-              <h3 className="text-2xl font-bold mb-2 text-foreground">Business Plan</h3>
-              <p className="text-foreground mb-6">For larger organizations with advanced needs</p>
- <div className="mb-8">
+ <div className="md:w-1/2 bg-primary-foreground/10 p-8 md:p-16 flex items-center justify-center">
+ <div className="bg-background rounded-xl p-6 md:p-8 shadow-xl w-full max-w-md">
+              <h3 className="font-headline text-2xl font-bold mb-2 text-primary">Business Plan</h3>
+              <p className="text-muted-foreground mb-6">For larger organizations with advanced needs</p>
+ <div className="mb-8 pb-6 border-b border-border">
                 <span className="text-4xl font-bold text-foreground">$299</span>
-                <span className="text-foreground">/month</span>
+                <span className="text-muted-foreground">/month</span>
  </div>
  <ul className="mb-8 space-y-3">
- <li className="flex items-center text-foreground">
- <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
-                  <span>All MaintenEase features included</span>
+ {[
+                  "All MaintenEase features included",
+                  "Unlimited assets & work orders",
+                  "Email + chat support",
+                  "SSO + API access",
+                ].map((item) => (
+ <li key={item} className="flex items-center text-foreground text-sm">
+ <CheckCircle className="h-4 w-4 mr-3 text-primary shrink-0" />
+                  <span>{item}</span>
  </li>
- <li className="flex items-center text-foreground">
- <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
- <span>Unlimited assets & work orders</span>
- </li>
- <li className="flex items-center text-foreground">
- <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
-                  <span>Email + chat support</span>
- </li>
- <li className="flex items-center text-foreground">
- <CheckCircle className="h-5 w-5 mr-3 text-fiix-600" />
-                  <span>SSO + API access</span>
- </li>
+ ))}
  </ul>
  <Button
- className="w-full bg-fiix-600 hover:bg-fiix-700 text-white"
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold"
  onClick={() => navigate("/auth?signup=true")}
  >
  Contact Sales

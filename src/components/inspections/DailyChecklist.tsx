@@ -49,8 +49,8 @@ const DailyChecklist: React.FC = () => {
  <CardContent className="pt-4">
  {completedDate ? (
  <div className="space-y-4">
- <div className="p-4 bg-green-50 rounded-md border border-green-200">
- <p className="text-green-700">
+ <div className="p-4 bg-success/10 rounded-md border border-success/30">
+ <p className="text-success">
  Checklist completed on {new Date(completedDate).toLocaleDateString()} at{" "}
  {new Date(completedDate).toLocaleTimeString()}
  </p>
@@ -94,7 +94,7 @@ const DailyChecklist: React.FC = () => {
  />
  <Label 
  htmlFor={`${item.id}-pass`} 
- className="text-sm text-green-600"
+ className="text-sm text-success"
  >
  Pass
  </Label>
@@ -107,7 +107,7 @@ const DailyChecklist: React.FC = () => {
  />
  <Label 
  htmlFor={`${item.id}-fail`}
- className="text-sm text-red-600"
+ className="text-sm text-destructive"
  >
  Fail
  </Label>

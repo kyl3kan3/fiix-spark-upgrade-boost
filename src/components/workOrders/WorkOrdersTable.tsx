@@ -40,7 +40,7 @@ const WorkOrdersTable: React.FC<WorkOrdersTableProps> = ({ workOrders, isLoading
  if (error) {
  return (
  <div className="text-center py-10 bg-card rounded-lg shadow">
- <p className="text-red-500 dark:text-red-400">Error loading work orders: {error.message}</p>
+ <p className="text-destructive dark:text-destructive">Error loading work orders: {error.message}</p>
  </div>
  );
  }

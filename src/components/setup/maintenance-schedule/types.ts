@@ -65,10 +65,10 @@ export const defaultScheduleTemplates: ScheduleTemplate[] = [
 
 export const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case "low": return "bg-green-100 text-green-800";
-    case "medium": return "bg-blue-100 text-blue-800";
-    case "high": return "bg-amber-100 text-amber-800";
-    case "urgent": return "bg-red-100 text-red-800";
+    case "low": return "bg-success/10 text-success";
+    case "medium": return "bg-primary/10 text-primary";
+    case "high": return "bg-warning/10 text-warning";
+    case "urgent": return "bg-destructive/10 text-destructive";
     default: return "bg-muted text-foreground";
   }
 };

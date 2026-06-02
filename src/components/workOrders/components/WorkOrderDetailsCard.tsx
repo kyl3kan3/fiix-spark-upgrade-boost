@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Package, User } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { formatDate } from "../utils/dateUtils";
@@ -11,76 +10,85 @@ interface WorkOrderDetailsCardProps {
 
 export const WorkOrderDetailsCard: React.FC<WorkOrderDetailsCardProps> = ({ workOrder }) => {
  return (
- <Card>
- <CardHeader>
- <CardTitle>Details</CardTitle>
- </CardHeader>
- <CardContent className="space-y-4">
- <div>
- <h3 className="font-medium mb-2">Description</h3>
- <p className="text-foreground whitespace-pre-wrap">{workOrder.description}</p>
+ <div className="space-y-4">
+ {/* Core metadata bento row */}
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-5 flex items-center gap-4">
+ <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+ <User className="h-5 w-5 text-primary" />
  </div>
- 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
- <div>
- <div className="flex items-center mb-2">
- <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
- <h3 className="font-medium">Due Date</h3>
- </div>
- <p className="text-foreground">
- {workOrder.due_date ? formatDate(workOrder.due_date) : "No due date set"}
+ <div className="min-w-0">
+ <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Assigned To</p>
+ <p className="text-sm font-semibold text-foreground truncate">
+ {workOrder.assignee
+ ? `${workOrder.assignee.first_name} ${workOrder.assignee.last_name}`
+ : "Unassigned"}
  </p>
  </div>
- 
- <div>
- <div className="flex items-center mb-2">
- <Package className="h-4 w-4 mr-2 text-muted-foreground" />
- <h3 className="font-medium">Related Asset</h3>
  </div>
+
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-5 flex items-center gap-4">
+ <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+ <Calendar className="h-5 w-5 text-primary" />
+ </div>
+ <div className="min-w-0">
+ <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Due Date</p>
+ <p className="text-sm font-semibold text-foreground">
+ {workOrder.due_date ? formatDate(workOrder.due_date) : "No due date"}
+ </p>
+ </div>
+ </div>
+
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-5 flex items-center gap-4">
+ <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+ <Package className="h-5 w-5 text-primary" />
+ </div>
+ <div className="min-w-0">
+ <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Asset</p>
  {workOrder.asset ? (
  <div>
- <p className="font-medium">{workOrder.asset.name}</p>
+ <p className="text-sm font-semibold text-foreground truncate">{workOrder.asset.name}</p>
  {workOrder.asset.location && (
- <p className="text-muted-foreground text-sm">Location: {workOrder.asset.location}</p>
- )}
- {workOrder.asset.serial_number && (
- <p className="text-muted-foreground text-sm">S/N: {workOrder.asset.serial_number}</p>
+ <p className="text-xs text-muted-foreground truncate">{workOrder.asset.location}</p>
  )}
  </div>
  ) : (
- <p className="text-muted-foreground">No asset associated</p>
+ <p className="text-sm text-muted-foreground">No asset linked</p>
  )}
  </div>
- 
- <div>
- <div className="flex items-center mb-2">
- <User className="h-4 w-4 mr-2 text-muted-foreground" />
- <h3 className="font-medium">Assigned To</h3>
  </div>
- {workOrder.assignee ? (
- <p className="text-foreground">
- {workOrder.assignee.first_name} {workOrder.assignee.last_name}
+ </div>
+
+ {/* Description card */}
+ {workOrder.description && (
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
+ <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Detailed Description</h3>
+ <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+ {workOrder.description}
  </p>
- ) : (
- <p className="text-muted-foreground">Unassigned</p>
+ </div>
  )}
+
+ {/* Creator row */}
+ {workOrder.creator && (
+ <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-5 flex items-center gap-4">
+ <div className="w-11 h-11 rounded-xl bg-muted flex items-center justify-center shrink-0">
+ <User className="h-5 w-5 text-muted-foreground" />
  </div>
- 
  <div>
- <div className="flex items-center mb-2">
- <User className="h-4 w-4 mr-2 text-muted-foreground" />
- <h3 className="font-medium">Created By</h3>
- </div>
- {workOrder.creator ? (
- <p className="text-foreground">
+ <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Created By</p>
+ <p className="text-sm font-semibold text-foreground">
  {workOrder.creator.first_name} {workOrder.creator.last_name}
  </p>
- ) : (
- <p className="text-muted-foreground">Unknown</p>
+ </div>
+ {workOrder.asset?.serial_number && (
+ <div className="ml-auto text-right">
+ <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Serial No.</p>
+ <p className="text-sm font-mono font-semibold text-foreground">{workOrder.asset.serial_number}</p>
+ </div>
  )}
  </div>
+ )}
  </div>
- </CardContent>
- </Card>
  );
 };

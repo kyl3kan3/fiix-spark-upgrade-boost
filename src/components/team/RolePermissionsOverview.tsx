@@ -3,23 +3,32 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+const roleBorderClass = (title: string) => {
+ switch (title) {
+ case "Administrator": return "border-t-destructive";
+ case "Manager": return "border-t-primary";
+ case "Technician": return "border-t-success";
+ default: return "border-t-muted-foreground";
+ }
+};
+
 const RolePermissionsOverview: React.FC = () => {
  return (
- <div className="mt-8">
- <Card>
+ <div className="mt-2">
+ <Card className="bg-card border border-border shadow-sm">
  <CardHeader>
- <CardTitle>Role Permissions</CardTitle>
+ <CardTitle className="font-headline text-xl text-foreground">Role Permissions</CardTitle>
  <CardDescription>
  Review the access levels for each role in the system
  </CardDescription>
  </CardHeader>
  <CardContent>
  <Tabs defaultValue="overview">
- <TabsList className="mb-4">
- <TabsTrigger value="overview">Overview</TabsTrigger>
- <TabsTrigger value="detailed">Detailed Permissions</TabsTrigger>
+ <TabsList className="mb-4 bg-card border border-border">
+ <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Overview</TabsTrigger>
+ <TabsTrigger value="detailed" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Detailed Permissions</TabsTrigger>
  </TabsList>
- 
+
  <TabsContent value="overview">
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
  {[
@@ -44,13 +53,13 @@ const RolePermissionsOverview: React.FC = () => {
  permissions: ["View work orders", "View assets", "View reports", "No edit capabilities"]
  }
  ].map((role) => (
- <Card key={role.title} className="border-t-4" style={{ borderTopColor: role.title === 'Administrator' ? '#ef4444' : role.title === 'Manager' ? '#3b82f6' : role.title === 'Technician' ? '#22c55e' : '#6b7280' }}>
- <CardHeader>
- <CardTitle>{role.title}</CardTitle>
- <CardDescription>{role.description}</CardDescription>
+ <Card key={role.title} className={`border-t-4 bg-card border border-border shadow-sm hover:shadow-md transition-shadow ${roleBorderClass(role.title)}`}>
+ <CardHeader className="pb-2">
+ <CardTitle className="font-headline text-base text-foreground">{role.title}</CardTitle>
+ <CardDescription className="text-xs">{role.description}</CardDescription>
  </CardHeader>
  <CardContent>
- <ul className="list-disc pl-5 space-y-1 text-sm">
+ <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
  {role.permissions.map((permission, idx) => (
  <li key={idx}>{permission}</li>
  ))}
@@ -60,17 +69,17 @@ const RolePermissionsOverview: React.FC = () => {
  ))}
  </div>
  </TabsContent>
- 
+
  <TabsContent value="detailed">
  <div className="overflow-x-auto">
  <table className="w-full min-w-[560px] border-collapse">
  <thead>
  <tr className="bg-muted">
- <th className="border p-2 text-left">Feature</th>
- <th className="border p-2 text-center">Administrator</th>
- <th className="border p-2 text-center">Manager</th>
- <th className="border p-2 text-center">Technician</th>
- <th className="border p-2 text-center">Viewer</th>
+ <th className="border border-border p-2 text-left text-sm font-semibold text-foreground">Feature</th>
+ <th className="border border-border p-2 text-center text-sm font-semibold text-foreground">Administrator</th>
+ <th className="border border-border p-2 text-center text-sm font-semibold text-foreground">Manager</th>
+ <th className="border border-border p-2 text-center text-sm font-semibold text-foreground">Technician</th>
+ <th className="border border-border p-2 text-center text-sm font-semibold text-foreground">Viewer</th>
  </tr>
  </thead>
  <tbody>
@@ -87,12 +96,12 @@ const RolePermissionsOverview: React.FC = () => {
  { feature: "Generate Reports", admin: true, manager: true, technician: false, viewer: true },
  { feature: "Export Data", admin: true, manager: true, technician: false, viewer: false },
  ].map((row) => (
- <tr key={row.feature} className="border-b">
- <td className="border-x p-2 font-medium">{row.feature}</td>
- <td className="border-x p-2 text-center">{row.admin ? "✅" : "❌"}</td>
- <td className="border-x p-2 text-center">{row.manager ? "✅" : "❌"}</td>
- <td className="border-x p-2 text-center">{row.technician ? "✅" : "❌"}</td>
- <td className="border-x p-2 text-center">{row.viewer ? "✅" : "❌"}</td>
+ <tr key={row.feature} className="border-b border-border hover:bg-muted/40 transition-colors">
+ <td className="border-x border-border p-2 font-medium text-sm text-foreground">{row.feature}</td>
+ <td className="border-x border-border p-2 text-center text-sm">{row.admin ? <span className="text-success">✓</span> : <span className="text-muted-foreground">–</span>}</td>
+ <td className="border-x border-border p-2 text-center text-sm">{row.manager ? <span className="text-success">✓</span> : <span className="text-muted-foreground">–</span>}</td>
+ <td className="border-x border-border p-2 text-center text-sm">{row.technician ? <span className="text-success">✓</span> : <span className="text-muted-foreground">–</span>}</td>
+ <td className="border-x border-border p-2 text-center text-sm">{row.viewer ? <span className="text-success">✓</span> : <span className="text-muted-foreground">–</span>}</td>
  </tr>
  ))}
  </tbody>

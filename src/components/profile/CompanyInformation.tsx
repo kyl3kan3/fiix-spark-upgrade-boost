@@ -32,25 +32,30 @@ const CompanyInformation: React.FC = () => {
  return <NoCompanyInfo setupCompleted={setupCompleted} />;
  }
 
- return (
- <Card>
- <CardHeader className="flex flex-row items-center justify-between">
- <div>
- <CardTitle>Company Information</CardTitle>
- <CardDescription>Details of your organization</CardDescription>
- </div>
- <Button variant="outline" size="sm" onClick={handleEditClick}>
- Edit
- </Button>
- </CardHeader>
- <CardContent>
- <CompanyDetails 
- companyInfo={companyInfo} 
- handleEditClick={handleEditClick} 
- />
- </CardContent>
- </Card>
- );
+  return (
+    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+      <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
+        <div>
+          <CardTitle className="font-headline text-xl text-foreground">Company Information</CardTitle>
+          <CardDescription className="text-muted-foreground">Details of your organization</CardDescription>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleEditClick}
+          className="border-border text-primary hover:bg-primary/5"
+        >
+          Edit
+        </Button>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <CompanyDetails
+          companyInfo={companyInfo}
+          handleEditClick={handleEditClick}
+        />
+      </CardContent>
+    </Card>
+  );
 };
 
 export default CompanyInformation;

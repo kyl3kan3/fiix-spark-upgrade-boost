@@ -180,7 +180,7 @@ const NotificationSetup: React.FC<NotificationSettingsProps> = ({ data, onUpdate
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <Bell className="h-6 w-6 text-maintenease-600" />
+ <Bell className="h-6 w-6 text-primary" />
  <h2 className="text-xl font-semibold">Notification Preferences</h2>
  </div>
  
@@ -283,7 +283,7 @@ const NotificationSetup: React.FC<NotificationSettingsProps> = ({ data, onUpdate
  <Card>
  <CardHeader>
  <div className="flex items-center gap-2">
- <Clock className="h-5 w-5 text-maintenease-600" />
+ <Clock className="h-5 w-5 text-primary" />
  <CardTitle>Due Date Reminders</CardTitle>
  </div>
  <CardDescription>
@@ -325,7 +325,7 @@ const NotificationSetup: React.FC<NotificationSettingsProps> = ({ data, onUpdate
  <Card>
  <CardHeader>
  <div className="flex items-center gap-2">
- <AlertTriangle className="h-5 w-5 text-maintenease-600" />
+ <AlertTriangle className="h-5 w-5 text-primary" />
  <CardTitle>Overdue Escalation</CardTitle>
  </div>
  <CardDescription>

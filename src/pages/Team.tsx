@@ -52,12 +52,12 @@ const Team = () => {
  companyName: member.companyName || ''
  }));
 
- // Role color mapping
+ // Role color mapping (semantic tokens)
  const roleColorMap = {
- admin: 'bg-red-100 text-red-800',
- manager: 'bg-blue-100 text-blue-800',
- technician: 'bg-green-100 text-green-800',
- viewer: 'bg-muted text-foreground'
+ admin: 'bg-destructive/10 text-destructive',
+ manager: 'bg-primary/10 text-primary',
+ technician: 'bg-success/10 text-success',
+ viewer: 'bg-muted text-muted-foreground'
  };
 
  // Handle member updates
@@ -79,7 +79,7 @@ const Team = () => {
  <PageContainer className="space-y-6">
  <BackToDashboard />
  <div className="flex items-center justify-center h-64">
- <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+ <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
  </div>
  </PageContainer>
  </DashboardLayout>
@@ -90,12 +90,12 @@ const Team = () => {
  <DashboardLayout>
  <PageContainer className="space-y-6">
  <BackToDashboard />
- 
+
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
  <TeamHeader />
  <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
  <DialogTrigger asChild>
- <Button className="bg-maintenease-600 hover:bg-maintenease-700 w-full sm:w-auto">
+ <Button className="bg-primary hover:bg-primary-variant text-primary-foreground w-full sm:w-auto shadow-sm">
  <UserPlus className="h-4 w-4 mr-2" />
  <span className="text-sm sm:text-base">Add Member</span>
  </Button>
@@ -106,30 +106,30 @@ const Team = () => {
 
  <Tabs defaultValue="members" className="w-full">
  <div className="overflow-x-auto">
- <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 min-w-[300px]">
- <TabsTrigger value="members" className="text-xs sm:text-sm">Members</TabsTrigger>
- <TabsTrigger value="invitations" className="text-xs sm:text-sm">Invitations</TabsTrigger>
- <TabsTrigger value="roles" className="text-xs sm:text-sm">Roles</TabsTrigger>
+ <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 min-w-[300px] bg-card border border-border">
+ <TabsTrigger value="members" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Members</TabsTrigger>
+ <TabsTrigger value="invitations" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Invitations</TabsTrigger>
+ <TabsTrigger value="roles" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Roles</TabsTrigger>
  </TabsList>
  </div>
- 
+
  <TabsContent value="members" className="mt-0 space-y-4 sm:space-y-6">
  {viewMode === "grid" ? (
- <TeamMembersGrid 
+ <TeamMembersGrid
  members={transformedMembers}
  roleColorMap={roleColorMap}
  onMemberUpdated={handleMemberUpdated}
  />
  ) : (
- <TeamMembersList 
- members={transformedMembers} 
+ <TeamMembersList
+ members={transformedMembers}
  roleColorMap={roleColorMap}
  loading={loading}
  onMemberUpdated={handleMemberUpdated}
  />
  )}
  </TabsContent>
- 
+
  <TabsContent value="invitations" className="mt-0">
  <PendingInvitationsSection
  invitations={pendingInvitations}
@@ -138,7 +138,7 @@ const Team = () => {
  onInvitationDeleted={refreshPendingInvitations}
  />
  </TabsContent>
- 
+
  <TabsContent value="roles" className="mt-0">
  <RolePermissionsOverview />
  </TabsContent>

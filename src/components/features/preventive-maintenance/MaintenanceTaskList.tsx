@@ -51,7 +51,7 @@ const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, select
  <div className="flex items-center gap-2">
  <p className="font-medium">{task.title}</p>
  {task.isRecurring && (
- <span className="inline-flex items-center text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+ <span className="inline-flex items-center text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
  <RepeatIcon className="h-3 w-3 mr-1" />
  Recurring
  </span>
@@ -65,10 +65,10 @@ const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, select
  )}
  </div>
  <div className="flex flex-col items-end">
- <span className="text-sm font-medium text-fiix-600">
+ <span className="text-sm font-medium text-primary">
  {format(task.dueDate, "MMM d")}
  </span>
- <span className={`text-xs px-2 py-1 rounded-full ${task.priority === 'high' ? 'bg-red-100 text-red-800' : task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}
+ <span className={`text-xs px-2 py-1 rounded-full ${task.priority === 'high' ? 'bg-destructive/10 text-destructive' : task.priority === 'medium' ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}
  >
  {task.priority}
  </span>

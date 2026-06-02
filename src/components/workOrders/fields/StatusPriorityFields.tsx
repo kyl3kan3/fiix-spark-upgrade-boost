@@ -11,53 +11,47 @@ type StatusPriorityFieldsProps = {
 
 export const StatusPriorityFields = ({ form }: StatusPriorityFieldsProps) => {
  return (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
  <FormField
  control={form.control}
  name="priority"
  render={({ field }) => (
  <FormItem>
- <FormLabel>How urgent is it?</FormLabel>
- <Select 
- onValueChange={field.onChange} 
- defaultValue={field.value}
- >
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Priority Level</FormLabel>
+ <Select onValueChange={field.onChange} defaultValue={field.value}>
  <FormControl>
- <SelectTrigger>
- <SelectValue placeholder="Pick how urgent" />
+ <SelectTrigger className="bg-muted/30 border-border/60 focus:ring-primary/30">
+ <SelectValue placeholder="Select priority" />
  </SelectTrigger>
  </FormControl>
  <SelectContent>
- <SelectItem value="low">Whenever — no rush</SelectItem>
- <SelectItem value="medium">Soon — this week</SelectItem>
- <SelectItem value="high">Important — this is slowing us down</SelectItem>
- <SelectItem value="urgent">Right away — it's broken or unsafe</SelectItem>
+ <SelectItem value="low">Low — no rush</SelectItem>
+ <SelectItem value="medium">Medium — this week</SelectItem>
+ <SelectItem value="high">High — slowing us down</SelectItem>
+ <SelectItem value="urgent">Urgent — broken or unsafe</SelectItem>
  </SelectContent>
  </Select>
  <FormMessage />
  </FormItem>
  )}
  />
- 
+
  <FormField
  control={form.control}
  name="status"
  render={({ field }) => (
  <FormItem>
- <FormLabel>Where is it now?</FormLabel>
- <Select 
- onValueChange={field.onChange} 
- defaultValue={field.value}
- >
+ <FormLabel className="text-sm font-semibold text-muted-foreground">Current Status</FormLabel>
+ <Select onValueChange={field.onChange} defaultValue={field.value}>
  <FormControl>
- <SelectTrigger>
- <SelectValue placeholder="Pick a status" />
+ <SelectTrigger className="bg-muted/30 border-border/60 focus:ring-primary/30">
+ <SelectValue placeholder="Select status" />
  </SelectTrigger>
  </FormControl>
  <SelectContent>
- <SelectItem value="pending">Not started yet</SelectItem>
- <SelectItem value="in_progress">Being worked on</SelectItem>
- <SelectItem value="completed">All done</SelectItem>
+ <SelectItem value="pending">Pending — not started</SelectItem>
+ <SelectItem value="in_progress">In Progress</SelectItem>
+ <SelectItem value="completed">Completed</SelectItem>
  <SelectItem value="cancelled">Cancelled</SelectItem>
  </SelectContent>
  </Select>

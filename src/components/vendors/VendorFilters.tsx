@@ -37,25 +37,25 @@ const VendorFilters: React.FC<VendorFiltersProps> = ({
  const totalFilters = selectedStatus.length + selectedTypes.length;
 
  return (
- <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
- <div className="relative w-full sm:flex-1 sm:min-w-0 sm:max-w-xl">
- <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+ <div className="bg-card border border-border rounded-lg p-4 shadow-sm flex flex-col sm:flex-row gap-4 items-center">
+ <div className="relative w-full sm:w-96">
+ <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
  <Input
  type="search"
  placeholder="Search vendors..."
- className="w-full pl-8"
+ className="w-full pl-10 bg-background border-border"
  value={searchQuery}
  onChange={(e) => onSearchChange(e.target.value)}
  />
  </div>
- 
+
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="outline" className="w-full whitespace-nowrap sm:w-auto sm:px-4">
- <Filter className="mr-2 h-4 w-4" />
+ <Button variant="outline" className="w-full sm:w-auto border-border text-foreground hover:bg-accent hover:text-accent-foreground">
+ <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
  Filters
  {totalFilters > 0 && (
- <Badge variant="secondary" className="ml-2 rounded-full">
+ <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary">
  {totalFilters}
  </Badge>
  )}
@@ -72,9 +72,9 @@ const VendorFilters: React.FC<VendorFiltersProps> = ({
  {status.charAt(0).toUpperCase() + status.slice(1)}
  </DropdownMenuCheckboxItem>
  ))}
- 
+
  <DropdownMenuSeparator />
- 
+
  <DropdownMenuLabel>Type</DropdownMenuLabel>
  {typeOptions.map((type) => (
  <DropdownMenuCheckboxItem

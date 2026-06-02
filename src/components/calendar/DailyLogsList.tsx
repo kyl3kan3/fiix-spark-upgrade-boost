@@ -34,7 +34,7 @@ const DailyLogsList: React.FC<DailyLogsListProps> = ({ onViewLog }) => {
  return (
  <Card>
  <CardContent className="flex items-center justify-center h-64">
- <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maintenease-600"></div>
+ <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
  </CardContent>
  </Card>
  );
@@ -105,7 +105,7 @@ const DailyLogsList: React.FC<DailyLogsListProps> = ({ onViewLog }) => {
  variant="outline"
  size="sm"
  onClick={() => handleDeleteLog(log.id!)}
- className="flex items-center gap-1 text-red-600 hover:text-red-700"
+ className="flex items-center gap-1 text-destructive hover:text-destructive"
  >
  <Trash2 className="h-3 w-3" />
  Delete

@@ -26,13 +26,13 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
+ <Building2 className="h-6 w-6 text-primary dark:text-primary" />
  <h2 className="text-xl font-semibold text-foreground">Company Information</h2>
  </div>
  
  <div className="flex items-center justify-center py-12 bg-card rounded-lg border border-border">
  <div className="flex items-center gap-3">
- <Loader2 className="h-6 w-6 animate-spin text-maintenease-600 dark:text-maintenease-400" />
+ <Loader2 className="h-6 w-6 animate-spin text-primary dark:text-primary" />
  <p className="text-muted-foreground">Loading company information...</p>
  </div>
  </div>
@@ -43,7 +43,7 @@ const CompanyInfoSetup: React.FC<CompanyInfoSetupProps> = ({ data, onUpdate }) =
  return (
  <div className="space-y-6">
  <div className="flex items-center gap-3">
- <Building2 className="h-6 w-6 text-maintenease-600 dark:text-maintenease-400" />
+ <Building2 className="h-6 w-6 text-primary dark:text-primary" />
  <h2 className="text-xl font-semibold text-foreground">Company Information</h2>
  </div>
  

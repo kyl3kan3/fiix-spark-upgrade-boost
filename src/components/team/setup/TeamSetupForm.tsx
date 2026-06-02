@@ -31,7 +31,7 @@ export const TeamSetupForm: React.FC<TeamSetupFormProps> = ({
  return (
  <>
  {error && (
- <Alert variant="destructive" className="mb-6">
+ <Alert variant="destructive" className="mb-4">
  <AlertCircle className="h-4 w-4" />
  <AlertDescription>{error}</AlertDescription>
  </Alert>
@@ -39,7 +39,9 @@ export const TeamSetupForm: React.FC<TeamSetupFormProps> = ({
 
  <form onSubmit={handleSubmit} className="space-y-4">
  <div>
- <Label htmlFor="inviteEmail">Email Address</Label>
+ <Label htmlFor="inviteEmail" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+   Email Address
+ </Label>
  <Input
  id="inviteEmail"
  type="email"
@@ -47,12 +49,13 @@ export const TeamSetupForm: React.FC<TeamSetupFormProps> = ({
  onChange={(e) => setInviteEmail(e.target.value)}
  placeholder="colleague@example.com"
  disabled={isSubmitting}
+ className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
  />
  </div>
 
  <Button
  type="submit"
- className="w-full"
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-sm hover:-translate-y-0.5 transition-all"
  disabled={isSubmitting || !inviteEmail}
  >
  {isSubmitting ? (

@@ -39,10 +39,10 @@ const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onS
  };
 
  const urgencyOptions = [
- { value: "critical", label: "Critical", color: "text-red-600" },
- { value: "high", label: "High", color: "text-orange-600" },
- { value: "medium", label: "Medium", color: "text-yellow-600" },
- { value: "low", label: "Low", color: "text-green-600" }
+ { value: "critical", label: "Critical", color: "text-destructive" },
+ { value: "high", label: "High", color: "text-warning" },
+ { value: "medium", label: "Medium", color: "text-warning" },
+ { value: "low", label: "Low", color: "text-success" }
  ];
 
  return (
@@ -133,7 +133,7 @@ const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onS
 
  <Button 
  type="submit" 
- className="w-full bg-red-600 hover:bg-red-700 text-white"
+ className="w-full bg-destructive hover:bg-destructive text-white"
  disabled={!formData.title || !formData.description || !formData.asset}
  >
  <AlertTriangle className="mr-2 h-4 w-4" />

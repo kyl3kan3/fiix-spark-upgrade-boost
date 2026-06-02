@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MaintenEase - Team</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#c5c5d4",
+                      "surface-variant": "#d3e4fe",
+                      "inverse-primary": "#b8c4ff",
+                      "on-primary-fixed-variant": "#213da0",
+                      "surface-container-low": "#eff4ff",
+                      "success": "#10B981",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#00288e",
+                      "container-blue": "#e5eeff",
+                      "surface-container": "#e5eeff",
+                      "surface-container-lowest": "#ffffff",
+                      "outline": "#757684",
+                      "surface-blue": "#f8f9ff",
+                      "tertiary-container": "#333535",
+                      "surface-dim": "#cbdbf5",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#dce9ff",
+                      "on-tertiary-container": "#9c9d9d",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-container": "#606365",
+                      "surface": "#f8f9ff",
+                      "on-tertiary-fixed": "#1a1c1c",
+                      "on-surface-variant": "#444652",
+                      "secondary-container": "#dee0e2",
+                      "on-background": "#0b1c30",
+                      "secondary-fixed": "#e1e3e5",
+                      "primary": "#00175c",
+                      "primary-fixed": "#dde1ff",
+                      "on-tertiary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "primary-fixed-dim": "#b8c4ff",
+                      "on-tertiary-fixed-variant": "#454747",
+                      "inverse-on-surface": "#eaf1ff",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-error": "#ffffff",
+                      "secondary": "#5c5f61",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#c6c6c6",
+                      "tertiary": "#1e2020",
+                      "on-surface": "#0b1c30",
+                      "secondary-fixed-dim": "#c4c7c9",
+                      "surface-tint": "#3d57ba",
+                      "on-secondary-fixed": "#191c1e",
+                      "inverse-surface": "#213145",
+                      "on-primary-fixed": "#001453",
+                      "on-secondary-fixed-variant": "#444749",
+                      "on-primary-container": "#7e97fe",
+                      "warning": "#F59E0B",
+                      "tertiary-fixed": "#e2e2e2",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sidebar_expanded": "240px",
+                      "gutter": "24px",
+                      "card_padding": "24px",
+                      "base_unit": "8px",
+                      "sidebar_collapsed": "64px",
+                      "container_padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      }
+              }
+            },
+          }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col justify-between py-base_unit h-full bg-surface-container-lowest dark:bg-inverse-surface fixed left-0 top-0 w-sidebar_collapsed hover:w-sidebar_expanded transition-all duration-300 z-50 border-r border-outline-variant/10 shadow-[0px_10px_30px_rgba(0,0,0,0.04),0px_4px_8px_rgba(0,0,0,0.02)] group overflow-hidden">
+<div>
+<!-- Header -->
+<div class="flex items-center h-16 px-4 mb-4 whitespace-nowrap">
+<span class="material-symbols-outlined text-primary text-3xl shrink-0" data-weight="fill">engineering</span>
+<div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">MaintenEase</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">CMMS Workspace</p>
+</div>
+</div>
+<!-- Tabs -->
+<ul class="space-y-2 px-2">
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">dashboard</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">assignment</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Work Orders</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">inventory_2</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Assets</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">bar_chart</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-primary font-bold border-l-4 border-primary bg-primary/5 hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0" data-weight="fill">group</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Team</span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<!-- Footer Tabs -->
+<ul class="space-y-2 px-2 mb-4">
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">contact_support</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">settings</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Settings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-2 py-3 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined shrink-0">logout</span>
+<span class="ml-4 font-label-md text-label-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">Log Out</span>
+</a>
+</li>
+</ul>
+<div class="px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-DEFAULT uppercase tracking-wider hover:bg-primary/90 transition-colors">
+                    Report a Problem
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-h-screen md:ml-sidebar_collapsed transition-all duration-300">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md docked full-width top-0 z-40 shadow-sm sticky">
+<!-- Mobile Menu & Search -->
+<div class="flex items-center space-x-4 flex-1">
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-DEFAULT py-2 pl-10 pr-4 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant focus:ring-2 focus:ring-primary transition-all" placeholder="Search team members..." type="text"/>
+</div>
+</div>
+<!-- Brand (Mobile) -->
+<div class="md:hidden font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary absolute left-1/2 -translate-x-1/2">
+                MaintenEase
+            </div>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 active:scale-95 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 active:scale-95 ease-in-out">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary/10 overflow-hidden border border-primary/20 cursor-pointer active:scale-95 duration-150 ease-in-out">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLc7Sc-PcXmf9B4QA4u3murqtJvM5YJM-dfz3PCLJvH9TVBxO6Fju4uY6GaQHDcEOucHarHjkNCOD2g3Gy-ZQfLyoW7GX3PucciQwdjtgf5SZPvWVTnkl7WTtEBFJ241A-lAYH03nymzZ6f7xGjKJBI5beUVpS9YCecv2KUyeH9JikB2Ov_7EGplJA1IiPgx_Tf1prJGwd_yJ67FexOpSmSP0ksC5iXKbJveaEVuOtLeZX4NDSZE86wJKeahmi_wko2RatK-BEjhY"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-gutter md:p-container_padding">
+<!-- Page Header & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Team Directory</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage roles, access, and communication.</p>
+</div>
+<div class="flex gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none bg-surface-container-low text-primary font-label-md text-label-md py-3 px-6 rounded-DEFAULT hover:bg-surface-variant transition-colors border border-transparent">
+                        Export CSV
+                    </button>
+<button class="flex-1 md:flex-none bg-primary text-on-primary font-label-md text-label-md py-3 px-6 rounded-DEFAULT uppercase hover:bg-primary/90 transition-colors shadow-sm">
+                        + Add Member
+                    </button>
+</div>
+</div>
+<!-- Filters -->
+<div class="flex overflow-x-auto pb-4 mb-6 gap-2 hide-scrollbar">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap">All Roles</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm whitespace-nowrap transition-colors">Administrators</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm whitespace-nowrap transition-colors">Managers</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm whitespace-nowrap transition-colors">Technicians</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm whitespace-nowrap transition-colors">Contractors</button>
+</div>
+<!-- Team Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="p-card_padding flex-1 flex flex-col items-center text-center">
+<div class="relative mb-4">
+<img alt="Sarah Jenkins, Facility Manager" class="w-20 h-20 rounded-full object-cover border-2 border-surface-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPZJKwxY1TF6IQyqnKs-SWlbmSOewN-d0fqfYFxFjCM0ZFL7rJ3EYoHlkP9jZS84VypYJlwU29uJ0H7l6FoNb12Ew6MDneK_SfskxumFcp7nJHP_NHxcC1lOWbT_0N8I1qW9rP5PFk7T0WjyjMdsLi4106Exa-ivlCD1CIXI6ZG7HIWanSep2D-KfoylDk6CHnG1sNxKLJUrQa5IxyG8cb8fM7H_REoon4xHPyzi7zEEwBAj8V75JcTFWQt46UyXZtUDH3EYs12zk"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-success border-2 border-surface-container-lowest rounded-full"></span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background text-[20px]">Sarah Jenkins</h3>
+<p class="font-body-md text-label-md text-primary mt-1">Facility Manager</p>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">HVAC</span>
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">Electrical</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 p-4 flex justify-between items-center bg-surface-blue/50 rounded-b-lg">
+<button class="text-primary font-label-md text-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Role
+                        </button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors" title="Send Message">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="p-card_padding flex-1 flex flex-col items-center text-center">
+<div class="relative mb-4">
+<img alt="David Chen, Senior Technician" class="w-20 h-20 rounded-full object-cover border-2 border-surface-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAndZxgCsts1Cja0Pvz4mPM_kuQhoht6XwJRztI-fnw78v1RSUAw2zwgjiIExe7puzgoLUYmLTLwWGLBiQeedrOYwFEU3n8PNrw7dwPAc7Tss1z6gn1NlsXEoo_TPhRavE-nJbZ2TuNOOHaRLfciEYe8WTrbCZyorK8y82yyGzbTgYlpwowJzuwQ8VGZar3sFoYoc4IX1AXVrMPfyC9yMxP4ePOsEXDjUx6lH-n8TnJr15cKg9zuHeEFWeyOYIWq3gO254Qk_m37y4"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-outline border-2 border-surface-container-lowest rounded-full" title="Offline"></span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background text-[20px]">David Chen</h3>
+<p class="font-body-md text-label-md text-primary mt-1">Senior Technician</p>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">Plumbing</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 p-4 flex justify-between items-center bg-surface-blue/50 rounded-b-lg">
+<button class="text-primary font-label-md text-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Role
+                        </button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors" title="Send Message">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="p-card_padding flex-1 flex flex-col items-center text-center">
+<div class="relative mb-4">
+<div class="w-20 h-20 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-md text-[24px] border-2 border-surface-variant">
+                                MR
+                            </div>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-success border-2 border-surface-container-lowest rounded-full"></span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background text-[20px]">Marcus Reed</h3>
+<p class="font-body-md text-label-md text-primary mt-1">Administrator</p>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">System</span>
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">Security</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 p-4 flex justify-between items-center bg-surface-blue/50 rounded-b-lg">
+<button class="text-primary font-label-md text-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Role
+                        </button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors" title="Send Message">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-lg border border-transparent hover:border-primary/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+<div class="p-card_padding flex-1 flex flex-col items-center text-center">
+<div class="relative mb-4">
+<img alt="Elena Rodriguez, Technician" class="w-20 h-20 rounded-full object-cover border-2 border-surface-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfVS6XLEkY4xGip23pMxtoXFJD0Rc8hSdCWYb71l_9fu3QJtqlxSguo9OBWJ4n5AmFB_4LOStATwFlxqlpMOznfl-hMjqqlD9QNq_7m4xCbCDOgwKJLnJS4nrBWl4CJe0zbHqNhLzu2gMPzpezhdWWrXR1-spTKKuVim8_Mh5G-KvgS0c7yXs9tchPz7_BLTgxM5iWE6fQFuB7PDNXgyplFJv_g6IMnuWHhxtmmB1genh6dR83HDivM4PjCR30ES8m1L9YBVtYxIQ"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-warning border-2 border-surface-container-lowest rounded-full" title="Away"></span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background text-[20px]">Elena Rodriguez</h3>
+<p class="font-body-md text-label-md text-primary mt-1">Technician</p>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-label-sm font-label-sm text-on-surface-variant">HVAC</span>
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded text-label-sm font-label-sm font-bold">On Call</span>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 p-4 flex justify-between items-center bg-surface-blue/50 rounded-b-lg">
+<button class="text-primary font-label-md text-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Role
+                        </button>
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors" title="Send Message">
+<span class="material-symbols-outlined">mail</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<style>
+        /* Hide scrollbar for filters */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

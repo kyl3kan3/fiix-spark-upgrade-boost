@@ -99,7 +99,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  {isChecking ? (
  <span className="text-sm text-muted-foreground">(Checking current role...)</span>
  ) : currentRole ? (
- <span className={`text-sm font-medium px-2 py-1 rounded-full ${ currentRole === 'administrator' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }`}>
+ <span className={`text-sm font-medium px-2 py-1 rounded-full ${ currentRole === 'administrator' ? 'bg-success/10 text-success' : 'bg-primary/10 text-primary' }`}>
  Current role: {currentRole}
  </span>
  ) : (
@@ -108,7 +108,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  </div>
 
  {currentRole === 'administrator' ? (
- <p className="text-green-600">This user already has administrator access.</p>
+ <p className="text-success">This user already has administrator access.</p>
  ) : (
  <Button 
  onClick={handleSetAdmin} 

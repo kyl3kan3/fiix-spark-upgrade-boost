@@ -50,9 +50,9 @@ function verdictBadge(v?: string, hasError?: boolean) {
  if (hasError) return <Badge variant="destructive">Error</Badge>;
  switch (v) {
  case "PASS":
- return <Badge className="bg-emerald-600 hover:bg-emerald-600">Indexed</Badge>;
+ return <Badge className="bg-success hover:bg-success">Indexed</Badge>;
  case "PARTIAL":
- return <Badge className="bg-amber-500 hover:bg-amber-500">Partial</Badge>;
+ return <Badge className="bg-warning hover:bg-warning">Partial</Badge>;
  case "FAIL":
  return <Badge variant="destructive">Not indexed</Badge>;
  case "NEUTRAL":
@@ -171,7 +171,7 @@ const AdminSeoIndexPage: React.FC = () => {
  </div>
 
  {error && (
- <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+ <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
  {error}
  </div>
  )}
@@ -229,13 +229,13 @@ const AdminSeoIndexPage: React.FC = () => {
  </td>
  <td className="px-4 py-3 text-foreground">
  {r.error ? (
- <span className="text-red-600">{r.error}</span>
+ <span className="text-destructive">{r.error}</span>
  ) : r.inspectionResultLink ? (
  <a
  href={r.inspectionResultLink}
  target="_blank"
  rel="noreferrer"
- className="inline-flex items-center gap-1 text-maintenease-600 hover:underline"
+ className="inline-flex items-center gap-1 text-primary hover:underline"
  >
  Open in GSC <ExternalLink className="h-3 w-3" />
  </a>
@@ -258,11 +258,11 @@ const AdminSeoIndexPage: React.FC = () => {
 function StatCard({ label, value, tone }: { label: string; value: number; tone?: "emerald" | "amber" | "red" }) {
  const toneClass =
  tone === "emerald"
- ? "text-emerald-700"
+ ? "text-success"
  : tone === "amber"
- ? "text-amber-700"
+ ? "text-warning"
  : tone === "red"
- ? "text-red-700"
+ ? "text-destructive"
  : "text-foreground";
  return (
  <Card>

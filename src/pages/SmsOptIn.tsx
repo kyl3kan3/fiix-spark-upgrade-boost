@@ -86,7 +86,7 @@ export default function SmsOptIn() {
  <div className="rounded-lg border bg-card p-6 md:p-8 shadow-sm">
  {done ? (
  <div className="flex flex-col items-center text-center py-8">
- <CheckCircle2 className="h-12 w-12 text-green-600 mb-3" />
+ <CheckCircle2 className="h-12 w-12 text-success mb-3" />
  <h2 className="text-2xl font-semibold mb-2">You're signed up!</h2>
  <p className="text-muted-foreground">
  Thanks. You'll start receiving SMS alerts at {phone}. Reply{" "}
@@ -98,7 +98,7 @@ export default function SmsOptIn() {
  <form onSubmit={handleSubmit} className="space-y-6">
  <div>
  <label className="block text-sm font-medium mb-1" htmlFor="phone">
- Mobile phone number <span className="text-red-500">*</span>
+ Mobile phone number <span className="text-destructive">*</span>
  </label>
  <Input
  id="phone"
@@ -132,8 +132,9 @@ export default function SmsOptIn() {
  not liable for delayed or undelivered messages.
  </p>
  <p>
- Reply <strong>HELP</strong> for help or email support through
- the app. Reply <strong>STOP</strong> at any time to cancel.
+ Reply <strong>HELP</strong> for help, or email{" "}
+ <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>.
+ Reply <strong>STOP</strong> at any time to cancel.
  You can also unsubscribe from your{" "}
  <Link to="/settings/notifications" className="underline">
  notification preferences

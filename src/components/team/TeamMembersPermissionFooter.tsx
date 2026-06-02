@@ -15,10 +15,10 @@ const TeamMembersPermissionFooter: React.FC<TeamMembersPermissionFooterProps> = 
  
  return (
  <CardFooter className="pt-0">
- <Alert className="w-full bg-amber-50 border-amber-200">
- <ShieldAlert className="h-5 w-5 text-amber-600 mr-2" />
- <AlertDescription className="text-amber-800">
- You need administrator privileges to change user roles. 
+ <Alert className="w-full bg-warning/10 border-warning/30">
+ <ShieldAlert className="h-5 w-5 text-warning mr-2" />
+ <AlertDescription className="text-foreground">
+ You need administrator privileges to change user roles.
  Your current role: <strong>{currentUserRole}</strong>
  </AlertDescription>
  </Alert>

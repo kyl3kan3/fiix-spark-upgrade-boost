@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export type AttachmentAction = "uploaded" | "deleted" | "reordered" | "updated";
 
@@ -25,8 +26,8 @@ export async function logAttachmentEvent(entry: AuditEntryInput): Promise<void> 
  _attachment_id: entry.attachmentId ?? null,
  _details: (entry.details ?? {}) as never,
  });
- if (error) console.warn("attachment audit insert failed:", error.message);
+ if (error) logger.warn("attachment audit insert failed:", error.message);
  } catch (e) {
- console.warn("attachment audit insert threw:", e);
+ logger.warn("attachment audit insert threw:", e);
  }
 }

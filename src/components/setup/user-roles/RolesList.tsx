@@ -31,7 +31,7 @@ const RolesList: React.FC<RolesListProps> = ({
  {roles.map((role) => (
  <div 
  key={role.id}
- className={`p-3 border rounded-md cursor-pointer hover:bg-muted transition-colors ${selectedRole?.id === role.id ? 'border-maintenease-600 bg-maintenease-50' : ''}`}
+ className={`p-3 border rounded-md cursor-pointer hover:bg-muted transition-colors ${selectedRole?.id === role.id ? 'border-primary bg-primary/5' : ''}`}
  onClick={() => onRoleSelect(role)}
  >
  <div className="flex items-center justify-between">

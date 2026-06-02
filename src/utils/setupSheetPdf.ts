@@ -3,6 +3,7 @@ import autoTable from "jspdf-autotable";
 import { toast } from "sonner";
 import { ChecklistFrequencies } from "@/types/checklists";
 import JsBarcode from "jsbarcode";
+import { logger } from "@/lib/logger";
 
 interface AssetLite {
  id: string;
@@ -67,7 +68,7 @@ const generateBarcodeDataUrl = (value: string): string | null => {
  });
  return canvas.toDataURL("image/png");
  } catch (e) {
- console.warn("Barcode generation failed for", value, e);
+ logger.warn("Barcode generation failed for", value, e);
  return null;
  }
 };

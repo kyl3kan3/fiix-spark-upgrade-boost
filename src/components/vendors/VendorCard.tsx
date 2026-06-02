@@ -41,36 +41,38 @@ const VendorCard: React.FC<VendorCardProps> = ({
  const getStatusColor = (status: string) => {
  switch (status) {
  case "active":
- return "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100";
+ return "bg-success/10 text-success";
  case "inactive":
- return "bg-muted text-foreground  ";
+ return "bg-muted text-muted-foreground";
  case "suspended":
- return "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100";
+ return "bg-destructive/10 text-destructive";
  default:
- return "bg-muted text-foreground  ";
+ return "bg-muted text-muted-foreground";
  }
  };
 
  const getTypeColor = (type: string) => {
  switch (type) {
  case "service":
- return "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100";
+ return "bg-secondary/10 text-secondary";
  case "supplier":
- return "bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100";
+ return "bg-primary/10 text-primary";
  case "contractor":
- return "bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100";
+ return "bg-warning/10 text-warning";
  case "consultant":
- return "bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100";
+ return "bg-accent/10 text-accent-foreground";
  default:
- return "bg-muted text-foreground  ";
+ return "bg-muted text-muted-foreground";
  }
  };
 
  return (
- <Card 
- className={`group relative h-full border bg-card p-4 transition-all hover:shadow-md ${ isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-border ' }`}
+ <Card
+ className={`group relative h-full bg-card border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${
+ isSelected ? "border-primary bg-primary/5" : "border-border"
+ }`}
  >
- <div className="flex items-start gap-3 sm:gap-4">
+ <div className="p-5 flex items-start gap-4">
  {/* Selection checkbox - only show for administrators */}
  {canDelete && (
  <div className="mt-1 shrink-0">
@@ -80,51 +82,52 @@ const VendorCard: React.FC<VendorCardProps> = ({
  />
  </div>
  )}
- 
- <div className="shrink-0 rounded-lg bg-blue-100 p-3 dark:bg-blue-900">
- <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+
+ <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+ <Building2 className="h-5 w-5 text-primary" />
  </div>
+
  <div className="min-w-0 flex-1">
  <Link to={`/vendors/${vendor.id}/edit`} className="block">
- <h3 className="cursor-pointer break-words font-medium text-foreground transition-colors hover:text-blue-600 dark:hover:text-blue-400">{vendor.name}</h3>
+ <h3 className="cursor-pointer font-semibold text-foreground hover:text-primary transition-colors text-sm leading-tight">{vendor.name}</h3>
  </Link>
- 
+
  {vendor.contact_person && (
- <p className="mt-1 break-words text-sm text-foreground">{vendor.contact_person}</p>
+ <p className="mt-0.5 text-xs text-muted-foreground">{vendor.contact_person}</p>
  )}
- 
+
  <div className="mt-2 space-y-1">
  {vendor.email && (
- <div className="flex min-w-0 items-start text-muted-foreground">
- <Mail className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
+ <div className="flex min-w-0 items-center text-muted-foreground gap-1">
+ <Mail className="h-3 w-3 shrink-0" />
  <p className="min-w-0 break-all text-xs">{vendor.email}</p>
  </div>
  )}
 
  {vendor.phone && (
- <div className="flex min-w-0 items-start text-muted-foreground">
- <Phone className="mr-1 mt-0.5 h-3 w-3 shrink-0" />
+ <div className="flex min-w-0 items-center text-muted-foreground gap-1">
+ <Phone className="h-3 w-3 shrink-0" />
  <p className="break-words text-xs">{vendor.phone}</p>
  </div>
  )}
  </div>
- 
+
  <div className="mt-3 flex flex-wrap items-center gap-2">
- <Badge className={`text-xs font-medium ${getStatusColor(vendor.status)}`}>
+ <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(vendor.status)}`}>
  {vendor.status.charAt(0).toUpperCase() + vendor.status.slice(1)}
- </Badge>
- <Badge className={`text-xs font-medium ${getTypeColor(vendor.vendor_type)}`}>
+ </span>
+ <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getTypeColor(vendor.vendor_type)}`}>
  {vendor.vendor_type.charAt(0).toUpperCase() + vendor.vendor_type.slice(1)}
- </Badge>
+ </span>
  </div>
- 
+
  {vendor.rating && (
- <div className="mt-2 flex flex-wrap items-center gap-1">
+ <div className="mt-2 flex items-center gap-1">
  <div className="flex items-center">
  {[...Array(5)].map((_, i) => (
  <Star
  key={i}
- className={`h-3 w-3 ${ i < vendor.rating! ? "text-yellow-400 fill-current" : "text-muted-foreground" }`}
+ className={`h-3 w-3 ${i < vendor.rating! ? "text-warning fill-current" : "text-muted-foreground"}`}
  />
  ))}
  </div>
@@ -132,7 +135,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  </div>
  )}
  </div>
- 
+
  {/* Delete button - only show for admins */}
  {canDelete && (
  <div className="shrink-0 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
@@ -142,7 +145,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  variant="ghost"
  size="sm"
  disabled={isDeleting}
- className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+ className="text-destructive hover:text-destructive hover:bg-destructive/10"
  >
  <Trash2 className="h-4 w-4" />
  </Button>
@@ -159,7 +162,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  <AlertDialogAction
  onClick={() => onDeleteVendor(vendor.id)}
  disabled={isDeleting}
- className="bg-red-600 hover:bg-red-700"
+ className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
  >
  {isDeleting ? "Deleting..." : "Delete"}
  </AlertDialogAction>

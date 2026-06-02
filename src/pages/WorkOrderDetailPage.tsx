@@ -24,8 +24,13 @@ const WorkOrderDetailPage: React.FC = () => {
  if (isLoading) {
  return (
  <DashboardLayout>
- <div className="flex justify-center items-center h-60">
- <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+ <div className="px-4 md:px-6 lg:px-8 py-8 space-y-6">
+ <div className="h-8 w-48 bg-muted rounded-lg animate-pulse" />
+ <div className="h-20 bg-muted rounded-xl animate-pulse" />
+ <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+ <div className="lg:col-span-2 h-64 bg-muted rounded-xl animate-pulse" />
+ <div className="h-64 bg-muted rounded-xl animate-pulse" />
+ </div>
  </div>
  </DashboardLayout>
  );
@@ -34,11 +39,14 @@ const WorkOrderDetailPage: React.FC = () => {
  if (!workOrder) {
  return (
  <DashboardLayout>
- <div className="text-center py-10">
- <h1 className="text-2xl font-bold mb-2">Work Order Not Found</h1>
- <p className="mb-4 text-muted-foreground">The requested work order could not be found.</p>
- <Button onClick={handleBackToWorkOrders}>
- <ArrowLeft className="mr-2 h-4 w-4" />
+ <div className="px-4 md:px-6 lg:px-8 py-16 text-center">
+ <div className="mx-auto w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-4">
+ <ArrowLeft className="h-8 w-8 text-muted-foreground" />
+ </div>
+ <h1 className="font-headline text-2xl font-bold mb-2 text-foreground">Work Order Not Found</h1>
+ <p className="mb-6 text-muted-foreground">The requested work order could not be found.</p>
+ <Button onClick={handleBackToWorkOrders} className="gap-2">
+ <ArrowLeft className="h-4 w-4" />
  Back to Work Orders
  </Button>
  </div>
@@ -52,23 +60,24 @@ const WorkOrderDetailPage: React.FC = () => {
  <title>{workOrder.title} | Work Order | MaintenEase</title>
  </Helmet>
 
- <div className="space-y-6">
+ <div className="px-4 md:px-6 lg:px-8 py-6 space-y-6">
+ {/* Top nav row */}
  <div className="flex items-center justify-between">
  <Button
  variant="ghost"
  size="sm"
  onClick={handleBackToWorkOrders}
- className="-ml-2"
+ className="gap-1.5 text-muted-foreground hover:text-foreground -ml-2"
  >
- <ArrowLeft className="h-4 w-4 mr-1" />
- Back to Dashboard
+ <ArrowLeft className="h-4 w-4" />
+ Work Orders
  </Button>
  <WorkOrderNotificationHistoryDrawer workOrderId={workOrder.id} />
  </div>
 
  <WorkOrderDetail workOrder={workOrder} />
 
- <Card>
+ <Card className="surface-card">
  <CardContent className="p-6">
  <ImageGallery entityType="work_order" entityId={workOrder.id} title="Photos & Attachments" />
  </CardContent>

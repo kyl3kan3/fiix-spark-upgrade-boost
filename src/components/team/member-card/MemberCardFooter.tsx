@@ -30,11 +30,11 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
  const userIdString = userId.toString();
  
  return (
- <div className="bg-muted px-6 py-3 flex items-center justify-between">
- <span className="text-sm font-medium">Role Access</span>
- <UserRoleSelector 
- userId={userIdString} 
- currentRole={displayRole} 
+ <div className="border-t border-border bg-background/50 px-5 py-3 flex items-center justify-between rounded-b-lg">
+ <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</span>
+ <UserRoleSelector
+ userId={userIdString}
+ currentRole={displayRole}
  onRoleUpdated={handleRoleUpdated}
  />
  </div>

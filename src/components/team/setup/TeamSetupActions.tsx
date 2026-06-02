@@ -17,13 +17,14 @@ export const TeamSetupActions: React.FC<TeamSetupActionsProps> = ({ isSubmitting
  };
 
  return (
- <div className="mt-6 text-center">
+ <div className="mt-4 text-center">
  <Button
- variant="outline"
+ variant="ghost"
  onClick={handleSkip}
  disabled={isSubmitting}
+ className="text-primary hover:bg-primary/5 text-sm"
  >
- Skip for now
+ Skip for now — invite later from Team page
  </Button>
  </div>
  );

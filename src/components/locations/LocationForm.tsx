@@ -85,7 +85,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  disabled={isLoading}
  />
  {errors.name && (
- <p className="text-sm text-red-600">{errors.name.message}</p>
+ <p className="text-sm text-destructive">{errors.name.message}</p>
  )}
  </div>
 
@@ -146,7 +146,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  <Button
  type="submit"
  disabled={isLoading}
- className="bg-maintenease-600 hover:bg-maintenease-700"
+ className="bg-primary hover:bg-primary/90"
  >
  {isLoading ? "Saving..." : mode === "create" ? "Create Location" : "Update Location"}
  </Button>

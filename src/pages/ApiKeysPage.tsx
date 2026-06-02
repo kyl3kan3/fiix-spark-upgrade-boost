@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { KeyRound, Loader2, Copy, Trash2 } from "lucide-react";
+import { KeyRound, Loader2, Copy, Trash2, Plus, CheckCircle2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { PaywallGate } from "@/components/billing/PaywallGate";
@@ -10,8 +10,14 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import PageContainer from "@/components/shell/PageContainer";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 interface ApiKey {
@@ -26,13 +32,17 @@ interface ApiKey {
 async function sha256(text: string): Promise<string> {
   const buf = new TextEncoder().encode(text);
   const hash = await crypto.subtle.digest("SHA-256", buf);
-  return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function generateKey(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  const b64 = btoa(String.fromCharCode(...bytes)).replace(/[+/=]/g, "").slice(0, 40);
+  const b64 = btoa(String.fromCharCode(...bytes))
+    .replace(/[+/=]/g, "")
+    .slice(0, 40);
   return `mke_live_${b64}`;
 }
 
@@ -65,10 +75,15 @@ const ApiKeysPage: React.FC = () => {
     if (!name.trim()) return toast.error("Name is required");
     setCreating(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("Not signed in");
       const { data: profile } = await supabase
-        .from("profiles").select("company_id").eq("id", user.id).maybeSingle();
+        .from("profiles")
+        .select("company_id")
+        .eq("id", user.id)
+        .maybeSingle();
       if (!profile?.company_id) throw new Error("No company");
 
       const fullKey = generateKey();
@@ -120,14 +135,16 @@ const ApiKeysPage: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 sm:space-y-6">
+      <PageContainer className="space-y-8">
         <BackToDashboard />
+
+        {/* Page Header */}
         <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold flex items-center gap-2">
-            <KeyRound className="h-6 w-6 sm:h-8 sm:w-8" />
-            API Keys
+          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
+            <KeyRound className="h-8 w-8" />
+            API &amp; Integrations
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-1">
+          <p className="text-base text-muted-foreground mt-1">
             Manage API keys for programmatic access to your MaintenEase data.
           </p>
         </div>
@@ -137,86 +154,172 @@ const ApiKeysPage: React.FC = () => {
           title="API access is a Business feature"
           description="Upgrade to Business to generate API keys and integrate MaintenEase with your other systems."
         >
-          <Card>
-            <CardHeader>
-              <CardTitle>Create new key</CardTitle>
-              <CardDescription>
-                Give the key a memorable name (e.g. "Zapier integration"). You'll see the
-                full key once — store it securely.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col sm:flex-row gap-2">
-              <div className="flex-1">
-                <Label htmlFor="keyName" className="sr-only">Name</Label>
-                <Input
-                  id="keyName"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Integration name"
-                />
-              </div>
-              <Button onClick={handleCreate} disabled={creating}>
-                {creating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                Create key
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Your keys</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Active API Keys — spans 2 cols */}
+            <Card className="lg:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col">
+              <CardHeader className="border-b border-border pb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="font-headline text-xl text-foreground flex items-center gap-2">
+                      <KeyRound className="h-5 w-5 text-primary" />
+                      Active API Keys
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground mt-1">
+                      Give the key a memorable name. You'll see the full key once — store it securely.
+                    </CardDescription>
+                  </div>
+                  <Button
+                    onClick={handleCreate}
+                    disabled={creating || !name.trim()}
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold shadow-sm"
+                  >
+                    {creating ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Plus className="h-4 w-4" />
+                    )}
+                    <span className="ml-1 hidden sm:inline">Generate Key</span>
+                  </Button>
                 </div>
-              ) : keys.length === 0 ? (
-                <p className="text-muted-foreground text-sm py-6 text-center">
-                  No API keys yet.
-                </p>
-              ) : (
-                <ul className="divide-y">
-                  {keys.map((k) => (
-                    <li key={k.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium truncate">{k.name}</span>
-                          {k.revoked_at && <Badge variant="destructive">Revoked</Badge>}
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4 flex-1">
+                {/* Create form */}
+                <div className="flex flex-col sm:flex-row gap-2 p-4 bg-background rounded-lg border border-border">
+                  <div className="flex-1">
+                    <Label htmlFor="keyName" className="sr-only">
+                      Name
+                    </Label>
+                    <Input
+                      id="keyName"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Integration name (e.g. Zapier integration)"
+                      className="bg-background border-border focus:ring-primary"
+                      onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                    />
+                  </div>
+                  <Button
+                    onClick={handleCreate}
+                    disabled={creating}
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                  >
+                    {creating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                    Create key
+                  </Button>
+                </div>
+
+                {/* Keys list */}
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : keys.length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-6 text-center">
+                    No API keys yet. Create one above.
+                  </p>
+                ) : (
+                  <ul className="divide-y divide-border">
+                    {keys.map((k) => (
+                      <li
+                        key={k.id}
+                        className="flex flex-wrap items-center justify-between gap-3 py-4 group hover:bg-muted/30 px-2 -mx-2 rounded-lg transition-colors"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-foreground truncate">{k.name}</span>
+                            {k.revoked_at ? (
+                              <Badge variant="destructive" className="text-xs rounded-full px-2 py-0.5">
+                                Revoked
+                              </Badge>
+                            ) : (
+                              <Badge className="text-xs rounded-full px-2 py-0.5 bg-success/20 text-success border-0 font-semibold">
+                                Active
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground font-mono truncate mt-0.5">
+                            {k.key_prefix}…
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Created {new Date(k.created_at).toLocaleDateString()}
+                            {k.last_used_at
+                              ? ` · Last used ${new Date(k.last_used_at).toLocaleDateString()}`
+                              : " · Never used"}
+                          </p>
                         </div>
-                        <p className="text-xs text-muted-foreground font-mono truncate">
-                          {k.key_prefix}…
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Created {new Date(k.created_at).toLocaleDateString()}
-                          {k.last_used_at
-                            ? ` · Last used ${new Date(k.last_used_at).toLocaleDateString()}`
-                            : " · Never used"}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        {!k.revoked_at && (
-                          <Button size="sm" variant="outline" onClick={() => handleRevoke(k.id)}>
-                            Revoke
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {!k.revoked_at && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleRevoke(k.id)}
+                              className="border-border text-primary hover:bg-primary/5 text-xs uppercase tracking-wide font-semibold"
+                            >
+                              Revoke
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDelete(k.id)}
+                            aria-label="Delete"
+                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDelete(k.id)}
-                          aria-label="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Developer Docs sidebar */}
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all flex flex-col relative overflow-hidden">
+              <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
+              <CardHeader className="border-b border-border pb-4 relative z-10">
+                <CardTitle className="font-headline text-xl text-foreground flex items-center gap-2">
+                  <KeyRound className="h-5 w-5 text-primary" />
+                  Developer Docs
+                </CardTitle>
+                <CardDescription className="text-muted-foreground mt-1">
+                  Explore guides, endpoints, and SDKs to build custom workflows.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6 flex-1 flex flex-col relative z-10">
+                <ul className="space-y-3 flex-1">
+                  {[
+                    "REST API Reference",
+                    "Authentication Guide",
+                    "Webhook Events",
+                    "SDK Downloads",
+                  ].map((item) => (
+                    <li key={item}>
+                      <a
+                        href="#"
+                        className="flex items-center gap-2 text-primary hover:underline text-sm font-semibold group"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        {item}
+                      </a>
                     </li>
                   ))}
                 </ul>
-              )}
-            </CardContent>
-          </Card>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 uppercase tracking-wide text-xs font-semibold"
+                >
+                  <a href="#" target="_blank" rel="noreferrer">
+                    View API Portal
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </PaywallGate>
-      </div>
+      </PageContainer>
 
       <Dialog open={!!newKey} onOpenChange={(o) => !o && setNewKey(null)}>
         <DialogContent>
@@ -226,15 +329,24 @@ const ApiKeysPage: React.FC = () => {
               This is the only time you'll see the full key. Copy and store it now.
             </DialogDescription>
           </DialogHeader>
-          <div className="bg-muted rounded-lg p-3 font-mono text-xs break-all">
+          <div className="bg-muted rounded-lg p-3 font-mono text-xs break-all border border-border">
             {newKey}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => newKey && copy(newKey)}>
+            <Button
+              variant="outline"
+              onClick={() => newKey && copy(newKey)}
+              className="border-border text-primary hover:bg-primary/5"
+            >
               <Copy className="h-4 w-4 mr-2" />
               Copy
             </Button>
-            <Button onClick={() => setNewKey(null)}>I've saved it</Button>
+            <Button
+              onClick={() => setNewKey(null)}
+              className="bg-primary hover:bg-primary-variant text-primary-foreground"
+            >
+              I've saved it
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

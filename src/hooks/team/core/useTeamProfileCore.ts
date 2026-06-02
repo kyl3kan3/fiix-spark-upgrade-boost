@@ -114,12 +114,12 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  setError(null);
  logger.log("Profile processed successfully");
  } else {
- console.warn("Invalid profile data: missing company_id", data);
+ logger.warn("Invalid profile data: missing company_id", data);
  setError("Profile missing required company information");
  setProfileData(null);
  }
  } else {
- console.warn("Invalid profile data format:", data);
+ logger.warn("Invalid profile data format:", data);
  setError("Invalid profile data format");
  setProfileData(null);
  }

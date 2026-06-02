@@ -45,10 +45,3 @@ export const AUTH_STORAGE_KEYS = {
 export const AUTH_VALIDATION = {
  MIN_PASSWORD_LENGTH: 6
 } as const;
-
-export const AUTH_COLORS = {
- PRIMARY: "maintenease-600",
- PRIMARY_HOVER: "maintenease-700",
- PRIMARY_TEXT: "maintenease-600",
- PRIMARY_TEXT_HOVER: "maintenease-800"
-} as const;

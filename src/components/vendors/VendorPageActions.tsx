@@ -25,9 +25,9 @@ const VendorPageActions: React.FC<VendorPageActionsProps> = ({
  <div className="flex flex-col gap-4">
  {/* Bulk Selection Actions */}
  {selectedCount > 0 && (
- <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+ <div className="p-4 bg-primary/10 dark:bg-primary/20 border border-primary/30 dark:border-primary rounded-lg">
  <div className="flex items-center justify-between">
- <span className="text-sm text-blue-800 dark:text-blue-200">
+ <span className="text-sm text-primary dark:text-primary">
  {selectedCount} vendor(s) selected
  </span>
  <div className="flex gap-2">

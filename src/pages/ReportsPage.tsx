@@ -16,10 +16,13 @@ const ReportsPage = () => {
  <link rel="canonical" href="https://maintenease.com/reports" />
  </Helmet>
  <PageHeader
- title="Reports"
+ title="Analytics & Reports"
  description="Simple summaries of your work — what's done, what's pending, and how things are trending."
  actions={
- <Button variant="accent" size="lg"><Download className="h-4 w-4" />Download</Button>
+ <Button className="bg-primary hover:bg-primary-variant text-primary-foreground shadow-sm" size="lg">
+ <Download className="h-4 w-4 mr-2" />
+ Generate Report
+ </Button>
  }
  />
  <PageContainer>

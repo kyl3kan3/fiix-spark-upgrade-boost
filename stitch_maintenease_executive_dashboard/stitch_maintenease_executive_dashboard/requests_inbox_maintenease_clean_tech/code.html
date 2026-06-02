@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Maintenance Requests - MaintenEase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "on-surface-variant": "#444652",
+                    "secondary-container": "#dee0e2",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-container": "#7e97fe",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#e2e2e2",
+                    "primary-container": "#00288e",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#c6c6c6",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-tertiary-container": "#9c9d9d",
+                    "inverse-primary": "#b8c4ff",
+                    "on-background": "#0b1c30",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#dde1ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#d3e4fe",
+                    "secondary-fixed": "#e1e3e5",
+                    "primary": "#00175c",
+                    "outline-variant": "#c5c5d4",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "warning": "#F59E0B",
+                    "surface-tint": "#3d57ba",
+                    "on-surface": "#0b1c30",
+                    "on-primary-fixed-variant": "#213da0",
+                    "inverse-surface": "#213145",
+                    "on-secondary-fixed-variant": "#444749",
+                    "secondary": "#5c5f61",
+                    "surface-blue": "#f8f9ff",
+                    "tertiary-container": "#333535",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#191c1e",
+                    "surface-container-low": "#eff4ff",
+                    "tertiary": "#1e2020",
+                    "surface-variant": "#d3e4fe",
+                    "success": "#10B981",
+                    "surface-container-high": "#dce9ff",
+                    "surface-bright": "#f8f9ff",
+                    "surface-dim": "#cbdbf5",
+                    "on-secondary-container": "#606365",
+                    "error-container": "#ffdad6",
+                    "outline": "#757684",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "container-blue": "#e5eeff",
+                    "on-primary-fixed": "#001453"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sidebar_collapsed": "64px",
+                    "base_unit": "8px",
+                    "card_padding": "24px",
+                    "gutter": "24px",
+                    "sidebar_expanded": "240px",
+                    "container_padding": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "headline-lg-mobile": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        /* Tonal Layering Shadows */
+        .shadow-level-1 { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); }
+        .shadow-level-2 { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); }
+        
+        /* Custom Scrollbar for inner panes */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #c5c5d4; border-radius: 20px; }
+    </style>
+</head>
+<body class="text-on-background font-body-md antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface-container-lowest dark:bg-surface-dim border-r border-outline-variant/20 shadow-sm docked h-full left-0 w-sidebar_expanded translate-x-1 duration-300 ease-in-out flex-col h-screen py-gutter gap-base_unit fixed left-0 top-0 z-40">
+<!-- Header -->
+<div class="px-6 mb-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-md text-headline-md">
+                M
+            </div>
+<div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim leading-none">MaintenEase</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Facility Management</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-6 mb-6">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md uppercase py-3 px-4 rounded-DEFAULT shadow-sm hover:shadow-md transition-shadow flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add</span>
+                New Work Order
+            </button>
+</div>
+<!-- Main Links -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- ACTIVE TAB: Work Orders -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg border-l-4 border-primary dark:border-primary-fixed-dim bg-primary/5 dark:bg-primary-fixed-dim/5 text-primary dark:text-primary-fixed-dim font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in" style="font-variation-settings: 'FILL' 1;">assignment_turned_in</span>
+<span class="font-label-md text-label-md">Work Orders</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="font-label-md text-label-md">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+<span class="font-label-md text-label-md">Preventive</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Reporting</span>
+</a>
+</div>
+<!-- Footer Links -->
+<div class="px-3 pb-6 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-secondary dark:text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container dark:hover:bg-on-surface-variant/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-sidebar_expanded w-full bg-background h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 docked full-width top-0 sticky backdrop-blur-md border-b border-outline-variant/30 shadow-sm flex justify-between items-center w-full px-container_padding py-4 z-50">
+<!-- Left: Search (JSON dictates search_bar: on_left) -->
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
+<input class="w-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-full pl-10 pr-4 py-2 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 transition-all" placeholder="Search requests, assets..." type="text"/>
+</div>
+</div>
+<!-- Right: Actions & Profile -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container transition-colors duration-200 rounded-full scale-95 active:opacity-80 transition-all relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container transition-colors duration-200 rounded-full scale-95 active:opacity-80 transition-all hidden sm:block">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="p-2 text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container transition-colors duration-200 rounded-full scale-95 active:opacity-80 transition-all hidden sm:block">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/30 mx-2 hidden sm:block"></div>
+<button class="w-9 h-9 rounded-full overflow-hidden border-2 border-surface-container-high scale-95 active:opacity-80 transition-all">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a male facility manager in a modern office setting. He is wearing a crisp blue button-down shirt. The lighting is bright and clean, typical of a corporate light-mode environment. The background is slightly blurred with soft grey and white tones, matching a professional high-tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAdYMxZQt6986qZs__ELfcAU70mAjFFlRcvbIOMLjjJwcAl_gHFv3DJKH8xwZpxkyXd-3bfmLEAGVESR0dJSzi3dRwB0J54oAQiOC9VLJ8jvMpEKXgAGFt3n-7E2LYXFLI5I1-7pkSKNRE0dI8KfY04j2I7iqoZteim9Qs4Ywn9lYjVAEbErql0yl4I7UCQoB-uI-UOGoMBLWcsBRBhMneUZJbCrsiHWcd3-BOKLvNmXLpqApWUWSrcYS62Z5tKUmk6U2sxCSqySU"/>
+</button>
+</div>
+</header>
+<!-- Split Pane Canvas -->
+<div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-6 gap-6">
+<!-- Left Pane: List View -->
+<div class="w-full lg:w-[400px] xl:w-[450px] flex flex-col h-full bg-surface shadow-level-1 rounded-xl border border-outline-variant/20 overflow-hidden flex-shrink-0">
+<!-- List Header & Filters -->
+<div class="p-5 border-b border-outline-variant/20 bg-surface-container-lowest">
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-headline-md text-headline-md text-primary">Inbox</h2>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-1 rounded text-primary">24 Open</span>
+</div>
+<!-- Filters -->
+<div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-primary text-primary bg-primary/5 font-label-sm text-label-sm transition-colors">
+                            All Requests
+                        </button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant/50 text-on-surface-variant hover:bg-surface-container transition-colors font-label-sm text-label-sm">
+                            New
+                        </button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant/50 text-on-surface-variant hover:bg-surface-container transition-colors font-label-sm text-label-sm">
+                            Pending
+                        </button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant/50 text-on-surface-variant hover:bg-surface-container transition-colors font-label-sm text-label-sm">
+                            High Priority
+                        </button>
+</div>
+</div>
+<!-- List Items (Scrollable) -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2 bg-background">
+<!-- Card 1 (Active) -->
+<div class="bg-surface border-2 border-primary/20 shadow-sm rounded-lg p-4 cursor-pointer transform transition-all relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase bg-error-container text-on-error-container px-2 py-0.5 rounded text-[10px] tracking-wider font-bold">High</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">#WR-2941</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10m ago</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">HVAC Unit B-3 Failure</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-3 text-sm">Main circulation fan is making a grinding noise and air output has dropped significantly in Sector 4.</p>
+<div class="flex items-center gap-3 mt-auto pt-3 border-t border-outline-variant/10">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-surface">SJ</div>
+<span class="font-label-sm text-label-sm text-secondary">Sarah Jenkins</span>
+<span class="text-outline-variant text-xs mx-1">•</span>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Roof Level
+                            </span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface border border-transparent hover:border-primary/10 shadow-sm hover:shadow-md hover:-translate-y-[2px] rounded-lg p-4 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase bg-surface-variant text-on-surface px-2 py-0.5 rounded text-[10px] tracking-wider font-bold">New</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">#WR-2940</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1h ago</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">Plumbing Leak in Restroom A</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-3 text-sm">Water pooling near the second sink station. Requires immediate attention to prevent slip hazard.</p>
+<div class="flex items-center gap-3 mt-auto pt-3 border-t border-outline-variant/10">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-surface">MR</div>
+<span class="font-label-sm text-label-sm text-secondary">Mike Ross</span>
+<span class="text-outline-variant text-xs mx-1">•</span>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Floor 2
+                            </span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface border border-transparent hover:border-primary/10 shadow-sm hover:shadow-md hover:-translate-y-[2px] rounded-lg p-4 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase bg-surface-container-high text-on-surface px-2 py-0.5 rounded text-[10px] tracking-wider font-bold">Pending</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">#WR-2938</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3h ago</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface mb-1">Lighting Fixture Replacement</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-3 text-sm">Three fluorescent tubes are flickering in the main corridor hallway near the server room.</p>
+<div class="flex items-center gap-3 mt-auto pt-3 border-t border-outline-variant/10">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-surface">AK</div>
+<span class="font-label-sm text-label-sm text-secondary">Anna Kim</span>
+<span class="text-outline-variant text-xs mx-1">•</span>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Corridor C
+                            </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Detail View -->
+<div class="flex-1 bg-surface shadow-level-1 rounded-xl border border-outline-variant/20 overflow-hidden flex flex-col hidden lg:flex relative">
+<!-- Detail Header -->
+<div class="p-6 lg:p-8 border-b border-outline-variant/20 bg-surface-container-lowest sticky top-0 z-10 flex justify-between items-start gap-4">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label-md text-label-md text-on-surface-variant">#WR-2941</span>
+<span class="font-label-sm text-label-sm uppercase bg-error-container text-on-error-container px-2 py-0.5 rounded text-xs tracking-wider font-bold">High Priority</span>
+<span class="font-label-sm text-label-sm uppercase border border-outline-variant/50 text-on-surface-variant px-2 py-0.5 rounded text-xs tracking-wider font-bold">New</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">HVAC Unit B-3 Failure</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Submitted on Oct 24, 2023 at 09:14 AM</p>
+</div>
+<!-- Quick Actions -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 border border-outline text-on-surface font-label-md text-label-md rounded hover:bg-surface-container transition-colors">
+                            Reject
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary font-label-md text-label-md uppercase rounded shadow-sm hover:shadow-md transition-all">
+                            Approve &amp; Assign
+                        </button>
+</div>
+</div>
+<!-- Detail Scrollable Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8">
+<!-- Bento Grid for Meta Info -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-4 flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Requester</span>
+<div class="flex items-center gap-3 mt-1">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">SJ</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-none">Sarah Jenkins</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Operations Manager</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-4 flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Location / Asset</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-primary">hvac</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-none">HVAC-B3</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Roof Level, Sector 4</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-4 flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Category</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-warning">build</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-none">Mechanical</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Corrective</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Description Section -->
+<div class="mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 border-b border-outline-variant/20 pb-2">Description</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant bg-surface-container-low p-4 rounded-lg border border-outline-variant/10 leading-relaxed">
+                            Main circulation fan is making a severe grinding noise and air output has dropped significantly in Sector 4. Temperature in the server antechamber is starting to rise above nominal levels (currently 78°F). Recommend immediate inspection of the blower motor bearings and drive belt. 
+                        </p>
+</div>
+<!-- Attachments Section (Asymmetric layout) -->
+<div class="mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 border-b border-outline-variant/20 pb-2">Attachments (1)</h3>
+<div class="flex gap-4">
+<div class="w-48 h-32 rounded-lg overflow-hidden border border-outline-variant/20 relative group cursor-pointer">
+<div class="absolute inset-0 bg-on-surface/0 group-hover:bg-on-surface/10 transition-colors z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity">zoom_in</span>
+</div>
+<img alt="Industrial HVAC Unit" class="w-full h-full object-cover" data-alt="A close-up shot of a large industrial HVAC unit on a building rooftop. The metal casing is slightly weathered, showing mechanical components like vents and large bolts. The lighting is bright, natural daylight casting sharp shadows, highlighting the textured surface of the machinery. The aesthetic is gritty yet technical, fitting a facility management context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqHd3zhcJBX6GqRkiT8B0cGt-HVpRtLf5DNs9OyR4hxwmmBY1CgxIDDBuXN4muoI3O1lUnV4JPJVyPgWSSQfyrAzEywGuC6FN-hr6CtWAcxFcHrauL_LTFDWPZalG0YDbAmDAyku2XKn9PPAJPtp5pbO8BtF_XkDslWoEfOQd6uGzFKUQagMK9mG7uzB8Z5LB3Snbpa3sMTCJsHFThv7p0os979f2WGFFpr812xm4gxIMzd44zWCvcewbE8bNrS9TLv7TxPObtCPk"/>
+</div>
+</div>
+</div>
+<!-- Timeline / Activity -->
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 border-b border-outline-variant/20 pb-2">Activity</h3>
+<div class="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant/30">
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-4 h-4 rounded-full bg-primary border-4 border-surface"></div>
+<p class="font-label-md text-label-md text-on-surface">Request Created</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">by Sarah Jenkins • Today, 09:14 AM</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[30px] top-1 w-4 h-4 rounded-full bg-surface-container-high border-2 border-outline-variant"></div>
+<div class="bg-surface-container-low p-3 rounded-lg border border-outline-variant/20 inline-block mt-1">
+<p class="font-body-md text-body-md text-on-surface-variant text-sm italic">Automated system flagged as High Priority based on "Server antechamber" keyword.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

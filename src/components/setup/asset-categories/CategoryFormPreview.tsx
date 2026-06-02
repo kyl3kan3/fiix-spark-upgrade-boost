@@ -49,7 +49,7 @@ export const CategoryFormPreview: React.FC<{ category: AssetCategory | null }> =
                   <div key={field.id} className="space-y-2">
                     <Label>
                       {field.name}
-                      {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                      {field.required && <span className="text-destructive ml-0.5">*</span>}
                     </Label>
                     <FieldPreview field={field} />
                   </div>

@@ -14,12 +14,14 @@ const VendorEmptyState: React.FC<VendorEmptyStateProps> = ({ hasFilters }) => {
  const canAdd = currentUserRole === 'administrator' || currentUserRole === 'manager';
 
  return (
- <div className="text-center py-12 bg-card rounded-lg border border-border">
- <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
- <h3 className="mt-2 text-sm font-medium text-foreground">No vendors found</h3>
+ <div className="text-center py-14 bg-card rounded-lg border border-border shadow-sm">
+ <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+ <Building2 className="h-7 w-7 text-primary" />
+ </div>
+ <h3 className="mt-2 text-sm font-semibold text-foreground">No vendors found</h3>
  <p className="mt-1 text-sm text-muted-foreground">
- {hasFilters 
- ? "Try adjusting your search or filters." 
+ {hasFilters
+ ? "Try adjusting your search or filters."
  : canAdd
  ? "Get started by creating a new vendor."
  : "No vendors have been created yet."}
@@ -27,7 +29,7 @@ const VendorEmptyState: React.FC<VendorEmptyStateProps> = ({ hasFilters }) => {
  {!hasFilters && canAdd && (
  <div className="mt-6">
  <Link to="/vendors/new">
- <Button className="bg-blue-500 hover:bg-blue-600 text-white font-medium">
+ <Button className="bg-primary hover:bg-primary-variant text-primary-foreground">
  <Plus className="mr-2 h-4 w-4" />
  New Vendor
  </Button>

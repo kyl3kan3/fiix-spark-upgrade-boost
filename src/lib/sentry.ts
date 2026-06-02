@@ -84,6 +84,16 @@ export function initSentry() {
       // Third-party (Lovable badge / flock.js analytics) errors.
       "e.replaceAll is not a function",
       "Cannot read properties of undefined (reading 'outerHTML')",
+      // Lovable badge analytics (flock.js) — third-party 5xx noise we can't fix.
+      "HTTP Client Error with status code: 500",
+      // Facebook in-app browser (Android WebView) fires this on beforeunload
+      // when the user navigates away. Not actionable from our code.
+      "Java object is gone",
+    ],
+    denyUrls: [
+      // Lovable badge / flock.js analytics script.
+      /\/~flock\.js/i,
+      /\/~api\/analytics/i,
     ],
   });
 

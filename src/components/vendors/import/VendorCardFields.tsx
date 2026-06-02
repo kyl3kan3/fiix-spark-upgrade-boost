@@ -10,6 +10,7 @@ import { FieldMapper } from "./FieldMapper";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ResponsiveGrid from "@/components/shell/ResponsiveGrid";
 
 interface VendorCardFieldsProps {
  vendor: VendorFormData;
@@ -72,7 +73,7 @@ export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
  )}
 
  {/* Regular Form Fields */}
- <div className="grid grid-cols-2 gap-3">
+ <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={3}>
  <div>
  <Label htmlFor={`name-${index}`} className="text-xs">Company Name *</Label>
  <Input
@@ -94,9 +95,9 @@ export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
  className="h-8"
  />
  </div>
- </div>
+ </ResponsiveGrid>
 
- <div className="grid grid-cols-2 gap-3">
+ <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={3}>
  <div>
  <Label htmlFor={`phone-${index}`} className="text-xs">Phone</Label>
  <Input
@@ -117,9 +118,9 @@ export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
  className="h-8"
  />
  </div>
- </div>
+ </ResponsiveGrid>
 
- <div className="grid grid-cols-2 gap-3">
+ <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={3}>
  <div>
  <Label htmlFor={`status-${index}`} className="text-xs">Status</Label>
  <Select
@@ -146,7 +147,7 @@ export const VendorCardFields: React.FC<VendorCardFieldsProps> = ({
  className="h-8"
  />
  </div>
- </div>
+ </ResponsiveGrid>
 
  <div>
  <Label htmlFor={`address-${index}`} className="text-xs">Address</Label>

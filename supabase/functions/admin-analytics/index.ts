@@ -77,6 +77,39 @@ Deno.serve(async (req) => {
     const days = Math.max(7, Math.min(90, Number(url.searchParams.get('days') ?? '30')));
     const since = daysAgo(days - 1).toISOString();
 
+    // Internal accounts to exclude from analytics
+    const EXCLUDED_EMAILS = [
+      'kyl3kan3@gmail.com',
+      'kyle@decent4.com',
+      'kyle.kane@admiralparkway.com',
+      'account@admiralparkway.com',
+    ];
+    const { data: excludedProfiles } = await admin
+      .from('profiles')
+      .select('id,company_id')
+      .in('email', EXCLUDED_EMAILS);
+    const excludedUserIds = (excludedProfiles ?? []).map((p: any) => p.id);
+    const excludedCompanyIds = Array.from(
+      new Set((excludedProfiles ?? []).map((p: any) => p.company_id).filter(Boolean)),
+    );
+    const excludedUserCount = excludedUserIds.length;
+    const excludedCompanyCount = excludedCompanyIds.length;
+    const notInUsers = excludedUserIds.length ? `(${excludedUserIds.join(',')})` : null;
+    const notInCompanies = excludedCompanyIds.length ? `(${excludedCompanyIds.join(',')})` : null;
+
+    const excludeUsers = <T>(q: T): T => {
+      if (!notInUsers) return q;
+      return (q as any).not('id', 'in', notInUsers);
+    };
+    const excludeCompanies = <T>(q: T): T => {
+      if (!notInCompanies) return q;
+      return (q as any).not('id', 'in', notInCompanies);
+    };
+    const excludeByCompanyCol = <T>(q: T): T => {
+      if (!notInCompanies) return q;
+      return (q as any).not('company_id', 'in', notInCompanies);
+    };
+
     // Parallel queries
     const [
       profilesTotal,
@@ -93,19 +126,19 @@ Deno.serve(async (req) => {
       workOrdersTotal,
       trialsAll,
     ] = await Promise.all([
-      admin.from('profiles').select('id', { count: 'exact', head: true }),
-      admin.from('profiles').select('created_at').gte('created_at', since),
-      admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end,trial_ends_at,company_id'),
-      admin.from('subscriptions').select('created_at,updated_at,status,environment').gte('updated_at', since),
+      excludeUsers(admin.from('profiles').select('id', { count: 'exact', head: true })),
+      excludeUsers(admin.from('profiles').select('id,created_at').gte('created_at', since)),
+      excludeByCompanyCol(admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end,trial_ends_at,company_id')),
+      excludeByCompanyCol(admin.from('subscriptions').select('created_at,updated_at,status,environment,company_id').gte('updated_at', since)),
       admin.from('marketing_leads').select('id', { count: 'exact', head: true }),
       admin.from('marketing_leads').select('created_at,source_slug').gte('created_at', since),
       admin.from('marketing_page_events').select('event_type,page_slug,created_at,user_agent,referrer').gte('created_at', since),
-      admin.from('companies').select('id', { count: 'exact', head: true }),
-      admin.from('companies').select('id,name,created_at').gte('created_at', since).order('created_at', { ascending: false }),
-      admin.from('locations').select('id', { count: 'exact', head: true }),
-      admin.from('assets').select('id', { count: 'exact', head: true }),
-      admin.from('work_orders').select('id', { count: 'exact', head: true }),
-      admin.from('subscriptions').select('company_id,trial_ends_at,tier').eq('status', 'trialing').not('trial_ends_at', 'is', null),
+      excludeCompanies(admin.from('companies').select('id', { count: 'exact', head: true })),
+      excludeCompanies(admin.from('companies').select('id,name,created_at').gte('created_at', since).order('created_at', { ascending: false })),
+      excludeByCompanyCol(admin.from('locations').select('id', { count: 'exact', head: true })),
+      excludeByCompanyCol(admin.from('assets').select('id', { count: 'exact', head: true })),
+      excludeByCompanyCol(admin.from('work_orders').select('id', { count: 'exact', head: true })),
+      excludeByCompanyCol(admin.from('subscriptions').select('company_id,trial_ends_at,tier').eq('status', 'trialing').not('trial_ends_at', 'is', null)),
     ]);
 
     const subs = subsAll.data ?? [];
@@ -113,12 +146,14 @@ Deno.serve(async (req) => {
     const newCompanies = companiesRecent.data ?? [];
 
     // Incomplete signups: users with a profile but no company_id
-    const { data: incompleteRows, count: incompleteCount } = await admin
-      .from('profiles')
-      .select('id,email,created_at', { count: 'exact' })
-      .is('company_id', null)
-      .order('created_at', { ascending: false })
-      .limit(20);
+    const { data: incompleteRows, count: incompleteCount } = await excludeUsers(
+      admin
+        .from('profiles')
+        .select('id,email,created_at', { count: 'exact' })
+        .is('company_id', null)
+        .order('created_at', { ascending: false })
+        .limit(20),
+    );
     const DISPOSABLE_DOMAINS = new Set([
       'wshu.net','mailinator.com','tempmail.com','guerrillamail.com','10minutemail.com',
       'yopmail.com','trashmail.com','sharklasers.com','getnada.com','maildrop.cc',
@@ -283,6 +318,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('admin-analytics error', e);
-    return json({ error: String((e as Error).message ?? e) }, 500);
+    return json({ error: 'An internal error occurred. Please try again.' }, 500);
   }
 });

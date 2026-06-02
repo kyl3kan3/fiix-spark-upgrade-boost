@@ -11,7 +11,7 @@ import { useHelpSearch } from "@/components/help/hooks/useHelpSearch";
 import { Button } from "@/components/ui/button";
 import { Compass, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useOnboardingProgress } from "@/hooks/onboarding/useOnboardingProgress";
+import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
 import { toast } from "sonner";
 import { faqItems } from "@/components/help/data/helpData";
 
@@ -68,7 +68,7 @@ const Help = () => {
  })}</script>
  </Helmet>
  <div className="flex items-center mb-6">
- <HelpCircle className="h-6 w-6 text-maintenease-600 mr-2" />
+ <HelpCircle className="h-6 w-6 text-primary mr-2" />
  <h1 className="text-2xl font-bold text-foreground">Help Center</h1>
  </div>
 

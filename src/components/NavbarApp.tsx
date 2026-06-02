@@ -36,7 +36,7 @@ const NavbarApp = () => {
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-2">
             <img src={logo} alt="MaintenEase" className="h-8 w-8" />
-            <span className="text-xl font-bold text-maintenease-600">MaintenEase</span>
+            <span className="text-xl font-bold text-primary">MaintenEase</span>
           </Link>
 
  {/* Mobile menu button */}
@@ -53,49 +53,49 @@ const NavbarApp = () => {
  <nav className="hidden md:flex items-center space-x-1">
  <Link
  to="/dashboard"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Dashboard
  </Link>
  <Link
  to="/work-orders"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Work Orders
  </Link>
  <Link
  to="/assets"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Assets
  </Link>
  <Link
  to="/inspections"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Inspections
  </Link>
  <Link
  to="/calendar"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Calendar
  </Link>
  <Link
  to="/reports"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Reports
  </Link>
  <Link
  to="/chat"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Chat
  </Link>
  <Link
  to="/locations"
- className="px-3 py-2 text-sm font-medium text-foreground hover:text-maintenease-600"
+ className="px-3 py-2 text-sm font-medium text-foreground hover:text-primary"
  >
  Locations
  </Link>
@@ -138,56 +138,56 @@ const NavbarApp = () => {
  <div className="flex flex-col space-y-2">
  <Link
  to="/dashboard"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Dashboard
  </Link>
  <Link
  to="/work-orders"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Work Orders
  </Link>
  <Link
  to="/assets"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Assets
  </Link>
  <Link
  to="/inspections"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Inspections
  </Link>
  <Link
  to="/calendar"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Calendar
  </Link>
  <Link
  to="/reports"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Reports
  </Link>
  <Link
  to="/chat"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Chat
  </Link>
  <Link
  to="/locations"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Locations
@@ -195,28 +195,28 @@ const NavbarApp = () => {
  <div className="pt-4 border-t border-border">
  <Link
  to="/profile"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Profile
  </Link>
  <Link
  to="/team"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Team
  </Link>
  <Link
  to="/help"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Help
  </Link>
  <Link
  to="/setup"
- className="px-3 py-2 text-base font-medium text-foreground hover:text-maintenease-600 hover:bg-muted rounded-md"
+ className="px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-muted rounded-md"
  onClick={() => setIsOpen(false)}
  >
  Setup
@@ -226,7 +226,7 @@ const NavbarApp = () => {
  setIsOpen(false);
  handleSignOut();
  }}
- className="w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50 rounded-md flex items-center"
+ className="w-full text-left px-3 py-2 text-base font-medium text-destructive hover:bg-destructive/10 rounded-md flex items-center"
  >
  <LogOut className="mr-2 h-4 w-4" />
  Sign out

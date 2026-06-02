@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 const BUCKET = "asset-images";
 const PUBLIC_PREFIX = `/storage/v1/object/public/${BUCKET}/`;
@@ -30,7 +31,7 @@ export async function getSignedAssetImageUrl(input: string | null | undefined): 
  if (cached && cached.expiresAt > now + 30_000) return cached.url;
  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, SIGN_TTL);
  if (error || !data?.signedUrl) {
- console.warn("Failed to sign asset image url", error);
+ logger.warn("Failed to sign asset image url", error);
  return null;
  }
  cache.set(path, { url: data.signedUrl, expiresAt: now + SIGN_TTL * 1000 });

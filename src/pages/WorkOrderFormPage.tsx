@@ -2,7 +2,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WorkOrderForm from "@/components/workOrders/WorkOrderForm";
 import PageHeader from "@/components/shell/PageHeader";
@@ -32,18 +31,20 @@ const WorkOrderFormPage: React.FC = () => {
  return (
  <DashboardLayout>
  <Helmet>
- <title>{isEditMode ? "Edit Job" : "Report a Problem"} | MaintenEase</title>
+ <title>{isEditMode ? "Edit Job" : "Create New Work Order"} | MaintenEase</title>
  </Helmet>
  <PageHeader
- title={isEditMode ? "Edit job" : "Report a problem"}
+ title={isEditMode ? "Edit Work Order" : "Create New Work Order"}
  description={isEditMode
- ? "Update the details for this job."
- : "Tell us what's wrong — we'll get someone on it."}
+ ? "Update the details for this maintenance task."
+ : "Initiate a new maintenance task. Provide detailed information so the technician can resolve the issue efficiently."}
  />
- <div className="px-4 md:px-6 lg:px-8 py-6">
+ <div className="px-4 md:px-6 lg:px-8 py-6 max-w-4xl">
  {isEditMode && isLoading ? (
- <div className="flex justify-center items-center h-60">
- <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+ <div className="space-y-4">
+ <div className="h-48 bg-muted rounded-xl animate-pulse" />
+ <div className="h-36 bg-muted rounded-xl animate-pulse" />
+ <div className="h-24 bg-muted rounded-xl animate-pulse" />
  </div>
  ) : (
  <WorkOrderForm
