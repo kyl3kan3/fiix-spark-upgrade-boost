@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -24,8 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import BillingSupportGrid from "@/components/billing/BillingSupportGrid";
-import BillingUsageMetric from "@/components/billing/BillingUsageMetric";
+import { Progress } from "@/components/ui/progress";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageContainer from "@/components/shell/PageContainer";
@@ -196,7 +195,7 @@ export default function BillingPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 bg-card border border-transparent rounded-xl shadow-sm hover:shadow-md hover:border-primary/10 transition-all overflow-hidden flex flex-col relative">
+              <div className="md:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-col relative">
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div>
@@ -246,8 +245,8 @@ export default function BillingPage() {
                     </p>
                   )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-                    <BillingUsageMetric
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                    <UsageMetric
                       icon={<Users className="h-4 w-4" />}
                       label="Active Users"
                       used={counts.seats}
@@ -301,16 +300,8 @@ export default function BillingPage() {
                 </div>
               </div>
 
-              <div className="bg-primary text-primary-foreground rounded-xl shadow-lg p-6 flex flex-col justify-between relative overflow-hidden hover:-translate-y-1 transition-transform duration-300">
-                <div
-                  className="absolute inset-0 opacity-20"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-                    backgroundSize: "24px 24px",
-                  }}
-                />
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+              <div className="bg-primary text-primary-foreground rounded-xl shadow-lg p-6 flex flex-col justify-between relative overflow-hidden hover:-translate-y-1 transition-transform">
+                <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
                 <div className="relative z-10">
                   <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 border border-white/20 backdrop-blur-md">
                     <Rocket className="h-6 w-6 text-primary-foreground" />
@@ -414,5 +405,48 @@ export default function BillingPage() {
         </Dialog>
       )}
     </DashboardLayout>
+  );
+}
+
+function UsageMetric({
+  icon,
+  label,
+  used,
+  limit,
+  hint,
+}: {
+  icon: ReactNode;
+  label: string;
+  used: number;
+  limit: number | null;
+  hint?: string;
+}) {
+  const pct = limit ? Math.min(100, (used / limit) * 100) : 0;
+  const isHigh = pct >= 80;
+
+  return (
+    <div className="bg-muted/40 rounded-lg p-4">
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs text-muted-foreground font-medium">
+          {label}
+        </span>
+        <span className="text-muted-foreground">{icon}</span>
+      </div>
+      <div className="flex items-end gap-1.5 mb-2">
+        <span className="text-2xl font-bold text-foreground leading-none">
+          {used}
+        </span>
+        <span className="text-sm text-muted-foreground leading-none pb-0.5">
+          / {limit ?? "∞"}
+        </span>
+      </div>
+      {limit !== null && (
+        <Progress
+          value={pct}
+          className={`h-1.5 ${isHigh ? "[&>div]:bg-warning" : "[&>div]:bg-primary"}`}
+        />
+      )}
+      {hint && <p className="text-xs text-muted-foreground mt-1.5">{hint}</p>}
+    </div>
   );
 }
