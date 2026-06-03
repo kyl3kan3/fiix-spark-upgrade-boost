@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
       "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(supabasePublishableKey),
       "import.meta.env.VITE_SUPABASE_PROJECT_ID": JSON.stringify(supabaseProjectId),
+      "import.meta.env.VITE_APP_VERSION": JSON.stringify(
+        env.VITE_APP_VERSION || new Date().toISOString()
+      ),
     },
     optimizeDeps: {
       // Always re-bundle deps on dev server startup to avoid stale
