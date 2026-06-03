@@ -253,13 +253,13 @@ export default function BillingPage() {
                       limit={sub.total_seats}
                       hint={`${sub.included_seats} included + ${sub.paid_seats} extra`}
                     />
-                    <UsageMetric
+                    <BillingUsageMetric
                       icon={<Package className="h-4 w-4" />}
                       label="Managed Assets"
                       used={counts.assets}
                       limit={sub.asset_limit}
                     />
-                    <UsageMetric
+                    <BillingUsageMetric
                       icon={<ClipboardList className="h-4 w-4" />}
                       label="Work Orders"
                       used={counts.workOrders}
@@ -334,6 +334,8 @@ export default function BillingPage() {
                 </Button>
               </div>
             </div>
+
+            <BillingSupportGrid />
           </>
         )}
       </PageContainer>
