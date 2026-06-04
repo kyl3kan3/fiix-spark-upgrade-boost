@@ -2,10 +2,11 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import MarketingLayout from "@/components/marketing/MarketingLayout";
 
 export default function TermsOfService() {
  return (
- <div className="min-h-screen bg-background">
+ <MarketingLayout>
  <Helmet>
  <title>Terms & Conditions | MaintenEase</title>
  <meta name="description" content="The legal terms governing your use of MaintenEase, including acceptable use, subscriptions, Paddle as Merchant of Record, liability, and termination." />
@@ -152,6 +153,6 @@ export default function TermsOfService() {
  </section>
  </div>
  </div>
- </div>
+ </MarketingLayout>
  );
 }

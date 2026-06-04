@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate } from "react-router-dom";
-import { Check, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +12,7 @@ import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
+import MarketingLayout from "@/components/marketing/MarketingLayout";
 
 const PLANS = [
  {
@@ -79,7 +80,7 @@ export default function PricingPage() {
  }
 
  return (
- <div className="min-h-screen bg-background">
+ <MarketingLayout>
  <Helmet>
  <title>Pricing — Plans for Maintenance Teams | MaintenEase</title>
  <meta name="description" content="Simple per-team pricing for MaintenEase. Compare Starter, Pro, and Business plans for asset tracking, work orders, and inspections. 14-day free trial." />
@@ -112,9 +113,6 @@ export default function PricingPage() {
  {/* Hero section */}
  <section className="pt-16 pb-12 px-4 text-center bg-background border-b border-border">
    <div className="max-w-2xl mx-auto">
-     <Button asChild variant="ghost" size="sm" className="mb-6 text-muted-foreground hover:text-primary">
-       <Link to="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" />Back to Dashboard</Link>
-     </Button>
      <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-tight">
        Simple, transparent pricing
      </h1>
@@ -221,6 +219,6 @@ export default function PricingPage() {
  />
  </div>
  </div>
- </div>
+ </MarketingLayout>
  );
 }

@@ -2,10 +2,11 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import MarketingLayout from "@/components/marketing/MarketingLayout";
 
 export default function RefundPolicy() {
  return (
- <div className="min-h-screen bg-background">
+ <MarketingLayout>
  <Helmet>
  <title>Refund Policy | MaintenEase</title>
  <meta name="description" content="MaintenEase offers a 30-day money-back guarantee. Learn how to request a refund through Paddle, our Merchant of Record, and how trials and renewals work." />
@@ -74,6 +75,6 @@ export default function RefundPolicy() {
  </section>
  </div>
  </div>
- </div>
+ </MarketingLayout>
  );
 }

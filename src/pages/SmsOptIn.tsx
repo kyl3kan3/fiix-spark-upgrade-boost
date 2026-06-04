@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import MarketingLayout from "@/components/marketing/MarketingLayout";
 
 export default function SmsOptIn() {
  const [phone, setPhone] = useState("");
@@ -42,7 +43,7 @@ export default function SmsOptIn() {
  };
 
  return (
- <div className="min-h-screen bg-background">
+ <MarketingLayout>
  <Helmet>
  <title>SMS Alerts Sign-Up | MaintenEase</title>
  <meta
@@ -186,6 +187,6 @@ export default function SmsOptIn() {
  )}
  </div>
  </div>
- </div>
+ </MarketingLayout>
  );
 }
