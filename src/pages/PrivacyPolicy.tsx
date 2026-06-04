@@ -2,10 +2,11 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import MarketingLayout from "@/components/marketing/MarketingLayout";
 
 export default function PrivacyPolicy() {
  return (
- <div className="min-h-screen bg-background">
+ <MarketingLayout>
  <Helmet>
  <title>Privacy Notice | MaintenEase</title>
  <meta name="description" content="How MaintenEase (Decent4) collects, uses, and protects personal data, including your rights, retention, and sharing with subprocessors like Paddle." />
@@ -154,6 +155,6 @@ export default function PrivacyPolicy() {
  </section>
  </div>
  </div>
- </div>
+ </MarketingLayout>
  );
 }
