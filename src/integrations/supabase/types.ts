@@ -1918,6 +1918,21 @@ export type Database = {
           work_order_limit: number
         }[]
       }
+      get_google_ads_connection_status: {
+        Args: never
+        Returns: {
+          account_descriptive_name: string
+          company_id: string
+          connected_by: string
+          created_at: string
+          customer_id: string
+          id: string
+          login_customer_id: string
+          scope: string
+          token_expires_at: string
+          updated_at: string
+        }[]
+      }
       get_invitation_by_token: {
         Args: { _token: string }
         Returns: {

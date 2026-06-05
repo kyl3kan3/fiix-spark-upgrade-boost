@@ -51,10 +51,14 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
-  // Reject anon callers — only authenticated users and service_role (internal
-  // edge functions) may send transactional emails.
+  // Only service_role callers (internal edge functions) may invoke this
+  // function. End-user-initiated emails must go through a purpose-specific
+  // edge function that validates the user's identity and constrains the
+  // recipient/template — never let authenticated end users pick arbitrary
+  // templates (like `generic`) and recipients, which would enable phishing
+  // from our verified sending domain.
   const role = getJwtRole(req.headers.get('authorization'))
-  if (!role || role === 'anon') {
+  if (role !== 'service_role') {
     return new Response(
       JSON.stringify({ error: 'Forbidden' }),
       {
