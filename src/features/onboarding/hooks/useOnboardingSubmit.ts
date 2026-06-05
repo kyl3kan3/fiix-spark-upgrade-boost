@@ -140,35 +140,14 @@ export const useOnboardingSubmit = (
   toast.success("Company created successfully!");
 
   // Notify ops that a new trial signup happened. Fire-and-forget — never block onboarding.
+  // The dedicated edge function authenticates the user server-side and sends to a fixed
+  // internal recipient; clients cannot pick the recipient or email body.
   try {
-    const escape = (s: string) =>
-      String(s ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    const html = `
-      <p>A new company just started a MaintenEase trial.</p>
-      <ul>
-        <li><strong>Company:</strong> ${escape(state.company)}</li>
-        <li><strong>Name:</strong> ${escape(`${firstName} ${lastName}`.trim())}</li>
-        <li><strong>Email:</strong> ${escape(user.email ?? "")}</li>
-        <li><strong>Phone:</strong> ${escape(state.phoneNumber?.trim() ?? "")}</li>
-        <li><strong>Company ID:</strong> ${escape(companyId)}</li>
-        <li><strong>When:</strong> ${escape(new Date().toISOString())}</li>
-      </ul>
-    `;
-    void supabase.functions.invoke("send-transactional-email", {
-      body: {
-        templateName: "generic",
-        recipientEmail: "Kyle@decent4.com",
-        idempotencyKey: `trial-signup-${companyId}`,
-        templateData: {
-          subject: `New trial signup: ${state.company}`,
-          preheader: `${state.company} just started a trial`,
-          html,
-        },
-      },
-    }).catch((err) => logger.log("Trial signup notification failed:", err));
+    void supabase.functions
+      .invoke("notify-trial-signup", {
+        body: { company: state.company, companyId },
+      })
+      .catch((err) => logger.log("Trial signup notification failed:", err));
   } catch (notifyErr) {
     logger.log("Trial signup notification error:", notifyErr);
   }
