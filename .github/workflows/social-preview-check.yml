@@ -50,7 +50,56 @@ jobs:
           # to repo secrets; enables automatic Facebook cache invalidation
           # when mismatches are detected.
           FB_APP_ACCESS_TOKEN: ${{ secrets.FB_APP_ACCESS_TOKEN }}
-        run: npx tsx scripts/check-social-cache.ts
+        run: npx tsx scripts/check-social-cache.ts 2>&1 | tee social-audit.log
+
+      - name: Snapshot metadata history
+        id: snapshot
+        if: always()
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://maintenease.com' }}
+        run: npx tsx scripts/snapshot-meta-history.ts
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: social-preview-reports
+          path: |
+            social-audit.log
+            reports/meta-history/latest.json
+            reports/meta-history/latest-diff.md
+          if-no-files-found: ignore
+
+      # Email notification on failure. Configure these repo/org secrets to enable:
+      #   MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, MAIL_TO
+      # The step is skipped automatically when MAIL_SERVER is not configured.
+      - name: Email alert on failure
+        if: failure() && env.MAIL_SERVER != ''
+        env:
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: MaintenEase Monitoring <${{ secrets.MAIL_FROM }}>
+          to: ${{ secrets.MAIL_TO }}
+          subject: "[MaintenEase] Social preview check FAILED"
+          body: |
+            The daily social-preview audit failed.
+
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Artifacts (social-audit.log + meta-history diff) are attached
+            to the workflow run. Re-run the job after caches refresh; if
+            it persists, use the platform debuggers:
+              • https://developers.facebook.com/tools/debug/
+              • https://www.linkedin.com/post-inspector/
+              • https://cards-dev.twitter.com/validator
+          attachments: social-audit.log,reports/meta-history/latest-diff.md
+          ignore_cert: true
 
       - name: Open alert issue on failure
         if: failure()
