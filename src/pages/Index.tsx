@@ -24,11 +24,11 @@ const Index = () => {
  <meta property="og:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
  <meta property="og:url" content="https://maintenease.com/" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase — Maintenance Management Software" />
  <meta name="twitter:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
  </Helmet>
  <MarketingJsonLd />
  <Navbar />

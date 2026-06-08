@@ -58,14 +58,14 @@ export default function SmsOptIn() {
  />
  <meta property="og:url" content="https://maintenease.com/sms-opt-in" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="SMS Alerts Sign-Up | MaintenEase" />
  <meta
  name="twitter:description"
  content="Opt in to MaintenEase SMS alerts for work orders, inspections, and maintenance reminders."
  />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
  </Helmet>
 
  <div className="container mx-auto max-w-2xl px-4 py-12">

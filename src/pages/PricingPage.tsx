@@ -89,11 +89,11 @@ export default function PricingPage() {
  <meta property="og:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
  <meta property="og:url" content="https://maintenease.com/pricing" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
  <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
  <script type="application/ld+json">{JSON.stringify({
  "@context": "https://schema.org",
  "@type": "Product",
