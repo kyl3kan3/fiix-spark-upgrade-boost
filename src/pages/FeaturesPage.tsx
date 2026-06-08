@@ -37,6 +37,7 @@ const FeaturesPage = () => {
           name="twitter:description"
           content="Every MaintenEase feature, in one place."
         />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
       </Helmet>
       <Navbar />
       <main className="flex-1 pt-24">
