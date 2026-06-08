@@ -1,0 +1,121 @@
+name: Metadata regression (PR)
+
+# On every PR, runs the static-fallback + per-route og + render-time tests,
+# plus the live snapshot diff vs the previous run on main. If anything
+# fails (or any tag changed), posts a single rolling comment to the PR
+# with the diff so reviewers can see exactly what crawlers will see
+# differently after merge.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Run metadata tests
+        id: tests
+        run: |
+          set +e
+          npx vitest run \
+            src/__tests__/staticMetaFallback.test.ts \
+            src/pages/__tests__/metaTags.test.ts \
+            src/pages/__tests__/metaTagsAllPages.test.ts \
+            src/pages/__tests__/metaTagsRender.test.tsx \
+            2>&1 | tee meta-test-output.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Snapshot live metadata diff
+        id: snapshot
+        if: always()
+        continue-on-error: true
+        env:
+          BASE_URL: https://maintenease.com
+        run: |
+          mkdir -p reports/meta-history
+          # Pull the last committed snapshot from main so we can diff
+          # against it; if there isn't one yet, the script just writes
+          # a baseline.
+          git fetch origin main --depth=1 || true
+          git checkout origin/main -- reports/meta-history 2>/dev/null || true
+          npx tsx scripts/snapshot-meta-history.ts
+
+      - name: Build PR comment body
+        if: always()
+        id: body
+        run: |
+          {
+            echo "## Metadata regression report"
+            echo ""
+            if [ "${{ steps.tests.outputs.exit }}" = "0" ]; then
+              echo "✅ All static-fallback / per-route og / render tests passed."
+            else
+              echo "❌ Metadata tests **failed** — see details below."
+              echo ""
+              echo "<details><summary>Test output (tail)</summary>"
+              echo ""
+              echo '```'
+              tail -120 meta-test-output.txt || true
+              echo '```'
+              echo "</details>"
+            fi
+            echo ""
+            if [ -f reports/meta-history/latest-diff.md ]; then
+              echo "<details><summary>Live OG / JSON-LD diff vs previous snapshot</summary>"
+              echo ""
+              cat reports/meta-history/latest-diff.md
+              echo ""
+              echo "</details>"
+            fi
+          } > pr-comment.md
+
+      - name: Upsert PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const body = fs.readFileSync("pr-comment.md", "utf8");
+            const marker = "<!-- meta-regression-report -->";
+            const tagged = `${marker}\n${body}`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const mine = comments.find((c) => c.body && c.body.startsWith(marker));
+            if (mine) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: mine.id,
+                body: tagged,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: tagged,
+              });
+            }
+
+      - name: Fail job if tests failed
+        if: always()
+        run: |
+          if [ "${{ steps.tests.outputs.exit }}" != "0" ]; then exit 1; fi
