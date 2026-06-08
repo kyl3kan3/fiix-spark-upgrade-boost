@@ -41,16 +41,25 @@ function listPageFiles(): string[] {
 }
 
 function hasTag(source: string, attr: "property" | "name", key: string): boolean {
- const re = new RegExp(`<meta\\s+${attr}=["']${key}["']`);
- return re.test(source);
+	// Tolerate whitespace/newlines and reversed attribute order (JSX often
+	// splits long meta tags across lines).
+	const direct = new RegExp(`<meta[\\s\\S]*?${attr}=["']${key}["'][\\s\\S]*?\\/?>`);
+	if (direct.test(source)) return true;
+	return false;
 }
 
 function extractImage(source: string, attr: "property" | "name", key: string): string | null {
- const re = new RegExp(
- `<meta\\s+${attr}=["']${key}["']\\s+content=["']([^"']+)["']`,
- );
- const m = source.match(re);
- return m ? m[1] : null;
+	const re = new RegExp(
+		`<meta[\\s\\S]*?${attr}=["']${key}["'][\\s\\S]*?content=["']([^"']+)["']`,
+	);
+	const m1 = source.match(re);
+	if (m1) return m1[1];
+	// reversed attribute order
+	const re2 = new RegExp(
+		`<meta[\\s\\S]*?content=["']([^"']+)["'][\\s\\S]*?${attr}=["']${key}["']`,
+	);
+	const m2 = source.match(re2);
+	return m2 ? m2[1] : null;
 }
 
 describe("og/twitter metadata regression across all marketing pages", () => {
