@@ -40,26 +40,28 @@ function listPageFiles(): string[] {
  return files;
 }
 
+// Extract every <meta ... /> JSX tag (single- or multi-line) as a chunk so
+// each tag can be inspected independently — avoids regex bleed across tags.
+function metaTags(source: string): string[] {
+ const re = /<meta\b[^>]*?\/>/gs;
+ return source.match(re) ?? [];
+}
+
 function hasTag(source: string, attr: "property" | "name", key: string): boolean {
-	// Tolerate whitespace/newlines and reversed attribute order (JSX often
-	// splits long meta tags across lines).
-	const direct = new RegExp(`<meta[\\s\\S]*?${attr}=["']${key}["'][\\s\\S]*?\\/?>`);
-	if (direct.test(source)) return true;
-	return false;
+ const tag = new RegExp(`${attr}=["']${key}["']`);
+ return metaTags(source).some((t) => tag.test(t));
 }
 
 function extractImage(source: string, attr: "property" | "name", key: string): string | null {
-	const re = new RegExp(
-		`<meta[\\s\\S]*?${attr}=["']${key}["'][\\s\\S]*?content=["']([^"']+)["']`,
-	);
-	const m1 = source.match(re);
-	if (m1) return m1[1];
-	// reversed attribute order
-	const re2 = new RegExp(
-		`<meta[\\s\\S]*?content=["']([^"']+)["'][\\s\\S]*?${attr}=["']${key}["']`,
-	);
-	const m2 = source.match(re2);
-	return m2 ? m2[1] : null;
+ const matcher = new RegExp(`${attr}=["']${key}["']`);
+ const contentRe = /content=["']([^"']+)["']/;
+ for (const t of metaTags(source)) {
+ if (matcher.test(t)) {
+ const m = t.match(contentRe);
+ if (m) return m[1];
+ }
+ }
+ return null;
 }
 
 describe("og/twitter metadata regression across all marketing pages", () => {
