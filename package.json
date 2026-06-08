@@ -19,6 +19,7 @@
     "test": "vitest run",
     "check:og": "tsx scripts/check-og-images.ts",
     "check:social": "tsx scripts/check-social-cache.ts",
+    "snapshot:meta": "tsx scripts/snapshot-meta-history.ts",
     "preview": "vite preview"
   },
   "dependencies": {
