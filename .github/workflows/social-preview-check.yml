@@ -71,22 +71,10 @@ jobs:
             reports/meta-history/latest-diff.md
           if-no-files-found: ignore
 
-      - name: Send email alert on failure
-        if: failure()
-        # Configure these repo/org secrets to enable email:
-        #   MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD,
-        #   MAIL_FROM, MAIL_TO
-        # If MAIL_SERVER is not set the step is skipped silently.
-        env:
-          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
-        run: |
-          if [ -z "$MAIL_SERVER" ]; then
-            echo "MAIL_SERVER not configured — skipping email alert."
-            exit 0
-          fi
-        # The action below only runs if the previous shell step exited 0
-        # AND failure() above is true; we wrap the gating in a second step:
-      - name: Email notification
+      # Email notification on failure. Configure these repo/org secrets to enable:
+      #   MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, MAIL_TO
+      # The step is skipped automatically when MAIL_SERVER is not configured.
+      - name: Email alert on failure
         if: failure() && env.MAIL_SERVER != ''
         env:
           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
