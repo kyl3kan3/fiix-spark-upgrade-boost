@@ -57,7 +57,7 @@ import SolutionPage from "../SolutionPage";
 import LearnIndex from "../LearnIndex";
 import LearnArticle from "../LearnArticle";
 
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=2";
 
 type RouteCase = {
  name: string;

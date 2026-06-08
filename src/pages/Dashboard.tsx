@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
           content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
       </Helmet>
 
       <PageContainer>
