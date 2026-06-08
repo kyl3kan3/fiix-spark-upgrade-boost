@@ -20,6 +20,7 @@
 const BASE_URL = process.env.BASE_URL ?? "https://maintenease.com";
 const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=2";
 const FB_TOKEN = process.env.FB_APP_ACCESS_TOKEN;
+const SITEMAP_URL = `${BASE_URL}/sitemap.xml`;
 
 const PATHS = [
   "/",
@@ -69,6 +70,42 @@ function extract(html: string, attr: "property" | "name", key: string): string |
   return m2 ? m2[1] : null;
 }
 
+function extractCanonical(html: string): string | null {
+  return (
+    html.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1] ?? null
+  );
+}
+
+function normalizeUrl(u: string): string {
+  try {
+    const url = new URL(u);
+    let p = url.pathname.replace(/\/+$/, "");
+    if (p === "") p = "/";
+    return `${url.origin}${p}`;
+  } catch {
+    return u;
+  }
+}
+
+let sitemapEntriesCache: Set<string> | null = null;
+async function loadSitemapEntries(): Promise<Set<string>> {
+  if (sitemapEntriesCache) return sitemapEntriesCache;
+  const set = new Set<string>();
+  try {
+    const res = await fetch(SITEMAP_URL);
+    if (res.ok) {
+      const xml = await res.text();
+      const re = /<loc>\s*([^<]+)\s*<\/loc>/gi;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(xml))) set.add(normalizeUrl(m[1]));
+    }
+  } catch {
+    // ignored — sitemap presence is asserted separately below.
+  }
+  sitemapEntriesCache = set;
+  return set;
+}
+
 async function refreshFacebookCache(url: string): Promise<void> {
   if (!FB_TOKEN) return;
   try {
@@ -100,6 +137,8 @@ async function checkOne(path: string, crawler: { name: string; ua: string }): Pr
     const og = extract(html, "property", "og:image");
     const ogTitle = extract(html, "property", "og:title");
     const ogDesc = extract(html, "property", "og:description");
+    const ogUrl = extract(html, "property", "og:url");
+    const canonical = extractCanonical(html);
 
     if (og !== EXPECTED_IMAGE) {
       ok = false;
@@ -113,6 +152,30 @@ async function checkOne(path: string, crawler: { name: string; ua: string }): Pr
       ok = false;
       messages.push(`og:description missing`);
     }
+    if (!ogUrl) {
+      ok = false;
+      messages.push(`og:url missing`);
+    }
+    if (!canonical) {
+      ok = false;
+      messages.push(`canonical <link> missing`);
+    }
+    if (ogUrl && canonical && normalizeUrl(ogUrl) !== normalizeUrl(canonical)) {
+      ok = false;
+      messages.push(
+        `og:url / canonical mismatch — og:url=${ogUrl} canonical=${canonical}`,
+      );
+    }
+    const expectedAbs = normalizeUrl(url);
+    if (canonical && normalizeUrl(canonical) !== expectedAbs) {
+      ok = false;
+      messages.push(`canonical does not match request URL — got ${canonical}`);
+    }
+    const sitemap = await loadSitemapEntries();
+    if (sitemap.size > 0 && !sitemap.has(expectedAbs)) {
+      ok = false;
+      messages.push(`URL is not listed in sitemap.xml`);
+    }
   } catch (e) {
     ok = false;
     messages.push(`fetch failed: ${(e as Error).message}`);
@@ -123,6 +186,18 @@ async function checkOne(path: string, crawler: { name: string; ua: string }): Pr
 async function main() {
   console.log(`Checking social-crawler preview on ${BASE_URL}`);
   console.log(`Expected og:image = ${EXPECTED_IMAGE}\n`);
+
+  // Sanity: sitemap must be reachable at all.
+  try {
+    const sm = await fetch(SITEMAP_URL);
+    if (!sm.ok) {
+      console.error(`sitemap.xml unreachable: HTTP ${sm.status}`);
+      process.exit(1);
+    }
+  } catch (e) {
+    console.error(`sitemap.xml fetch failed: ${(e as Error).message}`);
+    process.exit(1);
+  }
 
   const tasks: Promise<Result>[] = [];
   for (const path of PATHS) {
