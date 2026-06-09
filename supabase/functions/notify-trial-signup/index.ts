@@ -9,6 +9,10 @@ const corsHeaders = {
 // abuse of the verified sending domain for arbitrary recipients.
 const INTERNAL_RECIPIENT = "Kyle@decent4.com";
 
+// Single source of truth on the server. Keep in sync with `TRIAL_DAYS`
+// in src/constants/trial.ts and the Paddle price trial_period settings.
+const TRIAL_DAYS = 7;
+
 interface Body {
   company?: string;
   companyId?: string;
@@ -72,36 +76,60 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+    const userEmail = profile?.email ?? user.email ?? "";
+    const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString();
     const html = `
       <p>A new company just started a MaintenEase trial.</p>
       <ul>
         <li><strong>Company:</strong> ${escape(company)}</li>
         <li><strong>Name:</strong> ${escape(fullName)}</li>
-        <li><strong>Email:</strong> ${escape(profile?.email ?? user.email ?? "")}</li>
+        <li><strong>Email:</strong> ${escape(userEmail)}</li>
         <li><strong>Phone:</strong> ${escape(profile?.phone_number ?? "")}</li>
         <li><strong>Company ID:</strong> ${escape(companyId)}</li>
+        <li><strong>Trial length:</strong> ${TRIAL_DAYS} days</li>
         <li><strong>When:</strong> ${escape(new Date().toISOString())}</li>
       </ul>
     `;
 
-    const forwardRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
-      },
-      body: JSON.stringify({
-        templateName: "generic",
-        recipientEmail: INTERNAL_RECIPIENT,
-        idempotencyKey: `trial-signup-${companyId || user.id}`,
-        templateData: {
-          subject: `New trial signup: ${company}`,
-          preheader: `${company} just started a trial`,
-          html,
+    const sendEmail = (payload: Record<string, unknown>) =>
+      fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceKey}`,
+          apikey: serviceKey,
         },
-      }),
+        body: JSON.stringify(payload),
+      });
+
+    // 1) Internal ops notification.
+    const forwardRes = await sendEmail({
+      templateName: "generic",
+      recipientEmail: INTERNAL_RECIPIENT,
+      idempotencyKey: `trial-signup-${companyId || user.id}`,
+      templateData: {
+        subject: `New trial signup: ${company}`,
+        preheader: `${company} just started a trial`,
+        html,
+      },
     });
+
+    // 2) Confirmation email to the new trial user. Fire-and-forget — never
+    //    block the response on the welcome email.
+    if (userEmail) {
+      sendEmail({
+        templateName: "trial-start",
+        recipientEmail: userEmail,
+        idempotencyKey: `trial-start-${companyId || user.id}`,
+        templateData: {
+          firstName: profile?.first_name ?? undefined,
+          companyName: company,
+          trialDays: TRIAL_DAYS,
+          trialEndsAt,
+          appUrl: "https://maintenease.com/dashboard",
+        },
+      }).catch((err) => console.error("trial-start email failed", err));
+    }
 
     if (!forwardRes.ok) {
       const text = await forwardRes.text().catch(() => "");
@@ -112,7 +140,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, trialDays: TRIAL_DAYS, trialEndsAt }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
