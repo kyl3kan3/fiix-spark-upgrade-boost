@@ -117,7 +117,7 @@ export default function PricingPage() {
        Simple, transparent pricing
      </h1>
      <p className="text-lg text-muted-foreground mb-8">
-       Choose the plan that fits your facility's needs. 14-day free trial on every plan.
+        Choose the plan that fits your facility's needs. 7-day free trial on every plan.
      </p>
      <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
        <span
@@ -191,7 +191,7 @@ export default function PricingPage() {
    disabled={loadingTier === plan.tier}
    onClick={() => startCheckout(plan.tier)}
  >
- {loadingTier === plan.tier ? "Loading…" : "Start 14-day trial"}
+ {loadingTier === plan.tier ? "Loading…" : "Start 7-day trial"}
  </Button>
  <ul className="space-y-2 text-sm">
  {plan.features.map((f) => (
@@ -208,14 +208,14 @@ export default function PricingPage() {
  </div>
 
  <p className="mt-4 text-center text-sm text-muted-foreground">
- All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 15 to avoid charges.
+ All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 8 to avoid charges.
  </p>
  <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between">
  <p className="text-sm text-muted-foreground">Share these plans</p>
  <ShareButtons
  url="https://maintenease.com/pricing"
  title="MaintenEase Pricing — Plans for Maintenance Teams"
- description="Compare Starter, Pro, and Business plans. 14-day free trial."
+ description="Compare Starter, Pro, and Business plans. 7-day free trial."
  />
  </div>
  </div>
