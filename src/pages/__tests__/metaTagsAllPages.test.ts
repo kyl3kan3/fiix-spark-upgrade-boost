@@ -68,7 +68,7 @@ describe("og/twitter metadata regression across all marketing pages", () => {
  const files = listPageFiles();
  // Only consider pages that actually opt-in to social previews (declare og:image).
  const pagesWithOg = files.filter((file) =>
- /\<meta\s+property=["']og:image["']/.test(readFileSync(file, "utf8")),
+ /<meta\s+property=["']og:image["']/.test(readFileSync(file, "utf8")),
  );
 
  it("discovers at least the known marketing pages", () => {
