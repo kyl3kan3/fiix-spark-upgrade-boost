@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { deleteWorkOrder } from "@/services/workOrderService";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 
 // Import our new components
@@ -27,25 +27,16 @@ const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
  if (isDeleting) return;
  setIsDeleting(true);
  try {
- const { data, error } = await supabase
- .from("work_orders")
- .delete()
- .eq("id", workOrder.id)
- .select("id");
-
- if (error) throw error;
- if (!data || data.length === 0) {
- throw new Error("You don't have permission to delete this job.");
- }
+ await deleteWorkOrder(workOrder.id);
 
  toast.success("Job deleted", {
  description: "The work order has been removed.",
  });
  setIsDeleteDialogOpen(false);
  navigate("/work-orders");
- } catch (error: any) {
+ } catch (error) {
  toast.error("Couldn't delete job", {
- description: error.message || "Please try again.",
+ description: error instanceof Error ? error.message : "Please try again.",
  });
  } finally {
  setIsDeleting(false);

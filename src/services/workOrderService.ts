@@ -42,6 +42,36 @@ export async function updateWorkOrder(workOrderId: string, values: WorkOrderForm
  return response;
 }
 
+export async function deleteWorkOrder(workOrderId: string) {
+ const { data, error } = await supabase
+ .from("work_orders")
+ .delete()
+ .eq("id", workOrderId)
+ .select("id");
+
+ if (error) throw error;
+ if (!data || data.length === 0) {
+ throw new Error("You don't have permission to delete this work order.");
+ }
+
+ return data;
+}
+
+export async function getScheduledWorkOrders() {
+ const { data, error } = await supabase
+ .from("work_orders")
+ .select(`
+ *,
+ asset:assets(*),
+ assignee:profiles!work_orders_assigned_to_fkey(*)
+ `)
+ .not("due_date", "is", null)
+ .order("due_date", { ascending: true });
+
+ if (error) throw error;
+ return data;
+}
+
 export async function getWorkOrderById(workOrderId: string) {
  const response = await supabase
  .from("work_orders")
