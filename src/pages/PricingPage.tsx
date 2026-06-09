@@ -13,6 +13,8 @@ import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
+import { TRIAL_DAYS } from "@/constants/trial";
+import { trackTrialEvent } from "@/lib/analytics/trialEvents";
 
 const PLANS = [
  {
@@ -51,6 +53,7 @@ export default function PricingPage() {
  async function startCheckout(tier: "starter" | "pro" | "business") {
  setLoadingTier(tier);
  try {
+  void trackTrialEvent("trial_checkout_started", { tier, metadata: { interval } });
  const { data: session } = await supabase.auth.getSession();
  if (!session.session) {
  navigate("/auth?signup=true");
@@ -70,7 +73,7 @@ export default function PricingPage() {
  customerEmail: email,
  customData: { companyId: profile.company_id, userId },
 	  successUrl: `${window.location.origin}/billing?success=1`,
-	  trialDays: 7,
+ 	  trialDays: TRIAL_DAYS,
 	});
  } catch (e) {
  toast.error((e as Error).message || "Could not start checkout");
