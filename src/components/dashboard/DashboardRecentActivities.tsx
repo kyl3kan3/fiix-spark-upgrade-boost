@@ -1,8 +1,37 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
+import { Loader2 } from "lucide-react";
+import { getRecentWorkOrderActivity } from "@/services/reportService";
+
+const STATUS_LABELS: Record<string, string> = {
+ pending: "OPENED",
+ in_progress: "IN PROGRESS",
+ completed: "COMPLETED",
+ cancelled: "CANCELLED",
+};
 
 const DashboardRecentActivities: React.FC = () => {
- // Mock activities until wired to real feed
- const activities: Array<{ id: string; code: string; title: string; meta: string; time: string }> = [];
+ const { data, isLoading } = useQuery({
+ queryKey: ["recentWorkOrderActivity"],
+ queryFn: () => getRecentWorkOrderActivity(8),
+ });
+
+ const activities = (data || []).map((wo) => {
+ const assignee = [wo.assignee?.first_name, wo.assignee?.last_name]
+ .filter(Boolean)
+ .join(" ");
+ const meta = [wo.asset?.name, assignee && `Assigned to ${assignee}`]
+ .filter(Boolean)
+ .join(" · ") || "Unassigned";
+ return {
+ id: wo.id,
+ code: `WO-${wo.id.slice(0, 8).toUpperCase()} · ${STATUS_LABELS[wo.status] || wo.status.toUpperCase()}`,
+ title: wo.title,
+ meta,
+ time: formatDistanceToNow(new Date(wo.updated_at), { addSuffix: true }),
+ };
+ });
 
  return (
  <div className="ticket-card h-full">
@@ -11,7 +40,12 @@ const DashboardRecentActivities: React.FC = () => {
  <span className="label-meta">LIVE · 24H</span>
  </div>
  <div className="p-5">
- {activities.length > 0 ? (
+ {isLoading ? (
+ <div className="flex items-center justify-center py-12 text-muted-foreground">
+ <Loader2 className="h-4 w-4 animate-spin mr-2" />
+ <span className="font-mono text-[11px] uppercase tracking-wider">Loading activity…</span>
+ </div>
+ ) : activities.length > 0 ? (
  <div className="relative pl-5 border-l border-dashed border-border space-y-4">
  {activities.map((a) => (
  <div key={a.id} className="relative">

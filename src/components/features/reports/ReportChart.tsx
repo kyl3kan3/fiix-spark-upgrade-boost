@@ -88,11 +88,10 @@ const ReportChart: React.FC<ReportChartProps> = ({
  <div className="mt-4 p-4 bg-background rounded-lg border border-border">
  <h4 className="font-semibold text-sm text-foreground mb-2">Report Summary</h4>
  <p className="text-sm text-muted-foreground">
- This {reportType.toLowerCase()} report shows data from the last 30 days.
- {reportType === "Work Order Statistics" && " Work orders have increased by 12% compared to the previous period."}
- {reportType === "Asset Performance" && " Asset performance has improved with 8% less downtime compared to the previous period."}
- {reportType === "Maintenance Trends" && " Preventive maintenance has increased by 15% while corrective maintenance has decreased."}
- {reportType === "Custom Report" && " This custom report reflects the parameters you've selected."}
+ {reportType === "Work Order Statistics" && "Work orders created, completed, and in progress per month over the last 6 months."}
+ {reportType === "Asset Performance" && "Distribution of work orders across your most active assets over the last 6 months."}
+ {reportType === "Maintenance Trends" && "Preventive vs. corrective work per month, classified by work order priority."}
+ {reportType === "Custom Report" && "Work order activity for the most recent months."}
  </p>
  </div>
  </CardContent>
