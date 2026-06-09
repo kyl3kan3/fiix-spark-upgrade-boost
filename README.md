@@ -1,76 +1,82 @@
-# Welcome to your Lovable project
+# MaintenEase
 
-## Project info
+A CMMS (computerized maintenance management system) for small teams: work
+orders, assets, locations, preventive-maintenance scheduling, checklists,
+inspections, vendors, and team management — backed by Supabase with a
+React/Vite front end.
 
-**URL**: https://lovable.dev/projects/8e4b0baf-d26e-4fdc-947e-b3bad90e188b
+Live site: https://maintenease.com
+Lovable project: https://lovable.dev/projects/8e4b0baf-d26e-4fdc-947e-b3bad90e188b
+(changes made via Lovable are committed to this repo automatically).
 
-## How can I edit this code?
+## Stack
 
-There are several ways of editing your application.
+- **Vite + React 18 + TypeScript** — SPA with route-level code splitting
+- **Supabase** — Postgres, auth, storage, edge functions (`supabase/`)
+- **TanStack Query** — server state; components consume domain services via hooks
+- **shadcn/ui + Tailwind CSS** — UI components and styling
+- **Vitest + Testing Library** — unit/component tests
+- **Sentry** — client error monitoring (see below)
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/8e4b0baf-d26e-4fdc-947e-b3bad90e188b) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Getting started
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install        # Node 20+; installs deps (xlsx comes from cdn.sheetjs.com)
+npm run dev        # start the dev server (regenerates public/sitemap.xml first)
 ```
 
-**Edit a file directly in GitHub**
+Useful scripts:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Script | What it does |
+| --- | --- |
+| `npm run build` | Production build (also regenerates the sitemap) |
+| `npm run typecheck` | `tsc --noEmit` against `tsconfig.app.json` |
+| `npm run lint` | ESLint over the repo (warnings allowed, errors fail CI) |
+| `npm test` | Vitest run |
+| `npm run seed:demo` / `reset:demo` / `verify:demo` | Manage the demo tenant (see `docs/demo-environment-playbook.md`) |
+| `npm run check:og` / `check:social` / `snapshot:meta` | Social-preview / metadata checks used by CI |
 
-**Use GitHub Codespaces**
+### Environment variables
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The Supabase URL/publishable key are committed defaults in
+`src/integrations/supabase/`. Optional overrides:
 
-## What technologies are used for this project?
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID`
+- `VITE_SENTRY_DSN` — per-environment Sentry project (a default DSN is hard-coded)
+- `VITE_APP_VERSION` — release tag for Sentry; CI sets this to the commit SHA
+- `VITE_PAYMENTS_CLIENT_TOKEN` — payments/billing client token
 
-This project is built with:
+## Code organization
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+  pages/            # route components (see src/router/routeManifest.ts)
+  components/       # feature UIs (workOrders, assets, calendar, team, …)
+  services/         # ALL Supabase access lives here (enforced by lint rule)
+  hooks/            # react-query hooks and shared logic
+  integrations/     # supabase client + generated types
+supabase/
+  functions/        # edge functions
+  migrations/       # SQL migrations (RLS policies included)
+scripts/            # sitemap, demo tenant, and metadata-check scripts
+```
 
-## How can I deploy this project?
+Two conventions are enforced by ESLint:
 
-Simply open [Lovable](https://lovable.dev/projects/8e4b0baf-d26e-4fdc-947e-b3bad90e188b) and click on Share -> Publish.
+1. Import the Supabase client only inside `src/services/**` or
+   `src/integrations/**` — components/hooks/pages go through a domain
+   service consumed via a react-query hook.
+2. Resolve the current user/company through
+   `src/services/supabaseHelpers.ts` (`requireUserCompany`, `getCurrentUser`,
+   …) instead of calling `supabase.auth.getUser()` directly.
 
-## Can I connect a custom domain to my Lovable project?
+## CI
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+`.github/workflows/ci.yml` runs lint, typecheck, tests, and the production
+build on every PR. `meta-tests-pr.yml` runs metadata/OG regression tests and
+posts a report comment; `social-preview-check.yml` validates social-card
+images. All jobs install with `npm ci`, so keep `package-lock.json` in sync
+with `package.json` when changing dependencies.
 
 ## Error monitoring (Sentry)
 
@@ -116,3 +122,9 @@ Sentry UI (Alerts → Create Alert → Issues):
 
 The default DSN is hard-coded; override per environment with
 `VITE_SENTRY_DSN` if you need a separate Sentry project.
+
+## Deployment
+
+Open the [Lovable project](https://lovable.dev/projects/8e4b0baf-d26e-4fdc-947e-b3bad90e188b)
+and click Share → Publish. Custom domains: Project → Settings → Domains
+([docs](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)).

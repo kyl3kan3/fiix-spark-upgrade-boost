@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { exportReportToPdf } from "@/utils/pdfExport";
@@ -7,7 +8,7 @@ import ReportsList from "./reports/ReportsList";
 import ReportChart from "./reports/ReportChart";
 import CustomReportForm from "./reports/CustomReportForm";
 import AnalyticsOverview from "./reports/AnalyticsOverview";
-import { monthlyWorkOrders, assetPerformanceData, maintenanceTrendsData } from "./reports/data";
+import { getWorkOrderReportData } from "@/services/reportService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import ImageGallery from "@/components/common/ImageGallery";
@@ -28,19 +29,14 @@ const REPORT_ENTITY_IDS: Record<string, string> = {
 const ReportsContent: React.FC = () => {
  const [selectedReport, setSelectedReport] = useState<string | null>(null);
  const [isExporting, setIsExporting] = useState(false);
- const [isLoading, setIsLoading] = useState(true);
  const [shareOpen, setShareOpen] = useState(false);
  const isMobile = useIsMobile();
- 
- // Simulate loading state for better UX
- useEffect(() => {
- const timer = setTimeout(() => {
- setIsLoading(false);
- }, 800);
- 
- return () => clearTimeout(timer);
- }, []);
- 
+
+ const { data: reportData, isLoading } = useQuery({
+ queryKey: ["workOrderReportData"],
+ queryFn: getWorkOrderReportData,
+ });
+
  const handleGenerateReport = (reportType: string) => {
  logger.log("Generating report:", reportType);
  setSelectedReport(reportType);
@@ -76,18 +72,18 @@ const ReportsContent: React.FC = () => {
  };
 
  const getReportData = () => {
+ if (!reportData) return [];
  switch (selectedReport) {
  case "Work Order Statistics":
- return monthlyWorkOrders;
+ return reportData.monthly;
  case "Asset Performance":
- return assetPerformanceData;
+ return reportData.byAsset;
  case "Maintenance Trends":
- return maintenanceTrendsData;
+ return reportData.trends;
  case "Custom Report":
- // In a real app, this would be generated from custom parameters
- return [...monthlyWorkOrders].slice(0, 5);
+ return [...reportData.monthly].slice(-3);
  default:
- return monthlyWorkOrders;
+ return reportData.monthly;
  }
  };
 

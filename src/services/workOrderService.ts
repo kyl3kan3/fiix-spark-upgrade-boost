@@ -1,5 +1,7 @@
 
+import { add, addMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { requireUser } from "@/services/supabaseHelpers";
 import { WorkOrderFormValues } from "@/components/workOrders/WorkOrderFormSchema";
 
 export async function createWorkOrder(userId: string, values: WorkOrderFormValues) {
@@ -69,6 +71,91 @@ export async function getScheduledWorkOrders() {
  .order("due_date", { ascending: true });
 
  if (error) throw error;
+ return data;
+}
+
+export interface PmScheduleInput {
+ title: string;
+ assetId: string;
+ startDate: Date;
+ priority: "low" | "medium" | "high";
+ frequency?: {
+ value: number;
+ unit: "days" | "weeks" | "months" | "years";
+ };
+}
+
+// Without a dedicated schedules table, a recurring schedule is persisted as
+// one work order per occurrence, bounded to the next 6 months (max 12).
+const PM_HORIZON_MONTHS = 6;
+const PM_MAX_OCCURRENCES = 12;
+
+export function buildPmOccurrenceDates(
+ startDate: Date,
+ frequency?: PmScheduleInput["frequency"],
+): Date[] {
+ if (!frequency || frequency.value < 1) return [startDate];
+
+ const horizon = addMonths(startDate, PM_HORIZON_MONTHS);
+ const dates: Date[] = [];
+ let next = startDate;
+ while (next <= horizon && dates.length < PM_MAX_OCCURRENCES) {
+ dates.push(next);
+ next = add(next, { [frequency.unit]: frequency.value });
+ }
+ return dates;
+}
+
+export async function createPmSchedule(input: PmScheduleInput) {
+ const user = await requireUser();
+ const dates = buildPmOccurrenceDates(input.startDate, input.frequency);
+
+ const description = input.frequency
+ ? `Preventive maintenance — repeats every ${input.frequency.value} ${input.frequency.unit}`
+ : "Preventive maintenance";
+
+ const rows = dates.map((date) => ({
+ title: input.title,
+ description,
+ priority: input.priority,
+ status: "pending" as const,
+ due_date: date.toISOString(),
+ asset_id: input.assetId,
+ created_by: user.id,
+ }));
+
+ const { data, error } = await supabase
+ .from("work_orders")
+ .insert(rows)
+ .select("id");
+
+ if (error) throw error;
+ return data?.length ?? 0;
+}
+
+export async function getUpcomingPmWorkOrders() {
+ const { data, error } = await supabase
+ .from("work_orders")
+ .select("id, title, due_date, priority, status, description, asset:assets(name)")
+ .not("due_date", "is", null)
+ .in("status", ["pending", "in_progress"])
+ .order("due_date", { ascending: true });
+
+ if (error) throw error;
+ return data || [];
+}
+
+export async function completeWorkOrder(workOrderId: string) {
+ const { data, error } = await supabase
+ .from("work_orders")
+ .update({ status: "completed" })
+ .eq("id", workOrderId)
+ .select("id");
+
+ if (error) throw error;
+ if (!data || data.length === 0) {
+ throw new Error("You don't have permission to update this work order.");
+ }
  return data;
 }
 
