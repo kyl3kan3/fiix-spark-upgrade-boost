@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const features = [
- "Free 14-day trial",
+ "Free 7-day trial",
  "No credit card required",
  "Easy self-onboarding",
  "Unlimited users during trial"

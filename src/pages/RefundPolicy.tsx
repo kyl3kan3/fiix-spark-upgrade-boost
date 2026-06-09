@@ -51,7 +51,7 @@ export default function RefundPolicy() {
  <section>
  <h2 className="text-2xl font-semibold">Free trials</h2>
  <p>
- All paid plans start with a 14-day free trial. You will not be charged during the trial period. If you cancel before
+ All paid plans start with a 7-day free trial. You will not be charged during the trial period. If you cancel before
  the trial ends, no charge is made and no refund is needed.
  </p>
  </section>
