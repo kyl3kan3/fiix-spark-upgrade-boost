@@ -33,7 +33,7 @@ export const workOrderToCalendarEvent = (workOrder: WorkOrderWithRelations): Mai
 });
 
 export const useCalendarEvents = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["calendarEvents"],
     queryFn: async () => {
       const workOrders = await getScheduledWorkOrders();
@@ -56,5 +56,5 @@ export const useCalendarEvents = () => {
     })),
   ];
 
-  return { events, technicians, isLoading, error };
+  return { events, technicians, isLoading, error, refetch };
 };

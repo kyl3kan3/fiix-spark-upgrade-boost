@@ -7,6 +7,7 @@ import { UnplannedMaintenanceItem, UnplannedMaintenanceFormData } from "./unplan
 import UnplannedMaintenanceForm from "./unplanned-maintenance/UnplannedMaintenanceForm";
 import UnplannedMaintenanceList from "./unplanned-maintenance/UnplannedMaintenanceList";
 import UnplannedMaintenanceDashboard from "./unplanned-maintenance/UnplannedMaintenanceDashboard";
+import QueryErrorState from "@/components/common/QueryErrorState";
 import {
  createUnplannedWorkOrder,
  getUnplannedWorkOrders,
@@ -33,7 +34,7 @@ const personName = (profile?: { first_name: string | null; last_name: string | n
 const UnplannedMaintenanceContent: React.FC = () => {
  const queryClient = useQueryClient();
 
- const { data: workOrders, isLoading } = useQuery({
+ const { data: workOrders, isLoading, error, refetch } = useQuery({
  queryKey: ["unplannedWorkOrders"],
  queryFn: getUnplannedWorkOrders,
  });
@@ -108,6 +109,8 @@ const UnplannedMaintenanceContent: React.FC = () => {
  <Loader2 className="h-5 w-5 animate-spin mr-2" />
  <span className="text-sm">Loading unplanned maintenance…</span>
  </div>
+ ) : error ? (
+ <QueryErrorState title="Couldn't load unplanned maintenance" error={error} onRetry={() => refetch()} />
  ) : (
  <UnplannedMaintenanceList
  items={unplannedItems}

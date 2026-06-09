@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { getRecentWorkOrderActivity } from "@/services/reportService";
+import QueryErrorState from "@/components/common/QueryErrorState";
 
 const STATUS_LABELS: Record<string, string> = {
  pending: "OPENED",
@@ -12,7 +13,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const DashboardRecentActivities: React.FC = () => {
- const { data, isLoading } = useQuery({
+ const { data, isLoading, error, refetch } = useQuery({
  queryKey: ["recentWorkOrderActivity"],
  queryFn: () => getRecentWorkOrderActivity(8),
  });
@@ -45,6 +46,8 @@ const DashboardRecentActivities: React.FC = () => {
  <Loader2 className="h-4 w-4 animate-spin mr-2" />
  <span className="font-mono text-[11px] uppercase tracking-wider">Loading activity…</span>
  </div>
+ ) : error ? (
+ <QueryErrorState title="Couldn't load activity" error={error} onRetry={() => refetch()} />
  ) : activities.length > 0 ? (
  <div className="relative pl-5 border-l border-dashed border-border space-y-4">
  {activities.map((a) => (
