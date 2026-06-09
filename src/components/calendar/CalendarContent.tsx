@@ -58,7 +58,7 @@ const CalendarContent: React.FC<CalendarContentProps> = ({
  </TabsContent>
 
  <TabsContent value="week" className="mt-0">
- <WeekView />
+ <WeekView events={filteredEvents} date={date} />
  </TabsContent>
 
  <TabsContent value="month" className="mt-0">

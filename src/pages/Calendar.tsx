@@ -1,7 +1,8 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
@@ -9,15 +10,15 @@ import CalendarSidebar from "@/components/calendar/CalendarSidebar";
 import CalendarContent from "@/components/calendar/CalendarContent";
 import DailyLog from "@/components/calendar/DailyLog";
 import DailyLogsList from "@/components/calendar/DailyLogsList";
-import { events, technicians } from "@/components/calendar/mockData";
-import { MaintenanceEvent } from "@/components/calendar/types";
-import { toast } from "sonner";
+import { useCalendarEvents } from "@/components/calendar/useCalendarEvents";
 
 const CalendarPage = () => {
+ const navigate = useNavigate();
  const [date, setDate] = useState<Date | undefined>(new Date());
  const [activeView, setActiveView] = useState("day");
  const [technicianFilter, setTechnicianFilter] = useState("all");
- 
+ const { events, technicians, isLoading } = useCalendarEvents();
+
  // Filter events by selected date and technician
  const filteredEvents = events.filter((event) => {
  const isTechnicianMatch = technicianFilter === "all" || event.technician === technicianFilter;
@@ -54,7 +55,7 @@ const CalendarPage = () => {
  };
 
  const handleScheduleEvent = () => {
- toast.info("Schedule Event dialog will open here");
+ navigate("/work-orders/new");
  };
 
  return (
@@ -105,6 +106,12 @@ const CalendarPage = () => {
  />
  </div>
  <div className="lg:col-span-3 order-1 lg:order-2">
+ {isLoading ? (
+ <div className="bg-card border border-border rounded-lg p-12 flex items-center justify-center text-muted-foreground">
+ <Loader2 className="h-5 w-5 animate-spin mr-2" />
+ <span className="text-sm">Loading scheduled work…</span>
+ </div>
+ ) : (
  <CalendarContent
  date={date}
  activeView={activeView}
@@ -112,6 +119,7 @@ const CalendarPage = () => {
  technicianFilter={technicianFilter}
  filteredEvents={filteredEvents}
  />
+ )}
  </div>
  </div>
  </TabsContent>

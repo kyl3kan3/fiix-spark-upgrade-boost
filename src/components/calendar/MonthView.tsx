@@ -59,7 +59,7 @@ const MonthView: React.FC<MonthViewProps> = ({ events }) => {
  <Users className="h-3.5 w-3.5 shrink-0" />
  <span className="truncate">{event.technician}</span>
  </div>
- <span className="shrink-0 text-muted-foreground font-medium">{event.duration}</span>
+ <span className="shrink-0 text-muted-foreground font-medium truncate max-w-[40%]">{event.asset}</span>
  </div>
  </div>
  </div>

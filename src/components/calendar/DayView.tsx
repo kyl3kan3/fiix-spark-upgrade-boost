@@ -1,6 +1,7 @@
 
 import React from "react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { MaintenanceEvent } from "./types";
@@ -29,6 +30,8 @@ const getTypeBorderAccent = (type: string) => {
 };
 
 const DayView: React.FC<DayViewProps> = ({ events }) => {
+ const navigate = useNavigate();
+
  if (events.length === 0) {
  return (
  <div className="text-center py-12">
@@ -37,7 +40,7 @@ const DayView: React.FC<DayViewProps> = ({ events }) => {
  <p className="text-sm text-muted-foreground mb-5">
  No maintenance events scheduled for this day.
  </p>
- <Button size="sm">Schedule New Event</Button>
+ <Button size="sm" onClick={() => navigate("/work-orders/new")}>Schedule New Event</Button>
  </div>
  );
  }
@@ -69,13 +72,19 @@ const DayView: React.FC<DayViewProps> = ({ events }) => {
  <p className="font-medium text-foreground capitalize">{event.type}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Duration</p>
- <p className="font-medium text-foreground">{event.duration}</p>
+ <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Asset</p>
+ <p className="font-medium text-foreground">{event.asset}</p>
  </div>
  </div>
  <div className="mt-4 flex justify-end gap-2">
- <Button variant="outline" size="sm" className="text-xs border-primary text-primary hover:bg-primary/5">View Details</Button>
- <Button size="sm" className="text-xs">Update Status</Button>
+ <Button
+ variant="outline"
+ size="sm"
+ className="text-xs border-primary text-primary hover:bg-primary/5"
+ onClick={() => navigate(`/work-orders/${event.id}`)}
+ >
+ View Details
+ </Button>
  </div>
  </div>
  ))}

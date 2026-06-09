@@ -1,11 +1,11 @@
 
 export interface MaintenanceEvent {
- id: number;
+ id: string;
  title: string;
  description: string;
  date: Date;
  technician: string;
  status: string;
  type: string;
- duration: string;
+ asset: string;
 }

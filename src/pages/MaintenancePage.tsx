@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import UnplannedMaintenanceContent from "@/components/features/UnplannedMaintena
 import { Plus } from "lucide-react";
 
 const MaintenancePage = () => {
+ const navigate = useNavigate();
  const [activeTab, setActiveTab] = useState("preventive");
  return (
  <DashboardLayout>
@@ -15,7 +17,7 @@ const MaintenancePage = () => {
  title="PM Scheduler"
  description="Manage and forecast preventive maintenance tasks."
  actions={
- <Button size="lg" onClick={() => {}}>
+ <Button size="lg" onClick={() => navigate("/work-orders/new")}>
  <Plus className="h-4 w-4 mr-1.5" />
  Create New Schedule
  </Button>
