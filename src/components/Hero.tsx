@@ -65,7 +65,7 @@ const Hero = () => {
               </div>
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-success" />
-                14-day full access
+                7-day full access
               </div>
             </div>
           </div>

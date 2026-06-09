@@ -122,7 +122,7 @@ const FlatFeeAdvantage = () => {
             className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
             onClick={() => navigate("/auth?signup=true")}
           >
-            Start your 14-day trial
+            Start your 7-day trial
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
           <Button

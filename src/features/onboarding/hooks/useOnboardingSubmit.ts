@@ -148,6 +148,12 @@ export const useOnboardingSubmit = (
         body: { company: state.company, companyId },
       })
       .catch((err) => logger.log("Trial signup notification failed:", err));
+    void import("@/lib/analytics/trialEvents").then(({ trackTrialEvent }) =>
+      trackTrialEvent("trial_signup_completed", {
+        companyId,
+        metadata: { source: "onboarding" },
+      }),
+    );
   } catch (notifyErr) {
     logger.log("Trial signup notification error:", notifyErr);
   }

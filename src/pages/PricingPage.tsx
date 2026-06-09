@@ -13,6 +13,8 @@ import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
+import { TRIAL_DAYS } from "@/constants/trial";
+import { trackTrialEvent } from "@/lib/analytics/trialEvents";
 
 const PLANS = [
  {
@@ -51,6 +53,7 @@ export default function PricingPage() {
  async function startCheckout(tier: "starter" | "pro" | "business") {
  setLoadingTier(tier);
  try {
+  void trackTrialEvent("trial_checkout_started", { tier, metadata: { interval } });
  const { data: session } = await supabase.auth.getSession();
  if (!session.session) {
  navigate("/auth?signup=true");
@@ -69,9 +72,9 @@ export default function PricingPage() {
  priceId,
  customerEmail: email,
  customData: { companyId: profile.company_id, userId },
- successUrl: `${window.location.origin}/billing?success=1`,
- trialDays: 14,
- });
+	  successUrl: `${window.location.origin}/billing?success=1`,
+ 	  trialDays: TRIAL_DAYS,
+	});
  } catch (e) {
  toast.error((e as Error).message || "Could not start checkout");
  } finally {
@@ -83,16 +86,16 @@ export default function PricingPage() {
  <MarketingLayout>
  <Helmet>
  <title>Pricing — Plans for Maintenance Teams | MaintenEase</title>
- <meta name="description" content="Simple per-team pricing for MaintenEase. Compare Starter, Pro, and Business plans for asset tracking, work orders, and inspections. 14-day free trial." />
+ <meta name="description" content="Simple per-team pricing for MaintenEase. Compare Starter, Pro, and Business plans for asset tracking, work orders, and inspections. 7-day free trial." />
  <link rel="canonical" href="https://maintenease.com/pricing" />
  <meta property="og:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
- <meta property="og:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
+ <meta property="og:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
  <meta property="og:url" content="https://maintenease.com/pricing" />
  <meta property="og:type" content="website" />
  <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
- <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 14-day free trial." />
+ <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
  <script type="application/ld+json">{JSON.stringify({
  "@context": "https://schema.org",
@@ -117,7 +120,7 @@ export default function PricingPage() {
        Simple, transparent pricing
      </h1>
      <p className="text-lg text-muted-foreground mb-8">
-       Choose the plan that fits your facility's needs. 14-day free trial on every plan.
+        Choose the plan that fits your facility's needs. 7-day free trial on every plan.
      </p>
      <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
        <span
@@ -191,7 +194,7 @@ export default function PricingPage() {
    disabled={loadingTier === plan.tier}
    onClick={() => startCheckout(plan.tier)}
  >
- {loadingTier === plan.tier ? "Loading…" : "Start 14-day trial"}
+ {loadingTier === plan.tier ? "Loading…" : "Start 7-day trial"}
  </Button>
  <ul className="space-y-2 text-sm">
  {plan.features.map((f) => (
@@ -208,14 +211,14 @@ export default function PricingPage() {
  </div>
 
  <p className="mt-4 text-center text-sm text-muted-foreground">
- All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 15 to avoid charges.
+ All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 8 to avoid charges.
  </p>
  <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between">
  <p className="text-sm text-muted-foreground">Share these plans</p>
  <ShareButtons
  url="https://maintenease.com/pricing"
  title="MaintenEase Pricing — Plans for Maintenance Teams"
- description="Compare Starter, Pro, and Business plans. 14-day free trial."
+ description="Compare Starter, Pro, and Business plans. 7-day free trial."
  />
  </div>
  </div>

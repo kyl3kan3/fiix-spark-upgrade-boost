@@ -56,8 +56,8 @@ const plans = [
 // flow. The trial requires a card and auto-converts to paid on day 15 unless
 // cancelled — say so plainly here instead of contradicting the pricing page.
 const comparison = [
-  "14-day free trial on every plan",
-  "Card required — cancel before day 15, no charge",
+  "7-day free trial on every plan",
+  "Card required — cancel before day 8, no charge",
   "Cancel or change plans anytime",
   "Free onboarding & data import",
 ];
