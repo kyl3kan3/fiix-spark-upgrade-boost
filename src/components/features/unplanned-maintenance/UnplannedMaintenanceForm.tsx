@@ -1,41 +1,44 @@
 
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { getAllAssets } from "@/services/assets/assetQueries";
 import { UnplannedMaintenanceFormData } from "./types";
 
 interface UnplannedMaintenanceFormProps {
  onSubmit: (data: UnplannedMaintenanceFormData) => void;
+ isSubmitting?: boolean;
 }
 
-const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onSubmit }) => {
- const [formData, setFormData] = useState<UnplannedMaintenanceFormData>({
+const EMPTY_FORM: UnplannedMaintenanceFormData = {
  title: "",
  description: "",
- asset: "",
+ assetId: "",
  urgency: "medium",
  estimatedDowntime: "",
  notes: ""
+};
+
+const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onSubmit, isSubmitting }) => {
+ const [formData, setFormData] = useState<UnplannedMaintenanceFormData>(EMPTY_FORM);
+
+ const { data: assets, isLoading: assetsLoading } = useQuery({
+ queryKey: ["assets"],
+ queryFn: getAllAssets,
  });
 
  const handleSubmit = (e: React.FormEvent) => {
  e.preventDefault();
- if (!formData.title || !formData.description || !formData.asset) {
+ if (!formData.title || !formData.description || !formData.assetId) {
  return;
  }
  onSubmit(formData);
- setFormData({
- title: "",
- description: "",
- asset: "",
- urgency: "medium",
- estimatedDowntime: "",
- notes: ""
- });
+ setFormData(EMPTY_FORM);
  };
 
  const urgencyOptions = [
@@ -60,21 +63,25 @@ const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onS
 
  <div>
  <Label htmlFor="asset">Affected Asset</Label>
- <Select 
- value={formData.asset} 
- onValueChange={(value) => setFormData(prev => ({ ...prev, asset: value }))}
+ <Select
+ value={formData.assetId}
+ onValueChange={(value) => setFormData(prev => ({ ...prev, assetId: value }))}
+ disabled={assetsLoading}
  >
  <SelectTrigger>
- <SelectValue placeholder="Select affected asset" />
+ <SelectValue placeholder={assetsLoading ? "Loading assets…" : "Select affected asset"} />
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="Pump Station A">Pump Station A</SelectItem>
- <SelectItem value="Conveyor Line 1">Conveyor Line 1</SelectItem>
- <SelectItem value="Conveyor Line 2">Conveyor Line 2</SelectItem>
- <SelectItem value="Conveyor Line 3">Conveyor Line 3</SelectItem>
- <SelectItem value="HVAC Unit 1">HVAC Unit 1</SelectItem>
- <SelectItem value="Generator">Emergency Generator</SelectItem>
- <SelectItem value="Compressor">Air Compressor</SelectItem>
+ {(assets || []).map((asset) => (
+ <SelectItem key={asset.id} value={asset.id}>
+ {asset.name}
+ </SelectItem>
+ ))}
+ {!assetsLoading && (assets || []).length === 0 && (
+ <div className="px-2 py-1.5 text-sm text-muted-foreground">
+ No assets yet — add one under Assets first.
+ </div>
+ )}
  </SelectContent>
  </Select>
  </div>
@@ -131,13 +138,17 @@ const UnplannedMaintenanceForm: React.FC<UnplannedMaintenanceFormProps> = ({ onS
  />
  </div>
 
- <Button 
- type="submit" 
+ <Button
+ type="submit"
  className="w-full bg-destructive hover:bg-destructive text-white"
- disabled={!formData.title || !formData.description || !formData.asset}
+ disabled={isSubmitting || !formData.title || !formData.description || !formData.assetId}
  >
+ {isSubmitting ? (
+ <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+ ) : (
  <AlertTriangle className="mr-2 h-4 w-4" />
- Report Issue
+ )}
+ {isSubmitting ? "Reporting…" : "Report Issue"}
  </Button>
  </form>
  );

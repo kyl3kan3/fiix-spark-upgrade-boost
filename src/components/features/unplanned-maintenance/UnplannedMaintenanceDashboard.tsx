@@ -1,5 +1,6 @@
 
 import React from "react";
+import { isToday } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Clock, CheckCircle, Wrench } from "lucide-react";
 import { UnplannedMaintenanceItem } from "./types";
@@ -13,8 +14,8 @@ const UnplannedMaintenanceDashboard: React.FC<UnplannedMaintenanceDashboardProps
  total: items.length,
  critical: items.filter(item => item.urgency === 'critical' && item.status !== 'completed').length,
  inProgress: items.filter(item => item.status === 'in_progress').length,
- completed: items.filter(item => item.status === 'completed').length,
- awaitingParts: items.filter(item => item.status === 'awaiting_parts').length
+ completedToday: items.filter(item => item.completedAt && isToday(item.completedAt)).length,
+ reported: items.filter(item => item.status === 'reported').length
  };
 
  const cards = [
@@ -33,15 +34,15 @@ const UnplannedMaintenanceDashboard: React.FC<UnplannedMaintenanceDashboardProps
  bgColor: "bg-primary/10 border-primary/30"
  },
  {
- title: "Awaiting Parts",
- value: stats.awaitingParts,
+ title: "Reported",
+ value: stats.reported,
  icon: Clock,
  color: "text-warning",
  bgColor: "bg-warning/10 border-warning/30"
  },
  {
  title: "Completed Today",
- value: stats.completed,
+ value: stats.completedToday,
  icon: CheckCircle,
  color: "text-success",
  bgColor: "bg-success/10 border-success/30"
