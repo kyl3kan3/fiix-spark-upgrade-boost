@@ -1,32 +1,26 @@
 
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { getAllAssets } from "@/services/assets/assetQueries";
+import { PmScheduleInput } from "@/services/workOrderService";
 
 interface MaintenanceFormProps {
- onCreateSchedule: (task: {
- title: string;
- asset: string;
- dueDate: Date;
- priority: "low" | "medium" | "high";
- isRecurring: boolean;
- frequency?: {
- value: number;
- unit: "days" | "weeks" | "months" | "years";
- };
- }) => void;
+ onCreateSchedule: (input: PmScheduleInput) => void;
+ isSubmitting?: boolean;
 }
 
-const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) => {
+const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule, isSubmitting }) => {
  // Form state
  const [taskName, setTaskName] = useState("");
  const [selectedAsset, setSelectedAsset] = useState("");
@@ -37,19 +31,22 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) =
  const [isRecurring, setIsRecurring] = useState(false);
  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
 
+ const { data: assets, isLoading: assetsLoading } = useQuery({
+ queryKey: ["assets"],
+ queryFn: getAllAssets,
+ });
+
  const handleCreateSchedule = () => {
  if (!taskName || !selectedAsset || !startDate) {
  toast.error("Please fill out all required fields");
  return;
  }
- 
- // Create the new task
+
  onCreateSchedule({
  title: taskName,
- asset: selectedAsset,
- dueDate: startDate,
+ assetId: selectedAsset,
+ startDate,
  priority,
- isRecurring,
  ...(isRecurring && {
  frequency: {
  value: parseInt(frequencyValue),
@@ -57,7 +54,7 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) =
  }
  })
  });
- 
+
  // Reset the form
  setTaskName("");
  };
@@ -76,17 +73,21 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) =
  
  <div className="space-y-2">
  <Label htmlFor="asset">Asset</Label>
- <Select value={selectedAsset} onValueChange={setSelectedAsset}>
+ <Select value={selectedAsset} onValueChange={setSelectedAsset} disabled={assetsLoading}>
  <SelectTrigger>
- <SelectValue placeholder="Select Asset" />
+ <SelectValue placeholder={assetsLoading ? "Loading assets…" : "Select Asset"} />
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="Production Line 1">Production Line 1</SelectItem>
- <SelectItem value="Production Line 2">Production Line 2</SelectItem>
- <SelectItem value="Warehouse Equipment">Warehouse Equipment</SelectItem>
- <SelectItem value="Building A">Building A</SelectItem>
- <SelectItem value="Main Office">Main Office</SelectItem>
- <SelectItem value="Assembly Line">Assembly Line</SelectItem>
+ {(assets || []).map((asset) => (
+ <SelectItem key={asset.id} value={asset.id}>
+ {asset.name}
+ </SelectItem>
+ ))}
+ {!assetsLoading && (assets || []).length === 0 && (
+ <div className="px-2 py-1.5 text-sm text-muted-foreground">
+ No assets yet — add one under Assets first.
+ </div>
+ )}
  </SelectContent>
  </Select>
  </div>
@@ -169,12 +170,14 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onCreateSchedule }) =
  
  <Button
  className="w-full"
+ disabled={isSubmitting}
  onClick={(e) => {
  e.preventDefault();
  handleCreateSchedule();
  }}
  >
- Create Schedule
+ {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+ {isSubmitting ? "Creating…" : "Create Schedule"}
  </Button>
  </form>
  );

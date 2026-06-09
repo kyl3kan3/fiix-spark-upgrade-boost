@@ -2,32 +2,35 @@
 import React from "react";
 import { format } from "date-fns";
 import { CheckCircle2, RepeatIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-interface MaintenanceTask {
- id: number;
+export interface PmTask {
+ id: string;
  title: string;
  asset: string;
  dueDate: Date;
  priority: "low" | "medium" | "high";
- frequency?: {
- value: number;
- unit: "days" | "weeks" | "months" | "years";
- };
- lastCompleted?: Date;
  isRecurring: boolean;
 }
 
 interface MaintenanceTaskListProps {
- tasks: MaintenanceTask[];
+ tasks: PmTask[];
  selectedDate: Date | undefined;
+ onCompleteTask?: (taskId: string) => void;
+ isCompleting?: boolean;
 }
 
-const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, selectedDate }) => {
+const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({
+ tasks,
+ selectedDate,
+ onCompleteTask,
+ isCompleting,
+}) => {
  // Display only tasks for selected date or all if no date selected
- const filteredTasks = selectedDate 
- ? tasks.filter(task => 
- task.dueDate.getDate() === selectedDate.getDate() && 
- task.dueDate.getMonth() === selectedDate.getMonth() && 
+ const filteredTasks = selectedDate
+ ? tasks.filter(task =>
+ task.dueDate.getDate() === selectedDate.getDate() &&
+ task.dueDate.getMonth() === selectedDate.getMonth() &&
  task.dueDate.getFullYear() === selectedDate.getFullYear())
  : tasks;
 
@@ -43,27 +46,23 @@ const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, select
  return (
  <div className="space-y-3">
  {filteredTasks.map((task) => (
- <div 
- key={task.id} 
- className="p-3 bg-card rounded border flex justify-between items-center hover:bg-muted transition-colors"
+ <div
+ key={task.id}
+ className="p-3 bg-card rounded border flex justify-between items-center gap-3 hover:bg-muted transition-colors"
  >
- <div>
+ <div className="min-w-0">
  <div className="flex items-center gap-2">
- <p className="font-medium">{task.title}</p>
+ <p className="font-medium truncate">{task.title}</p>
  {task.isRecurring && (
- <span className="inline-flex items-center text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+ <span className="inline-flex items-center text-xs px-2 py-1 rounded-full bg-primary/10 text-primary shrink-0">
  <RepeatIcon className="h-3 w-3 mr-1" />
  Recurring
  </span>
  )}
  </div>
  <p className="text-sm text-muted-foreground">Asset: {task.asset}</p>
- {task.frequency && (
- <p className="text-xs text-muted-foreground">
- Every {task.frequency.value} {task.frequency.unit}
- </p>
- )}
  </div>
+ <div className="flex items-center gap-3 shrink-0">
  <div className="flex flex-col items-end">
  <span className="text-sm font-medium text-primary">
  {format(task.dueDate, "MMM d")}
@@ -72,6 +71,19 @@ const MaintenanceTaskList: React.FC<MaintenanceTaskListProps> = ({ tasks, select
  >
  {task.priority}
  </span>
+ </div>
+ {onCompleteTask && (
+ <Button
+ variant="outline"
+ size="sm"
+ className="text-xs"
+ disabled={isCompleting}
+ onClick={() => onCompleteTask(task.id)}
+ >
+ <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+ Complete
+ </Button>
+ )}
  </div>
  </div>
  ))}
