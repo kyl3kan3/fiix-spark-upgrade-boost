@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { resolvePaddlePriceId } from "@/services/billingService";
 
 const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined;
 
@@ -39,12 +39,5 @@ export async function initializePaddle(): Promise<void> {
 }
 
 export async function getPaddlePriceId(priceId: string): Promise<string> {
- const environment = getPaddleEnvironment();
- const { data, error } = await supabase.functions.invoke("get-paddle-price", {
- body: { priceId, environment },
- });
- if (error || !data?.paddleId) {
- throw new Error(`Failed to resolve price: ${priceId}`);
- }
- return data.paddleId as string;
+ return resolvePaddlePriceId(priceId, getPaddleEnvironment());
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { getCheckoutUserContext } from "@/services/billingService";
 import { toast } from "sonner";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -54,16 +54,13 @@ export default function PricingPage() {
  setLoadingTier(tier);
  try {
   void trackTrialEvent("trial_checkout_started", { tier, metadata: { interval } });
- const { data: session } = await supabase.auth.getSession();
- if (!session.session) {
+ const checkoutUser = await getCheckoutUserContext();
+ if (!checkoutUser) {
  navigate("/auth?signup=true");
  return;
  }
- const userId = session.session.user.id;
- const email = session.session.user.email ?? undefined;
- const { data: profile } = await supabase
- .from("profiles").select("company_id").eq("id", userId).maybeSingle();
- if (!profile?.company_id) {
+ const { userId, email, companyId } = checkoutUser;
+ if (!companyId) {
  toast.error("Finish setting up your company before subscribing.");
  return;
  }
@@ -71,7 +68,7 @@ export default function PricingPage() {
  await openCheckout({
  priceId,
  customerEmail: email,
- customData: { companyId: profile.company_id, userId },
+ customData: { companyId, userId },
 	  successUrl: `${window.location.origin}/billing?success=1`,
  	  trialDays: TRIAL_DAYS,
 	});
