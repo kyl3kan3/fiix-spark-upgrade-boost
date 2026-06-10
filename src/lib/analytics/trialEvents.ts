@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
 import { TRIAL_DAYS } from "@/constants/trial";
 
 /**
@@ -68,13 +68,13 @@ export async function trackTrialEvent(event: TrialEvent, opts: TrackOptions = {}
   // 2) Internal marketing_page_events table — same storage as marketing
   //    funnel events so dashboards can compare cohorts side by side.
   try {
-    await supabase.from("marketing_page_events").insert({
+    await insertMarketingPageEvent({
       event_type: event,
       page_slug: pageSlug,
       page_url: window.location.href.slice(0, 2048),
       referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
       user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
-      metadata: props as never,
+      metadata: props,
     });
   } catch {
     // Never let analytics failures surface to the user.

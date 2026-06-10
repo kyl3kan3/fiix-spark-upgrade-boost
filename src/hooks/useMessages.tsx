@@ -1,150 +1,121 @@
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { Message } from "@/types/chat";
 import { toast } from "@/hooks/use-toast";
-
-const getUserMessagesChannelTopic = (userId: string, recipientId: string) =>
-  `user:${userId}:messages:${recipientId}`;
+import { getCurrentUser } from "@/services/supabaseHelpers";
+import {
+  getConversationMessages,
+  insertMessage,
+  markConversationAsRead,
+  subscribeToConversationMessages,
+  removeMessagesChannel,
+} from "@/services/messageService";
 
 export const useMessages = (recipientId: string | undefined) => {
- const [messages, setMessages] = useState<Message[]>([]);
- const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
 
- useEffect(() => {
- // Skip if no recipient is selected
- if (!recipientId) {
- setMessages([]);
- return;
- }
+  useEffect(() => {
+    // Skip if no recipient is selected
+    if (!recipientId) {
+      setMessages([]);
+      return;
+    }
 
- let subscription: ReturnType<typeof supabase.channel> | null = null;
+    let subscription: RealtimeChannel | null = null;
     let cancelled = false;
 
- const fetchMessages = async () => {
- try {
- setLoading(true);
- const { data: userData } = await supabase.auth.getUser();
- const currentUserId = userData?.user?.id;
+    const fetchMessages = async () => {
+      try {
+        setLoading(true);
+        const user = await getCurrentUser();
+        const currentUserId = user?.id;
 
- if (!currentUserId) return;
+        if (!currentUserId) return;
 
- // Get messages between current user and selected recipient (both sent and received)
- const { data, error } = await supabase
- .from("messages")
- .select("*")
- .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${currentUserId})`)
- .order("created_at", { ascending: true });
+        // Get messages between current user and selected recipient (both sent and received)
+        const data = await getConversationMessages(currentUserId, recipientId);
 
- if (error) throw error;
+        setMessages(data || []);
 
- setMessages(data || []);
- 
- // Mark messages from this recipient as read
- markAsRead();
+        // Mark messages from this recipient as read
+        markAsRead();
 
-          if (cancelled) return;
-          subscription = supabase
-        .channel(getUserMessagesChannelTopic(currentUserId, recipientId), {
- config: { private: true },
- })
- .on('postgres_changes', 
- { 
- event: '*', 
- schema: 'public', 
- table: 'messages',
- filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
- }, 
- (payload) => {
- if (payload.eventType === 'INSERT') {
- setMessages(prev => [...prev, payload.new as Message]);
- if (payload.new.sender_id === recipientId) {
- markAsRead();
- }
- } else if (payload.eventType === 'UPDATE') {
- setMessages(prev => 
- prev.map(msg => msg.id === payload.new.id ? payload.new as Message : msg)
- );
- }
- })
- .subscribe();
- } catch (error) {
- console.error("Error fetching messages:", error);
- toast({
- title: "Error",
- description: "Failed to load messages",
- variant: "destructive"
- });
- } finally {
- setLoading(false);
- }
- };
+        if (cancelled) return;
+        subscription = subscribeToConversationMessages(currentUserId, recipientId, (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setMessages(prev => [...prev, payload.new]);
+            if (payload.new.sender_id === recipientId) {
+              markAsRead();
+            }
+          } else if (payload.eventType === 'UPDATE') {
+            setMessages(prev =>
+              prev.map(msg => msg.id === payload.new.id ? payload.new : msg)
+            );
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load messages",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
 
- fetchMessages();
+    fetchMessages();
 
- return () => {
+    return () => {
       cancelled = true;
- if (subscription) {
- supabase.removeChannel(subscription);
- }
- };
- }, [recipientId]);
+      if (subscription) {
+        removeMessagesChannel(subscription);
+      }
+    };
+  }, [recipientId]);
 
- const sendMessage = async (content: string, recipientId: string) => {
- try {
- const { data: userData } = await supabase.auth.getUser();
- const currentUserId = userData?.user?.id;
+  const sendMessage = async (content: string, recipientId: string) => {
+    try {
+      const user = await getCurrentUser();
+      const currentUserId = user?.id;
 
- if (!currentUserId) {
- toast({
- title: "Error",
- description: "You must be logged in to send messages",
- variant: "destructive"
- });
- return;
- }
+      if (!currentUserId) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to send messages",
+          variant: "destructive"
+        });
+        return;
+      }
 
- const { error } = await supabase
- .from("messages")
- .insert({
- sender_id: currentUserId,
- recipient_id: recipientId,
- content,
- read: false
- });
+      await insertMessage(currentUserId, recipientId, content);
 
- if (error) throw error;
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive"
+      });
+    }
+  };
 
- } catch (error) {
- console.error("Error sending message:", error);
- toast({
- title: "Error",
- description: "Failed to send message",
- variant: "destructive"
- });
- }
- };
+  const markAsRead = async () => {
+    try {
+      const user = await getCurrentUser();
+      const currentUserId = user?.id;
 
- const markAsRead = async () => {
- try {
- const { data: userData } = await supabase.auth.getUser();
- const currentUserId = userData?.user?.id;
+      if (!currentUserId || !recipientId) return;
 
- if (!currentUserId || !recipientId) return;
+      // Mark all messages from this sender to current user as read
+      await markConversationAsRead(currentUserId, recipientId);
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+    }
+  };
 
- // Mark all messages from this sender to current user as read
- const { error } = await supabase
- .from("messages")
- .update({ read: true })
- .eq("sender_id", recipientId)
- .eq("recipient_id", currentUserId)
- .eq("read", false);
-
- if (error) throw error;
- } catch (error) {
- console.error("Error marking messages as read:", error);
- }
- };
-
- return { messages, sendMessage, markAsRead, loading };
+  return { messages, sendMessage, markAsRead, loading };
 };

@@ -88,6 +88,29 @@ export const sendEmailNotification = async (
  }
 };
 
+// Function to send a test email through the send-email edge function.
+// Unlike sendEmailNotification, no notifications row is written.
+export const sendTestEmail = async (to: string, userId: string): Promise<void> => {
+  const { data, error } = await supabase.functions.invoke("send-email", {
+    body: {
+      to,
+      subject: "MaintenEase test email",
+      body: `<div style="font-family:Arial,sans-serif;padding:24px;color:#111">
+ <h2 style="margin:0 0 12px">Resend is working ✅</h2>
+ <p>This is a test email from MaintenEase confirming end-to-end delivery.</p>
+ <p style="color:#666;font-size:12px;margin-top:24px">Sent to ${to}</p>
+ </div>`,
+      userId,
+      notificationType: "test",
+    },
+  });
+
+  if (error) throw error;
+  if (data && (data as { success?: boolean }).success === false) {
+    throw new Error((data as { error?: string }).error || "Unknown error");
+  }
+};
+
 // Function to send an SMS notification
 export const sendSmsNotification = async (
  to: string,
