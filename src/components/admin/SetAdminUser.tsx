@@ -44,7 +44,7 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  .from('profiles')
  .select('role')
  .eq('email', currentUserEmail)
- .single();
+ .maybeSingle();
 
  if (error) throw error;
 

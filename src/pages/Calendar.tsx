@@ -11,13 +11,14 @@ import CalendarContent from "@/components/calendar/CalendarContent";
 import DailyLog from "@/components/calendar/DailyLog";
 import DailyLogsList from "@/components/calendar/DailyLogsList";
 import { useCalendarEvents } from "@/components/calendar/useCalendarEvents";
+import QueryErrorState from "@/components/common/QueryErrorState";
 
 const CalendarPage = () => {
  const navigate = useNavigate();
  const [date, setDate] = useState<Date | undefined>(new Date());
  const [activeView, setActiveView] = useState("day");
  const [technicianFilter, setTechnicianFilter] = useState("all");
- const { events, technicians, isLoading } = useCalendarEvents();
+ const { events, technicians, isLoading, error, refetch } = useCalendarEvents();
 
  // Filter events by selected date and technician
  const filteredEvents = events.filter((event) => {
@@ -110,6 +111,10 @@ const CalendarPage = () => {
  <div className="bg-card border border-border rounded-lg p-12 flex items-center justify-center text-muted-foreground">
  <Loader2 className="h-5 w-5 animate-spin mr-2" />
  <span className="text-sm">Loading scheduled work…</span>
+ </div>
+ ) : error ? (
+ <div className="bg-card border border-border rounded-lg">
+ <QueryErrorState title="Couldn't load scheduled work" error={error} onRetry={() => refetch()} />
  </div>
  ) : (
  <CalendarContent

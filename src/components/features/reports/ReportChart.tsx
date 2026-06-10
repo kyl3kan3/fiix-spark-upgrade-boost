@@ -3,11 +3,11 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart as BarChartIcon, Download, Printer } from "lucide-react";
-import { BarChartComponent, LineChartComponent, PieChartComponent } from "./ChartComponents";
+import { BarChartComponent, LineChartComponent, PieChartComponent, ChartDatum } from "./ChartComponents";
 
 interface ReportChartProps {
  reportType: string;
- data: any[];
+ data: ChartDatum[];
  isMobile: boolean;
  isExporting: boolean;
  onExport: () => void;

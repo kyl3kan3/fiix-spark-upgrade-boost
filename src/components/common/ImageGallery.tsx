@@ -218,7 +218,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
                   className="flex items-center gap-3 border rounded-md p-2 bg-card hover:bg-accent/30 cursor-grab active:cursor-grabbing"
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  <ManageThumb src={it.url} />
+                  <ManageThumb src={it.url} alt={it.caption || it.file_name || "Photo"} />
                   <div className="flex-1 truncate text-sm">
                     {it.caption || it.file_name || "Photo"}
                   </div>

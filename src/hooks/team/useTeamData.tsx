@@ -40,7 +40,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  .from("profiles")
  .select("company_id")
  .eq("id", currentUserId)
- .single();
+ .maybeSingle();
  
  if (profileError || !currentUserProfile?.company_id) {
  console.error("Error getting current user's company or user has no company:", profileError);
@@ -76,7 +76,7 @@ export const useTeamData = (onlineUsers: Record<string, boolean>) => {
  .from("companies")
  .select("name")
  .eq("id", companyId)
- .single();
+ .maybeSingle();
  
  if (companyError) {
  console.error("Error fetching company:", companyError);

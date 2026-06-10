@@ -11,6 +11,7 @@ import AnalyticsOverview from "./reports/AnalyticsOverview";
 import { getWorkOrderReportData } from "@/services/reportService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import QueryErrorState from "@/components/common/QueryErrorState";
 import ImageGallery from "@/components/common/ImageGallery";
 import ShareReportDialog from "./reports/ShareReportDialog";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ const ReportsContent: React.FC = () => {
  const [shareOpen, setShareOpen] = useState(false);
  const isMobile = useIsMobile();
 
- const { data: reportData, isLoading } = useQuery({
+ const { data: reportData, isLoading, error, refetch } = useQuery({
  queryKey: ["workOrderReportData"],
  queryFn: getWorkOrderReportData,
  });
@@ -91,6 +92,14 @@ const ReportsContent: React.FC = () => {
  return (
  <Card className="w-full h-64 flex items-center justify-center bg-card border border-border shadow-sm">
  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+ </Card>
+ );
+ }
+
+ if (error) {
+ return (
+ <Card className="w-full bg-card border border-border shadow-sm">
+ <QueryErrorState title="Couldn't load report data" error={error} onRetry={() => refetch()} />
  </Card>
  );
  }

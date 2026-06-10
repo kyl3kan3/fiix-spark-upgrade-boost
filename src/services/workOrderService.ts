@@ -3,6 +3,7 @@ import { add, addMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { requireUser } from "@/services/supabaseHelpers";
 import { WorkOrderFormValues } from "@/components/workOrders/WorkOrderFormSchema";
+import { WorkOrderStatus } from "@/types/workOrders";
 
 export async function createWorkOrder(userId: string, values: WorkOrderFormValues) {
  const workOrderData = {
@@ -145,10 +146,10 @@ export async function getUpcomingPmWorkOrders() {
  return data || [];
 }
 
-export async function completeWorkOrder(workOrderId: string) {
+export async function updateWorkOrderStatus(workOrderId: string, status: WorkOrderStatus) {
  const { data, error } = await supabase
  .from("work_orders")
- .update({ status: "completed" })
+ .update({ status })
  .eq("id", workOrderId)
  .select("id");
 
@@ -157,6 +158,73 @@ export async function completeWorkOrder(workOrderId: string) {
  throw new Error("You don't have permission to update this work order.");
  }
  return data;
+}
+
+export async function completeWorkOrder(workOrderId: string) {
+ return updateWorkOrderStatus(workOrderId, "completed");
+}
+
+export type UnplannedUrgency = "critical" | "high" | "medium" | "low";
+
+export interface UnplannedWorkOrderInput {
+ title: string;
+ description: string;
+ assetId: string;
+ urgency: UnplannedUrgency;
+ estimatedDowntime?: string;
+ notes?: string;
+}
+
+const URGENCY_TO_PRIORITY = {
+ critical: "urgent",
+ high: "high",
+ medium: "medium",
+ low: "low",
+} as const;
+
+export function buildUnplannedDescription(input: UnplannedWorkOrderInput): string {
+ const parts = [input.description];
+ if (input.estimatedDowntime) parts.push(`Estimated downtime: ${input.estimatedDowntime}`);
+ if (input.notes) parts.push(`Notes: ${input.notes}`);
+ return parts.join("\n\n");
+}
+
+// Unscheduled work (no due_date) is the reactive/unplanned bucket; scheduled
+// PM work always carries a due date.
+export async function createUnplannedWorkOrder(input: UnplannedWorkOrderInput) {
+ const user = await requireUser();
+
+ const { data, error } = await supabase
+ .from("work_orders")
+ .insert({
+ title: input.title,
+ description: buildUnplannedDescription(input),
+ priority: URGENCY_TO_PRIORITY[input.urgency],
+ status: "pending" as const,
+ due_date: null,
+ asset_id: input.assetId,
+ created_by: user.id,
+ })
+ .select("id");
+
+ if (error) throw error;
+ return data;
+}
+
+export async function getUnplannedWorkOrders() {
+ const { data, error } = await supabase
+ .from("work_orders")
+ .select(`
+ id, title, description, status, priority, created_at, updated_at,
+ asset:assets(name),
+ assignee:profiles!work_orders_assigned_to_fkey(first_name, last_name),
+ creator:profiles!work_orders_created_by_fkey(first_name, last_name)
+ `)
+ .is("due_date", null)
+ .order("created_at", { ascending: false });
+
+ if (error) throw error;
+ return data || [];
 }
 
 export async function getWorkOrderById(workOrderId: string) {

@@ -24,11 +24,11 @@ export function useTeamSetupAuth() {
  .from("profiles")
  .select("company_id")
  .eq("id", user.id)
- .single();
+ .maybeSingle();
 
  if (profileError) throw profileError;
 
- if (!profile.company_id) {
+ if (!profile?.company_id) {
  // User doesn't have a company yet, redirect to company setup
  navigate("/company-setup");
  return;
@@ -49,11 +49,11 @@ export function useTeamSetupAuth() {
  .from("companies")
  .select("name")
  .eq("id", profile.company_id)
- .single();
+ .maybeSingle();
 
  if (companyError) throw companyError;
- 
- setCompanyName(company.name);
+
+ setCompanyName(company?.name ?? "");
 
  } catch (err) {
  console.error("Error checking user role:", err);

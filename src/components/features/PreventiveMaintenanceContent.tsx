@@ -7,6 +7,7 @@ import MaintenanceForm from "./preventive-maintenance/MaintenanceForm";
 import MaintenanceCalendar from "./preventive-maintenance/MaintenanceCalendar";
 import TasksHeader from "./preventive-maintenance/TasksHeader";
 import MaintenanceTaskList, { PmTask } from "./preventive-maintenance/MaintenanceTaskList";
+import QueryErrorState from "@/components/common/QueryErrorState";
 import {
  PmScheduleInput,
  completeWorkOrder,
@@ -28,7 +29,7 @@ const PreventiveMaintenanceContent: React.FC = () => {
  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
  const queryClient = useQueryClient();
 
- const { data: workOrders, isLoading } = useQuery({
+ const { data: workOrders, isLoading, error, refetch } = useQuery({
  queryKey: ["pmWorkOrders"],
  queryFn: getUpcomingPmWorkOrders,
  });
@@ -118,6 +119,8 @@ const PreventiveMaintenanceContent: React.FC = () => {
  <Loader2 className="h-5 w-5 animate-spin mr-2" />
  <span className="text-sm">Loading maintenance tasks…</span>
  </div>
+ ) : error ? (
+ <QueryErrorState title="Couldn't load maintenance tasks" error={error} onRetry={() => refetch()} />
  ) : (
  <MaintenanceTaskList
  tasks={tasks}

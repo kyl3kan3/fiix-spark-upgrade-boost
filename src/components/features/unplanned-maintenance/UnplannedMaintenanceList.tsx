@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, User, Wrench, Package, CheckCircle } from "lucide-react";
+import { Clock, User, Wrench, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { UnplannedMaintenanceItem } from "./types";
 
@@ -37,8 +37,6 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  return 'bg-primary/10 text-primary';
  case 'in_progress':
  return 'bg-primary/10 text-primary';
- case 'awaiting_parts':
- return 'bg-warning/10 text-warning';
  case 'completed':
  return 'bg-success/10 text-success';
  default:
@@ -50,8 +48,8 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  switch (item.status) {
  case 'reported':
  return (
- <Button 
- size="sm" 
+ <Button
+ size="sm"
  onClick={() => onUpdateStatus(item.id, 'in_progress')}
  className="bg-primary hover:bg-primary"
  >
@@ -61,34 +59,13 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  );
  case 'in_progress':
  return (
- <div className="flex gap-2">
- <Button 
- size="sm" 
- variant="outline"
- onClick={() => onUpdateStatus(item.id, 'awaiting_parts')}
- >
- <Package className="mr-1 h-3 w-3" />
- Need Parts
- </Button>
- <Button 
- size="sm" 
+ <Button
+ size="sm"
  onClick={() => onUpdateStatus(item.id, 'completed')}
  className="bg-success hover:bg-success"
  >
  <CheckCircle className="mr-1 h-3 w-3" />
  Complete
- </Button>
- </div>
- );
- case 'awaiting_parts':
- return (
- <Button 
- size="sm" 
- onClick={() => onUpdateStatus(item.id, 'in_progress')}
- className="bg-primary hover:bg-primary"
- >
- <Wrench className="mr-1 h-3 w-3" />
- Resume Work
  </Button>
  );
  default:
@@ -145,12 +122,6 @@ const UnplannedMaintenanceList: React.FC<UnplannedMaintenanceListProps> = ({
  <span>{format(item.reportedAt, 'MMM dd, HH:mm')}</span>
  </div>
  </div>
- 
- {item.estimatedDowntime && (
- <div className="text-sm">
- <span className="font-medium">Estimated Downtime:</span> {item.estimatedDowntime}
- </div>
- )}
  
  {item.assignedTo && (
  <div className="text-sm">
