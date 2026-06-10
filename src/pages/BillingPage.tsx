@@ -30,7 +30,11 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageContainer from "@/components/shell/PageContainer";
 import { useAuth } from "@/hooks/auth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  createBillingPortalSession,
+  getBillingUsageCounts,
+  updateSubscriptionSeats,
+} from "@/services/billingService";
 import { trackPurchaseConversion } from "@/lib/gtag";
 
 export default function BillingPage() {
@@ -63,32 +67,7 @@ export default function BillingPage() {
   }, [params, refetch, user?.email]);
 
   useEffect(() => {
-    const fetchUsageCounts = async () => {
-      const [{ count: assets }, { count: workOrders }, { count: seats }] =
-        await Promise.all([
-          supabase.from("assets").select("*", { count: "exact", head: true }),
-          supabase
-            .from("work_orders")
-            .select("*", { count: "exact", head: true })
-            .gte(
-              "created_at",
-              new Date(
-                new Date().getFullYear(),
-                new Date().getMonth(),
-                1,
-              ).toISOString(),
-            ),
-          supabase.from("profiles").select("*", { count: "exact", head: true }),
-        ]);
-
-      setCounts({
-        assets: assets ?? 0,
-        workOrders: workOrders ?? 0,
-        seats: seats ?? 0,
-      });
-    };
-
-    void fetchUsageCounts();
+    void getBillingUsageCounts().then(setCounts);
   }, []);
 
   async function openPortal() {
@@ -96,12 +75,11 @@ export default function BillingPage() {
     const popup = window.open("about:blank", "_blank");
 
     try {
-      const { data, error } = await supabase.functions.invoke("paddle-portal");
-      if (error) throw error;
+      const url = await createBillingPortalSession();
 
-      if (data?.url) {
-        if (popup) popup.location.href = data.url;
-        else window.open(data.url, "_blank");
+      if (url) {
+        if (popup) popup.location.href = url;
+        else window.open(url, "_blank");
       } else {
         popup?.close();
       }
@@ -121,13 +99,7 @@ export default function BillingPage() {
     setSeatSaving(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("update-seats", {
-        body: { extraSeats: newTotal },
-      });
-      if (error) throw error;
-      if ((data as { error?: string })?.error) {
-        throw new Error((data as { error: string }).error);
-      }
+      await updateSubscriptionSeats(newTotal);
 
       toast.success(
         `Added ${additional} seat${additional === 1 ? "" : "s"}. Charges are prorated.`,
