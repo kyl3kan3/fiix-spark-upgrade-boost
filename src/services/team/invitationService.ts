@@ -2,6 +2,55 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
+/** Lists all invitations for an organization, newest first. Throws on error. */
+export async function listOrganizationInvitations(organizationId: string) {
+ const { data, error } = await supabase
+ .from("organization_invitations")
+ .select("*")
+ .eq("organization_id", organizationId)
+ .order("created_at", { ascending: false });
+
+ if (error) throw error;
+ return data;
+}
+
+export interface OrganizationInvitationInsert {
+ organizationId: string;
+ email: string;
+ role: string;
+ invitedBy: string;
+ token: string;
+}
+
+/** Inserts a new organization invitation and returns the created row. Throws on error. */
+export async function insertOrganizationInvitation(input: OrganizationInvitationInsert) {
+ const { data, error } = await supabase
+ .from("organization_invitations")
+ .insert([
+ {
+ organization_id: input.organizationId,
+ email: input.email,
+ role: input.role,
+ invited_by: input.invitedBy,
+ token: input.token,
+ }
+ ])
+ .select()
+ .single();
+
+ if (error) throw error;
+ return data;
+}
+
+/** Looks up the invitations matching an invite token. Throws on error. */
+export async function getInvitationsByToken(token: string) {
+ const { data, error } = await supabase
+ .rpc("get_invitation_by_token", { _token: token });
+
+ if (error) throw error;
+ return data;
+}
+
 export async function checkExistingInvitation(email: string, organizationId: string) {
  logger.log("=== CHECKING EXISTING INVITATIONS ===");
  logger.log("Checking for existing invitations with:", { email, organizationId });

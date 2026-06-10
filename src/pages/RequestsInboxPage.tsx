@@ -7,24 +7,16 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  getRequestInboxCompany,
+  listPublicRequests,
+  resolvePublicRequest,
+  updatePublicRequestStatus,
+  type PublicRequest,
+} from "@/services/requestService";
 import { useAuth } from "@/providers/AuthContext";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
-
-type PublicRequest = {
- id: string;
- type: "standard" | "urgent";
- title: string;
- description: string;
- location_text: string | null;
- contact_name: string | null;
- contact_email: string | null;
- contact_phone: string | null;
- status: "new" | "in_progress" | "resolved";
- created_at: string;
-  photos: string[] | null;
-};
 
 const RequestsInboxPage = () => {
  const { user } = useAuth();
@@ -34,37 +26,21 @@ const RequestsInboxPage = () => {
 
  const { data: company } = useQuery({
  queryKey: ["company-for-requests", user?.id],
- queryFn: async () => {
- const { data: profile } = await supabase.from("profiles").select("company_id").eq("id", user!.id).single();
- if (!profile?.company_id) return null;
- const { data } = await supabase.from("companies").select("id, name, public_slug").eq("id", profile.company_id).single();
- return data;
- },
+ queryFn: getRequestInboxCompany,
  enabled: !!user,
  });
 
  const { data: requests = [] } = useQuery({
  queryKey: ["public_requests", filter],
- queryFn: async () => {
- let q = supabase.from("public_requests").select("*").order("created_at", { ascending: false });
- if (filter !== "all") q = q.eq("type", filter);
- const { data, error } = await q;
- if (error) throw error;
- return (data ?? []) as PublicRequest[];
- },
+ queryFn: () => listPublicRequests(filter),
  });
 
  const updateStatus = useMutation({
  mutationFn: async ({ id, status }: { id: string; status: PublicRequest["status"] }) => {
  if (status === "resolved") {
- const { data, error } = await supabase.functions.invoke("resolve-public-request", {
- body: { requestId: id },
- });
- if (error) throw error;
- return data as { emailSent?: boolean; reason?: string | null } | null;
+ return await resolvePublicRequest(id);
  }
- const { error } = await supabase.from("public_requests").update({ status }).eq("id", id);
- if (error) throw error;
+ await updatePublicRequestStatus(id, status);
  return null;
  },
  onSuccess: (data, variables) => {

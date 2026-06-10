@@ -1,9 +1,12 @@
 
 import { useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 import { ChatUser } from "@/types/chat";
 import { logger } from "@/lib/logger";
+import {
+ TeamMemberProfileUpdate,
+ updateTeamMemberProfile,
+} from "@/services/team/teamMemberService";
 
 export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateAction<ChatUser[]>>) => {
  const updateTeamMember = useCallback(async (userId: string, updates: {
@@ -17,26 +20,17 @@ export const useTeamUpdates = (setTeamMembers: React.Dispatch<React.SetStateActi
  try {
  logger.log("Updating team member:", userId, updates);
  
- const updateData: Record<string, any> = {};
+ const updateData: TeamMemberProfileUpdate = {};
  if (updates.firstName !== undefined) updateData.first_name = updates.firstName;
  if (updates.lastName !== undefined) updateData.last_name = updates.lastName;
  if (updates.role !== undefined) updateData.role = updates.role;
  if (updates.email !== undefined) updateData.email = updates.email;
  if (updates.phone !== undefined) updateData.phone_number = updates.phone; // Map phone to phone_number field
- 
+
  logger.log("Sending update to Supabase:", updateData);
- 
- const { data, error } = await supabase
- .from("profiles")
- .update(updateData as any)
- .eq("id", userId)
- .select();
- 
- if (error) {
- console.error("Error updating team member:", error);
- throw error;
- }
- 
+
+ const data = await updateTeamMemberProfile(userId, updateData);
+
  logger.log("Update successful, received data:", data);
  
  // Update local state with the new information immediately

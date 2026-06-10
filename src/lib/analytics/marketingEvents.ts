@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
 
 const TRACKED_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -80,13 +80,13 @@ export async function trackMarketingEvent({
  }
 
  try {
- await supabase.from("marketing_page_events").insert({
+ await insertMarketingPageEvent({
  event_type: eventType,
  page_slug: pageSlug,
  page_url: window.location.href.slice(0, 2048),
  referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
  user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
- metadata: (metadata ?? {}) as never,
+ metadata: metadata ?? {},
  });
  } catch {
  // Never let analytics failures surface to the user.

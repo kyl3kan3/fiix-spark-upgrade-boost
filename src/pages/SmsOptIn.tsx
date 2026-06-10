@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { submitSmsOptIn } from "@/services/smsOptInService";
 import { toast } from "sonner";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 
@@ -28,17 +28,14 @@ export default function SmsOptIn() {
  return;
  }
  setSubmitting(true);
- const { error } = await supabase.from("sms_optins").insert({
- phone_number: phone.trim(),
- consent: true,
- source: "web_form",
- user_agent: navigator.userAgent,
- });
+ try {
+ await submitSmsOptIn(phone.trim(), navigator.userAgent);
+ } catch {
  setSubmitting(false);
- if (error) {
  toast.error("Could not save your opt-in. Please try again.");
  return;
  }
+ setSubmitting(false);
  setDone(true);
  };
 
