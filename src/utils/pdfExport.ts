@@ -2,7 +2,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { listReportAttachments } from "@/services/attachmentService";
 import { logger } from "@/lib/logger";
 
 interface ExportOptions {
@@ -39,7 +39,6 @@ export const exportReportToPdf = async (
  const pageWidth = doc.internal.pageSize.getWidth();
  
  // Add logo/header image
- const logoSize = 40;
  doc.setFillColor(13, 71, 161); // Primary brand color
  doc.rect(0, 0, pageWidth, 25, 'F');
  
@@ -110,15 +109,9 @@ export const exportReportToPdf = async (
  // Append attached photos for this report (if any)
  if (options.reportEntityId) {
  try {
- const { data: attachments } = await supabase
- .from("attachments")
- .select("url,file_name,caption,description,sort_order,created_at")
- .eq("entity_type", "report")
- .eq("entity_id", options.reportEntityId)
- .order("sort_order", { ascending: true })
- .order("created_at", { ascending: true });
+ const attachments = await listReportAttachments(options.reportEntityId);
 
- if (attachments && attachments.length > 0) {
+ if (attachments.length > 0) {
  doc.addPage();
  doc.setFontSize(16);
  doc.setTextColor(0, 0, 0);

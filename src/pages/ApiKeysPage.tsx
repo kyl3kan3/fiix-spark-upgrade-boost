@@ -9,7 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  type ApiKeySummary,
+  createApiKey,
+  deleteApiKey,
+  listApiKeys,
+  revokeApiKey,
+} from "@/services/apiKeyService";
 import PageContainer from "@/components/shell/PageContainer";
 import {
   Dialog,
@@ -20,34 +26,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-interface ApiKey {
-  id: string;
-  name: string;
-  key_prefix: string;
-  created_at: string;
-  last_used_at: string | null;
-  revoked_at: string | null;
-}
-
-async function sha256(text: string): Promise<string> {
-  const buf = new TextEncoder().encode(text);
-  const hash = await crypto.subtle.digest("SHA-256", buf);
-  return Array.from(new Uint8Array(hash))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function generateKey(): string {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  const b64 = btoa(String.fromCharCode(...bytes))
-    .replace(/[+/=]/g, "")
-    .slice(0, 40);
-  return `mke_live_${b64}`;
-}
-
 const ApiKeysPage: React.FC = () => {
-  const [keys, setKeys] = useState<ApiKey[]>([]);
+  const [keys, setKeys] = useState<ApiKeySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [creating, setCreating] = useState(false);
@@ -55,14 +35,10 @@ const ApiKeysPage: React.FC = () => {
 
   const fetchKeys = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("api_keys")
-      .select("id, name, key_prefix, created_at, last_used_at, revoked_at")
-      .order("created_at", { ascending: false });
-    if (error) {
+    try {
+      setKeys(await listApiKeys());
+    } catch (error) {
       console.error(error);
-    } else {
-      setKeys((data || []) as ApiKey[]);
     }
     setLoading(false);
   };
@@ -75,34 +51,12 @@ const ApiKeysPage: React.FC = () => {
     if (!name.trim()) return toast.error("Name is required");
     setCreating(true);
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not signed in");
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", user.id)
-        .maybeSingle();
-      if (!profile?.company_id) throw new Error("No company");
-
-      const fullKey = generateKey();
-      const key_hash = await sha256(fullKey);
-      const key_prefix = fullKey.slice(0, 16);
-
-      const { error } = await supabase.from("api_keys").insert({
-        company_id: profile.company_id,
-        created_by: user.id,
-        name: name.trim(),
-        key_hash,
-        key_prefix,
-      });
-      if (error) throw error;
+      const fullKey = await createApiKey(name.trim());
       setNewKey(fullKey);
       setName("");
       fetchKeys();
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to create key");
+    } catch (e) {
+      toast.error((e as { message?: string })?.message || "Failed to create key");
     } finally {
       setCreating(false);
     }
@@ -110,22 +64,23 @@ const ApiKeysPage: React.FC = () => {
 
   const handleRevoke = async (id: string) => {
     if (!confirm("Revoke this key? It will stop working immediately.")) return;
-    const { error } = await supabase
-      .from("api_keys")
-      .update({ revoked_at: new Date().toISOString() })
-      .eq("id", id);
-    if (error) toast.error(error.message);
-    else {
+    try {
+      await revokeApiKey(id);
       toast.success("Key revoked");
       fetchKeys();
+    } catch (e) {
+      toast.error((e as Error).message);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Permanently delete this key?")) return;
-    const { error } = await supabase.from("api_keys").delete().eq("id", id);
-    if (error) toast.error(error.message);
-    else fetchKeys();
+    try {
+      await deleteApiKey(id);
+      fetchKeys();
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   };
 
   const copy = (text: string) => {

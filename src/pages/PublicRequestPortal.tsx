@@ -3,14 +3,19 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 import { AlertTriangle, CheckCircle2, Wrench, ImagePlus, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  getPublicCompanyBySlug,
+  submitPublicRequest,
+  uploadPublicRequestPhotos,
+  type PublicPortalCompany,
+} from "@/services/requestService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-type Company = { id: string; name: string; logo: string | null; public_slug: string };
+type Company = PublicPortalCompany;
 
 const schema = z.object({
  title: z.string().trim().min(1, "Please describe the issue").max(200),
@@ -36,11 +41,10 @@ const PublicRequestPortal = () => {
 
  useEffect(() => {
  (async () => {
- const { data, error } = await supabase.rpc("get_public_company_by_slug", { _slug: slug });
- if (error || !data || data.length === 0) {
+ try {
+ setCompany(await getPublicCompanyBySlug(slug));
+ } catch {
  setCompany(null);
- } else {
- setCompany(data[0] as Company);
  }
  setLoading(false);
  })();
@@ -72,26 +76,10 @@ const PublicRequestPortal = () => {
  setSubmitting(true);
 
     // Upload photos first (best-effort — failures are surfaced but don't block submission)
-    const uploadedUrls: string[] = [];
-    if (photos.length > 0) {
-      const folder = `${company.id}/${crypto.randomUUID()}`;
-      for (const file of photos) {
-        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().slice(0, 5);
-        const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("public-request-photos")
-          .upload(path, file, { contentType: file.type, upsert: false });
-        if (upErr) {
-          console.error("photo upload failed", upErr);
-          continue;
-        }
-        const { data: pub } = supabase.storage.from("public-request-photos").getPublicUrl(path);
-        if (pub?.publicUrl) uploadedUrls.push(pub.publicUrl);
-      }
-    }
+    const uploadedUrls = await uploadPublicRequestPhotos(company.id, photos);
 
-    const { error } = await supabase.functions.invoke("submit-public-request", {
-      body: {
+    try {
+      await submitPublicRequest({
         companyId: company.id,
         type,
         title: parsed.data.title,
@@ -102,16 +90,16 @@ const PublicRequestPortal = () => {
         contact_phone: parsed.data.contact_phone || null,
         photos: uploadedUrls,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
-      },
-    });
- setSubmitting(false);
- if (error) {
- toast.error("Couldn't submit — please try again");
- return;
- }
- setSubmitted(true);
+      });
+    } catch {
+      setSubmitting(false);
+      toast.error("Couldn't submit — please try again");
+      return;
+    }
+    setSubmitting(false);
+    setSubmitted(true);
     setPhotos([]);
- };
+  };
 
  if (loading) {
  return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;

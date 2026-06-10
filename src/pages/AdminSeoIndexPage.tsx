@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, ExternalLink, Loader2, RefreshCw, Search } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchSeoIndexStatus, type SeoIndexInspectResult } from "@/services/seoService";
 import { useAdminStatus } from "@/hooks/team/useAdminStatus";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
@@ -32,19 +32,7 @@ function buildAllUrls(): string[] {
  return [...STATIC_URLS, ...dynamic].map((p) => `${SITE_ORIGIN}${p}`);
 }
 
-interface InspectResult {
- url: string;
- coverageState?: string;
- indexingState?: string;
- verdict?: string;
- lastCrawlTime?: string | null;
- pageFetchState?: string;
- robotsTxtState?: string;
- googleCanonical?: string | null;
- userCanonical?: string | null;
- inspectionResultLink?: string;
- error?: string;
-}
+type InspectResult = SeoIndexInspectResult;
 
 function verdictBadge(v?: string, hasError?: boolean) {
  if (hasError) return <Badge variant="destructive">Error</Badge>;
@@ -78,11 +66,7 @@ const AdminSeoIndexPage: React.FC = () => {
  setLoading(true);
  setError(null);
  try {
- const { data, error: invokeErr } = await supabase.functions.invoke("seo-index-status", {
- body: { urls: allUrls },
- });
- if (invokeErr) throw invokeErr;
- const next: InspectResult[] = data?.results ?? [];
+ const next: InspectResult[] = await fetchSeoIndexStatus(allUrls);
  setResults(next);
  setLastRunAt(new Date());
  } catch (e) {

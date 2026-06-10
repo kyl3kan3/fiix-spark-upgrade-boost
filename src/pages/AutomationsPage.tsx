@@ -8,36 +8,24 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageContainer from "@/components/shell/PageContainer";
-import { supabase } from "@/integrations/supabase/client";
-
-interface ScheduledChecklist {
-  id: string;
-  name: string;
-  frequency: string | null;
-  schedule?: { next_due_at: string | null; last_submitted_at: string | null } | null;
-}
+import {
+  listRecurringChecklists,
+  type RecurringChecklistSummary,
+} from "@/services/checklistService";
 
 const AutomationsPage: React.FC = () => {
-  const [items, setItems] = useState<ScheduledChecklist[]>([]);
+  const [items, setItems] = useState<RecurringChecklistSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("checklists")
-        .select("id, name, frequency, checklist_schedules(next_due_at, last_submitted_at)")
-        .eq("is_active", true)
-        .neq("frequency", "one-time")
-        .order("name");
-      setItems(
-        (data || []).map((c: any) => ({
-          id: c.id,
-          name: c.name,
-          frequency: c.frequency,
-          schedule: c.checklist_schedules?.[0] || null,
-        }))
-      );
-      setLoading(false);
+      try {
+        setItems(await listRecurringChecklists());
+      } catch {
+        setItems([]);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 

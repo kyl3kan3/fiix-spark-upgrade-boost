@@ -340,3 +340,39 @@ export const checklistService = {
   return (data ?? []).map((row) => mapChecklistRow(row as unknown as ChecklistRow));
   },
 };
+
+export interface RecurringChecklistSummary {
+  id: string;
+  name: string;
+  frequency: string | null;
+  schedule: { next_due_at: string | null; last_submitted_at: string | null } | null;
+}
+
+type RecurringChecklistRow = {
+  id: string;
+  name: string;
+  frequency: string | null;
+  checklist_schedules:
+    | { next_due_at: string | null; last_submitted_at: string | null }[]
+    | null;
+};
+
+/**
+ * Active, non-one-time checklists with their schedule, sorted by name.
+ * Powers the Automations page list of recurring checklists.
+ */
+export async function listRecurringChecklists(): Promise<RecurringChecklistSummary[]> {
+  const { data, error } = await supabase
+    .from("checklists")
+    .select("id, name, frequency, checklist_schedules(next_due_at, last_submitted_at)")
+    .eq("is_active", true)
+    .neq("frequency", "one-time")
+    .order("name");
+  if (error) throw error;
+  return ((data ?? []) as unknown as RecurringChecklistRow[]).map((c) => ({
+    id: c.id,
+    name: c.name,
+    frequency: c.frequency,
+    schedule: c.checklist_schedules?.[0] || null,
+  }));
+}
