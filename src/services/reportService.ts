@@ -1,20 +1,20 @@
 import { format, startOfMonth, subMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 
-export interface MonthlyWorkOrderStats {
+export type MonthlyWorkOrderStats = {
  name: string;
  workOrders: number;
  completed: number;
  inProgress: number;
 }
 
-export interface MaintenanceTrendPoint {
+export type MaintenanceTrendPoint = {
  name: string;
  preventive: number;
  corrective: number;
 }
 
-export interface AssetWorkOrderSlice {
+export type AssetWorkOrderSlice = {
  name: string;
  value: number;
 }

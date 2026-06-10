@@ -7,9 +7,9 @@ import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 import type { AttachmentRow } from "./types";
 
 /** Small thumbnail that resolves a signed URL — used in the manage/reorder modal. */
-export const ManageThumb: React.FC<{ src: string }> = ({ src }) => {
+export const ManageThumb: React.FC<{ src: string; alt?: string }> = ({ src, alt }) => {
   const url = useSignedAssetImageUrl(src);
-  return <img src={url ?? src} alt="" className="h-14 w-14 object-cover rounded" />;
+  return <img src={url ?? src} alt={alt || "Attachment thumbnail"} className="h-14 w-14 object-cover rounded" />;
 };
 
 interface PhotoCardProps {
