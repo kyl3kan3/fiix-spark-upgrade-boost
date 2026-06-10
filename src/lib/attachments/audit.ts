@@ -1,16 +1,19 @@
-import { supabase } from "@/integrations/supabase/client";
+import {
+  AttachmentAction,
+  insertAttachmentAuditEvent,
+} from "@/services/attachmentService";
 import { logger } from "@/lib/logger";
 
-export type AttachmentAction = "uploaded" | "deleted" | "reordered" | "updated";
+export type { AttachmentAction };
 
 export interface AuditEntryInput {
- companyId: string;
- entityType: string;
- entityId: string;
- attachmentId?: string | null;
- action: AttachmentAction;
- actorId: string;
- details?: Record<string, unknown>;
+  companyId: string;
+  entityType: string;
+  entityId: string;
+  attachmentId?: string | null;
+  action: AttachmentAction;
+  actorId: string;
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -18,16 +21,15 @@ export interface AuditEntryInput {
  * never thrown so they cannot block the primary user action.
  */
 export async function logAttachmentEvent(entry: AuditEntryInput): Promise<void> {
- try {
- const { error } = await (supabase as any).rpc("log_attachment_event", {
- _entity_type: entry.entityType,
- _entity_id: entry.entityId,
- _action: entry.action,
- _attachment_id: entry.attachmentId ?? null,
- _details: (entry.details ?? {}) as never,
- });
- if (error) logger.warn("attachment audit insert failed:", error.message);
- } catch (e) {
- logger.warn("attachment audit insert threw:", e);
- }
+  try {
+    await insertAttachmentAuditEvent({
+      entityType: entry.entityType,
+      entityId: entry.entityId,
+      action: entry.action,
+      attachmentId: entry.attachmentId ?? null,
+      details: entry.details ?? {},
+    });
+  } catch (e) {
+    logger.warn("attachment audit insert failed:", e instanceof Error ? e.message : e);
+  }
 }

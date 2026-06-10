@@ -2,6 +2,101 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
+/**
+ * Fetches an organization row (id only) by id. Returns null when the
+ * organization does not exist. Throws on query error.
+ */
+export async function getOrganizationById(organizationId: string) {
+ const { data, error } = await supabase
+ .from("organizations")
+ .select("id")
+ .eq("id", organizationId)
+ .maybeSingle();
+
+ if (error) throw error;
+ return data;
+}
+
+/**
+ * Creates the organizations row for a company id when it is missing, copying
+ * the name from the companies table. Throws when the company cannot be found
+ * or the organization cannot be created.
+ */
+export async function createOrganizationFromCompany(organizationId: string) {
+ // Get company info
+ const { data: company, error: companyError } = await supabase
+ .from("companies")
+ .select("name")
+ .eq("id", organizationId)
+ .single();
+
+ if (companyError) {
+ throw new Error(`Could not find company: ${companyError.message}`);
+ }
+
+ // Check if org already exists with this ID to avoid conflicts
+ const { data: existingOrg } = await supabase
+ .from("organizations")
+ .select("id")
+ .eq("id", organizationId)
+ .maybeSingle();
+
+ if (!existingOrg) {
+ // Create organization with same ID as company
+ const { error: createOrgError } = await supabase
+ .from("organizations")
+ .insert({
+ id: organizationId,
+ name: company.name
+ });
+
+ if (createOrgError) {
+ throw new Error(`Error creating organization: ${createOrgError.message}`);
+ }
+
+ logger.log("Created missing organization record for company:", organizationId);
+ }
+}
+
+/**
+ * Best-effort variant used during invite acceptance: creates the
+ * organizations row from company data when missing. Failures are logged but
+ * not thrown so the caller can continue the accept flow.
+ */
+export async function tryCreateOrganizationFromCompany(organizationId: string) {
+ // Try to get company info
+ const { data: company } = await supabase
+ .from("companies")
+ .select("name")
+ .eq("id", organizationId)
+ .single();
+
+ if (company) {
+ // Check if org already exists with this ID
+ const { data: existingOrg } = await supabase
+ .from("organizations")
+ .select("id")
+ .eq("id", organizationId)
+ .maybeSingle();
+
+ if (!existingOrg) {
+ // Create organization with same ID as company
+ const { error: createOrgError } = await supabase
+ .from("organizations")
+ .insert({
+ id: organizationId,
+ name: company.name
+ });
+
+ if (createOrgError) {
+ console.error("Error creating organization:", createOrgError);
+ } else {
+ logger.log("Created organization from company for invitation");
+ }
+ }
+ }
+}
+
 export async function getOrCreateOrganization(userId: string, addStatusUpdate?: (message: string) => void) {
  logger.log("🏢 Getting organization for user:", userId);
  addStatusUpdate?.("🏢 Starting organization setup...");

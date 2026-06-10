@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createSignedUrl } from "@/services/storageService";
 import { logger } from "@/lib/logger";
 
 const BUCKET = "asset-images";
@@ -29,13 +29,15 @@ export async function getSignedAssetImageUrl(input: string | null | undefined): 
  const now = Date.now();
  const cached = cache.get(path);
  if (cached && cached.expiresAt > now + 30_000) return cached.url;
- const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, SIGN_TTL);
- if (error || !data?.signedUrl) {
+ let signedUrl: string;
+ try {
+ signedUrl = await createSignedUrl(BUCKET, path, SIGN_TTL);
+ } catch (error) {
  logger.warn("Failed to sign asset image url", error);
  return null;
  }
- cache.set(path, { url: data.signedUrl, expiresAt: now + SIGN_TTL * 1000 });
- return data.signedUrl;
+ cache.set(path, { url: signedUrl, expiresAt: now + SIGN_TTL * 1000 });
+ return signedUrl;
 }
 
 /** React hook returning a viewable URL for a stored asset-images value. */
