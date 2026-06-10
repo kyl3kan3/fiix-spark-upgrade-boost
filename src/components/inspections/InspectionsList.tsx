@@ -3,8 +3,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Calendar, FileText, User, MoreVertical } from "lucide-react";
+import { PlusCircle, Calendar, FileText, User } from "lucide-react";
 import { Inspection } from "@/types/inspections";
+import { checklistIdFromInspectionId } from "@/services/inspectionService";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface InspectionsListProps {
@@ -142,19 +143,15 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  <Button
  size="sm"
  className="text-xs"
- onClick={(e) => { e.stopPropagation(); navigate(`/inspections/${inspection.id}`); }}
+ onClick={(e) => {
+ e.stopPropagation();
+ const checklistId = checklistIdFromInspectionId(inspection.id);
+ navigate(checklistId ? `/checklists/${checklistId}/submit` : `/inspections/${inspection.id}`);
+ }}
  >
  Start Now
  </Button>
  )}
- <Button
- size="icon"
- variant="ghost"
- className="h-8 w-8 text-muted-foreground"
- onClick={(e) => e.stopPropagation()}
- >
- <MoreVertical className="h-4 w-4" />
- </Button>
  </div>
  </div>
  </div>

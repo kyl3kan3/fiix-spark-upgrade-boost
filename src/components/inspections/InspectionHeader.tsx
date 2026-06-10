@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Pencil } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { InspectionStatus, InspectionPriority } from "@/types/inspections";
 
 interface InspectionHeaderProps {
@@ -10,7 +9,7 @@ interface InspectionHeaderProps {
   status: InspectionStatus;
   priority: InspectionPriority;
   handleBackClick: () => void;
-  handleUpdateStatus: (status: InspectionStatus) => void;
+  handleUpdateStatus?: (status: InspectionStatus) => void;
 }
 
 function getStatusConfig(status: string) {
@@ -53,7 +52,6 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
   handleBackClick,
   handleUpdateStatus,
 }) => {
-  const navigate = useNavigate();
   const statusConfig = getStatusConfig(status);
   const priorityConfig = getPriorityConfig(priority);
 
@@ -86,8 +84,8 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
           </div>
         </div>
 
-        <div className="flex gap-2 shrink-0">
-          {status !== "completed" && (
+        {handleUpdateStatus && status !== "completed" && (
+          <div className="flex gap-2 shrink-0">
             <Button
               variant="outline"
               className="border-success/40 text-success hover:bg-success/10"
@@ -95,11 +93,8 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
             >
               <Check className="h-4 w-4 mr-1" /> Mark Complete
             </Button>
-          )}
-          <Button onClick={() => navigate(`/inspections/edit/${id}`)}>
-            <Pencil className="h-4 w-4 mr-1" /> Edit Inspection
-          </Button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

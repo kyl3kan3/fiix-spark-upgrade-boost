@@ -1,140 +1,100 @@
-
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Inspection } from "@/types/inspections";
-import { format } from "date-fns";
+import { checklistIdFromInspectionId } from "@/services/inspectionService";
+import {
+ addDays,
+ endOfMonth,
+ endOfWeek,
+ format,
+ isSameDay,
+ isSameMonth,
+ startOfMonth,
+ startOfWeek,
+} from "date-fns";
 
 interface InspectionsCalendarViewProps {
- filters: {
- status: string;
- priority: string;
- assignedTo: string;
- dateRange: { from: Date | undefined; to: Date | undefined };
- };
+ inspections: Inspection[];
 }
 
-export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = ({ filters }) => {
- // Simple calendar view - in a real app you'd use a more sophisticated calendar component
- const daysInMonth = 31; // Simplified for demo
- const currentDate = new Date();
- const currentMonth = currentDate.getMonth();
- const currentYear = currentDate.getFullYear();
- 
- // Mock inspections for calendar display
- const mockInspections: Inspection[] = [
- {
- id: "1",
- title: "HVAC Inspection",
- description: "Regular check",
- status: "scheduled",
- priority: "medium",
- assignedTo: "John Doe",
- scheduledDate: new Date(currentYear, currentMonth, 15).toISOString(),
- assetId: "hvac-001",
- assetName: "HVAC System",
- items: []
- },
- {
- id: "2",
- title: "Electrical Check",
- description: "Safety inspection",
- status: "in-progress",
- priority: "high",
- assignedTo: "Jane Smith",
- scheduledDate: new Date(currentYear, currentMonth, 10).toISOString(),
- assetId: "elec-002",
- assetName: "Main Panel",
- items: []
- },
- {
- id: "3",
- title: "Fire Safety",
- description: "Annual review",
- status: "completed",
- priority: "critical",
- assignedTo: "Robert Johnson",
- scheduledDate: new Date(currentYear, currentMonth, 5).toISOString(),
- assetId: "fire-003",
- assetName: "Fire Systems",
- items: []
- }
- ];
- 
- // Map inspections to their days
- const inspectionsByDay: { [key: number]: Inspection[] } = {};
- 
- mockInspections.forEach(inspection => {
- const date = new Date(inspection.scheduledDate);
- const day = date.getDate();
- if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
- if (!inspectionsByDay[day]) {
- inspectionsByDay[day] = [];
- }
- inspectionsByDay[day].push(inspection);
- }
- });
+const statusDot = (status: string) =>
+ status === "completed" ? "bg-success" : "bg-primary";
 
- const getStatusColor = (status: string) => {
- switch (status) {
- case 'scheduled': return 'border-primary/30 bg-primary/8 text-primary';
- case 'in-progress': return 'border-warning/30 bg-warning/8 text-warning';
- case 'completed': return 'border-success/30 bg-success/8 text-success';
- case 'failed': return 'border-destructive/30 bg-destructive/8 text-destructive';
- case 'cancelled': return 'border-border bg-muted text-muted-foreground';
- default: return 'border-border bg-muted text-muted-foreground';
+export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = ({ inspections }) => {
+ const navigate = useNavigate();
+ const today = new Date();
+ const gridStart = startOfWeek(startOfMonth(today), { weekStartsOn: 1 });
+ const gridEnd = endOfWeek(endOfMonth(today), { weekStartsOn: 1 });
+
+ const days: Date[] = [];
+ for (let day = gridStart; day <= gridEnd; day = addDays(day, 1)) {
+ days.push(day);
  }
+
+ const openInspection = (inspection: Inspection) => {
+ const checklistId = checklistIdFromInspectionId(inspection.id);
+ navigate(checklistId ? `/checklists/${checklistId}/submit` : `/inspections/${inspection.id}`);
  };
 
  return (
- <Card className="bg-card border border-border rounded-lg shadow-sm p-5">
- <h2 className="font-headline text-xl font-semibold text-foreground mb-5">
- {format(new Date(currentYear, currentMonth, 1), 'MMMM yyyy')}
- </h2>
+ <Card className="p-4 sm:p-6">
+ <h3 className="font-headline text-lg font-semibold text-foreground mb-4">
+ {format(today, "MMMM yyyy")}
+ </h3>
 
- <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3">
- {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
- <div key={day} className="text-center">
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider sm:hidden">{day.charAt(0)}</span>
- <span className="hidden sm:inline text-xs font-semibold text-muted-foreground uppercase tracking-wider">{day}</span>
- </div>
+ <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-muted-foreground mb-1">
+ {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+ <div key={d} className="py-1">{d}</div>
  ))}
  </div>
 
- <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
- {Array.from({ length: daysInMonth }, (_, i) => {
- const day = i + 1;
- const date = new Date(currentYear, currentMonth, day);
- const dayInspections = inspectionsByDay[day] || [];
- const isToday = date.getDate() === currentDate.getDate() &&
- date.getMonth() === currentDate.getMonth() &&
- date.getFullYear() === currentDate.getFullYear();
-
+ <div className="grid grid-cols-7 gap-1">
+ {days.map((day) => {
+ const dayInspections = inspections.filter((i) =>
+ isSameDay(new Date(i.scheduledDate), day),
+ );
+ const inMonth = isSameMonth(day, today);
  return (
  <div
- key={day}
- className={`min-h-14 sm:min-h-20 border rounded-lg p-0.5 sm:p-1 text-[10px] sm:text-xs hover:border-primary/30 transition-colors ${
- isToday
- ? 'border-primary bg-primary/5'
- : 'border-border/60 hover:bg-muted/30'
- }`}
+ key={day.toISOString()}
+ className={`min-h-[84px] rounded-md border p-1.5 text-left ${
+ inMonth ? "border-border bg-card" : "border-transparent bg-muted/30"
+ } ${isSameDay(day, today) ? "ring-1 ring-primary" : ""}`}
  >
- <div className={`text-right text-xs sm:text-sm font-semibold mb-0.5 sm:mb-1 ${isToday ? 'text-primary' : 'text-foreground'}`}>
- {day}
+ <div className={`text-xs font-semibold mb-1 ${inMonth ? "text-foreground" : "text-muted-foreground/60"}`}>
+ {format(day, "d")}
  </div>
- <div className="space-y-0.5">
- {dayInspections.map(inspection => (
- <div
+ <div className="space-y-1">
+ {dayInspections.slice(0, 3).map((inspection) => (
+ <button
  key={inspection.id}
- className={`p-0.5 sm:p-1 text-[9px] sm:text-xs rounded border ${getStatusColor(inspection.status)}`}
+ onClick={() => openInspection(inspection)}
+ className="w-full flex items-center gap-1 rounded bg-muted/60 hover:bg-muted px-1 py-0.5 text-left"
+ title={inspection.title}
  >
- <div className="font-semibold truncate">{inspection.title}</div>
- <div className="truncate opacity-70">{inspection.assetName}</div>
- </div>
+ <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${statusDot(inspection.status)}`} />
+ <span className="text-[10px] font-medium truncate">{inspection.title}</span>
+ </button>
  ))}
+ {dayInspections.length > 3 && (
+ <div className="text-[10px] text-muted-foreground px-1">
+ +{dayInspections.length - 3} more
+ </div>
+ )}
  </div>
  </div>
  );
  })}
+ </div>
+
+ <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
+ <span className="flex items-center gap-1.5">
+ <span className="h-2 w-2 rounded-full bg-primary" /> Scheduled
+ </span>
+ <span className="flex items-center gap-1.5">
+ <span className="h-2 w-2 rounded-full bg-success" /> Completed
+ </span>
  </div>
  </Card>
  );

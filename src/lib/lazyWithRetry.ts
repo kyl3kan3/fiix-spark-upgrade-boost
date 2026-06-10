@@ -23,7 +23,8 @@ function isChunkLoadError(err: unknown): boolean {
   );
 }
 
-export function lazyWithRetry<T extends ComponentType<unknown>>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- mirrors React.lazy's own ComponentType<any> constraint
+export function lazyWithRetry<T extends ComponentType<any>>(
   factory: () => Promise<{ default: T }>,
 ) {
   return lazy(async () => {

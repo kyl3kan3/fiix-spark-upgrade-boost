@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon, ClipboardCheck, AlertTriangle, CheckCircle2, SlidersHorizontal } from "lucide-react";
+import { Plus, CalendarIcon, ClipboardCheck, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -9,6 +9,8 @@ import PageHeader from "@/components/shell/PageHeader";
 import InspectionsList from "@/components/inspections/InspectionsList";
 import { InspectionsCalendarView } from "@/components/inspections/InspectionsCalendarView";
 import { useInspections } from "@/hooks/useInspections";
+import QueryErrorState from "@/components/common/QueryErrorState";
+import { isToday, isSameMonth } from "date-fns";
 
 const InspectionsPage = () => {
  const navigate = useNavigate();
@@ -19,29 +21,39 @@ const InspectionsPage = () => {
  assignee: "all",
  });
 
- const { inspections, loading } = useInspections();
+ const { inspections, loading, error, refreshInspections } = useInspections();
+
+ const now = new Date();
+ const isOverdue = (i: (typeof inspections)[number]) =>
+ i.status === "scheduled" && new Date(i.scheduledDate) < now;
 
  const filteredInspections = inspections.filter((inspection) => {
  const matchesSearch = !filters.search ||
  inspection.title.toLowerCase().includes(filters.search.toLowerCase()) ||
  inspection.description?.toLowerCase().includes(filters.search.toLowerCase());
 
- const matchesStatus = filters.status === "all" || inspection.status === filters.status;
+ const matchesStatus =
+ filters.status === "all" ||
+ (filters.status === "failed"
+ ? isOverdue(inspection)
+ : inspection.status === filters.status && !(filters.status === "scheduled" && isOverdue(inspection)));
  const matchesAssignee = filters.assignee === "all" || inspection.assignedTo === filters.assignee;
 
  return matchesSearch && matchesStatus && matchesAssignee;
  });
 
- const calendarFilters = {
- status: filters.status,
- priority: "all",
- assignedTo: filters.assignee,
- dateRange: { from: undefined as Date | undefined, to: undefined as Date | undefined },
- };
-
- const scheduledCount = inspections.filter((i) => i.status === "scheduled").length;
- const overdueCount = inspections.filter((i) => i.status === "failed").length;
- const completedCount = inspections.filter((i) => i.status === "completed").length;
+ const scheduledCount = inspections.filter(
+ (i) => i.status === "scheduled" && isToday(new Date(i.scheduledDate)),
+ ).length;
+ const overdueCount = inspections.filter(isOverdue).length;
+ const completedThisMonth = inspections.filter(
+ (i) => i.status === "completed" && i.completedDate && isSameMonth(new Date(i.completedDate), now),
+ );
+ const completedCount = completedThisMonth.length;
+ const monthItems = completedThisMonth.flatMap((i) => i.items).filter((item) => item.passed !== null);
+ const passRate = monthItems.length
+ ? Math.round((monthItems.filter((item) => item.passed).length / monthItems.length) * 100)
+ : null;
 
  return (
  <DashboardLayout>
@@ -88,7 +100,7 @@ const InspectionsPage = () => {
  <div className="p-3 rounded-lg bg-muted text-primary">
  <CheckCircle2 className="h-5 w-5" />
  </div>
- <span className="text-xs font-bold text-muted-foreground">Monthly Score: 98%</span>
+ <span className="text-xs font-bold text-muted-foreground">{passRate !== null ? `Pass rate: ${passRate}%` : "This month"}</span>
  </div>
  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Completed (MTD)</p>
  <h4 className="font-headline text-4xl font-bold text-foreground">
@@ -119,12 +131,6 @@ const InspectionsPage = () => {
  })}
  </div>
 
- <div className="ml-auto flex items-center gap-2">
- <Button variant="outline" size="sm" className="text-xs gap-1.5">
- <SlidersHorizontal className="h-3.5 w-3.5" />
- Filter
- </Button>
- </div>
  </div>
 
  {/* List / Calendar tabs */}
@@ -146,11 +152,15 @@ const InspectionsPage = () => {
  </TabsList>
 
  <TabsContent value="list" className="mt-0 space-y-4">
+ {error ? (
+ <QueryErrorState title="Couldn't load check-ups" error={error} onRetry={() => refreshInspections()} />
+ ) : (
  <InspectionsList inspections={filteredInspections} loading={loading} />
+ )}
  </TabsContent>
 
  <TabsContent value="calendar" className="mt-0">
- <InspectionsCalendarView filters={calendarFilters} />
+ <InspectionsCalendarView inspections={filteredInspections} />
  </TabsContent>
  </Tabs>
  </div>

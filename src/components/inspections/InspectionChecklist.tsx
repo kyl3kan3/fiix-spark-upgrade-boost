@@ -8,9 +8,9 @@ import { InspectionItem } from "@/types/inspections";
 interface InspectionChecklistProps {
   items: InspectionItem[];
   isCompleted: boolean;
-  handleItemPassChange: (itemId: string, passed: boolean) => void;
-  handleNoteChange: (itemId: string, notes: string) => void;
-  handleSaveChecklist: () => void;
+  handleItemPassChange?: (itemId: string, passed: boolean) => void;
+  handleNoteChange?: (itemId: string, notes: string) => void;
+  handleSaveChecklist?: () => void;
 }
 
 const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
@@ -44,7 +44,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
                         id={`${item.id}-pass`}
                         checked={item.passed === true}
                         disabled={isCompleted}
-                        onCheckedChange={() => handleItemPassChange(item.id, true)}
+                        onCheckedChange={() => handleItemPassChange?.(item.id, true)}
                       />
                       <label htmlFor={`${item.id}-pass`} className="text-xs text-success font-medium cursor-pointer">
                         Pass
@@ -55,7 +55,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
                         id={`${item.id}-fail`}
                         checked={item.passed === false}
                         disabled={isCompleted}
-                        onCheckedChange={() => handleItemPassChange(item.id, false)}
+                        onCheckedChange={() => handleItemPassChange?.(item.id, false)}
                       />
                       <label htmlFor={`${item.id}-fail`} className="text-xs text-destructive font-medium cursor-pointer">
                         Fail
@@ -67,7 +67,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
                   <Textarea
                     value={item.notes}
                     disabled={isCompleted}
-                    onChange={(e) => handleNoteChange(item.id, e.target.value)}
+                    onChange={(e) => handleNoteChange?.(item.id, e.target.value)}
                     placeholder="Enter notes"
                     className="h-20 min-h-0"
                   />
@@ -86,7 +86,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
             <Textarea
               value={item.notes}
               disabled={isCompleted}
-              onChange={(e) => handleNoteChange(item.id, e.target.value)}
+              onChange={(e) => handleNoteChange?.(item.id, e.target.value)}
               placeholder="Enter notes"
               className="h-16 min-h-0"
             />
@@ -94,7 +94,7 @@ const InspectionChecklist: React.FC<InspectionChecklistProps> = ({
         ))}
       </div>
 
-      {!isCompleted && items.length > 0 && (
+      {!isCompleted && handleSaveChecklist && items.length > 0 && (
         <div className="mt-4 flex justify-end">
           <Button onClick={handleSaveChecklist}>Save Checklist</Button>
         </div>
