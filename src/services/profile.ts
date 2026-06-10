@@ -1,6 +1,24 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/services/supabaseHelpers";
 import { normalizeError } from "@/lib/errors";
+
+/**
+ * Gets the profile of the currently authenticated user.
+ * Returns null if unauthenticated or if no profile row is found.
+ */
+export const getCurrentUserProfile = async () => {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  return profile;
+};
 
 /**
  * Updates a user's profile with company information
