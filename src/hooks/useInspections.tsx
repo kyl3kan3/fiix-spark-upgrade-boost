@@ -1,50 +1,25 @@
-
-import { useState, useEffect, useCallback } from "react";
-import { Inspection } from "@/types/inspections";
+import { useQuery } from "@tanstack/react-query";
 import { fetchInspections } from "@/services/inspectionService";
 
 /**
- * Hook for managing inspections data
+ * Check-ups derived from checklist schedules (upcoming) and checklist
+ * submissions (completed). Cached under one query key so the list,
+ * detail, and calendar views share a single fetch.
  */
-export const useInspections = (filters: any = {}) => {
- const [inspections, setInspections] = useState<Inspection[]>([]);
- const [loading, setLoading] = useState(true);
- const [error, setError] = useState<Error | null>(null);
-
- const loadInspections = useCallback(async () => {
- try {
- setError(null);
- 
- const { data, error } = await fetchInspections(filters);
- 
- if (error) {
- setError(error);
- setInspections([]);
- } else {
- setInspections(data);
- }
- } catch (err) {
- setError(err instanceof Error ? err : new Error('Failed to load inspections'));
- setInspections([]);
- } finally {
- setLoading(false);
- }
- }, [filters]);
-
- // Function to force refresh the data
- const refreshInspections = useCallback(() => {
- setLoading(true);
- loadInspections();
- }, [loadInspections]);
-
- useEffect(() => {
- loadInspections();
- }, [loadInspections]);
+export const useInspections = () => {
+ const { data, isLoading, error, refetch } = useQuery({
+ queryKey: ["inspections"],
+ queryFn: async () => {
+ const { data, error } = await fetchInspections();
+ if (error) throw error;
+ return data;
+ },
+ });
 
  return {
- inspections,
- loading,
- error,
- refreshInspections
+ inspections: data || [],
+ loading: isLoading,
+ error: (error as Error | null) ?? null,
+ refreshInspections: refetch,
  };
 };

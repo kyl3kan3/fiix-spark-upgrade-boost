@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { supabase } from "@/integrations/supabase/client";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import FeatureDemo from "../components/FeatureDemo";

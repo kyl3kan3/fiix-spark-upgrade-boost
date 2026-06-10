@@ -49,8 +49,8 @@ export const InspectionsFilters: React.FC<InspectionsFiltersProps> = ({ filters,
  setFilters(prev => ({ ...prev, assignedTo: value }));
  };
 
- const handleDateRangeChange = (range: { from: Date | undefined; to: Date | undefined }) => {
- setFilters(prev => ({ ...prev, dateRange: range }));
+ const handleDateRangeChange = (range: { from?: Date; to?: Date } | undefined) => {
+ setFilters(prev => ({ ...prev, dateRange: { from: range?.from, to: range?.to } }));
  };
 
  const resetFilters = () => {
