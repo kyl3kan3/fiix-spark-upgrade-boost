@@ -1,23 +1,12 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUserProfile } from "@/services/profile";
 
 export const useUserProfile = () => {
- const { data: profile, isLoading, error } = useQuery({
- queryKey: ["userProfile"],
- queryFn: async () => {
- const { data: { user } } = await supabase.auth.getUser();
- if (!user) return null;
+  const { data: profile, isLoading, error } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: getCurrentUserProfile,
+  });
 
- const { data: profile } = await supabase
- .from("profiles")
- .select("*")
- .eq("id", user.id)
- .single();
-
- return profile;
- },
- });
-
- return { profile, isLoading, error };
+  return { profile, isLoading, error };
 };
