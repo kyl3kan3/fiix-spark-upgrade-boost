@@ -17,6 +17,7 @@ import {
 import { useAuth } from "@/providers/AuthContext";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import TriageSuggestionInline from "@/components/selfHealing/TriageSuggestionInline";
 
 const RequestsInboxPage = () => {
  const { user } = useAuth();
