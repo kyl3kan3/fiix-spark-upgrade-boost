@@ -1,6 +1,6 @@
 
 import { ReactNode } from "react";
-import { BarChart2, Calendar, ClipboardCheck, Clock, Settings, Users } from "lucide-react";
+import { BarChart2, BrainCircuit, Calendar, ClipboardCheck, Clock, Settings, Users } from "lucide-react";
 
 // Feature categories
 export const categories = [
@@ -49,6 +49,14 @@ export const featureItems: FeatureItem[] = [
  icon: <Settings className="h-12 w-12 p-2 bg-primary/10 text-primary rounded-lg" />,
  category: "core",
  benefits: ["Centralized asset database", "Complete maintenance history", "Document storage"],
+ demoEnabled: true,
+ },
+ {
+ title: "Predictive Maintenance",
+ description: "Use AI-powered risk scoring to predict equipment failures before they happen and act proactively.",
+ icon: <BrainCircuit className="h-12 w-12 p-2 bg-primary/10 text-primary rounded-lg" />,
+ category: "advanced",
+ benefits: ["Predict failures before they happen", "Prioritize work by risk score", "Cut unplanned downtime"],
  demoEnabled: true,
  },
  {

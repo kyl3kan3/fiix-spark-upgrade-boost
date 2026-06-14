@@ -7,6 +7,7 @@ import ReportsContent from "./ReportsContent";
 import TeamCollaborationContent from "./TeamCollaborationContent";
 import PerformanceAnalyticsContent from "./PerformanceAnalyticsContent";
 import DowntimeTrackingContent from "./DowntimeTrackingContent";
+import PredictiveMaintenanceContent from "./PredictiveMaintenanceContent";
 
 export interface FeatureContent {
  title: string;
@@ -29,6 +30,11 @@ export const featureContentMap: FeatureContentMap = {
  title: "Preventive Maintenance",
  description: "Schedule and manage recurring maintenance tasks",
  content: <PreventiveMaintenanceContent />
+ },
+ "Predictive Maintenance": {
+ title: "Predictive Maintenance",
+ description: "AI-powered risk scoring that predicts failures before they happen",
+ content: <PredictiveMaintenanceContent />
  },
  "Asset Management": {
  title: "Asset Management",

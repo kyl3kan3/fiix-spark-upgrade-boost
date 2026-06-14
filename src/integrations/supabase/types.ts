@@ -50,6 +50,175 @@ export type Database = {
         }
         Relationships: []
       }
+      asset_failure_events: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          downtime_minutes: number | null
+          failed_at: string
+          id: string
+          notes: string | null
+          resolved_at: string | null
+          root_cause: string | null
+          severity: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          downtime_minutes?: number | null
+          failed_at?: string
+          id?: string
+          notes?: string | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          downtime_minutes?: number | null
+          failed_at?: string
+          id?: string
+          notes?: string | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_failure_events_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_failure_events_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_health_metrics: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          id: string
+          metric_type: string
+          notes: string | null
+          recorded_at: string
+          source: string
+          unit: string | null
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          metric_type: string
+          notes?: string | null
+          recorded_at?: string
+          source?: string
+          unit?: string | null
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          metric_type?: string
+          notes?: string | null
+          recorded_at?: string
+          source?: string
+          unit?: string | null
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_health_metrics_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_risk_scores: {
+        Row: {
+          asset_id: string
+          company_id: string
+          computed_at: string
+          contributing_factors: Json
+          created_at: string
+          failure_probability: number
+          id: string
+          model_version: string
+          predicted_failure_date: string | null
+          recommended_action: string | null
+          remaining_useful_life_days: number | null
+          risk_level: string
+          risk_score: number
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          computed_at?: string
+          contributing_factors?: Json
+          created_at?: string
+          failure_probability?: number
+          id?: string
+          model_version?: string
+          predicted_failure_date?: string | null
+          recommended_action?: string | null
+          remaining_useful_life_days?: number | null
+          risk_level?: string
+          risk_score?: number
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          computed_at?: string
+          contributing_factors?: Json
+          created_at?: string
+          failure_probability?: number
+          id?: string
+          model_version?: string
+          predicted_failure_date?: string | null
+          recommended_action?: string | null
+          remaining_useful_life_days?: number | null
+          risk_level?: string
+          risk_score?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_risk_scores_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: true
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assets: {
         Row: {
           company_id: string | null

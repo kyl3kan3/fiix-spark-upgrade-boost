@@ -3,10 +3,10 @@ import { getCompanySubscription, type SubscriptionTier } from "@/services/subscr
 
 export type { SubscriptionTier, SubscriptionStatus, Subscription } from "@/services/subscriptionService";
 
-export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; automations: boolean; api: boolean; sso: boolean }> = {
-  starter: { analytics: false, automations: false, api: false, sso: false },
-  pro: { analytics: true, automations: true, api: false, sso: false },
-  business: { analytics: true, automations: true, api: true, sso: true },
+export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; automations: boolean; api: boolean; sso: boolean; predictive_maintenance: boolean }> = {
+  starter: { analytics: false, automations: false, api: false, sso: false, predictive_maintenance: false },
+  pro: { analytics: true, automations: true, api: false, sso: false, predictive_maintenance: true },
+  business: { analytics: true, automations: true, api: true, sso: true, predictive_maintenance: true },
 };
 
 export function useSubscription() {
