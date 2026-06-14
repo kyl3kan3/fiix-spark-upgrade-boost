@@ -174,6 +174,56 @@ export type Database = {
           },
         ]
       }
+      asset_risk_score_runs: {
+        Row: {
+          actor_id: string | null
+          company_id: string
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          model_version: string
+          snapshot: Json
+          status: string
+          summary: Json
+          triggered_by: string
+        }
+        Insert: {
+          actor_id?: string | null
+          company_id: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          model_version?: string
+          snapshot?: Json
+          status?: string
+          summary?: Json
+          triggered_by: string
+        }
+        Update: {
+          actor_id?: string | null
+          company_id?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          model_version?: string
+          snapshot?: Json
+          status?: string
+          summary?: Json
+          triggered_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_risk_score_runs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_scores: {
         Row: {
           asset_id: string
