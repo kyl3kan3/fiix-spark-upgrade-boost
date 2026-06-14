@@ -112,7 +112,7 @@ const DashboardHeader = ({ userName = "Admin User" }: DashboardHeaderProps) => {
 
           <div className="hidden md:flex mr-4">
             <Link to="/dashboard" className="flex items-center gap-2 text-xl font-bold text-primary">
-              <img src={logo} alt="MaintenEase" className="h-8 w-8" />
+              <img src={logo} alt="MaintenEase maintenance management logo" className="h-8 w-8" />
               MaintenEase
             </Link>
           </div>
