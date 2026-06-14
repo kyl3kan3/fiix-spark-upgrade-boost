@@ -225,23 +225,23 @@ type Block =
   | { kind: "title"; dur: number; props: React.ComponentProps<typeof TitleCard> }
   | { kind: "clip"; dur: number; props: React.ComponentProps<typeof Clip> };
 
-// 30fps, total = 2700 frames (90s)
+// 30fps. Clip durations match trimmed source footage (loading screens removed).
 const BLOCKS: Block[] = [
-  { kind: "title", dur: 180, props: { eyebrow: "MaintenEase", title: "A quieter way to run maintenance.", italicWord: "quieter", subtitle: "Ninety seconds. Real product. No theatrics." } },
+  { kind: "title", dur: 180, props: { eyebrow: "MaintenEase", title: "A quieter way to run maintenance.", italicWord: "quieter", subtitle: "Sixty seconds. Real product. No theatrics." } },
 
-  { kind: "clip", dur: 285, props: { src: "clips/01-overview.mp4", kicker: "I · Overview", caption: "The morning, on one page." } },
+  { kind: "clip", dur: 192, props: { src: "clips/trimmed/01-overview.mp4", kicker: "I · Overview", caption: "The morning, on one page." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter II", title: "From request to work.", italicWord: "work", size: 104 } },
 
-  { kind: "clip", dur: 540, props: { src: "clips/02-triage.mp4", kicker: "II · Triage", caption: "Inbox becomes a work order, without ceremony." } },
+  { kind: "clip", dur: 504, props: { src: "clips/trimmed/02-triage.mp4", kicker: "II · Triage", caption: "Inbox becomes a work order, without ceremony." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter III", title: "Ahead of the breakdown.", italicWord: "Ahead", size: 104 } },
 
-  { kind: "clip", dur: 285, props: { src: "clips/03-pm.mp4", kicker: "III · Preventive", caption: "A month, planned in minutes." } },
+  { kind: "clip", dur: 222, props: { src: "clips/trimmed/03-pm.mp4", kicker: "III · Preventive", caption: "A month, planned in minutes." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter IV", title: "Every asset, accounted for.", italicWord: "accounted", size: 104 } },
 
-  { kind: "clip", dur: 510, props: { src: "clips/04-registry.mp4", kicker: "IV · Registry", caption: "Equipment, places, and the people who own them." } },
+  { kind: "clip", dur: 102, props: { src: "clips/trimmed/04-registry.mp4", kicker: "IV · Registry", caption: "Equipment, places, and the people who own them." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter V", title: "The whole picture.", italicWord: "whole", size: 104 } },
 
-  { kind: "clip", dur: 420, props: { src: "clips/05-analytics.mp4", kicker: "V · Analytics", caption: "Trends, costs, and the questions you haven't asked yet." } },
+  { kind: "clip", dur: 96, props: { src: "clips/trimmed/05-analytics.mp4", kicker: "V · Analytics", caption: "Trends, costs, and the questions you haven't asked yet." } },
 
   { kind: "title", dur: 120, props: { eyebrow: "Begin", title: "maintenease.com", subtitle: "Seven days, full access. No card required.", align: "center", size: 96 } },
 ];
