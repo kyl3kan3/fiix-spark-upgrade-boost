@@ -248,6 +248,34 @@ const BLOCKS: Block[] = [
 
 export const TOTAL_FRAMES = BLOCKS.reduce((a, b) => a + b.dur, 0);
 
+const TITLE_BLOCKS = BLOCKS.filter((b) => b.kind === "title") as Extract<Block, { kind: "title" }>[];
+export const TITLE_DURS = TITLE_BLOCKS.map((b) => b.dur);
+export const TITLES_FRAMES = TITLE_DURS.reduce((a, b) => a + b, 0);
+
+export const TitlesOnly: React.FC = () => {
+  let cursor = 0;
+  return (
+    <AbsoluteFill style={{ backgroundColor: BG }}>
+      <AbsoluteFill
+        style={{
+          background:
+            "radial-gradient(circle at 20% 10%, rgba(185,116,74,0.05), transparent 55%), radial-gradient(circle at 80% 90%, rgba(185,116,74,0.04), transparent 60%)",
+          pointerEvents: "none",
+        }}
+      />
+      {TITLE_BLOCKS.map((b, i) => {
+        const from = cursor;
+        cursor += b.dur;
+        return (
+          <Sequence key={i} from={from} durationInFrames={b.dur}>
+            <TitleCard {...b.props} />
+          </Sequence>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
 export const MainVideo: React.FC = () => {
   let cursor = 0;
   return (
