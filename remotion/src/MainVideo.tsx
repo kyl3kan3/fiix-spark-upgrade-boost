@@ -4,171 +4,219 @@ import {
   OffthreadVideo,
   Sequence,
   interpolate,
-  spring,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { loadFont as loadDisplay } from "@remotion/google-fonts/PlayfairDisplay";
-import { loadFont as loadBody } from "@remotion/google-fonts/Inter";
+import { loadFont as loadDisplay } from "@remotion/google-fonts/Fraunces";
+import { loadFont as loadBody } from "@remotion/google-fonts/InterTight";
 
-const display = loadDisplay("normal", { weights: ["600", "700"], subsets: ["latin"] });
-const body = loadBody("normal", { weights: ["400", "500", "600"], subsets: ["latin"] });
+const display = loadDisplay("normal", { weights: ["300", "400", "600"], subsets: ["latin"] });
+const displayIt = loadDisplay("italic", { weights: ["300", "400"], subsets: ["latin"] });
+const body = loadBody("normal", { weights: ["400", "500"], subsets: ["latin"] });
 
-const NAVY = "#0a1f44";
-const CREAM = "#f5f3ec";
-const TEAL = "#14b8a6";
+const BG = "#0b0c0e";
+const BONE = "#eae7df";
+const COPPER = "#b9744a";
+const GRAPHITE = "#5b6168";
 
 const ci = (f: number, a: number[], b: number[]) =>
   interpolate(f, a, b, { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-const Clip: React.FC<{
-  src: string;
-  caption: string;
-  kicker: string;
-}> = ({ src, caption, kicker }) => {
-  const frame = useCurrentFrame();
-  const { durationInFrames, fps } = useVideoConfig();
+const useFade = () => {
+  const f = useCurrentFrame();
+  const { durationInFrames: d } = useVideoConfig();
+  return ci(f, [0, 18], [0, 1]) * ci(f, [d - 18, d - 1], [1, 0]);
+};
 
-  const enter = ci(frame, [0, 10], [0, 1]);
-  const exit = ci(frame, [durationInFrames - 10, durationInFrames - 1], [1, 0]);
-  const opacity = enter * exit;
-
-  const capIn = spring({ frame: frame - 8, fps, config: { damping: 200, stiffness: 80 } });
-  const capOut = ci(frame, [durationInFrames - 22, durationInFrames - 8], [1, 0]);
-  const capOp = capIn * capOut;
-  const capY = interpolate(capIn, [0, 1], [14, 0]);
-  const kickW = ci(frame, [6, 22], [0, 1]);
-
-  return (
-    <AbsoluteFill style={{ backgroundColor: "#04081a", opacity }}>
-      <OffthreadVideo src={staticFile(src)} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-
-      <AbsoluteFill
-        style={{
-          background:
-            "linear-gradient(to top, rgba(4,8,26,0.85) 0%, rgba(4,8,26,0.1) 38%, rgba(4,8,26,0) 60%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          left: 60,
-          bottom: 56,
-          maxWidth: 1300,
-          opacity: capOp,
-          transform: `translateY(${capY}px)`,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-          <div style={{ width: kickW * 40, height: 2, background: TEAL, borderRadius: 2 }} />
-          <div
-            style={{
-              fontFamily: body.fontFamily,
-              color: TEAL,
-              fontWeight: 600,
-              letterSpacing: 3,
-              fontSize: 13,
-              textTransform: "uppercase",
-            }}
-          >
-            {kicker}
-          </div>
-        </div>
-        <div
-          style={{
-            fontFamily: display.fontFamily,
-            color: "#ffffff",
-            fontSize: 44,
-            lineHeight: 1.1,
-            fontWeight: 700,
-            letterSpacing: -0.5,
-            textShadow: "0 4px 24px rgba(0,0,0,0.6)",
-          }}
-        >
-          {caption}
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
+const Rise: React.FC<{ delay?: number; y?: number; children: React.ReactNode; style?: React.CSSProperties }> = ({
+  delay = 0,
+  y = 12,
+  children,
+  style,
+}) => {
+  const f = useCurrentFrame() - delay;
+  const o = ci(f, [0, 18], [0, 1]);
+  const ty = interpolate(o, [0, 1], [y, 0]);
+  return <div style={{ opacity: o, transform: `translateY(${ty}px)`, ...style }}>{children}</div>;
 };
 
 const TitleCard: React.FC<{
   eyebrow: string;
   title: string;
+  italicWord?: string;
   subtitle?: string;
-  variant?: "intro" | "chapter" | "outro";
-}> = ({ eyebrow, title, subtitle, variant = "chapter" }) => {
+  align?: "left" | "center";
+  size?: number;
+}> = ({ eyebrow, title, italicWord, subtitle, align = "left", size = 124 }) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
-  const enter = spring({ frame, fps, config: { damping: 200, stiffness: 70 } });
-  const exit = ci(frame, [durationInFrames - 14, durationInFrames - 1], [1, 0]);
-  const op = enter * exit;
-  const y = interpolate(enter, [0, 1], [18, 0]);
-
-  const bg =
-    variant === "intro"
-      ? `radial-gradient(circle at 30% 20%, rgba(20,184,166,0.14), transparent 55%), linear-gradient(135deg, ${NAVY} 0%, #04081a 100%)`
-      : variant === "outro"
-      ? `radial-gradient(circle at 70% 80%, rgba(20,184,166,0.12), transparent 60%), linear-gradient(135deg, #04081a 0%, ${NAVY} 100%)`
-      : `linear-gradient(135deg, ${NAVY} 0%, #04081a 100%)`;
-
-  const lineW = interpolate(enter, [0, 1], [0, 140]);
+  const op = useFade();
+  const lineW = ci(frame, [10, 40], [0, 120]);
 
   return (
-    <AbsoluteFill style={{ background: bg, opacity: op }}>
+    <AbsoluteFill style={{ background: BG, opacity: op }}>
+      {/* Subtle vignette */}
       <AbsoluteFill
         style={{
-          alignItems: "flex-start",
+          background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.5) 100%)",
+          pointerEvents: "none",
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          alignItems: align === "center" ? "center" : "flex-start",
           justifyContent: "center",
-          padding: "0 160px",
-          transform: `translateY(${y}px)`,
+          padding: align === "center" ? "0 200px" : "0 180px",
+          textAlign: align,
         }}
       >
-        <div
-          style={{
-            fontFamily: body.fontFamily,
-            color: TEAL,
-            fontSize: 16,
-            fontWeight: 600,
-            letterSpacing: 5,
-            textTransform: "uppercase",
-            marginBottom: 22,
-          }}
-        >
-          {eyebrow}
-        </div>
-        <div style={{ width: lineW, height: 2, background: TEAL, marginBottom: 28, borderRadius: 2, opacity: 0.7 }} />
-        <div
-          style={{
-            fontFamily: display.fontFamily,
-            color: "#ffffff",
-            fontSize: variant === "intro" ? 104 : 88,
-            lineHeight: 1.05,
-            fontWeight: 700,
-            letterSpacing: -2,
-            maxWidth: 1600,
-          }}
-        >
-          {title}
-        </div>
-        {subtitle && (
+        <Rise delay={4}>
           <div
             style={{
-              marginTop: 28,
               fontFamily: body.fontFamily,
-              color: "rgba(255,255,255,0.7)",
-              fontSize: 24,
-              lineHeight: 1.4,
-              maxWidth: 1200,
+              color: COPPER,
+              fontSize: 13,
+              fontWeight: 500,
+              letterSpacing: 6,
+              textTransform: "uppercase",
+              marginBottom: 28,
             }}
           >
-            {subtitle}
+            {eyebrow}
           </div>
+        </Rise>
+        <div style={{ width: lineW, height: 1, background: COPPER, marginBottom: 36, opacity: 0.8 }} />
+        <Rise delay={12}>
+          <div
+            style={{
+              fontFamily: display.fontFamily,
+              color: BONE,
+              fontSize: size,
+              lineHeight: 1.02,
+              fontWeight: 400,
+              letterSpacing: -2.4,
+              maxWidth: 1500,
+            }}
+          >
+            {italicWord ? (
+              <>
+                {title.split(italicWord)[0]}
+                <span style={{ fontFamily: displayIt.fontFamily, fontStyle: "italic", color: COPPER }}>
+                  {italicWord}
+                </span>
+                {title.split(italicWord)[1]}
+              </>
+            ) : (
+              title
+            )}
+          </div>
+        </Rise>
+        {subtitle && (
+          <Rise delay={26} style={{ marginTop: 32 }}>
+            <div
+              style={{
+                fontFamily: body.fontFamily,
+                color: GRAPHITE,
+                fontSize: 22,
+                lineHeight: 1.5,
+                fontWeight: 400,
+                maxWidth: 720,
+                letterSpacing: 0.2,
+              }}
+            >
+              {subtitle}
+            </div>
+          </Rise>
         )}
       </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+const Clip: React.FC<{ src: string; kicker: string; caption: string }> = ({ src, kicker, caption }) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const op = useFade();
+  const capOut = ci(frame, [durationInFrames - 30, durationInFrames - 14], [1, 0]);
+
+  return (
+    <AbsoluteFill style={{ background: BG, opacity: op }}>
+      {/* Inset frame */}
+      <AbsoluteFill style={{ padding: "80px 100px 220px 100px" }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            borderRadius: 6,
+            overflow: "hidden",
+            boxShadow: "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(234,231,223,0.06)",
+          }}
+        >
+          <OffthreadVideo
+            src={staticFile(src)}
+            muted
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+          {/* Soft top vignette */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(11,12,14,0.25) 0%, rgba(11,12,14,0) 18%, rgba(11,12,14,0) 80%, rgba(11,12,14,0.35) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+      </AbsoluteFill>
+
+      {/* Lower-third caption */}
+      <div
+        style={{
+          position: "absolute",
+          left: 100,
+          right: 100,
+          bottom: 70,
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 60,
+          opacity: capOut,
+        }}
+      >
+        <Rise delay={14}>
+          <div
+            style={{
+              fontFamily: display.fontFamily,
+              fontStyle: "italic",
+              color: BONE,
+              fontSize: 40,
+              fontWeight: 300,
+              letterSpacing: -0.4,
+              lineHeight: 1.15,
+              maxWidth: 1100,
+            }}
+          >
+            {caption}
+          </div>
+        </Rise>
+        <Rise delay={20} style={{ paddingBottom: 8 }}>
+          <div
+            style={{
+              fontFamily: body.fontFamily,
+              color: COPPER,
+              fontSize: 12,
+              letterSpacing: 5,
+              textTransform: "uppercase",
+              fontWeight: 500,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {kicker}
+          </div>
+        </Rise>
+      </div>
     </AbsoluteFill>
   );
 };
@@ -177,25 +225,25 @@ type Block =
   | { kind: "title"; dur: number; props: React.ComponentProps<typeof TitleCard> }
   | { kind: "clip"; dur: number; props: React.ComponentProps<typeof Clip> };
 
+// 30fps, total = 2700 frames (90s)
 const BLOCKS: Block[] = [
-  { kind: "title", dur: 75, props: { eyebrow: "MaintenEase", title: "A quick tour.", subtitle: "Live inside the app — every click is real.", variant: "intro" } },
+  { kind: "title", dur: 180, props: { eyebrow: "MaintenEase", title: "A quieter way to run maintenance.", italicWord: "quieter", subtitle: "Ninety seconds. Real product. No theatrics." } },
 
-  { kind: "title", dur: 45, props: { eyebrow: "01", title: "Your morning.", variant: "chapter" } },
-  { kind: "clip", dur: 289, props: { src: "clips/01-overview.mp4", kicker: "Dashboard", caption: "Today, at a glance." } },
+  { kind: "clip", dur: 285, props: { src: "clips/01-overview.mp4", kicker: "I · Overview", caption: "The morning, on one page." } },
+  { kind: "title", dur: 90, props: { eyebrow: "Chapter II", title: "From request to work.", italicWord: "work", size: 104 } },
 
-  { kind: "title", dur: 45, props: { eyebrow: "02", title: "Requests to work.", variant: "chapter" } },
-  { kind: "clip", dur: 574, props: { src: "clips/02-triage.mp4", kicker: "Triage", caption: "Inbox → work order → done." } },
+  { kind: "clip", dur: 540, props: { src: "clips/02-triage.mp4", kicker: "II · Triage", caption: "Inbox becomes a work order, without ceremony." } },
+  { kind: "title", dur: 90, props: { eyebrow: "Chapter III", title: "Ahead of the breakdown.", italicWord: "Ahead", size: 104 } },
 
-  { kind: "title", dur: 45, props: { eyebrow: "03", title: "Ahead of breakdowns.", variant: "chapter" } },
-  { kind: "clip", dur: 295, props: { src: "clips/03-pm.mp4", kicker: "PM & compliance", caption: "A month, planned." } },
+  { kind: "clip", dur: 285, props: { src: "clips/03-pm.mp4", kicker: "III · Preventive", caption: "A month, planned in minutes." } },
+  { kind: "title", dur: 90, props: { eyebrow: "Chapter IV", title: "Every asset, accounted for.", italicWord: "accounted", size: 104 } },
 
-  { kind: "title", dur: 45, props: { eyebrow: "04", title: "Know every asset.", variant: "chapter" } },
-  { kind: "clip", dur: 535, props: { src: "clips/04-registry.mp4", kicker: "Registry", caption: "Equipment · places · vendors." } },
+  { kind: "clip", dur: 510, props: { src: "clips/04-registry.mp4", kicker: "IV · Registry", caption: "Equipment, places, and the people who own them." } },
+  { kind: "title", dur: 90, props: { eyebrow: "Chapter V", title: "The whole picture.", italicWord: "whole", size: 104 } },
 
-  { kind: "title", dur: 45, props: { eyebrow: "05", title: "The whole picture.", variant: "chapter" } },
-  { kind: "clip", dur: 430, props: { src: "clips/05-analytics.mp4", kicker: "Analytics", caption: "Trends and custom reports." } },
+  { kind: "clip", dur: 420, props: { src: "clips/05-analytics.mp4", kicker: "V · Analytics", caption: "Trends, costs, and the questions you haven't asked yet." } },
 
-  { kind: "title", dur: 120, props: { eyebrow: "Start free", title: "maintenease.com", subtitle: "Seven days, full access — no card.", variant: "outro" } },
+  { kind: "title", dur: 120, props: { eyebrow: "Begin", title: "maintenease.com", subtitle: "Seven days, full access. No card required.", align: "center", size: 96 } },
 ];
 
 export const TOTAL_FRAMES = BLOCKS.reduce((a, b) => a + b.dur, 0);
@@ -203,17 +251,21 @@ export const TOTAL_FRAMES = BLOCKS.reduce((a, b) => a + b.dur, 0);
 export const MainVideo: React.FC = () => {
   let cursor = 0;
   return (
-    <AbsoluteFill style={{ backgroundColor: NAVY }}>
+    <AbsoluteFill style={{ backgroundColor: BG }}>
+      {/* Persistent grain */}
+      <AbsoluteFill
+        style={{
+          background:
+            "radial-gradient(circle at 20% 10%, rgba(185,116,74,0.05), transparent 55%), radial-gradient(circle at 80% 90%, rgba(185,116,74,0.04), transparent 60%)",
+          pointerEvents: "none",
+        }}
+      />
       {BLOCKS.map((b, i) => {
         const from = cursor;
         cursor += b.dur;
         return (
           <Sequence key={i} from={from} durationInFrames={b.dur}>
-            {b.kind === "title" ? (
-              <TitleCard {...(b.props as any)} />
-            ) : (
-              <Clip {...(b.props as any)} />
-            )}
+            {b.kind === "title" ? <TitleCard {...(b.props as any)} /> : <Clip {...(b.props as any)} />}
           </Sequence>
         );
       })}
