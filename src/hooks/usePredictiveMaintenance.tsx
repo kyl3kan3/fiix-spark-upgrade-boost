@@ -3,10 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchAssetRiskScores,
   recomputeRiskScores,
+  fetchRiskScoreRuns,
   type AssetRiskScore,
+  type RiskScoreRun,
 } from "@/services/predictiveMaintenanceService";
 
 const QUERY_KEY = ["predictive-maintenance", "risk-scores"] as const;
+const RUNS_KEY = ["predictive-maintenance", "runs"] as const;
 
 export interface PredictiveMaintenanceStats {
   total: number;
@@ -59,16 +62,24 @@ function buildStats(scores: AssetRiskScore[]): PredictiveMaintenanceStats {
 export function usePredictiveMaintenance() {
   const queryClient = useQueryClient();
 
-  const { data: scores = [], isLoading, error } = useQuery({
+  const { data: scores = [], isLoading, error, refetch } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: fetchAssetRiskScores,
     staleTime: 1000 * 60 * 5,
+    retry: 1,
+  });
+
+  const { data: runs = [], isLoading: isLoadingRuns } = useQuery({
+    queryKey: RUNS_KEY,
+    queryFn: () => fetchRiskScoreRuns(10),
+    staleTime: 1000 * 60,
   });
 
   const recompute = useMutation({
     mutationFn: recomputeRiskScores,
     onSuccess: (fresh) => {
       queryClient.setQueryData(QUERY_KEY, fresh);
+      queryClient.invalidateQueries({ queryKey: RUNS_KEY });
     },
   });
 
@@ -77,9 +88,15 @@ export function usePredictiveMaintenance() {
   return {
     scores,
     stats,
+    runs,
     isLoading,
+    isLoadingRuns,
     error,
+    refetch,
     recompute: () => recompute.mutate(),
     isRecomputing: recompute.isPending,
+    recomputeError: recompute.error as Error | null,
   };
 }
+
+export type { RiskScoreRun };
