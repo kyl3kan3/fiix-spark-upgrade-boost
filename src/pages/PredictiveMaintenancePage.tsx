@@ -6,9 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { usePredictiveMaintenance } from "@/hooks/usePredictiveMaintenance";
 import PredictiveMaintenanceDashboard from "@/components/predictiveMaintenance/PredictiveMaintenanceDashboard";
+import RiskScoreRunsHistory from "@/components/predictiveMaintenance/RiskScoreRunsHistory";
 
 const PredictiveMaintenancePage = () => {
-  const { scores, stats, isLoading, recompute, isRecomputing } = usePredictiveMaintenance();
+  const {
+    scores,
+    stats,
+    runs,
+    isLoading,
+    isLoadingRuns,
+    error,
+    refetch,
+    recompute,
+    isRecomputing,
+    recomputeError,
+  } = usePredictiveMaintenance();
 
   const lastComputed = stats.lastComputedAt
     ? new Date(stats.lastComputedAt).toLocaleString()
@@ -39,7 +51,13 @@ const PredictiveMaintenancePage = () => {
           isLoading={isLoading}
           onRecompute={recompute}
           isRecomputing={isRecomputing}
+          loadError={error as Error | null}
+          recomputeError={recomputeError}
+          onRetryLoad={() => refetch()}
         />
+        <div className="mt-6">
+          <RiskScoreRunsHistory runs={runs} isLoading={isLoadingRuns} />
+        </div>
       </PageContainer>
     </DashboardLayout>
   );
