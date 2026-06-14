@@ -53,6 +53,59 @@ export interface CreateHealthMetricData {
   notes?: string;
 }
 
+export interface RiskScoreRun {
+  id: string;
+  company_id: string;
+  actor_id: string | null;
+  triggered_by: "manual" | "scheduled";
+  model_version: string;
+  snapshot: Record<string, number>;
+  summary: Record<string, number | string>;
+  duration_ms: number | null;
+  status: "success" | "failed" | "empty";
+  error_message: string | null;
+  created_at: string;
+  actor_name?: string | null;
+}
+
+/** Fetch the most recent risk-score analysis runs for the current company. */
+export const fetchRiskScoreRuns = async (limit = 10): Promise<RiskScoreRun[]> => {
+  const { data: runs, error } = await supabase
+    .from("asset_risk_score_runs")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  const actorIds = Array.from(new Set((runs ?? []).map((r) => r.actor_id).filter(Boolean))) as string[];
+  let nameById = new Map<string, string>();
+  if (actorIds.length > 0) {
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("id, first_name, last_name, email")
+      .in("id", actorIds);
+    nameById = new Map(
+      (profs ?? []).map((p) => [
+        p.id,
+        [p.first_name, p.last_name].filter(Boolean).join(" ").trim() || p.email || "Unknown",
+      ]),
+    );
+  }
+  return (runs ?? []).map((r) => ({
+    id: r.id,
+    company_id: r.company_id,
+    actor_id: r.actor_id,
+    triggered_by: r.triggered_by as "manual" | "scheduled",
+    model_version: r.model_version,
+    snapshot: (r.snapshot as Record<string, number>) ?? {},
+    summary: (r.summary as Record<string, number | string>) ?? {},
+    duration_ms: r.duration_ms,
+    status: r.status as "success" | "failed" | "empty",
+    error_message: r.error_message,
+    created_at: r.created_at,
+    actor_name: r.actor_id ? nameById.get(r.actor_id) ?? null : null,
+  }));
+};
+
 /** Fetch the latest computed risk score per asset, joined with basic asset info. */
 export const fetchAssetRiskScores = async (): Promise<AssetRiskScore[]> => {
   try {
@@ -96,7 +149,10 @@ export const fetchAssetRiskScores = async (): Promise<AssetRiskScore[]> => {
  */
 export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
   try {
+    const startedAt = Date.now();
     const { companyId } = await requireUserCompany();
+    const { data: { user } } = await supabase.auth.getUser();
+    const actorId = user?.id ?? null;
 
     const [assetsRes, workOrdersRes, failuresRes, metricsRes] = await Promise.all([
       supabase.from("assets").select("id, name, status, purchase_date"),
@@ -111,12 +167,30 @@ export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
     if (metricsRes.error) throw metricsRes.error;
 
     const assets = assetsRes.data ?? [];
+    const snapshot = {
+      assets: assets.length,
+      work_orders: workOrdersRes.data?.length ?? 0,
+      failure_events: failuresRes.data?.length ?? 0,
+      health_metrics: metricsRes.data?.length ?? 0,
+    };
     if (assets.length === 0) {
+      await supabase.from("asset_risk_score_runs").insert({
+        company_id: companyId,
+        actor_id: actorId,
+        triggered_by: "manual",
+        model_version: "heuristic-v1",
+        snapshot,
+        summary: { total: 0 },
+        duration_ms: Date.now() - startedAt,
+        status: "empty",
+      });
       toast.info("No assets to score yet. Add equipment first.");
       return [];
     }
 
     const now = new Date();
+    const counts = { critical: 0, high: 0, medium: 0, low: 0 } as Record<string, number>;
+    let scoreSum = 0;
     const rows = assets.map((asset) => {
       const input: AssetScoringInput = {
         assetId: asset.id,
@@ -144,6 +218,8 @@ export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
       };
 
       const result = computeAssetRisk(input);
+      counts[result.riskLevel] += 1;
+      scoreSum += result.riskScore;
       return {
         company_id: companyId,
         asset_id: asset.id,
@@ -163,7 +239,35 @@ export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
       .from("asset_risk_scores")
       .upsert(rows, { onConflict: "asset_id" });
 
-    if (upsertError) throw upsertError;
+    if (upsertError) {
+      await supabase.from("asset_risk_score_runs").insert({
+        company_id: companyId,
+        actor_id: actorId,
+        triggered_by: "manual",
+        model_version: "heuristic-v1",
+        snapshot,
+        summary: { total: assets.length },
+        duration_ms: Date.now() - startedAt,
+        status: "failed",
+        error_message: upsertError.message,
+      });
+      throw upsertError;
+    }
+
+    await supabase.from("asset_risk_score_runs").insert({
+      company_id: companyId,
+      actor_id: actorId,
+      triggered_by: "manual",
+      model_version: "heuristic-v1",
+      snapshot,
+      summary: {
+        total: assets.length,
+        ...counts,
+        avg_score: Math.round((scoreSum / assets.length) * 10) / 10,
+      },
+      duration_ms: Date.now() - startedAt,
+      status: "success",
+    });
 
     toast.success(`Risk scores recomputed for ${rows.length} asset${rows.length === 1 ? "" : "s"}`);
     return fetchAssetRiskScores();
