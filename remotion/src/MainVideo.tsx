@@ -379,46 +379,49 @@ const BLOCKS: Block[] = [
 
   // CH 1 — DASHBOARD PUNCHES
   { kind: "title", dur: 40, props: { eyebrow: "01", title: "Your morning.", variant: "chapter" } },
-  { kind: "shot", dur: 75, props: { src: "shots/dashboard-1.png", kicker: "Open", caption: "Today, at a glance.", fx: 0.5, fy: 0.3, zoom: 1.2 } },
-  { kind: "shot", dur: 65, props: { src: "shots/dashboard-1.png", kicker: "Completion", caption: "Track every job.", fx: 0.22, fy: 0.45, zoom: 1.7, accent: HOT } },
-  { kind: "shot", dur: 65, props: { src: "shots/dashboard-1.png", kicker: "Pending", caption: "What needs you now.", fx: 0.55, fy: 0.45, zoom: 1.7 } },
-  { kind: "shot", dur: 65, props: { src: "shots/dashboard-1.png", kicker: "Active techs", caption: "Who's on it.", fx: 0.82, fy: 0.45, zoom: 1.7, accent: HOT } },
+  { kind: "shot", dur: 75, props: { src: "shots/v2/01-dashboard.png", kicker: "Open", caption: "Today, at a glance.", fx: 0.5, fy: 0.3, zoom: 1.2 } },
+  { kind: "shot", dur: 65, props: { src: "shots/v2/01-dashboard.png", kicker: "Completion", caption: "Every job, tracked.", fx: 0.32, fy: 0.32, zoom: 1.8, accent: HOT } },
+  { kind: "shot", dur: 65, props: { src: "shots/v2/01-dashboard.png", kicker: "Pending", caption: "What needs you now.", fx: 0.56, fy: 0.32, zoom: 1.8 } },
+  { kind: "shot", dur: 65, props: { src: "shots/v2/01-dashboard.png", kicker: "Quick actions", caption: "One tap to work.", fx: 0.5, fy: 0.58, zoom: 1.5, accent: HOT } },
   { kind: "flash", dur: 3, props: {} },
   { kind: "stat", dur: 65, props: { stat: "47%", label: "Faster triage", sub: "Across pilot teams", color: HOT } },
   { kind: "flash", dur: 3, props: { color: HOT } },
 
   // CH 2 — REQUESTS → WORK
   { kind: "title", dur: 40, props: { eyebrow: "02", title: "Triage in seconds.", variant: "chapter" } },
-  { kind: "shot", dur: 75, props: { src: "shots/requests-1.png", kicker: "Inbox", caption: "Requests land here.", fx: 0.45, fy: 0.35, zoom: 1.22 } },
-  { kind: "shot", dur: 65, props: { src: "shots/requests-1.png", kicker: "One click", caption: "→ work order.", fx: 0.75, fy: 0.55, zoom: 1.75, accent: HOT } },
+  { kind: "shot", dur: 75, props: { src: "shots/v2/02-inbox.png", kicker: "Inbox", caption: "Requests land here.", fx: 0.45, fy: 0.32, zoom: 1.22 } },
+  { kind: "shot", dur: 70, props: { src: "shots/v2/02-inbox.png", kicker: "Promote", caption: "One click → work order.", fx: 0.25, fy: 0.55, zoom: 1.75, accent: HOT } },
   { kind: "flash", dur: 3, props: {} },
-  { kind: "shot", dur: 75, props: { src: "shots/workorders-1.png", kicker: "Pipeline", caption: "Right away · Up next · Done.", fx: 0.5, fy: 0.4, zoom: 1.2 } },
-  { kind: "shot", dur: 60, props: { src: "shots/workorders-1.png", kicker: "Urgent", caption: "Surfaced first.", fx: 0.22, fy: 0.5, zoom: 1.75, accent: HOT } },
-  { kind: "shot", dur: 60, props: { src: "shots/workorders-1.png", kicker: "Assigned", caption: "Routed to the right tech.", fx: 0.72, fy: 0.55, zoom: 1.75 } },
+  { kind: "shot", dur: 75, props: { src: "shots/v2/03-workorders.png", kicker: "Pipeline", caption: "Right away · Up next · Done.", fx: 0.5, fy: 0.32, zoom: 1.18 } },
+  { kind: "shot", dur: 60, props: { src: "shots/v2/03-workorders.png", kicker: "Right away", caption: "Surfaced first.", fx: 0.22, fy: 0.55, zoom: 1.75, accent: HOT } },
+  { kind: "shot", dur: 70, props: { src: "shots/v2/04-wo-detail.png", kicker: "Work order", caption: "Everything in one place.", fx: 0.45, fy: 0.35, zoom: 1.18 } },
+  { kind: "shot", dur: 55, props: { src: "shots/v2/04-wo-detail.png", kicker: "Asset link", caption: "Tied to the right machine.", fx: 0.78, fy: 0.4, zoom: 1.8, accent: HOT } },
   { kind: "flash", dur: 3, props: {} },
 
   // CH 3 — PM + INSPECTIONS
   { kind: "title", dur: 40, props: { eyebrow: "03", title: "Get ahead of breakdowns.", variant: "chapter" } },
-  { kind: "shot", dur: 75, props: { src: "shots/calendar-1.png", kicker: "PM scheduler", caption: "A month, planned.", fx: 0.5, fy: 0.5, zoom: 1.15 } },
-  { kind: "shot", dur: 60, props: { src: "shots/calendar-1.png", kicker: "Weekly", caption: "Every PM, on time.", fx: 0.4, fy: 0.55, zoom: 1.7, accent: HOT } },
-  { kind: "shot", dur: 70, props: { src: "shots/inspections-1.png", kicker: "Check-ups", caption: "Compliance, handled.", fx: 0.5, fy: 0.45, zoom: 1.2 } },
+  { kind: "shot", dur: 80, props: { src: "shots/v2/05-calendar.png", kicker: "PM scheduler", caption: "A month, planned.", fx: 0.55, fy: 0.45, zoom: 1.15 } },
+  { kind: "shot", dur: 60, props: { src: "shots/v2/05-calendar.png", kicker: "Today", caption: "Every PM, on time.", fx: 0.7, fy: 0.45, zoom: 1.7, accent: HOT } },
+  { kind: "shot", dur: 70, props: { src: "shots/v2/06-checkups.png", kicker: "Compliance", caption: "Audits, handled.", fx: 0.5, fy: 0.28, zoom: 1.25 } },
   { kind: "flash", dur: 3, props: {} },
   { kind: "stat", dur: 65, props: { stat: "100%", label: "Audit ready", sub: "Every inspection logged" } },
   { kind: "flash", dur: 3, props: {} },
 
   // CH 4 — FACILITY
   { kind: "title", dur: 40, props: { eyebrow: "04", title: "Know every asset.", variant: "chapter" } },
-  { kind: "shot", dur: 65, props: { src: "shots/assets-1.png", kicker: "Registry", caption: "24 assets · live status.", fx: 0.5, fy: 0.45, zoom: 1.2 } },
-  { kind: "shot", dur: 55, props: { src: "shots/assets-2.png", kicker: "Equipment", caption: "Every machine tracked.", fx: 0.5, fy: 0.4, zoom: 1.25, accent: HOT } },
-  { kind: "shot", dur: 55, props: { src: "shots/locations-1.png", kicker: "Places", caption: "Sites, organized.", fx: 0.5, fy: 0.4, zoom: 1.2 } },
-  { kind: "shot", dur: 55, props: { src: "shots/vendors-1.png", kicker: "Vendors", caption: "All in one directory.", fx: 0.5, fy: 0.4, zoom: 1.2, accent: HOT } },
+  { kind: "shot", dur: 70, props: { src: "shots/v2/07-equipment.png", kicker: "Registry", caption: "24 assets · 100% uptime.", fx: 0.5, fy: 0.32, zoom: 1.18 } },
+  { kind: "shot", dur: 60, props: { src: "shots/v2/07-equipment.png", kicker: "Status", caption: "Live, per machine.", fx: 0.85, fy: 0.6, zoom: 1.75, accent: HOT } },
+  { kind: "shot", dur: 65, props: { src: "shots/v2/08-asset-detail.png", kicker: "Asset detail", caption: "Specs, photos, QR.", fx: 0.5, fy: 0.45, zoom: 1.15 } },
+  { kind: "shot", dur: 55, props: { src: "shots/v2/09-places.png", kicker: "Places", caption: "Sites, organized.", fx: 0.5, fy: 0.3, zoom: 1.2 } },
+  { kind: "shot", dur: 55, props: { src: "shots/v2/10-vendors.png", kicker: "Vendors", caption: "Contractors on tap.", fx: 0.4, fy: 0.4, zoom: 1.25, accent: HOT } },
   { kind: "flash", dur: 3, props: {} },
 
   // CH 5 — ANALYTICS
   { kind: "title", dur: 40, props: { eyebrow: "05", title: "See the whole picture.", variant: "chapter" } },
-  { kind: "shot", dur: 75, props: { src: "shots/reports-1.png", kicker: "Analytics", caption: "Six months of trends.", fx: 0.5, fy: 0.4, zoom: 1.15 } },
-  { kind: "shot", dur: 60, props: { src: "shots/reports-1.png", kicker: "Status mix", caption: "Open vs. done.", fx: 0.3, fy: 0.55, zoom: 1.7 } },
-  { kind: "shot", dur: 60, props: { src: "shots/reports-1.png", kicker: "Trend", caption: "Up and to the right.", fx: 0.75, fy: 0.55, zoom: 1.7, accent: HOT } },
+  { kind: "shot", dur: 75, props: { src: "shots/v2/11-analytics.png", kicker: "Analytics", caption: "Six months of trends.", fx: 0.5, fy: 0.32, zoom: 1.15 } },
+  { kind: "shot", dur: 60, props: { src: "shots/v2/11-analytics.png", kicker: "Status mix", caption: "Open vs. done.", fx: 0.82, fy: 0.55, zoom: 1.7 } },
+  { kind: "shot", dur: 60, props: { src: "shots/v2/11-analytics.png", kicker: "Priority", caption: "Where the heat is.", fx: 0.4, fy: 0.85, zoom: 1.7, accent: HOT } },
+  { kind: "shot", dur: 70, props: { src: "shots/v2/12-reports.png", kicker: "Reports", caption: "Custom, on demand.", fx: 0.5, fy: 0.45, zoom: 1.15 } },
   { kind: "flash", dur: 4, props: { color: HOT } },
 
   // OUTRO
