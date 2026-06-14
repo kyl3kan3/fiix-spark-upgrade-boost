@@ -4,6 +4,8 @@ import { computeAssetRisk, MODEL_VERSION } from "./scoring.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 
 type Counts = { critical: number; high: number; medium: number; low: number };
 
@@ -119,11 +121,83 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    // --- Authentication ---
+    // Accept either:
+    //   1. A valid shared-secret header (used by scheduled jobs / self-heal)
+    //   2. A valid user JWT belonging to an administrator/super_admin
+    const providedSecret = req.headers.get("x-notify-secret");
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const bearer = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+
+    let authMode: "secret" | "user" | null = null;
+    let verifiedUserId: string | null = null;
+    let verifiedUserCompanyId: string | null = null;
+    let verifiedIsSuperAdmin = false;
+
+    if (NOTIFY_SHARED_SECRET && providedSecret && providedSecret === NOTIFY_SHARED_SECRET) {
+      authMode = "secret";
+    } else if (bearer && bearer !== SUPABASE_ANON_KEY) {
+      // Verify the JWT
+      const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: { headers: { Authorization: `Bearer ${bearer}` } },
+      });
+      const { data: userData, error: userError } = await userClient.auth.getUser(bearer);
+      if (userError || !userData?.user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      verifiedUserId = userData.user.id;
+
+      // Look up company + role (using service role to avoid RLS recursion)
+      const adminLookup = createClient(SUPABASE_URL, SERVICE_ROLE);
+      const { data: profile } = await adminLookup
+        .from("profiles")
+        .select("company_id")
+        .eq("id", verifiedUserId)
+        .maybeSingle();
+      verifiedUserCompanyId = (profile as { company_id?: string } | null)?.company_id ?? null;
+
+      const { data: roles } = await adminLookup
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", verifiedUserId);
+      const roleSet = new Set((roles ?? []).map((r: { role: string }) => r.role));
+      verifiedIsSuperAdmin = roleSet.has("super_admin");
+      const isAdmin = verifiedIsSuperAdmin || roleSet.has("administrator");
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      authMode = "user";
+    } else {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
     const triggeredBy: "manual" | "scheduled" = body?.triggered_by === "manual" ? "manual" : "scheduled";
-    const actorId: string | null = body?.actor_id ?? null;
-    const onlyCompanyId: string | null = body?.company_id ?? null;
+    // Never trust client-supplied actor_id. Use the verified user id when present.
+    const actorId: string | null = verifiedUserId;
+    let onlyCompanyId: string | null = body?.company_id ?? null;
+
+    // For user-authenticated calls, force company scope to the caller's company
+    // unless they are a super_admin (who may run cross-company recomputes).
+    if (authMode === "user" && !verifiedIsSuperAdmin) {
+      if (!verifiedUserCompanyId) {
+        return new Response(JSON.stringify({ error: "No company context" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      onlyCompanyId = verifiedUserCompanyId;
+    }
 
     let companies: { id: string }[];
     if (onlyCompanyId) {
