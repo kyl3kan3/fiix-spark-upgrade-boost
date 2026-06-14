@@ -17,6 +17,7 @@ import {
 import { useAuth } from "@/providers/AuthContext";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import TriageSuggestionInline from "@/components/selfHealing/TriageSuggestionInline";
 
 const RequestsInboxPage = () => {
  const { user } = useAuth();
@@ -168,6 +169,7 @@ const RequestsInboxPage = () => {
  {r.description && (
  <p className="text-sm text-muted-foreground mb-3 whitespace-pre-wrap line-clamp-3">{r.description}</p>
  )}
+ <TriageSuggestionInline requestId={r.id} />
 
  {/* Photo thumbnails */}
  {(r.photos ?? []).length > 0 && (
