@@ -9,15 +9,15 @@
     <!-- description, og:title/description/url, twitter:title/description are set per-route
          via react-helmet-async to avoid duplicate-tag and og:url/canonical-mismatch flags. -->
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+    <meta property="og:image" content="https://maintenease.com/og-image.png?v=2">
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+    <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2">
     <meta name="google-site-verification" content="hHvtnhbE-j8Wb7dB5agVFGJnymG-odLvDSs0FxvHk0s" />
     <!-- Prevent Chrome/Google Translate from mutating React-managed text nodes
          (causes NotFoundError: Failed to execute 'removeChild' on 'Node') -->
     <meta name="google" content="notranslate" />
 
-    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +52,12 @@
       gtag('config', 'AW-18051376894');
       gtag('config', 'AW-18190364490', { allow_enhanced_conversions: true });
     </script>
-  </head>
+    <meta property="og:title" content="MaintenEase — Maintenance Management, Simplified">
+  <meta name="twitter:title" content="MaintenEase — Maintenance Management, Simplified">
+  <meta name="description" content="Maintenance Management, Simplified.">
+  <meta property="og:description" content="Maintenance Management, Simplified.">
+  <meta name="twitter:description" content="Maintenance Management, Simplified.">
+</head>
 
   <body translate="no" class="notranslate">
     <div id="root"></div>
