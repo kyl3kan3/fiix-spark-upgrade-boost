@@ -66,12 +66,27 @@ serve(async (req) => {
       });
     }
 
+    // Redact raw payload: keep only minimal, non-sensitive delivery metadata.
+    // Drop full provider headers, unsubscribe tokens, body snippets, and any
+    // unknown fields that could contain PII or auth material.
+    const redactedRaw = {
+      type: eventType,
+      created_at: occurredAt,
+      data: {
+        email_id: messageId,
+        subject: typeof data.subject === "string" ? data.subject : undefined,
+        bounce_type: data.bounce_type,
+        complaint_type: data.complaint_type,
+        click_url: typeof data.click?.link === "string" ? data.click.link : undefined,
+      },
+    };
+
     await admin.from("email_events").insert({
       provider_message_id: messageId,
       event_type: eventType,
       recipient_email: recipient || null,
       occurred_at: occurredAt,
-      raw: payload,
+      raw: redactedRaw,
     });
 
     return new Response(JSON.stringify({ ok: true }), {

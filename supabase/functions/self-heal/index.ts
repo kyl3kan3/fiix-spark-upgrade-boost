@@ -59,6 +59,7 @@ async function healRiskScoring(companyId: string): Promise<RunResult> {
           "Content-Type": "application/json",
           Authorization: `Bearer ${SERVICE_ROLE}`,
           apikey: SERVICE_ROLE,
+          "x-notify-secret": Deno.env.get("NOTIFY_SHARED_SECRET") ?? "",
         },
         body: JSON.stringify({ company_id: companyId, triggered_by: "self_heal" }),
       });
