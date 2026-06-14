@@ -85,7 +85,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = () => {
  <SidebarHeader className="border-b border-sidebar-border">
  <div className={cn("flex items-center gap-2.5 px-2 py-2", collapsed && "justify-center px-0")}>
           <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-gradient-primary shadow-glow">
-            <img src={logo} alt="MaintenEase" className="h-9 w-9 object-contain" />
+            <img src={logo} alt="MaintenEase maintenance management logo" className="h-9 w-9 object-contain" />
           </div>
  {!collapsed && (
  <div className="flex flex-col leading-tight">

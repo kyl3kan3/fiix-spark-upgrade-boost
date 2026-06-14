@@ -35,7 +35,7 @@ const NavbarApp = () => {
  <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src={logo} alt="MaintenEase" className="h-8 w-8" />
+            <img src={logo} alt="MaintenEase maintenance management logo" className="h-8 w-8" />
             <span className="text-xl font-bold text-primary">MaintenEase</span>
           </Link>
 
