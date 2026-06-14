@@ -1407,6 +1407,71 @@ export type Database = {
           },
         ]
       }
+      public_request_triage: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          category: string | null
+          company_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          model_version: string | null
+          reasoning: string | null
+          request_id: string
+          status: string
+          suggested_assignee_role: string | null
+          summary: string | null
+          updated_at: string
+          urgency: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          category?: string | null
+          company_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          model_version?: string | null
+          reasoning?: string | null
+          request_id: string
+          status?: string
+          suggested_assignee_role?: string | null
+          summary?: string | null
+          updated_at?: string
+          urgency?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          category?: string | null
+          company_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          model_version?: string | null
+          reasoning?: string | null
+          request_id?: string
+          status?: string
+          suggested_assignee_role?: string | null
+          summary?: string | null
+          updated_at?: string
+          urgency?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_request_triage_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: true
+            referencedRelation: "public_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_requests: {
         Row: {
           company_id: string
@@ -1458,6 +1523,143 @@ export type Database = {
           type?: string
           updated_at?: string
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      self_healing_actions: {
+        Row: {
+          action: string
+          after: Json | null
+          before: Json | null
+          company_id: string
+          created_at: string
+          details: string | null
+          entity_id: string | null
+          entity_type: string
+          healer: string
+          id: string
+          requires_review: boolean
+          reviewed_at: string | null
+          reviewed_by: string | null
+          run_id: string
+        }
+        Insert: {
+          action: string
+          after?: Json | null
+          before?: Json | null
+          company_id: string
+          created_at?: string
+          details?: string | null
+          entity_id?: string | null
+          entity_type: string
+          healer: string
+          id?: string
+          requires_review?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          run_id: string
+        }
+        Update: {
+          action?: string
+          after?: Json | null
+          before?: Json | null
+          company_id?: string
+          created_at?: string
+          details?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          healer?: string
+          id?: string
+          requires_review?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          run_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "self_healing_actions_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "self_healing_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      self_healing_runs: {
+        Row: {
+          actor_id: string | null
+          company_id: string
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          fixed: number
+          flagged: number
+          healer: string
+          id: string
+          scanned: number
+          snapshot: Json
+          status: string
+          triggered_by: string
+        }
+        Insert: {
+          actor_id?: string | null
+          company_id: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          fixed?: number
+          flagged?: number
+          healer: string
+          id?: string
+          scanned?: number
+          snapshot?: Json
+          status?: string
+          triggered_by?: string
+        }
+        Update: {
+          actor_id?: string | null
+          company_id?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          fixed?: number
+          flagged?: number
+          healer?: string
+          id?: string
+          scanned?: number
+          snapshot?: Json
+          status?: string
+          triggered_by?: string
+        }
+        Relationships: []
+      }
+      self_healing_settings: {
+        Row: {
+          ai_triage_enabled: boolean
+          company_id: string
+          created_at: string
+          data_integrity_enabled: boolean
+          risk_scoring_enabled: boolean
+          updated_at: string
+          work_orders_enabled: boolean
+        }
+        Insert: {
+          ai_triage_enabled?: boolean
+          company_id: string
+          created_at?: string
+          data_integrity_enabled?: boolean
+          risk_scoring_enabled?: boolean
+          updated_at?: string
+          work_orders_enabled?: boolean
+        }
+        Update: {
+          ai_triage_enabled?: boolean
+          company_id?: string
+          created_at?: string
+          data_integrity_enabled?: boolean
+          risk_scoring_enabled?: boolean
+          updated_at?: string
+          work_orders_enabled?: boolean
         }
         Relationships: []
       }
