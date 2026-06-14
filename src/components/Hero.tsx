@@ -22,10 +22,15 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* Hero copy */}
           <div className="flex-1 text-center md:text-left space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-card border border-border rounded-full text-xs font-semibold text-primary shadow-sm">
+            <button
+              type="button"
+              onClick={() => navigate("/feature/Predictive Maintenance")}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-card border border-border rounded-full text-xs font-semibold text-primary shadow-sm cursor-pointer transition-colors hover:border-primary hover:bg-primary/5"
+            >
               <Zap className="h-3.5 w-3.5 text-secondary" />
               New: AI-Powered Predictive Maintenance
-            </div>
+              <ArrowRight className="h-3 w-3" />
+            </button>
 
             <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-tight">
               Facility Excellence,

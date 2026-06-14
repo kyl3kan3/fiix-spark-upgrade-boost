@@ -1,7 +1,7 @@
 import {
  LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
- Zap, KeyRound, ShieldCheck, type LucideIcon,
+ Zap, KeyRound, ShieldCheck, BrainCircuit, type LucideIcon,
 } from "lucide-react";
 import type { TIER_FEATURES } from "@/hooks/useSubscription";
 
@@ -27,6 +27,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Places", href: "/locations", icon: Building, code: "LOC", group: "Things" },
  { label: "Team", href: "/team", icon: Users, code: "TM", group: "People" },
  { label: "Vendors", href: "/vendors", icon: Building2, code: "VEN", group: "People" },
+ { label: "Predictive", href: "/predictive-maintenance", icon: BrainCircuit, code: "PDM", group: "More", feature: "predictive_maintenance" },
  { label: "Analytics", href: "/reports", icon: BarChart3, code: "RPT", group: "More", feature: "analytics" },
  { label: "Automations", href: "/automations", icon: Zap, code: "AUT", group: "More", feature: "automations" },
  { label: "API Keys", href: "/api-keys", icon: KeyRound, code: "API", group: "More", feature: "api" },
