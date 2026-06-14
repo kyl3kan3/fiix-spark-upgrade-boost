@@ -1,7 +1,7 @@
 import React from "react";
 import {
   AbsoluteFill,
-  Img,
+  OffthreadVideo,
   Sequence,
   interpolate,
   spring,
@@ -22,47 +22,32 @@ const TEAL = "#14b8a6";
 const ci = (f: number, a: number[], b: number[]) =>
   interpolate(f, a, b, { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-const Shot: React.FC<{
+const Clip: React.FC<{
   src: string;
   caption: string;
   kicker: string;
-  fx?: number;
-  fy?: number;
-  zoom?: number;
-}> = ({ src, caption, kicker, fx = 0.5, fy = 0.45, zoom = 1.05 }) => {
+}> = ({ src, caption, kicker }) => {
   const frame = useCurrentFrame();
   const { durationInFrames, fps } = useVideoConfig();
 
-  const ease = spring({ frame, fps, config: { damping: 200, stiffness: 50, mass: 1 } });
-  const scale = interpolate(ease, [0, 1], [zoom * 1.03, zoom]);
-  const enter = ci(frame, [0, 14], [0, 1]);
-  const exit = ci(frame, [durationInFrames - 14, durationInFrames - 1], [1, 0]);
+  const enter = ci(frame, [0, 10], [0, 1]);
+  const exit = ci(frame, [durationInFrames - 10, durationInFrames - 1], [1, 0]);
   const opacity = enter * exit;
 
-  const capIn = spring({ frame: frame - 10, fps, config: { damping: 200, stiffness: 80 } });
-  const capOut = ci(frame, [durationInFrames - 16, durationInFrames - 4], [1, 0]);
+  const capIn = spring({ frame: frame - 8, fps, config: { damping: 200, stiffness: 80 } });
+  const capOut = ci(frame, [durationInFrames - 22, durationInFrames - 8], [1, 0]);
   const capOp = capIn * capOut;
-  const capY = interpolate(capIn, [0, 1], [16, 0]);
-  const kickW = ci(frame, [8, 24], [0, 1]);
+  const capY = interpolate(capIn, [0, 1], [14, 0]);
+  const kickW = ci(frame, [6, 22], [0, 1]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#04081a", opacity }}>
-      <AbsoluteFill
-        style={{
-          transform: `scale(${scale})`,
-          transformOrigin: `${fx * 100}% ${fy * 100}%`,
-        }}
-      >
-        <Img
-          src={staticFile(src)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
-        />
-      </AbsoluteFill>
+      <OffthreadVideo src={staticFile(src)} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
 
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(to top, rgba(4,8,26,0.88) 0%, rgba(4,8,26,0.15) 45%, rgba(4,8,26,0) 70%)",
+            "linear-gradient(to top, rgba(4,8,26,0.85) 0%, rgba(4,8,26,0.1) 38%, rgba(4,8,26,0) 60%)",
           pointerEvents: "none",
         }}
       />
@@ -70,37 +55,22 @@ const Shot: React.FC<{
       <div
         style={{
           position: "absolute",
-          left: 70,
-          top: 56,
-          color: CREAM,
-          fontFamily: display.fontFamily,
-          fontSize: 22,
-          fontWeight: 600,
-          opacity: 0.85,
-        }}
-      >
-        MaintenEase
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          left: 70,
-          bottom: 80,
+          left: 60,
+          bottom: 56,
           maxWidth: 1300,
           opacity: capOp,
           transform: `translateY(${capY}px)`,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
-          <div style={{ width: kickW * 48, height: 2, background: TEAL, borderRadius: 2 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+          <div style={{ width: kickW * 40, height: 2, background: TEAL, borderRadius: 2 }} />
           <div
             style={{
               fontFamily: body.fontFamily,
               color: TEAL,
               fontWeight: 600,
               letterSpacing: 3,
-              fontSize: 15,
+              fontSize: 13,
               textTransform: "uppercase",
             }}
           >
@@ -111,10 +81,11 @@ const Shot: React.FC<{
           style={{
             fontFamily: display.fontFamily,
             color: "#ffffff",
-            fontSize: 56,
+            fontSize: 44,
             lineHeight: 1.1,
             fontWeight: 700,
-            letterSpacing: -1,
+            letterSpacing: -0.5,
+            textShadow: "0 4px 24px rgba(0,0,0,0.6)",
           }}
         >
           {caption}
@@ -204,36 +175,27 @@ const TitleCard: React.FC<{
 
 type Block =
   | { kind: "title"; dur: number; props: React.ComponentProps<typeof TitleCard> }
-  | { kind: "shot"; dur: number; props: React.ComponentProps<typeof Shot> };
+  | { kind: "clip"; dur: number; props: React.ComponentProps<typeof Clip> };
 
 const BLOCKS: Block[] = [
-  { kind: "title", dur: 90, props: { eyebrow: "MaintenEase", title: "A quick tour.", subtitle: "Inside the app — built for facilities teams.", variant: "intro" } },
+  { kind: "title", dur: 75, props: { eyebrow: "MaintenEase", title: "A quick tour.", subtitle: "Live inside the app — every click is real.", variant: "intro" } },
 
-  { kind: "title", dur: 55, props: { eyebrow: "01", title: "Your morning.", variant: "chapter" } },
-  { kind: "shot", dur: 110, props: { src: "shots/v2/01-dashboard.png", kicker: "Dashboard", caption: "Today, at a glance.", fx: 0.5, fy: 0.35, zoom: 1.04 } },
-  { kind: "shot", dur: 95, props: { src: "shots/v2/01-dashboard.png", kicker: "Completion", caption: "Every job, tracked.", fx: 0.32, fy: 0.32, zoom: 1.2 } },
-  { kind: "shot", dur: 95, props: { src: "shots/v2/01-dashboard.png", kicker: "Quick actions", caption: "One tap to work.", fx: 0.5, fy: 0.58, zoom: 1.12 } },
+  { kind: "title", dur: 45, props: { eyebrow: "01", title: "Your morning.", variant: "chapter" } },
+  { kind: "clip", dur: 289, props: { src: "clips/01-overview.mp4", kicker: "Dashboard", caption: "Today, at a glance." } },
 
-  { kind: "title", dur: 55, props: { eyebrow: "02", title: "Requests to work.", variant: "chapter" } },
-  { kind: "shot", dur: 110, props: { src: "shots/v2/02-inbox.png", kicker: "Inbox", caption: "Requests land here.", fx: 0.45, fy: 0.32, zoom: 1.04 } },
-  { kind: "shot", dur: 95, props: { src: "shots/v2/03-workorders.png", kicker: "Pipeline", caption: "Right away · Up next · Done.", fx: 0.5, fy: 0.35, zoom: 1.04 } },
-  { kind: "shot", dur: 110, props: { src: "shots/v2/04-wo-detail.png", kicker: "Work order", caption: "Everything in one place.", fx: 0.45, fy: 0.35, zoom: 1.04 } },
+  { kind: "title", dur: 45, props: { eyebrow: "02", title: "Requests to work.", variant: "chapter" } },
+  { kind: "clip", dur: 574, props: { src: "clips/02-triage.mp4", kicker: "Triage", caption: "Inbox → work order → done." } },
 
-  { kind: "title", dur: 55, props: { eyebrow: "03", title: "Ahead of breakdowns.", variant: "chapter" } },
-  { kind: "shot", dur: 110, props: { src: "shots/v2/05-calendar.png", kicker: "PM scheduler", caption: "A month, planned.", fx: 0.55, fy: 0.45, zoom: 1.04 } },
-  { kind: "shot", dur: 100, props: { src: "shots/v2/06-checkups.png", kicker: "Compliance", caption: "Audits, handled.", fx: 0.5, fy: 0.32, zoom: 1.04 } },
+  { kind: "title", dur: 45, props: { eyebrow: "03", title: "Ahead of breakdowns.", variant: "chapter" } },
+  { kind: "clip", dur: 295, props: { src: "clips/03-pm.mp4", kicker: "PM & compliance", caption: "A month, planned." } },
 
-  { kind: "title", dur: 55, props: { eyebrow: "04", title: "Know every asset.", variant: "chapter" } },
-  { kind: "shot", dur: 100, props: { src: "shots/v2/07-equipment.png", kicker: "Registry", caption: "Your full inventory.", fx: 0.5, fy: 0.35, zoom: 1.04 } },
-  { kind: "shot", dur: 95, props: { src: "shots/v2/08-asset-detail.png", kicker: "Asset detail", caption: "Specs, photos, QR.", fx: 0.5, fy: 0.45, zoom: 1.04 } },
-  { kind: "shot", dur: 90, props: { src: "shots/v2/09-places.png", kicker: "Places", caption: "Sites, organized.", fx: 0.5, fy: 0.32, zoom: 1.04 } },
-  { kind: "shot", dur: 90, props: { src: "shots/v2/10-vendors.png", kicker: "Vendors", caption: "Contractors on tap.", fx: 0.4, fy: 0.4, zoom: 1.04 } },
+  { kind: "title", dur: 45, props: { eyebrow: "04", title: "Know every asset.", variant: "chapter" } },
+  { kind: "clip", dur: 535, props: { src: "clips/04-registry.mp4", kicker: "Registry", caption: "Equipment · places · vendors." } },
 
-  { kind: "title", dur: 55, props: { eyebrow: "05", title: "The whole picture.", variant: "chapter" } },
-  { kind: "shot", dur: 110, props: { src: "shots/v2/11-analytics.png", kicker: "Analytics", caption: "Six months of trends.", fx: 0.5, fy: 0.35, zoom: 1.04 } },
-  { kind: "shot", dur: 100, props: { src: "shots/v2/12-reports.png", kicker: "Reports", caption: "Custom, on demand.", fx: 0.5, fy: 0.45, zoom: 1.04 } },
+  { kind: "title", dur: 45, props: { eyebrow: "05", title: "The whole picture.", variant: "chapter" } },
+  { kind: "clip", dur: 430, props: { src: "clips/05-analytics.mp4", kicker: "Analytics", caption: "Trends and custom reports." } },
 
-  { kind: "title", dur: 140, props: { eyebrow: "Start free", title: "maintenease.com", subtitle: "Seven days, full access — no card.", variant: "outro" } },
+  { kind: "title", dur: 120, props: { eyebrow: "Start free", title: "maintenease.com", subtitle: "Seven days, full access — no card.", variant: "outro" } },
 ];
 
 export const TOTAL_FRAMES = BLOCKS.reduce((a, b) => a + b.dur, 0);
@@ -250,7 +212,7 @@ export const MainVideo: React.FC = () => {
             {b.kind === "title" ? (
               <TitleCard {...(b.props as any)} />
             ) : (
-              <Shot {...(b.props as any)} />
+              <Clip {...(b.props as any)} />
             )}
           </Sequence>
         );
