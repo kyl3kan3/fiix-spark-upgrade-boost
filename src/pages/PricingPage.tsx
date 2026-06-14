@@ -146,6 +146,9 @@ export default function PricingPage() {
  </section>
 
  <div className="container mx-auto max-w-6xl px-4 py-12">
+ <h2 className="font-headline text-2xl md:text-3xl font-bold text-primary text-center mb-8">
+   Compare plans
+ </h2>
  <div className="grid gap-6 md:grid-cols-3 items-center mb-10">
  {PLANS.map((plan) => {
  const price = interval === "month" ? plan.monthly : Math.round(plan.yearly / 12);
