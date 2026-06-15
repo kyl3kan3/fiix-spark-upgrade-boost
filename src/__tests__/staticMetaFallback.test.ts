@@ -59,11 +59,17 @@ describe("index.html static OG/Twitter fallback (no-JS crawlers)", () => {
     expect(hasStaticCanonical).toBe(false);
   });
 
-  it("does NOT declare per-page og:title/og:description statically", () => {
-    // These are intentionally per-route via react-helmet-async to avoid
-    // duplicate-tag SEO flags. Failing here means someone re-added them.
-    expect(metaProperty("og:title")).toBeNull();
-    expect(metaProperty("og:description")).toBeNull();
+  it("carries brand-level og:title/og:description fallbacks for no-JS crawlers", () => {
+    // index.html ships brand-level OG fallbacks so non-JS social crawlers see
+    // something sensible; react-helmet-async still overrides these per-route at
+    // runtime, so they don't produce duplicate-tag flags for real visitors.
+    expect(metaProperty("og:title")).toMatch(/MaintenEase/);
+    expect(metaProperty("og:description")).toBeTruthy();
+  });
+
+  it("does NOT statically declare og:url (per-route owns it to avoid canonical mismatch)", () => {
+    // A static og:url would conflict with the per-route canonical/og:url and
+    // trip canonical-mismatch SEO flags.
     expect(metaProperty("og:url")).toBeNull();
   });
 });
