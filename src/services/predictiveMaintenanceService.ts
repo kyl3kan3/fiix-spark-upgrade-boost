@@ -278,6 +278,21 @@ export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
   }
 };
 
+export interface ScorableAsset {
+  id: string;
+  name: string;
+}
+
+/** Lightweight asset list (id + name) for data-entry pickers. */
+export const fetchScorableAssets = async (): Promise<ScorableAsset[]> => {
+  const { data, error } = await supabase
+    .from("assets")
+    .select("id, name")
+    .order("name");
+  if (error) throw error;
+  return (data ?? []).map((a) => ({ id: a.id, name: a.name }));
+};
+
 /** Record a ground-truth failure event (feeds future risk computations). */
 export const createFailureEvent = async (payload: CreateFailureEventData): Promise<void> => {
   try {
