@@ -30,6 +30,7 @@ import {
   type CreateHealthMetricData,
 } from "@/services/predictiveMaintenanceService";
 
+const PM_KEY = ["predictive-maintenance"] as const;
 const ASSETS_KEY = ["predictive-maintenance", "scorable-assets"] as const;
 
 function useScorableAssets() {
@@ -38,6 +39,89 @@ function useScorableAssets() {
     queryFn: fetchScorableAssets,
     staleTime: 1000 * 60 * 5,
   });
+}
+
+/**
+ * Shared dialog plumbing for the data-entry forms: owns open state, wires the
+ * mutation to invalidate PM queries + close + reset on success, and renders the
+ * common header/footer (incl. the "recompute to apply" hint). Each caller only
+ * supplies its own fields and how to build the payload.
+ */
+function useEntryDialog<T>(mutationFn: (payload: T) => Promise<void>, reset: () => void) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PM_KEY });
+      setOpen(false);
+      reset();
+    },
+  });
+
+  const onOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (!next) reset();
+  };
+
+  return { open, setOpen, onOpenChange, mutation };
+}
+
+function EntryDialogShell({
+  open,
+  onOpenChange,
+  triggerIcon: Icon,
+  triggerLabel,
+  title,
+  description,
+  isPending,
+  canSubmit,
+  submitLabel,
+  onSubmit,
+  children,
+}: {
+  open: boolean;
+  onOpenChange: (next: boolean) => void;
+  triggerIcon: React.ElementType;
+  triggerLabel: string;
+  title: string;
+  description: string;
+  isPending: boolean;
+  canSubmit: boolean;
+  submitLabel: string;
+  onSubmit: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Icon className="h-4 w-4 mr-2" />
+          {triggerLabel}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">{children}</div>
+        <p className="text-xs text-muted-foreground">
+          Saved entries feed the model — run <span className="font-medium">Recompute risk</span>{" "}
+          to see them reflected in the scores.
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+            Cancel
+          </Button>
+          <Button onClick={onSubmit} disabled={!canSubmit || isPending}>
+            {isPending ? "Saving…" : submitLabel}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 /** Field labels keep the metric picker readable without leaking enum values. */
@@ -62,7 +146,7 @@ function AssetSelect({
   const { data: assets = [], isLoading } = useScorableAssets();
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
+      <SelectTrigger aria-label="Asset">
         <SelectValue placeholder={isLoading ? "Loading assets…" : "Select an asset"} />
       </SelectTrigger>
       <SelectContent>
@@ -77,8 +161,6 @@ function AssetSelect({
 }
 
 function LogFailureDialog() {
-  const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
   const [assetId, setAssetId] = useState("");
   const [severity, setSeverity] = useState<CreateFailureEventData["severity"]>("medium");
   const [failedAt, setFailedAt] = useState("");
@@ -93,14 +175,7 @@ function LogFailureDialog() {
     setRootCause("");
   };
 
-  const mutation = useMutation({
-    mutationFn: createFailureEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["predictive-maintenance"] });
-      setOpen(false);
-      reset();
-    },
-  });
+  const { open, onOpenChange, mutation } = useEntryDialog(createFailureEvent, reset);
 
   const submit = () => {
     if (!assetId) return;
@@ -114,96 +189,75 @@ function LogFailureDialog() {
   };
 
   return (
-    <Dialog
+    <EntryDialogShell
       open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (!o) reset();
-      }}
+      onOpenChange={onOpenChange}
+      triggerIcon={AlertTriangle}
+      triggerLabel="Log failure"
+      title="Log a failure event"
+      description="Records a ground-truth breakdown. Failure history feeds the next risk computation."
+      isPending={mutation.isPending}
+      canSubmit={!!assetId}
+      submitLabel="Record failure"
+      onSubmit={submit}
     >
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <AlertTriangle className="h-4 w-4 mr-2" />
-          Log failure
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Log a failure event</DialogTitle>
-          <DialogDescription>
-            Records a ground-truth breakdown. Failure history feeds the next risk computation.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Asset</Label>
-            <AssetSelect value={assetId} onChange={setAssetId} />
-          </div>
-          <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={4}>
-            <div className="space-y-2">
-              <Label>Severity</Label>
-              <Select value={severity} onValueChange={(v) => setSeverity(v as CreateFailureEventData["severity"])}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {SEVERITIES.map((s) => (
-                    <SelectItem key={s} value={s!} className="capitalize">
-                      {s}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="failure-downtime">Downtime (minutes)</Label>
-              <Input
-                id="failure-downtime"
-                type="number"
-                min={0}
-                value={downtime}
-                onChange={(e) => setDowntime(e.target.value)}
-                placeholder="Optional"
-              />
-            </div>
-          </ResponsiveGrid>
-          <div className="space-y-2">
-            <Label htmlFor="failure-when">Failed at</Label>
-            <Input
-              id="failure-when"
-              type="datetime-local"
-              value={failedAt}
-              onChange={(e) => setFailedAt(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">Leave blank to use now.</p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="failure-cause">Root cause</Label>
-            <Textarea
-              id="failure-cause"
-              value={rootCause}
-              onChange={(e) => setRootCause(e.target.value)}
-              placeholder="Optional — what went wrong?"
-              rows={2}
-            />
-          </div>
+      <div className="space-y-2">
+        <Label>Asset</Label>
+        <AssetSelect value={assetId} onChange={setAssetId} />
+      </div>
+      <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={4}>
+        <div className="space-y-2">
+          <Label>Severity</Label>
+          <Select value={severity} onValueChange={(v) => setSeverity(v as CreateFailureEventData["severity"])}>
+            <SelectTrigger aria-label="Severity">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SEVERITIES.map((s) => (
+                <SelectItem key={s} value={s!} className="capitalize">
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={mutation.isPending}>
-            Cancel
-          </Button>
-          <Button onClick={submit} disabled={!assetId || mutation.isPending}>
-            {mutation.isPending ? "Saving…" : "Record failure"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="space-y-2">
+          <Label htmlFor="failure-downtime">Downtime (minutes)</Label>
+          <Input
+            id="failure-downtime"
+            type="number"
+            min={0}
+            value={downtime}
+            onChange={(e) => setDowntime(e.target.value)}
+            placeholder="Optional"
+          />
+        </div>
+      </ResponsiveGrid>
+      <div className="space-y-2">
+        <Label htmlFor="failure-when">Failed at</Label>
+        <Input
+          id="failure-when"
+          type="datetime-local"
+          value={failedAt}
+          onChange={(e) => setFailedAt(e.target.value)}
+        />
+        <p className="text-xs text-muted-foreground">Leave blank to use now.</p>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="failure-cause">Root cause</Label>
+        <Textarea
+          id="failure-cause"
+          value={rootCause}
+          onChange={(e) => setRootCause(e.target.value)}
+          placeholder="Optional — what went wrong?"
+          rows={2}
+        />
+      </div>
+    </EntryDialogShell>
   );
 }
 
 function LogReadingDialog() {
-  const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
   const [assetId, setAssetId] = useState("");
   const [metricType, setMetricType] = useState<CreateHealthMetricData["metric_type"]>("manual_condition");
   const [value, setValue] = useState("");
@@ -216,14 +270,7 @@ function LogReadingDialog() {
     setNotes("");
   };
 
-  const mutation = useMutation({
-    mutationFn: createHealthMetric,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["predictive-maintenance"] });
-      setOpen(false);
-      reset();
-    },
-  });
+  const { open, onOpenChange, mutation } = useEntryDialog(createHealthMetric, reset);
 
   const selectedMetric = METRIC_TYPES.find((m) => m.value === metricType);
 
@@ -240,84 +287,65 @@ function LogReadingDialog() {
   };
 
   return (
-    <Dialog
+    <EntryDialogShell
       open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (!o) reset();
-      }}
+      onOpenChange={onOpenChange}
+      triggerIcon={Activity}
+      triggerLabel="Log reading"
+      title="Log a condition reading"
+      description="Records a condition signal (temperature, vibration, runtime…) used to sharpen risk scores."
+      isPending={mutation.isPending}
+      canSubmit={!!assetId && value !== ""}
+      submitLabel="Record reading"
+      onSubmit={submit}
     >
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <Activity className="h-4 w-4 mr-2" />
-          Log reading
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Log a condition reading</DialogTitle>
-          <DialogDescription>
-            Records a condition signal (temperature, vibration, runtime…) used to sharpen risk scores.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Asset</Label>
-            <AssetSelect value={assetId} onChange={setAssetId} />
-          </div>
-          <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={4}>
-            <div className="space-y-2">
-              <Label>Metric</Label>
-              <Select
-                value={metricType}
-                onValueChange={(v) => setMetricType(v as CreateHealthMetricData["metric_type"])}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {METRIC_TYPES.map((m) => (
-                    <SelectItem key={m.value} value={m.value}>
-                      {m.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="reading-value">
-                Value{selectedMetric?.unit ? ` (${selectedMetric.unit})` : ""}
-              </Label>
-              <Input
-                id="reading-value"
-                type="number"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                placeholder="e.g. 72"
-              />
-            </div>
-          </ResponsiveGrid>
-          <div className="space-y-2">
-            <Label htmlFor="reading-notes">Notes</Label>
-            <Textarea
-              id="reading-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Optional context"
-              rows={2}
-            />
-          </div>
+      <div className="space-y-2">
+        <Label>Asset</Label>
+        <AssetSelect value={assetId} onChange={setAssetId} />
+      </div>
+      <ResponsiveGrid cols={{ base: 1, sm: 2 }} gap={4}>
+        <div className="space-y-2">
+          <Label>Metric</Label>
+          <Select
+            value={metricType}
+            onValueChange={(v) => setMetricType(v as CreateHealthMetricData["metric_type"])}
+          >
+            <SelectTrigger aria-label="Metric">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {METRIC_TYPES.map((m) => (
+                <SelectItem key={m.value} value={m.value}>
+                  {m.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={mutation.isPending}>
-            Cancel
-          </Button>
-          <Button onClick={submit} disabled={!assetId || value === "" || mutation.isPending}>
-            {mutation.isPending ? "Saving…" : "Record reading"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="space-y-2">
+          <Label htmlFor="reading-value">
+            Value{selectedMetric?.unit ? ` (${selectedMetric.unit})` : ""}
+          </Label>
+          <Input
+            id="reading-value"
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="e.g. 72"
+          />
+        </div>
+      </ResponsiveGrid>
+      <div className="space-y-2">
+        <Label htmlFor="reading-notes">Notes</Label>
+        <Textarea
+          id="reading-notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Optional context"
+          rows={2}
+        />
+      </div>
+    </EntryDialogShell>
   );
 }
 

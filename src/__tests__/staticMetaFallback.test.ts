@@ -64,7 +64,9 @@ describe("index.html static OG/Twitter fallback (no-JS crawlers)", () => {
     // something sensible; react-helmet-async still overrides these per-route at
     // runtime, so they don't produce duplicate-tag flags for real visitors.
     expect(metaProperty("og:title")).toMatch(/MaintenEase/);
-    expect(metaProperty("og:description")).toBeTruthy();
+    // Guard against an empty/placeholder description slipping in — require a
+    // non-trivial sentence rather than just any truthy string.
+    expect((metaProperty("og:description") ?? "").length).toBeGreaterThan(10);
   });
 
   it("does NOT statically declare og:url (per-route owns it to avoid canonical mismatch)", () => {
