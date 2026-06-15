@@ -283,7 +283,13 @@ export interface ScorableAsset {
   name: string;
 }
 
-/** Lightweight asset list (id + name) for data-entry pickers. */
+/**
+ * Lightweight asset list (id + name) for data-entry pickers. Company scoping is
+ * enforced by row-level security on `assets` (same as the other reads in this
+ * service), so no explicit company_id filter is applied here. Unbounded by
+ * design — the picker shows the full (RLS-scoped) asset list; revisit with
+ * search/virtualization if tenants accumulate very large asset counts.
+ */
 export const fetchScorableAssets = async (): Promise<ScorableAsset[]> => {
   const { data, error } = await supabase
     .from("assets")
