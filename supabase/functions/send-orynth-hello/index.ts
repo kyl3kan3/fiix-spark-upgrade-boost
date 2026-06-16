@@ -7,6 +7,14 @@ import { template as generic } from '../_shared/transactional-email-templates/ge
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
 
+  const SHARED_SECRET = Deno.env.get('NOTIFY_SHARED_SECRET')
+  if (!SHARED_SECRET || req.headers.get('x-notify-secret') !== SHARED_SECRET) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,

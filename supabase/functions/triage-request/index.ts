@@ -26,6 +26,21 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    // Require shared secret — only internal callers (pg_cron, self-heal) may invoke.
+    const SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
+    if (!SHARED_SECRET) {
+      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (req.headers.get("x-notify-secret") !== SHARED_SECRET) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json().catch(() => ({}));
     const requestId: string | undefined = body.request_id;
     if (!requestId) {

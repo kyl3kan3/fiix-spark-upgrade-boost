@@ -287,6 +287,7 @@ async function healAiTriage(companyId: string): Promise<RunResult> {
           "Content-Type": "application/json",
           Authorization: `Bearer ${SERVICE_ROLE}`,
           apikey: SERVICE_ROLE,
+          "x-notify-secret": Deno.env.get("NOTIFY_SHARED_SECRET") ?? "",
         },
         body: JSON.stringify({ request_id: reqId, internal: true }),
       });
@@ -436,7 +437,15 @@ Deno.serve(async (req) => {
     let scopedCompany: string | undefined = body.company_id;
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
-    if (token && token !== SERVICE_ROLE) {
+    const SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
+    const hasValidSecret =
+      !!SHARED_SECRET && req.headers.get("x-notify-secret") === SHARED_SECRET;
+    const isServiceRole = !!token && token === SERVICE_ROLE;
+    const hasUserToken = !!token && !isServiceRole;
+
+    if (hasValidSecret) {
+      // Trusted internal caller (pg_cron / self). Allow full sweep.
+    } else if (hasUserToken) {
       const userClient = createClient(PROJECT_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
         global: { headers: { Authorization: `Bearer ${token}` } },
         auth: { persistSession: false },
@@ -447,6 +456,11 @@ Deno.serve(async (req) => {
       const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
       if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       scopedCompany = profile.company_id;
+    } else if (!isServiceRole) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const triggeredBy = body.triggered_by ?? (actorId ? "manual" : "scheduled");

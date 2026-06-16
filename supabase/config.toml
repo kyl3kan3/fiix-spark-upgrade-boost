@@ -19,6 +19,12 @@ verify_jwt = false
 [functions.send-orynth-hello]
 verify_jwt = false
 
+[functions.triage-request]
+verify_jwt = false
+
+[functions.self-heal]
+verify_jwt = false
+
 [functions.handle-email-unsubscribe]
 verify_jwt = false
 
