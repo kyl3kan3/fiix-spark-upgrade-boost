@@ -442,7 +442,9 @@ Deno.serve(async (req) => {
     const isServiceRole = !!token && token === SERVICE_ROLE;
     const hasUserToken = !!token && !isServiceRole;
 
-    if (hasUserToken) {
+    if (hasValidSecret) {
+      // Trusted internal caller (pg_cron / self). Allow full sweep.
+    } else if (hasUserToken) {
       const userClient = createClient(PROJECT_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
         global: { headers: { Authorization: `Bearer ${token}` } },
         auth: { persistSession: false },
@@ -453,7 +455,7 @@ Deno.serve(async (req) => {
       const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
       if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       scopedCompany = profile.company_id;
-    } else if (!hasValidSecret && !isServiceRole) {
+    } else if (!isServiceRole) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
