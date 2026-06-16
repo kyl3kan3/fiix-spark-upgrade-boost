@@ -15,6 +15,33 @@ interface EmailNotificationRequest {
   referenceId?: string;
 }
 
+// Minimal server-side HTML sanitizer: strip script/style/iframe/object/embed,
+// inline event handlers (onclick=, onerror=, …), and dangerous URL schemes.
+// This is defense-in-depth — callers should still prefer structured templates.
+function sanitizeHtml(input: string): string {
+  let html = String(input ?? "");
+  // Drop dangerous elements entirely (tag + contents).
+  html = html.replace(
+    /<\s*(script|style|iframe|object|embed|link|meta|base|form)\b[\s\S]*?<\s*\/\s*\1\s*>/gi,
+    "",
+  );
+  // Drop self-closing / unmatched dangerous tags.
+  html = html.replace(
+    /<\s*(script|style|iframe|object|embed|link|meta|base|form)\b[^>]*\/?>/gi,
+    "",
+  );
+  // Remove inline event handlers: on*="…" / on*='…' / on*=value
+  html = html.replace(/\son[a-z]+\s*=\s*"(?:\\.|[^"\\])*"/gi, "");
+  html = html.replace(/\son[a-z]+\s*=\s*'(?:\\.|[^'\\])*'/gi, "");
+  html = html.replace(/\son[a-z]+\s*=\s*[^\s>]+/gi, "");
+  // Neutralize javascript:/data:/vbscript: URLs in href/src.
+  html = html.replace(
+    /(href|src)\s*=\s*("|')\s*(?:javascript|data|vbscript):[^"']*\2/gi,
+    '$1=$2#$2',
+  );
+  return html;
+}
+
 // Backwards-compatible shim: existing callers keep invoking `send-email` with
 // raw subject+HTML, but we now forward to the managed Lovable Cloud
 // transactional email pipeline (queue + verified sender domain). Resend is no
@@ -94,6 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
         .maybeSingle();
       if (
         invite &&
+        invite.status === "pending" &&
         invite.invited_by === authedUserId &&
         String(invite.email).trim().toLowerCase() === recipientLower
       ) {
@@ -109,6 +137,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Forward to the managed transactional email pipeline
+    const safeSubject = String(subject).replace(/[\r\n]+/g, " ").slice(0, 300);
+    const safeBody = sanitizeHtml(body);
     const forwardRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
       method: "POST",
       headers: {
@@ -119,7 +149,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         templateName: "generic",
         recipientEmail: to,
-        templateData: { subject, html: body },
+        templateData: { subject: safeSubject, html: safeBody },
       }),
     });
     const forwardJson = await forwardRes.json().catch(() => ({}));
