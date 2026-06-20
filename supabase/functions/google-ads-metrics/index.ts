@@ -39,8 +39,13 @@ Deno.serve(async (req) => {
     const { data: userData } = await userClient.auth.getUser();
     if (!userData?.user) return json({ error: 'unauthorized' }, 401);
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
-    const { data: isAdmin } = await admin.rpc('is_super_admin', { _user_id: userData.user.id });
-    if (!isAdmin) return json({ error: 'forbidden' }, 403);
+    const { data: roleRow } = await admin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userData.user.id)
+      .eq('role', 'super_admin')
+      .maybeSingle();
+    if (!roleRow) return json({ error: 'forbidden' }, 403);
 
     const { data: conn } = await admin
       .from('google_ads_connections')
