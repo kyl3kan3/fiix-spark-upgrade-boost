@@ -17,8 +17,13 @@ Deno.serve(async (req) => {
   const { data: userData } = await userClient.auth.getUser();
   if (!userData?.user) return new Response('unauthorized', { status: 401, headers: corsHeaders });
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
-  const { data: isAdmin } = await admin.rpc('is_super_admin', { _user_id: userData.user.id });
-  if (!isAdmin) return new Response('forbidden', { status: 403, headers: corsHeaders });
+  const { data: roleRow } = await admin
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userData.user.id)
+    .eq('role', 'super_admin')
+    .maybeSingle();
+  if (!roleRow) return new Response('forbidden', { status: 403, headers: corsHeaders });
   await admin.from('google_ads_connections').delete().not('id', 'is', null);
   return new Response(JSON.stringify({ ok: true }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
