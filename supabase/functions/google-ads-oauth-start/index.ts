@@ -28,8 +28,13 @@ Deno.serve(async (req) => {
       });
     }
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
-    const { data: isAdmin } = await admin.rpc('is_super_admin', { _user_id: userData.user.id });
-    if (!isAdmin) {
+    const { data: roleRow } = await admin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userData.user.id)
+      .eq('role', 'super_admin')
+      .maybeSingle();
+    if (!roleRow) {
       return new Response(JSON.stringify({ error: 'forbidden' }), {
         status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
