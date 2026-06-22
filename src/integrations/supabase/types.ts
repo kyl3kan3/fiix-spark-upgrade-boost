@@ -174,6 +174,76 @@ export type Database = {
           },
         ]
       }
+      maintenance_costs: {
+        Row: {
+          amount: number
+          asset_id: string | null
+          category: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          id: string
+          incurred_at: string
+          maintenance_type: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          amount: number
+          asset_id?: string | null
+          category?: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          incurred_at?: string
+          maintenance_type?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          amount?: number
+          asset_id?: string | null
+          category?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          incurred_at?: string
+          maintenance_type?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_costs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_costs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_costs_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null
