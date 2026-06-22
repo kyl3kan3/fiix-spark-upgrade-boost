@@ -36,3 +36,5 @@ verify_jwt = false
     verify_jwt = false
   [functions.recompute-risk-scores]
     verify_jwt = false
+  [functions.maintenance-assistant]
+    verify_jwt = true
