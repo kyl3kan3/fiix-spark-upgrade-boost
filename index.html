@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MaintenEase — Maintenance Management, Simplified</title>
     <meta name="author" content="MaintenEase" />
-    <!-- description, og:title/description/url, twitter:title/description are set per-route
-         via react-helmet-async to avoid duplicate-tag and og:url/canonical-mismatch flags. -->
+    <!-- Brand-level OG/Twitter fallbacks for no-JS crawlers. Per-route values
+         (incl. og:url and the canonical) are set at runtime via react-helmet-async;
+         og:url is intentionally omitted here to avoid a canonical-mismatch flag. -->
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="MaintenEase — Maintenance Management, Simplified" />
+    <meta property="og:description" content="Maintenance Management, Simplified. Track work orders, assets, inspections, and predictive maintenance in one place." />
     <meta property="og:image" content="https://maintenease.com/og-image.png?v=2">
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2">
