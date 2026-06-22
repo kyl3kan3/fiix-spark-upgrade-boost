@@ -360,6 +360,53 @@ export type Database = {
           },
         ]
       }
+      onboarding_profiles: {
+        Row: {
+          company_id: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          goals: string[]
+          id: string
+          industry: string | null
+          plan: Json
+          team_size: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          goals?: string[]
+          id?: string
+          industry?: string | null
+          plan?: Json
+          team_size?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          goals?: string[]
+          id?: string
+          industry?: string | null
+          plan?: Json
+          team_size?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null

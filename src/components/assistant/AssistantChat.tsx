@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Send, Bot, User, ClipboardList, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -105,10 +106,22 @@ const AssistantChat: React.FC = () => {
   const { messages, send, isSending, confirmProposal } = useAssistant();
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isSending]);
+
+  // Prefill from a ?prompt= deep link (e.g. from the guided-setup plan), then clear it.
+  useEffect(() => {
+    const prompt = searchParams.get("prompt");
+    if (prompt) {
+      setInput(prompt);
+      searchParams.delete("prompt");
+      setSearchParams(searchParams, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submit = () => {
     if (!input.trim() || isSending) return;
