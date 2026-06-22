@@ -407,6 +407,95 @@ export type Database = {
           },
         ]
       }
+      floor_plans: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          storage_path: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          storage_path: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          storage_path?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "floor_plans_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      floor_plan_markers: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          created_at: string
+          floor_plan_id: string
+          id: string
+          label: string | null
+          updated_at: string
+          x: number
+          y: number
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          created_at?: string
+          floor_plan_id: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          created_at?: string
+          floor_plan_id?: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "floor_plan_markers_floor_plan_id_fkey"
+            columns: ["floor_plan_id"]
+            isOneToOne: false
+            referencedRelation: "floor_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "floor_plan_markers_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null

@@ -34,6 +34,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Power Usage", href: "/power-usage", icon: Gauge, code: "PWR", group: "More" },
  { label: "Assistant", href: "/assistant", icon: Bot, code: "AI", group: "More" },
  { label: "Guided Setup", href: "/guided-setup", icon: Compass, code: "SETUP", group: "More" },
+ { label: "Building Viewer", href: "/building-viewer", icon: Building2, code: "BLD", group: "More" },
  { label: "Analytics", href: "/reports", icon: BarChart3, code: "RPT", group: "More", feature: "analytics" },
  { label: "Automations", href: "/automations", icon: Zap, code: "AUT", group: "More", feature: "automations" },
  { label: "API Keys", href: "/api-keys", icon: KeyRound, code: "API", group: "More", feature: "api" },
