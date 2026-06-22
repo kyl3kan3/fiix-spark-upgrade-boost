@@ -297,6 +297,69 @@ export type Database = {
           },
         ]
       }
+      energy_readings: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          cost: number | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          kwh: number
+          meter_label: string | null
+          notes: string | null
+          reading_date: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          kwh: number
+          meter_label?: string | null
+          notes?: string | null
+          reading_date?: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          kwh?: number
+          meter_label?: string | null
+          notes?: string | null
+          reading_date?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_readings_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "energy_readings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null
