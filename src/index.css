@@ -177,9 +177,47 @@
   @media (hover: none) and (pointer: coarse) {
     button:not([role="switch"]), a, [role="button"] { min-height: 44px; }
   }
+
+  /* Subtle neutral outline on images for consistent depth. Pure black/white at
+     low opacity — never a tinted neutral, which reads as dirt on the edge.
+     Inset so it never changes layout size. */
+  img {
+    outline: 1px solid rgba(0, 0, 0, 0.1);
+    outline-offset: -1px;
+  }
+  .dark img { outline-color: rgba(255, 255, 255, 0.1); }
+
+  /* Respect users who prefer reduced motion: neutralize transitions, the
+     staggered enter animations, and the press/hover transforms. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .enter-item { opacity: 1 !important; filter: none !important; transform: none !important; }
+  }
+}
+
+/* Staggered enter: split content into semantic chunks and reveal each with a
+   small opacity + translateY + blur, offset by ~100ms. One-shot keyframe (not a
+   transition) since it runs once on mount. */
+@keyframes enter-fade-up {
+  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
 }
 
 @layer utilities {
+  .enter-item {
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: enter-fade-up 0.45s cubic-bezier(0.2, 0, 0, 1) both;
+  }
+  .enter-d1 { animation-delay: 0ms; }
+  .enter-d2 { animation-delay: 100ms; }
+  .enter-d3 { animation-delay: 200ms; }
+
   .font-headline { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
   .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
   .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
