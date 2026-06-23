@@ -4,6 +4,8 @@
  * error reporting). No data-layer / React imports, so it's unit-testable.
  */
 
+import { splitCsvLine } from "./csvParser";
+
 export type ImportKind = "assets" | "work_orders";
 
 export interface AssetImportRow {
@@ -39,34 +41,6 @@ export const IMPORT_TEMPLATES: Record<ImportKind, string> = {
   assets: "name,status,location,model,serial_number,purchase_date,description",
   work_orders: "title,description,priority,status,due_date",
 };
-
-function splitCsvLine(line: string): string[] {
-  const out: string[] = [];
-  let cur = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (inQuotes) {
-      if (ch === '"' && line[i + 1] === '"') {
-        cur += '"';
-        i++;
-      } else if (ch === '"') {
-        inQuotes = false;
-      } else {
-        cur += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ",") {
-      out.push(cur);
-      cur = "";
-    } else {
-      cur += ch;
-    }
-  }
-  out.push(cur);
-  return out.map((s) => s.trim());
-}
 
 /** Parse CSV text into header-keyed records (keys lowercased). */
 export function parseCsvRecords(text: string): { records: Record<string, string>[]; error: string | null } {

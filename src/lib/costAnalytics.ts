@@ -3,6 +3,15 @@
  * data-layer / React imports so the aggregation is unit-testable in isolation.
  */
 
+import { round } from "./numberUtils";
+import { monthKey, lastNMonthKeys } from "./dateUtils";
+
+// Re-exported for existing importers (e.g. costAnalytics.test) that reach these
+// month-key helpers through this module; the implementation now lives in dateUtils.
+export { monthKey, lastNMonthKeys };
+// formatCurrency now lives in ./formatting; re-export to keep import paths stable.
+export { formatCurrency } from "./formatting";
+
 export type CostCategory = "labor" | "parts" | "contractor" | "downtime" | "other";
 export type MaintenanceType = "preventive" | "reactive" | "other";
 
@@ -39,23 +48,6 @@ export interface CostSummary {
   topAssets: AssetCost[];
 }
 
-export function monthKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
-
-/** Continuous YYYY-MM keys for the last `n` calendar months, oldest first. */
-export function lastNMonthKeys(n: number, ref: Date = new Date()): string[] {
-  const keys: string[] = [];
-  for (let i = n - 1; i >= 0; i--) {
-    keys.push(monthKey(new Date(ref.getFullYear(), ref.getMonth() - i, 1)));
-  }
-  return keys;
-}
-
-function round2(n: number): number {
-  return Math.round((n + Number.EPSILON) * 100) / 100;
-}
-
 export interface SummarizeOptions {
   months?: number;
   topAssetsLimit?: number;
@@ -86,39 +78,27 @@ export function summarizeCosts(
 
   const monthly = lastNMonthKeys(months, ref).map((month) => ({
     month,
-    total: round2(monthTotals.get(month) ?? 0),
+    total: round(monthTotals.get(month) ?? 0),
   }));
 
   const topAssets = [...assetTotals.entries()]
-    .map(([assetId, t]) => ({ assetId, total: round2(t) }))
+    .map(([assetId, t]) => ({ assetId, total: round(t) }))
     .sort((a, b) => b.total - a.total)
     .slice(0, topAssetsLimit);
 
   const pvr = byType.preventive + byType.reactive;
 
   return {
-    total: round2(total),
+    total: round(total),
     count: records.length,
     byCategory: Object.fromEntries(
-      COST_CATEGORIES.map((c) => [c, round2(byCategory[c])]),
+      COST_CATEGORIES.map((c) => [c, round(byCategory[c])]),
     ) as Record<CostCategory, number>,
     byType: Object.fromEntries(
-      MAINTENANCE_TYPES.map((t) => [t, round2(byType[t])]),
+      MAINTENANCE_TYPES.map((t) => [t, round(byType[t])]),
     ) as Record<MaintenanceType, number>,
-    preventiveRatio: pvr > 0 ? round2(byType.preventive / pvr) : 0,
+    preventiveRatio: pvr > 0 ? round(byType.preventive / pvr) : 0,
     monthly,
     topAssets,
   };
-}
-
-export function formatCurrency(amount: number, currency = "USD"): string {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency,
-      maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    }).format(amount);
-  } catch {
-    return `${currency} ${amount.toFixed(2)}`;
-  }
 }
