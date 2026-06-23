@@ -76,18 +76,25 @@ export const useVendorImport = () => {
  try {
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) throw new Error('You must be signed in to import vendors.');
- const { data: profile, error: profileError } = await supabase
- .from('profiles')
- .select('company_id, role')
- .eq('id', user.id)
- .maybeSingle();
- if (profileError) throw profileError;
- if (!profile?.company_id) {
- throw new Error('Your account is not linked to a company.');
- }
- if (!['administrator', 'manager'].includes((profile.role || '').toLowerCase())) {
- throw new Error('Only administrators or managers can import vendors.');
- }
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (profileError) throw profileError;
+      if (!profile?.company_id) {
+        throw new Error('Your account is not linked to a company.');
+      }
+      // Authoritative role check uses user_roles (matches server-side has_role()).
+      const { data: roleRows, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
+      if (rolesError) throw rolesError;
+      const roles = new Set((roleRows ?? []).map((r) => String(r.role).toLowerCase()));
+      if (!roles.has('administrator') && !roles.has('manager')) {
+        throw new Error('Only administrators or managers can import vendors.');
+      }
 
  for (const vendor of vendors) {
  const { error } = await supabase
