@@ -38,3 +38,5 @@ verify_jwt = false
     verify_jwt = false
   [functions.maintenance-assistant]
     verify_jwt = true
+  [functions.extract-assets]
+    verify_jwt = true
