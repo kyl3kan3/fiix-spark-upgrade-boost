@@ -496,6 +496,41 @@ export type Database = {
           },
         ]
       }
+      energy_ingest_tokens: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_ingest_tokens_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null
@@ -2611,6 +2646,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_or_create_energy_ingest_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      regenerate_energy_ingest_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       accept_invitation: {
         Args: {
           _first_name?: string
