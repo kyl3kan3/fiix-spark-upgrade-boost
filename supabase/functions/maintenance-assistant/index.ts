@@ -14,7 +14,7 @@ const SYSTEM_PROMPT = `You are the MaintenEase maintenance assistant, embedded i
 You help maintenance teams understand their data and get things done.
 
 - Use the read tools to answer questions about assets, work orders, costs, energy usage, and equipment risk. Prefer calling a tool over guessing; if a tool returns nothing, say so plainly.
-- When the user asks you to create or schedule work, call propose_work_order with a clear title and description. This does NOT create anything — it drafts a proposal the user must confirm in the UI. Tell them you've drafted it and they can confirm.
+- When the user asks to create/schedule work, call propose_work_order; to log a cost/expense, call propose_cost; to log energy/power usage, call propose_energy_reading. These do NOT write anything — they draft a proposal the user must confirm in the UI. Tell them you've drafted it and they can confirm.
 - Be concise and practical. Use plain language and small markdown tables when helpful. Never invent asset names, numbers, or ids; only use values returned by tools.
 - All data is automatically scoped to the user's company — never ask for a company id.`;
 
@@ -80,6 +80,39 @@ const tools = [
         due_date: { type: "string", description: "Optional ISO date." },
       },
       required: ["title"],
+    },
+  },
+  {
+    name: "propose_cost",
+    description:
+      "Draft a maintenance cost entry for the user to confirm. Does NOT create it. Use when the user wants to log/record a cost or expense.",
+    input_schema: {
+      type: "object",
+      properties: {
+        amount: { type: "number" },
+        category: { type: "string", enum: ["labor", "parts", "contractor", "downtime", "other"] },
+        maintenance_type: { type: "string", enum: ["preventive", "reactive", "other"] },
+        currency: { type: "string", description: "3-letter code, default USD." },
+        asset_id: { type: "string", description: "Optional asset id from get_assets." },
+        description: { type: "string" },
+      },
+      required: ["amount"],
+    },
+  },
+  {
+    name: "propose_energy_reading",
+    description:
+      "Draft an energy (kWh) reading for the user to confirm. Does NOT create it. Use when the user wants to log/record energy or power usage.",
+    input_schema: {
+      type: "object",
+      properties: {
+        kwh: { type: "number" },
+        cost: { type: "number", description: "Optional cost for the reading." },
+        currency: { type: "string", description: "3-letter code, default USD." },
+        asset_id: { type: "string", description: "Optional asset id from get_assets." },
+        meter_label: { type: "string", description: "Optional free-text meter name." },
+      },
+      required: ["kwh"],
     },
   },
 ];
@@ -165,6 +198,29 @@ async function executeTool(db: Db, name: string, input: any, proposals: any[]): 
         due_date: input?.due_date ?? null,
       });
       return JSON.stringify({ ok: true, note: "Proposal recorded. The user will confirm it in the UI." });
+    }
+    case "propose_cost": {
+      proposals.push({
+        type: "cost",
+        amount: input?.amount ?? 0,
+        category: input?.category ?? "other",
+        maintenance_type: input?.maintenance_type ?? "reactive",
+        currency: input?.currency ?? "USD",
+        asset_id: input?.asset_id ?? null,
+        description: input?.description ?? null,
+      });
+      return JSON.stringify({ ok: true, note: "Cost proposal recorded. The user will confirm it in the UI." });
+    }
+    case "propose_energy_reading": {
+      proposals.push({
+        type: "energy",
+        kwh: input?.kwh ?? 0,
+        cost: input?.cost ?? null,
+        currency: input?.currency ?? "USD",
+        asset_id: input?.asset_id ?? null,
+        meter_label: input?.meter_label ?? null,
+      });
+      return JSON.stringify({ ok: true, note: "Energy proposal recorded. The user will confirm it in the UI." });
     }
     default:
       return JSON.stringify({ error: `Unknown tool: ${name}` });

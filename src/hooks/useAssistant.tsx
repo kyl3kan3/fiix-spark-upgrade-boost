@@ -3,14 +3,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   sendAssistantMessage,
-  confirmWorkOrderProposal,
+  confirmProposal as runConfirmProposal,
+  proposalInvalidationKeys,
 } from "@/services/assistantService";
-import type { ChatMessage, WorkOrderProposal } from "@/lib/assistant";
+import type { ChatMessage, AssistantProposal } from "@/lib/assistant";
 
 export type ProposalStatus = "pending" | "confirming" | "done" | "error";
 
 export interface ProposalState {
-  proposal: WorkOrderProposal;
+  proposal: AssistantProposal;
   status: ProposalStatus;
 }
 
@@ -86,18 +87,18 @@ export function useAssistant() {
       ),
     );
 
-  const confirmProposal = useCallback(async (messageId: string, index: number, proposal: WorkOrderProposal) => {
+  const confirmProposal = useCallback(async (messageId: string, index: number, proposal: AssistantProposal) => {
     setProposalStatus(messageId, index, "confirming");
     try {
-      await confirmWorkOrderProposal(proposal);
+      await runConfirmProposal(proposal);
       setProposalStatus(messageId, index, "done");
-      toast.success("Work order created");
-      queryClient.invalidateQueries({ queryKey: ["work-orders"] });
-      queryClient.invalidateQueries({ queryKey: ["workOrders"] });
+      for (const key of proposalInvalidationKeys(proposal.type)) {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      }
     } catch (e) {
-      console.error("Failed to create work order:", e);
+      console.error("Failed to apply proposal:", e);
       setProposalStatus(messageId, index, "error");
-      toast.error("Couldn't create the work order");
+      toast.error("Couldn't apply that action");
     }
   }, [queryClient]);
 
