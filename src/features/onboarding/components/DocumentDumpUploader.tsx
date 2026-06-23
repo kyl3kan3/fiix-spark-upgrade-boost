@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useOnboardingDocuments } from "@/hooks/useOnboardingDocuments";
 import { getOnboardingDocumentUrl, type OnboardingDocument } from "@/services/documentDumpService";
+import { canExtract } from "@/services/assetExtractionService";
+import ExtractAssetsDialog from "@/features/onboarding/components/ExtractAssetsDialog";
 import {
   ACCEPTED_MIME_HINT,
   DOC_KINDS,
@@ -168,6 +170,7 @@ const DocumentDumpUploader: React.FC = () => {
                     <Badge variant="outline" className={STATUS_STYLES[doc.status]}>
                       <span className="capitalize">{doc.status}</span>
                     </Badge>
+                    {canExtract(doc.mime_type) && <ExtractAssetsDialog doc={doc} />}
                     <Button variant="ghost" size="icon" onClick={() => onDownload(doc)} aria-label="Download">
                       <Download className="h-4 w-4" />
                     </Button>
