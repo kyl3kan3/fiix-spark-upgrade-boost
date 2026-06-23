@@ -1,18 +1,49 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Send, Bot, User, ClipboardList, Check, Loader2 } from "lucide-react";
+import { Send, Bot, User, ClipboardList, Wallet, Zap, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useAssistant, type AssistantUiMessage, type ProposalState } from "@/hooks/useAssistant";
+import { formatCurrency } from "@/lib/costAnalytics";
+import { formatKwh } from "@/lib/energyAnalytics";
+import type { AssistantProposal } from "@/lib/assistant";
 
 const SUGGESTIONS = [
   "Which assets are highest risk right now?",
   "What did we spend on parts in the last 90 days?",
-  "Show my open work orders.",
   "Draft a work order to inspect the HVAC unit.",
+  "Log a $200 parts cost for the air compressor.",
 ];
+
+function proposalView(p: AssistantProposal): { icon: React.ElementType; heading: string; badge?: string; title: string; subtitle?: string } {
+  switch (p.type) {
+    case "work_order":
+      return {
+        icon: ClipboardList,
+        heading: "Proposed work order",
+        badge: p.priority,
+        title: p.title,
+        subtitle: p.description,
+      };
+    case "cost":
+      return {
+        icon: Wallet,
+        heading: "Proposed cost",
+        badge: p.maintenance_type,
+        title: `${formatCurrency(p.amount, p.currency)} · ${p.category}`,
+        subtitle: p.description ?? undefined,
+      };
+    case "energy":
+      return {
+        icon: Zap,
+        heading: "Proposed energy reading",
+        title: `${formatKwh(p.kwh)}${p.cost != null ? ` · ${formatCurrency(p.cost, p.currency)}` : ""}`,
+        subtitle: p.meter_label ?? undefined,
+      };
+  }
+}
 
 function ProposalCard({
   state,
@@ -22,19 +53,23 @@ function ProposalCard({
   onConfirm: () => void;
 }) {
   const { proposal, status } = state;
+  const v = proposalView(proposal);
+  const Icon = v.icon;
   return (
     <Card className="mt-2 border-primary/30 bg-primary/5">
       <CardContent className="p-3 space-y-2">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <ClipboardList className="h-4 w-4 text-primary" />
-          Proposed work order
-          <Badge variant="outline" className="capitalize ml-auto">
-            {proposal.priority}
-          </Badge>
+          <Icon className="h-4 w-4 text-primary" />
+          {v.heading}
+          {v.badge && (
+            <Badge variant="outline" className="capitalize ml-auto">
+              {v.badge}
+            </Badge>
+          )}
         </div>
-        <p className="text-sm font-medium">{proposal.title}</p>
-        <p className="text-sm text-muted-foreground">{proposal.description}</p>
-        {proposal.due_date && (
+        <p className="text-sm font-medium">{v.title}</p>
+        {v.subtitle && <p className="text-sm text-muted-foreground">{v.subtitle}</p>}
+        {proposal.type === "work_order" && proposal.due_date && (
           <p className="text-xs text-muted-foreground">
             Due {new Date(proposal.due_date).toLocaleDateString()}
           </p>
@@ -42,18 +77,18 @@ function ProposalCard({
         <div className="pt-1">
           {status === "done" ? (
             <span className="inline-flex items-center text-sm text-success">
-              <Check className="h-4 w-4 mr-1" /> Work order created
+              <Check className="h-4 w-4 mr-1" /> Saved
             </span>
           ) : (
             <Button size="sm" onClick={onConfirm} disabled={status === "confirming"}>
               {status === "confirming" ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-1 animate-spin" /> Creating…
+                  <Loader2 className="h-4 w-4 mr-1 animate-spin" /> Saving…
                 </>
               ) : status === "error" ? (
-                "Retry create"
+                "Retry"
               ) : (
-                "Confirm & create"
+                "Confirm & save"
               )}
             </Button>
           )}
