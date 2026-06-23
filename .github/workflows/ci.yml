@@ -5,6 +5,16 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege: this job only reads the repo (build + test, no writes).
+permissions:
+  contents: read
+
+# Cancel superseded PR runs when new commits are pushed, but never cancel a
+# main build — each main commit is tagged as a Sentry release via VITE_APP_VERSION.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

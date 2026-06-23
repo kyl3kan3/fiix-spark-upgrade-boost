@@ -14,6 +14,11 @@ permissions:
   contents: read
   pull-requests: write
 
+# One metadata run per PR; cancel superseded runs on new pushes.
+concurrency:
+  group: meta-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   meta:
     runs-on: ubuntu-latest
@@ -38,7 +43,10 @@ jobs:
             src/pages/__tests__/metaTagsAllPages.test.ts \
             src/pages/__tests__/metaTagsRender.test.tsx \
             2>&1 | tee meta-test-output.txt
-          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          # PIPESTATUS[0] is vitest's exit code. Plain $? would be tee's status
+          # (always 0) because the default shell (bash -e {0}) has no pipefail,
+          # which would silently swallow test failures.
+          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Snapshot live metadata diff
         id: snapshot
@@ -93,10 +101,14 @@ jobs:
             const body = fs.readFileSync("pr-comment.md", "utf8");
             const marker = "<!-- meta-regression-report -->";
             const tagged = `${marker}\n${body}`;
-            const { data: comments } = await github.rest.issues.listComments({
+            // Paginate so the marker comment is found even on PRs with >30
+            // comments; otherwise listComments returns only the first page and
+            // a duplicate report comment gets posted on every run.
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
+              per_page: 100,
             });
             const mine = comments.find((c) => c.body && c.body.startsWith(marker));
             if (mine) {

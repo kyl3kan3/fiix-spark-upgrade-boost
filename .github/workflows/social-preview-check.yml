@@ -24,6 +24,12 @@ jobs:
     permissions:
       contents: read
       issues: write
+    env:
+      # Job-level so it's set once for every step (used by all three audits) and,
+      # for MAIL_SERVER, so it's in scope for the email step's `if` — a step's own
+      # `env:` block is NOT available to that same step's `if` condition.
+      BASE_URL: ${{ github.event.inputs.base_url || 'https://maintenease.com' }}
+      MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,15 +43,12 @@ jobs:
 
       - name: Run page-level og audit
         id: og_audit
-        env:
-          BASE_URL: ${{ github.event.inputs.base_url || 'https://maintenease.com' }}
         run: npx tsx scripts/check-og-images.ts
 
       - name: Run social-crawler audit
         id: social_audit
         if: always()
         env:
-          BASE_URL: ${{ github.event.inputs.base_url || 'https://maintenease.com' }}
           # Optional — only set if you've added a Facebook App access token
           # to repo secrets; enables automatic Facebook cache invalidation
           # when mismatches are detected.
@@ -56,8 +59,6 @@ jobs:
         id: snapshot
         if: always()
         continue-on-error: true
-        env:
-          BASE_URL: ${{ github.event.inputs.base_url || 'https://maintenease.com' }}
         run: npx tsx scripts/snapshot-meta-history.ts
 
       - name: Upload reports
@@ -76,8 +77,6 @@ jobs:
       # The step is skipped automatically when MAIL_SERVER is not configured.
       - name: Email alert on failure
         if: failure() && env.MAIL_SERVER != ''
-        env:
-          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.MAIL_SERVER }}
