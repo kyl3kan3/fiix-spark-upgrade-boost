@@ -71,19 +71,27 @@ export const getVendorById = async (id: string): Promise<VendorWithContracts | n
 export const createVendor = async (vendorData: VendorFormData): Promise<Vendor> => {
  const user = await requireUser();
 
- const { data: profile, error: profileError } = await supabase
- .from("profiles")
- .select("company_id, role")
- .eq("id", user.id)
- .maybeSingle();
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("company_id")
+    .eq("id", user.id)
+    .maybeSingle();
 
- if (profileError) throw profileError;
- if (!profile?.company_id) {
- throw new Error("Your account is not linked to a company. Complete setup first.");
- }
- if (!["administrator", "manager"].includes((profile.role || "").toLowerCase())) {
- throw new Error("Only administrators or managers can create vendors.");
- }
+  if (profileError) throw profileError;
+  if (!profile?.company_id) {
+    throw new Error("Your account is not linked to a company. Complete setup first.");
+  }
+
+  // Authoritative role check uses user_roles (matches server-side has_role()).
+  const { data: roleRows, error: rolesError } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id);
+  if (rolesError) throw rolesError;
+  const roles = new Set((roleRows ?? []).map((r) => String(r.role).toLowerCase()));
+  if (!roles.has("administrator") && !roles.has("manager")) {
+    throw new Error("Only administrators or managers can create vendors.");
+  }
 
  const { data, error } = await supabase
  .from("vendors")
