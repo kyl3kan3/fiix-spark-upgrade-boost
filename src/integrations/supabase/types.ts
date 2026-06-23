@@ -174,6 +174,363 @@ export type Database = {
           },
         ]
       }
+      maintenance_costs: {
+        Row: {
+          amount: number
+          asset_id: string | null
+          category: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          id: string
+          incurred_at: string
+          maintenance_type: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          amount: number
+          asset_id?: string | null
+          category?: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          incurred_at?: string
+          maintenance_type?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          amount?: number
+          asset_id?: string | null
+          category?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          incurred_at?: string
+          maintenance_type?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_costs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_costs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_costs_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_documents: {
+        Row: {
+          company_id: string
+          created_at: string
+          doc_kind: string
+          file_name: string
+          id: string
+          mime_type: string | null
+          notes: string | null
+          size_bytes: number | null
+          status: string
+          storage_path: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          doc_kind?: string
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          size_bytes?: number | null
+          status?: string
+          storage_path: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          doc_kind?: string
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          size_bytes?: number | null
+          status?: string
+          storage_path?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_readings: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          cost: number | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          kwh: number
+          meter_label: string | null
+          notes: string | null
+          reading_date: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          kwh: number
+          meter_label?: string | null
+          notes?: string | null
+          reading_date?: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          kwh?: number
+          meter_label?: string | null
+          notes?: string | null
+          reading_date?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_readings_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "energy_readings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_profiles: {
+        Row: {
+          company_id: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          goals: string[]
+          id: string
+          industry: string | null
+          plan: Json
+          team_size: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          goals?: string[]
+          id?: string
+          industry?: string | null
+          plan?: Json
+          team_size?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          goals?: string[]
+          id?: string
+          industry?: string | null
+          plan?: Json
+          team_size?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      floor_plans: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          storage_path: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          storage_path: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          storage_path?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "floor_plans_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      floor_plan_markers: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          created_at: string
+          floor_plan_id: string
+          id: string
+          label: string | null
+          updated_at: string
+          x: number
+          y: number
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          created_at?: string
+          floor_plan_id: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          created_at?: string
+          floor_plan_id?: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "floor_plan_markers_floor_plan_id_fkey"
+            columns: ["floor_plan_id"]
+            isOneToOne: false
+            referencedRelation: "floor_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "floor_plan_markers_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_ingest_tokens: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_ingest_tokens_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null
@@ -2289,6 +2646,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_or_create_energy_ingest_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      regenerate_energy_ingest_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       accept_invitation: {
         Args: {
           _first_name?: string
