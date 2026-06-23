@@ -6,6 +6,7 @@ import { usePowerUsage } from "@/hooks/usePowerUsage";
 import PowerUsageDashboard from "@/components/powerUsage/PowerUsageDashboard";
 import LogEnergyReadingDialog from "@/components/powerUsage/LogEnergyReadingDialog";
 import ImportEnergyCsvDialog from "@/components/powerUsage/ImportEnergyCsvDialog";
+import EnergyIntegrationDialog from "@/components/powerUsage/EnergyIntegrationDialog";
 
 const PowerUsagePage = () => {
   const { readings, summary, assets, assetNames, isLoading, error, refetch, create, importCsv } =
@@ -19,6 +20,7 @@ const PowerUsagePage = () => {
         description="Track energy consumption and cost across your equipment and meters. Log readings by hand or import a CSV now; a live utility integration can feed the same dashboard later."
         actions={
           <div className="flex flex-wrap gap-2">
+            <EnergyIntegrationDialog />
             <ImportEnergyCsvDialog
               isImporting={importCsv.isPending}
               onImport={(rows, currency) => importCsv.mutateAsync([rows, currency])}

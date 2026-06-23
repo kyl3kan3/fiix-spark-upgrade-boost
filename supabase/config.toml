@@ -40,3 +40,5 @@ verify_jwt = false
     verify_jwt = true
   [functions.extract-assets]
     verify_jwt = true
+  [functions.ingest-energy]
+    verify_jwt = false
