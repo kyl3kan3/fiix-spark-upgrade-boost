@@ -141,12 +141,12 @@ const ImportHubPage = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-4 text-sm">
-                  <span className="inline-flex items-center text-success">
+                  <span className="inline-flex items-center text-success tabular-nums">
                     <CheckCircle2 className="h-4 w-4 mr-1" />
                     {parsed.rows.length} ready to import
                   </span>
                   {parsed.errors.length > 0 && (
-                    <span className="inline-flex items-center text-warning">
+                    <span className="inline-flex items-center text-warning tabular-nums">
                       <AlertTriangle className="h-4 w-4 mr-1" />
                       {parsed.errors.length} skipped
                     </span>

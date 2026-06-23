@@ -21,11 +21,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
  <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 pt-6 pb-4")}>
  <div className="flex items-start justify-between gap-4 flex-wrap">
  <div className="min-w-0">
- <h1 className="font-display text-2xl md:text-3xl lg:text-[34px] font-extrabold tracking-tight leading-tight">
+ <h1 className="enter-item enter-d1 font-display text-2xl md:text-3xl lg:text-[34px] font-extrabold tracking-tight leading-tight">
  {title}
  </h1>
  {description && (
- <p className="mt-2 text-base text-muted-foreground max-w-2xl font-medium">
+ <p className="enter-item enter-d2 mt-2 text-base text-muted-foreground max-w-2xl font-medium">
  {description}
  </p>
  )}
