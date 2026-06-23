@@ -77,13 +77,13 @@ Deno.serve(async (req) => {
     const days = Math.max(7, Math.min(90, Number(url.searchParams.get('days') ?? '30')));
     const since = daysAgo(days - 1).toISOString();
 
-    // Internal accounts to exclude from analytics
-    const EXCLUDED_EMAILS = [
-      'kyl3kan3@gmail.com',
-      'kyle@decent4.com',
-      'kyle.kane@admiralparkway.com',
-      'account@admiralparkway.com',
-    ];
+    // Internal accounts to exclude from analytics.
+    // Configured via the EXCLUDED_INTERNAL_EMAILS secret (comma-separated list)
+    // so personal emails aren't committed to source control.
+    const EXCLUDED_EMAILS = (Deno.env.get('EXCLUDED_INTERNAL_EMAILS') ?? '')
+      .split(',')
+      .map((e) => e.trim().toLowerCase())
+      .filter((e) => e.length > 0);
     const { data: excludedProfiles } = await admin
       .from('profiles')
       .select('id,company_id')
