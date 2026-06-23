@@ -3,6 +3,15 @@
  * No data-layer / React imports, so they're unit-testable in isolation.
  */
 
+import { round } from "./numberUtils";
+import { monthKey, lastNMonthKeys } from "./dateUtils";
+import { splitCsvLine } from "./csvParser";
+
+// month-key helpers now live in dateUtils; re-export to keep import paths stable.
+export { monthKey, lastNMonthKeys };
+// formatCurrency now lives in ./formatting; re-export for existing importers.
+export { formatCurrency } from "./formatting";
+
 export interface EnergyRecord {
   kwh: number;
   cost: number | null;
@@ -32,23 +41,6 @@ export interface EnergySummary {
   avgCostPerKwh: number;
   monthly: MonthlyEnergy[];
   topConsumers: ConsumerEnergy[];
-}
-
-export function monthKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
-
-export function lastNMonthKeys(n: number, ref: Date = new Date()): string[] {
-  const keys: string[] = [];
-  for (let i = n - 1; i >= 0; i--) {
-    keys.push(monthKey(new Date(ref.getFullYear(), ref.getMonth() - i, 1)));
-  }
-  return keys;
-}
-
-function round(n: number, dp = 2): number {
-  const f = 10 ** dp;
-  return Math.round((n + Number.EPSILON) * f) / f;
 }
 
 export interface SummarizeEnergyOptions {
@@ -122,34 +114,6 @@ export interface CsvParseResult {
   errors: string[];
 }
 
-function splitCsvLine(line: string): string[] {
-  const out: string[] = [];
-  let cur = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (inQuotes) {
-      if (ch === '"' && line[i + 1] === '"') {
-        cur += '"';
-        i++;
-      } else if (ch === '"') {
-        inQuotes = false;
-      } else {
-        cur += ch;
-      }
-    } else if (ch === '"') {
-      inQuotes = true;
-    } else if (ch === ",") {
-      out.push(cur);
-      cur = "";
-    } else {
-      cur += ch;
-    }
-  }
-  out.push(cur);
-  return out.map((s) => s.trim());
-}
-
 /**
  * Parse an energy CSV. Expected header columns (case-insensitive, in any order):
  * `date`, `kwh`, optional `cost`, optional `meter`. Returns parsed rows plus a
@@ -205,16 +169,4 @@ export function parseEnergyCsv(text: string): CsvParseResult {
 
 export function formatKwh(kwh: number): string {
   return `${new Intl.NumberFormat(undefined, { maximumFractionDigits: kwh % 1 === 0 ? 0 : 1 }).format(kwh)} kWh`;
-}
-
-export function formatCurrency(amount: number, currency = "USD"): string {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency,
-      maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    }).format(amount);
-  } catch {
-    return `${currency} ${amount.toFixed(2)}`;
-  }
 }
