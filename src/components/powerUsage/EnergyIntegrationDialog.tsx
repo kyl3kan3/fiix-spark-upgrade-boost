@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   ingestEndpointUrl,
-  getOrCreateIngestToken,
+  getIngestTokenInfo,
   regenerateIngestToken,
 } from "@/services/energyIngestService";
 
@@ -35,25 +35,30 @@ const EnergyIntegrationDialog: React.FC = () => {
   const [open, setOpen] = useState(false);
   const endpoint = ingestEndpointUrl();
 
-  const { data: token, isLoading } = useQuery({
+  const { data: info, isLoading } = useQuery({
     queryKey: TOKEN_KEY,
-    queryFn: getOrCreateIngestToken,
+    queryFn: getIngestTokenInfo,
     enabled: open,
   });
+  const token = info?.token;
 
   const regen = useMutation({
     mutationFn: regenerateIngestToken,
     onSuccess: (t) => {
-      queryClient.setQueryData(TOKEN_KEY, t);
+      queryClient.setQueryData(TOKEN_KEY, { token: t, lastUsedAt: null });
       toast.success("New token generated");
     },
     onError: () => toast.error("Couldn't regenerate the token"),
   });
 
+  const lastUsed = info?.lastUsedAt
+    ? `Last reading received ${new Date(info.lastUsedAt).toLocaleString()}`
+    : "No readings received yet";
+
   const curl = `curl -X POST '${endpoint}' \\
   -H 'x-ingest-token: ${token ?? "<your-token>"}' \\
   -H 'content-type: application/json' \\
-  -d '{"readings":[{"kwh":120,"cost":24.5,"meter_label":"Main"}]}'`;
+  -d '{"readings":[{"kwh":120,"cost":24.5,"meter_label":"Main","external_id":"meter-1-2026-06-01T00:00"}]}'`;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -113,6 +118,7 @@ const EnergyIntegrationDialog: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Regenerating immediately invalidates the old token.
             </p>
+            <p className="text-xs text-muted-foreground">{isLoading ? "…" : lastUsed}</p>
           </div>
 
           <div className="space-y-1">
@@ -125,6 +131,10 @@ const EnergyIntegrationDialog: React.FC = () => {
             <pre className="rounded-md bg-muted p-3 text-[11px] overflow-x-auto whitespace-pre-wrap break-all">
               {curl}
             </pre>
+            <p className="text-xs text-muted-foreground">
+              Send an <code className="font-mono">external_id</code> per reading to make retries safe — duplicates
+              are ignored. Up to 120 requests/minute and 1,000 readings per request.
+            </p>
           </div>
         </div>
       </DialogContent>

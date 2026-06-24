@@ -8,11 +8,14 @@ const corsHeaders = {
 };
 
 const MAX_ROWS = 1000;
+// Per-token rate limit: up to this many requests per rolling window.
+const RATE_MAX_PER_WINDOW = 120;
+const RATE_WINDOW_SECONDS = 60;
 
-function json(status: number, body: unknown) {
+function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json", ...extraHeaders },
   });
 }
 
@@ -34,16 +37,26 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { data: tokenRow, error: tokenErr } = await admin
-      .from("energy_ingest_tokens")
-      .select("company_id")
-      .eq("token", token)
-      .maybeSingle();
+    // Atomically validate the token, advance its rate-limit window, and stamp
+    // last_used_at. Empty result => unknown token; allowed=false => over budget.
+    const { data: consumed, error: tokenErr } = await admin.rpc("consume_energy_ingest_token", {
+      _token: token,
+      _max_per_window: RATE_MAX_PER_WINDOW,
+      _window_seconds: RATE_WINDOW_SECONDS,
+    });
     if (tokenErr) {
       console.error("Token lookup error:", tokenErr);
       return json(500, { error: "Lookup failed." });
     }
+    const tokenRow = Array.isArray(consumed) ? consumed[0] : consumed;
     if (!tokenRow?.company_id) return json(403, { error: "Invalid ingest token." });
+    if (!tokenRow.allowed) {
+      return json(
+        429,
+        { error: `Rate limit exceeded (max ${RATE_MAX_PER_WINDOW} requests per ${RATE_WINDOW_SECONDS}s).` },
+        { "Retry-After": String(RATE_WINDOW_SECONDS) },
+      );
+    }
 
     const body = await req.json().catch(() => null);
     // deno-lint-ignore no-explicit-any
@@ -79,6 +92,13 @@ serve(async (req) => {
           : "USD";
       const meter_label =
         typeof r.meter_label === "string" && r.meter_label.trim() ? r.meter_label.trim() : null;
+      // Optional idempotency key: retries with the same external_id dedupe.
+      const external_id =
+        typeof r.external_id === "string" && r.external_id.trim()
+          ? r.external_id.trim()
+          : typeof r.id === "string" && r.id.trim()
+            ? r.id.trim()
+            : null;
 
       rows.push({
         company_id: tokenRow.company_id,
@@ -87,19 +107,31 @@ serve(async (req) => {
         currency,
         reading_date,
         meter_label,
+        external_id,
         source: "integration",
       });
     }
 
     if (rows.length === 0) return json(400, { error: "No valid readings.", errors });
 
-    const { error: insErr } = await admin.from("energy_readings").insert(rows);
+    // Upsert (ignore duplicates) on (company_id, external_id) so retried POSTs are
+    // idempotent. Rows without an external_id carry NULL, which never conflicts.
+    const { data: insertedRows, error: insErr } = await admin
+      .from("energy_readings")
+      .upsert(rows, { onConflict: "company_id,external_id", ignoreDuplicates: true })
+      .select("id");
     if (insErr) {
       console.error("Insert error:", insErr);
       return json(500, { error: "Insert failed." });
     }
 
-    return json(200, { inserted: rows.length, skipped: errors.length, errors });
+    const inserted = insertedRows?.length ?? 0;
+    return json(200, {
+      inserted,
+      deduped: rows.length - inserted,
+      skipped: errors.length,
+      errors,
+    });
   } catch (e) {
     console.error("ingest-energy error:", e);
     return json(500, { error: "Something went wrong." });

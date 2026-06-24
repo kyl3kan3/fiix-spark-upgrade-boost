@@ -305,6 +305,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           currency: string
+          external_id: string | null
           id: string
           kwh: number
           meter_label: string | null
@@ -320,6 +321,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          external_id?: string | null
           id?: string
           kwh: number
           meter_label?: string | null
@@ -335,6 +337,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          external_id?: string | null
           id?: string
           kwh?: number
           meter_label?: string | null
@@ -502,6 +505,9 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          last_used_at: string | null
+          rate_count: number
+          rate_window_start: string | null
           token: string
           updated_at: string
         }
@@ -510,6 +516,9 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          last_used_at?: string | null
+          rate_count?: number
+          rate_window_start?: string | null
           token?: string
           updated_at?: string
         }
@@ -518,6 +527,9 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          last_used_at?: string | null
+          rate_count?: number
+          rate_window_start?: string | null
           token?: string
           updated_at?: string
         }
@@ -2646,6 +2658,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_energy_ingest_token: {
+        Args: {
+          _max_per_window?: number
+          _token: string
+          _window_seconds?: number
+        }
+        Returns: {
+          allowed: boolean
+          company_id: string
+        }[]
+      }
       get_or_create_energy_ingest_token: {
         Args: Record<PropertyKey, never>
         Returns: string
