@@ -10,6 +10,8 @@ export interface IngestReadingInput {
   currency?: unknown;
   reading_date?: unknown;
   meter_label?: unknown;
+  external_id?: unknown;
+  id?: unknown;
 }
 
 export interface NormalizedReading {
@@ -18,6 +20,7 @@ export interface NormalizedReading {
   currency: string;
   reading_date: string; // ISO
   meter_label: string | null;
+  external_id: string | null; // optional idempotency key; retries dedupe on it
 }
 
 export interface IngestResult {
@@ -69,8 +72,22 @@ export function normalizeIngestReadings(body: unknown): IngestResult {
       typeof r.currency === "string" && r.currency.trim() ? r.currency.trim().toUpperCase().slice(0, 3) : "USD";
     const meter_label =
       typeof r.meter_label === "string" && r.meter_label.trim() ? r.meter_label.trim() : null;
+    // Optional idempotency key: accept `external_id`, falling back to `id`.
+    const external_id =
+      typeof r.external_id === "string" && r.external_id.trim()
+        ? r.external_id.trim()
+        : typeof r.id === "string" && r.id.trim()
+          ? r.id.trim()
+          : null;
 
-    rows.push({ kwh, cost: cost !== null && cost >= 0 ? cost : null, currency, reading_date, meter_label });
+    rows.push({
+      kwh,
+      cost: cost !== null && cost >= 0 ? cost : null,
+      currency,
+      reading_date,
+      meter_label,
+      external_id,
+    });
   });
 
   return { rows, errors };

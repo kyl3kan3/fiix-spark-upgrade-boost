@@ -32,6 +32,17 @@ describe("energyIngest.normalizeIngestReadings", () => {
     expect(new Date(rows[0].reading_date).getTime()).toBeGreaterThanOrEqual(before);
   });
 
+  it("captures external_id (or id) as the idempotency key, defaulting to null", () => {
+    const { rows } = normalizeIngestReadings([
+      { kwh: 1, external_id: " meter-1 " },
+      { kwh: 2, id: "abc" },
+      { kwh: 3 },
+    ]);
+    expect(rows[0].external_id).toBe("meter-1");
+    expect(rows[1].external_id).toBe("abc");
+    expect(rows[2].external_id).toBeNull();
+  });
+
   it("rejects empty and oversized batches", () => {
     expect(normalizeIngestReadings([]).errors[0]).toMatch(/no readings/i);
     const big = Array.from({ length: MAX_INGEST_ROWS + 1 }, () => ({ kwh: 1 }));
