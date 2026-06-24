@@ -61,7 +61,9 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide transition-all hover:-translate-y-0.5 active:scale-95 group"
-                onClick={() => navigate("/contact")}
+                onClick={() => {
+                  document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" });
+                }}
               >
                 Talk to us
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
