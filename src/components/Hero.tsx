@@ -33,45 +33,39 @@ const Hero = () => {
             </button>
 
             <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-tight">
-              Facility Excellence,
+              Stop downtime
               <br />
-              Engineered.
+              before it starts.
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto md:mx-0 leading-relaxed">
-              Streamline workflows, reduce downtime, and empower your team with
-              an intelligent CMMS designed for modern facility operations.
-              Precision meets utility.
+              MaintenEase helps industrial and facility teams catch issues before they become expensive interruptions.
             </p>
+
+            <ul className="space-y-2 text-sm text-foreground max-w-xl mx-auto md:mx-0">
+              <li className="flex items-start gap-2 justify-center md:justify-start">
+                <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                Fewer missed requests
+              </li>
+              <li className="flex items-start gap-2 justify-center md:justify-start">
+                <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                Less back and forth
+              </li>
+              <li className="flex items-start gap-2 justify-center md:justify-start">
+                <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                Clear visibility from request to completion
+              </li>
+            </ul>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start pt-2">
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide transition-all hover:-translate-y-0.5 active:scale-95 group"
-                onClick={() => navigate("/auth?signup=true")}
+                onClick={() => navigate("/contact")}
               >
-                Start Free Trial
+                Talk to us
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto bg-background text-primary border border-border hover:border-primary hover:bg-primary/5 px-8 flex items-center justify-center gap-2"
-                onClick={() => navigate("/auth")}
-              >
-                Watch Demo
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-xs text-muted-foreground pt-2">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-success" />
-                No credit card required
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-success" />
-                7-day full access
-              </div>
             </div>
           </div>
 
