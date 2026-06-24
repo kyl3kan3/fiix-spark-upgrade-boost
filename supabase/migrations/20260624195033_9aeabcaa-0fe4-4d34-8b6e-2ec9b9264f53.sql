@@ -1,0 +1,1 @@
+ALTER TABLE public.energy_ingest_tokens ADD COLUMN IF NOT EXISTS last_used_at TIMESTAMP WITH TIME ZONE;
