@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, Zap, TrendingUp } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Menu, LayoutGrid, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -72,54 +72,159 @@ const Hero = () => {
           </div>
 
           {/* Hero visual — simulated dashboard preview */}
-          <div className="flex-1 w-full max-w-lg relative">
-            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative border border-border bg-card">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
-              <div className="relative p-6 h-full flex flex-col justify-between">
-                {/* Top status badge */}
-                <div className="flex justify-end">
-                  <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2 shadow-sm text-xs">
-                    <div className="h-7 w-7 rounded-full bg-success/10 flex items-center justify-center">
-                      <CheckCircle2 className="h-4 w-4 text-success" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-foreground text-[11px]">System Status</div>
-                      <div className="text-success font-medium text-[10px]">Optimal (99.9%)</div>
-                    </div>
+          <div className="flex-1 w-full max-w-xl relative">
+            <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-border bg-card flex flex-col">
+              {/* Top bar */}
+              <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-card shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 bg-primary rounded flex items-center justify-center">
+                    <div className="w-3.5 h-3.5 border-2 border-primary-foreground rounded-sm" />
                   </div>
+                  <span className="font-headline text-primary text-sm font-bold">
+                    MaintenEase
+                    <span className="text-[10px] font-sans font-medium text-muted-foreground ml-1.5 italic">v4.2</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="px-2 py-0.5 bg-success/10 text-success text-[10px] font-semibold rounded-full border border-success/20 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
+                    System Optimal
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-muted border border-border" />
+                </div>
+              </div>
+
+              {/* Body: sidebar + grid */}
+              <div className="flex-1 flex overflow-hidden min-h-0">
+                {/* Sidebar */}
+                <div className="w-12 border-r border-border bg-muted/40 flex flex-col items-center py-4 gap-4 shrink-0">
+                  <div className="w-8 h-8 bg-primary/10 text-primary rounded-md flex items-center justify-center">
+                    <Menu className="w-4 h-4" />
+                  </div>
+                  <LayoutGrid className="w-4 h-4 text-muted-foreground" />
+                  <BarChart3 className="w-4 h-4 text-muted-foreground" />
                 </div>
 
-                {/* Simulated chart bars */}
-                <div className="flex gap-2 w-full h-20 items-end opacity-80 px-2">
-                  {[40, 60, 80, 50, 100, 70, 55].map((h, i) => (
+                {/* Grid */}
+                <div className="flex-1 p-3 grid grid-cols-12 grid-rows-6 gap-2 bg-muted/20 min-h-0">
+                  {/* KPI row */}
+                  {[
+                    { l: "Active WOs", v: "142", d: "+12%", c: "text-success" },
+                    { l: "MTBF Avg", v: "842h", d: "-2%", c: "text-warning" },
+                    { l: "Compliance", v: "98.4%", d: "Stable", c: "text-success" },
+                  ].map((k) => (
                     <div
-                      key={i}
-                      className="flex-1 rounded-t-sm"
-                      style={{
-                        height: `${h}%`,
-                        background: i === 4 ? "hsl(var(--primary))" : "hsl(var(--muted))",
-                      }}
-                    />
+                      key={k.l}
+                      className="col-span-4 row-span-1 bg-card p-2 rounded-md border border-border flex flex-col justify-center"
+                    >
+                      <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-wider">
+                        {k.l}
+                      </span>
+                      <div className="flex items-end gap-1.5">
+                        <span className="text-lg font-bold text-primary leading-none">{k.v}</span>
+                        <span className={`text-[9px] font-medium mb-0.5 ${k.c}`}>{k.d}</span>
+                      </div>
+                    </div>
                   ))}
-                </div>
 
-                {/* Bottom work orders summary */}
-                <div className="bg-background/90 backdrop-blur-sm p-4 rounded-lg border border-border shadow-sm">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-semibold text-foreground">
-                      Weekly Work Orders
-                    </span>
-                    <TrendingUp className="h-4 w-4 text-primary" />
+                  {/* Chart */}
+                  <div className="col-span-8 row-span-3 bg-card p-3 rounded-md border border-border flex flex-col">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="text-[10px] font-bold text-primary">Downtime Prevention</h3>
+                      <div className="flex gap-2">
+                        <div className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          <span className="text-[8px] text-muted-foreground">Predicted</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/30" />
+                          <span className="text-[8px] text-muted-foreground">Actual</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 flex items-end justify-between gap-1.5 px-1 pb-1 min-h-0">
+                      {[
+                        [55, 70],
+                        [70, 85],
+                        [45, 60],
+                        [90, 100],
+                        [75, 90],
+                        [35, 45],
+                      ].map(([a, b], i) => (
+                        <div key={i} className="flex-1 flex items-end justify-center gap-0.5 h-full">
+                          <div
+                            className="w-full bg-primary/25 rounded-t-sm"
+                            style={{ height: `${a}%` }}
+                          />
+                          <div
+                            className="w-full bg-primary rounded-t-sm"
+                            style={{ height: `${b}%` }}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden flex">
-                    <div className="h-full bg-primary w-[70%]" />
-                    <div className="h-full bg-warning w-[20%]" />
-                    <div className="h-full bg-destructive w-[10%]" />
+
+                  {/* Priority breakdown */}
+                  <div className="col-span-4 row-span-3 bg-card p-3 rounded-md border border-border flex flex-col">
+                    <h3 className="text-[10px] font-bold text-primary mb-2">Priority</h3>
+                    <div className="space-y-2 flex-1 flex flex-col justify-center">
+                      {[
+                        { l: "Critical", v: 12, c: "bg-destructive", t: "text-destructive" },
+                        { l: "Preventive", v: 68, c: "bg-primary", t: "text-primary" },
+                        { l: "Inspection", v: 20, c: "bg-primary/40", t: "text-primary/70" },
+                      ].map((p) => (
+                        <div key={p.l}>
+                          <div className="flex justify-between text-[9px] mb-1">
+                            <span className="text-muted-foreground">{p.l}</span>
+                            <span className={`font-bold ${p.t}`}>{p.v}%</span>
+                          </div>
+                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className={`${p.c} h-full`} style={{ width: `${p.v}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex justify-between mt-1.5 text-[10px] text-muted-foreground">
-                    <span>Completed (70%)</span>
-                    <span>Pending (20%)</span>
-                    <span>Overdue (10%)</span>
+
+                  {/* High priority assets */}
+                  <div className="col-span-12 row-span-2 bg-card rounded-md border border-border overflow-hidden flex flex-col">
+                    <div className="bg-muted/40 px-3 py-1.5 border-b border-border flex justify-between items-center">
+                      <h3 className="text-[9px] font-bold text-primary uppercase tracking-wide">
+                        High-Priority Assets
+                      </h3>
+                      <span className="text-[8px] text-primary font-semibold">View All</span>
+                    </div>
+                    <div className="flex-1 grid grid-cols-2 gap-px bg-border min-h-0">
+                      <div className="bg-card p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-7 h-7 rounded bg-destructive/10 flex items-center justify-center text-destructive font-bold text-[9px] shrink-0">
+                            P1
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-bold text-foreground truncate">HVAC Unit #402</p>
+                            <p className="text-[8px] text-muted-foreground truncate">Bearing failure 48h</p>
+                          </div>
+                        </div>
+                        <div className="px-1.5 py-0.5 bg-warning/10 text-warning text-[8px] rounded border border-warning/20 shrink-0">
+                          Scheduled
+                        </div>
+                      </div>
+                      <div className="bg-card p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-7 h-7 rounded bg-primary/10 flex items-center justify-center text-primary font-bold text-[9px] shrink-0">
+                            P2
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-bold text-foreground truncate">Conveyor B-12</p>
+                            <p className="text-[8px] text-muted-foreground truncate">Routine inspection</p>
+                          </div>
+                        </div>
+                        <div className="px-1.5 py-0.5 bg-success/10 text-success text-[8px] rounded border border-success/20 shrink-0">
+                          In Progress
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
