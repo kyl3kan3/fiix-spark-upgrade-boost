@@ -932,6 +932,8 @@ export type Database = {
           created_by: string | null
           id: string
           last_used_at: string | null
+          rate_count: number
+          rate_window_start: string | null
           token: string
           updated_at: string
         }
@@ -941,6 +943,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           last_used_at?: string | null
+          rate_count?: number
+          rate_window_start?: string | null
           token?: string
           updated_at?: string
         }
@@ -950,6 +954,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           last_used_at?: string | null
+          rate_count?: number
+          rate_window_start?: string | null
           token?: string
           updated_at?: string
         }
@@ -971,6 +977,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           currency: string
+          external_id: string | null
           id: string
           kwh: number
           meter_label: string | null
@@ -986,6 +993,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          external_id?: string | null
           id?: string
           kwh: number
           meter_label?: string | null
@@ -1001,6 +1009,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           currency?: string
+          external_id?: string | null
           id?: string
           kwh?: number
           meter_label?: string | null
@@ -2682,6 +2691,17 @@ export type Database = {
       complete_personal_onboarding: {
         Args: { _first_name?: string; _last_name?: string; _phone?: string }
         Returns: Json
+      }
+      consume_energy_ingest_token: {
+        Args: {
+          _max_per_window?: number
+          _token: string
+          _window_seconds?: number
+        }
+        Returns: {
+          allowed: boolean
+          company_id: string
+        }[]
       }
       delete_email: {
         Args: { message_id: number; queue_name: string }
