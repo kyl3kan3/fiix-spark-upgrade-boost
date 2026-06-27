@@ -40,16 +40,28 @@ const SetAdminUser: React.FC<SetAdminUserProps> = ({ email }) => {
  const checkCurrentRole = async () => {
  try {
  setIsChecking(true);
- const { data, error } = await supabase
- .from('profiles')
- .select('role')
- .eq('email', currentUserEmail)
- .maybeSingle();
-
- if (error) throw error;
-
- setCurrentRole(data?.role || null);
- logger.log(`Current role for ${currentUserEmail}: ${data?.role}`);
+        // Authoritative role lookup: join profiles -> user_roles. Never trust profiles.role.
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', currentUserEmail)
+          .maybeSingle();
+        if (profileError) throw profileError;
+        if (!profile?.id) {
+          setCurrentRole(null);
+          return;
+        }
+        const { data: roleRows, error: rolesError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', profile.id);
+        if (rolesError) throw rolesError;
+        const roles = (roleRows ?? []).map((r) => String(r.role));
+        const effective = roles.includes('administrator')
+          ? 'administrator'
+          : roles[0] ?? null;
+        setCurrentRole(effective);
+        logger.log(`Current role for ${currentUserEmail}: ${effective}`);
  } catch (error) {
  console.error("Error checking role:", error);
  setCurrentRole(null);
