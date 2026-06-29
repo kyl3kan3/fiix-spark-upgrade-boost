@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// Keep these claims consistent with the canonical trial terms shown on
+// PricingPage.tsx and the TrialBanner: a 7-day trial that requires a card and
+// auto-charges on day 8 unless cancelled. Do not claim "no card required" here.
 const features = [
- "Free 7-day trial",
- "No credit card required",
- "Easy self-onboarding",
- "Unlimited users during trial"
+ "7-day free trial on every plan",
+ "Card required — cancel before day 8, no charge",
+ "Free onboarding & data import",
+ "Cancel or change plans anytime"
 ];
 
 const CTA = () => {
@@ -19,10 +22,10 @@ const CTA = () => {
  <div className="flex flex-col md:flex-row">
  <div className="md:w-1/2 p-8 md:p-16">
  <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-primary-foreground">
- Ready to transform your maintenance operations?
+ Stop paying per seat. Start preventing downtime.
  </h2>
  <p className="text-primary-foreground/80 text-lg mb-8 max-w-lg">
- Join teams that use MaintenEase to reduce downtime, extend equipment life, and make data-driven maintenance decisions.
+ Bring your whole crew onto MaintenEase for one flat price — and catch failures before they become expensive interruptions.
  </p>
  <ul className="mb-10 space-y-3">
  {features.map((feature, index) => (
@@ -66,7 +69,7 @@ const CTA = () => {
  className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold"
  onClick={() => navigate("/auth?signup=true")}
  >
- Contact Sales
+ Start free trial
  </Button>
  </div>
  </div>
