@@ -200,7 +200,7 @@ const Hero = () => {
                       </h3>
                       <span className="text-[8px] text-primary font-semibold">View All</span>
                     </div>
-                    <div className="flex-1 grid grid-cols-2 gap-px bg-border min-h-0">
+                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-px bg-border min-h-0">
                       <div className="bg-card p-2 flex items-center justify-between">
                         <div className="flex items-center gap-2 min-w-0">
                           <div className="w-7 h-7 rounded bg-destructive/10 flex items-center justify-center text-destructive font-bold text-[9px] shrink-0">
