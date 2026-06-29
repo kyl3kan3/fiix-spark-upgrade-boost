@@ -81,7 +81,7 @@ const Navbar = () => {
                 </Link>
                 <Link to="/auth?signup=true">
                   <Button className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide text-xs font-bold px-6">
-                    Get Started
+                    Start free trial
                   </Button>
                 </Link>
               </>
@@ -134,7 +134,7 @@ const Navbar = () => {
                   </Link>
                   <Link to="/auth?signup=true" className="w-full">
                     <Button className="bg-primary text-primary-foreground hover:bg-primary-variant w-full uppercase tracking-wide text-xs font-bold">
-                      Get Started
+                      Start free trial
                     </Button>
                   </Link>
                 </>

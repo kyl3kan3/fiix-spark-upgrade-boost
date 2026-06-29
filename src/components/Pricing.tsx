@@ -53,7 +53,7 @@ const plans = [
 ];
 
 // Keep these claims consistent with PricingPage.tsx and the Stripe checkout
-// flow. The trial requires a card and auto-converts to paid on day 15 unless
+// flow. The trial requires a card and auto-converts to paid on day 8 unless
 // cancelled — say so plainly here instead of contradicting the pricing page.
 const comparison = [
   "7-day free trial on every plan",

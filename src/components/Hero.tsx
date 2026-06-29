@@ -45,15 +45,15 @@ const Hero = () => {
             <ul className="space-y-2 text-sm text-foreground max-w-xl mx-auto md:mx-0">
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                Fewer missed requests
+                One flat price for your whole crew — not $45 per technician
               </li>
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                Less back and forth
+                Predict failures before they cause costly downtime
               </li>
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                Clear visibility from request to completion
+                Free onboarding &amp; data import — live in days, not months
               </li>
             </ul>
 
@@ -61,13 +61,18 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide transition-all hover:-translate-y-0.5 active:scale-95 group"
-                onClick={() => {
-                  document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={() => navigate("/auth?signup=true")}
               >
-                Talk to us
+                Start free trial
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
+              <button
+                type="button"
+                onClick={() => navigate("/pricing")}
+                className="text-sm font-semibold text-primary hover:underline"
+              >
+                See pricing
+              </button>
             </div>
           </div>
 
