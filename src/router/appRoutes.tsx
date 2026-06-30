@@ -24,6 +24,8 @@ const LearnIndex = lazy(() => import("@/pages/LearnIndex"));
 const LearnArticle = lazy(() => import("@/pages/LearnArticle"));
 const SolutionsIndex = lazy(() => import("@/pages/SolutionsIndex"));
 const SolutionPage = lazy(() => import("@/pages/SolutionPage"));
+const CompareIndex = lazy(() => import("@/pages/CompareIndex"));
+const ComparePage = lazy(() => import("@/pages/ComparePage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 
 export const AppRoutes = () => (
@@ -54,6 +56,8 @@ export const AppRoutes = () => (
         <Route path="/learn/:slug" element={<LearnArticle />} />
         <Route path="/solutions" element={<SolutionsIndex />} />
         <Route path="/solutions/:slug" element={<SolutionPage />} />
+        <Route path="/compare" element={<CompareIndex />} />
+        <Route path="/compare/:slug" element={<ComparePage />} />
 
         <Route path="/r/:slug" element={<PublicRequestPortal />} />
 
