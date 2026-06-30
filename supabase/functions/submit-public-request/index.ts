@@ -40,6 +40,7 @@ const BodySchema = z.object({
   contact_phone: z.string().trim().max(40).optional().nullable(),
   photos: z.array(photoUrlSchema).max(6).optional().default([]),
   user_agent: z.string().max(500).optional().nullable(),
+  turnstileToken: z.string().min(1).max(4096),
 });
 
 type Recipient = {
@@ -129,6 +130,33 @@ serve(async (req) => {
     }
 
     const payload = parsed.data;
+
+    // Verify Turnstile CAPTCHA before doing any work to block bot spam.
+    const turnstileSecret = Deno.env.get("TURNSTILE_SECRET_KEY");
+    if (!turnstileSecret) {
+      console.error("TURNSTILE_SECRET_KEY not configured");
+      return new Response(JSON.stringify({ error: "Verification not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "";
+    const tsForm = new URLSearchParams();
+    tsForm.append("secret", turnstileSecret);
+    tsForm.append("response", payload.turnstileToken);
+    if (ip) tsForm.append("remoteip", ip.split(",")[0].trim());
+    const tsRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: tsForm,
+    });
+    const tsData = await tsRes.json().catch(() => ({}));
+    if (!tsData?.success) {
+      return new Response(JSON.stringify({ error: "Verification failed" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data: request, error: insertError } = await admin.from("public_requests").insert({
       company_id: payload.companyId,
       type: payload.type,
