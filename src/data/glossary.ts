@@ -251,6 +251,186 @@ export const glossary: GlossaryTerm[] = [
  ],
  related: ["facility-maintenance", "building-maintenance", "work-order"],
  },
+ {
+ slug: "reactive-maintenance",
+ term: "Reactive Maintenance",
+ short: "Fixing equipment after it has already broken down — the unplanned, run-to-failure work that a maintenance program tries to shrink.",
+ metaTitle: "What is Reactive Maintenance? Definition, Cost & Examples",
+ metaDescription: "Reactive maintenance is repairing equipment after it fails. Learn when it makes sense, what it really costs, and how to shift toward planned work.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "Reactive maintenance — also called breakdown or run-to-failure maintenance — is any repair carried out after an asset has already failed or stopped performing. There is no schedule and no warning: a machine goes down, a work order is raised, and a technician scrambles to fix it. It is the default mode every maintenance team starts in, and the mode a good preventive program is designed to escape.",
+ },
+ {
+ heading: "What reactive maintenance really costs",
+ body: "The repair bill is only part of it. Reactive work also brings unplanned downtime, lost production, emergency overtime, rushed parts ordering at premium prices, and collateral damage when one failed component takes others with it. Industry studies consistently put reactive repairs at three to nine times the cost of the equivalent planned work. The hidden tax is unpredictability — reactive-heavy teams can never plan their week because the week plans them.",
+ },
+ {
+ heading: "When reactive maintenance is the right call",
+ body: "Not every asset deserves a preventive schedule. For cheap, non-critical, easily replaced items — a light fixture, a $20 pump, a redundant component with a standby — running to failure is often the rational choice. The skill is deciding deliberately: reactive maintenance should be a strategy you chose for low-stakes assets, not a condition you are stuck in for critical ones.",
+ },
+ {
+ heading: "How to reduce reactive maintenance",
+ body: "Start by measuring it: a CMMS tags every work order as planned or reactive so you can see the ratio. Then attack the worst offenders — the handful of assets generating most of the emergency calls usually reveal a clear preventive fix. Move those onto schedules, track whether breakdowns drop, and repeat. Most teams start near 80% reactive and work toward the 20–30% that world-class operations sustain.",
+ },
+ ],
+ faqs: [
+ { q: "Is reactive maintenance always bad?", a: "No. For low-cost, non-critical assets it can be the cheapest strategy. It becomes a problem when critical equipment is run to failure by accident rather than by choice." },
+ { q: "How do I know if I have too much reactive maintenance?", a: "Track the planned-vs-reactive ratio in your CMMS. If more than ~30% of your work is unplanned breakdowns, there is room to shift work into preventive schedules." },
+ ],
+ related: ["preventive-maintenance", "predictive-maintenance", "cmms"],
+ },
+ {
+ slug: "predictive-maintenance",
+ term: "Predictive Maintenance",
+ short: "Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.",
+ metaTitle: "What is Predictive Maintenance? Definition & How It Works",
+ metaDescription: "Predictive maintenance uses sensor data to fix equipment just before it fails. Learn how it works, how it differs from preventive maintenance, and where to start.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "Predictive maintenance (PdM) uses real-time condition data to forecast when an asset is likely to fail, so work is performed just in time — late enough to get full life out of components, early enough to avoid the breakdown. Instead of a calendar telling you to act, the equipment itself does, through signals like vibration, temperature, ultrasonic noise, oil particulates, or motor current.",
+ },
+ {
+ heading: "How predictive maintenance works",
+ body: "It runs in three layers. First, sensors (or manual readings) capture a condition signal over time. Second, a baseline of normal behavior is established. Third, when readings drift outside normal — a bearing's vibration climbing, a motor drawing more current — the system flags a developing fault and generates a work order with lead time to plan parts and labor. Modern CMMS platforms increasingly fold in AI models that learn each asset's failure signature from its own history.",
+ },
+ {
+ heading: "Predictive vs preventive maintenance",
+ body: "Preventive maintenance acts on a fixed schedule whether the asset needs it or not, which means some work is done too early (wasting component life) and some failures still slip through between intervals. Predictive maintenance acts only on evidence, so it cuts both unnecessary work and surprise breakdowns. The trade-off is setup: PdM needs sensors or readings and a baseline, where preventive needs only a calendar.",
+ },
+ {
+ heading: "Where to start with predictive maintenance",
+ body: "Begin with your most critical, most expensive-to-fail assets — the ones whose downtime hurts most. Pick one measurable signal (vibration on rotating equipment is the classic starting point), capture it regularly, and watch for trend changes. You do not need a full sensor rollout to start; even routine manual readings logged in a CMMS turn into a predictive trend over time.",
+ },
+ ],
+ faqs: [
+ { q: "Do I need expensive sensors for predictive maintenance?", a: "Not to start. Manual condition readings (temperature, vibration pens, oil samples) logged consistently in a CMMS build a usable trend. Permanent sensors pay off on the most critical assets." },
+ { q: "Is predictive maintenance the same as condition-based maintenance?", a: "They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models." },
+ ],
+ related: ["preventive-maintenance", "condition-based-maintenance", "reactive-maintenance"],
+ },
+ {
+ slug: "corrective-maintenance",
+ term: "Corrective Maintenance",
+ short: "Planned repair work that fixes a known defect found during an inspection or PM — before it becomes a breakdown.",
+ metaTitle: "What is Corrective Maintenance? Definition & Examples",
+ metaDescription: "Corrective maintenance repairs a fault that has been identified but hasn't caused failure yet. Learn how it differs from reactive and preventive maintenance.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "Corrective maintenance is work that restores a failed or failing asset to working order. Crucially, in modern usage it usually refers to planned corrective work: a technician spots a worn belt, a small leak, or an out-of-spec reading during an inspection or preventive task, raises a work order, and the fix is scheduled before the asset actually breaks down.",
+ },
+ {
+ heading: "Corrective vs reactive maintenance",
+ body: "The terms are often confused. Reactive (breakdown) maintenance happens after an unexpected failure, under time pressure. Corrective maintenance is the planned cousin: the defect is known, parts and labor are organized, and the work is scheduled into the normal flow. Both fix a problem, but corrective work is calm and cheap where reactive work is chaotic and expensive.",
+ },
+ {
+ heading: "Where corrective maintenance comes from",
+ body: "Most corrective work is generated by other maintenance activity. A preventive task or inspection surfaces a defect that is not yet a failure — this is exactly why inspections pay off. The finding becomes a corrective work order, ideally linked to the same asset so its history shows the full chain from detection to repair.",
+ },
+ {
+ heading: "Tracking corrective maintenance well",
+ body: "Tag corrective work orders distinctly from preventive and reactive so reporting stays honest. A healthy program shows preventive inspections feeding a steady stream of planned corrective fixes, with reactive breakdowns shrinking over time. If corrective work is rare and reactive work is high, your inspections are probably not catching defects early enough.",
+ },
+ ],
+ faqs: [
+ { q: "Is corrective maintenance planned or unplanned?", a: "Modern usage treats it as planned: the defect is already known (found during a PM or inspection) and the repair is scheduled, unlike a reactive breakdown." },
+ { q: "What triggers corrective maintenance?", a: "Usually a preventive task or inspection that finds a developing fault — a worn part, a leak, an out-of-tolerance reading — which becomes a scheduled corrective work order." },
+ ],
+ related: ["preventive-maintenance", "reactive-maintenance", "work-order"],
+ },
+ {
+ slug: "condition-based-maintenance",
+ term: "Condition-Based Maintenance",
+ short: "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
+ metaTitle: "What is Condition-Based Maintenance (CBM)? A Plain Guide",
+ metaDescription: "Condition-based maintenance triggers work when a measured condition crosses a threshold. Learn how CBM works and how it compares to preventive and predictive maintenance.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "Condition-based maintenance (CBM) triggers service based on the actual, measured condition of an asset rather than a calendar or runtime interval. A monitored parameter — bearing temperature, vibration amplitude, oil cleanliness, differential pressure across a filter — is compared against a defined limit, and when it crosses that limit, a work order is raised. The asset is serviced because it shows it needs it, not because a schedule said so.",
+ },
+ {
+ heading: "How condition-based maintenance works",
+ body: "First, choose a condition that reliably indicates wear or impending failure for that asset class. Second, set a threshold based on manufacturer specs and your own history. Third, monitor — continuously with sensors, or periodically with manual readings logged in a CMMS. When the reading breaches the threshold, the system generates the work. The art is choosing thresholds that fire early enough to plan but not so early that you waste component life.",
+ },
+ {
+ heading: "CBM vs preventive vs predictive",
+ body: "Preventive maintenance acts on time. Condition-based maintenance acts on a present-moment reading crossing a line. Predictive maintenance goes one step further, using trends and models to forecast when the line will be crossed in the future. CBM is often the practical middle ground: more efficient than fixed schedules, far simpler to implement than full predictive analytics.",
+ },
+ {
+ heading: "Getting started with CBM",
+ body: "Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Decide the threshold, log readings on a regular route, and let your CMMS raise the work order when the limit is hit. As confidence grows, add parameters and assets. Manual CBM with a clipboard and a CMMS is a legitimate, low-cost place to begin.",
+ },
+ ],
+ faqs: [
+ { q: "Does condition-based maintenance require sensors?", a: "Not necessarily. Permanent sensors enable continuous monitoring, but periodic manual readings (temperature, vibration, pressure) logged in a CMMS are a valid, low-cost form of CBM." },
+ { q: "How is CBM different from predictive maintenance?", a: "CBM reacts when a reading crosses a threshold now. Predictive maintenance forecasts when that threshold will be crossed in the future, usually with trend analysis or models." },
+ ],
+ related: ["predictive-maintenance", "preventive-maintenance", "mtbf"],
+ },
+ {
+ slug: "mtbf",
+ term: "MTBF (Mean Time Between Failures)",
+ short: "The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.",
+ metaTitle: "What is MTBF (Mean Time Between Failures)? Formula & Examples",
+ metaDescription: "MTBF measures the average time between failures of a repairable asset. Learn the formula, how to use it, and how it differs from MTTR and MTTF.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "MTBF stands for Mean Time Between Failures. It is the average amount of operating time a repairable asset runs between one failure and the next. A higher MTBF means a more reliable asset. It is one of the most widely used reliability metrics in maintenance and is most useful for comparing assets, tracking whether reliability is improving, and prioritizing where to focus preventive effort.",
+ },
+ {
+ heading: "MTBF formula",
+ body: "MTBF = total operating time ÷ number of failures over that period. For example, if a pump ran for 1,200 hours and failed 3 times, its MTBF is 400 hours. The number is only as good as the data behind it, which is why teams track failures in a CMMS — accurate failure counts and runtime are what make the metric trustworthy.",
+ },
+ {
+ heading: "MTBF vs MTTR vs MTTF",
+ body: "MTBF measures reliability — how long an asset runs between failures. MTTR (Mean Time To Repair) measures maintainability — how long it takes to get it running again. The two together describe availability. MTTF (Mean Time To Failure) is used for non-repairable items that are replaced rather than fixed; MTBF is for repairable assets.",
+ },
+ {
+ heading: "How to use MTBF in practice",
+ body: "Track MTBF per asset and watch the trend. A falling MTBF flags an asset that is degrading and may need a tighter preventive schedule, a rebuild, or replacement. Comparing MTBF across similar assets surfaces the bad actors that deserve attention first. Avoid over-reading a single number — MTBF is an average, so it is most meaningful as a trend over time on assets with enough failure history.",
+ },
+ ],
+ faqs: [
+ { q: "What is a good MTBF?", a: "There is no universal target — it depends entirely on the asset and industry. MTBF is most useful as a trend (is it improving?) and as a way to compare similar assets, not as an absolute score." },
+ { q: "What's the difference between MTBF and MTTR?", a: "MTBF measures how long an asset runs between failures (reliability); MTTR measures how long it takes to repair after a failure (maintainability). Together they drive availability." },
+ ],
+ related: ["mttr", "preventive-maintenance", "cmms"],
+ },
+ {
+ slug: "mttr",
+ term: "MTTR (Mean Time To Repair)",
+ short: "The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.",
+ metaTitle: "What is MTTR (Mean Time To Repair)? Formula & How to Improve It",
+ metaDescription: "MTTR measures the average time to repair a failed asset. Learn the formula, what drives it, and practical ways to bring it down.",
+ sections: [
+ {
+ heading: "Definition",
+ body: "MTTR stands for Mean Time To Repair: the average time it takes to restore a failed asset to working condition, measured from the moment it goes down to the moment it is back in service. It captures everything in between — diagnosis, waiting for parts, the actual repair, testing, and handback. A lower MTTR means faster recovery and less downtime.",
+ },
+ {
+ heading: "MTTR formula",
+ body: "MTTR = total repair time ÷ number of repairs over a period. If a line suffered 4 failures last month and the total time-to-restore across them was 8 hours, MTTR is 2 hours. As with MTBF, the metric is only as reliable as the timestamps behind it — recording when work orders open and close in a CMMS is what makes MTTR measurable.",
+ },
+ {
+ heading: "What drives MTTR up",
+ body: "The repair itself is often the smallest slice. The big drivers are usually waiting — for a technician to be notified, for the right parts to be on hand, for documentation or a manual, for an approval. That is why MTTR is as much a logistics and process metric as a wrench-time one: faster notification, better spare-parts stocking, and clear procedures cut it more than working faster ever could.",
+ },
+ {
+ heading: "How to reduce MTTR",
+ body: "Tighten notification so the right technician knows immediately. Stock critical spares so repairs don't stall waiting for parts. Attach manuals, photos, and procedures to each asset so diagnosis is fast. Capture failure history so recurring problems have a known fix. A CMMS supports all four — mobile alerts, parts tracking, asset documentation, and history — which is why MTTR usually falls once a team moves off spreadsheets.",
+ },
+ ],
+ faqs: [
+ { q: "What is included in MTTR?", a: "Everything from failure to restored service: detection, diagnosis, waiting for parts or approvals, the repair, and testing. Much of MTTR is waiting, not wrench time." },
+ { q: "How can I lower MTTR?", a: "Speed up notification, stock critical spare parts, attach procedures and history to each asset, and track recurring failures — all of which a CMMS makes easier." },
+ ],
+ related: ["mtbf", "work-order", "cmms"],
+ },
 ];
 
 export const getGlossaryTerm = (slug: string) =>

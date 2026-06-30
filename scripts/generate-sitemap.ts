@@ -4,6 +4,7 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
+import { comparisons } from "../src/data/comparisons";
 
 const BASE_URL = "https://maintenease.com";
 
@@ -42,7 +43,17 @@ const learnEntries: SitemapEntry[] = glossary.map((g) => ({
   priority: "0.7",
 }));
 
-const entries = [...staticEntries, ...solutionEntries, ...learnEntries];
+const compareEntries: SitemapEntry[] = [
+  { path: "/compare", lastmod: today, changefreq: "monthly", priority: "0.8" },
+  ...comparisons.map((c) => ({
+    path: `/compare/${c.slug}`,
+    lastmod: today,
+    changefreq: "monthly" as const,
+    priority: "0.8",
+  })),
+];
+
+const entries = [...staticEntries, ...solutionEntries, ...learnEntries, ...compareEntries];
 
 function render(entries: SitemapEntry[]): string {
   const urls = entries.map((e) =>
