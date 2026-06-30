@@ -134,6 +134,11 @@ const FlatFeeAdvantage = () => {
             See full pricing
           </Button>
         </div>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          <button onClick={() => navigate("/compare")} className="font-medium text-primary hover:underline">
+            Compare MaintenEase to UpKeep, Fiix, MaintainX &amp; Limble →
+          </button>
+        </p>
       </div>
     </section>
   );

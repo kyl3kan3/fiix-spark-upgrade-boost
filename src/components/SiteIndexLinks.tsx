@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
+import { comparisons } from "@/data/comparisons";
 
 /**
  * Internal-link block rendered on the homepage so Googlebot can discover
@@ -14,7 +15,7 @@ const SiteIndexLinks = () => {
  className="border-t border-border bg-muted/30 py-16"
  >
  <div className="container mx-auto px-4">
- <div className="grid gap-12 md:grid-cols-2">
+ <div className="grid gap-12 md:grid-cols-3">
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
  Solutions
@@ -51,6 +52,27 @@ const SiteIndexLinks = () => {
  className="text-sm text-foreground/80 hover:text-primary hover:underline"
  >
  {g.term.split(" (")[0]}
+ </Link>
+ </li>
+ ))}
+ </ul>
+ </div>
+
+ <div>
+ <h2 className="mb-4 text-2xl font-semibold text-foreground">
+ Compare
+ </h2>
+ <p className="mb-6 text-sm text-muted-foreground">
+ See how MaintenEase stacks up against other CMMS platforms.
+ </p>
+ <ul className="grid gap-2 sm:grid-cols-2">
+ {comparisons.map((c) => (
+ <li key={c.slug}>
+ <Link
+ to={`/compare/${c.slug}`}
+ className="text-sm text-foreground/80 hover:text-primary hover:underline"
+ >
+ {c.h1}
  </Link>
  </li>
  ))}
