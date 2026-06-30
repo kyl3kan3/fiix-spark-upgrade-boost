@@ -7,6 +7,8 @@ project_id = "wwgljhpuulhljumrhscg"
     verify_jwt = false
   [functions.google-ads-oauth-callback]
     verify_jwt = false
+  [functions.google-analytics-oauth-callback]
+    verify_jwt = false
   [functions.process-email-queue]
     verify_jwt = true
 
