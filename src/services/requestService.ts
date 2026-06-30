@@ -48,6 +48,7 @@ export interface SubmitPublicRequestInput {
   contact_phone: string | null;
   photos: string[];
   user_agent: string | null;
+  turnstileToken: string;
 }
 
 /**
