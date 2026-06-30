@@ -1194,6 +1194,69 @@ export type Database = {
         }
         Relationships: []
       }
+      google_analytics_connections: {
+        Row: {
+          access_token: string | null
+          account_display_name: string | null
+          company_id: string | null
+          connected_by: string
+          created_at: string
+          id: string
+          property_display_name: string | null
+          property_id: string | null
+          refresh_token: string
+          scope: string | null
+          token_expires_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          account_display_name?: string | null
+          company_id?: string | null
+          connected_by: string
+          created_at?: string
+          id?: string
+          property_display_name?: string | null
+          property_id?: string | null
+          refresh_token: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          account_display_name?: string | null
+          company_id?: string | null
+          connected_by?: string
+          created_at?: string
+          id?: string
+          property_display_name?: string | null
+          property_id?: string | null
+          refresh_token?: string
+          scope?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      google_analytics_oauth_states: {
+        Row: {
+          created_at: string
+          state: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          state: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           company_id: string | null
