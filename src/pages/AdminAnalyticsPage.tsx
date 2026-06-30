@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import GoogleAdsPanel from "@/components/admin/GoogleAdsPanel";
+import GoogleAnalyticsPanel from "@/components/admin/GoogleAnalyticsPanel";
 import { useAdminAnalytics } from "@/components/admin/analytics/useAdminAnalytics";
 import { AnalyticsHeader } from "@/components/admin/analytics/AnalyticsHeader";
 import { AnalyticsKpis } from "@/components/admin/analytics/AnalyticsKpis";
@@ -75,7 +76,8 @@ const AdminAnalyticsPage: React.FC = () => {
           </>
         )}
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-6">
+          <GoogleAnalyticsPanel />
           <GoogleAdsPanel />
         </div>
       </div>
