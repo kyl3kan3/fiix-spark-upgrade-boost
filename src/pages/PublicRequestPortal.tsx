@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import TurnstileWidget from "@/components/auth/TurnstileWidget";
 
 type Company = PublicPortalCompany;
 
@@ -34,6 +35,7 @@ const PublicRequestPortal = () => {
  const [submitted, setSubmitted] = useState(false);
  const [submitting, setSubmitting] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
  const [form, setForm] = useState({
  title: "", description: "", location_text: "",
  contact_name: "", contact_email: "", contact_phone: "",
@@ -67,6 +69,10 @@ const PublicRequestPortal = () => {
  const onSubmit = async (e: React.FormEvent) => {
  e.preventDefault();
  if (!company) return;
+ if (!turnstileToken) {
+   toast.error("Please complete the verification");
+   return;
+ }
  const parsed = schema.safeParse(form);
  if (!parsed.success) {
  const first = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0];
@@ -90,15 +96,18 @@ const PublicRequestPortal = () => {
         contact_phone: parsed.data.contact_phone || null,
         photos: uploadedUrls,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
+        turnstileToken,
       });
     } catch {
       setSubmitting(false);
+      setTurnstileToken(null);
       toast.error("Couldn't submit — please try again");
       return;
     }
     setSubmitting(false);
     setSubmitted(true);
     setPhotos([]);
+    setTurnstileToken(null);
   };
 
  if (loading) {
@@ -260,6 +269,12 @@ const PublicRequestPortal = () => {
  className={type === "urgent" ? "w-full bg-destructive hover:bg-destructive" : "w-full"}>
  {submitting ? "Sending…" : type === "urgent" ? "Send urgent alert" : "Submit request"}
  </Button>
+             <div className="flex justify-center">
+               <TurnstileWidget
+                 onVerify={(t) => setTurnstileToken(t)}
+                 onExpire={() => setTurnstileToken(null)}
+               />
+             </div>
  <p className="text-xs text-muted-foreground text-center">
  Powered by <Link to="/" className="underline hover:text-foreground">MaintenEase</Link>
  </p>
