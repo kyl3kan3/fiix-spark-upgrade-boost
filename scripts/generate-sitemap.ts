@@ -45,6 +45,7 @@ const learnEntries: SitemapEntry[] = glossary.map((g) => ({
 
 const compareEntries: SitemapEntry[] = [
   { path: "/compare", lastmod: today, changefreq: "monthly", priority: "0.8" },
+  { path: "/cmms-cost-calculator", lastmod: today, changefreq: "monthly", priority: "0.8" },
   ...comparisons.map((c) => ({
     path: `/compare/${c.slug}`,
     lastmod: today,

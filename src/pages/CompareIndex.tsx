@@ -52,6 +52,20 @@ const CompareIndex = () => {
             </Link>
           ))}
         </div>
+        <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Not sure which numbers apply to you?</h2>
+            <p className="text-sm text-muted-foreground">
+              Slide to your team size and see every vendor's monthly bill side by side — breakevens included.
+            </p>
+          </div>
+          <Link
+            to="/cmms-cost-calculator"
+            className="shrink-0 font-semibold text-primary hover:underline"
+          >
+            Open the cost calculator →
+          </Link>
+        </div>
         <div className="mt-12 flex flex-col items-start gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-foreground">Share these comparisons</p>
           <ShareButtons
