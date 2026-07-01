@@ -138,6 +138,10 @@ const FlatFeeAdvantage = () => {
           <button onClick={() => navigate("/compare")} className="font-medium text-primary hover:underline">
             Compare MaintenEase to UpKeep, Fiix, MaintainX &amp; Limble →
           </button>
+          <span className="mx-2 text-border">|</span>
+          <button onClick={() => navigate("/cmms-cost-calculator")} className="font-medium text-primary hover:underline">
+            Run the numbers for your team size →
+          </button>
         </p>
       </div>
     </section>
