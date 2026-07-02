@@ -2,7 +2,7 @@ import React from "react";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logger } from "@/lib/logger";
-import { Sentry } from "@/lib/sentry";
+import { captureBoundaryError } from "@/lib/sentry";
 
 interface Props {
   children: React.ReactNode;
@@ -30,11 +30,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     logger.error("[ErrorBoundary]", error, info.componentStack);
-    const eventId = Sentry.captureException(error, {
-      contexts: { react: { componentStack: info.componentStack } },
-      tags: { source: "react_error_boundary" },
+    // Sentry loads lazily after first paint; the event id arrives async.
+    void captureBoundaryError(error, info.componentStack).then((eventId) => {
+      if (eventId) this.setState({ eventId });
     });
-    this.setState({ eventId });
   }
 
   private handleRetry = () => {

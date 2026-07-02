@@ -17,7 +17,7 @@ export const PAGE_MAX_WIDTH = "max-w-[1400px]";
 
 const PageContainer: React.FC<PageContainerProps> = ({ children, className, ...rest }) => (
   <div
-    className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 py-6", className)}
+    className={cn("mx-auto w-full page-enter", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 py-6", className)}
     {...rest}
   >
     {children}

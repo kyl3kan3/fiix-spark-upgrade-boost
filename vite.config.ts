@@ -26,6 +26,22 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       sourcemap: true,
+      rollupOptions: {
+        output: {
+          // Split long-lived vendor code out of the entry chunk so it caches
+          // across deploys and downloads in parallel. App code changes every
+          // deploy; react/supabase change on dependency bumps only.
+          manualChunks: {
+            "vendor-react": [
+              "react",
+              "react-dom",
+              "react-router-dom",
+              "@tanstack/react-query",
+            ],
+            "vendor-supabase": ["@supabase/supabase-js"],
+          },
+        },
+      },
     },
     define: {
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(supabaseUrl),
