@@ -45,7 +45,7 @@ const Hero = () => {
             <ul className="space-y-2 text-sm text-foreground max-w-xl mx-auto md:mx-0">
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                One flat price for your whole crew — not $45 per technician
+                One flat price from $49/mo for your whole crew — not $45 per technician
               </li>
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
@@ -71,7 +71,7 @@ const Hero = () => {
                 onClick={() => navigate("/pricing")}
                 className="text-sm font-semibold text-primary hover:underline"
               >
-                See pricing
+                See pricing — plans from $49/mo
               </button>
             </div>
           </div>

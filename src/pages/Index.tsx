@@ -2,7 +2,10 @@
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import ProblemSolved from "@/components/ProblemSolved";
 import Features from "@/components/Features";
+import LocalBusinesses from "@/components/LocalBusinesses";
+import WhyDifferent from "@/components/WhyDifferent";
 import RequestPortalSection from "@/components/RequestPortalSection";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
@@ -18,7 +21,7 @@ const Index = () => {
  <div className="min-h-screen flex flex-col bg-background text-foreground">
  <Helmet>
  <title>MaintenEase — Maintenance Management Software</title>
- <meta name="description" content="MaintenEase helps maintenance teams organize assets, schedule work orders, run inspections, and optimize operations from one modern platform." />
+ <meta name="description" content="MaintenEase helps local businesses and facility teams organize assets, schedule work orders, and predict failures before they cause downtime — one flat price from $49/mo." />
  <link rel="canonical" href="https://maintenease.com/" />
  <meta property="og:title" content="MaintenEase — Maintenance Management Software" />
  <meta property="og:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
@@ -34,9 +37,12 @@ const Index = () => {
  <Navbar />
  <main className="flex-1">
  <Hero />
+ <ProblemSolved />
  <Features />
+ <LocalBusinesses />
  <RequestPortalSection />
  <Testimonials />
+ <WhyDifferent />
  <FlatFeeAdvantage />
  <Pricing />
  <CTA />
