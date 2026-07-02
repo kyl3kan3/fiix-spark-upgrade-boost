@@ -8,6 +8,8 @@ import { useDashboardData } from "@/hooks/dashboard/useDashboardData";
 import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 import { TodaySnapshot } from "@/components/dashboard/snapshot/TodaySnapshot";
+import { RecentWorkOrders } from "@/components/dashboard/snapshot/RecentWorkOrders";
+import { GetStartedPanel } from "@/components/dashboard/snapshot/GetStartedPanel";
 
 const Dashboard: React.FC = () => {
   const { userName, companyName, isLoading } = useDashboardData();
@@ -85,8 +87,15 @@ const Dashboard: React.FC = () => {
           totalTechs={totalTechs}
           highPriorityPendingJobs={highPriorityPendingJobs}
           pendingAssetLabels={pendingAssetLabels}
+          members={teamMembers}
           isLoading={workOrdersLoading}
         />
+
+        {!workOrdersLoading && workOrders.length === 0 ? (
+          <GetStartedPanel />
+        ) : (
+          <RecentWorkOrders workOrders={workOrders} />
+        )}
 
         <section className="mt-8">
           <h3 className="font-headline text-xl text-foreground mb-4">

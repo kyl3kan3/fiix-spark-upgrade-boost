@@ -9,6 +9,13 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
+export interface SnapshotMember {
+  id: string;
+  name: string;
+  avatar: string | null;
+  online: boolean;
+}
+
 interface TodaySnapshotProps {
   completionRate: number | null;
   pendingJobs: number;
@@ -16,6 +23,7 @@ interface TodaySnapshotProps {
   pendingAssetLabels?: string[];
   activeTechs: number;
   totalTechs: number;
+  members?: SnapshotMember[];
   isLoading?: boolean;
 }
 
@@ -33,6 +41,7 @@ export function TodaySnapshot({
   totalTechs,
   highPriorityPendingJobs = 0,
   pendingAssetLabels = [],
+  members = [],
   isLoading,
 }: TodaySnapshotProps) {
   return (
@@ -48,7 +57,7 @@ export function TodaySnapshot({
           assetLabels={pendingAssetLabels}
           isLoading={isLoading}
         />
-        <ActiveTechsCard active={activeTechs} total={totalTechs} />
+        <ActiveTechsCard active={activeTechs} total={totalTechs} members={members} />
       </div>
     </section>
   );
@@ -88,7 +97,7 @@ function CompletionCard({
   rate: number | null;
   isLoading?: boolean;
 }) {
-  const display = rate === null ? (isLoading ? "—" : "n/a") : `${rate}%`;
+  const display = rate === null ? "—" : `${rate}%`;
 
   return (
     <Card>
@@ -105,10 +114,16 @@ function CompletionCard({
         <ProgressRing percent={rate ?? 0} color="hsl(var(--success))" />
       </div>
       <div className="mt-auto pt-4 border-t border-border/70 z-10">
-        <p className="text-xs text-success flex items-center gap-1 font-medium">
-          <TrendingUp className="h-3.5 w-3.5" />
-          Last 30 days
-        </p>
+        {rate === null ? (
+          <p className="text-xs text-muted-foreground font-medium">
+            {isLoading ? "Loading…" : "No work orders yet"}
+          </p>
+        ) : (
+          <p className="text-xs text-success flex items-center gap-1 font-medium">
+            <TrendingUp className="h-3.5 w-3.5" />
+            Last 30 days
+          </p>
+        )}
       </div>
     </Card>
   );
@@ -125,8 +140,6 @@ function PendingJobsCard({
   assetLabels: string[];
   isLoading?: boolean;
 }) {
-  const chips = assetLabels.length > 0 ? assetLabels : ["HVAC Unit B", "Plumbing L1"];
-
   return (
     <Card>
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -139,29 +152,35 @@ function PendingJobsCard({
             {isLoading ? "—" : count}
           </p>
         </div>
-        <div className="inline-flex items-center gap-1 rounded bg-warning/10 px-2 py-1 text-xs font-bold text-warning">
-          <AlertTriangle className="h-3 w-3" />
-          {highPriorityCount} High
-        </div>
+        {highPriorityCount > 0 && (
+          <div className="inline-flex items-center gap-1 rounded bg-warning/10 px-2 py-1 text-xs font-bold text-warning">
+            <AlertTriangle className="h-3 w-3" />
+            {highPriorityCount} High
+          </div>
+        )}
       </div>
-      <div className="mt-auto flex flex-wrap gap-2 border-t border-border/70 pt-4 z-10">
-        {chips.map((chip, index) => (
-          <Link
-            key={`${chip}-${index}`}
-            to="/work-orders"
-            className={cn(
-              "inline-flex items-center rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition-colors",
-              index === 0
-                ? "bg-destructive/10 text-destructive hover:bg-destructive/15"
-                : "bg-muted text-foreground hover:bg-muted/80",
-            )}
-          >
-            {chip}
-          </Link>
-        ))}
+      <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-border/70 pt-4 z-10">
+        {count === 0 && !isLoading ? (
+          <p className="text-xs text-muted-foreground font-medium">
+            Nothing waiting — all caught up
+          </p>
+        ) : (
+          assetLabels.map((chip, index) => (
+            <Link
+              key={`${chip}-${index}`}
+              to="/work-orders"
+              className={cn(
+                "inline-flex items-center rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition-colors",
+                "bg-muted text-foreground hover:bg-muted/80",
+              )}
+            >
+              {chip}
+            </Link>
+          ))
+        )}
         <Link
           to="/work-orders"
-          className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold text-warning bg-warning/10 hover:bg-warning/20 transition-colors"
+          className="ml-auto inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold text-warning bg-warning/10 hover:bg-warning/20 transition-colors"
         >
           Open
           <ArrowRight className="h-3 w-3" />
@@ -171,8 +190,26 @@ function PendingJobsCard({
   );
 }
 
-function ActiveTechsCard({ active, total }: { active: number; total: number }) {
-  const others = Math.max(0, total - 2);
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+function ActiveTechsCard({
+  active,
+  total,
+  members,
+}: {
+  active: number;
+  total: number;
+  members: SnapshotMember[];
+}) {
+  const shown = members.slice(0, 3);
+  const others = Math.max(0, total - shown.length);
 
   return (
     <Card>
@@ -192,14 +229,30 @@ function ActiveTechsCard({ active, total }: { active: number; total: number }) {
             )}
           </p>
         </div>
-        {total > 0 && (
+        {shown.length > 0 && (
           <div className="flex -space-x-2">
-            <div className="h-8 w-8 rounded-full bg-muted border-2 border-card" />
-            <div className="h-8 w-8 rounded-full bg-secondary/30 border-2 border-card" />
+            {shown.map((member) => (
+              <span key={member.id} className="relative inline-block" title={member.name}>
+                {member.avatar ? (
+                  <img
+                    src={member.avatar}
+                    alt={member.name}
+                    className="h-8 w-8 rounded-full border-2 border-card object-cover"
+                  />
+                ) : (
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 border-2 border-card text-[10px] font-bold text-primary">
+                    {initials(member.name) || "?"}
+                  </span>
+                )}
+                {member.online && (
+                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-success ring-2 ring-card" />
+                )}
+              </span>
+            ))}
             {others > 0 && (
-              <div className="h-8 w-8 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center text-[10px] font-bold text-primary">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted border-2 border-card text-[10px] font-bold text-muted-foreground">
                 +{others}
-              </div>
+              </span>
             )}
           </div>
         )}
