@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Magnetic from "@/components/marketing/Magnetic";
 
 // Keep these claims consistent with the canonical trial terms shown on
 // PricingPage.tsx and the TrialBanner: a 7-day trial that requires a card and
@@ -35,6 +36,7 @@ const CTA = () => {
  </li>
  ))}
  </ul>
+ <Magnetic>
  <Button
  size="lg"
  className="bg-background text-primary hover:bg-background/90 group font-semibold uppercase tracking-wide shadow-md"
@@ -43,6 +45,7 @@ const CTA = () => {
  Start Free Trial
  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
+ </Magnetic>
  </div>
  <div className="md:w-1/2 bg-primary-foreground/10 p-8 md:p-16 flex items-center justify-center">
  <div className="bg-background rounded-xl p-6 md:p-8 shadow-xl w-full max-w-md">

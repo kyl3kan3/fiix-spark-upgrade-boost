@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Reveal3D from "@/components/marketing/Reveal3D";
 
 const plans = [
   {
@@ -77,9 +78,9 @@ const Pricing = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-center">
-          {plans.map((plan) => (
+          {plans.map((plan, index) => (
+            <Reveal3D key={plan.name} delayMs={index * 120}>
             <div
-              key={plan.name}
               className={`relative rounded-xl border bg-card p-8 flex flex-col transition-all duration-300 hover:-translate-y-1 ${
                 plan.highlight
                   ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
@@ -125,6 +126,7 @@ const Pricing = () => {
                 {plan.cta}
               </Button>
             </div>
+            </Reveal3D>
           ))}
         </div>
 
