@@ -472,7 +472,22 @@ export type Database = {
           id?: string
           start_offset_minutes?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "checklist_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_assets_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checklist_items: {
         Row: {
