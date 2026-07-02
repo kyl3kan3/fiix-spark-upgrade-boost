@@ -1,6 +1,7 @@
 import { Check, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Reveal3D from "@/components/marketing/Reveal3D";
 
 /**
  * Flat-fee pricing advantage section.
@@ -47,7 +48,8 @@ const FlatFeeAdvantage = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto rounded-xl border border-border bg-background overflow-hidden shadow-sm">
+        <Reveal3D className="max-w-4xl mx-auto">
+        <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_1fr] text-sm">
             <div className="bg-muted px-6 py-4 font-semibold text-foreground border-b border-border">
               For a team of {TEAM_SIZE} technicians
@@ -115,6 +117,7 @@ const FlatFeeAdvantage = () => {
             require annual commitment; MaintenEase is month-to-month.
           </div>
         </div>
+        </Reveal3D>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button

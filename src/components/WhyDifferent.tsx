@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeDollarSign, Brain, Rocket, CalendarOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Reveal3D from "@/components/marketing/Reveal3D";
 
 /**
  * Concise "what makes us different" section.
@@ -54,8 +55,9 @@ const WhyDifferent = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {differentiators.map((d) => (
-            <div key={d.title} className="rounded-xl border border-border bg-card p-6 flex gap-4">
+          {differentiators.map((d, index) => (
+            <Reveal3D key={d.title} delayMs={(index % 2) * 120} className="h-full">
+              <div className="h-full rounded-xl border border-border bg-card p-6 flex gap-4">
               <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <d.icon className="h-5 w-5 text-primary" />
               </div>
@@ -63,7 +65,8 @@ const WhyDifferent = () => {
                 <h3 className="font-semibold text-foreground mb-1.5">{d.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{d.detail}</p>
               </div>
-            </div>
+              </div>
+            </Reveal3D>
           ))}
         </div>
 

@@ -1,5 +1,6 @@
 import { ArrowRight, CheckCircle2, XCircle, Activity, CalendarClock, History, SearchCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Reveal3D from "@/components/marketing/Reveal3D";
 
 /**
  * Problem → solved narrative for the homepage.
@@ -67,7 +68,8 @@ const ProblemSolved = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          <div className="rounded-xl border border-border bg-card p-8">
+          <Reveal3D>
+          <div className="h-full rounded-xl border border-border bg-card p-8">
             <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground mb-5">
               Without MaintenEase
             </h3>
@@ -80,8 +82,10 @@ const ProblemSolved = () => {
               ))}
             </ul>
           </div>
+          </Reveal3D>
 
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-8 shadow-sm">
+          <Reveal3D delayMs={140}>
+          <div className="h-full rounded-xl border border-primary/30 bg-primary/5 p-8 shadow-sm">
             <h3 className="text-sm font-bold uppercase tracking-wide text-primary mb-5">
               With MaintenEase
             </h3>
@@ -94,6 +98,7 @@ const ProblemSolved = () => {
               ))}
             </ul>
           </div>
+          </Reveal3D>
         </div>
 
         <div className="max-w-5xl mx-auto mt-10">
@@ -101,12 +106,14 @@ const ProblemSolved = () => {
             The predictive metrics behind it
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {metrics.map((m) => (
-              <div key={m.label} className="rounded-lg border border-border bg-card p-4">
-                <m.icon className="h-5 w-5 text-primary mb-2" />
-                <div className="text-sm font-semibold text-foreground">{m.label}</div>
-                <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{m.detail}</div>
-              </div>
+            {metrics.map((m, index) => (
+              <Reveal3D key={m.label} delayMs={index * 90}>
+                <div className="h-full rounded-lg border border-border bg-card p-4">
+                  <m.icon className="h-5 w-5 text-primary mb-2" />
+                  <div className="text-sm font-semibold text-foreground">{m.label}</div>
+                  <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{m.detail}</div>
+                </div>
+              </Reveal3D>
             ))}
           </div>
           <div className="mt-6 text-center">
