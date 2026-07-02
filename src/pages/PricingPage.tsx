@@ -110,8 +110,9 @@ export default function PricingPage() {
  <MarketingJsonLd />
  <PaymentTestModeBanner />
 
- {/* Hero section */}
- <section className="pt-16 pb-12 px-4 text-center bg-background border-b border-border">
+ {/* Hero section — MarketingLayout already clears the fixed navbar (pt-24),
+     so keep this shallow or mobile shows half a screen of dead space. */}
+ <section className="pt-4 md:pt-10 pb-10 md:pb-12 px-4 text-center bg-background border-b border-border">
    <div className="max-w-2xl mx-auto">
      <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-tight">
        Simple, transparent pricing
@@ -120,27 +121,30 @@ export default function PricingPage() {
         Choose the plan that fits your facility's needs. 7-day free trial on every plan.
      </p>
      <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
-       <span
-         className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+       <button
+         type="button"
+         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-all ${
            interval === "month" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
          }`}
          onClick={() => setInterval("month")}
        >
          Monthly
-       </span>
+       </button>
        <Switch
          checked={interval === "year"}
          onCheckedChange={(c) => setInterval(c ? "year" : "month")}
          className="mx-1"
+         aria-label="Toggle annual billing"
        />
-       <span
-         className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
+       <button
+         type="button"
+         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-all ${
            interval === "year" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
          }`}
          onClick={() => setInterval("year")}
        >
          Annual <span className="text-success text-xs ml-1">-17%</span>
-       </span>
+       </button>
      </div>
    </div>
  </section>
@@ -216,6 +220,7 @@ export default function PricingPage() {
  <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between">
  <p className="text-sm text-muted-foreground">Share these plans</p>
  <ShareButtons
+ className="justify-center sm:justify-end"
  url="https://maintenease.com/pricing"
  title="MaintenEase Pricing — Plans for Maintenance Teams"
  description="Compare Starter, Pro, and Business plans. 7-day free trial."
