@@ -472,7 +472,22 @@ export type Database = {
           id?: string
           start_offset_minutes?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "checklist_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_assets_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checklist_items: {
         Row: {
@@ -540,7 +555,15 @@ export type Database = {
           next_due_at?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "checklist_schedules_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: true
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checklist_submission_items: {
         Row: {
