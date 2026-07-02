@@ -44,6 +44,12 @@
     --accent: 174 84% 32%;                /* mirror teal */
     --accent-foreground: 0 0% 100%;
 
+    /* Chart series colors — validated (lightness band, chroma, CVD
+       separation, contrast) against the light card surface with the dataviz
+       palette checker. Re-run the validator if these change. */
+    --chart-series-1: #2453d6;            /* opened — brand navy, chart step */
+    --chart-series-2: #0d9488;            /* completed — brand teal */
+
     --success: 142 71% 45%;               /* #22c55e */
     --warning: 38 92% 50%;                /* #f59e0b */
     --info:    226 100% 28%;
@@ -107,6 +113,10 @@
 
     --accent: 174 84% 50%;
     --accent-foreground: 220 30% 10%;
+
+    /* Chart series — validated against the dark card surface (#1a202e). */
+    --chart-series-1: #3363ff;
+    --chart-series-2: #0d9488;
 
     --success: 142 60% 55%;
     --warning: 38 92% 60%;

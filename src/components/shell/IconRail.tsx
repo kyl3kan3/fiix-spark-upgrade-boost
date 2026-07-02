@@ -35,7 +35,8 @@ const IconRail: React.FC<IconRailProps> = () => {
  if (!item.feature) return true;
  if (!sub) return false;
  if (!sub.is_active) return false;
- return TIER_FEATURES[sub.tier][item.feature];
+ // Unknown tier from the backend degrades to hiding gated items, not a crash.
+ return TIER_FEATURES[sub.tier]?.[item.feature] ?? false;
  });
 
  // Group items
