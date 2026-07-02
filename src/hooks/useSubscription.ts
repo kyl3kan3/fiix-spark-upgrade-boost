@@ -21,5 +21,7 @@ export function useHasFeature(feature: keyof typeof TIER_FEATURES["starter"]) {
   const { data } = useSubscription();
   if (!data) return false;
   if (!data.is_active) return false;
-  return TIER_FEATURES[data.tier][feature];
+  // An unknown tier value from the backend must degrade to "no feature",
+  // not crash the shell with a property read on undefined.
+  return TIER_FEATURES[data.tier]?.[feature] ?? false;
 }

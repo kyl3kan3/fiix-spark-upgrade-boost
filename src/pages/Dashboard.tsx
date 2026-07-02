@@ -9,6 +9,7 @@ import { useWorkOrdersData } from "@/hooks/dashboard/useWorkOrdersData";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 import { TodaySnapshot } from "@/components/dashboard/snapshot/TodaySnapshot";
 import { RecentWorkOrders } from "@/components/dashboard/snapshot/RecentWorkOrders";
+import { MaintenanceActivityCard } from "@/components/dashboard/snapshot/MaintenanceActivityCard";
 import { GetStartedPanel } from "@/components/dashboard/snapshot/GetStartedPanel";
 
 const Dashboard: React.FC = () => {
@@ -94,7 +95,10 @@ const Dashboard: React.FC = () => {
         {!workOrdersLoading && workOrders.length === 0 ? (
           <GetStartedPanel />
         ) : (
-          <RecentWorkOrders workOrders={workOrders} />
+          <>
+            <MaintenanceActivityCard />
+            <RecentWorkOrders workOrders={workOrders} />
+          </>
         )}
 
         <section className="mt-8">
