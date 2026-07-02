@@ -2,6 +2,8 @@ import { ArrowRight, CheckCircle2, Zap, Menu, LayoutGrid, BarChart3 } from "luci
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Tilt3D from "@/components/marketing/Tilt3D";
+import ScrambleText from "@/components/marketing/ScrambleText";
+import Magnetic from "@/components/marketing/Magnetic";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -19,6 +21,27 @@ const Hero = () => {
         style={{ background: "hsl(var(--secondary) / 0.08)" }}
       />
 
+      {/* Blueprint grid: faint gridlines fading toward the edges, with a few
+          crosshair marks — a technical, drafting-table texture. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(var(--primary) / 0.05) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.05) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%)",
+        }}
+      />
+      <div aria-hidden className="absolute inset-0 pointer-events-none font-mono text-primary/25 select-none hidden md:block">
+        <span className="absolute left-[8%] top-[18%]">+</span>
+        <span className="absolute left-[46%] top-[10%]">+</span>
+        <span className="absolute right-[10%] top-[26%]">+</span>
+        <span className="absolute left-[14%] bottom-[16%]">+</span>
+        <span className="absolute right-[22%] bottom-[10%]">+</span>
+      </div>
+
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* Hero copy */}
@@ -34,9 +57,9 @@ const Hero = () => {
             </button>
 
             <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-tight">
-              Stop downtime
+              <ScrambleText text="Stop downtime" />
               <br />
-              before it starts.
+              <ScrambleText text="before it starts." delayMs={250} />
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto md:mx-0 leading-relaxed">
@@ -59,14 +82,16 @@ const Hero = () => {
             </ul>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start pt-2">
+              <Magnetic className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide transition-all hover:-translate-y-0.5 active:scale-95 group"
+                className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide group"
                 onClick={() => navigate("/auth?signup=true")}
               >
                 Start free trial
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
+              </Magnetic>
               <button
                 type="button"
                 onClick={() => navigate("/pricing")}
