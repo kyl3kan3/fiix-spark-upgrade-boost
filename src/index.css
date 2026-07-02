@@ -197,6 +197,8 @@
       scroll-behavior: auto !important;
     }
     .enter-item { opacity: 1 !important; filter: none !important; transform: none !important; }
+    .reveal-3d { opacity: 1 !important; transform: none !important; }
+    .float-3d { animation: none !important; }
   }
 }
 
@@ -318,6 +320,41 @@
 
   /* Mobile bottom nav safe area */
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
+
+  /* 3D motion primitives. A .scene-3d parent supplies perspective; .tilt-3d
+     elements are driven by --tilt-x/--tilt-y custom properties (set from JS by
+     Tilt3D); .float-3d adds an idle hover-in-space loop; .reveal-3d elements
+     start rotated back in 3D and stand up when Reveal3D marks them
+     .is-revealed. All are neutralized by the prefers-reduced-motion block. */
+  .scene-3d { perspective: 1200px; }
+  .tilt-3d {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      scale(var(--tilt-scale, 1));
+    transform-style: preserve-3d;
+    transition: transform 0.4s var(--transition-smooth);
+    will-change: transform;
+  }
+  .tilt-3d.is-tilting { transition: transform 80ms linear; }
+  .float-3d { animation: float-3d 7s ease-in-out infinite; }
+  .reveal-3d {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(10deg) translateY(28px);
+    transform-origin: 50% 100%;
+    transition:
+      opacity 0.7s var(--transition-smooth),
+      transform 0.7s var(--transition-smooth);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: transform, opacity;
+  }
+  .reveal-3d.is-revealed {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0);
+  }
+}
+
+@keyframes float-3d {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
 
 @keyframes pulse-badge {

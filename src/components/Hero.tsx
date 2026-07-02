@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle2, Zap, Menu, LayoutGrid, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Tilt3D from "@/components/marketing/Tilt3D";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -76,8 +77,10 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Hero visual — simulated dashboard preview */}
+          {/* Hero visual — simulated dashboard preview, floating in 3D and
+              tilting toward the cursor */}
           <div className="flex-1 w-full max-w-xl relative">
+            <Tilt3D maxTilt={7} className="float-3d">
             <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-border bg-card flex flex-col">
               {/* Top bar */}
               <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-card shrink-0">
@@ -234,6 +237,7 @@ const Hero = () => {
                 </div>
               </div>
             </div>
+            </Tilt3D>
           </div>
         </div>
       </div>
