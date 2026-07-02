@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+/* Fonts are loaded from index.html via async (media=print swap) stylesheets
+   so a slow fonts CDN can never block first paint. Do NOT re-add a CSS
+   @import for Google Fonts here: an @import inside this render-blocking
+   bundle forces the browser to fetch it before painting anything, which is
+   exactly the "site loads super slow" failure mode it caused. */
 
 @tailwind base;
 @tailwind components;
@@ -199,6 +203,7 @@
     .enter-item { opacity: 1 !important; filter: none !important; transform: none !important; }
     .reveal-3d { opacity: 1 !important; transform: none !important; }
     .float-3d { animation: none !important; }
+    .page-enter > * { animation: none !important; }
   }
 }
 
@@ -300,7 +305,7 @@
     box-shadow: var(--shadow-sm);
     transition: all 0.25s var(--transition-smooth);
   }
-  .surface-card:hover { box-shadow: var(--shadow-md); }
+  .surface-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 
   .glass-morphism,
   .glass-morphism-dark {
@@ -326,6 +331,18 @@
      Tilt3D); .float-3d adds an idle hover-in-space loop; .reveal-3d elements
      start rotated back in 3D and stand up when Reveal3D marks them
      .is-revealed. All are neutralized by the prefers-reduced-motion block. */
+  /* App-wide page entrance: every PageContainer staggers its direct children
+     in with a light fade-up on mount. Fill mode is `backwards` (not `both`)
+     so no transform lingers after the animation — a persistent transform
+     would break position: sticky/fixed descendants. */
+  .page-enter > * {
+    animation: page-fade-up 0.4s cubic-bezier(0.2, 0, 0, 1) backwards;
+  }
+  .page-enter > *:nth-child(2) { animation-delay: 60ms; }
+  .page-enter > *:nth-child(3) { animation-delay: 120ms; }
+  .page-enter > *:nth-child(4) { animation-delay: 180ms; }
+  .page-enter > *:nth-child(n + 5) { animation-delay: 240ms; }
+
   .scene-3d { perspective: 1200px; }
   .tilt-3d {
     transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
@@ -355,6 +372,10 @@
 @keyframes float-3d {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-10px); }
+}
+@keyframes page-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse-badge {
