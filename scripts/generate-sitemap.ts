@@ -20,6 +20,7 @@ const today = new Date().toISOString().slice(0, 10);
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/pricing", changefreq: "monthly", priority: "0.9" },
+  { path: "/features", changefreq: "monthly", priority: "0.8" },
   { path: "/solutions", changefreq: "weekly", priority: "0.9" },
   { path: "/learn", changefreq: "weekly", priority: "0.8" },
   { path: "/auth", changefreq: "monthly", priority: "0.4" },
