@@ -31,14 +31,18 @@ export default defineConfig(({ mode }) => {
           // Split long-lived vendor code out of the entry chunk so it caches
           // across deploys and downloads in parallel. App code changes every
           // deploy; react/supabase change on dependency bumps only.
-          manualChunks: {
-            "vendor-react": [
-              "react",
-              "react-dom",
-              "react-router-dom",
-              "@tanstack/react-query",
-            ],
-            "vendor-supabase": ["@supabase/supabase-js"],
+          // Function form (not object) for Rolldown/Vite 8 compatibility.
+          manualChunks(id) {
+            if (
+              /node_modules\/(react|react-dom|react-router-dom|react-router|@remix-run\/router|@tanstack\/react-query|scheduler)\//.test(
+                id,
+              )
+            ) {
+              return "vendor-react";
+            }
+            if (/node_modules\/@supabase\//.test(id)) {
+              return "vendor-supabase";
+            }
           },
         },
       },
