@@ -1,7 +1,8 @@
 import React from "react";
 import {
   AbsoluteFill,
-  OffthreadVideo,
+  Img,
+  Video,
   Sequence,
   interpolate,
   staticFile,
@@ -153,7 +154,7 @@ const Clip: React.FC<{ src: string; kicker: string; caption: string }> = ({ src,
             boxShadow: "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(234,231,223,0.06)",
           }}
         >
-          <OffthreadVideo
+          <Video
             src={staticFile(src)}
             muted
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -221,9 +222,111 @@ const Clip: React.FC<{ src: string; kicker: string; caption: string }> = ({ src,
   );
 };
 
+// Ken-Burns still with lower-third caption — matches the Clip aesthetic.
+const Still: React.FC<{ src: string; kicker: string; caption: string; zoom?: "in" | "out"; pan?: [number, number] }> = ({
+  src,
+  kicker,
+  caption,
+  zoom = "in",
+  pan = [0, 0],
+}) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  const op = useFade();
+  const capOut = ci(frame, [durationInFrames - 30, durationInFrames - 14], [1, 0]);
+  const t = frame / Math.max(1, durationInFrames - 1);
+  const scale = zoom === "in" ? interpolate(t, [0, 1], [1.03, 1.11]) : interpolate(t, [0, 1], [1.11, 1.03]);
+  const tx = interpolate(t, [0, 1], [0, pan[0]]);
+  const ty = interpolate(t, [0, 1], [0, pan[1]]);
+
+  return (
+    <AbsoluteFill style={{ background: BG, opacity: op }}>
+      <AbsoluteFill style={{ padding: "80px 100px 220px 100px" }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            borderRadius: 6,
+            overflow: "hidden",
+            boxShadow: "0 40px 120px rgba(0,0,0,0.55), 0 0 0 1px rgba(234,231,223,0.06)",
+            background: BG,
+          }}
+        >
+          <Img
+            src={staticFile(src)}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: `scale(${scale}) translate(${tx}px, ${ty}px)`,
+              transformOrigin: "center",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to bottom, rgba(11,12,14,0.25) 0%, rgba(11,12,14,0) 18%, rgba(11,12,14,0) 80%, rgba(11,12,14,0.35) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+      </AbsoluteFill>
+      <div
+        style={{
+          position: "absolute",
+          left: 100,
+          right: 100,
+          bottom: 70,
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 60,
+          opacity: capOut,
+        }}
+      >
+        <Rise delay={12}>
+          <div
+            style={{
+              fontFamily: display.fontFamily,
+              fontStyle: "italic",
+              color: BONE,
+              fontSize: 40,
+              fontWeight: 300,
+              letterSpacing: -0.4,
+              lineHeight: 1.15,
+              maxWidth: 1100,
+            }}
+          >
+            {caption}
+          </div>
+        </Rise>
+        <Rise delay={18} style={{ paddingBottom: 8 }}>
+          <div
+            style={{
+              fontFamily: body.fontFamily,
+              color: COPPER,
+              fontSize: 12,
+              letterSpacing: 5,
+              textTransform: "uppercase",
+              fontWeight: 500,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {kicker}
+          </div>
+        </Rise>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 type Block =
   | { kind: "title"; dur: number; props: React.ComponentProps<typeof TitleCard> }
-  | { kind: "clip"; dur: number; props: React.ComponentProps<typeof Clip> };
+  | { kind: "clip"; dur: number; props: React.ComponentProps<typeof Clip> }
+  | { kind: "still"; dur: number; props: React.ComponentProps<typeof Still> };
 
 // 30fps. Clip durations match trimmed source footage (loading screens removed).
 const BLOCKS: Block[] = [
@@ -243,7 +346,18 @@ const BLOCKS: Block[] = [
 
   { kind: "clip", dur: 96, props: { src: "clips/trimmed/05-analytics.mp4", kicker: "V · Analytics", caption: "Trends, costs, and the questions you haven't asked yet." } },
 
-  { kind: "title", dur: 120, props: { eyebrow: "Begin", title: "maintenease.com", subtitle: "Seven days, full access. No card required.", align: "center", size: 96 } },
+  // ----- New chapters: intelligence + the rest -----
+  { kind: "title", dur: 78, props: { eyebrow: "Chapter VI", title: "Ahead of the guesswork.", italicWord: "guesswork", size: 104 } },
+  { kind: "still", dur: 150, props: { src: "shots/10-predictive.png", kicker: "VI · Predictive", caption: "AI risk scoring \u2014 before things break.", zoom: "in", pan: [-20, -12] } },
+  { kind: "still", dur: 150, props: { src: "shots/11-self-healing.png", kicker: "VI · Self-healing", caption: "Small failures, quietly repaired.", zoom: "out", pan: [15, 8] } },
+  { kind: "still", dur: 180, props: { src: "shots/15-assistant.png", kicker: "VI · Assistant", caption: "Ask in plain English. Get a real work order back.", zoom: "in", pan: [10, -6] } },
+
+  { kind: "title", dur: 78, props: { eyebrow: "Chapter VII", title: "Every routine, one place.", italicWord: "one", size: 104 } },
+  { kind: "still", dur: 108, props: { src: "shots/09-inspections.png", kicker: "VII \u00b7 Inspections", caption: "Rounds, findings, corrective work \u2014 tracked.", zoom: "in", pan: [-10, 0] } },
+  { kind: "still", dur: 108, props: { src: "shots/17-automations.png", kicker: "VII \u00b7 Automations", caption: "Rules that quietly do the small stuff for you.", zoom: "out", pan: [10, 0] } },
+  { kind: "still", dur: 108, props: { src: "shots/07-vendors.png", kicker: "VII \u00b7 Vendors", caption: "Contractors, contacts, and the paper trail.", zoom: "in", pan: [8, 6] } },
+
+  { kind: "title", dur: 150, props: { eyebrow: "Begin", title: "maintenease.com", subtitle: "Seven days, full access. No card required.", align: "center", size: 96 } },
 ];
 
 export const TOTAL_FRAMES = BLOCKS.reduce((a, b) => a + b.dur, 0);
@@ -293,7 +407,13 @@ export const MainVideo: React.FC = () => {
         cursor += b.dur;
         return (
           <Sequence key={i} from={from} durationInFrames={b.dur}>
-            {b.kind === "title" ? <TitleCard {...(b.props as any)} /> : <Clip {...(b.props as any)} />}
+            {b.kind === "title" ? (
+              <TitleCard {...(b.props as any)} />
+            ) : b.kind === "clip" ? (
+              <Clip {...(b.props as any)} />
+            ) : (
+              <Still {...(b.props as any)} />
+            )}
           </Sequence>
         );
       })}

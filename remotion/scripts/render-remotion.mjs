@@ -30,10 +30,10 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/marketing/in-app-flow/demo.mp4",
+  outputLocation: "/mnt/documents/marketing/full-tour/demo-video.mp4",
   puppeteerInstance: browser,
   muted: true,
-  concurrency: 2,
+  concurrency: 1,
   onProgress: ({ progress }) => {
     if (Math.round(progress * 100) % 10 === 0) {
       process.stdout.write(`\rProgress: ${(progress * 100).toFixed(0)}%`);
