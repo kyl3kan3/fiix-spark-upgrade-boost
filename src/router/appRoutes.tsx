@@ -28,6 +28,7 @@ const CompareIndex = lazy(() => import("@/pages/CompareIndex"));
 const ComparePage = lazy(() => import("@/pages/ComparePage"));
 const CostCalculatorPage = lazy(() => import("@/pages/CostCalculatorPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
+const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 
 export const AppRoutes = () => (
   <ErrorBoundary>
@@ -62,6 +63,8 @@ export const AppRoutes = () => (
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
 
         <Route path="/r/:slug" element={<PublicRequestPortal />} />
+
+        <Route path="/.lovable/oauth/consent" element={<OAuthConsentPage />} />
 
         {PROTECTED_ROUTES.map(({ path, component: Component }) => (
           <Route
