@@ -44,6 +44,7 @@ const AdminAnalyticsPage: React.FC = () => {
     <DashboardLayout>
       <Helmet>
         <title>Admin Analytics | MaintenEase</title>
+        <meta name="description" content="Internal admin analytics dashboard for MaintenEase — usage metrics, signups, active companies, and platform health signals." />
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
 

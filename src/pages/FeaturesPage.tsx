@@ -20,7 +20,7 @@ const FeaturesPage = () => {
         <title>Features — MaintenEase</title>
         <meta
           name="description"
-          content="Mobile-first work orders, preventive maintenance, asset tracking, inspections, request portal, offline sync, and parts inventory automation. See every MaintenEase feature."
+          content="Mobile-first CMMS features: work orders, preventive maintenance, asset tracking, inspections, request portal, offline sync, and parts inventory."
         />
         <link rel="canonical" href="https://maintenease.com/features" />
         <meta property="og:title" content="Features — MaintenEase" />

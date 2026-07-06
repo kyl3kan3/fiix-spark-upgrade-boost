@@ -125,6 +125,7 @@ const AdminSeoIndexPage: React.FC = () => {
  <DashboardLayout>
  <Helmet>
  <title>SEO Index Tracker — MaintenEase Admin</title>
+       <meta name="description" content="Internal admin tool that queries Google Search Console indexing status for every MaintenEase marketing URL." />
  <meta name="robots" content="noindex,nofollow" />
  </Helmet>
  <div className="container mx-auto max-w-6xl px-4 py-8">
