@@ -22,7 +22,7 @@ export default defineTool({
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const { data, error } = await client(ctx)
-      .from("maintenance_requests")
+      .from("public_requests")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(limit ?? 25);
