@@ -26,7 +26,14 @@ export const AuthContainer: React.FC = () => {
  // If a pending invite token is present, send the user to onboarding
  // so the invitation can be accepted before landing on the dashboard.
       const hasPendingInvite = !!getStorageItem("pending_invite_token");
- const from = location.state?.from?.pathname || "/dashboard";
+  const params = new URLSearchParams(location.search);
+  const nextParam = params.get("next");
+  // Only accept same-origin relative paths for `next`.
+  const safeNext =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
+      ? nextParam
+      : null;
+  const from = safeNext || location.state?.from?.pathname || "/dashboard";
  navigate(hasPendingInvite ? "/onboarding" : from, { replace: true });
  }
  }, [isAuthenticated, isLoading, navigate, location.state]);
