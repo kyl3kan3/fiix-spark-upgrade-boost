@@ -20,17 +20,17 @@ const Index = () => {
  return (
  <div className="min-h-screen flex flex-col bg-background text-foreground">
  <Helmet>
- <title>MaintenEase — Maintenance Management Software</title>
- <meta name="description" content="MaintenEase helps local businesses and facility teams organize assets and schedule work orders to prevent downtime — one flat price from $49/mo." />
+ <title>MaintenEase — CMMS & Maintenance Management Software</title>
+ <meta name="description" content="Modern CMMS that helps facility & maintenance teams track work orders, assets, and inspections. Prevent downtime with predictive AI. From $49/mo, flat pricing." />
  <link rel="canonical" href="https://maintenease.com/" />
- <meta property="og:title" content="MaintenEase — Maintenance Management Software" />
- <meta property="og:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
+ <meta property="og:title" content="MaintenEase — CMMS & Maintenance Management Software" />
+ <meta property="og:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
  <meta property="og:url" content="https://maintenease.com/" />
  <meta property="og:type" content="website" />
  <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
  <meta name="twitter:card" content="summary_large_image" />
- <meta name="twitter:title" content="MaintenEase — Maintenance Management Software" />
- <meta name="twitter:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
+ <meta name="twitter:title" content="MaintenEase — CMMS & Maintenance Management Software" />
+ <meta name="twitter:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
  </Helmet>
  <MarketingJsonLd />
