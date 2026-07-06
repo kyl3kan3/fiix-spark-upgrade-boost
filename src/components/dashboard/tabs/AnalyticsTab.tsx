@@ -7,7 +7,7 @@ import WorkOrdersLineChart from "./analytics/WorkOrdersLineChart";
 import MaintenanceCostsBarChart from "./analytics/MaintenanceCostsBarChart";
 import AssetStatusPieChart from "./analytics/AssetStatusPieChart";
 import AssetMarketingFunnel from "./analytics/AssetMarketingFunnel";
-import KeywordTrackerWidget from "./analytics/KeywordTrackerWidget";
+import SemrushInsightsPanel from "./analytics/semrush/SemrushInsightsPanel";
 import { 
  emptyWorkOrdersData,
  emptyMaintenanceCostsData,
@@ -94,9 +94,9 @@ const AnalyticsTab: React.FC = () => {
  />
  </div>
 
- <AssetMarketingFunnel />
+        <AssetMarketingFunnel />
 
- <KeywordTrackerWidget />
+        <SemrushInsightsPanel />
  </CardContent>
  </Card>
  );
