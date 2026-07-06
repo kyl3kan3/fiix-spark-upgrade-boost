@@ -12,8 +12,8 @@ export interface ScheduleTemplate {
 export const scheduleFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   description: z.string().optional(),
-  frequency: z.string({ required_error: "Please select a frequency." }),
-  priority: z.string({ required_error: "Please select a priority level." }),
+  frequency: z.string({ error: "Please select a frequency." }),
+  priority: z.string({ error: "Please select a priority level." }),
 });
 
 export type ScheduleFormValues = z.infer<typeof scheduleFormSchema>;
