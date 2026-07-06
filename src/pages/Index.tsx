@@ -21,7 +21,7 @@ const Index = () => {
  <div className="min-h-screen flex flex-col bg-background text-foreground">
  <Helmet>
  <title>MaintenEase — Maintenance Management Software</title>
- <meta name="description" content="MaintenEase helps local businesses and facility teams organize assets, schedule work orders, and predict failures before they cause downtime — one flat price from $49/mo." />
+ <meta name="description" content="MaintenEase helps local businesses and facility teams organize assets and schedule work orders to prevent downtime — one flat price from $49/mo." />
  <link rel="canonical" href="https://maintenease.com/" />
  <meta property="og:title" content="MaintenEase — Maintenance Management Software" />
  <meta property="og:description" content="Organize assets, schedule work orders, and run inspections from one modern maintenance platform." />
