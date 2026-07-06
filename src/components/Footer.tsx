@@ -80,20 +80,20 @@ const Footer = () => {
             <Building2 className="h-6 w-6 text-background/80" strokeWidth={1.5} />
             <span className="text-2xl font-bold text-background font-headline">MaintenEase</span>
           </div>
- <p className="text-background/70 mb-6 max-w-xs text-sm leading-relaxed">
+ <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
  <div className="flex space-x-4">
- <a href="#" className="text-background/50 hover:text-background transition-colors" aria-label="Twitter">
+ <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Twitter">
  <Twitter className="h-5 w-5" />
  </a>
- <a href="#" className="text-background/50 hover:text-background transition-colors" aria-label="Facebook">
+ <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Facebook">
  <Facebook className="h-5 w-5" />
  </a>
- <a href="#" className="text-background/50 hover:text-background transition-colors" aria-label="Instagram">
+ <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Instagram">
  <Instagram className="h-5 w-5" />
  </a>
- <a href="#" className="text-background/50 hover:text-background transition-colors" aria-label="LinkedIn">
+ <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="LinkedIn">
  <Linkedin className="h-5 w-5" />
  </a>
  </div>
@@ -106,11 +106,11 @@ const Footer = () => {
  {column.links.map((link, linkIdx) => (
  <li key={linkIdx}>
  {link.to.startsWith("/") ? (
- <Link to={link.to} className="text-background/60 hover:text-background transition-colors text-sm">
+ <Link to={link.to} className="text-background/85 hover:text-background transition-colors text-sm">
  {link.label}
  </Link>
  ) : (
- <a href={link.to} className="text-background/60 hover:text-background transition-colors text-sm">
+ <a href={link.to} className="text-background/85 hover:text-background transition-colors text-sm">
  {link.label}
  </a>
  )}
@@ -123,17 +123,17 @@ const Footer = () => {
 
  <div className="mt-12 pt-8 border-t border-background/10">
  <div className="flex flex-col md:flex-row justify-between items-center">
- <p className="text-background/50 text-sm mb-4 md:mb-0">
+ <p className="text-background/80 text-sm mb-4 md:mb-0">
  &copy; {currentYear} Decent4. All rights reserved.
  </p>
  <div className="flex space-x-6">
- <Link to="/privacy" className="text-background/50 hover:text-background text-sm transition-colors">
+ <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
  Privacy Policy
  </Link>
- <Link to="/terms" className="text-background/50 hover:text-background text-sm transition-colors">
+ <Link to="/terms" className="text-background/80 hover:text-background text-sm transition-colors">
  Terms of Service
  </Link>
- <Link to="/refund-policy" className="text-background/50 hover:text-background text-sm transition-colors">
+ <Link to="/refund-policy" className="text-background/80 hover:text-background text-sm transition-colors">
  Refund Policy
  </Link>
  </div>
