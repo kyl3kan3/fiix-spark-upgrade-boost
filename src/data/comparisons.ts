@@ -149,6 +149,26 @@ export const comparisons: Comparison[] = [
     ],
     faqs: [pricingFaq("Limble", 28), affiliationFaq("Limble"), migrationFaq("Limble")],
   },
+  {
+    slug: "maintenease-vs-emaint",
+    competitor: "eMaint",
+    competitorPlan: "Team",
+    competitorPricePerUser: 69,
+    metaTitle: "MaintenEase vs eMaint — Modern Flat-Fee CMMS Alternative (2026)",
+    metaDescription:
+      "MaintenEase vs eMaint: a modern, mobile-first alternative to legacy enterprise CMMS. Flat monthly fee instead of per-user seats. Compare features and cost.",
+    h1: "MaintenEase vs eMaint",
+    tagline: "A modern, mobile-first alternative to legacy enterprise CMMS.",
+    intro:
+      "eMaint (a Fluke company) is a long-established enterprise CMMS billed per user per month, with a heavier interface aimed at large industrial deployments. MaintenEase delivers the same core maintenance workflow — work orders, assets, preventive maintenance, inspections, and reporting — in a mobile-first UI, for one flat monthly fee. If eMaint feels like more system (and more cost) than your crew needs, MaintenEase is the leaner alternative.",
+    rows: makeRows("eMaint", 69),
+    differentiators: [
+      { title: "Mobile-first, not desktop-first", body: "Technicians close work from their phone in a couple of taps — no training on a legacy enterprise console." },
+      { title: "Flat fee vs per-seat enterprise pricing", body: "eMaint's per-user pricing adds up fast for a growing crew. MaintenEase is one flat monthly price for the whole team." },
+      { title: "Live in days, not months", body: "Free data import and guided onboarding replace long enterprise implementations." },
+    ],
+    faqs: [pricingFaq("eMaint", 69), affiliationFaq("eMaint"), migrationFaq("eMaint")],
+  },
 ];
 
 export const getComparison = (slug: string) => comparisons.find((c) => c.slug === slug);
