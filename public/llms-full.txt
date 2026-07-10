@@ -1,0 +1,1129 @@
+# MaintenEase — Full AI-agent corpus
+
+Generated from https://maintenease.com. See https://maintenease.com/llms.txt for the index.
+
+
+---
+
+# Solutions
+
+---
+
+# Work Order Software that turns requests into completed work
+
+> Capture, assign, and close work orders without the spreadsheet sprawl.
+
+Canonical URL: https://maintenease.com/solutions/work-order-software
+
+MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.
+
+## Benefits
+
+- **Faster response** — Work orders route to the right technician the moment they are submitted, with mobile push alerts so urgent issues never sit in an inbox.
+- **Honest reporting** — Every status change is timestamped. Backlog, mean time to repair, and technician throughput stop being a guess.
+- **Lower friction for requesters** — Staff or tenants submit issues through a simple QR-coded form — no app install, no training required.
+
+## Features
+
+- **Mobile-first work orders** — Create, update, and close work orders from a phone with photos, voice-to-text, and offline support.
+- **Smart routing and priority** — Auto-assign by asset, location, trade, or priority. Escalate when SLAs slip.
+- **Parts and labor on every work order** — Track time, parts consumed, and total cost per work order, asset, and location.
+- **Approvals and SLAs** — Optional approval steps for high-cost work; SLA timers that visibly count down on the work order card.
+
+## Who it's for
+
+- Manufacturing plants drowning in reactive breakdown calls
+- Property managers handling resident maintenance requests
+- Facility teams supporting multiple buildings or campuses
+- Hospitality and retail chains coordinating across locations
+
+## FAQ
+
+### Can requesters submit work without a MaintenEase login?
+
+Yes. Public request links and QR codes let staff or tenants submit issues without creating an account; they get email or SMS updates as the work progresses.
+
+### Do you support recurring work orders?
+
+Yes. Any recurring task lives as a preventive maintenance schedule and generates work orders automatically.
+
+---
+
+# Preventive Maintenance Software that stops failures before they cost you
+
+> Schedule by date, runtime, or meter — and watch reactive work shrink.
+
+Canonical URL: https://maintenease.com/solutions/preventive-maintenance-software
+
+MaintenEase turns preventive maintenance from a calendar reminder into an audited, automated process. Build schedules per asset by date, runtime hours, or meter reading. Work orders generate themselves, route to the right technician, and surface the procedure, parts, and safety steps inline. Compliance reports — fire systems, life safety, regulated inspections — export with a click.
+
+## Benefits
+
+- **Fewer breakdowns** — Teams typically cut reactive work by 30–50% within the first year of running preventive maintenance on a schedule.
+- **Smoother technician days** — Planned work replaces firefighting. Workload is visible a week ahead, not discovered each morning.
+- **Audit-ready records** — Every PM closes with a timestamped record, photos, and signatures — exactly what regulators and insurance carriers want to see.
+
+## Features
+
+- **Flexible schedules** — Time, runtime, meter, condition-based — or any combination. Holiday blackouts and grouping rules included.
+- **Procedures and checklists** — Step-by-step instructions, pass/fail items, photo evidence, and required signatures attached to every PM.
+- **Compliance pack** — Fire-system tests, sprinkler inspections, generator runs, electrical thermography — pre-built templates and audit exports.
+- **Schedule health insights** — See which PMs are overdue, which assets keep failing between PMs, and where intervals should change.
+
+## Who it's for
+
+- Compliance-heavy facilities (healthcare, education, public sector)
+- Manufacturing teams chasing a higher planned-to-reactive ratio
+- Property managers managing recurring life-safety tasks
+- Fleet operators running meter-based service schedules
+
+## FAQ
+
+### Can we import our existing PM schedule from a spreadsheet?
+
+Yes — CSV import is supported, and our team will help map columns on the first import.
+
+### What happens if a PM is missed?
+
+Missed PMs stay visible in a dedicated overdue queue with an aging color code, and roll up into compliance reports so they cannot be quietly forgotten.
+
+---
+
+# Facility Maintenance Software for buildings that have to just work
+
+> One system for assets, work orders, PMs, and tenant requests across every building.
+
+Canonical URL: https://maintenease.com/solutions/facility-maintenance-software
+
+MaintenEase gives facility teams a single system across every building, floor, and room they look after. Register assets with locations, warranties, and manuals. Schedule the predictable work. Collect occupant requests through a QR code on the wall. Report up to leadership with numbers that hold up to scrutiny.
+
+## Benefits
+
+- **Multi-site visibility** — See backlog, response time, and PM compliance per building and per portfolio in one dashboard.
+- **Happier occupants** — Tenants and staff get automatic status updates from the moment they submit a request to the moment work is complete.
+- **Lower operating cost** — Standardized vendor management, warranty tracking, and parts visibility quietly trim 5–15% from facility budgets.
+
+## Features
+
+- **Nested locations** — Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly.
+- **Vendor and contractor management** — COI tracking, scoped POs, vendor performance scoring, and one work-order queue across in-house and outsourced work.
+- **Occupant request portal** — Branded QR codes per location capture requests with photos, location, and access permission — no app install required.
+- **Compliance and audit** — Life-safety, ADA, environmental, and inspection programs pre-built and exportable for any audit.
+
+## Who it's for
+
+- Corporate real estate and workplace teams
+- Healthcare and life sciences facilities
+- K–12 and higher education campuses
+- Retail, hospitality, and restaurant chains
+
+## FAQ
+
+### Can we restrict what each building manager sees?
+
+Yes. Role and location-based permissions limit each user to the sites and data they are responsible for.
+
+### Do you integrate with our building management system?
+
+MaintenEase exposes a documented API and supports common BMS triggers via webhooks — talk to us about the specific system in play.
+
+---
+
+# Fleet Maintenance Software that keeps vehicles safe, compliant, and on the road
+
+> Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.
+
+Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
+
+MaintenEase treats every vehicle as an asset with its own service history, parts, warranties, and PM schedule. Telematics-fed odometer readings trigger PMs the moment a threshold is crossed. Drivers complete DVIRs on their phone before and after every shift. Compliance reports export ready for any inspection.
+
+## Benefits
+
+- **Less downtime** — Meter-based scheduling and parts visibility mean vehicles come into the shop ready and leave faster.
+- **DOT-ready records** — Every inspection, every repair, every DVIR — timestamped, signed, and exportable per vehicle.
+- **Lower cost per mile** — Track cost per mile by vehicle and class to spot which units to keep, repair, or retire.
+
+## Features
+
+- **Meter-based PMs** — Schedule by mileage, engine hours, or fuel burn. Pulls readings from telematics so nothing has to be entered by hand.
+- **Mobile DVIRs** — Drivers complete inspections from their phone with photos and signatures; defects open work orders automatically.
+- **Parts, warranty, and recalls** — Track parts per vehicle, recover warranty claims, and flag affected units when a recall lands.
+- **Compliance exports** — DOT, FMCSA, and provincial reports built and exportable in one click.
+
+## Who it's for
+
+- Last-mile delivery and logistics fleets
+- Service fleets (HVAC, plumbing, electrical contractors)
+- Municipal fleets and public works
+- Heavy equipment and construction yards
+
+## FAQ
+
+### Do you integrate with telematics providers?
+
+Yes — common providers (Samsara, Geotab, and others) can feed odometer and engine-hour readings into MaintenEase via API.
+
+### Can drivers use this without a full MaintenEase license?
+
+Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost.
+
+---
+
+# A free, branded portal for customers to report problems
+
+> Standard requests and an urgent lane — submissions land straight in your inbox.
+
+Canonical URL: https://maintenease.com/solutions/maintenance-request-portal
+
+Every MaintenEase account ships with a branded public request portal at your-team.maintenease.com/r/your-name. Share the link on your website, print a QR code on the wall, or email it to tenants. Submitters pick a standard request or hit the red Urgent button, fill in a short form, and your team is notified — no app install, no login required.
+
+## Benefits
+
+- **Catch urgent issues in seconds** — Urgent submissions fire instant push and email alerts to your on-call admins and managers — even outside business hours.
+- **Stop drowning in email and texts** — Every request lands in one structured inbox with location, photos, and contact info. No more screenshots in group chats.
+- **Look professional** — The portal carries your logo and company name. Customers experience a real product, not a Google Form.
+
+## Features
+
+- **Standard + urgent lanes** — Two clear buttons up top. The urgent lane is visually distinct and routes differently.
+- **One-click convert to work order** — Triage in the inbox, then convert any request into a fully populated work order with location, contact info, and the right priority.
+- **Branded with your logo** — Your colors and logo appear at the top. Use a custom URL slug so the link reads naturally on your website.
+- **Public — no login required** — Submitters fill the form in 30 seconds. No account, no install, no friction.
+- **Spam-safe by design** — Length-capped fields and per-tenant rate limiting keep the inbox clean without captchas in front of real users.
+- **Free on every plan** — Included with every MaintenEase plan — no extra cost per submission.
+
+## Who it's for
+
+- Property managers receiving tenant maintenance requests
+- Facility teams collecting issues from staff across multiple buildings
+- HOAs and condo associations fielding resident reports
+- Schools and clinics where staff need a fast way to flag problems
+
+## FAQ
+
+### Is the portal really free?
+
+Yes. The public request portal is included on every MaintenEase plan, with no per-submission charges.
+
+### Can I customize the URL?
+
+Yes — each company picks a unique slug (e.g. /r/acme-facilities). You can change it any time from settings.
+
+### How do urgent alerts work?
+
+When someone selects the Urgent option, MaintenEase fires push notifications and emails to admins and managers immediately — using their existing notification preferences.
+
+### Do submitters need a MaintenEase account?
+
+No. The portal is fully public. Anyone with the link can submit a request.
+
+---
+
+# Asset Tracking Software that always knows where every asset lives
+
+> QR codes, locations, custody, and full service history — for every asset you own.
+
+Canonical URL: https://maintenease.com/solutions/asset-tracking-software
+
+MaintenEase gives every asset a unique QR code, a permanent home in your location hierarchy, and a full service history that travels with it. Scan a QR code to see the asset's manual, warranty, open work orders, and PM schedule. Move an asset between rooms or buildings and the audit trail updates itself. No more spreadsheets, no more lost equipment.
+
+## Benefits
+
+- **Find any asset in seconds** — Scan the QR code or search by name, tag, or serial. Every asset has a clear home in your location tree.
+- **Stop losing equipment** — Custody changes, transfers, and disposals are all timestamped — you always know who had it last and where it went.
+- **Service history that follows the asset** — Every work order, PM, inspection, and part swap stays attached to the asset for its entire life — including across owners and locations.
+
+## Features
+
+- **QR code generation** — Print branded QR labels for every asset. Scanning opens the asset directly in MaintenEase — no app install required for read-only access.
+- **Nested locations** — Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level.
+- **Custody and transfers** — Assign assets to people, teams, or locations. Every transfer is logged with who, when, and why.
+- **Warranty, manuals, and photos** — Attach manuals, photos, purchase records, and warranty dates. Get alerts before warranties expire.
+- **Bulk import and CSV export** — Import existing asset registers from a spreadsheet in minutes. Export filtered views for audits or insurance.
+- **Asset lifecycle reporting** — See total cost of ownership, downtime hours, and remaining useful life per asset and per asset class.
+
+## Who it's for
+
+- Facility teams managing thousands of fixed assets across multiple buildings
+- IT and operations teams tracking laptops, tools, and shared equipment
+- Manufacturers tracking machines, tooling, and spare parts
+- Schools, clinics, and labs tracking regulated or high-value equipment
+
+## FAQ
+
+### Do I need special hardware to scan QR codes?
+
+No. Any modern smartphone camera scans MaintenEase QR codes — no scanner, no app install required for read-only access.
+
+### Can I import my existing asset list?
+
+Yes. CSV import is supported, and our team will help map columns and locations on the first import.
+
+### Does it support barcodes too?
+
+Yes — both QR codes and 1D barcodes are supported for scanning and lookup.
+
+---
+
+# Asset Management Software that turns your asset register into a working system
+
+> Register, schedule, maintain, and report on every asset — in one place.
+
+Canonical URL: https://maintenease.com/solutions/asset-management-software
+
+MaintenEase is asset management software built for the teams who actually maintain the assets. Register every asset with its location, warranty, parts, and manuals. Layer PM schedules and work orders directly on top. Report on cost, downtime, and lifecycle — per asset, per location, per category. Your asset register stops being a spreadsheet and starts being the system of record for everything that happens to your equipment.
+
+## Benefits
+
+- **One source of truth** — Every asset, every work order, every PM, every part — in one place. No more reconciling spreadsheets at month-end.
+- **Smarter capital decisions** — See total cost of ownership and downtime per asset to decide what to repair, replace, or retire.
+- **Audit-ready in one click** — Insurance, regulatory, and internal audits export from the asset register with full history attached.
+
+## Features
+
+- **Full asset register** — Capture make, model, serial, warranty, purchase price, installation date, and custom fields per asset class.
+- **PM scheduling per asset** — Time-based, runtime-based, or meter-based PMs attached directly to the asset. Work orders generate automatically.
+- **Work orders and parts** — Every repair, inspection, and part swap is recorded against the asset — building a complete service history.
+- **Warranty and contract tracking** — Alerts before warranties and service contracts expire so you never miss a recoverable repair.
+- **Lifecycle and TCO reporting** — Cost per asset, downtime per asset, repair frequency, and depreciation curves — exportable for finance.
+- **Role and location permissions** — Restrict each user to the sites, asset classes, or actions they're responsible for.
+
+## Who it's for
+
+- Manufacturers managing production equipment and tooling
+- Facility teams tracking HVAC, electrical, and life-safety assets
+- Healthcare and life sciences managing regulated equipment
+- Property and real estate teams managing portfolio-wide asset registers
+
+## FAQ
+
+### How is this different from a CMMS?
+
+Asset management is one of the core capabilities of a CMMS. MaintenEase is a full CMMS — asset management, work orders, PMs, parts, and reporting — sold under whichever name fits how you think about the problem.
+
+### Can I track depreciation?
+
+Yes. Purchase price, installation date, and useful life are captured per asset; straight-line depreciation reports are built in, and you can export raw data for your finance system.
+
+### Does it work for non-physical assets?
+
+Yes — software licenses, certifications, and contracts can be tracked alongside physical assets with their own renewal alerts.
+
+
+---
+
+# Comparisons
+
+---
+
+# MaintenEase vs UpKeep
+
+> The same core CMMS — without paying by the technician.
+
+Canonical URL: https://maintenease.com/compare/maintenease-vs-upkeep
+
+UpKeep is a well-known mobile-first CMMS, priced per user per month. MaintenEase covers the same essentials — work orders, assets, preventive maintenance, inspections, and mobile access — but charges one flat fee for your whole crew. For a growing team, that's the difference between a bill that climbs with every hire and one that doesn't.
+
+## Side-by-side
+
+| Feature | MaintenEase | UpKeep (Starter) |
+| --- | --- | --- |
+| Pricing model | One flat monthly fee | Per user / month |
+| Cost for a team of 8 | $129/mo | $360/mo |
+| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Billing commitment | Month-to-month | Often annual |
+| Work order management | Yes | Yes |
+| Asset management & history | Yes | Yes |
+| Preventive maintenance scheduling | Yes | Yes |
+| Mobile app | Yes | Yes |
+| AI predictive maintenance | Yes | Higher tier / add-on |
+| Energy / power usage tracking | Yes | Varies |
+| Public request portal (no login) | Yes | Varies |
+| Free onboarding & data import | Yes | Varies / paid |
+
+MaintenEase Pro is a flat $129/mo for the whole team; UpKeep's listed plan is ~$45/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+
+## Why teams switch
+
+- **One flat price, not per seat** — Add the whole maintenance team without your bill climbing. UpKeep's per-user pricing means every new technician adds to the monthly cost.
+- **Month-to-month** — MaintenEase is month-to-month — no annual contract required to get the listed price.
+- **Free, hands-on migration** — We import your assets and open work orders for free so switching from UpKeep doesn't mean re-keying your data.
+
+## FAQ
+
+### How much does MaintenEase save vs UpKeep?
+
+UpKeep's listed plan is around $45 per user per month, so a team of 8 runs about $360/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### Is MaintenEase affiliated with UpKeep?
+
+No. This page is an independent comparison based on publicly available pricing and feature information as of 2026. UpKeep is a trademark of its respective owner. Always verify current details on the vendor's own site.
+
+### Can I migrate from UpKeep to MaintenEase?
+
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+
+---
+
+# MaintenEase vs Fiix
+
+> A flat-fee alternative to per-user CMMS pricing.
+
+Canonical URL: https://maintenease.com/compare/maintenease-vs-fiix
+
+Fiix is an established CMMS with deep asset features, billed per user per month. MaintenEase delivers the core maintenance workflow — work orders, asset history, preventive schedules, predictive maintenance, and reporting — for one flat monthly fee, so the whole crew can be on the system without watching the seat count.
+
+## Side-by-side
+
+| Feature | MaintenEase | Fiix (Basic) |
+| --- | --- | --- |
+| Pricing model | One flat monthly fee | Per user / month |
+| Cost for a team of 8 | $129/mo | $360/mo |
+| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Billing commitment | Month-to-month | Often annual |
+| Work order management | Yes | Yes |
+| Asset management & history | Yes | Yes |
+| Preventive maintenance scheduling | Yes | Yes |
+| Mobile app | Yes | Yes |
+| AI predictive maintenance | Yes | Higher tier / add-on |
+| Energy / power usage tracking | Yes | Varies |
+| Public request portal (no login) | Yes | Varies |
+| Free onboarding & data import | Yes | Varies / paid |
+
+MaintenEase Pro is a flat $129/mo for the whole team; Fiix's listed plan is ~$45/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+
+## Why teams switch
+
+- **Predictable flat billing** — One monthly price covers the whole team — no recalculating cost every time you add or remove a technician.
+- **Fast to live** — MaintenEase is built to be running the same week, with free data import rather than a long implementation.
+- **Modern, mobile-first** — Technicians close work from their phone; managers see status in real time without a heavyweight rollout.
+
+## FAQ
+
+### How much does MaintenEase save vs Fiix?
+
+Fiix's listed plan is around $45 per user per month, so a team of 8 runs about $360/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### Is MaintenEase affiliated with Fiix?
+
+No. This page is an independent comparison based on publicly available pricing and feature information as of 2026. Fiix is a trademark of its respective owner. Always verify current details on the vendor's own site.
+
+### Can I migrate from Fiix to MaintenEase?
+
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+
+---
+
+# MaintenEase vs MaintainX
+
+> Flat-fee pricing that doesn't scale with headcount.
+
+Canonical URL: https://maintenease.com/compare/maintenease-vs-maintainx
+
+MaintainX is a popular work-order and procedure app billed per user per month. MaintenEase matches the core workflow — work orders, assets, preventive maintenance, inspections, and mobile — and prices it as one flat fee, so adding the whole crew doesn't multiply the bill.
+
+## Side-by-side
+
+| Feature | MaintenEase | MaintainX (Essential) |
+| --- | --- | --- |
+| Pricing model | One flat monthly fee | Per user / month |
+| Cost for a team of 8 | $129/mo | $168/mo |
+| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Billing commitment | Month-to-month | Often annual |
+| Work order management | Yes | Yes |
+| Asset management & history | Yes | Yes |
+| Preventive maintenance scheduling | Yes | Yes |
+| Mobile app | Yes | Yes |
+| AI predictive maintenance | Yes | Higher tier / add-on |
+| Energy / power usage tracking | Yes | Varies |
+| Public request portal (no login) | Yes | Varies |
+| Free onboarding & data import | Yes | Varies / paid |
+
+MaintenEase Pro is a flat $129/mo for the whole team; MaintainX's listed plan is ~$21/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+
+## Why teams switch
+
+- **Whole crew, one price** — Bring every technician on without per-seat costs — useful once your team grows past a handful of users.
+- **No annual lock-in** — Month-to-month billing; cancel or change plans anytime.
+- **Free onboarding** — We set up your assets, PMs, and reports with you during a free onboarding instead of leaving you to DIY.
+
+## FAQ
+
+### How much does MaintenEase save vs MaintainX?
+
+MaintainX's listed plan is around $21 per user per month, so a team of 8 runs about $168/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### Is MaintenEase affiliated with MaintainX?
+
+No. This page is an independent comparison based on publicly available pricing and feature information as of 2026. MaintainX is a trademark of its respective owner. Always verify current details on the vendor's own site.
+
+### Can I migrate from MaintainX to MaintenEase?
+
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+
+---
+
+# MaintenEase vs Limble
+
+> The flat-fee way to run preventive maintenance.
+
+Canonical URL: https://maintenease.com/compare/maintenease-vs-limble
+
+Limble is a modern CMMS billed per user per month. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — for one flat monthly fee, so your cost stays the same whether you have four technicians or fourteen.
+
+## Side-by-side
+
+| Feature | MaintenEase | Limble (Standard) |
+| --- | --- | --- |
+| Pricing model | One flat monthly fee | Per user / month |
+| Cost for a team of 8 | $129/mo | $224/mo |
+| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Billing commitment | Month-to-month | Often annual |
+| Work order management | Yes | Yes |
+| Asset management & history | Yes | Yes |
+| Preventive maintenance scheduling | Yes | Yes |
+| Mobile app | Yes | Yes |
+| AI predictive maintenance | Yes | Higher tier / add-on |
+| Energy / power usage tracking | Yes | Varies |
+| Public request portal (no login) | Yes | Varies |
+| Free onboarding & data import | Yes | Varies / paid |
+
+MaintenEase Pro is a flat $129/mo for the whole team; Limble's listed plan is ~$28/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+
+## Why teams switch
+
+- **Cost that doesn't climb** — A flat monthly fee means a new hire never increases your software bill.
+- **Everything in one place** — Work orders, assets, PMs, predictive maintenance, and energy tracking under one login.
+- **Switch for free** — Free data import and onboarding make moving from Limble low-effort.
+
+## FAQ
+
+### How much does MaintenEase save vs Limble?
+
+Limble's listed plan is around $28 per user per month, so a team of 8 runs about $224/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### Is MaintenEase affiliated with Limble?
+
+No. This page is an independent comparison based on publicly available pricing and feature information as of 2026. Limble is a trademark of its respective owner. Always verify current details on the vendor's own site.
+
+### Can I migrate from Limble to MaintenEase?
+
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+
+---
+
+# MaintenEase vs eMaint
+
+> A modern, mobile-first alternative to legacy enterprise CMMS.
+
+Canonical URL: https://maintenease.com/compare/maintenease-vs-emaint
+
+eMaint (a Fluke company) is a long-established enterprise CMMS billed per user per month, with a heavier interface aimed at large industrial deployments. MaintenEase delivers the same core maintenance workflow — work orders, assets, preventive maintenance, inspections, and reporting — in a mobile-first UI, for one flat monthly fee. If eMaint feels like more system (and more cost) than your crew needs, MaintenEase is the leaner alternative.
+
+## Side-by-side
+
+| Feature | MaintenEase | eMaint (Team) |
+| --- | --- | --- |
+| Pricing model | One flat monthly fee | Per user / month |
+| Cost for a team of 8 | $129/mo | $552/mo |
+| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Billing commitment | Month-to-month | Often annual |
+| Work order management | Yes | Yes |
+| Asset management & history | Yes | Yes |
+| Preventive maintenance scheduling | Yes | Yes |
+| Mobile app | Yes | Yes |
+| AI predictive maintenance | Yes | Higher tier / add-on |
+| Energy / power usage tracking | Yes | Varies |
+| Public request portal (no login) | Yes | Varies |
+| Free onboarding & data import | Yes | Varies / paid |
+
+MaintenEase Pro is a flat $129/mo for the whole team; eMaint's listed plan is ~$69/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+
+## Why teams switch
+
+- **Mobile-first, not desktop-first** — Technicians close work from their phone in a couple of taps — no training on a legacy enterprise console.
+- **Flat fee vs per-seat enterprise pricing** — eMaint's per-user pricing adds up fast for a growing crew. MaintenEase is one flat monthly price for the whole team.
+- **Live in days, not months** — Free data import and guided onboarding replace long enterprise implementations.
+
+## FAQ
+
+### How much does MaintenEase save vs eMaint?
+
+eMaint's listed plan is around $69 per user per month, so a team of 8 runs about $552/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### Is MaintenEase affiliated with eMaint?
+
+No. This page is an independent comparison based on publicly available pricing and feature information as of 2026. eMaint is a trademark of its respective owner. Always verify current details on the vendor's own site.
+
+### Can I migrate from eMaint to MaintenEase?
+
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+
+
+---
+
+# Learn
+
+---
+
+# CMMS (Computerized Maintenance Management System)
+
+> Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.
+
+Canonical URL: https://maintenease.com/learn/cmms
+
+## What does CMMS stand for?
+
+CMMS stands for Computerized Maintenance Management System. In practice it is the system of record for everything a maintenance team does — every asset they look after, every work order they raise, every inspection they complete, and every preventive task that comes due. Before CMMS software existed, this information lived in clipboards, whiteboards, and a tangle of spreadsheets. A modern CMMS replaces all of that with one searchable place that the whole team works from.
+
+## What does a CMMS actually do?
+
+Most CMMS platforms cover four core jobs. First, an asset registry: every machine, building, vehicle, or piece of equipment with its location, manuals, photos, and service history. Second, work orders: create, assign, prioritize, complete, and close them with a full audit trail. Third, preventive maintenance: recurring schedules that automatically generate work orders by date, meter reading, or runtime. Fourth, reporting: how many work orders are open, which assets fail most often, mean time between failures, technician throughput.
+
+## Who needs a CMMS?
+
+Any team responsible for physical assets benefits from a CMMS — manufacturing plants, facility managers, property managers, fleet operators, hospitals, schools, hotels, and municipal operations. The threshold is usually not company size but asset complexity. If you maintain more than a handful of assets, preventive work keeps slipping, or compliance audits require service history, a CMMS pays for itself quickly through avoided downtime alone.
+
+## CMMS vs EAM vs FSM
+
+A CMMS focuses on maintenance operations. An EAM (Enterprise Asset Management) system covers the full lifecycle of an asset, including procurement, depreciation, and disposal — it overlaps heavily with finance. FSM (Field Service Management) is geared toward dispatching technicians to customer sites and handling billing. Many teams start with a CMMS and only graduate to EAM or FSM when their needs clearly outgrow it.
+
+## FAQ
+
+### Is CMMS the same as maintenance management software?
+
+Yes — the terms are used interchangeably. CMMS is the older industry acronym; maintenance management software is the plain-English version.
+
+### Do I need a CMMS if I only have a few assets?
+
+Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS.
+
+### Is a CMMS expensive?
+
+Modern cloud CMMS platforms (including MaintenEase) charge per user per month and start well under what a single avoided breakdown would cost.
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/work-order
+- https://maintenease.com/learn/mro
+
+---
+
+# Preventive Maintenance
+
+> Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.
+
+Canonical URL: https://maintenease.com/learn/preventive-maintenance
+
+## Definition
+
+Preventive maintenance (PM) is any service task performed on a recurring schedule with the goal of preventing failure rather than reacting to it. Schedules can be time-based (every 30 days), runtime-based (every 250 operating hours), meter-based (every 5,000 miles), or condition-based (when a sensor reading crosses a threshold). The opposite of preventive maintenance is reactive or run-to-failure maintenance.
+
+## Why it matters
+
+Studies across multiple industries consistently find that a dollar spent on preventive work avoids three to nine dollars of reactive repair, lost production, and emergency overtime. Preventive maintenance also extends asset life, smooths out the workload for technicians, and turns chaotic days into planned ones. It is the single biggest lever a maintenance team has to control cost.
+
+## How to set a PM schedule
+
+Start with the manufacturer's recommended intervals — they are conservative, but they are a defensible starting point. Layer in observed failure patterns from your own history (every CMMS will surface these). Group PMs by asset, by location, and by trade so a single technician visit knocks out several tasks at once. Review schedules quarterly: tasks that have never found anything wrong are candidates to lengthen, and assets that keep failing between PMs are candidates to shorten.
+
+## Common preventive maintenance tasks
+
+Lubrication, filter changes, belt and bearing inspections, calibration checks, fluid sampling, infrared scans of electrical panels, fire-system tests, HVAC coil cleans, vehicle oil changes, and tire rotations. Most preventive work is short, predictable, and ideal for assigning to junior technicians from a checklist.
+
+## FAQ
+
+### How is preventive maintenance different from predictive maintenance?
+
+Preventive runs on a fixed schedule. Predictive uses live sensor data (vibration, temperature, current draw) to trigger work only when the asset shows it is needed.
+
+### What percentage of work should be preventive?
+
+World-class maintenance teams typically run 70–80% planned (preventive + scheduled) and 20–30% reactive. Most teams start much closer to 20/80 and improve from there.
+
+## Related
+
+- https://maintenease.com/learn/cmms
+- https://maintenease.com/learn/work-order
+- https://maintenease.com/learn/fleet-maintenance
+
+---
+
+# Work Order
+
+> A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.
+
+Canonical URL: https://maintenease.com/learn/work-order
+
+## Definition
+
+A work order is the unit of work in maintenance. It captures a task to be performed — replace a belt, repair a leak, inspect a panel — along with the asset, the assignee, the priority, the due date, and any parts or instructions needed. Once complete it becomes the permanent service record for that asset.
+
+## Anatomy of a good work order
+
+At minimum: a clear title, the asset it relates to, the location, the priority, the requester, the assignee, a description of the problem or task, and a due date. Better work orders also include attached photos, parts needed, estimated time, a checklist of steps, and required signatures. The richer the work order, the less time technicians spend asking clarifying questions in the field.
+
+## The work order lifecycle
+
+Most teams use four to six statuses: Requested → Approved → Assigned → In Progress → On Hold → Completed → Closed. Approval is optional but useful for cost control. 'On Hold' captures waiting for parts or vendor availability, which is critical for honest reporting on technician utilization.
+
+## Reactive vs preventive work orders
+
+Reactive work orders are created when something breaks. Preventive work orders are generated automatically by the CMMS from a schedule. Inspection work orders capture rounds and checklists. Healthy teams track the ratio between these three — it is the simplest indicator of whether maintenance is in control of its workload.
+
+## FAQ
+
+### What is the difference between a work order and a work request?
+
+A request is what an end user submits ('the printer is broken'). The maintenance team triages it, and if it is valid, converts it into a work order with priority, assignee, and due date.
+
+### How long should a work order stay open?
+
+Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign.
+
+## Related
+
+- https://maintenease.com/learn/cmms
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/facility-maintenance
+
+---
+
+# Facility Maintenance
+
+> All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.
+
+Canonical URL: https://maintenease.com/learn/facility-maintenance
+
+## Definition
+
+Facility maintenance is the discipline of keeping a building and its systems in working order. It spans the building envelope (roof, walls, doors, windows), the major systems inside it (HVAC, plumbing, electrical, fire and life safety), and the equipment that supports occupants (elevators, lighting, security, signage). The goal is a space that is safe, code-compliant, comfortable, and continuously available.
+
+## Scope of work
+
+Facility maintenance teams handle three broad workload types: preventive tasks (filter changes, inspections, code-required tests), reactive repairs (leaks, outages, broken fixtures), and small projects (paint, signage, minor reconfigurations). Larger capital projects — re-roofing, chiller replacement, full renovations — usually sit with a separate facilities or capital projects function.
+
+## How facility teams stay on top of it
+
+Most facility teams now run on a CMMS. Assets are registered with locations and warranties. Compliance-driven PMs (fire extinguishers, sprinklers, backflow preventers, generator tests) are scheduled and audit-trailed. Tenants or staff submit requests through a simple portal that drops directly into the work order queue. KPIs that matter: percentage of PMs completed on time, average response time on urgent requests, and reactive-to-planned work ratio.
+
+## Common pitfalls
+
+Three patterns sink most facility teams: an unmaintained asset list, so PMs are missed and audits are painful; an over-reliance on a single 'tribal knowledge' technician; and no reporting layer, so leadership has no objective view of workload or backlog. All three are solved by adopting purpose-built facility maintenance software.
+
+## FAQ
+
+### Is facility maintenance the same as building maintenance?
+
+They overlap heavily. 'Facility' tends to imply a broader scope including non-building infrastructure (parking lots, grounds, security systems). In daily use the terms are often interchangeable.
+
+### Who is responsible for facility maintenance?
+
+In owner-occupied buildings, an internal facilities team. In leased space, responsibility is split between landlord and tenant per the lease; the CMMS should reflect that split.
+
+## Related
+
+- https://maintenease.com/learn/building-maintenance
+- https://maintenease.com/learn/property-maintenance
+- https://maintenease.com/learn/work-order
+
+---
+
+# Fleet Maintenance
+
+> Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.
+
+Canonical URL: https://maintenease.com/learn/fleet-maintenance
+
+## Definition
+
+Fleet maintenance is the practice of keeping a group of vehicles operational, safe, and compliant. It covers everything from daily driver inspections to scheduled service, emergency roadside repairs, tire programs, accident damage, and end-of-life disposal. The scope spans light vehicles (cars, vans), medium and heavy trucks, trailers, and off-road equipment.
+
+## How fleet schedules are set
+
+Unlike most maintenance, fleet schedules are usually meter-based rather than calendar-based. Oil changes by mileage, brake inspections by mileage, DOT inspections by federal or local regulation. Modern fleet maintenance software pulls odometer readings directly from telematics so PMs trigger themselves the moment a vehicle crosses its threshold, eliminating the spreadsheet that used to live in dispatch.
+
+## Compliance is non-negotiable
+
+Commercial fleets in most jurisdictions must keep auditable records of inspections, repairs, and driver vehicle inspection reports (DVIRs). Penalties for missing records are steep, and insurance carriers increasingly require digital records to renew coverage. A fleet CMMS that stores DVIRs, inspection results, and service history per vehicle handles this automatically.
+
+## KPIs that matter
+
+Cost per mile by vehicle, downtime hours per month, percentage of PMs completed on time, average repair turnaround, and warranty recovery rate. The last one is widely under-tracked; warranty claims that slip through unfiled are pure margin lost.
+
+## FAQ
+
+### Do I need separate software for fleet maintenance?
+
+Not always. A general CMMS can handle a small fleet. Above roughly 20–30 vehicles, or once telematics integration and DOT compliance become priorities, dedicated fleet maintenance software pays off.
+
+### What is a DVIR?
+
+Driver Vehicle Inspection Report — a pre- and post-trip safety check the driver completes. In commercial transport it is legally required in most jurisdictions.
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/cmms
+- https://maintenease.com/learn/work-order
+
+---
+
+# MRO (Maintenance, Repair & Operations)
+
+> The supplies, parts, and consumables a maintenance team uses to keep operations running — separate from raw materials that become finished products.
+
+Canonical URL: https://maintenease.com/learn/mro
+
+## Definition
+
+MRO stands for Maintenance, Repair, and Operations. It refers to the goods a business consumes to keep itself running, as opposed to the raw materials that get turned into finished products. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. In accounting terms MRO is usually expensed rather than capitalized.
+
+## Why MRO is hard to control
+
+MRO inventory tends to sprawl. Items are low-value individually but high-value in aggregate. Multiple people order from multiple suppliers, often without checking stock first. Critical spares hide in personal toolboxes, while obsolete parts gather dust. Most plants discover during their first real audit that MRO inventory is 20–40% larger than the system shows.
+
+## How a CMMS helps
+
+A CMMS with parts and inventory tracks on-hand quantity, reorder points, supplier and cost, and — critically — which assets each part fits. When a technician closes a work order and consumes a bearing, stock decrements automatically. Reorder alerts fire before stockouts trigger emergency overnight shipping. Vendor performance becomes measurable.
+
+## MRO best practices
+
+Standardize on as few part numbers as possible; consolidate suppliers to negotiate better terms; lock the storeroom and require check-out; do a quarterly cycle count rather than an annual full inventory; and review the slow-moving list every six months to write off true obsolescence.
+
+## FAQ
+
+### Is MRO the same as spare parts?
+
+Spare parts are a subset of MRO. MRO also covers consumables, tools, and operating supplies that are not strictly 'parts'.
+
+### How much MRO inventory should I carry?
+
+Enough to cover critical-spare lead times for assets where downtime is expensive, and no more. Anything else ties up cash without reducing risk.
+
+## Related
+
+- https://maintenease.com/learn/cmms
+- https://maintenease.com/learn/work-order
+- https://maintenease.com/learn/preventive-maintenance
+
+---
+
+# Building Maintenance
+
+> The day-to-day and scheduled work needed to keep a building's structure, systems, and finishes in safe and serviceable condition.
+
+Canonical URL: https://maintenease.com/learn/building-maintenance
+
+## Definition
+
+Building maintenance is the set of activities required to preserve a building in working condition. It spans structural elements (foundation, walls, roof), enclosing surfaces (windows, doors, weatherproofing), interior finishes (paint, flooring, ceilings), and the mechanical systems that keep the building habitable (HVAC, plumbing, electrical). It is sometimes used interchangeably with facility maintenance, though building maintenance leans toward the physical structure itself.
+
+## Routine vs corrective vs cosmetic
+
+Routine maintenance is recurring work: filter changes, gutter cleaning, lamp replacement, lubrication. Corrective maintenance fixes something that has broken: a leaking pipe, a failed motor, a damaged door. Cosmetic maintenance restores appearance: paint touch-ups, carpet cleaning, signage refresh. Most building maintenance budgets are dominated by routine work, but corrective spikes are what get noticed.
+
+## How modern teams run it
+
+Buildings get registered as locations, with each floor and each room as nested sub-locations. Assets (HVAC units, water heaters, fire panels) are placed within those locations. Tenants or occupants submit requests through a portal or QR code; the CMMS routes the request to the right trade, assigns it, and tracks completion. Preventive schedules cover the predictable work; reactive requests flow through the same system so reporting is honest.
+
+## Outsourced vs in-house
+
+Most building maintenance programs blend in-house staff for fast response and routine work with outsourced contractors for specialized work (elevator service, fire-system testing, roofing). A CMMS makes the contractor side visible: scheduled work, invoices, warranty claims, and certificates of insurance all tracked alongside in-house work.
+
+## FAQ
+
+### What is the difference between building maintenance and janitorial?
+
+Janitorial (or custodial) work is daily cleaning. Building maintenance is the technical work to keep systems and structure functional. They are usually separate teams or contracts.
+
+### How much should I budget for building maintenance?
+
+A common rule of thumb for commercial buildings is 2–4% of replacement value per year for ongoing maintenance, with larger reserves set aside for capital renewals.
+
+## Related
+
+- https://maintenease.com/learn/facility-maintenance
+- https://maintenease.com/learn/property-maintenance
+- https://maintenease.com/learn/work-order
+
+---
+
+# Property Maintenance
+
+> Ongoing upkeep of residential or commercial rental property — units, common areas, grounds, and life-safety systems — to protect the asset and keep tenants happy.
+
+Canonical URL: https://maintenease.com/learn/property-maintenance
+
+## Definition
+
+Property maintenance is the work required to keep a real estate asset — a single-family rental, a multifamily community, a strip center, an office portfolio — in good condition. It covers the interior of units (appliances, fixtures, finishes), the building exterior, common areas, grounds, parking, and the major systems that serve all of it. The audience is typically property managers, landlords, and HOA boards rather than industrial maintenance teams.
+
+## Make-ready and turnover
+
+In residential property management, the dominant workload is turnover: getting a unit cleaned, painted, repaired, and re-keyed between residents. Speed matters because every day vacant is lost rent. A property maintenance system tracks the turn as a structured checklist with photos and sign-offs, so leasing can confidently market the unit before the work is fully done.
+
+## Resident requests
+
+The second major workload is resident-submitted work orders. Best practice is a portal or QR code that captures the issue, location within the unit, photos, and access permission ('OK to enter when not home') in one step. From there a CMMS routes the request to the right technician, sends the resident automatic status updates, and closes the loop with a satisfaction prompt.
+
+## Compliance and risk
+
+Property owners carry significant liability for habitability, life safety, and accessibility. Smoke and CO detector tests, pool inspections, playground inspections, lead paint and asbestos disclosures, and ADA accommodations all generate recurring tasks that belong on a preventive schedule with an audit trail.
+
+## FAQ
+
+### Is property maintenance the same as facility maintenance?
+
+They overlap, but property maintenance is oriented around rental real estate (units, residents, turnover), while facility maintenance is oriented around owner-occupied buildings (offices, plants, hospitals).
+
+### Should small landlords use maintenance software?
+
+Once you cross roughly 10 units, yes. The cost is small and the time saved tracking resident requests by text and email pays for itself within a month.
+
+## Related
+
+- https://maintenease.com/learn/facility-maintenance
+- https://maintenease.com/learn/building-maintenance
+- https://maintenease.com/learn/work-order
+
+---
+
+# Reactive Maintenance
+
+> Fixing equipment after it has already broken down — the unplanned, run-to-failure work that a maintenance program tries to shrink.
+
+Canonical URL: https://maintenease.com/learn/reactive-maintenance
+
+## Definition
+
+Reactive maintenance — also called breakdown or run-to-failure maintenance — is any repair carried out after an asset has already failed or stopped performing. There is no schedule and no warning: a machine goes down, a work order is raised, and a technician scrambles to fix it. It is the default mode every maintenance team starts in, and the mode a good preventive program is designed to escape.
+
+## What reactive maintenance really costs
+
+The repair bill is only part of it. Reactive work also brings unplanned downtime, lost production, emergency overtime, rushed parts ordering at premium prices, and collateral damage when one failed component takes others with it. Industry studies consistently put reactive repairs at three to nine times the cost of the equivalent planned work. The hidden tax is unpredictability — reactive-heavy teams can never plan their week because the week plans them.
+
+## When reactive maintenance is the right call
+
+Not every asset deserves a preventive schedule. For cheap, non-critical, easily replaced items — a light fixture, a $20 pump, a redundant component with a standby — running to failure is often the rational choice. The skill is deciding deliberately: reactive maintenance should be a strategy you chose for low-stakes assets, not a condition you are stuck in for critical ones.
+
+## How to reduce reactive maintenance
+
+Start by measuring it: a CMMS tags every work order as planned or reactive so you can see the ratio. Then attack the worst offenders — the handful of assets generating most of the emergency calls usually reveal a clear preventive fix. Move those onto schedules, track whether breakdowns drop, and repeat. Most teams start near 80% reactive and work toward the 20–30% that world-class operations sustain.
+
+## FAQ
+
+### Is reactive maintenance always bad?
+
+No. For low-cost, non-critical assets it can be the cheapest strategy. It becomes a problem when critical equipment is run to failure by accident rather than by choice.
+
+### How do I know if I have too much reactive maintenance?
+
+Track the planned-vs-reactive ratio in your CMMS. If more than ~30% of your work is unplanned breakdowns, there is room to shift work into preventive schedules.
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/cmms
+
+---
+
+# Predictive Maintenance
+
+> Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.
+
+Canonical URL: https://maintenease.com/learn/predictive-maintenance
+
+## Definition
+
+Predictive maintenance (PdM) uses real-time condition data to forecast when an asset is likely to fail, so work is performed just in time — late enough to get full life out of components, early enough to avoid the breakdown. Instead of a calendar telling you to act, the equipment itself does, through signals like vibration, temperature, ultrasonic noise, oil particulates, or motor current.
+
+## How predictive maintenance works
+
+It runs in three layers. First, sensors (or manual readings) capture a condition signal over time. Second, a baseline of normal behavior is established. Third, when readings drift outside normal — a bearing's vibration climbing, a motor drawing more current — the system flags a developing fault and generates a work order with lead time to plan parts and labor. Modern CMMS platforms increasingly fold in AI models that learn each asset's failure signature from its own history.
+
+## Predictive vs preventive maintenance
+
+Preventive maintenance acts on a fixed schedule whether the asset needs it or not, which means some work is done too early (wasting component life) and some failures still slip through between intervals. Predictive maintenance acts only on evidence, so it cuts both unnecessary work and surprise breakdowns. The trade-off is setup: PdM needs sensors or readings and a baseline, where preventive needs only a calendar.
+
+## Where to start with predictive maintenance
+
+Begin with your most critical, most expensive-to-fail assets — the ones whose downtime hurts most. Pick one measurable signal (vibration on rotating equipment is the classic starting point), capture it regularly, and watch for trend changes. You do not need a full sensor rollout to start; even routine manual readings logged in a CMMS turn into a predictive trend over time.
+
+## FAQ
+
+### Do I need expensive sensors for predictive maintenance?
+
+Not to start. Manual condition readings (temperature, vibration pens, oil samples) logged consistently in a CMMS build a usable trend. Permanent sensors pay off on the most critical assets.
+
+### Is predictive maintenance the same as condition-based maintenance?
+
+They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models.
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/condition-based-maintenance
+- https://maintenease.com/learn/reactive-maintenance
+
+---
+
+# Corrective Maintenance
+
+> Planned repair work that fixes a known defect found during an inspection or PM — before it becomes a breakdown.
+
+Canonical URL: https://maintenease.com/learn/corrective-maintenance
+
+## Definition
+
+Corrective maintenance is work that restores a failed or failing asset to working order. Crucially, in modern usage it usually refers to planned corrective work: a technician spots a worn belt, a small leak, or an out-of-spec reading during an inspection or preventive task, raises a work order, and the fix is scheduled before the asset actually breaks down.
+
+## Corrective vs reactive maintenance
+
+The terms are often confused. Reactive (breakdown) maintenance happens after an unexpected failure, under time pressure. Corrective maintenance is the planned cousin: the defect is known, parts and labor are organized, and the work is scheduled into the normal flow. Both fix a problem, but corrective work is calm and cheap where reactive work is chaotic and expensive.
+
+## Where corrective maintenance comes from
+
+Most corrective work is generated by other maintenance activity. A preventive task or inspection surfaces a defect that is not yet a failure — this is exactly why inspections pay off. The finding becomes a corrective work order, ideally linked to the same asset so its history shows the full chain from detection to repair.
+
+## Tracking corrective maintenance well
+
+Tag corrective work orders distinctly from preventive and reactive so reporting stays honest. A healthy program shows preventive inspections feeding a steady stream of planned corrective fixes, with reactive breakdowns shrinking over time. If corrective work is rare and reactive work is high, your inspections are probably not catching defects early enough.
+
+## FAQ
+
+### Is corrective maintenance planned or unplanned?
+
+Modern usage treats it as planned: the defect is already known (found during a PM or inspection) and the repair is scheduled, unlike a reactive breakdown.
+
+### What triggers corrective maintenance?
+
+Usually a preventive task or inspection that finds a developing fault — a worn part, a leak, an out-of-tolerance reading — which becomes a scheduled corrective work order.
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/reactive-maintenance
+- https://maintenease.com/learn/work-order
+
+---
+
+# Condition-Based Maintenance
+
+> Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.
+
+Canonical URL: https://maintenease.com/learn/condition-based-maintenance
+
+## Definition
+
+Condition-based maintenance (CBM) triggers service based on the actual, measured condition of an asset rather than a calendar or runtime interval. A monitored parameter — bearing temperature, vibration amplitude, oil cleanliness, differential pressure across a filter — is compared against a defined limit, and when it crosses that limit, a work order is raised. The asset is serviced because it shows it needs it, not because a schedule said so.
+
+## How condition-based maintenance works
+
+First, choose a condition that reliably indicates wear or impending failure for that asset class. Second, set a threshold based on manufacturer specs and your own history. Third, monitor — continuously with sensors, or periodically with manual readings logged in a CMMS. When the reading breaches the threshold, the system generates the work. The art is choosing thresholds that fire early enough to plan but not so early that you waste component life.
+
+## CBM vs preventive vs predictive
+
+Preventive maintenance acts on time. Condition-based maintenance acts on a present-moment reading crossing a line. Predictive maintenance goes one step further, using trends and models to forecast when the line will be crossed in the future. CBM is often the practical middle ground: more efficient than fixed schedules, far simpler to implement than full predictive analytics.
+
+## Getting started with CBM
+
+Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Decide the threshold, log readings on a regular route, and let your CMMS raise the work order when the limit is hit. As confidence grows, add parameters and assets. Manual CBM with a clipboard and a CMMS is a legitimate, low-cost place to begin.
+
+## FAQ
+
+### Does condition-based maintenance require sensors?
+
+Not necessarily. Permanent sensors enable continuous monitoring, but periodic manual readings (temperature, vibration, pressure) logged in a CMMS are a valid, low-cost form of CBM.
+
+### How is CBM different from predictive maintenance?
+
+CBM reacts when a reading crosses a threshold now. Predictive maintenance forecasts when that threshold will be crossed in the future, usually with trend analysis or models.
+
+## Related
+
+- https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/mtbf
+
+---
+
+# MTBF (Mean Time Between Failures)
+
+> The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.
+
+Canonical URL: https://maintenease.com/learn/mtbf
+
+## Definition
+
+MTBF stands for Mean Time Between Failures. It is the average amount of operating time a repairable asset runs between one failure and the next. A higher MTBF means a more reliable asset. It is one of the most widely used reliability metrics in maintenance and is most useful for comparing assets, tracking whether reliability is improving, and prioritizing where to focus preventive effort.
+
+## MTBF formula
+
+MTBF = total operating time ÷ number of failures over that period. For example, if a pump ran for 1,200 hours and failed 3 times, its MTBF is 400 hours. The number is only as good as the data behind it, which is why teams track failures in a CMMS — accurate failure counts and runtime are what make the metric trustworthy.
+
+## MTBF vs MTTR vs MTTF
+
+MTBF measures reliability — how long an asset runs between failures. MTTR (Mean Time To Repair) measures maintainability — how long it takes to get it running again. The two together describe availability. MTTF (Mean Time To Failure) is used for non-repairable items that are replaced rather than fixed; MTBF is for repairable assets.
+
+## How to use MTBF in practice
+
+Track MTBF per asset and watch the trend. A falling MTBF flags an asset that is degrading and may need a tighter preventive schedule, a rebuild, or replacement. Comparing MTBF across similar assets surfaces the bad actors that deserve attention first. Avoid over-reading a single number — MTBF is an average, so it is most meaningful as a trend over time on assets with enough failure history.
+
+## FAQ
+
+### What is a good MTBF?
+
+There is no universal target — it depends entirely on the asset and industry. MTBF is most useful as a trend (is it improving?) and as a way to compare similar assets, not as an absolute score.
+
+### What's the difference between MTBF and MTTR?
+
+MTBF measures how long an asset runs between failures (reliability); MTTR measures how long it takes to repair after a failure (maintainability). Together they drive availability.
+
+## Related
+
+- https://maintenease.com/learn/mttr
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/cmms
+
+---
+
+# MTTR (Mean Time To Repair)
+
+> The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.
+
+Canonical URL: https://maintenease.com/learn/mttr
+
+## Definition
+
+MTTR stands for Mean Time To Repair: the average time it takes to restore a failed asset to working condition, measured from the moment it goes down to the moment it is back in service. It captures everything in between — diagnosis, waiting for parts, the actual repair, testing, and handback. A lower MTTR means faster recovery and less downtime.
+
+## MTTR formula
+
+MTTR = total repair time ÷ number of repairs over a period. If a line suffered 4 failures last month and the total time-to-restore across them was 8 hours, MTTR is 2 hours. As with MTBF, the metric is only as reliable as the timestamps behind it — recording when work orders open and close in a CMMS is what makes MTTR measurable.
+
+## What drives MTTR up
+
+The repair itself is often the smallest slice. The big drivers are usually waiting — for a technician to be notified, for the right parts to be on hand, for documentation or a manual, for an approval. That is why MTTR is as much a logistics and process metric as a wrench-time one: faster notification, better spare-parts stocking, and clear procedures cut it more than working faster ever could.
+
+## How to reduce MTTR
+
+Tighten notification so the right technician knows immediately. Stock critical spares so repairs don't stall waiting for parts. Attach manuals, photos, and procedures to each asset so diagnosis is fast. Capture failure history so recurring problems have a known fix. A CMMS supports all four — mobile alerts, parts tracking, asset documentation, and history — which is why MTTR usually falls once a team moves off spreadsheets.
+
+## FAQ
+
+### What is included in MTTR?
+
+Everything from failure to restored service: detection, diagnosis, waiting for parts or approvals, the repair, and testing. Much of MTTR is waiting, not wrench time.
+
+### How can I lower MTTR?
+
+Speed up notification, stock critical spare parts, attach procedures and history to each asset, and track recurring failures — all of which a CMMS makes easier.
+
+## Related
+
+- https://maintenease.com/learn/mtbf
+- https://maintenease.com/learn/work-order
+- https://maintenease.com/learn/cmms

@@ -1,8 +1,57 @@
 # MaintenEase
 
-> Modern maintenance management software that helps teams organize, track, and optimize their operations — work orders, inspections, assets, and team coordination.
+> Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Flat monthly pricing instead of per-user seats. Work orders, preventive maintenance, inspections, assets, and a public request portal in one place.
 
-## Pages
+MaintenEase Pro is a flat $129/month for the whole team. 7-day free trial. Month-to-month billing. Free data import and onboarding.
 
-- [Home](/): Product overview and entry point.
-- [Sign in / Sign up](/auth): Account access for team members.
+All pages below are also available as clean Markdown by appending `.md` (e.g. https://maintenease.com/solutions/work-order-software.md). See https://maintenease.com/llms-full.txt for the full corpus in one file.
+
+## Product
+
+- [Home](https://maintenease.com/): Product overview.
+- [Features](https://maintenease.com/features): Full feature list.
+- [Pricing](https://maintenease.com/pricing): Flat monthly pricing and trial details.
+- [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
+- [Sign in / Sign up](https://maintenease.com/auth): Account access.
+
+## Solutions
+
+- [Work Order Software](https://maintenease.com/solutions/work-order-software.md): Capture, assign, and close work orders without the spreadsheet sprawl.
+- [Preventive Maintenance Software](https://maintenease.com/solutions/preventive-maintenance-software.md): Schedule by date, runtime, or meter — and watch reactive work shrink.
+- [Facility Maintenance Software](https://maintenease.com/solutions/facility-maintenance-software.md): One system for assets, work orders, PMs, and tenant requests across every building.
+- [Fleet Maintenance Software](https://maintenease.com/solutions/fleet-maintenance-software.md): Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.
+- [Maintenance Request Portal](https://maintenease.com/solutions/maintenance-request-portal.md): Standard requests and an urgent lane — submissions land straight in your inbox.
+- [Asset Tracking Software](https://maintenease.com/solutions/asset-tracking-software.md): QR codes, locations, custody, and full service history — for every asset you own.
+- [Asset Management Software](https://maintenease.com/solutions/asset-management-software.md): Register, schedule, maintain, and report on every asset — in one place.
+
+## Comparisons
+
+- [MaintenEase vs UpKeep](https://maintenease.com/compare/maintenease-vs-upkeep.md): The same core CMMS — without paying by the technician.
+- [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): A flat-fee alternative to per-user CMMS pricing.
+- [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx.md): Flat-fee pricing that doesn't scale with headcount.
+- [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): The flat-fee way to run preventive maintenance.
+- [MaintenEase vs eMaint](https://maintenease.com/compare/maintenease-vs-emaint.md): A modern, mobile-first alternative to legacy enterprise CMMS.
+
+## Learn (glossary)
+
+- [CMMS (Computerized Maintenance Management System)](https://maintenease.com/learn/cmms.md): Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.
+- [Preventive Maintenance](https://maintenease.com/learn/preventive-maintenance.md): Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.
+- [Work Order](https://maintenease.com/learn/work-order.md): A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.
+- [Facility Maintenance](https://maintenease.com/learn/facility-maintenance.md): All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.
+- [Fleet Maintenance](https://maintenease.com/learn/fleet-maintenance.md): Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.
+- [MRO (Maintenance, Repair & Operations)](https://maintenease.com/learn/mro.md): The supplies, parts, and consumables a maintenance team uses to keep operations running — separate from raw materials that become finished products.
+- [Building Maintenance](https://maintenease.com/learn/building-maintenance.md): The day-to-day and scheduled work needed to keep a building's structure, systems, and finishes in safe and serviceable condition.
+- [Property Maintenance](https://maintenease.com/learn/property-maintenance.md): Ongoing upkeep of residential or commercial rental property — units, common areas, grounds, and life-safety systems — to protect the asset and keep tenants happy.
+- [Reactive Maintenance](https://maintenease.com/learn/reactive-maintenance.md): Fixing equipment after it has already broken down — the unplanned, run-to-failure work that a maintenance program tries to shrink.
+- [Predictive Maintenance](https://maintenease.com/learn/predictive-maintenance.md): Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.
+- [Corrective Maintenance](https://maintenease.com/learn/corrective-maintenance.md): Planned repair work that fixes a known defect found during an inspection or PM — before it becomes a breakdown.
+- [Condition-Based Maintenance](https://maintenease.com/learn/condition-based-maintenance.md): Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.
+- [MTBF (Mean Time Between Failures)](https://maintenease.com/learn/mtbf.md): The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.
+- [MTTR (Mean Time To Repair)](https://maintenease.com/learn/mttr.md): The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.
+
+## Policies
+
+- [Privacy](https://maintenease.com/privacy)
+- [Terms](https://maintenease.com/terms)
+- [Refund policy](https://maintenease.com/refund-policy)
+- [SMS opt-in](https://maintenease.com/sms-opt-in)
