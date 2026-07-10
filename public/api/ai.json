@@ -1,0 +1,208 @@
+{
+  "name": "MaintenEase",
+  "description": "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
+  "site": "https://maintenease.com",
+  "generated_at": "2026-07-10T15:46:00.934Z",
+  "llms_txt": "https://maintenease.com/llms.txt",
+  "llms_full_txt": "https://maintenease.com/llms-full.txt",
+  "pricing": {
+    "plan": "Pro",
+    "model": "flat_monthly",
+    "price_usd_per_month": 129,
+    "trial_days": 7,
+    "billing": "month-to-month"
+  },
+  "solutions": [
+    {
+      "slug": "work-order-software",
+      "name": "Work Order Software",
+      "tagline": "Capture, assign, and close work orders without the spreadsheet sprawl.",
+      "html_url": "https://maintenease.com/solutions/work-order-software",
+      "markdown_url": "https://maintenease.com/solutions/work-order-software.md"
+    },
+    {
+      "slug": "preventive-maintenance-software",
+      "name": "Preventive Maintenance Software",
+      "tagline": "Schedule by date, runtime, or meter — and watch reactive work shrink.",
+      "html_url": "https://maintenease.com/solutions/preventive-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/preventive-maintenance-software.md"
+    },
+    {
+      "slug": "facility-maintenance-software",
+      "name": "Facility Maintenance Software",
+      "tagline": "One system for assets, work orders, PMs, and tenant requests across every building.",
+      "html_url": "https://maintenease.com/solutions/facility-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/facility-maintenance-software.md"
+    },
+    {
+      "slug": "fleet-maintenance-software",
+      "name": "Fleet Maintenance Software",
+      "tagline": "Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.",
+      "html_url": "https://maintenease.com/solutions/fleet-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/fleet-maintenance-software.md"
+    },
+    {
+      "slug": "maintenance-request-portal",
+      "name": "Maintenance Request Portal",
+      "tagline": "Standard requests and an urgent lane — submissions land straight in your inbox.",
+      "html_url": "https://maintenease.com/solutions/maintenance-request-portal",
+      "markdown_url": "https://maintenease.com/solutions/maintenance-request-portal.md"
+    },
+    {
+      "slug": "asset-tracking-software",
+      "name": "Asset Tracking Software",
+      "tagline": "QR codes, locations, custody, and full service history — for every asset you own.",
+      "html_url": "https://maintenease.com/solutions/asset-tracking-software",
+      "markdown_url": "https://maintenease.com/solutions/asset-tracking-software.md"
+    },
+    {
+      "slug": "asset-management-software",
+      "name": "Asset Management Software",
+      "tagline": "Register, schedule, maintain, and report on every asset — in one place.",
+      "html_url": "https://maintenease.com/solutions/asset-management-software",
+      "markdown_url": "https://maintenease.com/solutions/asset-management-software.md"
+    }
+  ],
+  "comparisons": [
+    {
+      "slug": "maintenease-vs-upkeep",
+      "competitor": "UpKeep",
+      "competitor_plan": "Starter",
+      "competitor_price_per_user_usd": 45,
+      "html_url": "https://maintenease.com/compare/maintenease-vs-upkeep",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-upkeep.md"
+    },
+    {
+      "slug": "maintenease-vs-fiix",
+      "competitor": "Fiix",
+      "competitor_plan": "Basic",
+      "competitor_price_per_user_usd": 45,
+      "html_url": "https://maintenease.com/compare/maintenease-vs-fiix",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-fiix.md"
+    },
+    {
+      "slug": "maintenease-vs-maintainx",
+      "competitor": "MaintainX",
+      "competitor_plan": "Essential",
+      "competitor_price_per_user_usd": 21,
+      "html_url": "https://maintenease.com/compare/maintenease-vs-maintainx",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-maintainx.md"
+    },
+    {
+      "slug": "maintenease-vs-limble",
+      "competitor": "Limble",
+      "competitor_plan": "Standard",
+      "competitor_price_per_user_usd": 28,
+      "html_url": "https://maintenease.com/compare/maintenease-vs-limble",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-limble.md"
+    },
+    {
+      "slug": "maintenease-vs-emaint",
+      "competitor": "eMaint",
+      "competitor_plan": "Team",
+      "competitor_price_per_user_usd": 69,
+      "html_url": "https://maintenease.com/compare/maintenease-vs-emaint",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-emaint.md"
+    }
+  ],
+  "glossary": [
+    {
+      "slug": "cmms",
+      "term": "CMMS (Computerized Maintenance Management System)",
+      "short": "Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.",
+      "html_url": "https://maintenease.com/learn/cmms",
+      "markdown_url": "https://maintenease.com/learn/cmms.md"
+    },
+    {
+      "slug": "preventive-maintenance",
+      "term": "Preventive Maintenance",
+      "short": "Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.",
+      "html_url": "https://maintenease.com/learn/preventive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/preventive-maintenance.md"
+    },
+    {
+      "slug": "work-order",
+      "term": "Work Order",
+      "short": "A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.",
+      "html_url": "https://maintenease.com/learn/work-order",
+      "markdown_url": "https://maintenease.com/learn/work-order.md"
+    },
+    {
+      "slug": "facility-maintenance",
+      "term": "Facility Maintenance",
+      "short": "All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.",
+      "html_url": "https://maintenease.com/learn/facility-maintenance",
+      "markdown_url": "https://maintenease.com/learn/facility-maintenance.md"
+    },
+    {
+      "slug": "fleet-maintenance",
+      "term": "Fleet Maintenance",
+      "short": "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
+      "html_url": "https://maintenease.com/learn/fleet-maintenance",
+      "markdown_url": "https://maintenease.com/learn/fleet-maintenance.md"
+    },
+    {
+      "slug": "mro",
+      "term": "MRO (Maintenance, Repair & Operations)",
+      "short": "The supplies, parts, and consumables a maintenance team uses to keep operations running — separate from raw materials that become finished products.",
+      "html_url": "https://maintenease.com/learn/mro",
+      "markdown_url": "https://maintenease.com/learn/mro.md"
+    },
+    {
+      "slug": "building-maintenance",
+      "term": "Building Maintenance",
+      "short": "The day-to-day and scheduled work needed to keep a building's structure, systems, and finishes in safe and serviceable condition.",
+      "html_url": "https://maintenease.com/learn/building-maintenance",
+      "markdown_url": "https://maintenease.com/learn/building-maintenance.md"
+    },
+    {
+      "slug": "property-maintenance",
+      "term": "Property Maintenance",
+      "short": "Ongoing upkeep of residential or commercial rental property — units, common areas, grounds, and life-safety systems — to protect the asset and keep tenants happy.",
+      "html_url": "https://maintenease.com/learn/property-maintenance",
+      "markdown_url": "https://maintenease.com/learn/property-maintenance.md"
+    },
+    {
+      "slug": "reactive-maintenance",
+      "term": "Reactive Maintenance",
+      "short": "Fixing equipment after it has already broken down — the unplanned, run-to-failure work that a maintenance program tries to shrink.",
+      "html_url": "https://maintenease.com/learn/reactive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/reactive-maintenance.md"
+    },
+    {
+      "slug": "predictive-maintenance",
+      "term": "Predictive Maintenance",
+      "short": "Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.",
+      "html_url": "https://maintenease.com/learn/predictive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/predictive-maintenance.md"
+    },
+    {
+      "slug": "corrective-maintenance",
+      "term": "Corrective Maintenance",
+      "short": "Planned repair work that fixes a known defect found during an inspection or PM — before it becomes a breakdown.",
+      "html_url": "https://maintenease.com/learn/corrective-maintenance",
+      "markdown_url": "https://maintenease.com/learn/corrective-maintenance.md"
+    },
+    {
+      "slug": "condition-based-maintenance",
+      "term": "Condition-Based Maintenance",
+      "short": "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
+      "html_url": "https://maintenease.com/learn/condition-based-maintenance",
+      "markdown_url": "https://maintenease.com/learn/condition-based-maintenance.md"
+    },
+    {
+      "slug": "mtbf",
+      "term": "MTBF (Mean Time Between Failures)",
+      "short": "The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.",
+      "html_url": "https://maintenease.com/learn/mtbf",
+      "markdown_url": "https://maintenease.com/learn/mtbf.md"
+    },
+    {
+      "slug": "mttr",
+      "term": "MTTR (Mean Time To Repair)",
+      "short": "The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.",
+      "html_url": "https://maintenease.com/learn/mttr",
+      "markdown_url": "https://maintenease.com/learn/mttr.md"
+    }
+  ]
+}
