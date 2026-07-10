@@ -14,3 +14,8 @@ User-agent: *
 Allow: /
 
 Sitemap: https://maintenease.com/sitemap.xml
+
+# AI agent hints (llmstxt.org)
+# Concise index:  https://maintenease.com/llms.txt
+# Full corpus:    https://maintenease.com/llms-full.txt
+# JSON index:     https://maintenease.com/api/ai.json

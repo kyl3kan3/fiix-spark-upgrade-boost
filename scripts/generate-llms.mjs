@@ -157,6 +157,48 @@ const parts = [
 ];
 write("llms-full.txt", parts.join(""));
 
+// ---- api/ai.json (structured index for agents) ----------------------------
+
+const apiJson = {
+  name: "MaintenEase",
+  description:
+    "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
+  site: SITE,
+  generated_at: new Date().toISOString(),
+  llms_txt: `${SITE}/llms.txt`,
+  llms_full_txt: `${SITE}/llms-full.txt`,
+  pricing: {
+    plan: "Pro",
+    model: "flat_monthly",
+    price_usd_per_month: MAINTENEASE_PRO,
+    trial_days: 7,
+    billing: "month-to-month",
+  },
+  solutions: solutions.map((s) => ({
+    slug: s.slug,
+    name: s.name,
+    tagline: s.tagline,
+    html_url: `${SITE}/solutions/${s.slug}`,
+    markdown_url: `${SITE}/solutions/${s.slug}.md`,
+  })),
+  comparisons: comparisons.map((c) => ({
+    slug: c.slug,
+    competitor: c.competitor,
+    competitor_plan: c.competitorPlan,
+    competitor_price_per_user_usd: c.competitorPricePerUser,
+    html_url: `${SITE}/compare/${c.slug}`,
+    markdown_url: `${SITE}/compare/${c.slug}.md`,
+  })),
+  glossary: glossary.map((g) => ({
+    slug: g.slug,
+    term: g.term,
+    short: g.short,
+    html_url: `${SITE}/learn/${g.slug}`,
+    markdown_url: `${SITE}/learn/${g.slug}.md`,
+  })),
+};
+write("api/ai.json", JSON.stringify(apiJson, null, 2));
+
 console.log(
   `Wrote llms.txt, llms-full.txt, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages.`,
 );
