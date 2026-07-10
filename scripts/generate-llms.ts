@@ -1,22 +1,23 @@
-#!/usr/bin/env bun
+#!/usr/bin/env tsx
 // Generates AI-agent-friendly artifacts under public/:
 //   - llms.txt         (concise index for AI crawlers, llmstxt.org convention)
 //   - llms-full.txt    (full flat corpus for LLMs that want one file)
 //   - solutions/<slug>.md, compare/<slug>.md, learn/<slug>.md
 //
-// Run with: bun scripts/generate-llms.mjs
+// Run with: tsx scripts/generate-llms.ts (invoked automatically by prebuild).
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const { solutions } = await import("../src/data/solutions.ts");
-const { comparisons, MAINTENEASE_PRO } = await import("../src/data/comparisons.ts");
-const { glossary } = await import("../src/data/glossary.ts");
+import { solutions } from "../src/data/solutions";
+import { comparisons, MAINTENEASE_PRO } from "../src/data/comparisons";
+import { glossary } from "../src/data/glossary";
 
 const SITE = "https://maintenease.com";
-const PUBLIC = resolve(import.meta.dir ?? new URL(".", import.meta.url).pathname, "../public");
+const PUBLIC = resolve(dirname(fileURLToPath(import.meta.url)), "../public");
 
-function write(path, body) {
+function write(path: string, body: string) {
   const full = resolve(PUBLIC, path);
   mkdirSync(dirname(full), { recursive: true });
   writeFileSync(full, body.trimStart() + (body.endsWith("\n") ? "" : "\n"));
@@ -24,7 +25,7 @@ function write(path, body) {
 
 // ---- Per-page markdown ----------------------------------------------------
 
-function solutionMd(s) {
+function solutionMd(s: (typeof solutions)[number]) {
   return `# ${s.h1}
 
 > ${s.tagline}
@@ -51,10 +52,10 @@ ${s.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 `;
 }
 
-function compareMd(c) {
+function compareMd(c: (typeof comparisons)[number]) {
   const rows = c.rows
     .map((r) => {
-      const fmt = (v) => (typeof v === "boolean" ? (v ? "Yes" : "No") : v);
+      const fmt = (v: string | boolean) => (typeof v === "boolean" ? (v ? "Yes" : "No") : v);
       return `| ${r.feature} | ${fmt(r.ours)} | ${fmt(r.theirs)} |`;
     })
     .join("\n");
@@ -84,7 +85,7 @@ ${c.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 `;
 }
 
-function glossaryMd(g) {
+function glossaryMd(g: (typeof glossary)[number]) {
   return `# ${g.term}
 
 > ${g.short}
