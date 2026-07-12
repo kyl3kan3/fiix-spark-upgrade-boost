@@ -450,6 +450,44 @@ export type Database = {
         }
         Relationships: []
       }
+      billing_checkout_authorizations: {
+        Row: {
+          company_id: string
+          created_at: string
+          environment: string
+          expires_at: string
+          id: string
+          paddle_subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          environment: string
+          expires_at?: string
+          id?: string
+          paddle_subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          environment?: string
+          expires_at?: string
+          id?: string
+          paddle_subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_checkout_authorizations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklist_assets: {
         Row: {
           asset_id: string
@@ -689,6 +727,7 @@ export type Database = {
           temp_max_c: number | null
           temp_min_c: number | null
           temp_unit: string
+          timezone: string
           updated_at: string
           weather_alerts_enabled: boolean
           website: string | null
@@ -710,6 +749,7 @@ export type Database = {
           temp_max_c?: number | null
           temp_min_c?: number | null
           temp_unit?: string
+          timezone?: string
           updated_at?: string
           weather_alerts_enabled?: boolean
           website?: string | null
@@ -731,6 +771,7 @@ export type Database = {
           temp_max_c?: number | null
           temp_min_c?: number | null
           temp_unit?: string
+          timezone?: string
           updated_at?: string
           weather_alerts_enabled?: boolean
           website?: string | null
@@ -1854,6 +1895,41 @@ export type Database = {
           },
         ]
       }
+      public_request_authorizations: {
+        Row: {
+          company_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          upload_prefix: string
+          used_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          upload_prefix: string
+          used_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          upload_prefix?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_request_authorizations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_request_triage: {
         Row: {
           accepted_at: string | null
@@ -2759,6 +2835,16 @@ export type Database = {
         }
         Returns: Json
       }
+      complete_owner_onboarding_with_timezone: {
+        Args: {
+          _company_name: string
+          _first_name?: string
+          _last_name?: string
+          _phone?: string
+          _timezone?: string
+        }
+        Returns: Json
+      }
       complete_personal_onboarding: {
         Args: { _first_name?: string; _last_name?: string; _phone?: string }
         Returns: Json
@@ -2773,6 +2859,22 @@ export type Database = {
           allowed: boolean
           company_id: string
         }[]
+      }
+      create_public_request_from_authorization: {
+        Args: {
+          _authorization_id: string
+          _contact_email: string
+          _contact_name: string
+          _contact_phone: string
+          _description: string
+          _location_text: string
+          _photo_paths: Json
+          _storage_base_url: string
+          _title: string
+          _type: string
+          _user_agent: string
+        }
+        Returns: Json
       }
       delete_email: {
         Args: { message_id: number; queue_name: string }
@@ -2891,15 +2993,28 @@ export type Database = {
         }
         Returns: number
       }
+      next_checklist_due: {
+        Args: { _frequency: string; _from: string; _timezone: string }
+        Returns: string
+      }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
+          enqueued_at: string
           message: Json
           msg_id: number
           read_ct: number
         }[]
       }
       regenerate_energy_ingest_token: { Args: never; Returns: string }
+      set_checklist_schedule: {
+        Args: { _checklist_id: string }
+        Returns: undefined
+      }
+      submit_checklist_atomic: {
+        Args: { _checklist_id: string; _items: Json; _notes?: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role:
