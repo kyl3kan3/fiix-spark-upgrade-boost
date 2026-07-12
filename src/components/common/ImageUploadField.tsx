@@ -50,8 +50,16 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
  try {
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) throw new Error("You must be signed in to upload images.");
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("company_id")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (profileError) throw profileError;
+  const companyId = profile?.company_id;
+  if (!companyId) throw new Error("Your account is not linked to a company.");
  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
- const path = `${user.id}/${folder}/${crypto.randomUUID()}.${ext}`;
+  const path = `${companyId}/${folder}/${crypto.randomUUID()}.${ext}`;
  const { error: upErr } = await supabase.storage
  .from("asset-images")
  .upload(path, file, { contentType: file.type, upsert: false });
