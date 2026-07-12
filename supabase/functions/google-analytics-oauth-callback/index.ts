@@ -32,11 +32,15 @@ Deno.serve(async (req) => {
     const CLIENT_SECRET = Deno.env.get('GOOGLE_ADS_CLIENT_SECRET')!;
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+    const cutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     const { data: stateRow, error: stateErr } = await admin
       .from('google_analytics_oauth_states')
-      .select('*').eq('state', state).maybeSingle();
+      .delete()
+      .eq('state', state)
+      .gte('created_at', cutoff)
+      .select('*')
+      .maybeSingle();
     if (stateErr || !stateRow) return html('<h2>Invalid or expired state</h2>', 400);
-    await admin.from('google_analytics_oauth_states').delete().eq('state', state);
 
     const redirectUri = `${SUPABASE_URL}/functions/v1/google-analytics-oauth-callback`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -83,13 +87,19 @@ Deno.serve(async (req) => {
 
     const token_expires_at = new Date(Date.now() + expires_in * 1000).toISOString();
     // Remove prior connection(s) — single active connection
-    await admin.from('google_analytics_connections').delete().not('id', 'is', null);
-    await admin.from('google_analytics_connections').insert({
+    const { error: deleteError } = await admin
+      .from('google_analytics_connections')
+      .delete()
+      .not('id', 'is', null);
+    if (deleteError) throw deleteError;
+
+    const { error: connectionError } = await admin.from('google_analytics_connections').insert({
       company_id: profile?.company_id ?? null,
       connected_by: stateRow.user_id,
       refresh_token, access_token, token_expires_at,
       property_id, property_display_name, account_display_name, scope,
     });
+    if (connectionError) throw connectionError;
 
     return html(`<h2>Google Analytics connected</h2><p>You can close this tab and return to the dashboard.</p>
 <script>setTimeout(()=>window.close(), 1500);</script>`);

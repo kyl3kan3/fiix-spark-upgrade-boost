@@ -90,7 +90,7 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  {inspections.map((inspection) => (
  <div
  key={inspection.id}
- className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/10 transition-all cursor-pointer group overflow-hidden"
+ className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/10 transition-ui cursor-pointer group overflow-hidden"
  onClick={() => navigate(`/inspections/${inspection.id}`)}
  >
  <div className="p-6 flex flex-col lg:flex-row lg:items-center gap-6">

@@ -21,7 +21,7 @@ const NotFound = () => {
  <span>ERR · 404</span>
  <span className="text-destructive">●</span>
  </div>
- <h1 className="font-display text-7xl font-bold leading-none tracking-tighter mb-2">404</h1>
+ <h1 className="font-display text-7xl font-bold leading-none tracking-normal mb-2">404</h1>
  <div className="divider-ticked my-4" />
  <p className="font-display text-lg font-semibold mb-1">Page not found</p>
  <p className="text-sm text-muted-foreground mb-1">

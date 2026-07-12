@@ -55,7 +55,7 @@ const IconRail: React.FC<IconRailProps> = () => {
  {/* Brand — Clean Tech: serif headline, no gradient block */}
  <div className="px-6 pt-6 pb-4">
  <NavLink to="/dashboard" className="block">
- <h1 className="font-headline text-2xl font-bold text-primary tracking-tight">MaintenEase</h1>
+ <h1 className="font-headline text-2xl font-bold text-primary tracking-normal">MaintenEase</h1>
  <p className="text-xs text-muted-foreground font-medium mt-0.5">Facility Management</p>
  </NavLink>
  </div>

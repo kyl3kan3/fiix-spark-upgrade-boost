@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,22 +11,26 @@ interface DomainRow {
 }
 interface Competitor { domain: string; competitionLevel: number; commonKeywords: number; organicKeywords: number; organicTraffic: number; }
 
+const DEFAULT_DOMAIN = "maintenease.com";
+const DEFAULT_COMPETITORS = "upkeep.com, limblecmms.com, maintainx.com";
+const DEFAULT_DATABASE = "us";
+
 const DomainAnalysisWidget = () => {
-  const [domain, setDomain] = useState("maintenease.com");
-  const [competitors, setCompetitors] = useState("upkeep.com, limblecmms.com, maintainx.com");
-  const [database, setDatabase] = useState("us");
+  const [domain, setDomain] = useState(DEFAULT_DOMAIN);
+  const [competitors, setCompetitors] = useState(DEFAULT_COMPETITORS);
+  const [database, setDatabase] = useState(DEFAULT_DATABASE);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [me, setMe] = useState<DomainRow | null>(null);
   const [comparison, setComparison] = useState<DomainRow[]>([]);
   const [discovered, setDiscovered] = useState<Competitor[]>([]);
 
-  const load = async () => {
+  const load = useCallback(async (requestDomain: string, requestDatabase: string, requestCompetitors: string) => {
     setLoading(true); setError(null);
     try {
-      const compList = competitors.split(",").map((c) => c.trim()).filter(Boolean).slice(0, 5);
+      const compList = requestCompetitors.split(",").map((c) => c.trim()).filter(Boolean).slice(0, 5);
       const { data, error } = await supabase.functions.invoke("semrush-domain-analysis", {
-        body: { domain, database, competitors: compList },
+        body: { domain: requestDomain, database: requestDatabase, competitors: compList },
       });
       if (error) throw error;
       setMe(data?.domain ?? null);
@@ -34,9 +38,11 @@ const DomainAnalysisWidget = () => {
       setDiscovered(data?.competitors?.competitors ?? []);
     } catch (e) { setError(e instanceof Error ? e.message : "Failed to load"); }
     finally { setLoading(false); }
-  };
+  }, []);
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    void load(DEFAULT_DOMAIN, DEFAULT_DATABASE, DEFAULT_COMPETITORS);
+  }, [load]);
 
   const fmt = (n?: number) => (n ?? 0).toLocaleString();
 
@@ -47,7 +53,7 @@ const DomainAnalysisWidget = () => {
         <CardDescription>Organic traffic, keywords, and paid visibility across your site and named competitors.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <form className="grid grid-cols-1 md:grid-cols-4 gap-2" onSubmit={(e) => { e.preventDefault(); load(); }}>
+        <form className="grid grid-cols-1 md:grid-cols-4 gap-2" onSubmit={(e) => { e.preventDefault(); void load(domain, database, competitors); }}>
           <Input value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="Your domain" disabled={loading} />
           <Input value={competitors} onChange={(e) => setCompetitors(e.target.value)} placeholder="Competitors (comma-separated)" className="md:col-span-2" disabled={loading} />
           <div className="flex gap-2">

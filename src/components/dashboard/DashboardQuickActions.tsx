@@ -28,7 +28,7 @@ const DashboardQuickActions: React.FC = () => {
  <button
  key={title}
  onClick={() => navigate(href)}
- className={`group text-left p-5 rounded-3xl border-2 transition-all min-h-[120px] flex flex-col justify-between shadow-soft ${toneStyles[tone]}`}
+ className={`group text-left p-5 rounded-3xl border-2 transition-ui min-h-[120px] flex flex-col justify-between shadow-soft ${toneStyles[tone]}`}
  >
  <Icon className="h-7 w-7" strokeWidth={2.2} />
  <span className="block font-display text-base font-bold leading-tight mt-3">{title}</span>

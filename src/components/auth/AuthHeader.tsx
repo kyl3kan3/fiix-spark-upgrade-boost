@@ -15,7 +15,7 @@ const AuthHeader = ({
   return (
     <div className="flex justify-between items-start gap-4">
       <div className="space-y-2">
-        <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground leading-tight">
+        <h2 className="font-headline text-3xl font-bold tracking-normal text-foreground leading-tight">
           {isSignUp ? AUTH_HEADERS.SIGN_UP : "Welcome back"}
         </h2>
         <p className="text-sm text-muted-foreground">

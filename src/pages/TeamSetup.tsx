@@ -35,7 +35,7 @@ const TeamSetup: React.FC = () => {
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>Step 2 of 4</span>
           <div className="w-28 h-1.5 bg-muted rounded-full overflow-hidden">
-            <div className="w-1/2 h-full bg-primary rounded-full transition-all" />
+            <div className="w-1/2 h-full bg-primary rounded-full" />
           </div>
         </div>
       </nav>

@@ -81,7 +81,7 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <Reveal3D key={plan.name} delayMs={index * 120}>
             <div
-              className={`relative rounded-xl border bg-card p-8 flex flex-col transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative rounded-xl border bg-card p-8 flex flex-col transition-ui duration-300 hover:-translate-y-1 ${
                 plan.highlight
                   ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
                   : "border-border shadow-sm hover:border-primary/20 hover:shadow-md"

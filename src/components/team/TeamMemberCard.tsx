@@ -28,7 +28,7 @@ const TeamMemberCard: React.FC<TeamMemberProps> = ({ member, roleColorMap, onMem
 
  return (
  <div
- className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group"
+ className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-ui duration-300 overflow-hidden flex flex-col group"
  key={`member-${member.id}-${member.role}`}
  >
  <MemberCardBody

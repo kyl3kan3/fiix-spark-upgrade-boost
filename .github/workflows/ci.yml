@@ -35,6 +35,10 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
@@ -46,6 +50,9 @@ jobs:
 
       - name: Structure check
         run: npm run check:structure
+
+      - name: Edge Function check
+        run: npm run check:edge
 
       - name: Typecheck
         run: npm run typecheck

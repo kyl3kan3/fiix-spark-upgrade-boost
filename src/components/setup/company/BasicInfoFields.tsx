@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { CompanyInfoFormValues } from "./companyInfoSchema";
+import { TIMEZONE_OPTIONS } from "@/constants/timezones";
 
 interface BasicInfoFieldsProps {
  form: UseFormReturn<CompanyInfoFormValues>;
@@ -54,6 +55,32 @@ const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({ form }) => {
  <FormMessage />
  </FormItem>
  )}
+ />
+
+ <FormField
+ control={form.control}
+ name="timezone"
+ render={({ field }) => {
+ const options = Array.from(new Set([field.value, ...TIMEZONE_OPTIONS]));
+ return (
+ <FormItem>
+ <FormLabel>Facility Timezone</FormLabel>
+ <Select onValueChange={field.onChange} value={field.value}>
+ <FormControl>
+ <SelectTrigger>
+ <SelectValue placeholder="Select timezone" />
+ </SelectTrigger>
+ </FormControl>
+ <SelectContent className="max-h-72">
+ {options.map((timezone) => (
+ <SelectItem key={timezone} value={timezone}>{timezone.replace(/_/g, " ")}</SelectItem>
+ ))}
+ </SelectContent>
+ </Select>
+ <FormMessage />
+ </FormItem>
+ );
+ }}
  />
  </>
  );

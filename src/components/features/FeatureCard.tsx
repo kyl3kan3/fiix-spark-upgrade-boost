@@ -20,7 +20,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
  return (
  <Card 
- className={`border border-border hover:shadow-lg transition-all duration-300 hover:border-primary/20 group ${ selectedFeature === item.title ? "ring-2 ring-primary" : "" } ${viewType === "list" ? "overflow-hidden" : ""}`}
+ className={`border border-border hover:shadow-lg transition-ui duration-300 hover:border-primary/20 group ${ selectedFeature === item.title ? "ring-2 ring-primary" : "" } ${viewType === "list" ? "overflow-hidden" : ""}`}
  >
  <CardContent className={viewType === "grid" ? "p-6" : "p-6 flex flex-col md:flex-row md:items-center gap-6"}>
  <div className={viewType === "grid" 

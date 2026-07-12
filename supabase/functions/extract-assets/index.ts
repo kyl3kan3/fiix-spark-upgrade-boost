@@ -56,7 +56,7 @@ function buildContent(mime: string, bytes: Uint8Array): any[] {
     const text = new TextDecoder().decode(bytes).slice(0, 100_000);
     return [{ type: "text", text: `Document contents:\n\n${text}` }];
   }
-  const data = base64Encode(bytes);
+  const data = base64Encode(new Uint8Array(bytes).buffer);
   if (mime === "application/pdf") {
     return [
       { type: "document", source: { type: "base64", media_type: "application/pdf", data } },
@@ -97,8 +97,10 @@ serve(async (req) => {
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: authHeader } },
     });
-    const { data: claims, error: claimsErr } = await db.auth.getClaims(authHeader.replace("Bearer ", ""));
-    if (claimsErr || !claims?.claims) {
+    const { data: userData, error: userError } = await db.auth.getUser(
+      authHeader.replace("Bearer ", ""),
+    );
+    if (userError || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

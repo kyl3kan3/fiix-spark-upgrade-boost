@@ -1,6 +1,7 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { computeAssetRisk, MODEL_VERSION } from "./scoring.ts";
+import type { Database, Json } from "../../../src/integrations/supabase/types.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -10,7 +11,7 @@ const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 type Counts = { critical: number; high: number; medium: number; low: number };
 
 async function scoreCompany(
-  admin: ReturnType<typeof createClient>,
+  admin: SupabaseClient<Database>,
   companyId: string,
   triggeredBy: "manual" | "scheduled",
   actorId: string | null,
@@ -80,7 +81,7 @@ async function scoreCompany(
       failure_probability: result.failureProbability,
       predicted_failure_date: result.predictedFailureDate,
       remaining_useful_life_days: result.remainingUsefulLifeDays,
-      contributing_factors: result.contributingFactors,
+      contributing_factors: result.contributingFactors as unknown as Json,
       recommended_action: result.recommendedAction,
       model_version: result.modelVersion,
       computed_at: now.toISOString(),
@@ -138,7 +139,7 @@ Deno.serve(async (req) => {
       authMode = "secret";
     } else if (bearer && bearer !== SUPABASE_ANON_KEY) {
       // Verify the JWT
-      const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      const userClient = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
         global: { headers: { Authorization: `Bearer ${bearer}` } },
       });
       const { data: userData, error: userError } = await userClient.auth.getUser(bearer);
@@ -151,7 +152,7 @@ Deno.serve(async (req) => {
       verifiedUserId = userData.user.id;
 
       // Look up company + role (using service role to avoid RLS recursion)
-      const adminLookup = createClient(SUPABASE_URL, SERVICE_ROLE);
+      const adminLookup = createClient<Database>(SUPABASE_URL, SERVICE_ROLE);
       const { data: profile } = await adminLookup
         .from("profiles")
         .select("company_id")
@@ -180,7 +181,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+    const admin = createClient<Database>(SUPABASE_URL, SERVICE_ROLE);
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
     const triggeredBy: "manual" | "scheduled" = body?.triggered_by === "manual" ? "manual" : "scheduled";
     // Never trust client-supplied actor_id. Use the verified user id when present.

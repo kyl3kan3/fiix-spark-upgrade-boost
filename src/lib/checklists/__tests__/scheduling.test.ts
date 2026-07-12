@@ -15,6 +15,13 @@ describe("nextDueAt", () => {
     expect(result?.getUTCHours()).toBe(0);
   });
 
+  it("schedules twice daily at local UTC noon and midnight boundaries", () => {
+    expect(nextDueAt("twice-daily", wed10am)?.toISOString())
+      .toBe("2025-01-15T12:00:00.000Z");
+    expect(nextDueAt("twice-daily", new Date("2025-01-15T18:00:00Z"))?.toISOString())
+      .toBe("2025-01-16T00:00:00.000Z");
+  });
+
   it("schedules weekly +7 days and biweekly +14 days", () => {
     expect(nextDueAt("weekly", wed10am)?.getUTCDate()).toBe(22);
     expect(nextDueAt("biweekly", wed10am)?.getUTCDate()).toBe(29);
@@ -24,6 +31,17 @@ describe("nextDueAt", () => {
     expect(nextDueAt("monthly", wed10am)?.getUTCMonth()).toBe(1); // Feb
     expect(nextDueAt("quarterly", wed10am)?.getUTCMonth()).toBe(3); // Apr
     expect(nextDueAt("annually", wed10am)?.getUTCFullYear()).toBe(2026);
+  });
+
+  it("clamps month-end and leap-day recurrence like Postgres intervals", () => {
+    const january31 = new Date("2025-01-31T10:00:00Z");
+    const leapDay = new Date("2024-02-29T10:00:00Z");
+    expect(nextDueAt("monthly", january31)?.toISOString())
+      .toBe("2025-02-28T10:00:00.000Z");
+    expect(nextDueAt("quarterly", january31)?.toISOString())
+      .toBe("2025-04-30T10:00:00.000Z");
+    expect(nextDueAt("annually", leapDay)?.toISOString())
+      .toBe("2025-02-28T10:00:00.000Z");
   });
 });
 

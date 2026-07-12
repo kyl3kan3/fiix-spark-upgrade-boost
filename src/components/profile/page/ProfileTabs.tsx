@@ -22,14 +22,14 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
  <TabsList className="inline-flex h-auto gap-1 bg-card border border-border rounded-lg p-1 mb-8 shadow-sm">
  <TabsTrigger
  value="profile"
- className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+ className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
  >
  <User className="h-4 w-4" />
  Profile
  </TabsTrigger>
  <TabsTrigger
  value="settings"
- className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+ className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
  >
  <Settings className="h-4 w-4" />
  Settings

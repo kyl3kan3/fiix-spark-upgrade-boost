@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -17,37 +18,37 @@ export function useNotificationsData(
 ) {
  const [notifications, setNotifications] = useState<Notification[]>([]);
  const [loading, setLoading] = useState(true);
- const channelRef = useRef<any>(null);
+ const channelRef = useRef<RealtimeChannel | null>(null);
+ const notificationsRef = useRef<Notification[]>([]);
 
- // Load notifications when component mounts or when panel is opened
  useEffect(() => {
- if (isOpen) {
- loadNotifications();
- }
- }, [isOpen]);
+ notificationsRef.current = notifications;
+ }, [notifications]);
 
- // Set up realtime listener for new notifications
- useEffect(() => {
-  let cancelled = false;
-  setupNotificationListener(() => cancelled);
- return () => {
-  cancelled = true;
- if (channelRef.current) {
- supabase.removeChannel(channelRef.current);
-  channelRef.current = null;
+ const loadNotifications = useCallback(async () => {
+ setLoading(true);
+ try {
+ const notificationsData = await getUserNotifications();
+ notificationsRef.current = notificationsData;
+ setNotifications(notificationsData);
+ onNotificationCountChange?.(notificationsData.filter(n => !n.read).length);
+ } catch (error) {
+ console.error("Error loading notifications:", error);
+ toast.error("Failed to load notifications");
+ } finally {
+ setLoading(false);
  }
- };
- }, []);
+ }, [onNotificationCountChange]);
 
  // Setup notification listener
-  const setupNotificationListener = async (isCancelled?: () => boolean) => {
+ const setupNotificationListener = useCallback(async (isCancelled?: () => boolean) => {
  const { data } = await supabase.auth.getUser();
  const user = data?.user;
  if (!user) return;
   if (isCancelled?.()) return;
   // Remove any prior channel before creating a new one (StrictMode double-invoke safety)
   if (channelRef.current) {
-  supabase.removeChannel(channelRef.current);
+  await supabase.removeChannel(channelRef.current);
   channelRef.current = null;
   }
 
@@ -64,12 +65,12 @@ export function useNotificationsData(
  (payload) => {
  // Add new notification to the list
  const newNotification = payload.new as Notification;
- setNotifications(prev => [newNotification, ...prev]);
+ const nextNotifications = [newNotification, ...notificationsRef.current];
+ notificationsRef.current = nextNotifications;
+ setNotifications(nextNotifications);
  
  // Update unread count
- if (onNotificationCountChange) {
- onNotificationCountChange(getUnreadCount() + 1);
- }
+ onNotificationCountChange?.(nextNotifications.filter(n => !n.read).length);
 
  // Show toast if notification panel is closed
  if (!isOpen) {
@@ -96,23 +97,25 @@ export function useNotificationsData(
  .subscribe();
 
  channelRef.current = channel;
- };
+ }, [isOpen, onNewNotification, onNotificationCountChange]);
 
- const loadNotifications = useCallback(async () => {
- if (loading === false) setLoading(true);
- try {
- const notificationsData = await getUserNotifications();
- setNotifications(notificationsData);
- if (onNotificationCountChange) {
- onNotificationCountChange(notificationsData.filter(n => !n.read).length);
+ // Load notifications when the panel opens.
+ useEffect(() => {
+ if (isOpen) void loadNotifications();
+ }, [isOpen, loadNotifications]);
+
+ // Keep the realtime listener synchronized with the latest callbacks and panel state.
+ useEffect(() => {
+ let cancelled = false;
+ void setupNotificationListener(() => cancelled);
+ return () => {
+ cancelled = true;
+ if (channelRef.current) {
+ void supabase.removeChannel(channelRef.current);
+ channelRef.current = null;
  }
- } catch (error) {
- console.error("Error loading notifications:", error);
- toast.error("Failed to load notifications");
- } finally {
- setLoading(false);
- }
- }, [onNotificationCountChange]);
+ };
+ }, [setupNotificationListener]);
 
  const handleMarkAllAsRead = async () => {
  const unreadCount = getUnreadCount();
@@ -120,7 +123,9 @@ export function useNotificationsData(
  
  try {
  await markAllNotificationsAsRead();
- setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+ const updatedNotifications = notificationsRef.current.map(n => ({ ...n, read: true }));
+ notificationsRef.current = updatedNotifications;
+ setNotifications(updatedNotifications);
  toast.success("All notifications marked as read");
  if (onNotificationCountChange) {
  onNotificationCountChange(0);
@@ -134,9 +139,10 @@ export function useNotificationsData(
  const handleDismissNotification = async (id: string) => {
  try {
  await markNotificationAsRead(id);
- const updatedNotifications = notifications.map(n => 
+ const updatedNotifications = notificationsRef.current.map(n =>
  n.id === id ? { ...n, read: true } : n
  );
+ notificationsRef.current = updatedNotifications;
  setNotifications(updatedNotifications);
  if (onNotificationCountChange) {
  const newUnreadCount = updatedNotifications.filter(n => !n.read).length;
@@ -152,6 +158,7 @@ export function useNotificationsData(
  if (notifications.length === 0) return;
  try {
  await clearAllNotifications();
+ notificationsRef.current = [];
  setNotifications([]);
  if (onNotificationCountChange) onNotificationCountChange(0);
  toast.success("All notifications cleared");

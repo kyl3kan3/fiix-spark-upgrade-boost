@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getUserSettings, updateUserSettings } from "@/services/userSettingsService";
 import { toast } from "sonner";
 import { UserSettings } from "./types";
@@ -10,7 +10,7 @@ export const useUserSettingsCore = () => {
  const [isLoading, setIsLoading] = useState(true);
  const [isSaving, setIsSaving] = useState(false);
 
- const loadSettings = async () => {
+ const loadSettings = useCallback(async () => {
  setIsLoading(true);
  try {
  const userSettings = await getUserSettings();
@@ -22,9 +22,9 @@ export const useUserSettingsCore = () => {
  } finally {
  setIsLoading(false);
  }
- };
+ }, []);
 
- const saveSettings = async (newSettings: Partial<UserSettings>) => {
+ const saveSettings = useCallback(async (newSettings: Partial<UserSettings>) => {
  setIsSaving(true);
  try {
  const savedSettings = await updateUserSettings(newSettings);
@@ -39,7 +39,7 @@ export const useUserSettingsCore = () => {
  } finally {
  setIsSaving(false);
  }
- };
+ }, []);
 
  return {
  settings,
@@ -47,6 +47,7 @@ export const useUserSettingsCore = () => {
  isSaving,
  loadSettings,
  saveSettings,
- setSettings
+ setSettings,
+ setIsSaving,
  };
 };

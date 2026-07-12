@@ -205,7 +205,7 @@ const WorkOrderContent: React.FC = () => {
  {orders.map((o) => {
  const meta = statusMeta[o.status];
  return (
- <div key={o.id} className="border border-border rounded-xl p-4 hover:border-primary/20 hover:shadow-sm transition-all">
+ <div key={o.id} className="border border-border rounded-xl p-4 hover:border-primary/20 hover:shadow-sm transition-ui">
  <div className="flex items-start justify-between gap-3 mb-2"><div><div className="flex items-center gap-2 text-xs text-muted-foreground mb-1"><span className="font-mono">{o.id}</span><span>•</span><span>{o.asset}</span></div><h4 className="font-semibold text-foreground">{o.title}</h4></div><Badge variant="outline" className={priorityStyles[o.priority]}>{o.priority}</Badge></div>
  <div className="flex flex-wrap items-center gap-3 text-sm text-foreground">
  <Badge variant="outline" className={`gap-1 ${meta.className}`}>{meta.icon}{meta.label}</Badge>

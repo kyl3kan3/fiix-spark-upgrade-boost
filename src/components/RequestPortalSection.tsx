@@ -48,7 +48,7 @@ const RequestPortalSection = () => {
                 </div>
               </div>
             </div>
-            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-all">
+            <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui">
               <Link to="/solutions/maintenance-request-portal">See how it works</Link>
             </Button>
           </div>

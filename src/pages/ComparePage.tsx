@@ -67,10 +67,10 @@ const ComparePage = () => {
           <span className="text-foreground">{c.h1}</span>
         </nav>
         <p className="text-sm font-semibold text-secondary mb-3 uppercase tracking-wide">CMMS comparison</p>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4 max-w-3xl text-foreground">{c.h1}</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-4 max-w-3xl text-foreground">{c.h1}</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mb-8 leading-relaxed">{c.tagline}</p>
         <div className="flex flex-wrap gap-3 mb-12">
-          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-all">
+          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui">
             <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
@@ -121,7 +121,7 @@ const ComparePage = () => {
         <h2 className="font-headline text-3xl font-bold mb-10 text-foreground">Why teams pick MaintenEase</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {c.differentiators.map((d) => (
-            <div key={d.title} className="p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <div key={d.title} className="p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
               <h3 className="text-lg font-semibold mb-2 text-foreground">{d.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">{d.body}</p>
             </div>
@@ -167,7 +167,7 @@ const ComparePage = () => {
             <Link
               key={o.slug}
               to={`/compare/${o.slug}`}
-              className="block p-5 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-md transition-all group"
+              className="block p-5 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-md transition-ui group"
             >
               <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{o.h1}</h3>
               <p className="text-sm text-muted-foreground">{o.tagline}</p>

@@ -41,7 +41,10 @@ Deno.serve(async (req) => {
     }
 
     const state = crypto.randomUUID() + '-' + crypto.randomUUID();
-    await admin.from('google_ads_oauth_states').insert({ state, user_id: userData.user.id });
+    const { error: stateError } = await admin
+      .from('google_ads_oauth_states')
+      .insert({ state, user_id: userData.user.id });
+    if (stateError) throw stateError;
     // best-effort cleanup of states older than 30 min
     const cutoff = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     await admin.from('google_ads_oauth_states').delete().lt('created_at', cutoff);

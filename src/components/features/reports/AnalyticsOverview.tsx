@@ -159,7 +159,7 @@ const AnalyticsOverview: React.FC = () => {
  {kpis.map((k) => {
  const Icon = k.icon;
  return (
- <Card key={k.label} className="p-4 bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+ <Card key={k.label} className="p-4 bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-ui duration-200">
  <div className={`inline-flex p-2 rounded-lg ${k.tone} mb-3`}>
  <Icon className="h-4 w-4" />
  </div>

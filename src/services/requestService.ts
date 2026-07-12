@@ -38,7 +38,7 @@ export interface ResolvePublicRequestResult {
 }
 
 export interface SubmitPublicRequestInput {
-  companyId: string;
+  authorizationId: string;
   type: PublicRequestType;
   title: string;
   description: string;
@@ -46,9 +46,19 @@ export interface SubmitPublicRequestInput {
   contact_name: string | null;
   contact_email: string | null;
   contact_phone: string | null;
-  photos: string[];
+  photoPaths: string[];
   user_agent: string | null;
-  turnstileToken: string;
+}
+
+export interface AuthorizedPublicRequestUpload {
+  path: string;
+  token: string;
+}
+
+export interface PublicRequestAuthorization {
+  authorizationId: string;
+  uploads: AuthorizedPublicRequestUpload[];
+  expiresAt: string;
 }
 
 /**
@@ -113,30 +123,55 @@ export async function getPublicCompanyBySlug(slug: string): Promise<PublicPortal
 }
 
 /**
- * Best-effort upload of public request photos (unauthenticated). Failed
- * uploads are logged and skipped; returns the public URLs that succeeded.
+ * Verifies Turnstile server-side and creates single-use request authorization
+ * plus signed upload targets scoped to that request.
  */
-export async function uploadPublicRequestPhotos(
+export async function authorizePublicRequest(
   companyId: string,
-  photos: File[]
-): Promise<string[]> {
-  const uploadedUrls: string[] = [];
-  if (photos.length === 0) return uploadedUrls;
-  const folder = `${companyId}/${crypto.randomUUID()}`;
-  for (const file of photos) {
-    const ext = (file.name.split(".").pop() || "jpg").toLowerCase().slice(0, 5);
-    const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-    const { error: upErr } = await supabase.storage
-      .from("public-request-photos")
-      .upload(path, file, { contentType: file.type, upsert: false });
-    if (upErr) {
-      console.error("photo upload failed", upErr);
-      continue;
-    }
-    const { data: pub } = supabase.storage.from("public-request-photos").getPublicUrl(path);
-    if (pub?.publicUrl) uploadedUrls.push(pub.publicUrl);
+  photos: File[],
+  turnstileToken: string,
+): Promise<PublicRequestAuthorization> {
+  const { data, error } = await supabase.functions.invoke<
+    PublicRequestAuthorization & { error?: string }
+  >("authorize-public-request", {
+    body: {
+      companyId,
+      turnstileToken,
+      files: photos.map((file) => ({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      })),
+    },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  if (!data?.authorizationId || !Array.isArray(data.uploads)) {
+    throw new Error("Could not authorize request submission");
   }
-  return uploadedUrls;
+  return data;
+}
+
+/** Uploads every photo to its corresponding server-signed target. */
+export async function uploadPublicRequestPhotos(
+  photos: File[],
+  uploads: AuthorizedPublicRequestUpload[],
+): Promise<string[]> {
+  if (photos.length !== uploads.length) {
+    throw new Error("Upload authorization did not match the selected photos");
+  }
+
+  return Promise.all(photos.map(async (file, index) => {
+    const upload = uploads[index];
+    const { error } = await supabase.storage
+      .from("public-request-photos")
+      .uploadToSignedUrl(upload.path, upload.token, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+    if (error) throw error;
+    return upload.path;
+  }));
 }
 
 /**

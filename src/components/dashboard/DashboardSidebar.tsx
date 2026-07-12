@@ -89,7 +89,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = () => {
           </div>
  {!collapsed && (
  <div className="flex flex-col leading-tight">
- <span className="font-semibold tracking-tight text-sidebar-foreground">MaintenEase</span>
+ <span className="font-semibold tracking-normal text-sidebar-foreground">MaintenEase</span>
  <span className="text-[11px] text-muted-foreground">Operations Suite</span>
  </div>
  )}

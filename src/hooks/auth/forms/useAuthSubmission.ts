@@ -6,7 +6,6 @@ import { useAuthValidation } from "../validation/useAuthValidation";
 import { useAuthNavigation } from "../useAuthNavigation";
 import { setSupabaseRememberMe } from "@/integrations/supabase/authStorage";
 import { setRememberMe as persistRememberMePref } from "@/utils/storageUtils";
-import { supabase } from "@/integrations/supabase/client";
 
 interface UseAuthSubmissionProps {
  onError: (message: string) => void;
@@ -63,15 +62,6 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
     }
 
  try {
-      // Verify Turnstile token server-side before creating the account
-      const { data: verifyData, error: verifyError } = await supabase.functions.invoke("verify-turnstile", {
-        body: { token: turnstileToken },
-      });
-      if (verifyError || !verifyData?.success) {
-        onError("Verification failed. Please try again.");
-        return;
-      }
-
  // Parse the name into first and last name
  const nameParts = name.trim().split(" ");
  const firstName = nameParts[0] || "";
@@ -83,7 +73,7 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
  company_name: companyName
  };
 
- const result = await signUp(email, password, userData);
+ const result = await signUp(email, password, userData, turnstileToken);
  
  if (result.success) {
  if (localStorage.getItem("pending_invite_token")) {

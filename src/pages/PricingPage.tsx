@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { getCheckoutUserContext } from "@/services/billingService";
+import { createCheckoutContext } from "@/services/billingService";
 import { toast } from "sonner";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -15,6 +15,7 @@ import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanne
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { TRIAL_DAYS } from "@/constants/trial";
 import { trackTrialEvent } from "@/lib/analytics/trialEvents";
+import { getPaddleEnvironment } from "@/lib/paddle";
 
 const PLANS = [
  {
@@ -54,21 +55,17 @@ export default function PricingPage() {
  setLoadingTier(tier);
  try {
   void trackTrialEvent("trial_checkout_started", { tier, metadata: { interval } });
- const checkoutUser = await getCheckoutUserContext();
- if (!checkoutUser) {
+ const checkoutContext = await createCheckoutContext(getPaddleEnvironment());
+ if (!checkoutContext) {
  navigate("/auth?signup=true");
  return;
  }
- const { userId, email, companyId } = checkoutUser;
- if (!companyId) {
- toast.error("Finish setting up your company before subscribing.");
- return;
- }
+ const { checkoutAuthorizationId, email } = checkoutContext;
  const priceId = `${tier}_${interval === "month" ? "monthly" : "yearly"}`;
  await openCheckout({
  priceId,
  customerEmail: email,
- customData: { companyId, userId },
+ customData: { checkoutAuthorizationId },
 	  successUrl: `${window.location.origin}/billing?success=1`,
  	  trialDays: TRIAL_DAYS,
 	});
@@ -114,7 +111,7 @@ export default function PricingPage() {
      so keep this shallow or mobile shows half a screen of dead space. */}
  <section className="pt-4 md:pt-10 pb-10 md:pb-12 px-4 text-center bg-background border-b border-border">
    <div className="max-w-2xl mx-auto">
-     <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-tight">
+     <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-normal">
        Simple, transparent pricing
      </h1>
      <p className="text-lg text-muted-foreground mb-8">
@@ -123,7 +120,7 @@ export default function PricingPage() {
      <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
        <button
          type="button"
-         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
            interval === "month" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
          }`}
          onClick={() => setInterval("month")}
@@ -138,7 +135,7 @@ export default function PricingPage() {
        />
        <button
          type="button"
-         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
            interval === "year" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
          }`}
          onClick={() => setInterval("year")}
@@ -159,7 +156,7 @@ export default function PricingPage() {
  return (
  <Card
    key={plan.tier}
-   className={`relative transition-all duration-300 hover:-translate-y-1 ${
+   className={`relative transition-ui duration-300 hover:-translate-y-1 ${
      plan.popular
        ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
        : "border-border shadow-sm hover:border-primary/20 hover:shadow-md"

@@ -36,7 +36,7 @@ export const AuthContainer: React.FC = () => {
   const from = safeNext || location.state?.from?.pathname || "/dashboard";
  navigate(hasPendingInvite ? "/onboarding" : from, { replace: true });
  }
- }, [isAuthenticated, isLoading, navigate, location.state]);
+ }, [isAuthenticated, isLoading, navigate, location.search, location.state]);
 
  // Check for stored auth errors
  useEffect(() => {

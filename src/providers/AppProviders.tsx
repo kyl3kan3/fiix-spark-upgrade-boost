@@ -21,7 +21,9 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          >
             <AuthProvider>{children}</AuthProvider>
           </BrowserRouter>
         </TooltipProvider>

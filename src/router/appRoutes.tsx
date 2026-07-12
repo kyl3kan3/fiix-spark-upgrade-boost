@@ -7,6 +7,7 @@ import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import { PROTECTED_ROUTES } from "./routeManifest";
+import { LoaderCircle } from "lucide-react";
 
 // Public / marketing pages. Every authenticated page is registered in
 // routeManifest.ts and rendered from the map below.
@@ -30,9 +31,16 @@ const CostCalculatorPage = lazy(() => import("@/pages/CostCalculatorPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 
+const RouteLoadingFallback = () => (
+  <div className="flex min-h-[40vh] items-center justify-center" role="status">
+    <LoaderCircle className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
+    <span className="sr-only">Loading page</span>
+  </div>
+);
+
 export const AppRoutes = () => (
   <ErrorBoundary>
-    <Suspense fallback={null}>
+    <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/index" element={<Navigate to="/" replace />} />

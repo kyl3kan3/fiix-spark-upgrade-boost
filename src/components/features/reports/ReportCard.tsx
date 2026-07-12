@@ -13,7 +13,7 @@ interface ReportCardProps {
 
 const ReportCard: React.FC<ReportCardProps> = ({ title, description, icon, onGenerate }) => {
  return (
- <Card className="bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+ <Card className="bg-card border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-ui duration-200">
  <CardContent className="pt-6">
  <div className="text-center mb-4">
  <div className={`${getIconBackground(icon)} p-3 rounded-full inline-block mb-3`}>

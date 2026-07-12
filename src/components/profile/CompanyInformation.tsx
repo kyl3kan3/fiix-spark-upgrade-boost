@@ -33,7 +33,7 @@ const CompanyInformation: React.FC = () => {
  }
 
   return (
-    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
       <CardHeader className="flex flex-row items-center justify-between border-b border-border pb-4">
         <div>
           <CardTitle className="font-headline text-xl text-foreground">Company Information</CardTitle>

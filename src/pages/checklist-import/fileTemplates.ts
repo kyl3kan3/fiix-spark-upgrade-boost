@@ -1,7 +1,6 @@
-import * as XLSX from "xlsx";
-
 /** Downloads a sample .xlsx the user can fill in and re-import. */
-export function downloadExcelTemplate() {
+export async function downloadExcelTemplate(): Promise<void> {
+  const XLSX = await import("xlsx");
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet([
     ["Title", "Description", "Required"],

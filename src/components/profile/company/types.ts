@@ -10,6 +10,7 @@ export interface CompanyInfo {
  email?: string | null;
  website?: string | null;
  logo?: string | null;
+ timezone?: string;
 }
 
 export interface CompanyInfoContextType {

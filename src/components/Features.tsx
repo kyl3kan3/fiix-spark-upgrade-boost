@@ -76,7 +76,7 @@ const Features = () => {
 
  <div className="mt-16 text-center">
  <Button
- className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 py-6 text-base group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
+ className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 py-6 text-base group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-ui"
  onClick={handleExploreAll}
  >
  Explore All Features

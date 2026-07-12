@@ -289,7 +289,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ mode }) => {
  <div className="max-w-4xl mx-auto">
  {/* Page heading */}
  <div className="mb-7">
- <h1 className="font-headline text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+ <h1 className="font-headline text-2xl md:text-3xl font-bold text-foreground tracking-normal">
  {mode === "create" ? "New PM Checklist" : "Edit Checklist"}
  </h1>
  <p className="text-muted-foreground text-sm mt-1">

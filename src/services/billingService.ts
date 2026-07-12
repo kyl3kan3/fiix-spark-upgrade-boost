@@ -82,30 +82,33 @@ export async function updateSubscriptionSeats(extraSeats: number): Promise<void>
   }
 }
 
-export interface CheckoutUserContext {
-  userId: string;
+export interface CheckoutContext {
+  checkoutAuthorizationId: string;
   email?: string;
-  companyId: string | null;
 }
 
 /**
- * Resolves the signed-in user's id, email, and company for starting a
- * checkout. Returns null when unauthenticated; companyId is null when the
- * profile has no company association (lookup errors are treated the same).
+ * Creates a short-lived, administrator-only checkout authorization. The
+ * browser receives only an opaque id; the webhook resolves its company from
+ * the server-side authorization record.
  */
-export async function getCheckoutUserContext(): Promise<CheckoutUserContext | null> {
+export async function createCheckoutContext(
+  environment: PaddleEnvironment,
+): Promise<CheckoutContext | null> {
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("company_id")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data, error } = await supabase.functions.invoke<
+    CheckoutContext & { error?: string }
+  >("create-checkout-context", { body: { environment } });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  if (!data?.checkoutAuthorizationId) {
+    throw new Error("Could not authorize checkout");
+  }
 
   return {
-    userId: user.id,
-    email: user.email ?? undefined,
-    companyId: profile?.company_id ?? null,
+    checkoutAuthorizationId: data.checkoutAuthorizationId,
+    email: data.email ?? user.email ?? undefined,
   };
 }

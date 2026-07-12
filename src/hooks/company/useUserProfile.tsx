@@ -1,110 +1,35 @@
-
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
 export const useUserProfile = () => {
- const [userId, setUserId] = useState<string | null>(null);
- 
- // Get current user
- useEffect(() => {
- const getCurrentUser = async () => {
- const { data: { user } } = await supabase.auth.getUser();
- if (user) {
- setUserId(user.id);
- logger.log("Current user ID:", user.id);
- }
- };
- 
- getCurrentUser();
- }, []);
+  const [userId, setUserId] = useState<string | null>(null);
 
- // Check and fix user profile if needed
- const checkAndFixUserProfile = async (companyId: string) => {
- if (!userId) return false;
- 
- try {
- // Check current profile - use maybeSingle() to handle case where profile doesn't exist
- const { data: profile, error: profileError } = await supabase
- .from("profiles")
- .select("company_id, role, email")
- .eq("id", userId)
- .maybeSingle();
- 
- if (profileError) {
- console.error("Error checking profile:", profileError);
- return false;
- }
- 
- logger.log("Current user profile:", profile);
- 
- const { data: { user } } = await supabase.auth.getUser();
- const email = user?.email || '';
- 
- // If profile doesn't exist or company_id is not set
- if (!profile || !profile.company_id) {
- logger.log("Fixing user profile - setting company_id and role");
- 
- // Try to update/create profile
- const { error: updateError } = await supabase
- .from("profiles")
- .upsert({
- id: userId,
- company_id: companyId,
- role: "administrator",
- email: email
- });
- 
- if (updateError) {
- console.error("Error fixing user profile:", updateError);
- 
- // If RLS error, try a workaround by having the user sign out and back in
- if (updateError.message.includes("violates row-level security policy")) {
- logger.log("Detected RLS error, will try refreshing auth session");
- 
- // Try to refresh the session
- const { data: sessionData, error: refreshError } = await supabase.auth.refreshSession();
- 
- if (refreshError) {
- console.error("Failed to refresh session:", refreshError);
- return false;
- }
- 
- if (sessionData.session) {
- logger.log("Session refreshed, trying profile update again");
- 
- // Try update again after session refresh
- const { error: retryError } = await supabase
- .from("profiles")
- .upsert({
- id: userId,
- company_id: companyId,
- role: "administrator",
- email: email
- });
- 
- if (retryError) {
- console.error("Error on second profile update attempt:", retryError);
- return false;
- }
- 
- return true;
- }
- }
- 
- return false;
- } else {
- logger.log("User profile fixed successfully");
- return true;
- }
- }
- 
- return true;
- } catch (error) {
- console.error("Error checking/fixing user profile:", error);
- return false;
- }
- };
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id ?? null);
+    });
+  }, []);
 
- return { userId, checkAndFixUserProfile };
+  // Company/role assignment is owned by the onboarding and invitation RPCs.
+  // This legacy hook now verifies the result without attempting escalation.
+  const checkAndFixUserProfile = async (companyId: string) => {
+    if (!userId) return false;
+
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("company_id")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) {
+      console.error("Error checking profile:", error);
+      return false;
+    }
+
+    const matches = profile?.company_id === companyId;
+    if (!matches) logger.warn("Profile company did not match the saved company");
+    return matches;
+  };
+
+  return { userId, checkAndFixUserProfile };
 };

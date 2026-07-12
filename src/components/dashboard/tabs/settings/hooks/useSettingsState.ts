@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useUserSettings } from "@/hooks/useUserSettings";
 
@@ -19,10 +18,8 @@ interface DisplaySetting {
 }
 
 export const useSettingsState = () => {
- const { theme, setTheme } = useTheme();
  const { 
  settings, 
- isLoading, 
  isSaving, 
  updateNotificationPreferences, 
  updateDisplaySettings, 
@@ -40,13 +37,11 @@ export const useSettingsState = () => {
  ]);
 
  const [dashboardLayout, setDashboardLayout] = useState("Default");
- const [hasPendingChanges, setHasPendingChanges] = useState(false);
-
  // Load settings from database when available
  useEffect(() => {
  if (settings) {
  // Update notification preferences from database
- const updatedNotiPrefs = notificationPreferences.map(pref => {
+ setNotificationPreferences((preferences) => preferences.map(pref => {
  switch (pref.id) {
  case 1:
  return { ...pref, enabled: settings.notification_preferences.email_notifications };
@@ -57,17 +52,15 @@ export const useSettingsState = () => {
  default:
  return pref;
  }
- });
- setNotificationPreferences(updatedNotiPrefs);
+ }));
 
  // Update display settings from database
- const updatedDisplaySettings = displaySettings.map(setting => {
+ setDisplaySettings((displaySettings) => displaySettings.map(setting => {
  if (setting.id === "compactMode") {
  return { ...setting, enabled: settings.display_settings.compact_mode };
  }
  return setting;
- });
- setDisplaySettings(updatedDisplaySettings);
+ }));
 
  // Update dashboard layout
  setDashboardLayout(settings.dashboard_layout);
@@ -139,7 +132,6 @@ export const useSettingsState = () => {
  const handleSaveSettings = () => {
  // Settings are now saved automatically when changed
  toast.success("Settings are automatically saved");
- setHasPendingChanges(false);
  };
 
  const handleResetSetup = () => {

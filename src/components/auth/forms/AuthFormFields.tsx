@@ -46,7 +46,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         autoComplete={autoComplete}
         required={required}
         disabled={disabled}
-        className="w-full bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+        className="w-full bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
       />
     </div>
   );

@@ -133,7 +133,7 @@ const RequestsInboxPage = () => {
  {requests.map((r) => (
  <div
  key={r.id}
- className={`rounded-xl border bg-surface-container-lowest shadow-sm transition-all duration-200 overflow-hidden ${
+ className={`rounded-xl border bg-surface-container-lowest shadow-sm transition-ui duration-200 overflow-hidden ${
  r.type === "urgent" && r.status === "new"
  ? "border-destructive/30 shadow-destructive/5"
  : "border-border/60 hover:border-primary/20 hover:shadow-md"

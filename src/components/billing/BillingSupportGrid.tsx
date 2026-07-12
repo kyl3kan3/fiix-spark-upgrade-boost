@@ -38,7 +38,7 @@ export default function BillingSupportGrid() {
         </div>
         <div className="bg-muted/40 rounded-lg p-4 border border-border/60 flex items-center gap-4 mb-4">
           <div className="w-12 h-8 bg-white rounded border border-border/60 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-            <span className="text-[#1434CB] font-bold italic text-xs tracking-tighter">
+            <span className="text-[#1434CB] font-bold italic text-xs tracking-normal">
               VISA
             </span>
           </div>

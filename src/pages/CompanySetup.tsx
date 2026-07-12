@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/auth";
 import { Loader2, AlertCircle, Building2, CheckCircle2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { createCompany, fetchUserCompany, updateCompany } from "@/services/company";
+import { getBrowserTimezone, TIMEZONE_OPTIONS } from "@/constants/timezones";
 
 interface CompanyFormData {
  name: string;
@@ -20,6 +22,7 @@ interface CompanyFormData {
  phone: string;
  email: string;
  website: string;
+ timezone: string;
 }
 
 const CompanySetup: React.FC = () => {
@@ -35,6 +38,7 @@ const CompanySetup: React.FC = () => {
  phone: "",
  email: "",
  website: "",
+ timezone: getBrowserTimezone(),
  });
  const [isSubmitting, setIsSubmitting] = useState(false);
  const [error, setError] = useState<string | null>(null);
@@ -54,30 +58,9 @@ const CompanySetup: React.FC = () => {
   }
 
  try {
- // Check if user has a profile with company association
- const { data: profile, error: profileError } = await supabase
- .from("profiles")
- .select("company_id, email")
- .eq("id", user.id)
- .maybeSingle();
-
- if (profileError) {
- throw profileError;
- }
-
- if (profile?.company_id) {
- setExistingCompanyId(profile.company_id);
- 
- // Load existing company data
- const { data: companyData, error: companyError } = await supabase
- .from("companies")
- .select("*")
- .eq("id", profile.company_id)
- .single();
-
- if (companyError) {
- console.error("Error fetching company:", companyError);
- } else if (companyData) {
+ const companyData = await fetchUserCompany();
+ if (companyData?.id) {
+ setExistingCompanyId(companyData.id);
  // Fill form with existing data
  setFormData({
  name: companyData.name || "",
@@ -89,8 +72,8 @@ const CompanySetup: React.FC = () => {
  phone: companyData.phone || "",
   email: companyData.email || "",
  website: companyData.website || "",
+ timezone: companyData.timezone || getBrowserTimezone(),
  });
- }
  }
 
   initializedForUserRef.current = user.id;
@@ -123,62 +106,27 @@ const CompanySetup: React.FC = () => {
 
  // Create or update company
  let companyId = existingCompanyId;
- 
- if (companyId) {
- // Update existing company
- const { error: updateError } = await supabase
- .from("companies")
- .update({
- name: formData.name,
+ const companyInfo = {
+ companyName: formData.name,
  industry: formData.industry || null,
  address: formData.address || null,
  city: formData.city || null,
  state: formData.state || null,
- zip_code: formData.zipCode || null,
+ zipCode: formData.zipCode || null,
  phone: formData.phone || null,
  email: formData.email || null,
  website: formData.website || null,
- updated_at: new Date().toISOString()
- })
- .eq("id", companyId);
+ timezone: formData.timezone,
+ };
 
- if (updateError) throw updateError;
+ if (companyId) {
+ await updateCompany(companyId, companyInfo);
  
  toast.success("Company information updated successfully");
  } else {
- // Create new company
- const { data: companyData, error: companyError } = await supabase
- .from("companies")
- .insert({
- name: formData.name,
- industry: formData.industry || null,
- address: formData.address || null,
- city: formData.city || null,
- state: formData.state || null,
- zip_code: formData.zipCode || null,
- phone: formData.phone || null,
- email: formData.email || null,
- website: formData.website || null,
- created_by: user.id
- })
- .select()
- .single();
-
- if (companyError) throw companyError;
- 
- companyId = companyData.id;
-
- // Update user's profile with this company ID
- // (This will trigger the ensure_first_user_is_admin trigger we created)
-  const { error: updateProfileError } = await supabase
- .from("profiles")
- .upsert({
- id: user.id,
- company_id: companyId,
-  email: user.email || ""
- });
-
- if (updateProfileError) throw updateProfileError;
+ const companyData = await createCompany(companyInfo);
+ companyId = companyData.id ?? null;
+ if (!companyId) throw new Error("Company creation did not return an id");
  
  toast.success("Company created successfully");
  localStorage.setItem('maintenease_setup_complete', 'true');
@@ -188,9 +136,9 @@ const CompanySetup: React.FC = () => {
  setTimeout(() => {
  navigate("/team-setup");
  }, 1000);
- } catch (err: any) {
+ } catch (err: unknown) {
  console.error("Error saving company:", err);
- setError(err.message || "Failed to save company information");
+ setError(err instanceof Error ? err.message : "Failed to save company information");
  toast.error("Failed to save company information");
  } finally {
  setIsSubmitting(false);
@@ -222,7 +170,7 @@ const CompanySetup: React.FC = () => {
      <div className="flex items-center gap-2 text-xs text-muted-foreground">
        <span>Step 1 of 4</span>
        <div className="w-28 h-1.5 bg-muted rounded-full overflow-hidden">
-         <div className="w-1/4 h-full bg-primary rounded-full transition-all" />
+         <div className="w-1/4 h-full bg-primary rounded-full" />
        </div>
      </div>
    </nav>
@@ -231,7 +179,7 @@ const CompanySetup: React.FC = () => {
      {/* Stepper */}
      <div className="flex justify-between items-center relative max-w-2xl mx-auto mb-12">
        <div className="absolute top-5 left-0 w-full h-0.5 bg-border -z-10" />
-       <div className="absolute top-5 left-0 w-1/4 h-0.5 bg-primary -z-10 transition-all" />
+       <div className="absolute top-5 left-0 w-1/4 h-0.5 bg-primary -z-10" />
        {["Organization", "Team", "Assets", "Review"].map((step, idx) => (
          <div key={step} className="flex flex-col items-center gap-2 bg-background px-3">
            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ring-4 ring-background ${
@@ -280,7 +228,7 @@ const CompanySetup: React.FC = () => {
                onChange={handleChange}
                placeholder="e.g. Acme Manufacturing Corp"
                required
-               className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+               className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
              />
            </div>
 
@@ -295,7 +243,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.industry}
                  onChange={handleChange}
                  placeholder="Manufacturing, Healthcare, etc."
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
              <div>
@@ -309,9 +257,30 @@ const CompanySetup: React.FC = () => {
                  value={formData.phone}
                  onChange={handleChange}
                  placeholder="(555) 123-4567"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
+           </div>
+
+           <div>
+             <Label htmlFor="timezone" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+               Facility Timezone
+             </Label>
+             <Select
+               value={formData.timezone}
+               onValueChange={(timezone) => setFormData((current) => ({ ...current, timezone }))}
+             >
+               <SelectTrigger id="timezone" className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background">
+                 <SelectValue placeholder="Select timezone" />
+               </SelectTrigger>
+               <SelectContent className="max-h-72">
+                 {Array.from(new Set([formData.timezone, ...TIMEZONE_OPTIONS])).map((timezone) => (
+                   <SelectItem key={timezone} value={timezone}>
+                     {timezone.replace(/_/g, " ")}
+                   </SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
            </div>
 
            <div>
@@ -324,7 +293,7 @@ const CompanySetup: React.FC = () => {
                value={formData.address}
                onChange={handleChange}
                placeholder="123 Main Street"
-               className="resize-none bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+               className="resize-none bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
              />
            </div>
 
@@ -337,7 +306,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.city}
                  onChange={handleChange}
                  placeholder="New York"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
              <div>
@@ -348,7 +317,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.state}
                  onChange={handleChange}
                  placeholder="NY"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
              <div>
@@ -359,7 +328,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.zipCode}
                  onChange={handleChange}
                  placeholder="10001"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
            </div>
@@ -376,7 +345,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.email}
                  onChange={handleChange}
                  placeholder="contact@acme.com"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
              <div>
@@ -389,7 +358,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.website}
                  onChange={handleChange}
                  placeholder="https://www.acme.com"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-all"
+                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
                />
              </div>
            </div>
@@ -405,7 +374,7 @@ const CompanySetup: React.FC = () => {
              </Button>
              <Button
                type="submit"
-               className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-all px-8"
+               className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui px-8"
                disabled={isSubmitting || !formData.name}
              >
                {isSubmitting ? (

@@ -36,10 +36,12 @@ import {
   updateSubscriptionSeats,
 } from "@/services/billingService";
 import { trackPurchaseConversion } from "@/lib/gtag";
+import { useAdminStatus } from "@/hooks/team/useAdminStatus";
 
 export default function BillingPage() {
   const { data: sub, isLoading, refetch } = useSubscription();
   const { user } = useAuth();
+  const { isAdminUser, isLoading: isAdminLoading } = useAdminStatus();
   const [params] = useSearchParams();
   const [opening, setOpening] = useState(false);
   const [seatsOpen, setSeatsOpen] = useState(false);
@@ -157,17 +159,23 @@ export default function BillingPage() {
             <p className="mb-4 text-muted-foreground">
               You don't have an active subscription yet.
             </p>
-            <Button
-              asChild
-              className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
-            >
-              <Link to="/pricing">Choose a plan</Link>
-            </Button>
+            {!isAdminLoading && isAdminUser ? (
+              <Button
+                asChild
+                className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+              >
+                <Link to="/pricing">Choose a plan</Link>
+              </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                A workspace administrator can choose a plan.
+              </p>
+            )}
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-col relative">
+              <div className="md:col-span-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui overflow-hidden flex flex-col relative">
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div>
@@ -247,6 +255,8 @@ export default function BillingPage() {
                 </div>
 
                 <div className="px-6 py-4 border-t border-border/70 bg-background/50 backdrop-blur-sm flex flex-wrap gap-3 justify-end">
+                  {!isAdminLoading && isAdminUser ? (
+                    <>
                   <Button
                     variant="outline"
                     onClick={() => setSeatsOpen(true)}
@@ -269,11 +279,16 @@ export default function BillingPage() {
                       </>
                     )}
                   </Button>
+                    </>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Billing changes require workspace administrator access.
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-primary text-primary-foreground rounded-xl shadow-lg p-6 flex flex-col justify-between relative overflow-hidden hover:-translate-y-1 transition-transform">
-                <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+              <div className="bg-primary text-primary-foreground rounded-lg shadow-lg p-6 flex flex-col justify-between relative overflow-hidden hover:-translate-y-1 transition-transform">
                 <div className="relative z-10">
                   <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 border border-white/20 backdrop-blur-md">
                     <Rocket className="h-6 w-6 text-primary-foreground" />
@@ -310,7 +325,7 @@ export default function BillingPage() {
         )}
       </PageContainer>
 
-      {sub && (
+      {sub && isAdminUser && (
         <Dialog open={seatsOpen} onOpenChange={setSeatsOpen}>
           <DialogContent>
             <DialogHeader>

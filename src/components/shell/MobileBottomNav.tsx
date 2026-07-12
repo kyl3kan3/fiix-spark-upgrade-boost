@@ -1,21 +1,32 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, ClipboardCheck, Calendar, BarChart3, Menu } from "lucide-react";
+import { LayoutDashboard, ClipboardList, ClipboardCheck, Calendar, BarChart3, Menu, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TIER_FEATURES, useSubscription } from "@/hooks/useSubscription";
 
 interface Props {
  onOpenMenu: () => void;
 }
 
-const items = [
+const coreItems = [
  { label: "Home", href: "/dashboard", icon: LayoutDashboard },
  { label: "My Jobs", href: "/work-orders", icon: ClipboardList },
  { label: "Check-Ups", href: "/inspections", icon: ClipboardCheck },
  { label: "Calendar", href: "/calendar", icon: Calendar },
- { label: "Analytics", href: "/reports", icon: BarChart3 },
 ];
 
 const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
+ const { data: subscription } = useSubscription();
+ const hasAnalytics = Boolean(
+ subscription?.is_active && TIER_FEATURES[subscription.tier].analytics,
+ );
+ const items = [
+ ...coreItems,
+ hasAnalytics
+ ? { label: "Analytics", href: "/reports", icon: BarChart3 }
+ : { label: "Equipment", href: "/assets", icon: Package },
+ ];
+
  return (
  <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border pb-safe">
  <div className="grid grid-cols-6 px-1 pt-1.5">
@@ -37,7 +48,7 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  {({ isActive }) => (
  <>
  <div className={cn(
- "h-9 w-12 flex items-center justify-center rounded-2xl transition-all",
+ "h-9 w-12 flex items-center justify-center rounded-2xl transition-ui",
  isActive && "bg-primary/15"
  )}>
  <Icon className="h-5 w-5" strokeWidth={isActive ? 2.6 : 2.2} />

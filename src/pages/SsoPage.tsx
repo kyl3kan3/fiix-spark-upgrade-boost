@@ -43,7 +43,7 @@ const SsoPage: React.FC = () => {
             {/* Left column: config forms */}
             <div className="lg:col-span-8 space-y-6">
               {/* Identity Provider */}
-              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
                 <CardHeader className="border-b border-border pb-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="font-headline text-xl text-foreground">
@@ -65,7 +65,7 @@ const SsoPage: React.FC = () => {
                     {PROVIDERS.map((p, i) => (
                       <div
                         key={p.id}
-                        className={`p-5 rounded-xl text-center border-2 cursor-pointer transition-all ${
+                        className={`p-5 rounded-xl text-center border-2 cursor-pointer transition-ui ${
                           i === 0
                             ? "border-primary bg-primary/5"
                             : "border-border hover:border-primary/50"
@@ -104,7 +104,7 @@ const SsoPage: React.FC = () => {
               </Card>
 
               {/* Security Policies */}
-              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+              <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
                 <CardHeader className="border-b border-border pb-4">
                   <CardTitle className="font-headline text-xl text-foreground">
                     Security Policies

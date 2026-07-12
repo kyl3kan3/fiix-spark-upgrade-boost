@@ -32,7 +32,7 @@ export const VendorCard: React.FC<VendorCardProps> = ({
  return (
  <Draggable onDragStart={onDragStart} onDragEnd={onDragEnd}>
  <Card 
- className={`relative transition-all duration-200 ${ isDragging ? 'opacity-50 transform rotate-2' : 'hover:shadow-md' }`}
+ className={`relative transition-ui duration-200 ${ isDragging ? 'opacity-50 transform rotate-2' : 'hover:shadow-md' }`}
  onDragOver={onDragOver}
  >
  <VendorCardHeader

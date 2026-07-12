@@ -68,7 +68,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
 
  return (
  <Card
- className={`group relative h-full bg-card border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${
+ className={`group relative h-full bg-card border rounded-lg shadow-sm hover:shadow-md transition-ui duration-200 ${
  isSelected ? "border-primary bg-primary/5" : "border-border"
  }`}
  >

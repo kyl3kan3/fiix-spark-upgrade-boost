@@ -122,7 +122,7 @@ const WeatherAlertsCard: React.FC = () => {
  };
 
  return (
- <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+ <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
  <CardHeader className="border-b border-border pb-4">
  <CardTitle className="font-headline text-xl text-foreground flex items-center gap-2">
  <Thermometer className="h-5 w-5 text-primary" />

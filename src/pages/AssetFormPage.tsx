@@ -4,13 +4,10 @@ import { useParams } from "react-router-dom";
 import { AssetForm } from "@/components/workOrders/assets/AssetForm";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
-import { logger } from "@/lib/logger";
 
 const AssetFormPage = () => {
   const { assetId } = useParams();
   const isEditing = !!assetId;
-
-  logger.log("AssetFormPage rendering, assetId:", assetId, "isEditing:", isEditing);
 
   return (
     <DashboardLayout>

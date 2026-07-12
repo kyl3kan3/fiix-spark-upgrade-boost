@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
+import type { Database } from "../../../src/integrations/supabase/types.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -117,8 +118,7 @@ const tools = [
   },
 ];
 
-// deno-lint-ignore no-explicit-any
-type Db = ReturnType<typeof createClient>;
+type Db = SupabaseClient<Database>;
 
 // deno-lint-ignore no-explicit-any
 async function executeTool(db: Db, name: string, input: any, proposals: any[]): Promise<string> {
@@ -157,8 +157,10 @@ async function executeTool(db: Db, name: string, input: any, proposals: any[]): 
       for (const r of data ?? []) {
         const amt = Number(r.amount) || 0;
         total += amt;
-        byCategory[r.category] = (byCategory[r.category] ?? 0) + amt;
-        byType[r.maintenance_type] = (byType[r.maintenance_type] ?? 0) + amt;
+        const category = r.category || "other";
+        const maintenanceType = r.maintenance_type || "other";
+        byCategory[category] = (byCategory[category] ?? 0) + amt;
+        byType[maintenanceType] = (byType[maintenanceType] ?? 0) + amt;
       }
       return JSON.stringify({ total, byCategory, byType, count: data?.length ?? 0, currency: data?.[0]?.currency ?? "USD" });
     }
@@ -249,12 +251,14 @@ serve(async (req) => {
     }
 
     // RLS-scoped client bound to the caller's JWT — all reads/writes are company-scoped automatically.
-    const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
+    const db = createClient<Database>(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const { data: claims, error: claimsErr } = await db.auth.getClaims(authHeader.replace("Bearer ", ""));
-    if (claimsErr || !claims?.claims) {
+    const { data: userData, error: userError } = await db.auth.getUser(
+      authHeader.replace("Bearer ", ""),
+    );
+    if (userError || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

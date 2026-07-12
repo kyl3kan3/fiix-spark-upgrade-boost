@@ -93,7 +93,7 @@ export function useProfile() {
  setProfile(null);
  clearError();
  }
- }, [refreshProfile, isAuthenticated, user?.id, authLoading]);
+ }, [refreshProfile, isAuthenticated, user?.id, authLoading, setLoadingState, clearError]);
 
  return {
  profile,

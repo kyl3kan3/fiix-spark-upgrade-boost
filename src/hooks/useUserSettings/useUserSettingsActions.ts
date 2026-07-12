@@ -1,18 +1,18 @@
 
+import { useCallback } from "react";
 import { updateUserSettings } from "@/services/userSettingsService";
 import { toast } from "sonner";
 import { UserSettings } from "./types";
 import { transformDatabaseResponse } from "./transformers";
 
 interface UseUserSettingsActionsProps {
- isSaving: boolean;
  setIsSaving: (saving: boolean) => void;
  setSettings: (settings: UserSettings) => void;
 }
 
-export const useUserSettingsActions = ({ isSaving, setIsSaving, setSettings }: UseUserSettingsActionsProps) => {
+export const useUserSettingsActions = ({ setIsSaving, setSettings }: UseUserSettingsActionsProps) => {
  
- const updateNotificationPreferences = async (preferences: UserSettings['notification_preferences']) => {
+ const updateNotificationPreferences = useCallback(async (preferences: UserSettings['notification_preferences']) => {
  setIsSaving(true);
  try {
  const updatedSettings = await updateUserSettings({ notification_preferences: preferences });
@@ -27,9 +27,9 @@ export const useUserSettingsActions = ({ isSaving, setIsSaving, setSettings }: U
  } finally {
  setIsSaving(false);
  }
- };
+ }, [setIsSaving, setSettings]);
 
- const updateDisplaySettings = async (displaySettings: UserSettings['display_settings']) => {
+ const updateDisplaySettings = useCallback(async (displaySettings: UserSettings['display_settings']) => {
  setIsSaving(true);
  try {
  const updatedSettings = await updateUserSettings({ display_settings: displaySettings });
@@ -44,9 +44,9 @@ export const useUserSettingsActions = ({ isSaving, setIsSaving, setSettings }: U
  } finally {
  setIsSaving(false);
  }
- };
+ }, [setIsSaving, setSettings]);
 
- const updateDashboardLayout = async (layout: string) => {
+ const updateDashboardLayout = useCallback(async (layout: string) => {
  setIsSaving(true);
  try {
  const updatedSettings = await updateUserSettings({ dashboard_layout: layout });
@@ -61,9 +61,9 @@ export const useUserSettingsActions = ({ isSaving, setIsSaving, setSettings }: U
  } finally {
  setIsSaving(false);
  }
- };
+ }, [setIsSaving, setSettings]);
 
- const markSetupCompleted = async () => {
+ const markSetupCompleted = useCallback(async () => {
  setIsSaving(true);
  try {
  const updatedSettings = await updateUserSettings({ setup_completed: true });
@@ -77,7 +77,7 @@ export const useUserSettingsActions = ({ isSaving, setIsSaving, setSettings }: U
  } finally {
  setIsSaving(false);
  }
- };
+ }, [setIsSaving, setSettings]);
 
  return {
  updateNotificationPreferences,

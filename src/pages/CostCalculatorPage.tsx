@@ -112,7 +112,7 @@ const CostCalculatorPage = () => {
           <span className="mx-2">/</span>
           <span className="text-foreground">CMMS Cost Calculator</span>
         </nav>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-4 text-foreground">
           What does a CMMS really cost for your crew?
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl">
@@ -203,7 +203,7 @@ const CostCalculatorPage = () => {
                   </div>
                   <div className="h-3.5 rounded-r bg-muted/60 overflow-hidden">
                     <div
-                      className={`h-full rounded-r transition-all duration-300 ${row.accent ? BAR_ACCENT : BAR_NEUTRAL} hover:brightness-110`}
+                      className={`h-full rounded-r transition-[width,filter] duration-300 ${row.accent ? BAR_ACCENT : BAR_NEUTRAL} hover:brightness-110`}
                       style={{ width: `${Math.max(3, (row.monthly / result.maxMonthly) * 100)}%` }}
                     />
                   </div>
@@ -268,7 +268,7 @@ const CostCalculatorPage = () => {
             <Link
               key={c.slug}
               to={`/compare/${c.slug}`}
-              className="block p-5 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-md transition-all group"
+              className="block p-5 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-md transition-ui group"
             >
               <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">{c.h1}</h3>
               <p className="text-sm text-muted-foreground">{c.tagline}</p>

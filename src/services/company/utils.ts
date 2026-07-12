@@ -18,7 +18,8 @@ export const mapCompanyToCompanyInfo = (company: CompanyData | null): CompanyInf
  phone: company.phone,
  email: company.email,
  website: company.website,
- logo: company.logo
+ logo: company.logo,
+ timezone: company.timezone
  };
 };
 
@@ -39,6 +40,7 @@ export const mapCompanyInfoToCompanyData = (info: Partial<CompanyInfo>): Partial
  phone: info.phone,
  email: info.email,
  website: info.website,
- logo: info.logo
+ logo: info.logo,
+ timezone: info.timezone
  };
 };

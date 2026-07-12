@@ -1,4 +1,5 @@
-import { createClient } from 'npm:@supabase/supabase-js@2';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
+import type { Database } from '../../../src/integrations/supabase/types.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,7 +35,7 @@ async function sha256Hex(input: string): Promise<string> {
 
 const normalizeEmail = (e: string) => e.trim().toLowerCase();
 
-async function emailsForSegment(admin: ReturnType<typeof createClient>, segment: Segment): Promise<string[]> {
+async function emailsForSegment(admin: SupabaseClient<Database>, segment: Segment): Promise<string[]> {
   // Collect company_ids matching the segment from subscriptions
   let companyIds: string[] | null = null;
   if (segment !== 'all_users') {
@@ -44,7 +45,7 @@ async function emailsForSegment(admin: ReturnType<typeof createClient>, segment:
     else if (segment === 'churned_users') q = q.in('status', ['canceled', 'past_due']);
     const { data: subs, error } = await q;
     if (error) throw new Error(`subscriptions query failed: ${error.message}`);
-    companyIds = Array.from(new Set((subs ?? []).map((s: any) => s.company_id).filter(Boolean)));
+    companyIds = Array.from(new Set((subs ?? []).map((subscription) => subscription.company_id)));
     if (companyIds.length === 0) return [];
   }
 
@@ -52,7 +53,10 @@ async function emailsForSegment(admin: ReturnType<typeof createClient>, segment:
   if (companyIds) pq = pq.in('company_id', companyIds);
   const { data: profs, error: perr } = await pq;
   if (perr) throw new Error(`profiles query failed: ${perr.message}`);
-  return Array.from(new Set((profs ?? []).map((p: any) => p.email).filter(Boolean)));
+  const emails = (profs ?? [])
+    .map((profile) => profile.email)
+    .filter((email): email is string => Boolean(email));
+  return Array.from(new Set(emails));
 }
 
 async function adsFetch(
@@ -177,12 +181,12 @@ Deno.serve(async (req) => {
     if (!DEV_TOKEN) return json({ error: 'GOOGLE_ADS_DEVELOPER_TOKEN not configured' }, 500);
 
     const token = (req.headers.get('Authorization') ?? '').replace('Bearer ', '');
-    const userClient = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
+    const userClient = createClient<Database>(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
     const { data: userData } = await userClient.auth.getUser();
     if (!userData?.user) return json({ error: 'unauthorized' }, 401);
-    const admin = createClient(SUPABASE_URL, SERVICE_KEY);
+    const admin = createClient<Database>(SUPABASE_URL, SERVICE_KEY);
     const { data: roleRow } = await admin
       .from('user_roles')
       .select('role')

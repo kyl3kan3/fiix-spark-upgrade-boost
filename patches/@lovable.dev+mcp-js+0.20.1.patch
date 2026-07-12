@@ -1,0 +1,35 @@
+diff --git a/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.cjs b/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.cjs
+index ebc9f30..f49eef0 100644
+--- a/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.cjs
++++ b/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.cjs
+@@ -121,7 +121,7 @@ function externalizeBareAsNpm(versions) {
+     setup(pluginBuild) {
+       pluginBuild.onResolve({ filter: /.*/ }, (args) => {
+         const p = args.path;
+-        if (p.startsWith(".") || p.startsWith("/"))
++        if (p.startsWith(".") || (0, import_node_path.isAbsolute)(p))
+           return null;
+         if (/^(npm|node|jsr|https?|data):/.test(p))
+           return { path: p, external: true };
+diff --git a/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.js b/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.js
+index 845b5d0..2468e56 100644
+--- a/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.js
++++ b/node_modules/@lovable.dev/mcp-js/dist/stacks/supabase/vite.js
+@@ -16,7 +16,7 @@ import { loadEnv } from "vite";
+ // src/stacks/supabase/emit.ts
+ import { build } from "esbuild";
+ import { lstatSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "fs";
+-import { dirname, join, relative, resolve, sep } from "path";
++import { dirname, isAbsolute, join, relative, resolve, sep } from "path";
+ var DEFAULT_MCP_ENTRY = "src/lib/mcp/index.ts";
+ var DEFAULT_FUNCTIONS_DIR = "supabase/functions";
+ var DEFAULT_FUNCTION_NAME = "mcp";
+@@ -87,7 +87,7 @@ function externalizeBareAsNpm(versions) {
+     setup(pluginBuild) {
+       pluginBuild.onResolve({ filter: /.*/ }, (args) => {
+         const p = args.path;
+-        if (p.startsWith(".") || p.startsWith("/"))
++        if (p.startsWith(".") || isAbsolute(p))
+           return null;
+         if (/^(npm|node|jsr|https?|data):/.test(p))
+           return { path: p, external: true };

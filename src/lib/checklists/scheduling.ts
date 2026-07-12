@@ -1,6 +1,7 @@
 /**
- * Returns the next due timestamp for a checklist given its frequency,
- * starting from `from` (defaults to now).
+ * Returns the next due timestamp in UTC for client-side previews and tests,
+ * starting from `from` (defaults to now). Persisted schedules are calculated
+ * by Postgres in the company's configured IANA timezone.
  * Returns `null` for one-time checklists (no recurring due).
  */
 export function nextDueAt(frequency: string, from: Date = new Date()): Date | null {
@@ -10,49 +11,57 @@ export function nextDueAt(frequency: string, from: Date = new Date()): Date | nu
  // If currently AM (before noon), next due is today PM (noon).
  // If currently PM, next due is tomorrow AM (start of day).
  const next = new Date(d);
- if (d.getHours() < 12) {
- next.setHours(12, 0, 0, 0);
+ if (d.getUTCHours() < 12) {
+ next.setUTCHours(12, 0, 0, 0);
  } else {
- next.setDate(next.getDate() + 1);
- next.setHours(0, 0, 0, 0);
+ next.setUTCDate(next.getUTCDate() + 1);
+ next.setUTCHours(0, 0, 0, 0);
  }
  return next;
  }
  case "daily": {
  const next = new Date(d);
- next.setDate(next.getDate() + 1);
- next.setHours(0, 0, 0, 0);
+ next.setUTCDate(next.getUTCDate() + 1);
+ next.setUTCHours(0, 0, 0, 0);
  return next;
  }
  case "weekly": {
  const next = new Date(d);
- next.setDate(next.getDate() + 7);
+ next.setUTCDate(next.getUTCDate() + 7);
  return next;
  }
  case "biweekly": {
  const next = new Date(d);
- next.setDate(next.getDate() + 14);
+ next.setUTCDate(next.getUTCDate() + 14);
  return next;
  }
  case "monthly": {
- const next = new Date(d);
- next.setMonth(next.getMonth() + 1);
- return next;
+ return addUtcMonthsClamped(d, 1);
  }
  case "quarterly": {
- const next = new Date(d);
- next.setMonth(next.getMonth() + 3);
- return next;
+ return addUtcMonthsClamped(d, 3);
  }
  case "annually": {
- const next = new Date(d);
- next.setFullYear(next.getFullYear() + 1);
- return next;
+ return addUtcMonthsClamped(d, 12);
  }
  case "one-time":
  default:
  return null;
  }
+}
+
+function addUtcMonthsClamped(from: Date, months: number): Date {
+ const next = new Date(from);
+ const dayOfMonth = next.getUTCDate();
+ next.setUTCDate(1);
+ next.setUTCMonth(next.getUTCMonth() + months);
+ const lastDay = new Date(Date.UTC(
+ next.getUTCFullYear(),
+ next.getUTCMonth() + 1,
+ 0,
+ )).getUTCDate();
+ next.setUTCDate(Math.min(dayOfMonth, lastDay));
+ return next;
 }
 
 export function isDue(nextDueAtIso: string | null | undefined, now: Date = new Date()): boolean {

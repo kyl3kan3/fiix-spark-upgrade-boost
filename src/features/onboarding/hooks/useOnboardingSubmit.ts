@@ -1,223 +1,121 @@
-
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FormState, InviteDetails } from "./types";
-import { clearOnboardingStorage, setSetupComplete } from "./storageUtils";
+import { toast } from "sonner";
+import { getBrowserTimezone } from "@/constants/timezones";
 import { logger } from "@/lib/logger";
+import {
+  acceptOnboardingInvitation,
+  completeOwnerOnboarding,
+  completePersonalOnboarding,
+  notifyTrialSignup,
+} from "@/services/onboardingSubmissionService";
+import { getCurrentUser } from "@/services/supabaseHelpers";
+import { clearOnboardingStorage, setSetupComplete } from "./storageUtils";
+import type { FormState, InviteDetails } from "./types";
+
+function errorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error && error.message ? error.message : fallback;
+}
 
 export const useOnboardingSubmit = (
- state: FormState,
- isInvited: boolean,
- inviteDetails: InviteDetails | null
+  state: FormState,
+  isInvited: boolean,
+  inviteDetails: InviteDetails | null,
 ) => {
- const [submitting, setSubmitting] = useState(false);
- const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
- const handleSubmit = async (e: React.FormEvent) => {
- e.preventDefault();
- setSubmitting(true);
+  const finishOnboarding = () => {
+    setSetupComplete();
+    clearOnboardingStorage();
+    localStorage.removeItem("pending_invite_token");
+  };
 
- try {
- logger.log("Starting onboarding submission with state:", state);
- const { data: { user } } = await supabase.auth.getUser();
- 
- if (!user) {
- toast.error("User not found. Please log in again.");
- navigate("/auth");
- return;
- }
+  const redirectToDashboard = (delay: number) => {
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, delay);
+  };
 
- // Update user profile with name
- const names = state.fullName.split(' ');
- const firstName = names[0];
- const lastName = names.slice(1).join(' ');
- 
- logger.log("Updating user profile with name:", { firstName, lastName, role: state.role });
- 
- // Handle company assignment first to satisfy the NOT NULL constraint
- let companyId: string | undefined;
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setSubmitting(true);
 
- if (isInvited && inviteDetails) {
-      // Accept the invitation atomically via SECURITY DEFINER RPC.
-      // This bypasses the restrictive RLS policy that blocks users from
-      // changing their own company_id / role on the profiles table.
-      const token = localStorage.getItem("pending_invite_token");
-      if (!token) {
-        toast.error("Invitation token missing. Please open the invite link again.");
-        setSubmitting(false);
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        toast.error("User not found. Please log in again.");
+        navigate("/auth");
         return;
       }
 
-      const { data: acceptResult, error: acceptError } = await supabase.rpc(
-        "accept_invitation",
-        {
-          _token: token,
-          _first_name: firstName,
-          _last_name: lastName,
-          _phone: state.phoneNumber?.trim() || undefined,
-        }
-      );
+      const [firstName = "", ...lastNameParts] = state.fullName.trim().split(/\s+/);
+      const profile = {
+        firstName,
+        lastName: lastNameParts.join(" "),
+        phone: state.phoneNumber?.trim() || undefined,
+      };
 
-      if (acceptError) {
-        console.error("Error accepting invitation:", acceptError);
-        toast.error(acceptError.message || "Failed to accept invitation");
-        setSubmitting(false);
-        return;
-      }
-
-      companyId = (acceptResult as any)?.company_id ?? inviteDetails.organization_id;
-      logger.log("Invitation accepted, linked to company:", companyId);
-
-      setSetupComplete();
-      clearOnboardingStorage();
-      localStorage.removeItem("pending_invite_token");
-
-      toast.success("Invitation accepted! Redirecting to dashboard...");
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 800);
-      return;
-      } else if (state.accountType === "personal") {
-        try {
-          logger.log("Completing personal onboarding");
-          const { error: personalError } = await supabase.rpc(
-            "complete_personal_onboarding",
-            {
-              _first_name: firstName,
-              _last_name: lastName,
-              _phone: state.phoneNumber?.trim() || undefined,
-            }
+      if (isInvited && inviteDetails) {
+        const token = localStorage.getItem("pending_invite_token");
+        if (!token) {
+          throw new Error(
+            "Invitation token missing. Please open the invite link again.",
           );
-          if (personalError) {
-            console.error("Personal onboarding error:", personalError);
-            toast.error(personalError.message || "Failed to complete onboarding");
-            setSubmitting(false);
-            return;
-          }
-          setSetupComplete();
-          clearOnboardingStorage();
-          toast.success("You're all set! Redirecting...");
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 800);
-          return;
-        } catch (err: any) {
-          console.error("Personal onboarding error:", err);
-          toast.error(err.message || "Failed to complete onboarding");
-          setSubmitting(false);
-          return;
         }
-      } else if (state.company) {
-  try {
-  logger.log("Completing owner onboarding for company:", state.company);
 
-  const { data: onboardingResult, error: onboardingError } = await supabase.rpc(
-    "complete_owner_onboarding",
-    {
-      _company_name: state.company,
-      _first_name: firstName,
-      _last_name: lastName,
-      _phone: state.phoneNumber?.trim() || undefined,
+        const companyId =
+          await acceptOnboardingInvitation(token, profile) ??
+          inviteDetails.organization_id;
+        logger.log("Invitation accepted, linked to company:", companyId);
+        finishOnboarding();
+        toast.success("Invitation accepted! Redirecting to dashboard...");
+        redirectToDashboard(800);
+        return;
+      }
+
+      if (state.accountType === "personal") {
+        await completePersonalOnboarding(profile);
+        finishOnboarding();
+        toast.success("You're all set! Redirecting...");
+        redirectToDashboard(800);
+        return;
+      }
+
+      if (!state.company?.trim()) {
+        throw new Error("Company information is required");
+      }
+
+      const companyId = await completeOwnerOnboarding({
+        ...profile,
+        companyName: state.company,
+        timezone: getBrowserTimezone(),
+      });
+      logger.log("Owner onboarding completed for company:", companyId);
+      toast.success("Company created successfully!");
+
+      void notifyTrialSignup(state.company, companyId).catch((error) => {
+        logger.log("Trial signup notification failed:", error);
+      });
+      void import("@/lib/analytics/trialEvents")
+        .then(({ trackTrialEvent }) =>
+          trackTrialEvent("trial_signup_completed", {
+            companyId,
+            metadata: { source: "onboarding" },
+          })
+        )
+        .catch((error) => logger.log("Trial signup tracking failed:", error));
+
+      finishOnboarding();
+      toast.success("Onboarding complete! Redirecting to dashboard...");
+      redirectToDashboard(1000);
+    } catch (error) {
+      console.error("Error during onboarding:", error);
+      toast.error(errorMessage(error, "Failed to complete onboarding"));
+    } finally {
+      setSubmitting(false);
     }
-  );
+  };
 
-  if (onboardingError) {
-    console.error("Owner onboarding error:", onboardingError);
-    toast.error(onboardingError.message || "Failed to create company");
-    setSubmitting(false);
-    return;
-  }
-
-  companyId = (onboardingResult as any)?.company_id;
-
-  if (!companyId) {
-    throw new Error("Company created without an id");
-  }
-
-  logger.log("Owner onboarding completed for company:", companyId);
-  toast.success("Company created successfully!");
-
-  // Notify ops that a new trial signup happened. Fire-and-forget — never block onboarding.
-  // The dedicated edge function authenticates the user server-side and sends to a fixed
-  // internal recipient; clients cannot pick the recipient or email body.
-  try {
-    void supabase.functions
-      .invoke("notify-trial-signup", {
-        body: { company: state.company, companyId },
-      })
-      .catch((err) => logger.log("Trial signup notification failed:", err));
-    void import("@/lib/analytics/trialEvents").then(({ trackTrialEvent }) =>
-      trackTrialEvent("trial_signup_completed", {
-        companyId,
-        metadata: { source: "onboarding" },
-      }),
-    );
-  } catch (notifyErr) {
-    logger.log("Trial signup notification error:", notifyErr);
-  }
-  } catch (err: any) {
-  console.error("Company creation error:", err);
-  toast.error(err.message || "Failed to create company");
-  setSubmitting(false);
-  return;
-  }
- } else {
- // Company is now required
- toast.error("Company information is required");
- setSubmitting(false);
- return;
- }
- 
-  if (isInvited) {
-  // Now update the profile with non-restricted fields for invited users only.
-  const { error: profileError } = await supabase
-  .from("profiles")
-  .update({
-  first_name: firstName,
-  last_name: lastName,
-  phone_number: state.phoneNumber?.trim() || null,
-  })
-  .eq("id", user.id);
- 
-  if (profileError) {
-  console.error("Profile update error:", profileError);
-  throw profileError;
-  }
-  }
-
- if (isInvited && inviteDetails) {
- // Update invitation status
- const { error: inviteError } = await supabase
- .from("organization_invitations")
- .update({ 
- status: "accepted", 
- accepted_at: new Date().toISOString() 
- })
- .eq("id", inviteDetails.id);
- 
- if (inviteError) {
- console.error("Error updating invitation status:", inviteError);
- throw inviteError;
- }
- }
-
- setSetupComplete();
- clearOnboardingStorage();
- localStorage.removeItem("pending_invite_token");
- 
- toast.success("Onboarding complete! Redirecting to dashboard...");
- setTimeout(() => {
-  window.location.href = "/dashboard";
- }, 1000);
- } catch (error: any) {
- console.error("Error during onboarding:", error);
- toast.error(error.message || "Failed to complete onboarding");
- } finally {
- setSubmitting(false);
- }
- };
-
- return { submitting, handleSubmit };
+  return { submitting, handleSubmit };
 };

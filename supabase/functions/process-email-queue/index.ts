@@ -1,11 +1,66 @@
 import { sendLovableEmail } from 'npm:@lovable.dev/email-js'
-import { createClient } from 'npm:@supabase/supabase-js@2'
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
+import type { Database, Json } from '../../../src/integrations/supabase/types.ts'
 
 const MAX_RETRIES = 5
 const DEFAULT_BATCH_SIZE = 10
 const DEFAULT_SEND_DELAY_MS = 200
 const DEFAULT_AUTH_TTL_MINUTES = 15
 const DEFAULT_TRANSACTIONAL_TTL_MINUTES = 60
+
+interface EmailPayload {
+  [key: string]: unknown
+  from?: string
+  html?: string
+  idempotency_key?: string
+  label?: string
+  message_id?: string
+  purpose?: string
+  queued_at?: string
+  run_id?: string
+  sender_domain?: string
+  subject?: string
+  text?: string
+  to?: string
+  unsubscribe_token?: string
+}
+
+interface SendableEmailPayload extends EmailPayload {
+  from: string
+  html: string
+  subject: string
+  text: string
+  to: string
+}
+
+interface QueueMessage {
+  enqueued_at: string
+  message: unknown
+  msg_id: number
+  read_ct: number
+}
+
+function isSendableEmailPayload(
+  payload: unknown,
+): payload is SendableEmailPayload {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return false
+  }
+  const candidate = payload as EmailPayload
+  return typeof candidate.to === 'string' && candidate.to.length > 0 &&
+    typeof candidate.from === 'string' && candidate.from.length > 0 &&
+    typeof candidate.subject === 'string' &&
+    typeof candidate.html === 'string' &&
+    typeof candidate.text === 'string'
+}
+
+function getMessageId(payload: unknown): string | null {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return null
+  }
+  const messageId = (payload as EmailPayload).message_id
+  return typeof messageId === 'string' ? messageId : null
+}
 
 // Check if an error is a rate-limit (429) response.
 // Uses EmailAPIError.status when available (email-js >=0.x with structured errors),
@@ -54,16 +109,18 @@ function parseJwtClaims(token: string): Record<string, unknown> | null {
 
 // Move a message to the dead letter queue and log the reason.
 async function moveToDlq(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient<Database>,
   queue: string,
-  msg: { msg_id: number; message: Record<string, unknown> },
+  msg: QueueMessage,
   reason: string
 ): Promise<void> {
-  const payload = msg.message
+  const payload = msg.message && typeof msg.message === 'object' && !Array.isArray(msg.message)
+    ? msg.message as EmailPayload
+    : {}
   await supabase.from('email_send_log').insert({
     message_id: payload.message_id,
     template_name: (payload.label || queue) as string,
-    recipient_email: payload.to,
+    recipient_email: typeof payload.to === 'string' ? payload.to : 'unknown',
     status: 'dlq',
     error_message: reason,
   })
@@ -71,7 +128,7 @@ async function moveToDlq(
     source_queue: queue,
     dlq_name: `${queue}_dlq`,
     message_id: msg.msg_id,
-    payload,
+    payload: (msg.message ?? null) as Json,
   })
   if (error) {
     console.error('Failed to move message to DLQ', { queue, msg_id: msg.msg_id, reason, error })
@@ -111,7 +168,7 @@ Deno.serve(async (req) => {
     )
   }
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+  const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey)
 
   // 1. Check rate-limit cooldown and read queue config
   const { data: state } = await supabase
@@ -137,7 +194,7 @@ Deno.serve(async (req) => {
 
   // 2. Process auth_emails first (priority), then transactional_emails
   for (const queue of ['auth_emails', 'transactional_emails']) {
-    const { data: messages, error: readError } = await supabase.rpc('read_email_batch', {
+    const { data: rawMessages, error: readError } = await supabase.rpc('read_email_batch', {
       queue_name: queue,
       batch_size: batchSize,
       vt: 30,
@@ -148,7 +205,8 @@ Deno.serve(async (req) => {
       continue
     }
 
-    if (!messages?.length) continue
+    const messages = (rawMessages ?? []) as QueueMessage[]
+    if (messages.length === 0) continue
 
     // Retry budget is based on real send failures, not pgmq read_ct.
     // read_ct increments for every message in a claimed batch, including
@@ -156,11 +214,7 @@ Deno.serve(async (req) => {
     const messageIds = Array.from(
       new Set(
         messages
-          .map((msg) =>
-            msg?.message?.message_id && typeof msg.message.message_id === 'string'
-              ? msg.message.message_id
-              : null
-          )
+          .map((msg) => getMessageId(msg.message))
           .filter((id): id is string => Boolean(id))
       )
     )
@@ -192,6 +246,10 @@ Deno.serve(async (req) => {
     for (let i = 0; i < messages.length; i++) {
       const msg = messages[i]
       const payload = msg.message
+      if (!isSendableEmailPayload(payload)) {
+        await moveToDlq(supabase, queue, msg, 'Malformed email payload')
+        continue
+      }
       const failedAttempts =
         payload?.message_id && typeof payload.message_id === 'string'
           ? (failedAttemptsByMessageId.get(payload.message_id) ?? 0)

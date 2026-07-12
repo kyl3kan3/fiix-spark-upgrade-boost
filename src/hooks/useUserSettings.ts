@@ -10,18 +10,18 @@ export const useUserSettings = () => {
  isSaving,
  loadSettings,
  saveSettings,
- setSettings
+ setSettings,
+ setIsSaving,
  } = useUserSettingsCore();
 
  const actions = useUserSettingsActions({
- isSaving,
- setIsSaving: () => {}, // This will be handled by the core hook
+ setIsSaving,
  setSettings
  });
 
  useEffect(() => {
- loadSettings();
- }, []);
+ void loadSettings();
+ }, [loadSettings]);
 
  return {
  settings,

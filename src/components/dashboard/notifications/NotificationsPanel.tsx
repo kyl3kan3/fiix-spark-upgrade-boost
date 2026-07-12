@@ -78,7 +78,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  
  <div 
  ref={panelRef}
- className={`fixed right-4 top-20 z-50 w-full max-w-sm transition-all duration-300 ease-in-out ${ isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none" }`}
+ className={`fixed right-4 top-20 z-50 w-full max-w-sm transition-ui duration-300 ease-in-out ${ isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none" }`}
  role="dialog"
  aria-modal="true"
  aria-label="Notifications Panel"

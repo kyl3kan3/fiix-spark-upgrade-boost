@@ -73,7 +73,7 @@ export default function SmsOptIn() {
  </Link>
  </Button>
 
- <h1 className="text-4xl font-bold tracking-tight mb-2">
+ <h1 className="text-4xl font-bold tracking-normal mb-2">
  Sign Up for MaintenEase SMS Alerts
  </h1>
  <p className="text-muted-foreground mb-8">

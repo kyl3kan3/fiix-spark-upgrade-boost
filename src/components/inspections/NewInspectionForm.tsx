@@ -58,7 +58,7 @@ const NewInspectionForm: React.FC = () => {
  <button
  key={c.id}
  onClick={() => navigate(`/checklists/${c.id}/submit`)}
- className="group text-left p-5 rounded-3xl border-2 border-border bg-card hover:border-primary/40 transition-all flex items-start gap-4 shadow-soft"
+ className="group text-left p-5 rounded-3xl border-2 border-border bg-card hover:border-primary/40 transition-ui flex items-start gap-4 shadow-soft"
  >
  <div className="h-12 w-12 rounded-2xl bg-accent/15 text-accent flex items-center justify-center shrink-0">
  <ClipboardCheck className="h-6 w-6" strokeWidth={2.4} />

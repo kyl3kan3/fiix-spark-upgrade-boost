@@ -28,7 +28,7 @@ const CompareIndex = () => {
       <MarketingJsonLd />
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
         <p className="text-sm font-medium text-primary mb-3">Compare</p>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4 text-foreground">
           MaintenEase vs the other CMMS platforms
         </h1>
         <p className="text-lg text-foreground max-w-3xl mb-12">
@@ -41,7 +41,7 @@ const CompareIndex = () => {
             <Link
               key={c.slug}
               to={`/compare/${c.slug}`}
-              className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
+              className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
             >
               <h2 className="text-xl font-semibold mb-2 text-foreground">{c.h1}</h2>
               <p className="text-foreground mb-3">{c.tagline}</p>

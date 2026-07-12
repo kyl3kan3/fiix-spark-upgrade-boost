@@ -33,7 +33,7 @@ export default function TermsOfService() {
  <Button asChild variant="ghost" size="sm" className="mb-6">
  <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" />Back to Home</Link>
  </Button>
- <h1 className="text-4xl font-bold tracking-tight mb-2">Terms &amp; Conditions</h1>
+ <h1 className="text-4xl font-bold tracking-normal mb-2">Terms &amp; Conditions</h1>
  <p className="text-sm text-muted-foreground mb-8">Last updated: {new Date().toLocaleDateString()}</p>
 
  <div className="prose prose-slate dark:prose-invert max-w-none space-y-6">

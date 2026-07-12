@@ -48,20 +48,21 @@ const GuidedTour: React.FC = () => {
  const { pathname } = useLocation();
  const [run, setRun] = useState(false);
  const isMobile = useIsMobile();
+ const wizardComplete = progress?.wizard_complete;
+ const tourComplete = progress?.tour_complete;
 
  useEffect(() => {
- if (!progress) return;
  // Skip the desktop-nav-targeted tour on small screens; the sidebar isn't visible there.
  if (isMobile) return;
  if (
- progress.wizard_complete &&
- !progress.tour_complete &&
+ wizardComplete &&
+ !tourComplete &&
  pathname === "/dashboard"
  ) {
  const t = setTimeout(() => setRun(true), 800);
  return () => clearTimeout(t);
  }
- }, [progress?.tour_complete, progress?.wizard_complete, pathname, isMobile]);
+ }, [wizardComplete, tourComplete, pathname, isMobile]);
 
  const handleEvent = (data: CallBackProps) => {
  if (data.status === STATUS.FINISHED || data.status === STATUS.SKIPPED) {

@@ -66,7 +66,7 @@ export const LocationsListView: React.FC<LocationsListViewProps> = ({
      {locations.map((location) => (
        <div
          key={location.id}
-         className="surface-card rounded-lg overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+         className="surface-card rounded-lg overflow-hidden flex flex-col transition-ui duration-200 hover:-translate-y-0.5 hover:shadow-md"
        >
          {/* Card header */}
          <div className="bg-primary/5 px-5 pt-5 pb-4 flex items-start justify-between gap-3">

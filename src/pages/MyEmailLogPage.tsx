@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -37,7 +37,7 @@ const MyEmailLogPage: React.FC = () => {
   const [events, setEvents] = useState<EmailDeliveryEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const user = await getCurrentUser();
     if (!user) { navigate("/auth"); return; }
@@ -62,9 +62,9 @@ const MyEmailLogPage: React.FC = () => {
       setEvents([]);
     }
     setLoading(false);
-  };
+  }, [navigate]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { void load(); }, [load]);
 
   const eventsByMsg = useMemo(() => {
     const m = new Map<string, EmailDeliveryEvent[]>();

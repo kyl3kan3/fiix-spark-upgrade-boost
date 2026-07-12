@@ -32,13 +32,14 @@ const ProfileContainer: React.FC = () => {
   });
 
   const avatarUpload = useAvatarUpload(profile?.id);
+  const { setPreviewUrl } = avatarUpload;
 
   // Update avatar preview when profile data changes
   useEffect(() => {
     if (profile?.avatar_url) {
-      avatarUpload.setPreviewUrl(profile.avatar_url);
+      setPreviewUrl(profile.avatar_url);
     }
-  }, [profile?.avatar_url, avatarUpload.setPreviewUrl]);
+  }, [profile?.avatar_url, setPreviewUrl]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     const success = await profileForm.handleSubmit(e);
@@ -111,7 +112,7 @@ const ProfileContainer: React.FC = () => {
   }
 
   return (
-    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+    <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
       <CardHeader className="border-b border-border pb-4">
         <CardTitle className="font-headline text-xl text-foreground" tabIndex={0}>
           User Profile

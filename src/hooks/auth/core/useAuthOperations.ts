@@ -36,7 +36,12 @@ export function useAuthOperations() {
  }
  }, []);
 
- const signUp = useCallback(async (email: string, password: string, userData?: SignUpData): Promise<AuthResult> => {
+ const signUp = useCallback(async (
+ email: string,
+ password: string,
+ userData?: SignUpData,
+ captchaToken?: string,
+ ): Promise<AuthResult> => {
  try {
        const hasPendingInvite =
         typeof window !== "undefined" &&
@@ -47,7 +52,8 @@ export function useAuthOperations() {
  password,
  options: {
  data: userData || {},
-          emailRedirectTo: `${window.location.origin}${redirectPath}`
+          emailRedirectTo: `${window.location.origin}${redirectPath}`,
+          captchaToken,
  }
  });
 

@@ -122,7 +122,7 @@ const FlatFeeAdvantage = () => {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button
             size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-all"
+            className="bg-primary text-primary-foreground hover:bg-primary-variant px-8 group uppercase tracking-wide shadow-md hover:-translate-y-0.5 transition-ui"
             onClick={() => navigate("/auth?signup=true")}
           >
             Start your 7-day trial

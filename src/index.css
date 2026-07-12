@@ -168,8 +168,8 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', Georgia, serif;
-    @apply tracking-tight font-semibold;
-    letter-spacing: -0.01em;
+    @apply tracking-normal font-semibold;
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
@@ -235,8 +235,14 @@
   .enter-d2 { animation-delay: 100ms; }
   .enter-d3 { animation-delay: 200ms; }
 
-  .font-headline { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
-  .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.01em; }
+  .transition-ui {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform, filter;
+    transition-duration: 150ms;
+    transition-timing-function: var(--transition-smooth);
+  }
+
+  .font-headline { font-family: 'Playfair Display', Georgia, serif; letter-spacing: 0; }
+  .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: 0; }
   .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
   .font-mono    { font-family: 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 
@@ -313,7 +319,7 @@
   .surface-card {
     @apply bg-card border border-border rounded-lg;
     box-shadow: var(--shadow-sm);
-    transition: all 0.25s var(--transition-smooth);
+    transition: box-shadow 0.25s var(--transition-smooth);
   }
   .surface-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 

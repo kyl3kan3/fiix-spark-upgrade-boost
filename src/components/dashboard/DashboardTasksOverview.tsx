@@ -29,7 +29,7 @@ const DashboardTasksOverview: React.FC = () => {
  </span>
  </div>
  <div className="h-2 rounded-full bg-muted overflow-hidden">
- <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${pct}%` }} />
+ <div className="h-full bg-primary rounded-full transition-[width]" style={{ width: `${pct}%` }} />
  </div>
  </div>
  );
@@ -43,7 +43,7 @@ const DashboardTasksOverview: React.FC = () => {
  </span>
  </div>
  <div className="h-3 rounded-full bg-muted overflow-hidden">
- <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${overallPct}%` }} />
+ <div className="h-full bg-accent rounded-full transition-[width]" style={{ width: `${overallPct}%` }} />
  </div>
  </div>
  </div>

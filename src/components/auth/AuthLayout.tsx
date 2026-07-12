@@ -17,7 +17,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
         <div className="relative z-20 p-8 flex flex-col justify-between h-full w-full">
           <div className="flex items-center gap-2 text-primary-foreground">
             <Building2 className="h-7 w-7" strokeWidth={1.5} />
-            <span className="font-headline text-xl font-bold tracking-tight">MaintenEase</span>
+            <span className="font-headline text-xl font-bold tracking-normal">MaintenEase</span>
           </div>
 
           {/* Quote / value proposition */}
@@ -48,7 +48,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
         {/* Mobile brand header */}
         <div className="md:hidden absolute top-6 left-6 flex items-center gap-2 text-primary">
           <Building2 className="h-6 w-6" strokeWidth={1.5} />
-          <span className="font-headline text-lg font-bold tracking-tight">MaintenEase</span>
+          <span className="font-headline text-lg font-bold tracking-normal">MaintenEase</span>
         </div>
 
         <div className="w-full max-w-md mt-14 md:mt-0 space-y-8">

@@ -119,7 +119,7 @@ const InspectionsPage = () => {
  <button
  key={tab}
  onClick={() => setFilters((f) => ({ ...f, status: val }))}
- className={`px-5 py-1.5 rounded-md text-sm font-semibold transition-all capitalize ${
+ className={`px-5 py-1.5 rounded-md text-sm font-semibold transition-ui capitalize ${
  active
  ? "bg-card text-primary shadow-sm"
  : "text-muted-foreground hover:text-foreground"

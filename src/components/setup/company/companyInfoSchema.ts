@@ -10,7 +10,8 @@ export const companyInfoSchema = z.object({
  zipCode: z.string().optional(),
  phone: z.string().optional(),
  email: z.string().email({ message: "Invalid email address" }).optional(),
- website: z.string().url({ message: "Invalid website URL" }).optional().or(z.literal("")),
+  website: z.string().url({ message: "Invalid website URL" }).optional().or(z.literal("")),
+  timezone: z.string().min(1, { message: "Timezone is required" }),
 });
 
 export type CompanyInfoFormValues = z.infer<typeof companyInfoSchema>;

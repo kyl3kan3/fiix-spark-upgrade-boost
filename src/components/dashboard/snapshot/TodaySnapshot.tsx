@@ -73,7 +73,7 @@ function Card({
   return (
     <div
       className={cn(
-        "bg-card rounded-xl p-6 border border-transparent shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary/10 flex flex-col relative overflow-hidden group",
+        "bg-card rounded-xl p-6 border border-transparent shadow-sm transition-ui duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary/10 flex flex-col relative overflow-hidden group",
         className,
       )}
     >

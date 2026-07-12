@@ -1,7 +1,6 @@
 
-import * as XLSX from 'xlsx';
-
 export async function parseXLSX(file: File): Promise<any[]> {
+ const XLSX = await import('xlsx');
  const data = await file.arrayBuffer();
  const workbook = XLSX.read(data, { type: 'array' });
  const firstSheet = workbook.SheetNames[0];

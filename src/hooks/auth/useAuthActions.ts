@@ -23,10 +23,15 @@ export function useAuthActions() {
  }
  }, [performSignIn]);
 
- const signUp = useCallback(async (email: string, password: string, userData?: SignUpData) => {
+ const signUp = useCallback(async (
+ email: string,
+ password: string,
+ userData?: SignUpData,
+ captchaToken?: string,
+ ) => {
  setIsSigningUp(true);
  try {
- return await performSignUp(email, password, userData);
+ return await performSignUp(email, password, userData, captchaToken);
  } finally {
  setIsSigningUp(false);
  }

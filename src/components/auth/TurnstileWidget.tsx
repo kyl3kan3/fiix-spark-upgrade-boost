@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { getTurnstileSiteKey } from "@/services/turnstileService";
 
 declare global {
   interface Window {
@@ -21,7 +21,7 @@ let scriptLoadingPromise: Promise<void> | null = null;
 
 const loadTurnstileScript = () => {
   if (scriptLoadingPromise) return scriptLoadingPromise;
-  scriptLoadingPromise = new Promise<void>((resolve) => {
+  scriptLoadingPromise = new Promise<void>((resolve, reject) => {
     if (typeof window === "undefined") return resolve();
     if (window.turnstile) return resolve();
     const existing = document.querySelector<HTMLScriptElement>(
@@ -29,6 +29,7 @@ const loadTurnstileScript = () => {
     );
     if (existing) {
       existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () => reject(new Error("Turnstile failed to load")));
       return;
     }
     const s = document.createElement("script");
@@ -37,6 +38,7 @@ const loadTurnstileScript = () => {
     s.defer = true;
     s.dataset.turnstileLoader = "1";
     s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Turnstile failed to load"));
     document.head.appendChild(s);
   });
   return scriptLoadingPromise;
@@ -45,20 +47,23 @@ const loadTurnstileScript = () => {
 export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({ onVerify, onExpire }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const onVerifyRef = useRef(onVerify);
+  const onExpireRef = useRef(onExpire);
   const [siteKey, setSiteKey] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    onVerifyRef.current = onVerify;
+    onExpireRef.current = onExpire;
+  }, [onExpire, onVerify]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase.functions.invoke("get-turnstile-config");
+        const key = await getTurnstileSiteKey();
         if (cancelled) return;
-        if (error || !data?.siteKey) {
-          setError("Verification unavailable");
-          return;
-        }
-        setSiteKey(data.siteKey as string);
+        setSiteKey(key);
       } catch {
         if (!cancelled) setError("Verification unavailable");
       }
@@ -71,18 +76,21 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({ onVerify, onEx
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
     let removed = false;
-    (async () => {
-      await loadTurnstileScript();
-      if (removed || !window.turnstile || !containerRef.current) return;
-      widgetIdRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: siteKey,
-        callback: (token: string) => onVerify(token),
-        "expired-callback": () => onExpire?.(),
-        "error-callback": () => onExpire?.(),
-        theme: "auto",
-        appearance: "always",
+    void loadTurnstileScript()
+      .then(() => {
+        if (removed || !window.turnstile || !containerRef.current) return;
+        widgetIdRef.current = window.turnstile.render(containerRef.current, {
+          sitekey: siteKey,
+          callback: (token: string) => onVerifyRef.current(token),
+          "expired-callback": () => onExpireRef.current?.(),
+          "error-callback": () => onExpireRef.current?.(),
+          theme: "auto",
+          appearance: "always",
+        });
+      })
+      .catch(() => {
+        if (!removed) setError("Verification unavailable");
       });
-    })();
     return () => {
       removed = true;
       if (widgetIdRef.current && window.turnstile) {
@@ -93,7 +101,7 @@ export const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({ onVerify, onEx
         }
       }
     };
-  }, [siteKey, onVerify, onExpire]);
+  }, [siteKey]);
 
   if (error) {
     return <p className="text-xs text-muted-foreground">{error}</p>;

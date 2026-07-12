@@ -122,14 +122,14 @@ const Settings = () => {
             <TabsList className="inline-flex h-auto gap-1 bg-card border border-border rounded-lg p-1 mb-8 min-w-[300px] shadow-sm">
               <TabsTrigger
                 value="profile"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
               >
                 <User className="h-4 w-4" />
                 <span>Profile</span>
               </TabsTrigger>
               <TabsTrigger
                 value="notifications"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
               >
                 <Bell className="h-4 w-4" />
                 <span className="hidden sm:inline">Notifications</span>
@@ -137,14 +137,14 @@ const Settings = () => {
               </TabsTrigger>
               <TabsTrigger
                 value="security"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
               >
                 <Shield className="h-4 w-4" />
                 <span>Security</span>
               </TabsTrigger>
               <TabsTrigger
                 value="appearance"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm transition-ui"
               >
                 <Palette className="h-4 w-4" />
                 <span className="hidden sm:inline">Appearance</span>
@@ -160,7 +160,7 @@ const Settings = () => {
 
           {/* Notifications Tab */}
           <TabsContent value="notifications" className="mt-0 space-y-6">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Notification Preferences
@@ -239,7 +239,7 @@ const Settings = () => {
 
           {/* Security Tab */}
           <TabsContent value="security" className="mt-0">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Security Settings
@@ -264,7 +264,7 @@ const Settings = () => {
 
           {/* Appearance Tab */}
           <TabsContent value="appearance" className="mt-0">
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-headline text-xl text-foreground">
                   Appearance Settings

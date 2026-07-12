@@ -5,10 +5,8 @@ import listAssets from "./tools/list-assets";
 import listLocations from "./tools/list-locations";
 import listRequests from "./tools/list-requests";
 
-// Build the OAuth issuer from the Supabase project ref (inlined by Vite at build time).
-// SUPABASE_URL may be the Lovable Cloud proxy host, which mcp-js will reject during
-// discovery, so use the direct supabase.co issuer instead.
-const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+// Use the direct project issuer because SUPABASE_URL may point at a Lovable proxy.
+const projectRef = "wwgljhpuulhljumrhscg";
 
 export default defineMcp({
   name: "maintenease-mcp",

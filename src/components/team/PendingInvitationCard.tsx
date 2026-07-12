@@ -48,7 +48,7 @@ const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
  };
 
  return (
- <Card className="h-full border border-border border-dashed bg-card/50 hover:shadow-md transition-all duration-200">
+ <Card className="h-full border border-border border-dashed bg-card/50 hover:shadow-md transition-ui duration-200">
  <CardContent className="p-5 space-y-4">
  <div className="flex items-start justify-between gap-2">
  <div className="flex items-center space-x-3 min-w-0 flex-1">

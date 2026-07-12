@@ -1,4 +1,3 @@
-import mammoth from 'mammoth';
 import { analyzeAndCategorizeText, EntityClassification } from '../services/textAnalysisService';
 
 // Convert EntityClassification to vendor format
@@ -38,6 +37,7 @@ function entityToVendor(entity: EntityClassification): any {
 }
 
 export async function parseDOCX(file: File, expectedCount?: number): Promise<any[]> {
+ const { default: mammoth } = await import('mammoth');
  const data = await file.arrayBuffer();
  const result = await mammoth.extractRawText({ arrayBuffer: data });
  

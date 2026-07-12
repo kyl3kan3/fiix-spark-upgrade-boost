@@ -44,3 +44,27 @@ verify_jwt = false
     verify_jwt = true
   [functions.ingest-energy]
     verify_jwt = false
+
+[functions.authorize-public-request]
+verify_jwt = false
+
+[functions.submit-public-request]
+verify_jwt = false
+
+[functions.payments-webhook]
+verify_jwt = false
+
+[functions.resend-webhook]
+verify_jwt = false
+
+[functions.create-checkout-context]
+verify_jwt = true
+
+[functions.paddle-portal]
+verify_jwt = true
+
+[functions.update-seats]
+verify_jwt = true
+
+[functions.mcp]
+verify_jwt = false

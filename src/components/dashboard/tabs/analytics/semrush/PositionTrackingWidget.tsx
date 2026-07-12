@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ const PositionTrackingWidget = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async (id?: string | number) => {
+  const load = useCallback(async (id?: string | number) => {
     setLoading(true); setError(null);
     try {
       const { data, error } = await supabase.functions.invoke("semrush-position-tracking", {
@@ -25,9 +25,9 @@ const PositionTrackingWidget = () => {
       if (data?.overview) setDetail(data.overview);
     } catch (e) { setError(e instanceof Error ? e.message : "Failed to load"); }
     finally { setLoading(false); }
-  };
+  }, []);
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { void load(); }, [load]);
 
   return (
     <Card>

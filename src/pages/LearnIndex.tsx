@@ -24,7 +24,7 @@ const LearnIndex = () => {
  <MarketingJsonLd />
  <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
  <p className="text-sm font-medium text-primary mb-3">Learn</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Maintenance Glossary</h1>
+ <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">Maintenance Glossary</h1>
  <p className="text-lg text-foreground max-w-3xl mb-12">
  Plain-English definitions of the terms maintenance, facilities, and fleet teams use every day. Skim, search, or send a link to a colleague.
  </p>
@@ -33,7 +33,7 @@ const LearnIndex = () => {
  <Link
  key={g.slug}
  to={`/learn/${g.slug}`}
- className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
+ className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
  <h2 className="text-xl font-semibold mb-2 text-foreground">{g.term}</h2>
  <p className="text-foreground">{g.short}</p>

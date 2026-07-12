@@ -9,18 +9,6 @@ const Hero = () => {
   const navigate = useNavigate();
   return (
     <header className="relative pt-24 pb-32 overflow-hidden bg-background">
-      {/* Abstract background blobs */}
-      <div
-        aria-hidden
-        className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full blur-3xl opacity-50"
-        style={{ background: "hsl(var(--primary) / 0.08)" }}
-      />
-      <div
-        aria-hidden
-        className="absolute bottom-0 left-0 -ml-32 -mb-32 w-80 h-80 rounded-full blur-3xl opacity-50"
-        style={{ background: "hsl(var(--secondary) / 0.08)" }}
-      />
-
       {/* Blueprint grid: faint gridlines fading toward the edges, with a few
           crosshair marks — a technical, drafting-table texture. */}
       <div
@@ -56,7 +44,7 @@ const Hero = () => {
               <ArrowRight className="h-3 w-3" />
             </button>
 
-            <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-tight">
+            <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-normal">
               <ScrambleText text="Stop downtime" />
               <br />
               <ScrambleText text="before it starts." delayMs={250} />
@@ -85,7 +73,7 @@ const Hero = () => {
               <Magnetic className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide group"
+                className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide transition-ui hover:-translate-y-0.5 active:scale-95 group"
                 onClick={() => navigate("/auth?signup=true")}
               >
                 Start free trial

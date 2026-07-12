@@ -51,6 +51,12 @@ vi.mock("@/providers/AuthContext", () => ({
  useAuth: () => ({ user: null, session: null, loading: false, signOut: () => Promise.resolve() }),
 }));
 
+vi.mock("@/components/marketing/ScrambleText", () => ({
+ default: ({ text, className }: { text: string; className?: string }) => (
+ <span className={className}>{text}</span>
+ ),
+}));
+
 import Index from "../Index";
 import SolutionsIndex from "../SolutionsIndex";
 import SolutionPage from "../SolutionPage";
@@ -89,7 +95,10 @@ function renderRoute(route: RouteCase) {
  return render(
  <HelmetProvider>
  <QueryClientProvider client={queryClient}>
- <MemoryRouter initialEntries={[route.path]}>
+ <MemoryRouter
+ future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+ initialEntries={[route.path]}
+ >
  <Routes>
  <Route path={route.routePattern} element={route.element} />
  </Routes>

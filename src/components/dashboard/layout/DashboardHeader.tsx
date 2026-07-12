@@ -61,7 +61,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
  <button
  onClick={() => navigate("/profile")}
- className="ml-1 rounded-full ring-2 ring-transparent hover:ring-primary/30 transition-all"
+ className="ml-1 rounded-full ring-2 ring-transparent hover:ring-primary/30 transition-ui"
  >
  <Avatar className="h-8 w-8">
  <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "Avatar"} />

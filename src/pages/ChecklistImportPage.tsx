@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import * as XLSX from "xlsx";
+import type { WorkBook } from "xlsx";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ const ChecklistImportPage: React.FC = () => {
   const [dragActive, setDragActive] = useState(false);
 
   // Excel state
-  const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
+  const [workbook, setWorkbook] = useState<WorkBook | null>(null);
   const [sheetName, setSheetName] = useState<string>("");
   const [columns, setColumns] = useState<string[]>([]);
   const [rawRows, setRawRows] = useState<Record<string, unknown>[]>([]);
@@ -70,7 +70,8 @@ const ChecklistImportPage: React.FC = () => {
     setImportStats(null);
   };
 
-  const loadSheet = (wb: XLSX.WorkBook, sn: string) => {
+  const loadSheet = useCallback(async (wb: WorkBook, sn: string) => {
+    const XLSX = await import("xlsx");
     const sheet = wb.Sheets[sn];
     const aoa = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, defval: "" });
     if (aoa.length === 0) {
@@ -91,7 +92,7 @@ const ChecklistImportPage: React.FC = () => {
     setTitleCol(guess(/title|task|item|name/i) || headerRow[0]);
     setDescCol(guess(/desc|note/i) || NONE);
     setReqCol(guess(/required|must|mandatory/i) || NONE);
-  };
+  }, []);
 
   const handleFiles = useCallback(async (files: File[]) => {
     if (files.length === 0) return;
@@ -102,11 +103,12 @@ const ChecklistImportPage: React.FC = () => {
       setFileName(file.name);
       try {
         const buf = await file.arrayBuffer();
+        const XLSX = await import("xlsx");
         const wb = XLSX.read(buf, { type: "array" });
         setWorkbook(wb);
         const first = wb.SheetNames[0];
         setSheetName(first);
-        loadSheet(wb, first);
+        await loadSheet(wb, first);
         if (!name) setName(file.name.replace(/\.[^.]+$/, ""));
         setStep("configure");
       } catch (err) {
@@ -143,12 +145,16 @@ const ChecklistImportPage: React.FC = () => {
     } finally {
       setParsing(false);
     }
-  }, [name]);
+  }, [loadSheet, name]);
 
-  const onSheetChange = (sn: string) => {
+  const onSheetChange = async (sn: string) => {
     if (!workbook) return;
     setSheetName(sn);
-    loadSheet(workbook, sn);
+    try {
+      await loadSheet(workbook, sn);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to load sheet");
+    }
   };
 
   const goToPreview = () => {
@@ -490,5 +496,4 @@ const ChecklistImportPage: React.FC = () => {
     </DashboardLayout>
   );
 };
-
 export default ChecklistImportPage;

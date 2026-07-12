@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchUserCompany, mapCompanyToCompanyInfo } from "@/services/company";
 import { logger } from "@/lib/logger";
+import { getBrowserTimezone } from "@/constants/timezones";
 
 export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) => void) => {
  const [companyId, setCompanyId] = useState<string | null>(null);
@@ -43,7 +44,18 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  setCompanyId(company.id ?? null);
  
  const companyInfo = mapCompanyToCompanyInfo(company);
- form.reset(companyInfo);
+ form.reset({
+ name: companyInfo.companyName || "",
+ industry: companyInfo.industry || "",
+ address: companyInfo.address || "",
+ city: companyInfo.city || "",
+ state: companyInfo.state || "",
+ zipCode: companyInfo.zipCode || "",
+ phone: companyInfo.phone || "",
+ email: companyInfo.email || "",
+ website: companyInfo.website || "",
+ timezone: companyInfo.timezone || getBrowserTimezone(),
+ });
  
  if (company.logo) {
  setLogoPreview(company.logo);
@@ -67,7 +79,11 @@ export const useCompanyData = (form: any, setLogoPreview: (logo: string | null) 
  const editData = loadStoredEditData();
  if (editData) {
  logger.log("Using edit data, skipping database load");
- form.reset(editData);
+ form.reset({
+ ...editData,
+ name: editData.name || editData.companyName || "",
+ timezone: editData.timezone || getBrowserTimezone(),
+ });
  if (editData.logo) {
  setLogoPreview(editData.logo);
  }

@@ -15,8 +15,8 @@ const DailyLogsList: React.FC<DailyLogsListProps> = ({ onViewLog }) => {
  const { allDailyLogs, isLoading, loadAllDailyLogs, deleteDailyLog } = useDailyLogs();
 
  useEffect(() => {
- loadAllDailyLogs();
- }, []);
+ void loadAllDailyLogs();
+ }, [loadAllDailyLogs]);
 
  const handleViewLog = (dateString: string) => {
  if (onViewLog) {

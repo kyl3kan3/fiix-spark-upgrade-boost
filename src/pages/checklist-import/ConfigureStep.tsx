@@ -1,5 +1,5 @@
 import React from "react";
-import * as XLSX from "xlsx";
+import type { WorkBook } from "xlsx";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,7 +8,7 @@ import { NONE } from "./types";
 
 interface ConfigureStepProps {
   fileName: string;
-  workbook: XLSX.WorkBook;
+  workbook: WorkBook;
   sheetName: string;
   columns: string[];
   rowCount: number;

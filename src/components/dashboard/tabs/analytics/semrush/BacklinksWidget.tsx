@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ interface Overview {
 }
 interface Ref { domain: string; authorityScore: number; backlinks: number; country: string; firstSeen: string | null; lastSeen: string | null; }
 
+const DEFAULT_TARGET = "maintenease.com";
+
 const Stat = ({ label, value }: { label: string; value: string | number }) => (
   <div className="rounded-md border p-3">
     <div className="text-xs text-muted-foreground">{label}</div>
@@ -20,26 +22,26 @@ const Stat = ({ label, value }: { label: string; value: string | number }) => (
 );
 
 const BacklinksWidget = () => {
-  const [target, setTarget] = useState("maintenease.com");
+  const [target, setTarget] = useState(DEFAULT_TARGET);
   const [overview, setOverview] = useState<Overview | null>(null);
   const [refs, setRefs] = useState<Ref[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async (requestTarget: string) => {
     setLoading(true); setError(null);
     try {
       const { data, error } = await supabase.functions.invoke("semrush-backlinks", {
-        body: { target, target_type: "root_domain" },
+        body: { target: requestTarget, target_type: "root_domain" },
       });
       if (error) throw error;
       setOverview(data?.overview ?? null);
       setRefs(data?.referring_domains?.rows ?? []);
     } catch (e) { setError(e instanceof Error ? e.message : "Failed to load"); }
     finally { setLoading(false); }
-  };
+  }, []);
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { void load(DEFAULT_TARGET); }, [load]);
 
   return (
     <Card>
@@ -48,7 +50,7 @@ const BacklinksWidget = () => {
         <CardDescription>Authority Score, referring domains, and top referrers from Semrush.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); load(); }}>
+        <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); void load(target); }}>
           <Input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="Domain (e.g. example.com)" disabled={loading} />
           <Button type="submit" disabled={loading}>
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}

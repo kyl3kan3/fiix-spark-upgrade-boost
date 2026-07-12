@@ -25,7 +25,7 @@ const SolutionsIndex = () => {
  <MarketingJsonLd />
  <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
  <p className="text-sm font-medium text-primary mb-3">Solutions</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">One platform, four ways to use it</h1>
+ <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">One platform, four ways to use it</h1>
  <p className="text-lg text-foreground max-w-3xl mb-12">
  Whether you are chasing work orders, scheduling preventive tasks, looking after buildings, or keeping vehicles on the road — MaintenEase is built for the job.
  </p>
@@ -34,7 +34,7 @@ const SolutionsIndex = () => {
  <Link
  key={s.slug}
  to={`/solutions/${s.slug}`}
- className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
+ className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
  <h2 className="text-xl font-semibold mb-2 text-foreground">{s.name}</h2>
  <p className="text-foreground">{s.tagline}</p>

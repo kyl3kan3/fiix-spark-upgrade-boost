@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { CompanyInfoFormValues, companyInfoSchema } from "@/components/setup/company/companyInfoSchema";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/auth";
+import { createCompany, updateCompany } from "@/services/company";
+import { getBrowserTimezone } from "@/constants/timezones";
 
 export function useCompanyFormSimple(initialData?: any, onUpdate?: (data: any) => void) {
  const navigate = useNavigate();
@@ -27,7 +29,8 @@ export function useCompanyFormSimple(initialData?: any, onUpdate?: (data: any) =
  zipCode: "",
  phone: "",
  email: "",
- website: ""
+ website: "",
+ timezone: getBrowserTimezone(),
  }
  });
 
@@ -66,7 +69,8 @@ export function useCompanyFormSimple(initialData?: any, onUpdate?: (data: any) =
  zipCode: company.zip_code || "",
  phone: company.phone || "",
  email: company.email || "",
- website: company.website || ""
+ website: company.website || "",
+ timezone: company.timezone || getBrowserTimezone(),
  });
  setLogoPreview(company.logo);
  }
@@ -93,60 +97,30 @@ export function useCompanyFormSimple(initialData?: any, onUpdate?: (data: any) =
  setIsSubmitting(true);
  
  let currentCompanyId = companyId;
-
- if (!currentCompanyId) {
- // Create new company
- const { data: newCompany, error: companyError } = await supabase
- .from("companies")
- .insert({
- name: values.name,
+ const companyInfo = {
+ companyName: values.name,
  industry: values.industry,
  address: values.address,
  city: values.city,
  state: values.state,
- zip_code: values.zipCode,
+ zipCode: values.zipCode,
  phone: values.phone,
  email: values.email,
  website: values.website,
  logo: logoPreview,
- created_by: user.id
- })
- .select()
- .single();
+ timezone: values.timezone,
+ };
 
- if (companyError) throw companyError;
- currentCompanyId = newCompany.id;
- setCompanyId(currentCompanyId);
-
- // Update user profile with company_id
- const { error: profileError } = await supabase
- .from("profiles")
- .update({ company_id: currentCompanyId })
- .eq("id", user.id);
-
- if (profileError) throw profileError;
+ if (!currentCompanyId) {
+ const newCompany = await createCompany(companyInfo);
+ const newCompanyId = newCompany.id;
+ if (!newCompanyId) throw new Error("Company creation did not return an id");
+ currentCompanyId = newCompanyId;
+ setCompanyId(newCompanyId);
  
  toast.success("Company created successfully!");
  } else {
- // Update existing company
- const { error: updateError } = await supabase
- .from("companies")
- .update({
- name: values.name,
- industry: values.industry,
- address: values.address,
- city: values.city,
- state: values.state,
- zip_code: values.zipCode,
- phone: values.phone,
- email: values.email,
- website: values.website,
- logo: logoPreview,
- updated_at: new Date().toISOString()
- })
- .eq("id", currentCompanyId);
-
- if (updateError) throw updateError;
+ await updateCompany(currentCompanyId, companyInfo);
  
  toast.success("Company information updated successfully!");
  }

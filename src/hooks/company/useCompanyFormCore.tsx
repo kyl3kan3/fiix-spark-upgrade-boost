@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { companyInfoSchema, CompanyInfoFormValues } from "@/components/setup/company/companyInfoSchema";
 import { logger } from "@/lib/logger";
+import { getBrowserTimezone } from "@/constants/timezones";
 
 export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => void) => {
  const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -22,6 +23,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
  phone: "",
  email: "",
  website: "",
+ timezone: getBrowserTimezone(),
  },
  });
 
@@ -40,6 +42,7 @@ export const useCompanyFormCore = (initialData: any, onUpdate: (data: any) => vo
  phone: initialData.phone || "",
  email: initialData.email || "",
  website: initialData.website || "",
+ timezone: initialData.timezone || getBrowserTimezone(),
  };
  
  form.reset(formData);

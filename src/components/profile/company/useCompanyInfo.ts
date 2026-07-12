@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchUserCompany, mapCompanyToCompanyInfo, updateCompany, createCompany } from "@/services/company";
 import { CompanyInfo } from "./types";
 import { toast } from "sonner";
@@ -14,7 +14,7 @@ export const useCompanyInfo = () => {
  
  const { setupComplete, setSetupComplete } = useUnifiedCompanyStatus();
 
- const fetchCompanyInfo = async () => {
+ const fetchCompanyInfo = useCallback(async () => {
  try {
  setIsLoading(true);
  setError(null);
@@ -29,7 +29,7 @@ export const useCompanyInfo = () => {
  setCompanyInfo(mapCompanyToCompanyInfo(company));
  
  // Ensure setup is marked as complete if we have company data
- if (!setupComplete && company.id) {
+ if (company.id) {
  setSetupComplete(true);
  }
  return;
@@ -71,7 +71,7 @@ export const useCompanyInfo = () => {
  } finally {
  setIsLoading(false);
  }
- };
+ }, [setSetupComplete]);
 
  const updateCompanyInfo = async (data: CompanyInfo): Promise<boolean> => {
  try {
@@ -117,8 +117,8 @@ export const useCompanyInfo = () => {
  };
 
  useEffect(() => {
- fetchCompanyInfo();
- }, []);
+ void fetchCompanyInfo();
+ }, [fetchCompanyInfo]);
 
  return { 
  companyInfo, 

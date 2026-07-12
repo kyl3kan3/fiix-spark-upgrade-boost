@@ -26,7 +26,7 @@ export function AnalyticsHeader({ days, setDays, loading, generatedAt, onRefresh
 
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Site Analytics</h1>
+          <h1 className="text-3xl font-bold tracking-normal">Site Analytics</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Signups, subscriptions, marketing engagement across MaintenEase.
             {generatedAt && (

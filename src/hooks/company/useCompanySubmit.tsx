@@ -30,6 +30,19 @@ export const useCompanySubmit = (
  
  // Prepare form data with logo
  const formData = { ...values, logo: logoPreview };
+ const companyInfo = {
+ companyName: values.name,
+ industry: values.industry,
+ address: values.address,
+ city: values.city,
+ state: values.state,
+ zipCode: values.zipCode,
+ phone: values.phone,
+ email: values.email,
+ website: values.website,
+ timezone: values.timezone,
+ logo: logoPreview,
+ };
  
  // Update parent component state
  if (typeof onUpdate === 'function') {
@@ -61,7 +74,7 @@ export const useCompanySubmit = (
  // Update existing company
  logger.log("Updating existing company with ID:", companyId);
  try {
- const updatedCompany = await updateCompany(companyId, formData);
+ const updatedCompany = await updateCompany(companyId, companyInfo);
  logger.log("Company updated successfully:", updatedCompany);
  operationSuccess = true;
  toast.success("Company information updated successfully!");
@@ -74,7 +87,7 @@ export const useCompanySubmit = (
  // Create new company
  logger.log("Creating new company...");
  try {
- const company = await createCompany(formData);
+ const company = await createCompany(companyInfo);
  if (company?.id) {
  resultCompanyId = company.id;
  logger.log("New company created with ID:", company.id);
@@ -94,33 +107,14 @@ export const useCompanySubmit = (
 
  // Handle post-operation tasks
  if (operationSuccess && resultCompanyId) {
- logger.log("Linking profile to company:", resultCompanyId);
- 
- try {
- // Update user profile with company_id
- const { error: profileError } = await supabase
- .from("profiles")
- .update({ company_id: resultCompanyId })
- .eq("id", authData.user.id);
- 
- if (profileError) {
- console.error("Profile update error:", profileError);
- toast.warning("Company saved but had trouble linking it to your profile. Please try signing out and back in.");
- } else {
- logger.log("Profile successfully linked to company");
- }
- 
- // Run additional profile checks
  try {
  const profileFixed = await checkAndFixUserProfile(resultCompanyId);
  logger.log("Profile check result:", profileFixed);
+ if (!profileFixed) {
+ toast.warning("Company saved, but the profile association could not be verified. Please refresh and try again.");
+ }
  } catch (profileCheckError) {
  console.error("Profile check error:", profileCheckError);
- // Don't fail the whole operation for this
- }
- } catch (profileError) {
- console.error("Error in profile linking process:", profileError);
- // Continue since the main operation succeeded
  }
  
  // Mark setup as complete

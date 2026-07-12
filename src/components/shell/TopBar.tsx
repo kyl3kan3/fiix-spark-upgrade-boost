@@ -51,7 +51,7 @@ const TopBar: React.FC<TopBarProps> = ({
               className="p-0 w-80 bg-sidebar text-sidebar-foreground border-r border-sidebar-border"
             >
               <div className="px-6 py-5 border-b border-sidebar-border">
-                <h2 className="font-headline text-2xl font-bold text-primary tracking-tight">
+                <h2 className="font-headline text-2xl font-bold text-primary tracking-normal">
                   MaintenEase
                 </h2>
                 <p className="text-xs text-muted-foreground font-medium mt-0.5">
@@ -89,7 +89,7 @@ const TopBar: React.FC<TopBarProps> = ({
                   {greeting}
                   {name ? "," : "!"}
                 </div>
-                <div className="font-headline text-xl sm:text-2xl text-foreground tracking-tight truncate">
+                <div className="font-headline text-xl sm:text-2xl text-foreground tracking-normal truncate">
                   {name ? `${name} 👋` : "Welcome 👋"}
                 </div>
               </>
@@ -98,7 +98,7 @@ const TopBar: React.FC<TopBarProps> = ({
                 <div className="text-xs text-muted-foreground font-medium">
                   You're viewing
                 </div>
-                <div className="font-headline text-xl sm:text-2xl text-foreground tracking-tight truncate">
+                <div className="font-headline text-xl sm:text-2xl text-foreground tracking-normal truncate">
                   {pageTitle}
                 </div>
               </>

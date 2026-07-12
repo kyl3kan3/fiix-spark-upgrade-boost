@@ -108,26 +108,26 @@ Reported type: ${request.type ?? "(none)"}
 Be conservative with "critical" — reserve it for safety hazards, flooding, no power/heat, or anything that puts people/property at immediate risk.`;
 
     try {
-      const { experimental_output } = await generateText({
+      const { output } = await generateText({
         model: gateway("google/gemini-3-flash-preview"),
         prompt,
-        experimental_output: Output.object({ schema: TriageSchema }),
+        output: Output.object({ schema: TriageSchema }),
       });
 
       await sb.from("public_request_triage").upsert({
         request_id: requestId,
         company_id: request.company_id,
-        urgency: experimental_output.urgency,
-        category: experimental_output.category,
-        suggested_assignee_role: experimental_output.suggested_assignee_role,
-        summary: experimental_output.summary,
-        reasoning: experimental_output.reasoning,
+        urgency: output.urgency,
+        category: output.category,
+        suggested_assignee_role: output.suggested_assignee_role,
+        summary: output.summary,
+        reasoning: output.reasoning,
         model_version: "google/gemini-3-flash-preview",
         status: "ready",
         error_message: null,
       }, { onConflict: "request_id" });
 
-      return new Response(JSON.stringify({ ok: true, triage: experimental_output }), {
+      return new Response(JSON.stringify({ ok: true, triage: output }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } catch (e) {

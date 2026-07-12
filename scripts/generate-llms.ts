@@ -6,7 +6,7 @@
 //
 // Run with: tsx scripts/generate-llms.ts (invoked automatically by prebuild).
 
-import { writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -160,12 +160,11 @@ write("llms-full.txt", parts.join(""));
 
 // ---- api/ai.json (structured index for agents) ----------------------------
 
-const apiJson = {
+const apiContent = {
   name: "MaintenEase",
   description:
     "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
   site: SITE,
-  generated_at: new Date().toISOString(),
   llms_txt: `${SITE}/llms.txt`,
   llms_full_txt: `${SITE}/llms-full.txt`,
   pricing: {
@@ -197,6 +196,31 @@ const apiJson = {
     html_url: `${SITE}/learn/${g.slug}`,
     markdown_url: `${SITE}/learn/${g.slug}.md`,
   })),
+};
+
+let generatedAt = new Date().toISOString();
+try {
+  const existing = JSON.parse(
+    readFileSync(resolve(PUBLIC, "api/ai.json"), "utf8"),
+  ) as Record<string, unknown>;
+  const { generated_at: existingGeneratedAt, ...existingContent } = existing;
+  if (
+    typeof existingGeneratedAt === "string" &&
+    JSON.stringify(existingContent) === JSON.stringify(apiContent)
+  ) {
+    generatedAt = existingGeneratedAt;
+  }
+} catch {
+  // A missing or invalid file is replaced below.
+}
+
+const { name, description, site, ...apiRemainder } = apiContent;
+const apiJson = {
+  name,
+  description,
+  site,
+  generated_at: generatedAt,
+  ...apiRemainder,
 };
 write("api/ai.json", JSON.stringify(apiJson, null, 2));
 

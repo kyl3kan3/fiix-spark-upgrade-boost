@@ -116,7 +116,7 @@ const LearnArticle = () => {
  <span className="mx-2">/</span>
  <span className="text-foreground">{term.term}</span>
  </nav>
- <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">{term.term}</h1>
+ <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">{term.term}</h1>
  <p className="text-xl text-foreground mb-10">{term.short}</p>
 
  <div className="space-y-10">
@@ -158,7 +158,7 @@ const LearnArticle = () => {
  <Link
  key={r.slug}
  to={`/learn/${r.slug}`}
- className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
+ className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
  <h3 className="font-semibold text-foreground mb-1">{r.term}</h3>
  <p className="text-sm text-foreground">{r.short}</p>
@@ -176,7 +176,7 @@ const LearnArticle = () => {
  <Link
  key={r.slug}
  to={`/solutions/${r.slug}`}
- className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-all"
+ className="block p-5 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
  <h3 className="font-semibold text-foreground mb-1">{r.anchor}</h3>
  <p className="text-sm text-foreground">{r.tagline}</p>

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 import { AlertTriangle, CheckCircle2, Wrench, ImagePlus, X } from "lucide-react";
 import {
+  authorizePublicRequest,
   getPublicCompanyBySlug,
   submitPublicRequest,
   uploadPublicRequestPhotos,
@@ -17,6 +18,7 @@ import { toast } from "sonner";
 import TurnstileWidget from "@/components/auth/TurnstileWidget";
 
 type Company = PublicPortalCompany;
+type PendingPhoto = { id: string; file: File; previewUrl: string };
 
 const schema = z.object({
  title: z.string().trim().min(1, "Please describe the issue").max(200),
@@ -34,8 +36,10 @@ const PublicRequestPortal = () => {
  const [type, setType] = useState<"standard" | "urgent">("standard");
  const [submitted, setSubmitted] = useState(false);
  const [submitting, setSubmitting] = useState(false);
-  const [photos, setPhotos] = useState<File[]>([]);
+  const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
+  const photosRef = useRef<PendingPhoto[]>([]);
  const [form, setForm] = useState({
  title: "", description: "", location_text: "",
  contact_name: "", contact_email: "", contact_phone: "",
@@ -52,6 +56,14 @@ const PublicRequestPortal = () => {
  })();
  }, [slug]);
 
+  useEffect(() => {
+    photosRef.current = photos;
+  }, [photos]);
+
+  useEffect(() => () => {
+    photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+  }, []);
+
   const addPhotos = (files: FileList | null) => {
     if (!files) return;
     const next: File[] = [];
@@ -63,7 +75,26 @@ const PublicRequestPortal = () => {
       }
       next.push(f);
     }
-    setPhotos((prev) => [...prev, ...next].slice(0, 6));
+    const available = Math.max(0, 6 - photos.length);
+    const additions = next.slice(0, available).map((file) => ({
+      id: crypto.randomUUID(),
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+    setPhotos((prev) => [...prev, ...additions]);
+  };
+
+  const removePhoto = (id: string) => {
+    setPhotos((current) => {
+      const removed = current.find((photo) => photo.id === id);
+      if (removed) URL.revokeObjectURL(removed.previewUrl);
+      return current.filter((photo) => photo.id !== id);
+    });
+  };
+
+  const clearPhotos = () => {
+    photos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+    setPhotos([]);
   };
 
  const onSubmit = async (e: React.FormEvent) => {
@@ -81,12 +112,20 @@ const PublicRequestPortal = () => {
  }
  setSubmitting(true);
 
-    // Upload photos first (best-effort — failures are surfaced but don't block submission)
-    const uploadedUrls = await uploadPublicRequestPhotos(company.id, photos);
-
     try {
+      const files = photos.map((photo) => photo.file);
+      const authorization = await authorizePublicRequest(
+        company.id,
+        files,
+        turnstileToken,
+      );
+      const uploadedPaths = await uploadPublicRequestPhotos(
+        files,
+        authorization.uploads,
+      );
+
       await submitPublicRequest({
-        companyId: company.id,
+        authorizationId: authorization.authorizationId,
         type,
         title: parsed.data.title,
         description: parsed.data.description ?? "",
@@ -94,19 +133,19 @@ const PublicRequestPortal = () => {
         contact_name: parsed.data.contact_name || null,
         contact_email: parsed.data.contact_email || null,
         contact_phone: parsed.data.contact_phone || null,
-        photos: uploadedUrls,
+        photoPaths: uploadedPaths,
         user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
-        turnstileToken,
       });
-    } catch {
+    } catch (error) {
       setSubmitting(false);
       setTurnstileToken(null);
-      toast.error("Couldn't submit — please try again");
+      setTurnstileKey((key) => key + 1);
+      toast.error((error as Error).message || "Couldn't submit - please try again");
       return;
     }
     setSubmitting(false);
     setSubmitted(true);
-    setPhotos([]);
+    clearPhotos();
     setTurnstileToken(null);
   };
 
@@ -174,7 +213,7 @@ const PublicRequestPortal = () => {
  <button
  type="button"
  onClick={() => setType("standard")}
- className={`p-5 rounded-lg border-2 text-left transition-all ${type === "standard" ? "border-primary bg-primary/5" : "border-border bg-card hover:border-border"}`}
+ className={`p-5 rounded-lg border-2 text-left transition-ui ${type === "standard" ? "border-primary bg-primary/5" : "border-border bg-card hover:border-border"}`}
  >
  <div className="flex items-center gap-2 mb-1">
  <Wrench className="h-5 w-5 text-primary" />
@@ -185,7 +224,7 @@ const PublicRequestPortal = () => {
  <button
  type="button"
  onClick={() => setType("urgent")}
- className={`p-5 rounded-lg border-2 text-left transition-all ${type === "urgent" ? "border-destructive bg-destructive/10" : "border-border bg-card hover:border-destructive/30"}`}
+ className={`p-5 rounded-lg border-2 text-left transition-ui ${type === "urgent" ? "border-destructive bg-destructive/10" : "border-border bg-card hover:border-destructive/30"}`}
  >
  <div className="flex items-center gap-2 mb-1">
  <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -235,12 +274,12 @@ const PublicRequestPortal = () => {
               <div className="space-y-2">
                 <Label>Photos (optional)</Label>
                 <div className="flex flex-wrap gap-3">
-                  {photos.map((f, i) => (
-                    <div key={i} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
-                      <img src={URL.createObjectURL(f)} alt={`Maintenance issue attachment ${i + 1}: ${f.name}`} className="h-full w-full object-cover" />
+                  {photos.map((photo, i) => (
+                    <div key={photo.id} className="relative h-20 w-20 rounded-md overflow-hidden border border-border bg-muted">
+                      <img src={photo.previewUrl} alt={`Maintenance issue attachment ${i + 1}: ${photo.file.name}`} className="h-full w-full object-cover" />
                       <button
                         type="button"
-                        onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                        onClick={() => removePhoto(photo.id)}
                         className="absolute top-0.5 right-0.5 bg-foreground/70 text-background rounded-full p-0.5"
                         aria-label="Remove photo"
                       >
@@ -265,16 +304,17 @@ const PublicRequestPortal = () => {
                 <p className="text-xs text-muted-foreground">Up to 6 images, 10 MB each. Helps the team diagnose faster.</p>
               </div>
 
- <Button type="submit" size="lg" disabled={submitting}
- className={type === "urgent" ? "w-full bg-destructive hover:bg-destructive" : "w-full"}>
- {submitting ? "Sending…" : type === "urgent" ? "Send urgent alert" : "Submit request"}
- </Button>
              <div className="flex justify-center">
                <TurnstileWidget
+                 key={turnstileKey}
                  onVerify={(t) => setTurnstileToken(t)}
                  onExpire={() => setTurnstileToken(null)}
                />
              </div>
+ <Button type="submit" size="lg" disabled={submitting || !turnstileToken}
+ className={type === "urgent" ? "w-full bg-destructive hover:bg-destructive" : "w-full"}>
+ {submitting ? "Sending…" : type === "urgent" ? "Send urgent alert" : "Submit request"}
+ </Button>
  <p className="text-xs text-muted-foreground text-center">
  Powered by <Link to="/" className="underline hover:text-foreground">MaintenEase</Link>
  </p>

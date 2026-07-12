@@ -44,7 +44,7 @@ export const LocationNode: React.FC<LocationNodeProps> = ({
 
  return (
    <AccordionItem value={location.id} className="border-b border-border last:border-0">
-     <div className={`${indentClass} transition-all`}>
+     <div className={indentClass}>
        <div className="flex items-center group hover:bg-muted/30 transition-colors">
          {hasChildren ? (
            <AccordionTrigger className="hover:no-underline py-0 flex-grow px-5">

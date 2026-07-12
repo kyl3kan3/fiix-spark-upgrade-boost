@@ -1,5 +1,3 @@
-import * as XLSX from "xlsx";
-import mammoth from "mammoth";
 import type { DraftItem } from "./types";
 
 const TRUTHY = /^(true|yes|y|1|x|required)$/i;
@@ -9,6 +7,7 @@ const TRUTHY = /^(true|yes|y|1|x|required)$/i;
  * columns from the header row. Used for batch / multi-file imports.
  */
 export async function parseExcelAuto(file: File): Promise<DraftItem[]> {
+  const XLSX = await import("xlsx");
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
   const sn = wb.SheetNames[0];
@@ -37,6 +36,7 @@ export async function parseExcelAuto(file: File): Promise<DraftItem[]> {
  * leading bullets / numbering are stripped.
  */
 export async function parseWord(file: File): Promise<DraftItem[]> {
+  const { default: mammoth } = await import("mammoth");
   const buf = await file.arrayBuffer();
   const result = await mammoth.extractRawText({ arrayBuffer: buf });
   return result.value

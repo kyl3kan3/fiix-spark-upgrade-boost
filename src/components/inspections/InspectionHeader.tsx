@@ -70,7 +70,7 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h1 className="font-display text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
+            <h1 className="font-display text-2xl md:text-3xl font-extrabold tracking-normal text-foreground">
               {title}
             </h1>
           </div>

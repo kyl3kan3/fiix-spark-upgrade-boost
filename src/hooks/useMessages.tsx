@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { Message } from "@/types/chat";
 import { toast } from "@/hooks/use-toast";
@@ -15,6 +15,19 @@ import {
 export const useMessages = (recipientId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const markAsRead = useCallback(async () => {
+    try {
+      const user = await getCurrentUser();
+      const currentUserId = user?.id;
+
+      if (!currentUserId || !recipientId) return;
+
+      await markConversationAsRead(currentUserId, recipientId);
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+    }
+  }, [recipientId]);
 
   useEffect(() => {
     // Skip if no recipient is selected
@@ -37,17 +50,18 @@ export const useMessages = (recipientId: string | undefined) => {
         // Get messages between current user and selected recipient (both sent and received)
         const data = await getConversationMessages(currentUserId, recipientId);
 
+        if (cancelled) return;
+
         setMessages(data || []);
 
         // Mark messages from this recipient as read
-        markAsRead();
+        void markAsRead();
 
-        if (cancelled) return;
         subscription = subscribeToConversationMessages(currentUserId, recipientId, (payload) => {
           if (payload.eventType === 'INSERT') {
             setMessages(prev => [...prev, payload.new]);
             if (payload.new.sender_id === recipientId) {
-              markAsRead();
+              void markAsRead();
             }
           } else if (payload.eventType === 'UPDATE') {
             setMessages(prev =>
@@ -75,7 +89,7 @@ export const useMessages = (recipientId: string | undefined) => {
         removeMessagesChannel(subscription);
       }
     };
-  }, [recipientId]);
+  }, [recipientId, markAsRead]);
 
   const sendMessage = async (content: string, recipientId: string) => {
     try {
@@ -100,20 +114,6 @@ export const useMessages = (recipientId: string | undefined) => {
         description: "Failed to send message",
         variant: "destructive"
       });
-    }
-  };
-
-  const markAsRead = async () => {
-    try {
-      const user = await getCurrentUser();
-      const currentUserId = user?.id;
-
-      if (!currentUserId || !recipientId) return;
-
-      // Mark all messages from this sender to current user as read
-      await markConversationAsRead(currentUserId, recipientId);
-    } catch (error) {
-      console.error("Error marking messages as read:", error);
     }
   };
 

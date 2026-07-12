@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { DailyLogService, DailyLogEntry } from "@/services/dailyLogService";
 import { toast } from "sonner";
 
@@ -9,14 +9,7 @@ export const useDailyLogs = (selectedDate?: Date) => {
  const [isLoading, setIsLoading] = useState(false);
  const [isSaving, setIsSaving] = useState(false);
 
- // Load daily log for selected date
- useEffect(() => {
- if (selectedDate) {
- loadDailyLog(selectedDate);
- }
- }, [selectedDate]);
-
- const loadDailyLog = async (date: Date) => {
+ const loadDailyLog = useCallback(async (date: Date) => {
  setIsLoading(true);
  try {
  const log = await DailyLogService.getDailyLog(date);
@@ -27,9 +20,16 @@ export const useDailyLogs = (selectedDate?: Date) => {
  } finally {
  setIsLoading(false);
  }
- };
+ }, []);
 
- const saveDailyLog = async (logEntry: DailyLogEntry) => {
+ // Load daily log for selected date
+ useEffect(() => {
+ if (selectedDate) {
+ void loadDailyLog(selectedDate);
+ }
+ }, [selectedDate, loadDailyLog]);
+
+ const saveDailyLog = useCallback(async (logEntry: DailyLogEntry) => {
  setIsSaving(true);
  try {
  const savedLog = await DailyLogService.saveDailyLog(logEntry);
@@ -43,9 +43,9 @@ export const useDailyLogs = (selectedDate?: Date) => {
  } finally {
  setIsSaving(false);
  }
- };
+ }, []);
 
- const loadAllDailyLogs = async () => {
+ const loadAllDailyLogs = useCallback(async () => {
  setIsLoading(true);
  try {
  const logs = await DailyLogService.getAllDailyLogs();
@@ -56,21 +56,19 @@ export const useDailyLogs = (selectedDate?: Date) => {
  } finally {
  setIsLoading(false);
  }
- };
+ }, []);
 
- const deleteDailyLog = async (id: string) => {
+ const deleteDailyLog = useCallback(async (id: string) => {
  try {
  await DailyLogService.deleteDailyLog(id);
  setAllDailyLogs(prev => prev.filter(log => log.id !== id));
- if (dailyLog?.id === id) {
- setDailyLog(null);
- }
+ setDailyLog(prev => prev?.id === id ? null : prev);
  toast.success('Daily log deleted successfully');
  } catch (error) {
  console.error('Error deleting daily log:', error);
  toast.error('Failed to delete daily log');
  }
- };
+ }, []);
 
  return {
  dailyLog,

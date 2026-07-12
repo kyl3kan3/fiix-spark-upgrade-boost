@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ const KeywordTrackerWidget = () => {
  const [error, setError] = useState<string | null>(null);
  const [fetchedAt, setFetchedAt] = useState<string | null>(null);
 
- const fetchData = async (kw: string) => {
+ const fetchData = useCallback(async (kw: string) => {
  setLoading(true);
  setError(null);
  try {
@@ -53,12 +53,11 @@ const KeywordTrackerWidget = () => {
  } finally {
  setLoading(false);
  }
- };
+ }, []);
 
  useEffect(() => {
- fetchData(DEFAULT_KEYWORD);
- // eslint-disable-next-line react-hooks/exhaustive-deps
- }, []);
+ void fetchData(DEFAULT_KEYWORD);
+ }, [fetchData]);
 
  const maxVolume = Math.max(1, ...rows.map((r) => r.volume ?? 0));
 

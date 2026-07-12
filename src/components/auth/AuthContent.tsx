@@ -27,7 +27,7 @@ export const AuthContent: React.FC<AuthContentProps> = ({
         <button
           type="button"
           onClick={() => isSignUp && onToggleMode()}
-          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-ui duration-200 ${
             !isSignUp
               ? "bg-background shadow-sm text-primary"
               : "text-muted-foreground hover:text-primary"
@@ -38,7 +38,7 @@ export const AuthContent: React.FC<AuthContentProps> = ({
         <button
           type="button"
           onClick={() => !isSignUp && onToggleMode()}
-          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+          className={`flex-1 py-2 text-sm font-semibold rounded-md transition-ui duration-200 ${
             isSignUp
               ? "bg-background shadow-sm text-primary"
               : "text-muted-foreground hover:text-primary"

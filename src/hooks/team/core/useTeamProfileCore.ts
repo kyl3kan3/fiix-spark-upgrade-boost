@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TeamProfileData, TeamProfileResult } from "../types";
 import { logger } from "@/lib/logger";
@@ -7,11 +7,18 @@ import { logger } from "@/lib/logger";
 /**
  * Core hook for team profile data fetching and management
  */
-export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'company_name']): TeamProfileResult => {
+const DEFAULT_PROFILE_FIELDS = ['role', 'company_id', 'company_name'];
+
+export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): TeamProfileResult => {
  const [profileData, setProfileData] = useState<TeamProfileData | null>(null);
  const [userId, setUserId] = useState<string | null>(null);
  const [isLoading, setIsLoading] = useState(true);
  const [error, setError] = useState<string | null>(null);
+ const fieldsKey = fields.join("\u0000");
+ const selectFields = useMemo(() => {
+ const requestedFields = fieldsKey ? fieldsKey.split("\u0000") : [];
+ return [...new Set([...requestedFields, 'company_id'])].join(', ');
+ }, [fieldsKey]);
  
  const fetchUserProfile = useCallback(async (): Promise<any | null> => {
  try {
@@ -51,10 +58,6 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  
  logger.log("User authenticated:", user.id);
  setUserId(user.id);
- 
- // Make sure required fields are included
- const fieldsToFetch = [...new Set([...fields, 'company_id'])];
- const selectFields = fieldsToFetch.join(', ');
  
  logger.log("Fetching profile with fields:", selectFields);
  
@@ -133,7 +136,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  setIsLoading(false);
  return null;
  }
- }, []); // Remove fields dependency to prevent infinite loops
+ }, [selectFields]);
  
  const refreshProfile = useCallback(async () => {
  return await fetchUserProfile();
@@ -154,7 +157,7 @@ export const useTeamProfileCore = (fields: string[] = ['role', 'company_id', 'co
  return () => {
  mounted = false;
  };
- }, []); // Empty dependency array to run only once
+ }, [fetchUserProfile]);
 
  // Computed values
  const role = profileData?.role || null;

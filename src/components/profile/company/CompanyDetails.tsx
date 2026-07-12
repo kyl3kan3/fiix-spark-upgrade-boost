@@ -1,7 +1,7 @@
 
 import React from "react";
 import { CompanyInfo } from "./types";
-import { Building2, Globe, Mail, Phone, MapPin } from "lucide-react";
+import { Clock3, Globe, Mail, Phone, MapPin } from "lucide-react";
 import { logger } from "@/lib/logger";
 
 interface CompanyDetailsProps {
@@ -94,6 +94,16 @@ export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ companyInfo, han
                 >
                   {displayWebsite}
                 </a>
+              </div>
+            </div>
+          )}
+
+          {companyInfo.timezone && (
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border">
+              <Clock3 className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="text-sm">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-0.5">Timezone</p>
+                <p className="text-foreground">{companyInfo.timezone.replace(/_/g, " ")}</p>
               </div>
             </div>
           )}

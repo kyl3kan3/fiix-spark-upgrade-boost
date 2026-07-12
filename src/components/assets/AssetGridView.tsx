@@ -125,7 +125,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
              className="block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
              aria-label={`Open ${asset.name}`}
            >
-             <div className="bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col h-full">
+             <div className="bg-card border border-border rounded-lg overflow-hidden transition-ui duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 flex flex-col h-full">
                {/* Card header strip */}
                <div className="bg-primary/5 px-5 pt-5 pb-4 flex items-start justify-between gap-3">
                  <div className="flex items-center gap-3 min-w-0">

@@ -136,7 +136,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating }) => {
  return (
  <div
  onClick={() => navigate(`/work-orders/${job.id}`)}
- className="group cursor-pointer rounded-xl bg-surface-container-lowest border border-transparent hover:border-primary/10 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+ className="group cursor-pointer rounded-xl bg-surface-container-lowest border border-transparent hover:border-primary/10 shadow-sm hover:shadow-md transition-ui duration-300 overflow-hidden"
  >
  {/* Card body */}
  <div className="p-6">
@@ -282,7 +282,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  <button
  onClick={() => setActiveBucket("all")}
  className={cn(
- "px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200",
+ "px-4 py-1.5 rounded-full text-sm font-semibold border transition-ui duration-200",
  activeBucket === "all"
  ? "bg-primary text-primary-foreground border-primary shadow-sm"
  : "bg-surface-container-lowest text-foreground border-border hover:border-primary/40 hover:bg-muted/30",
@@ -299,7 +299,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  key={b.key}
  onClick={() => setActiveBucket(active ? "all" : b.key)}
  className={cn(
- "px-4 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200 inline-flex items-center gap-1.5",
+ "px-4 py-1.5 rounded-full text-sm font-semibold border transition-ui duration-200 inline-flex items-center gap-1.5",
  active
  ? "bg-primary text-primary-foreground border-primary shadow-sm"
  : "bg-surface-container-lowest text-foreground border-border hover:border-primary/40 hover:bg-muted/30",
