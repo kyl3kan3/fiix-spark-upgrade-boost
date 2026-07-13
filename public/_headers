@@ -1,0 +1,30 @@
+# Serve Markdown corpus files as plain text so AI assistants (ChatGPT, Claude,
+# Gemini) fetch and render them reliably instead of prompting a download or
+# hitting cache/timeout issues.
+/*.md
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/solutions/*.md
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/compare/*.md
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/learn/*.md
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: inline
+
+/api/ai.json
+  Content-Type: application/json; charset=utf-8
+  Content-Disposition: inline
