@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "description": "Cloudflare Pages routing — invoke functions/_middleware.ts only for HTML and crawler-facing files. Static assets bypass the Function entirely to save invocations. Do NOT exclude robots.txt, llms.txt, llms-full.txt, sitemap.xml, or .md content files — we want crawler hits on those to reach DataFast.",
+  "include": ["/*"],
+  "exclude": [
+    "/assets/*",
+    "/static/*",
+    "/favicon.ico",
+    "/favicon.png",
+    "/placeholder.svg",
+    "/og-image.png",
+    "/*.css",
+    "/*.js",
+    "/*.map",
+    "/*.png",
+    "/*.jpg",
+    "/*.jpeg",
+    "/*.gif",
+    "/*.webp",
+    "/*.avif",
+    "/*.svg",
+    "/*.ico",
+    "/*.woff",
+    "/*.woff2",
+    "/*.ttf",
+    "/*.otf",
+    "/*.mp4",
+    "/*.webm"
+  ]
+}
