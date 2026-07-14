@@ -32,6 +32,7 @@ const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const Landing = lazy(() => import("@/pages/Landing"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
