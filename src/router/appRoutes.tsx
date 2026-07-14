@@ -32,6 +32,7 @@ const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const Landing = lazy(() => import("@/pages/Landing"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -45,6 +46,7 @@ export const AppRoutes = () => (
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/landing" element={<Landing />} />
         <Route path="/index" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Navigate to="/auth" replace />} />
