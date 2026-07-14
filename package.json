@@ -27,6 +27,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@datafast/ai-crawl": "^1.0.7",
     "@hookform/resolvers": "^3.9.0",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
     "@lovable.dev/mcp-js": "0.20.1",
