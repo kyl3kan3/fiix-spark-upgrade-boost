@@ -7,6 +7,9 @@ import { glossary } from "../src/data/glossary";
 import { comparisons } from "../src/data/comparisons";
 
 const BASE_URL = "https://maintenease.com";
+const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
+const SUPABASE_ANON =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
 
 interface SitemapEntry {
   path: string;
@@ -55,7 +58,49 @@ const compareEntries: SitemapEntry[] = [
   })),
 ];
 
-const entries = [...staticEntries, ...solutionEntries, ...learnEntries, ...compareEntries];
+async function fetchBlogEntries(): Promise<SitemapEntry[]> {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,updated_at,published_at&order=published_at.desc.nullslast&limit=5000`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
+    );
+    if (!res.ok) {
+      console.warn(`[sitemap] blog fetch failed: ${res.status}`);
+      return [];
+    }
+    const rows = (await res.json()) as Array<{
+      slug: string;
+      updated_at: string | null;
+      published_at: string | null;
+    }>;
+    return rows.map((r) => ({
+      path: `/blog/${r.slug}`,
+      lastmod: (r.updated_at ?? r.published_at ?? today).slice(0, 10),
+      changefreq: "weekly" as const,
+      priority: "0.7",
+    }));
+  } catch (err) {
+    console.warn(`[sitemap] blog fetch error: ${(err as Error).message}`);
+    return [];
+  }
+}
+
+const blogEntries = await fetchBlogEntries();
+const blogIndexEntry: SitemapEntry = {
+  path: "/blog",
+  lastmod: today,
+  changefreq: "daily",
+  priority: "0.8",
+};
+
+const entries = [
+  ...staticEntries,
+  blogIndexEntry,
+  ...solutionEntries,
+  ...learnEntries,
+  ...compareEntries,
+  ...blogEntries,
+];
 
 function render(entries: SitemapEntry[]): string {
   const urls = entries.map((e) =>
