@@ -51,6 +51,12 @@
     <priority>0.2</priority>
   </url>
   <url>
+    <loc>https://maintenease.com/blog</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://maintenease.com/solutions/work-order-software</loc>
     <lastmod>2026-07-14</lastmod>
     <changefreq>monthly</changefreq>
@@ -217,5 +223,29 @@
     <lastmod>2026-07-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/blog/fixed-price-maintenance-software-ending-the-per-user-tax-in-2026</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/blog/industrial-maintenance-optimization-the-2026-guide-to-maximum-uptime</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/blog/the-ultimate-guide-to-modern-work-order-management-in-2026</loc>
+    <lastmod>2026-07-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
