@@ -46,6 +46,7 @@ export const AppRoutes = () => (
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/landing" element={<Landing />} />
         <Route path="/index" element={<Navigate to="/" replace />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Navigate to="/auth" replace />} />
