@@ -30,6 +30,8 @@ const ComparePage = lazy(() => import("@/pages/ComparePage"));
 const CostCalculatorPage = lazy(() => import("@/pages/CostCalculatorPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
+const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -69,6 +71,9 @@ export const AppRoutes = () => (
         <Route path="/compare" element={<CompareIndex />} />
         <Route path="/compare/:slug" element={<ComparePage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
+
+        <Route path="/blog" element={<BlogIndex />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
 
         <Route path="/r/:slug" element={<PublicRequestPortal />} />
 
