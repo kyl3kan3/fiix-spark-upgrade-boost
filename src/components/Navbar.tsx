@@ -53,6 +53,7 @@ const Navbar = () => {
             <a href="/solutions" className={navLinkClass}>Solutions</a>
             <a href="/features" className={navLinkClass}>Features</a>
             <a href="/pricing" className={navLinkClass}>Pricing</a>
+            <a href="/blog" className={navLinkClass}>Blog</a>
           </div>
           <div className="flex items-center gap-3">
             {isLoggedIn ? (
@@ -107,6 +108,7 @@ const Navbar = () => {
             <a href="/solutions" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Solutions</a>
             <a href="/features" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Features</a>
             <a href="/pricing" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Pricing</a>
+            <a href="/blog" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Blog</a>
             <div className="flex flex-col gap-2 pt-3">
               {isLoggedIn ? (
                 <>
