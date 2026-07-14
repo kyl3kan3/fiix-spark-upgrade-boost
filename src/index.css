@@ -430,3 +430,43 @@
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
 }
+
+/* =====================================================================
+   Blog article typography (rendered from webhook HTML via dangerouslySetInnerHTML).
+   Scoped to .blog-prose so it never leaks into product UI.
+   ===================================================================== */
+.blog-prose { color: hsl(var(--foreground)); font-size: 1.05rem; line-height: 1.7; }
+.blog-prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+.blog-prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.blog-prose p { font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem; color: hsl(220 20% 22%); }
+.blog-prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.blog-prose ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+.blog-prose li { margin-bottom: 0.5rem; }
+.blog-prose blockquote {
+  border-left: 4px solid hsl(var(--primary));
+  padding-left: 1rem; font-style: italic; color: hsl(220 15% 40%);
+  margin: 1.25rem 0;
+}
+.blog-prose code:not(pre code) {
+  background: hsl(220 15% 95%); padding: 2px 6px; border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em;
+}
+.blog-prose pre {
+  background: hsl(220 20% 12%); color: hsl(220 15% 92%);
+  padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 1.25rem 0;
+}
+.blog-prose pre code { background: transparent; padding: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
+.blog-prose a { color: hsl(var(--primary)); text-decoration: none; }
+.blog-prose a:hover { text-decoration: underline; }
+.blog-prose img {
+  max-width: 100%; height: auto; border-radius: 0.5rem;
+  display: block; margin: 1.25rem auto;
+}
+.blog-prose table {
+  width: 100%; border-collapse: collapse; margin: 1.25rem 0;
+  display: block; overflow-x: auto;
+}
+.blog-prose th, .blog-prose td {
+  border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; text-align: left;
+}
+.blog-prose tbody tr:nth-child(even) { background: hsl(220 15% 97%); }
