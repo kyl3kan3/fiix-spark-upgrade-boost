@@ -67,7 +67,7 @@ const LearnArticle = () => {
  description: term.short,
  mainEntityOfPage: { "@type": "WebPage", "@id": url },
  inLanguage: "en",
- image: "https://maintenease.com/og-image.png?v=2",
+ image: "https://maintenease.com/og-image.png?v=3",
  author: { "@type": "Organization", name: "MaintenEase" },
  publisher: {
  "@type": "Organization",
@@ -100,11 +100,11 @@ const LearnArticle = () => {
  <meta property="og:description" content={term.metaDescription} />
  <meta property="og:url" content={url} />
  <meta property="og:type" content="article" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content={term.metaTitle} />
  <meta name="twitter:description" content={term.metaDescription} />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
  <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
  <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
