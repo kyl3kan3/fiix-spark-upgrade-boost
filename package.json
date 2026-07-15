@@ -20,6 +20,7 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "test": "vitest run",
     "check:og": "tsx scripts/check-og-images.ts",
+    "check:landing": "tsx scripts/check-landing-meta.ts",
     "check:social": "tsx scripts/check-social-cache.ts",
     "check:seo": "node scripts/seo-checklist.mjs",
     "check:seo:live": "node scripts/seo-checklist.mjs --live",
