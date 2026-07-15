@@ -49,11 +49,11 @@ const ComparePage = () => {
         <meta property="og:description" content={c.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={c.metaTitle} />
         <meta name="twitter:description" content={c.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>

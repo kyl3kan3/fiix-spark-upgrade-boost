@@ -9,8 +9,8 @@ import { resolve } from "node:path";
  * - twitter:card
  * - twitter:title
  * - twitter:description
- * - og:image (must point to https://maintenease.com/og-image.png?v=2)
- * - twitter:image (must point to https://maintenease.com/og-image.png?v=2)
+ * - og:image (must point to https://maintenease.com/og-image.png?v=3)
+ * - twitter:image (must point to https://maintenease.com/og-image.png?v=3)
  */
 
 const KEY_PAGES = [
@@ -22,7 +22,7 @@ const KEY_PAGES = [
  "src/pages/LearnArticle.tsx",
 ];
 
-const OG_IMAGE_URL = "https://maintenease.com/og-image.png?v=2";
+const OG_IMAGE_URL = "https://maintenease.com/og-image.png?v=3";
 
 const REQUIRED_TAGS: { name: string; regex: RegExp; mustContain?: string }[] = [
  { name: "twitter:card", regex: /<meta\s+name=["']twitter:card["']\s+content=["']([^"']+)["']/ },

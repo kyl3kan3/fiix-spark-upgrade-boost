@@ -27,11 +27,11 @@ const Index = () => {
  <meta property="og:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
  <meta property="og:url" content="https://maintenease.com/" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase — CMMS & Maintenance Management Software" />
  <meta name="twitter:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
  </Helmet>
  <MarketingJsonLd />
  <Navbar />

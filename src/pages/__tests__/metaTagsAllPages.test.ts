@@ -14,7 +14,7 @@ import { resolve } from "node:path";
  */
 
 const PAGES_DIR = resolve(process.cwd(), "src/pages");
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=2";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=3";
 
 const REQUIRED_PROPERTY_TAGS = [
  "og:title",

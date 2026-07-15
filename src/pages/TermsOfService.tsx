@@ -15,11 +15,11 @@ export default function TermsOfService() {
  <meta property="og:description" content="The terms governing your use of the MaintenEase service." />
  <meta property="og:url" content="https://maintenease.com/terms" />
  <meta property="og:type" content="article" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="Terms & Conditions | MaintenEase" />
  <meta name="twitter:description" content="The terms governing your use of the MaintenEase service." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
  <script type="application/ld+json">{JSON.stringify({
  "@context": "https://schema.org",
  "@type": "Article",

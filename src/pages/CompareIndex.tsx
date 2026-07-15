@@ -19,11 +19,11 @@ const CompareIndex = () => {
         <meta property="og:description" content="Flat-fee CMMS vs per-seat competitors — compared side by side." />
         <meta property="og:url" content="https://maintenease.com/compare" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=2" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="MaintenEase vs other CMMS platforms" />
         <meta name="twitter:description" content="Flat-fee CMMS vs per-seat competitors — compared side by side." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=2" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
       </Helmet>
       <MarketingJsonLd />
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
