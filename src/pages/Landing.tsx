@@ -2,6 +2,12 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, Building2, Zap, Calendar, BarChart3, Shield } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -36,6 +42,36 @@ const checks = [
   "Unlimited work orders & assets",
 ];
 
+// Source of truth for both the visible FAQ section and the FAQPage JSON-LD.
+// Google's FAQ rich-result eligibility requires the Q&A text on the page to
+// match the structured data verbatim, so render both from this array.
+const faqs = [
+  {
+    q: "Is there a free trial?",
+    a: "Yes — MaintenEase includes a 7-day free trial on every plan. A card is required and you can cancel anytime before day 8 to avoid charges.",
+  },
+  {
+    q: "How much does MaintenEase cost?",
+    a: "Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%.",
+  },
+  {
+    q: "Do I have to import my data manually?",
+    a: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards from day one.",
+  },
+  {
+    q: "How does MaintenEase prevent downtime?",
+    a: "AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm.",
+  },
+  {
+    q: "Can my whole crew use it?",
+    a: "Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.",
+  },
+  {
+    q: "What do owners get out of it?",
+    a: "Owners stop guessing what is actually done. A clean dashboard tracks work orders, labor, and parts spend so you always know where time and money go.",
+  },
+];
+
 const Landing = () => {
   const navigate = useNavigate();
 
@@ -48,6 +84,7 @@ const Landing = () => {
           content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
         />
         <link rel="canonical" href="https://maintenease.com/landing" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta
           property="og:description"
@@ -104,32 +141,11 @@ const Landing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "Is there a free trial?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes — MaintenEase includes a 7-day free trial. A card is required and you can cancel anytime.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "How much does MaintenEase cost?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "One flat price of $49/month for your whole crew — no per-seat fees, unlimited work orders and assets.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Do I have to import my data manually?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards.",
-                },
-              },
-            ],
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
           })}
         </script>
       </Helmet>
@@ -214,6 +230,28 @@ const Landing = () => {
 
         {/* CTA */}
         <section className="py-20">
+          <div className="container mx-auto px-4 max-w-3xl mb-20">
+            <div className="text-center mb-10">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground mb-3">
+                Frequently asked questions
+              </h2>
+              <p className="text-muted-foreground">
+                Everything you need to know before starting your trial.
+              </p>
+            </div>
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((f, i) => (
+                <AccordionItem key={f.q} value={`faq-${i}`}>
+                  <AccordionTrigger className="text-left font-semibold">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
           <div className="container mx-auto px-4 max-w-4xl">
             <div
               className="rounded-2xl p-8 md:p-16 text-center"
