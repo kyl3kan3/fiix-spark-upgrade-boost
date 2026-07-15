@@ -84,6 +84,7 @@ const Landing = () => {
           content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
         />
         <link rel="canonical" href="https://maintenease.com/landing" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta
           property="og:description"
@@ -140,32 +141,11 @@ const Landing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "Is there a free trial?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Yes — MaintenEase includes a 7-day free trial. A card is required and you can cancel anytime.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "How much does MaintenEase cost?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "One flat price of $49/month for your whole crew — no per-seat fees, unlimited work orders and assets.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "Do I have to import my data manually?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards.",
-                },
-              },
-            ],
+            mainEntity: faqs.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
           })}
         </script>
       </Helmet>
