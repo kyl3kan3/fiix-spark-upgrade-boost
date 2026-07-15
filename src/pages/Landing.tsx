@@ -56,10 +56,82 @@ const Landing = () => {
         <meta property="og:url" content="https://maintenease.com/landing" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
+        <meta property="og:site_name" content="MaintenEase" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta name="twitter:description" content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
+        <meta name="twitter:site" content="@maintenease" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "MaintenEase",
+            applicationCategory: "BusinessApplication",
+            applicationSubCategory: "Computerized Maintenance Management System (CMMS)",
+            operatingSystem: "Web",
+            url: "https://maintenease.com/landing",
+            image: "https://maintenease.com/og-image.png?v=4",
+            description:
+              "Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.",
+            offers: {
+              "@type": "Offer",
+              price: "49",
+              priceCurrency: "USD",
+              priceSpecification: {
+                "@type": "UnitPriceSpecification",
+                price: "49",
+                priceCurrency: "USD",
+                unitText: "MONTH",
+              },
+              availability: "https://schema.org/InStock",
+              url: "https://maintenease.com/pricing",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "MaintenEase",
+              url: "https://maintenease.com/",
+              logo: "https://maintenease.com/favicon.png",
+            },
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Is there a free trial?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes — MaintenEase includes a 7-day free trial. A card is required and you can cancel anytime.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How much does MaintenEase cost?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "One flat price of $49/month for your whole crew — no per-seat fees, unlimited work orders and assets.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Do I have to import my data manually?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards.",
+                },
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <MarketingJsonLd />
       <Navbar />
