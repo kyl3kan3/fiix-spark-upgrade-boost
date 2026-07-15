@@ -45,6 +45,11 @@ jobs:
         id: og_audit
         run: npx tsx scripts/check-og-images.ts
 
+      - name: Run /landing meta audit
+        id: landing_audit
+        if: always()
+        run: npx tsx scripts/check-landing-meta.ts
+
       - name: Run social-crawler audit
         id: social_audit
         if: always()
