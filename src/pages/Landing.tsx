@@ -45,20 +45,20 @@ const Landing = () => {
         <title>MaintenEase — Stop Downtime Before It Starts</title>
         <meta
           name="description"
-          content="Modern CMMS for facility and maintenance teams. One flat price, AI-powered predictive maintenance, and unlimited work orders."
+          content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
         />
         <link rel="canonical" href="https://maintenease.com/landing" />
         <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta
           property="og:description"
-          content="Modern CMMS for facility and maintenance teams. One flat price, AI-powered predictive maintenance, and unlimited work orders."
+          content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
         />
         <meta property="og:url" content="https://maintenease.com/landing" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
-        <meta name="twitter:description" content="Modern CMMS for facility and maintenance teams. One flat price, AI-powered predictive maintenance, and unlimited work orders." />
+        <meta name="twitter:description" content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
       </Helmet>
       <MarketingJsonLd />
@@ -88,8 +88,7 @@ const Landing = () => {
                 Stop downtime before it starts.
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                MaintenEase helps industrial and facility teams track work orders, manage assets, and
-                catch failures before they become expensive interruptions.
+                Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                 <Button
