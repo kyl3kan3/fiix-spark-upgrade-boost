@@ -90,11 +90,11 @@ const BlogIndex = () => {
         <meta property="og:description" content="Read our latest articles and insights on maintenance management." />
         <meta property="og:url" content="https://maintenease.com/blog" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Blog | MaintenEase" />
         <meta name="twitter:description" content="Read our latest articles and insights on maintenance management." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       </Helmet>
 
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">

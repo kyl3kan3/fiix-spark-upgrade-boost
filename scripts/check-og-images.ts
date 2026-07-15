@@ -10,7 +10,7 @@
  */
 
 const BASE_URL = process.env.BASE_URL ?? "https://maintenease.com";
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=3";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
 
 const PATHS = [
   "/",

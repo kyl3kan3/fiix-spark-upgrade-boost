@@ -18,7 +18,7 @@
  */
 
 const BASE_URL = process.env.BASE_URL ?? "https://maintenease.com";
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=3";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
 const FB_TOKEN = process.env.FB_APP_ACCESS_TOKEN;
 const SITEMAP_URL = `${BASE_URL}/sitemap.xml`;
 

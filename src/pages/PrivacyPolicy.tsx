@@ -15,11 +15,11 @@ export default function PrivacyPolicy() {
  <meta property="og:description" content="How MaintenEase collects, uses, and protects your personal data." />
  <meta property="og:url" content="https://maintenease.com/privacy" />
  <meta property="og:type" content="article" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="Privacy Notice | MaintenEase" />
  <meta name="twitter:description" content="How MaintenEase collects, uses, and protects your personal data." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
  <script type="application/ld+json">{JSON.stringify({
  "@context": "https://schema.org",
  "@type": "Article",

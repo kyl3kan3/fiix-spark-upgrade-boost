@@ -9,7 +9,7 @@ import { resolve } from "node:path";
  * Facebook/LinkedIn/X will use.
  */
 
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=3";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
 const html = readFileSync(resolve(process.cwd(), "index.html"), "utf8");
 
 function metaProperty(key: string): string | null {
