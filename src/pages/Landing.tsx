@@ -55,6 +55,11 @@ const Landing = () => {
         />
         <meta property="og:url" content="https://maintenease.com/landing" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
+        <meta name="twitter:description" content="Modern CMMS for facility and maintenance teams. One flat price, AI-powered predictive maintenance, and unlimited work orders." />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
       </Helmet>
       <MarketingJsonLd />
       <Navbar />
