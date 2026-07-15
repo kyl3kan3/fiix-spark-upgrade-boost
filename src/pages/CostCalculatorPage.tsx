@@ -95,11 +95,11 @@ const CostCalculatorPage = () => {
         <meta property="og:description" content="What does a CMMS really cost for your crew? Compare per-seat pricing to one flat fee, honestly — breakevens included." />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="CMMS Cost Calculator — Per-Seat vs Flat-Fee Pricing" />
         <meta name="twitter:description" content="What does a CMMS really cost for your crew? Compare per-seat pricing to one flat fee, honestly — breakevens included." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>

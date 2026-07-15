@@ -30,14 +30,14 @@ const FeaturesPage = () => {
         />
         <meta property="og:url" content="https://maintenease.com/features" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Features — MaintenEase" />
         <meta
           name="twitter:description"
           content="Every MaintenEase feature, in one place."
         />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       </Helmet>
       <Navbar />
       <main className="flex-1 pt-24">

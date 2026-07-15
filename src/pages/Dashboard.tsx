@@ -58,12 +58,12 @@ const Dashboard: React.FC = () => {
           content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta property="og:url" content="https://maintenease.com/dashboard" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Dashboard | MaintenEase" />
         <meta name="twitter:description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=3" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       </Helmet>
 
       <PageContainer>
