@@ -2,6 +2,12 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, Building2, Zap, Calendar, BarChart3, Shield } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -34,6 +40,36 @@ const checks = [
   "Card required — cancel anytime",
   "Free onboarding & data import",
   "Unlimited work orders & assets",
+];
+
+// Source of truth for both the visible FAQ section and the FAQPage JSON-LD.
+// Google's FAQ rich-result eligibility requires the Q&A text on the page to
+// match the structured data verbatim, so render both from this array.
+const faqs = [
+  {
+    q: "Is there a free trial?",
+    a: "Yes — MaintenEase includes a 7-day free trial on every plan. A card is required and you can cancel anytime before day 8 to avoid charges.",
+  },
+  {
+    q: "How much does MaintenEase cost?",
+    a: "Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%.",
+  },
+  {
+    q: "Do I have to import my data manually?",
+    a: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards from day one.",
+  },
+  {
+    q: "How does MaintenEase prevent downtime?",
+    a: "AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm.",
+  },
+  {
+    q: "Can my whole crew use it?",
+    a: "Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.",
+  },
+  {
+    q: "What do owners get out of it?",
+    a: "Owners stop guessing what is actually done. A clean dashboard tracks work orders, labor, and parts spend so you always know where time and money go.",
+  },
 ];
 
 const Landing = () => {
