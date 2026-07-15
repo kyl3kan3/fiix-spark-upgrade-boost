@@ -230,6 +230,28 @@ const Landing = () => {
 
         {/* CTA */}
         <section className="py-20">
+          <div className="container mx-auto px-4 max-w-3xl mb-20">
+            <div className="text-center mb-10">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground mb-3">
+                Frequently asked questions
+              </h2>
+              <p className="text-muted-foreground">
+                Everything you need to know before starting your trial.
+              </p>
+            </div>
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((f, i) => (
+                <AccordionItem key={f.q} value={`faq-${i}`}>
+                  <AccordionTrigger className="text-left font-semibold">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
           <div className="container mx-auto px-4 max-w-4xl">
             <div
               className="rounded-2xl p-8 md:p-16 text-center"
