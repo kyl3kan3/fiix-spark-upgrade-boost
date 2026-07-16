@@ -59,17 +59,6 @@ const Index = () => {
  />
  </div>
  </section>
-      <section className="container mx-auto px-4 pb-10 flex justify-center">
-        <a href="https://orynth.dev/projects/maintenease" target="_blank" rel="noopener">
-          <img
-            src="https://orynth.dev/api/badge/maintenease?theme=light&style=default"
-            alt="Featured on Orynth"
-            width="260"
-            height="80"
-            loading="lazy"
-          />
-        </a>
-      </section>
       <SiteIndexLinks />
       </main>
  <Footer />
