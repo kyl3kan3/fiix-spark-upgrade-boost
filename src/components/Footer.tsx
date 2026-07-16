@@ -127,10 +127,13 @@ const Footer = () => {
  </div>
 
  <div className="mt-12 pt-8 border-t border-background/10">
- <div className="flex flex-col md:flex-row justify-between items-center">
- <p className="text-background/80 text-sm mb-4 md:mb-0">
+ <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+ <p className="text-background/80 text-sm">
  &copy; {currentYear} Decent4. All rights reserved.
  </p>
+ <a href="https://daniellaunches.com" target="_blank">
+ <img src="https://daniellaunches.com/badge-light.svg" alt="Featured on DanielLaunches" width="220" height="48" />
+ </a>
  <div className="flex space-x-6">
  <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
  Privacy Policy
