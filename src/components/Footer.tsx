@@ -18,12 +18,17 @@ const Footer = () => {
  // Simple footer for main application pages
  return (
  <footer className="bg-muted/50 border-t border-border py-4">
- <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-muted-foreground">
+ <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-3 text-center text-sm text-muted-foreground">
+ <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
  <span>&copy; {currentYear} Decent4. All rights reserved.</span>
  <span className="hidden sm:inline">·</span>
  <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
  <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
  <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
+ </div>
+ <a href="https://daniellaunches.com" target="_blank">
+ <img src="https://daniellaunches.com/badge-light.svg" alt="Featured on DanielLaunches" width="220" height="48" />
+ </a>
  </div>
  </footer>
  );
@@ -122,10 +127,13 @@ const Footer = () => {
  </div>
 
  <div className="mt-12 pt-8 border-t border-background/10">
- <div className="flex flex-col md:flex-row justify-between items-center">
- <p className="text-background/80 text-sm mb-4 md:mb-0">
+ <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+ <p className="text-background/80 text-sm">
  &copy; {currentYear} Decent4. All rights reserved.
  </p>
+ <a href="https://daniellaunches.com" target="_blank">
+ <img src="https://daniellaunches.com/badge-light.svg" alt="Featured on DanielLaunches" width="220" height="48" />
+ </a>
  <div className="flex space-x-6">
  <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
  Privacy Policy
