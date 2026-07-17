@@ -141,6 +141,16 @@ ${glossary.map((g) => `- [${g.term}](${SITE}/learn/${g.slug}.md): ${g.short}`).j
 - [Terms](${SITE}/terms)
 - [Refund policy](${SITE}/refund-policy)
 - [SMS opt-in](${SITE}/sms-opt-in)
+
+## Blog
+
+Fresh articles are published continuously. Fetch the always-current index at
+[/api/blog.json](${SITE}/api/blog.json) for every post's slug, title, description,
+tags, and Markdown URL. Each post is available as clean Markdown at
+\`${SITE}/blog/<slug>.md\`.
+
+- [Blog index (HTML)](${SITE}/blog)
+- [Blog index (JSON, agent-friendly)](${SITE}/api/blog.json)
 `;
 
 write("llms.txt", llmsTxt);
