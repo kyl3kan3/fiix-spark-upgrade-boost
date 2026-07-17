@@ -16,7 +16,7 @@ jobs:
         uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
         with:
           host: maintenease.com
-          api_key: ${{ secrets.INDEX_NOW_API_KEY }}
-          api_key_location: https://maintenease.com/${{ secrets.INDEX_NOW_API_KEY }}.txt
+          api_key: f8a6105d40eb4c5b8a6fdb94cfec9f35
+          api_key_location: https://maintenease.com/f8a6105d40eb4c5b8a6fdb94cfec9f35.txt
           endpoint: bing
           sitemap_locations: https://maintenease.com/sitemap.xml
