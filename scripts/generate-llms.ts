@@ -206,6 +206,12 @@ const apiContent = {
     html_url: `${SITE}/learn/${g.slug}`,
     markdown_url: `${SITE}/learn/${g.slug}.md`,
   })),
+  blog: {
+    index_html_url: `${SITE}/blog`,
+    index_json_url: `${SITE}/api/blog.json`,
+    markdown_url_pattern: `${SITE}/blog/{slug}.md`,
+    note: "Posts are dynamic — fetch /api/blog.json for the current list.",
+  },
 };
 
 let generatedAt = new Date().toISOString();
