@@ -141,6 +141,16 @@ ${glossary.map((g) => `- [${g.term}](${SITE}/learn/${g.slug}.md): ${g.short}`).j
 - [Terms](${SITE}/terms)
 - [Refund policy](${SITE}/refund-policy)
 - [SMS opt-in](${SITE}/sms-opt-in)
+
+## Blog
+
+Fresh articles are published continuously. Fetch the always-current index at
+[/api/blog.json](${SITE}/api/blog.json) for every post's slug, title, description,
+tags, and Markdown URL. Each post is available as clean Markdown at
+\`${SITE}/blog/<slug>.md\`.
+
+- [Blog index (HTML)](${SITE}/blog)
+- [Blog index (JSON, agent-friendly)](${SITE}/api/blog.json)
 `;
 
 write("llms.txt", llmsTxt);
@@ -196,6 +206,12 @@ const apiContent = {
     html_url: `${SITE}/learn/${g.slug}`,
     markdown_url: `${SITE}/learn/${g.slug}.md`,
   })),
+  blog: {
+    index_html_url: `${SITE}/blog`,
+    index_json_url: `${SITE}/api/blog.json`,
+    markdown_url_pattern: `${SITE}/blog/{slug}.md`,
+    note: "Posts are dynamic — fetch /api/blog.json for the current list.",
+  },
 };
 
 let generatedAt = new Date().toISOString();

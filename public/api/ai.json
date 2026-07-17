@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-07-12T10:01:55.123Z",
+  "generated_at": "2026-07-17T18:17:34.104Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
@@ -204,5 +204,11 @@
       "html_url": "https://maintenease.com/learn/mttr",
       "markdown_url": "https://maintenease.com/learn/mttr.md"
     }
-  ]
+  ],
+  "blog": {
+    "index_html_url": "https://maintenease.com/blog",
+    "index_json_url": "https://maintenease.com/api/blog.json",
+    "markdown_url_pattern": "https://maintenease.com/blog/{slug}.md",
+    "note": "Posts are dynamic — fetch /api/blog.json for the current list."
+  }
 }
