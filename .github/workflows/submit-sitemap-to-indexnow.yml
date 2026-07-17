@@ -1,0 +1,22 @@
+name: Submit Sitemap to IndexNow
+
+# Pings IndexNow (Bing, Yandex, DuckDuckGo, Seznam, Naver) with every URL
+# in maintenease.com/sitemap.xml so new blog posts, comparisons, and
+# solution pages get crawled faster. Runs weekly + on manual dispatch.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  submit-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit sitemap URLs to IndexNow
+        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
+        with:
+          host: maintenease.com
+          api_key: ${{ secrets.INDEX_NOW_API_KEY }}
+          api_key_location: https://maintenease.com/${{ secrets.INDEX_NOW_API_KEY }}.txt
+          endpoint: bing
+          sitemap_locations: https://maintenease.com/sitemap.xml
