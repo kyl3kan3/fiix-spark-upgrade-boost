@@ -2,7 +2,6 @@
 // article into public.blog_posts. Uses the service role key to bypass RLS.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const WEBHOOK_TOKEN = "aseo_wh_ecd3f7252ec04b993c46f6c86908f1b2";
 const SITE_ORIGIN = "https://maintenease.com";
 
 const corsHeaders = {
@@ -32,7 +31,8 @@ Deno.serve(async (req) => {
 
   const auth = req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
   const token = auth.replace(/^Bearer\s+/i, "").trim();
-  if (token !== WEBHOOK_TOKEN) return json(401, { error: "Unauthorized" });
+  const expected = Deno.env.get("AUTOSEO_WEBHOOK_TOKEN") ?? "";
+  if (!expected || token !== expected) return json(401, { error: "Unauthorized" });
 
   let payload: Record<string, unknown>;
   try {
