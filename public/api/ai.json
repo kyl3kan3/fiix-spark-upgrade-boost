@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-07-17T18:17:34.104Z",
+  "generated_at": "2026-07-19T10:27:13.160Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
@@ -203,6 +203,13 @@
       "short": "The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.",
       "html_url": "https://maintenease.com/learn/mttr",
       "markdown_url": "https://maintenease.com/learn/mttr.md"
+    },
+    {
+      "slug": "cmms-benchmarks-2026",
+      "term": "CMMS Benchmarks (2026)",
+      "short": "Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.",
+      "html_url": "https://maintenease.com/learn/cmms-benchmarks-2026",
+      "markdown_url": "https://maintenease.com/learn/cmms-benchmarks-2026.md"
     }
   ],
   "blog": {

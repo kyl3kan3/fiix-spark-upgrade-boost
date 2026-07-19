@@ -48,6 +48,7 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 - [Condition-Based Maintenance](https://maintenease.com/learn/condition-based-maintenance.md): Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.
 - [MTBF (Mean Time Between Failures)](https://maintenease.com/learn/mtbf.md): The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.
 - [MTTR (Mean Time To Repair)](https://maintenease.com/learn/mttr.md): The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.
+- [CMMS Benchmarks (2026)](https://maintenease.com/learn/cmms-benchmarks-2026.md): Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.
 
 ## Policies
 
