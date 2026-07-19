@@ -76,10 +76,10 @@ const Footer = () => {
  <div className="container mx-auto px-4 py-12 md:py-16">
  <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
  <div className="col-span-2">
-          <div className="mb-4 flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-background/80" strokeWidth={1.5} />
-            <span className="text-2xl font-bold text-background font-headline">MaintenEase</span>
-          </div>
+           <Link to="/" aria-label="MaintenEase home" className="mb-4 inline-flex items-center gap-2">
+             <Building2 className="h-6 w-6 text-background/80" strokeWidth={1.5} />
+             <span className="text-2xl font-bold text-background font-headline">MaintenEase</span>
+           </Link>
  <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
