@@ -40,20 +40,20 @@ const Navbar = () => {
       } border-b border-border/50`}
     >
       <div className="container mx-auto px-4 max-w-7xl flex justify-between items-center gap-3">
-        <a href="/" className="flex items-center gap-2 min-w-0 shrink">
+        <Link to="/" aria-label="MaintenEase home" className="flex items-center gap-2 min-w-0 shrink">
           <Building2 className="h-6 w-6 text-primary shrink-0" strokeWidth={1.5} />
           <span className="text-xl font-bold text-primary truncate leading-none font-headline">
             MaintenEase
           </span>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           <div className="flex items-center gap-1">
-            <a href="/solutions" className={navLinkClass}>Solutions</a>
-            <a href="/features" className={navLinkClass}>Features</a>
-            <a href="/pricing" className={navLinkClass}>Pricing</a>
-            <a href="/blog" className={navLinkClass}>Blog</a>
+            <Link to="/solutions" className={navLinkClass}>Solutions</Link>
+            <Link to="/features" className={navLinkClass}>Features</Link>
+            <Link to="/pricing" className={navLinkClass}>Pricing</Link>
+            <Link to="/blog" className={navLinkClass}>Blog</Link>
           </div>
           <div className="flex items-center gap-3">
             {isLoggedIn ? (
