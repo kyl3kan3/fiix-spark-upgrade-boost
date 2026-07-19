@@ -450,6 +450,51 @@ export type Database = {
         }
         Relationships: []
       }
+      backlink_prospects: {
+        Row: {
+          authority: number | null
+          company_id: string
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          created_by: string
+          domain: string
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          authority?: number | null
+          company_id: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string
+          domain: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          authority?: number | null
+          company_id?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string
+          domain?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       billing_checkout_authorizations: {
         Row: {
           company_id: string
