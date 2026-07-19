@@ -55,6 +55,7 @@ export const PROTECTED_ROUTES: AppRoute[] = [
   { path: "/admin/email-log", component: lazy(() => import("@/pages/AdminEmailLogPage")) },
   { path: "/admin/seo-index", component: lazy(() => import("@/pages/AdminSeoIndexPage")) },
   { path: "/admin/analytics", component: lazy(() => import("@/pages/AdminAnalyticsPage")) },
+ { path: "/admin/backlinks", component: lazy(() => import("@/pages/AdminBacklinksPage")) },
   { path: "/notifications/email-log", component: lazy(() => import("@/pages/MyEmailLogPage")) },
   { path: "/settings/notifications", component: lazy(() => import("@/pages/NotificationPreferencesPage")) },
 
