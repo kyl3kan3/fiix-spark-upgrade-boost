@@ -161,6 +161,15 @@ const ComparePage = () => {
 
       {/* Related comparisons */}
       <section className="container mx-auto px-4 pb-16 max-w-5xl">
+        <div className="mb-10 p-6 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="font-headline text-xl font-semibold text-foreground mb-1">Run the numbers on your own crew</h2>
+            <p className="text-sm text-muted-foreground">Slide the team-size dial and see MaintenEase vs {c.competitor} monthly cost.</p>
+          </div>
+          <Button asChild variant="outline" className="border-primary/30 text-primary hover:bg-primary/10">
+            <Link to="/cmms-cost-calculator">Open cost calculator <ArrowRight className="ml-1 h-4 w-4" /></Link>
+          </Button>
+        </div>
         <h2 className="font-headline text-2xl font-semibold mb-6 text-foreground">Other comparisons</h2>
         <div className="grid sm:grid-cols-3 gap-4">
           {others.map((o) => (

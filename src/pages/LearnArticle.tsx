@@ -145,9 +145,19 @@ const LearnArticle = () => {
  <p className="text-foreground mb-5">
  MaintenEase is modern maintenance management software built for teams that want to stop firefighting. Start free and see your work in one place in minutes.
  </p>
- <Button asChild>
- <Link to="/auth?signup=true">Start free</Link>
- </Button>
+  <div className="flex flex-wrap gap-3">
+  <Button asChild>
+  <Link to="/auth?signup=true">Start free</Link>
+  </Button>
+  <Button asChild variant="outline">
+  <Link to="/cmms-cost-calculator">Run the CMMS cost calculator</Link>
+  </Button>
+  </div>
+  {term.slug !== "cmms-benchmarks-2026" && (
+  <p className="text-sm text-muted-foreground mt-4">
+  Comparing your team to the industry? See the <Link to="/learn/cmms-benchmarks-2026" className="text-primary underline underline-offset-2">2026 CMMS benchmarks</Link> for MTTR, PM compliance, and cost per work order.
+  </p>
+  )}
  </section>
 
  {related.length > 0 && (
