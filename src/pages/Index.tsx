@@ -60,12 +60,7 @@ const Index = () => {
  </div>
  </section>
       <section className="container mx-auto px-4 pb-10 flex flex-col items-center gap-6">
-        <a href="https://daniellaunches.com" target="_blank">
-          <img src="https://daniellaunches.com/badge-light.svg" alt="Featured on DanielLaunches" width="220" height="48" />
-        </a>
-        <a href="https://verifieddr.com/website/mainteneas-com" target="_blank">
-          <img src="https://verifieddr.com/badge/mainteneas-com.svg?metric=truedr" alt="Verified DR - Verified Domain Rating for mainteneas.com" width="220" height="68" />
-        </a>
+        <a href="https://verifieddr.com/website/maintenease-com" target="_blank"><img src="https://verifieddr.com/badge/maintenease-com.svg?metric=truedr" alt="Verified DR - Verified Domain Rating for maintenease.com" width="220" height="68" /></a>
       </section>
       <SiteIndexLinks />
       </main>
