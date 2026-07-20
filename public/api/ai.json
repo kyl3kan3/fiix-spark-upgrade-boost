@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-07-19T10:27:13.160Z",
+  "generated_at": "2026-07-20T10:20:53.199Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
@@ -210,6 +210,20 @@
       "short": "Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.",
       "html_url": "https://maintenease.com/learn/cmms-benchmarks-2026",
       "markdown_url": "https://maintenease.com/learn/cmms-benchmarks-2026.md"
+    },
+    {
+      "slug": "cmms-roi",
+      "term": "CMMS ROI & Cost Savings",
+      "short": "How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.",
+      "html_url": "https://maintenease.com/learn/cmms-roi",
+      "markdown_url": "https://maintenease.com/learn/cmms-roi.md"
+    },
+    {
+      "slug": "root-cause-analysis",
+      "term": "Root Cause Analysis (RCA)",
+      "short": "A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.",
+      "html_url": "https://maintenease.com/learn/root-cause-analysis",
+      "markdown_url": "https://maintenease.com/learn/root-cause-analysis.md"
     }
   ],
   "blog": {

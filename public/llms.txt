@@ -49,6 +49,8 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 - [MTBF (Mean Time Between Failures)](https://maintenease.com/learn/mtbf.md): The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.
 - [MTTR (Mean Time To Repair)](https://maintenease.com/learn/mttr.md): The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.
 - [CMMS Benchmarks (2026)](https://maintenease.com/learn/cmms-benchmarks-2026.md): Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.
+- [CMMS ROI & Cost Savings](https://maintenease.com/learn/cmms-roi.md): How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.
+- [Root Cause Analysis (RCA)](https://maintenease.com/learn/root-cause-analysis.md): A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.
 
 ## Policies
 
