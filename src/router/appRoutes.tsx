@@ -33,6 +33,7 @@ const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Landing = lazy(() => import("@/pages/Landing"));
+const MaintenanceSimplifiedPage = lazy(() => import("@/pages/MaintenanceSimplifiedPage"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -73,6 +74,7 @@ export const AppRoutes = () => (
         <Route path="/compare" element={<CompareIndex />} />
         <Route path="/compare/:slug" element={<ComparePage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
+        <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
 
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
