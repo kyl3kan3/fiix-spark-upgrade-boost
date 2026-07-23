@@ -20,22 +20,30 @@ const Index = () => {
  return (
  <div className="min-h-screen flex flex-col bg-background text-foreground">
  <Helmet>
- <title>MaintenEase — CMMS & Maintenance Management Software</title>
- <meta name="description" content="Modern CMMS that helps facility & maintenance teams track work orders, assets, and inspections. Prevent downtime with predictive AI. From $49/mo, flat pricing." />
+ <title>MaintenEase — CMMS Software to Prevent Downtime</title>
+ <meta name="description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
  <link rel="canonical" href="https://maintenease.com/" />
- <meta property="og:title" content="MaintenEase — CMMS & Maintenance Management Software" />
- <meta property="og:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
+ <meta property="og:title" content="MaintenEase — CMMS Software to Prevent Downtime" />
+ <meta property="og:description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
  <meta property="og:url" content="https://maintenease.com/" />
  <meta property="og:type" content="website" />
  <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
  <meta name="twitter:card" content="summary_large_image" />
- <meta name="twitter:title" content="MaintenEase — CMMS & Maintenance Management Software" />
- <meta name="twitter:description" content="Modern CMMS for facility & maintenance teams. Track work orders, assets, and inspections. Predict failures. Flat pricing from $49/mo." />
+ <meta name="twitter:title" content="MaintenEase — CMMS Software to Prevent Downtime" />
+ <meta name="twitter:description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
  </Helmet>
  <MarketingJsonLd />
  <Navbar />
  <main className="flex-1">
+ <div className="container mx-auto px-4 pt-10 pb-2 max-w-5xl text-center">
+ <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-foreground">
+ CMMS Software for Facility & Maintenance Teams
+ </h1>
+ <p className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+ Track work orders, assets, and inspections in one place, and prevent downtime with predictive maintenance — flat pricing starting at $49/mo.
+ </p>
+ </div>
  <Hero />
  <ProblemSolved />
  <Features />
