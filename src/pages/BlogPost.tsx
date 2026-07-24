@@ -52,7 +52,7 @@ function formatDate(iso: string | null): string {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
-// Attach onerror to <img> so broken images hide themselves after render.
+// Hide broken content images after the article HTML renders.
 function useHideBrokenImages(html: string | null) {
   useEffect(() => {
     const container = document.getElementById("blog-content");
@@ -196,11 +196,11 @@ const BlogPost = () => {
         <meta property="og:description" content={description} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
-        {post.hero_image_url && <meta property="og:image" content={post.hero_image_url} />}
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={description} />
-        {post.hero_image_url && <meta name="twitter:image" content={post.hero_image_url} />}
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
         {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>
