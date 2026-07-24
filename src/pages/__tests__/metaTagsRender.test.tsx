@@ -137,7 +137,8 @@ function jsonLdTypes(): string[] {
 
 describe("rendered head for key routes", () => {
  beforeEach(() => {
- document.head.innerHTML = "";
+ document.head.innerHTML =
+ '<link data-rh="true" rel="canonical" href="https://maintenease.com/" />';
  });
  afterEach(() => {
  cleanup();
@@ -158,6 +159,8 @@ describe("rendered head for key routes", () => {
  const ogTitle = metaByAttr("property", "og:title");
  const ogDesc = metaByAttr("property", "og:description");
  const ogUrl = metaByAttr("property", "og:url");
+ const canonicalLinks = document.head.querySelectorAll('link[rel="canonical"]');
+ const expectedCanonical = new URL(route.path, "https://maintenease.com").href;
 
  expect(card, `${route.name}: twitter:card missing`).toBe("summary_large_image");
  expect(twTitle, `${route.name}: twitter:title missing`).toBeTruthy();
@@ -167,6 +170,11 @@ describe("rendered head for key routes", () => {
  expect(ogTitle, `${route.name}: og:title missing`).toBeTruthy();
  expect(ogDesc, `${route.name}: og:description missing`).toBeTruthy();
  expect(ogUrl, `${route.name}: og:url missing`).toBeTruthy();
+ expect(canonicalLinks, `${route.name}: duplicate canonical links`).toHaveLength(1);
+ expect(
+ canonicalLinks[0]?.getAttribute("href"),
+ `${route.name}: canonical mismatch`,
+ ).toBe(expectedCanonical);
 
  const types = jsonLdTypes();
  expect(types, `${route.name}: Organization JSON-LD missing`).toContain("Organization");

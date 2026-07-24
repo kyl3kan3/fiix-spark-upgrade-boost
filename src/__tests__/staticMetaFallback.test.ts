@@ -52,11 +52,13 @@ describe("index.html static OG/Twitter fallback (no-JS crawlers)", () => {
     expect(metaName("twitter:image")).toBe(EXPECTED_IMAGE);
   });
 
-  it("does NOT hard-code a sitewide <link rel=canonical> (per-route owns it)", () => {
-    // A static canonical in index.html would conflict with per-route
-    // <Helmet><link rel=canonical>, producing duplicate canonicals.
-    const hasStaticCanonical = /<link\s+[^>]*rel=["']canonical["']/i.test(html);
-    expect(hasStaticCanonical).toBe(false);
+  it("declares the homepage canonical for no-JS crawlers", () => {
+    const canonical = html.match(
+      /<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i,
+    );
+
+    expect(canonical?.[1]).toBe("https://maintenease.com/");
+    expect(canonical?.[0]).toMatch(/\sdata-rh=["']true["']/i);
   });
 
   it("carries brand-level og:title/og:description fallbacks for no-JS crawlers", () => {
