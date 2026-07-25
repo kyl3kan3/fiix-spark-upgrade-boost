@@ -188,6 +188,7 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
   h1: c.h1,
   intro: c.intro,
   sections: [
+    ...(c.sections ?? []).map((s) => ({ heading: s.heading, body: s.paragraphs.join(" ") })),
     ...c.differentiators.map((d) => ({ heading: d.title, body: d.body })),
     ...c.faqs.map((f) => ({ heading: f.q, body: f.a })),
   ],
