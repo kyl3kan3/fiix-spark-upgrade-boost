@@ -149,6 +149,74 @@ const staticRoutes: Route[] = [
     h1: "MaintenEase blog",
     intro: "Practical writing on maintenance management, CMMS adoption, and reducing unplanned downtime.",
   },
+  // These routes ship in the sitemap, so they need their own canonical in the
+  // no-JS HTML — otherwise they inherit the homepage canonical from the shell
+  // and get flagged as non-canonical pages in the sitemap.
+  {
+    path: "/auth",
+    title: "Sign in or create your account | MaintenEase",
+    description:
+      "Sign in to MaintenEase or create an account to manage assets, work orders, inspections, and your maintenance team in one place.",
+    h1: "Sign in or create your MaintenEase account",
+    intro:
+      "Access your MaintenEase workspace to manage assets, work orders, inspections, and your maintenance team.",
+    links: [
+      { href: "/pricing", label: "Pricing" },
+      { href: "/features", label: "Features" },
+    ],
+  },
+  {
+    path: "/privacy",
+    title: "Privacy Notice | MaintenEase",
+    description:
+      "How MaintenEase collects, uses, stores, and protects your personal data, plus the choices and rights you have over that information.",
+    h1: "Privacy Notice",
+    intro:
+      "How MaintenEase collects, uses, stores, and protects your personal data, and the rights you have over that information.",
+    links: [
+      { href: "/terms", label: "Terms of service" },
+      { href: "/", label: "Home" },
+    ],
+  },
+  {
+    path: "/terms",
+    title: "Terms & Conditions | MaintenEase",
+    description:
+      "The terms and conditions that govern your use of MaintenEase, including subscriptions, acceptable use, liability, and account termination.",
+    h1: "Terms & Conditions",
+    intro:
+      "The terms governing your use of MaintenEase, including subscriptions, acceptable use, and account termination.",
+    links: [
+      { href: "/privacy", label: "Privacy notice" },
+      { href: "/refund-policy", label: "Refund policy" },
+    ],
+  },
+  {
+    path: "/refund-policy",
+    title: "Refund Policy | MaintenEase",
+    description:
+      "MaintenEase refund policy: how the 7-day free trial works, how billing cancellations are handled, and when refunds are issued.",
+    h1: "Refund Policy",
+    intro:
+      "How the 7-day free trial works, how cancellations are handled, and when MaintenEase issues refunds.",
+    links: [
+      { href: "/pricing", label: "Pricing" },
+      { href: "/terms", label: "Terms of service" },
+    ],
+  },
+  {
+    path: "/sms-opt-in",
+    title: "SMS Notifications & Opt-In | MaintenEase",
+    description:
+      "How MaintenEase SMS notifications work: what messages we send, how to opt in or out, message frequency, and carrier charge information.",
+    h1: "SMS notifications and opt-in",
+    intro:
+      "What MaintenEase texts you about, how to opt in or out at any time, and how message frequency and carrier charges work.",
+    links: [
+      { href: "/privacy", label: "Privacy notice" },
+      { href: "/terms", label: "Terms of service" },
+    ],
+  },
 ];
 
 const solutionRoutes: Route[] = solutions.map((s) => ({
