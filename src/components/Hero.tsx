@@ -44,11 +44,11 @@ const Hero = () => {
               <ArrowRight className="h-3 w-3" />
             </button>
 
-            <h1 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-normal">
+            <h2 className="font-headline text-4xl md:text-5xl xl:text-[3.25rem] font-bold leading-[1.1] text-foreground tracking-normal">
               <ScrambleText text="Stop downtime" />
               <br />
               <ScrambleText text="before it starts." delayMs={250} />
-            </h1>
+            </h2>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto md:mx-0 leading-relaxed">
               MaintenEase helps industrial and facility teams catch issues before they become expensive interruptions.
