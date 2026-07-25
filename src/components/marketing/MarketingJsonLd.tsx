@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 /**
  * Renders sitewide Organization + WebSite structured data so every marketing
@@ -26,6 +27,11 @@ const WEBSITE_LD = {
 };
 
 export default function MarketingJsonLd() {
+ const { pathname } = useLocation();
+ // The homepage ships these two blocks statically in index.html (visible to
+ // no-JS crawlers), so skip them here to avoid duplicate nodes.
+ if (pathname === "/") return null;
+
  return (
  <Helmet>
  <script type="application/ld+json" data-ld="organization">
