@@ -119,7 +119,7 @@ const ComparePage = () => {
       {/* Differentiators */}
       <section className="container mx-auto px-4 py-16 max-w-5xl">
         <h2 className="font-headline text-3xl font-bold mb-10 text-foreground">Why teams pick MaintenEase</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {c.differentiators.map((d) => (
             <div key={d.title} className="p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
               <h3 className="text-lg font-semibold mb-2 text-foreground">{d.title}</h3>
@@ -128,6 +128,92 @@ const ComparePage = () => {
           ))}
         </div>
       </section>
+
+      {/* Long-form comparison (only for comparisons that carry it) */}
+      {c.sections?.length ? (
+        <section className="container mx-auto px-4 pb-4 max-w-3xl">
+          {c.sections.map((s) => (
+            <div key={s.heading} className="mb-12">
+              <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4 text-foreground">{s.heading}</h2>
+              {s.paragraphs.map((p, i) => (
+                <p key={i} className="text-muted-foreground leading-relaxed mb-4">{p}</p>
+              ))}
+            </div>
+          ))}
+        </section>
+      ) : null}
+
+      {/* Competitor plan ladder */}
+      {c.competitorTiers?.length ? (
+        <section className="container mx-auto px-4 pb-8 max-w-3xl">
+          <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4 text-foreground">
+            {c.competitor} plans at a glance
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-6">
+            Publicly listed tiers as of 2026, shown so you can compare like with like. Advertised per-user
+            rates usually assume an annual commitment — verify current pricing on {c.competitor}'s own site.
+          </p>
+          <div className="overflow-hidden rounded-xl border border-border bg-card divide-y divide-border">
+            {c.competitorTiers.map((t) => (
+              <div key={t.name} className="p-4 sm:flex sm:items-baseline sm:gap-4">
+                <span className="font-semibold text-foreground sm:w-28">{t.name}</span>
+                <span className="text-primary font-semibold sm:w-44">{t.price}</span>
+                <span className="text-sm text-muted-foreground">{t.notes}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Honest best-fit guidance */}
+      {c.bestFit ? (
+        <section className="container mx-auto px-4 py-12 max-w-5xl">
+          <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8 text-foreground">
+            Which one should you pick?
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-6 rounded-xl border border-primary/20 bg-primary/5">
+              <h3 className="text-lg font-semibold mb-4 text-primary">Choose MaintenEase if…</h3>
+              <ul className="space-y-3">
+                {c.bestFit.ours.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+                    <Check className="h-4 w-4 mt-0.5 shrink-0 text-primary" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="p-6 rounded-xl border border-border bg-card">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Choose {c.competitor} if…</h3>
+              <ul className="space-y-3">
+                {c.bestFit.theirs.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+                    <Check className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Migration plan */}
+      {c.migrationSteps?.length ? (
+        <section className="container mx-auto px-4 pb-12 max-w-5xl">
+          <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8 text-foreground">
+            How switching from {c.competitor} works
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {c.migrationSteps.map((s) => (
+              <div key={s.title} className="p-5 rounded-xl border border-border bg-card">
+                <h3 className="font-semibold text-foreground mb-2 text-sm">{s.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* FAQ */}
       <section className="bg-muted/40 border-y border-border py-16">
