@@ -269,7 +269,7 @@ if (blogPosts.length) {
       h1: post.title,
       intro: description,
       sections: chunk(body, 120, 10).map((paragraph, i) => ({
-        heading: i === 0 ? post.title : `${post.title} (continued)`,
+        heading: i === 0 ? "Overview" : "Continued",
         body: paragraph,
       })),
       links: [
