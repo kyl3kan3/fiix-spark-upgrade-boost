@@ -286,7 +286,7 @@ export const glossary: GlossaryTerm[] = [
  term: "Predictive Maintenance",
  short: "Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.",
  metaTitle: "What is Predictive Maintenance? Definition & How It Works",
- metaDescription: "Predictive maintenance uses sensor data to fix equipment just before it fails. Learn how it works, how it differs from preventive maintenance, and where to start.",
+ metaDescription: "Predictive maintenance uses sensor data to fix equipment just before it fails. Learn how it works, how it differs from preventive maintenance.",
  sections: [
  {
  heading: "Definition",
@@ -346,7 +346,7 @@ export const glossary: GlossaryTerm[] = [
  term: "Condition-Based Maintenance",
  short: "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
  metaTitle: "What is Condition-Based Maintenance (CBM)? A Plain Guide",
- metaDescription: "Condition-based maintenance triggers work when a measured condition crosses a threshold. Learn how CBM works and how it compares to preventive and predictive maintenance.",
+ metaDescription: "Condition-based maintenance triggers work when a measured condition crosses a threshold. See how CBM compares to preventive and predictive.",
  sections: [
  {
  heading: "Definition",
@@ -405,7 +405,7 @@ export const glossary: GlossaryTerm[] = [
  slug: "mttr",
  term: "MTTR (Mean Time To Repair)",
  short: "The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.",
- metaTitle: "What is MTTR (Mean Time To Repair)? Formula & How to Improve It",
+ metaTitle: "What is MTTR? Mean Time To Repair Formula & Tips",
  metaDescription: "MTTR measures the average time to repair a failed asset. Learn the formula, what drives it, and practical ways to bring it down.",
  sections: [
  {
@@ -479,7 +479,7 @@ export const glossary: GlossaryTerm[] = [
   term: "CMMS ROI & Cost Savings",
   short: "How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.",
   metaTitle: "CMMS ROI: How to Calculate Cost Savings & Justify the Budget",
-  metaDescription: "Calculate CMMS ROI with real numbers: downtime avoided, PM compliance gains, labor efficiency, and parts savings. Includes worked examples and a budget template.",
+  metaDescription: "Calculate CMMS ROI with real numbers: downtime avoided, PM compliance, labor efficiency, and parts savings. Includes worked examples.",
   sections: [
    {
     heading: "The five levers of CMMS ROI",
@@ -526,8 +526,8 @@ export const glossary: GlossaryTerm[] = [
   slug: "root-cause-analysis",
   term: "Root Cause Analysis (RCA)",
   short: "A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.",
-  metaTitle: "Root Cause Analysis (RCA) in Maintenance: 5 Whys, Fishbone & Examples",
-  metaDescription: "Root Cause Analysis (RCA) uncovers the underlying cause of equipment failures. Learn the 5 Whys, Fishbone diagrams, and how to track corrective actions in a CMMS.",
+  metaTitle: "Root Cause Analysis in Maintenance: 5 Whys & Fishbone",
+  metaDescription: "Root Cause Analysis uncovers why equipment fails. Learn the 5 Whys, Fishbone diagrams, and how to track corrective actions in a CMMS.",
   sections: [
    {
     heading: "What is Root Cause Analysis?",
