@@ -17,6 +17,12 @@ export const TEAM_SIZE = 8; // illustrative crew used for the cost comparison
 export type CompareValue = string | boolean;
 export type CompareRow = { feature: string; ours: CompareValue; theirs: CompareValue; highlight?: boolean };
 
+/** Optional long-form blocks, used by comparisons that need real depth. */
+export type CompareSection = { heading: string; paragraphs: string[] };
+export type CompetitorTier = { name: string; price: string; notes: string };
+export type BestFit = { ours: string[]; theirs: string[] };
+export type MigrationStep = { title: string; body: string };
+
 export type Comparison = {
   slug: string;
   competitor: string;
@@ -30,6 +36,14 @@ export type Comparison = {
   rows: CompareRow[];
   differentiators: { title: string; body: string }[];
   faqs: { q: string; a: string }[];
+  /** Long-form comparison narrative (optional, rendered when present). */
+  sections?: CompareSection[];
+  /** Publicly listed competitor plan ladder (optional). */
+  competitorTiers?: CompetitorTier[];
+  /** Honest "pick them / pick us" guidance (optional). */
+  bestFit?: BestFit;
+  /** Concrete switching plan (optional). */
+  migrationSteps?: MigrationStep[];
 };
 
 /** Standard, honest comparison rows for a per-seat competitor. */
