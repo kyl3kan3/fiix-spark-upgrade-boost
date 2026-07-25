@@ -259,12 +259,22 @@ if (blogPosts.length) {
 
   for (const post of blogPosts) {
     const body = stripHtml(post.content_html ?? "");
-    const description =
+    const rawDescription =
       post.meta_description?.trim() ||
       (body ? `${body.slice(0, 152).trimEnd()}…` : `${post.title} — MaintenEase blog.`);
+    // Keep titles <= 60 and descriptions <= 158 chars so crawlers do not truncate.
+    const description =
+      rawDescription.length > 158 ? `${rawDescription.slice(0, 157).trimEnd()}…` : rawDescription;
+    const suffix = " | MaintenEase";
+    const title =
+      post.title.length + suffix.length <= 60
+        ? `${post.title}${suffix}`
+        : post.title.length <= 60
+          ? post.title
+          : `${post.title.slice(0, 59).trimEnd()}…`;
     routes.push({
       path: `/blog/${post.slug}`,
-      title: `${post.title} | MaintenEase Blog`,
+      title,
       description,
       h1: post.title,
       intro: description,
