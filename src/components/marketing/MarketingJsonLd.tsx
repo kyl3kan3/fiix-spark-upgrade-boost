@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 /**
  * Renders sitewide Organization + WebSite structured data so every marketing
@@ -28,9 +29,20 @@ const WEBSITE_LD = {
 
 export default function MarketingJsonLd() {
  const { pathname } = useLocation();
+ const isHome = pathname === "/";
+
+ // On non-home routes (including client-side navigations away from "/"),
+ // drop the homepage-only static blocks so no duplicate nodes remain.
+ useEffect(() => {
+ if (isHome) return;
+ document
+ .querySelectorAll('script[type="application/ld+json"][data-ld-home]')
+ .forEach((el) => el.remove());
+ }, [isHome]);
+
  // The homepage ships these two blocks statically in index.html (visible to
  // no-JS crawlers), so skip them here to avoid duplicate nodes.
- if (pathname === "/") return null;
+ if (isHome) return null;
 
  return (
  <Helmet>
