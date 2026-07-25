@@ -412,6 +412,13 @@ function renderRoute(route: Route): string {
   html = html.replace(/<link[^>]*rel="canonical"[^>]*>\s*/, "");
   html = html.replace(/<meta property="og:(?:type|title|description|url)"[^>]*>\s*/g, "");
   html = html.replace(/<meta name="twitter:(?:card|title|description)"[^>]*>\s*/g, "");
+  // Organization/WebSite JSON-LD in the shell is homepage-only.
+  if (route.path !== "/") {
+    html = html.replace(
+      /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
+      "",
+    );
+  }
   html = html.replace("</head>", `  ${headFor(route)}\n  </head>`);
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
