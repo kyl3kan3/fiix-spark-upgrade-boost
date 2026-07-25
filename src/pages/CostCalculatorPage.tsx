@@ -85,7 +85,7 @@ const CostCalculatorPage = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>CMMS Cost Calculator — Per-Seat vs Flat-Fee Pricing | MaintenEase</title>
+        <title>CMMS Cost Calculator — Per-Seat vs Flat Fee</title>
         <meta
           name="description"
           content="Free CMMS cost calculator. See what UpKeep, MaintainX, Limble, and Fiix cost for your team size vs one flat fee — including where per-seat pricing is cheaper."
