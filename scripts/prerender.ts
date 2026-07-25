@@ -257,13 +257,21 @@ function renderRoute(route: Route): string {
 
 let written = 0;
 for (const route of routes) {
-  const outPath =
+  const html = renderRoute(route);
+  // Write both `<path>/index.html` and `<path>.html` so clean URLs resolve on
+  // any static host (some map /a/b -> a/b/index.html, others -> a/b.html).
+  const targets =
     route.path === "/"
-      ? join(DIST, "index.html")
-      : join(DIST, route.path.replace(/^\//, ""), "index.html");
-  mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, renderRoute(route));
-  written++;
+      ? [join(DIST, "index.html")]
+      : [
+          join(DIST, route.path.replace(/^\//, ""), "index.html"),
+          join(DIST, `${route.path.replace(/^\//, "")}.html`),
+        ];
+  for (const outPath of targets) {
+    mkdirSync(dirname(outPath), { recursive: true });
+    writeFileSync(outPath, html);
+    written++;
+  }
 }
 
 console.log(`[prerender] wrote ${written} static route documents → dist/`);
