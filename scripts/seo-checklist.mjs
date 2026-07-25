@@ -9,7 +9,7 @@
  *   node scripts/seo-checklist.mjs         # static checks only
  *   node scripts/seo-checklist.mjs --live  # + fetch every sitemap URL
  */
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
@@ -88,7 +88,38 @@ for (const file of walk(join(ROOT, "src"))) {
 }
 if (imgBad === 0) pass(`All ${imgTotal} <img> tags carry alt text`);
 
-// 5. Sitemap URL crawl (optional, requires --live)
+// 5. Prerendered crawler HTML (only when dist/ exists — after `npm run build`)
+const distDir = join(ROOT, "dist");
+if (existsSync(distDir)) {
+  const prerenderSamples = [
+    "index.html",
+    "pricing/index.html",
+    "learn/mtbf/index.html",
+    "compare/index.html",
+    "cmms-cost-calculator/index.html",
+  ];
+  let prerenderOk = 0;
+  for (const rel of prerenderSamples) {
+    const full = join(distDir, rel);
+    if (!existsSync(full)) {
+      fail(`prerender: dist/${rel} missing (run \`npm run build\`)`);
+      continue;
+    }
+    const html = readFileSync(full, "utf8");
+    const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
+    if (h1s !== 1) fail(`prerender: dist/${rel} has ${h1s} <h1> (expected exactly 1)`);
+    else if (!/rel="canonical"/.test(html)) fail(`prerender: dist/${rel} has no canonical`);
+    else if (!/<meta name="description"/.test(html)) fail(`prerender: dist/${rel} has no description`);
+    else prerenderOk++;
+  }
+  if (prerenderOk === prerenderSamples.length) {
+    pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
+  }
+} else {
+  warn("dist/ not built — skipped prerender checks (run `npm run build` first)");
+}
+
+// 6. Sitemap URL crawl (optional, requires --live)
 if (LIVE) {
   const sitemap = readFileSync(join(ROOT, "public/sitemap.xml"), "utf8");
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
