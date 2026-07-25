@@ -197,6 +197,90 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
 
 const routes: Route[] = [...staticRoutes, ...solutionRoutes, ...learnRoutes, ...compareRoutes];
 
+/* ------------------------------------------------------------------ blog --
+ * Blog posts live in the database, so a no-JS crawler sees an empty shell:
+ * no <h1>, no description, no OG tags, ~0 words, and the index links to
+ * nothing (which orphans every post). Fetch them at build time and emit the
+ * same static shell used for the file-backed routes.
+ */
+const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
+const SUPABASE_ANON =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
+
+type BlogRow = {
+  slug: string;
+  title: string;
+  meta_description: string | null;
+  content_html: string | null;
+};
+
+const stripHtml = (html: string) =>
+  html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+function chunk(text: string, size: number, count: number): string[] {
+  const words = text.split(" ");
+  const out: string[] = [];
+  for (let i = 0; i < words.length && out.length < count; i += size) {
+    out.push(words.slice(i, i + size).join(" "));
+  }
+  return out;
+}
+
+async function fetchBlogPosts(): Promise<BlogRow[]> {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&order=published_at.desc.nullslast&limit=5000`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
+    );
+    if (!res.ok) {
+      console.warn(`[prerender] blog fetch failed: ${res.status}`);
+      return [];
+    }
+    return (await res.json()) as BlogRow[];
+  } catch (err) {
+    console.warn(`[prerender] blog fetch error: ${(err as Error).message}`);
+    return [];
+  }
+}
+
+const blogPosts = await fetchBlogPosts();
+
+if (blogPosts.length) {
+  const blogIndex = routes.find((r) => r.path === "/blog");
+  if (blogIndex) {
+    blogIndex.links = blogPosts.map((p) => ({ href: `/blog/${p.slug}`, label: p.title }));
+  }
+
+  for (const post of blogPosts) {
+    const body = stripHtml(post.content_html ?? "");
+    const description =
+      post.meta_description?.trim() ||
+      (body ? `${body.slice(0, 152).trimEnd()}…` : `${post.title} — MaintenEase blog.`);
+    routes.push({
+      path: `/blog/${post.slug}`,
+      title: `${post.title} | MaintenEase Blog`,
+      description,
+      h1: post.title,
+      intro: description,
+      sections: chunk(body, 120, 10).map((paragraph, i) => ({
+        heading: i === 0 ? "Overview" : "Continued",
+        body: paragraph,
+      })),
+      links: [
+        { href: "/blog", label: "All articles" },
+        { href: "/learn", label: "Maintenance glossary" },
+        { href: "/pricing", label: "Pricing" },
+      ],
+    });
+  }
+}
+
 const shell = readFileSync(join(DIST, "index.html"), "utf8");
 
 function headFor(route: Route): string {

@@ -33,7 +33,7 @@ const Footer = () => {
  {
  title: "Product",
  links: [
- { label: "Features", to: "#" },
+ { label: "Features", to: "/features" },
  { label: "Pricing", to: "/pricing" },
  { label: "Request Portal", to: "/solutions/maintenance-request-portal" },
  { label: "Integrations", to: "#" },
@@ -46,6 +46,9 @@ const Footer = () => {
  links: [
  { label: "Glossary", to: "/learn" },
  { label: "Solutions", to: "/solutions" },
+ { label: "Maintenance Simplified", to: "/maintenance-simplified" },
+ { label: "Compare CMMS", to: "/compare" },
+ { label: "Cost Calculator", to: "/cmms-cost-calculator" },
  { label: "API", to: "#" },
  { label: "Status", to: "#" },
  { label: "Help Center", to: "#" },
@@ -55,7 +58,7 @@ const Footer = () => {
  title: "Company",
  links: [
  { label: "About", to: "#" },
- { label: "Blog", to: "#" },
+ { label: "Blog", to: "/blog" },
  { label: "Careers", to: "#" },
  { label: "Customers", to: "#" },
           { label: "Contact", to: "mailto:info@decent4.com" },
