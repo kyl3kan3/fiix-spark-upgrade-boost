@@ -31,6 +31,16 @@
 
     <link rel="icon" type="image/png" href="/favicon.png">
 
+    <!-- Homepage-only structured data (Organization + WebSite). The prerender
+         step strips these blocks from non-home route documents; inner routes get
+         their own schema at runtime via react-helmet-async. -->
+    <script type="application/ld+json" data-ld-home="organization">
+      {"@context":"https://schema.org","@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/","logo":"https://maintenease.com/favicon.png","image":"https://maintenease.com/og-image.png","sameAs":["https://twitter.com/maintenease"]}
+    </script>
+    <script type="application/ld+json" data-ld-home="website">
+      {"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase","url":"https://maintenease.com/","publisher":{"@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://maintenease.com/learn?q={search_term_string}"},"query-input":"required name=search_term_string"}}
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://wwgljhpuulhljumrhscg.supabase.co" crossorigin />
