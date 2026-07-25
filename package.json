@@ -9,6 +9,8 @@
     "dev": "vite",
     "prebuild": "tsx scripts/generate-sitemap.ts && tsx scripts/generate-llms.ts",
     "build": "vite build",
+    "postbuild": "tsx scripts/prerender.ts",
+    "prerender": "tsx scripts/prerender.ts",
     "build:dev": "vite build --mode development",
     "seed:demo": "tsx scripts/seed-demo-tenant.ts",
     "reset:demo": "tsx scripts/reset-demo-tenant.ts",
