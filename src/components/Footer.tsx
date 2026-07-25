@@ -57,6 +57,7 @@ const Footer = () => {
  {
  title: "Company",
  links: [
+ { label: "Why MaintenEase", to: "/landing" },
  { label: "About", to: "#" },
  { label: "Blog", to: "/blog" },
  { label: "Careers", to: "#" },
