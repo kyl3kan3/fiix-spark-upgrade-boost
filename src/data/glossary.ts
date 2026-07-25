@@ -375,7 +375,7 @@ export const glossary: GlossaryTerm[] = [
  slug: "mtbf",
  term: "MTBF (Mean Time Between Failures)",
  short: "The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.",
- metaTitle: "What is MTBF (Mean Time Between Failures)? Formula & Examples",
+ metaTitle: "What is MTBF? Mean Time Between Failures Formula",
  metaDescription: "MTBF measures the average time between failures of a repairable asset. Learn the formula, how to use it, and how it differs from MTTR and MTTF.",
  sections: [
  {
@@ -435,7 +435,7 @@ export const glossary: GlossaryTerm[] = [
   slug: "cmms-benchmarks-2026",
   term: "CMMS Benchmarks (2026)",
   short: "Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.",
-  metaTitle: "CMMS Benchmarks 2026: MTTR, PM Compliance, Cost per Work Order",
+  metaTitle: "CMMS Benchmarks 2026: MTTR, PM Compliance & Costs",
   metaDescription: "Free-to-cite 2026 CMMS benchmarks: planned vs reactive ratios, MTTR, PM compliance, and cost per work order. Methodology and sources included.",
   sections: [
    {

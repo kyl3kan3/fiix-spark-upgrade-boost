@@ -211,7 +211,7 @@ export const solutions: Solution[] = [
  name: "Asset Management Software",
  h1: "Asset Management Software that turns your asset register into a working system",
  tagline: "Register, schedule, maintain, and report on every asset — in one place.",
- metaTitle: "Asset Management Software for Maintenance Teams | MaintenEase",
+ metaTitle: "Asset Management Software for Maintenance Teams",
  metaDescription: "Asset management software with PM scheduling, work orders, warranty tracking, and lifecycle reporting. 7-day free trial.",
  intro:
  "MaintenEase is asset management software built for the teams who actually maintain the assets. Register every asset with its location, warranty, parts, and manuals. Layer PM schedules and work orders directly on top. Report on cost, downtime, and lifecycle — per asset, per location, per category. Your asset register stops being a spreadsheet and starts being the system of record for everything that happens to your equipment.",

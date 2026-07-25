@@ -84,7 +84,7 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/features",
-    title: "CMMS Features — Work Orders, Assets, PM & Reports | MaintenEase",
+    title: "CMMS Features — Work Orders, Assets & PM | MaintenEase",
     description:
       "Explore MaintenEase CMMS features: mobile work orders, asset registry, preventive maintenance scheduling, inspections, and cost reporting.",
     h1: "Everything your maintenance team needs in one CMMS",
@@ -93,7 +93,7 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/maintenance-simplified",
-    title: "Maintenance Simplified — A Playbook for Small Teams | MaintenEase",
+    title: "Maintenance Simplified: A Playbook for Small Teams",
     description:
       "Maintenance simplified: a practical playbook for small teams — six principles, a starter checklist, and the numbers that prove it works.",
     h1: "Maintenance simplified: a playbook for small teams",
