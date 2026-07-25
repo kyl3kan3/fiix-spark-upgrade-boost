@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 
 const URL = "https://maintenease.com/maintenance-simplified";
-const TITLE = "Maintenance Simplified: A Practical Playbook for Small Teams";
+const TITLE = "Maintenance Simplified: A Playbook for Small Teams";
 const DESCRIPTION =
   "Maintenance simplified — a practical playbook, checklist, and free calculator to run PMs, work orders, and reports without the spreadsheet mess.";
 

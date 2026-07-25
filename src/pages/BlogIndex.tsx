@@ -83,7 +83,7 @@ const BlogIndex = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>Blog | MaintenEase</title>
+        <title>MaintenEase Blog — Maintenance & CMMS Insights</title>
         <meta name="description" content="Read our latest articles and insights on maintenance management, CMMS, and facility operations." />
         <link rel="canonical" href="https://maintenease.com/blog" />
         <meta property="og:title" content="Blog | MaintenEase" />

@@ -26,7 +26,8 @@ export default function PrivacyPolicy() {
  headline: "Privacy Notice",
  datePublished: "2024-01-01",
  author: { "@type": "Organization", name: "Decent4" },
- publisher: { "@type": "Organization", name: "MaintenEase" }
+ image: "https://maintenease.com/og-image.png?v=4",
+ publisher: { "@type": "Organization", name: "MaintenEase", logo: { "@type": "ImageObject", url: "https://maintenease.com/favicon.png" } }
  })}</script>
  </Helmet>
  <div className="container mx-auto max-w-3xl px-4 py-12">

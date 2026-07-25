@@ -152,9 +152,19 @@ const BlogPost = () => {
   }
 
   const url = `${SITE}/blog/${post.slug}`;
-  const description =
+  const rawDescription =
     post.meta_description ??
     (post.content_html ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
+  // Keep meta under crawler truncation limits.
+  const description =
+    rawDescription.length > 158 ? `${rawDescription.slice(0, 157).trimEnd()}…` : rawDescription;
+  const suffix = " | MaintenEase";
+  const metaTitle =
+    post.title.length + suffix.length <= 60
+      ? `${post.title}${suffix}`
+      : post.title.length <= 60
+        ? post.title
+        : `${post.title.slice(0, 59).trimEnd()}…`;
 
   const articleLd = {
     "@context": "https://schema.org",
@@ -165,6 +175,7 @@ const BlogPost = () => {
     datePublished: post.published_at ?? undefined,
     dateModified: post.updated_at ?? post.published_at ?? undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: { "@type": "Organization", name: "MaintenEase", url: `${SITE}/` },
     publisher: {
       "@type": "Organization",
       name: "MaintenEase",
@@ -188,7 +199,7 @@ const BlogPost = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>{post.title} | MaintenEase</title>
+        <title>{metaTitle}</title>
         <meta name="description" content={description} />
         {post.meta_keywords && <meta name="keywords" content={post.meta_keywords} />}
         <link rel="canonical" href={url} />

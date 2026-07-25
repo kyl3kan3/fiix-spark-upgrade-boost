@@ -261,7 +261,7 @@ export const comparisons: Comparison[] = [
     competitor: "eMaint",
     competitorPlan: "Team",
     competitorPricePerUser: 69,
-    metaTitle: "MaintenEase vs eMaint — Modern Flat-Fee CMMS Alternative (2026)",
+    metaTitle: "MaintenEase vs eMaint — Flat-Fee CMMS Alternative",
     metaDescription:
       "MaintenEase vs eMaint: a modern, mobile-first alternative to legacy enterprise CMMS. Flat monthly fee instead of per-user seats. Compare features and cost.",
     h1: "MaintenEase vs eMaint",

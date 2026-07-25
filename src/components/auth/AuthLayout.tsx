@@ -22,9 +22,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
 
           {/* Quote / value proposition */}
           <div className="mb-12 max-w-lg">
-            <h1 className="font-headline text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
+            <p className="font-headline text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
               Precision Facility Management.
-            </h1>
+            </p>
             <p className="text-base text-primary-foreground/85 leading-relaxed">
               "MaintenEase transformed our operations. We moved from reactive fixes to
               proactive maintenance, saving thousands in downtime and extending asset life

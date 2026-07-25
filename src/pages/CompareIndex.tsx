@@ -9,7 +9,7 @@ const CompareIndex = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>MaintenEase vs UpKeep, Fiix, MaintainX & Limble | CMMS Comparison</title>
+        <title>MaintenEase vs UpKeep, Fiix, MaintainX & Limble</title>
         <meta
           name="description"
           content="See how MaintenEase compares to UpKeep, Fiix, MaintainX, and Limble — the same core CMMS features for one flat fee instead of per-technician pricing."

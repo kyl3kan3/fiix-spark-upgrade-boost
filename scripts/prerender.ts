@@ -84,7 +84,7 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/features",
-    title: "CMMS Features — Work Orders, Assets, PM & Reports | MaintenEase",
+    title: "CMMS Features — Work Orders, Assets & PM | MaintenEase",
     description:
       "Explore MaintenEase CMMS features: mobile work orders, asset registry, preventive maintenance scheduling, inspections, and cost reporting.",
     h1: "Everything your maintenance team needs in one CMMS",
@@ -93,7 +93,7 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/maintenance-simplified",
-    title: "Maintenance Simplified — A Playbook for Small Teams | MaintenEase",
+    title: "Maintenance Simplified: A Playbook for Small Teams",
     description:
       "Maintenance simplified: a practical playbook for small teams — six principles, a starter checklist, and the numbers that prove it works.",
     h1: "Maintenance simplified: a playbook for small teams",
@@ -148,6 +148,74 @@ const staticRoutes: Route[] = [
       "Articles on maintenance management, CMMS adoption, preventive maintenance strategy, and reducing unplanned downtime.",
     h1: "MaintenEase blog",
     intro: "Practical writing on maintenance management, CMMS adoption, and reducing unplanned downtime.",
+  },
+  // These routes ship in the sitemap, so they need their own canonical in the
+  // no-JS HTML — otherwise they inherit the homepage canonical from the shell
+  // and get flagged as non-canonical pages in the sitemap.
+  {
+    path: "/auth",
+    title: "Sign in or create your account | MaintenEase",
+    description:
+      "Sign in to MaintenEase or create an account to manage assets, work orders, inspections, and your maintenance team in one place.",
+    h1: "Sign in or create your MaintenEase account",
+    intro:
+      "Access your MaintenEase workspace to manage assets, work orders, inspections, and your maintenance team.",
+    links: [
+      { href: "/pricing", label: "Pricing" },
+      { href: "/features", label: "Features" },
+    ],
+  },
+  {
+    path: "/privacy",
+    title: "Privacy Notice | MaintenEase",
+    description:
+      "How MaintenEase collects, uses, stores, and protects your personal data, plus the choices and rights you have over that information.",
+    h1: "Privacy Notice",
+    intro:
+      "How MaintenEase collects, uses, stores, and protects your personal data, and the rights you have over that information.",
+    links: [
+      { href: "/terms", label: "Terms of service" },
+      { href: "/", label: "Home" },
+    ],
+  },
+  {
+    path: "/terms",
+    title: "Terms & Conditions | MaintenEase",
+    description:
+      "The terms and conditions that govern your use of MaintenEase, including subscriptions, acceptable use, liability, and account termination.",
+    h1: "Terms & Conditions",
+    intro:
+      "The terms governing your use of MaintenEase, including subscriptions, acceptable use, and account termination.",
+    links: [
+      { href: "/privacy", label: "Privacy notice" },
+      { href: "/refund-policy", label: "Refund policy" },
+    ],
+  },
+  {
+    path: "/refund-policy",
+    title: "Refund Policy | MaintenEase",
+    description:
+      "MaintenEase refund policy: how the 7-day free trial works, how billing cancellations are handled, and when refunds are issued.",
+    h1: "Refund Policy",
+    intro:
+      "How the 7-day free trial works, how cancellations are handled, and when MaintenEase issues refunds.",
+    links: [
+      { href: "/pricing", label: "Pricing" },
+      { href: "/terms", label: "Terms of service" },
+    ],
+  },
+  {
+    path: "/sms-opt-in",
+    title: "SMS Notifications & Opt-In | MaintenEase",
+    description:
+      "How MaintenEase SMS notifications work: what messages we send, how to opt in or out, message frequency, and carrier charge information.",
+    h1: "SMS notifications and opt-in",
+    intro:
+      "What MaintenEase texts you about, how to opt in or out at any time, and how message frequency and carrier charges work.",
+    links: [
+      { href: "/privacy", label: "Privacy notice" },
+      { href: "/terms", label: "Terms of service" },
+    ],
   },
 ];
 
@@ -259,12 +327,22 @@ if (blogPosts.length) {
 
   for (const post of blogPosts) {
     const body = stripHtml(post.content_html ?? "");
-    const description =
+    const rawDescription =
       post.meta_description?.trim() ||
       (body ? `${body.slice(0, 152).trimEnd()}…` : `${post.title} — MaintenEase blog.`);
+    // Keep titles <= 60 and descriptions <= 158 chars so crawlers do not truncate.
+    const description =
+      rawDescription.length > 158 ? `${rawDescription.slice(0, 157).trimEnd()}…` : rawDescription;
+    const suffix = " | MaintenEase";
+    const title =
+      post.title.length + suffix.length <= 60
+        ? `${post.title}${suffix}`
+        : post.title.length <= 60
+          ? post.title
+          : `${post.title.slice(0, 59).trimEnd()}…`;
     routes.push({
       path: `/blog/${post.slug}`,
-      title: `${post.title} | MaintenEase Blog`,
+      title,
       description,
       h1: post.title,
       intro: description,

@@ -17,7 +17,7 @@ const FeaturesPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Helmet>
-        <title>Features — MaintenEase</title>
+        <title>CMMS Features — Work Orders, Assets & PM | MaintenEase</title>
         <meta
           name="description"
           content="Mobile-first CMMS features: work orders, preventive maintenance, asset tracking, inspections, request portal, offline sync, and parts inventory."
