@@ -63,7 +63,7 @@ const staticRoutes: Route[] = [
     path: "/landing",
     title: "MaintenEase — Stop Downtime Before It Starts",
     description:
-      "Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.",
+      "See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done.",
     h1: "Stop downtime before it starts.",
     intro:
       "Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.",
@@ -361,11 +361,38 @@ if (blogPosts.length) {
 
 const shell = readFileSync(join(DIST, "index.html"), "utf8");
 
+const LANDING_FAQS = [
+  {
+    q: "Is there a free trial?",
+    a: "Yes — MaintenEase includes a 7-day free trial on every plan. A card is required and you can cancel anytime before day 8 to avoid charges.",
+  },
+  {
+    q: "How much does MaintenEase cost?",
+    a: "Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%.",
+  },
+  {
+    q: "Do I have to import my data manually?",
+    a: "No — free onboarding and data import are included so techs stop losing work between texts and whiteboards from day one.",
+  },
+  {
+    q: "How does MaintenEase prevent downtime?",
+    a: "AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm.",
+  },
+  {
+    q: "Can my whole crew use it?",
+    a: "Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.",
+  },
+  {
+    q: "What do owners get out of it?",
+    a: "Owners stop guessing what is actually done. A clean dashboard tracks work orders, labor, and parts spend so you always know where time and money go.",
+  },
+] as const;
+
 function headFor(route: Route): string {
   const canonical = route.path === "/" ? `${ORIGIN}/` : `${ORIGIN}${route.path}`;
   const title = esc(route.title);
   const description = esc(route.description);
-  return [
+  const tags = [
     `<title>${title}</title>`,
     `<meta name="description" content="${description}" data-rh="true" />`,
     `<link data-rh="true" rel="canonical" href="${canonical}" />`,
@@ -378,7 +405,52 @@ function headFor(route: Route): string {
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${OG_IMAGE}" />`,
-  ].join("\n    ");
+  ];
+
+  // /landing is a paid-acquisition surface: crawlers must see robots + org/site/FAQ
+  // structured data in the static shell (Helmet alone is invisible without JS).
+  if (route.path === "/landing") {
+    tags.push(
+      `<meta name="robots" content="index,follow,max-image-preview:large" data-rh="true" />`,
+    );
+    const org = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "MaintenEase",
+      url: `${ORIGIN}/`,
+      logo: `${ORIGIN}/favicon.png`,
+      sameAs: ["https://twitter.com/maintenease"],
+    };
+    const website = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "MaintenEase",
+      url: `${ORIGIN}/`,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${ORIGIN}/learn?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    };
+    const faq = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: LANDING_FAQS.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    };
+    for (const block of [org, website, faq]) {
+      tags.push(
+        `<script type="application/ld+json">${JSON.stringify(block)}</script>`,
+      );
+    }
+    // Visible FAQ copy must match FAQPage JSON-LD for rich-result eligibility.
+    // bodyFor also mirrors these Q&As below.
+  }
+
+  return tags.join("\n    ");
 }
 
 function bodyFor(route: Route): string {
@@ -390,6 +462,13 @@ function bodyFor(route: Route): string {
       `<p>${esc(s.body)}</p>`,
     ]),
   ];
+  if (route.path === "/landing") {
+    parts.push("<h2>Frequently asked questions</h2>");
+    for (const f of LANDING_FAQS) {
+      parts.push(`<h3>${esc(f.q)}</h3>`);
+      parts.push(`<p>${esc(f.a)}</p>`);
+    }
+  }
   if (route.links?.length) {
     parts.push(
       "<nav><ul>" +
