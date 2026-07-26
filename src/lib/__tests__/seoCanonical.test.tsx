@@ -8,14 +8,20 @@ import { CanonicalUrl } from "@/components/CanonicalUrl";
 import { canonicalUrlForPath, SITE_ORIGIN } from "@/lib/seoCanonical";
 
 function sitemapUrls(): string[] {
+  const document = sitemapDocument();
+
+  return Array.from(document.querySelectorAll("loc"), (element) =>
+    element.textContent?.trim(),
+  ).filter((url): url is string => Boolean(url));
+}
+
+function sitemapDocument(): Document {
   const xml = readFileSync(resolve(process.cwd(), "public/sitemap.xml"), "utf8");
   const document = new DOMParser().parseFromString(xml, "application/xml");
 
   expect(document.querySelector("parsererror")).toBeNull();
 
-  return Array.from(document.querySelectorAll("loc"), (element) =>
-    element.textContent?.trim(),
-  ).filter((url): url is string => Boolean(url));
+  return document;
 }
 
 describe("canonicalUrlForPath", () => {
@@ -43,6 +49,23 @@ describe("canonicalUrlForPath", () => {
     expect(canonicalUrlForPath("/forgot-password")).toBeNull();
     expect(canonicalUrlForPath("/learn/one/two")).toBeNull();
     expect(canonicalUrlForPath("/pricing?plan=pro")).toBeNull();
+  });
+
+  it("only publishes evidence-based lastmod dates", () => {
+    const entries = Array.from(sitemapDocument().querySelectorAll("url"));
+
+    for (const entry of entries) {
+      const url = entry.querySelector("loc")?.textContent?.trim() ?? "";
+      const lastmod = entry.querySelector("lastmod")?.textContent?.trim();
+
+      if (url === `${SITE_ORIGIN}/blog` || url.startsWith(`${SITE_ORIGIN}/blog/`)) {
+        expect(lastmod, `${url} should use its database-backed modification date`).toMatch(
+          /^\d{4}-\d{2}-\d{2}$/,
+        );
+      } else {
+        expect(lastmod, `${url} must not be stamped with the build date`).toBeUndefined();
+      }
+    }
   });
 });
 

@@ -138,7 +138,9 @@ function jsonLdTypes(): string[] {
 describe("rendered head for key routes", () => {
  beforeEach(() => {
  document.head.innerHTML =
- '<link data-rh="true" rel="canonical" href="https://maintenease.com/" />';
+ '<link data-rh="true" rel="canonical" href="https://maintenease.com/" />' +
+ '<script type="application/ld+json" data-ld-home="organization">{"@context":"https://schema.org","@type":"Organization","name":"MaintenEase"}</script>' +
+ '<script type="application/ld+json" data-ld-home="website">{"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase"}</script>';
  });
  afterEach(() => {
  cleanup();

@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Building2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -15,10 +16,14 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
 
         {/* Brand logo top-left */}
         <div className="relative z-20 p-8 flex flex-col justify-between h-full w-full">
-          <div className="flex items-center gap-2 text-primary-foreground">
+          <Link
+            to="/"
+            aria-label="MaintenEase home"
+            className="flex items-center gap-2 text-primary-foreground"
+          >
             <Building2 className="h-7 w-7" strokeWidth={1.5} />
             <span className="font-headline text-xl font-bold tracking-normal">MaintenEase</span>
-          </div>
+          </Link>
 
           {/* Quote / value proposition */}
           <div className="mb-12 max-w-lg">
@@ -46,10 +51,14 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       {/* Right side: Auth form */}
       <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 bg-background relative overflow-y-auto">
         {/* Mobile brand header */}
-        <div className="md:hidden absolute top-6 left-6 flex items-center gap-2 text-primary">
+        <Link
+          to="/"
+          aria-label="MaintenEase home"
+          className="md:hidden absolute top-6 left-6 flex items-center gap-2 text-primary"
+        >
           <Building2 className="h-6 w-6" strokeWidth={1.5} />
           <span className="font-headline text-lg font-bold tracking-normal">MaintenEase</span>
-        </div>
+        </Link>
 
         <div className="w-full max-w-md mt-14 md:mt-0 space-y-8">
           {children}

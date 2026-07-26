@@ -33,6 +33,7 @@ const ForgotPassword: React.FC = () => {
       <Helmet>
         <title>Reset password | MaintenEase</title>
         <meta name="description" content="Reset your MaintenEase account password." />
+        <meta name="robots" content="noindex,follow" />
       </Helmet>
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="w-full max-w-md space-y-6 p-8 border rounded-lg bg-card">

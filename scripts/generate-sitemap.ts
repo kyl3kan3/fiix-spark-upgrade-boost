@@ -18,8 +18,6 @@ interface SitemapEntry {
   priority?: string;
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/landing", changefreq: "weekly", priority: "0.9" },
@@ -37,24 +35,21 @@ const staticEntries: SitemapEntry[] = [
 
 const solutionEntries: SitemapEntry[] = solutions.map((s) => ({
   path: `/solutions/${s.slug}`,
-  lastmod: today,
   changefreq: "monthly",
   priority: "0.8",
 }));
 
 const learnEntries: SitemapEntry[] = glossary.map((g) => ({
   path: `/learn/${g.slug}`,
-  lastmod: today,
   changefreq: "monthly",
   priority: "0.7",
 }));
 
 const compareEntries: SitemapEntry[] = [
-  { path: "/compare", lastmod: today, changefreq: "monthly", priority: "0.8" },
-  { path: "/cmms-cost-calculator", lastmod: today, changefreq: "monthly", priority: "0.8" },
+  { path: "/compare", changefreq: "monthly", priority: "0.8" },
+  { path: "/cmms-cost-calculator", changefreq: "monthly", priority: "0.8" },
   ...comparisons.map((c) => ({
     path: `/compare/${c.slug}`,
-    lastmod: today,
     changefreq: "monthly" as const,
     priority: "0.8",
   })),
@@ -77,7 +72,7 @@ async function fetchBlogEntries(): Promise<SitemapEntry[]> {
     }>;
     return rows.map((r) => ({
       path: `/blog/${r.slug}`,
-      lastmod: (r.updated_at ?? r.published_at ?? today).slice(0, 10),
+      lastmod: (r.updated_at ?? r.published_at ?? "").slice(0, 10) || undefined,
       changefreq: "weekly" as const,
       priority: "0.7",
     }));
@@ -88,9 +83,14 @@ async function fetchBlogEntries(): Promise<SitemapEntry[]> {
 }
 
 const blogEntries = await fetchBlogEntries();
+const latestBlogLastmod = blogEntries
+  .map((entry) => entry.lastmod)
+  .filter((lastmod): lastmod is string => Boolean(lastmod))
+  .sort()
+  .at(-1);
 const blogIndexEntry: SitemapEntry = {
   path: "/blog",
-  lastmod: today,
+  lastmod: latestBlogLastmod,
   changefreq: "daily",
   priority: "0.8",
 };

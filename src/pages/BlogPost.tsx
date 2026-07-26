@@ -44,6 +44,28 @@ interface RelatedPost {
 }
 
 const SITE = "https://maintenease.com";
+const LOWERCASE_TITLE_WORDS = new Set(["a", "an", "and", "as", "at", "for", "in", "of", "on", "the", "to"]);
+const TITLE_ACRONYMS = new Map([
+  ["ai", "AI"],
+  ["cmms", "CMMS"],
+  ["mro", "MRO"],
+  ["mtbf", "MTBF"],
+  ["mttr", "MTTR"],
+  ["roi", "ROI"],
+]);
+
+function titleFromSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((word, index) => {
+      const acronym = TITLE_ACRONYMS.get(word);
+      if (acronym) return acronym;
+      if (index > 0 && LOWERCASE_TITLE_WORDS.has(word)) return word;
+      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+    })
+    .join(" ");
+}
 
 function formatDate(iso: string | null): string {
   if (!iso) return "";
@@ -110,6 +132,21 @@ const BlogPost = () => {
 
   useHideBrokenImages(post?.content_html ?? null);
 
+  const loadingTitle = useMemo(() => titleFromSlug(slug) || "Maintenance insights", [slug]);
+  const loadingDescription = useMemo(() => {
+    const prerenderedDescription =
+      typeof document === "undefined"
+        ? null
+        : document
+            .querySelector<HTMLMetaElement>('meta[property="og:description"]')
+            ?.content.trim();
+
+    return (
+      prerenderedDescription ||
+      `Read MaintenEase's practical guide to ${loadingTitle.toLowerCase()}, with strategies maintenance teams can apply to improve reliability and reduce downtime.`
+    );
+  }, [loadingTitle]);
+
   const faqs = useMemo<FaqItem[]>(() => {
     const raw = post?.faq_schema;
     if (!Array.isArray(raw)) return [];
@@ -117,16 +154,29 @@ const BlogPost = () => {
   }, [post]);
 
   if (loading) {
+    const loadingUrl = `${SITE}/blog/${slug}`;
+
     return (
       <MarketingLayout>
-        <div className="container mx-auto px-4 py-12 max-w-3xl space-y-6">
-          <Skeleton className="h-6 w-32" />
+        <Helmet>
+          <title>{loadingTitle} | MaintenEase</title>
+          <meta name="description" content={loadingDescription} />
+          <link rel="canonical" href={loadingUrl} />
+        </Helmet>
+        <article className="container mx-auto px-4 py-12 max-w-3xl space-y-6">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to all articles
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-normal">{loadingTitle}</h1>
+          <p className="text-muted-foreground leading-relaxed">{loadingDescription}</p>
           <Skeleton className="h-72 w-full" />
-          <Skeleton className="h-10 w-3/4" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
-        </div>
+        </article>
       </MarketingLayout>
     );
   }

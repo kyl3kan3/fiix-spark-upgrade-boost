@@ -12,6 +12,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
+const META_DESCRIPTION =
+  "See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done.";
+
 const benefits = [
   {
     icon: Zap,
@@ -81,14 +84,14 @@ const Landing = () => {
         <title>MaintenEase — Stop Downtime Before It Starts</title>
         <meta
           name="description"
-          content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
+          content={META_DESCRIPTION}
         />
         <link rel="canonical" href="https://maintenease.com/landing" />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta
           property="og:description"
-          content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done."
+          content={META_DESCRIPTION}
         />
         <meta property="og:url" content="https://maintenease.com/landing" />
         <meta property="og:type" content="website" />
@@ -100,43 +103,10 @@ const Landing = () => {
         <meta property="og:site_name" content="MaintenEase" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
-        <meta name="twitter:description" content="Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done." />
+        <meta name="twitter:description" content={META_DESCRIPTION} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
         <meta name="twitter:site" content="@maintenease" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "MaintenEase",
-            applicationCategory: "BusinessApplication",
-            applicationSubCategory: "Computerized Maintenance Management System (CMMS)",
-            operatingSystem: "Web",
-            url: "https://maintenease.com/landing",
-            image: "https://maintenease.com/og-image.png?v=4",
-            description:
-              "Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.",
-            offers: {
-              "@type": "Offer",
-              price: "49",
-              priceCurrency: "USD",
-              priceSpecification: {
-                "@type": "UnitPriceSpecification",
-                price: "49",
-                priceCurrency: "USD",
-                unitText: "MONTH",
-              },
-              availability: "https://schema.org/InStock",
-              url: "https://maintenease.com/pricing",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "MaintenEase",
-              url: "https://maintenease.com/",
-              logo: "https://maintenease.com/favicon.png",
-            },
-          })}
-        </script>
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

@@ -9,7 +9,8 @@
  *   - og:title / og:description / og:url / og:type / og:image
  *   - twitter:card / twitter:title / twitter:description / twitter:image
  *   - og:image + twitter:image resolve (HTTP 200) and are image/*
- *   - FAQPage and SoftwareApplication JSON-LD blocks parse and are non-empty
+ *   - FAQPage, Organization, and WebSite JSON-LD blocks parse
+ *   - any SoftwareApplication markup includes Google's required rating/review
  *
  * Exits non-zero on any failure. Wire into CI before deploy.
  *
@@ -141,8 +142,21 @@ async function main() {
     .map((b) => (b as { "@type"?: string })["@type"])
     .filter(Boolean);
   if (!types.includes("FAQPage")) errs.push("FAQPage JSON-LD missing");
-  if (!types.includes("SoftwareApplication"))
-    errs.push("SoftwareApplication JSON-LD missing");
+  if (!types.includes("Organization")) errs.push("Organization JSON-LD missing");
+  if (!types.includes("WebSite")) errs.push("WebSite JSON-LD missing");
+
+  const softwareApplication = jsonld.find(
+    (b) => (b as { "@type"?: string })["@type"] === "SoftwareApplication",
+  ) as { aggregateRating?: unknown; review?: unknown } | undefined;
+  if (
+    softwareApplication &&
+    !softwareApplication.aggregateRating &&
+    !softwareApplication.review
+  ) {
+    errs.push(
+      "SoftwareApplication JSON-LD requires a genuine aggregateRating or review for Google rich results",
+    );
+  }
 
   const faq = jsonld.find(
     (b) => (b as { "@type"?: string })["@type"] === "FAQPage",
@@ -151,7 +165,7 @@ async function main() {
     errs.push("FAQPage has no mainEntity questions");
 
   if (errs.length === 0) {
-    console.log(`ok — ${Object.keys(required).length + 4} checks passed`);
+    console.log("ok — landing metadata and structured data checks passed");
     return;
   }
   console.error(`FAIL — ${errs.length} issue(s) on ${url}:`);
