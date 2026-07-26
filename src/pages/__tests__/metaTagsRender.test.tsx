@@ -135,12 +135,21 @@ function jsonLdTypes(): string[] {
  return types;
 }
 
+// Mirrors homepage-only blocks in index.html. MarketingJsonLd skips emitting
+// Organization/WebSite on "/" to avoid duplicates with these static nodes.
+const HOME_STATIC_JSON_LD = `
+<script type="application/ld+json" data-ld-home="organization">
+{"@context":"https://schema.org","@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/","logo":"https://maintenease.com/favicon.png","image":"https://maintenease.com/og-image.png","sameAs":["https://twitter.com/maintenease"]}
+</script>
+<script type="application/ld+json" data-ld-home="website">
+{"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase","url":"https://maintenease.com/","publisher":{"@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://maintenease.com/learn?q={search_term_string}"},"query-input":"required name=search_term_string"}}
+</script>`;
+
 describe("rendered head for key routes", () => {
  beforeEach(() => {
  document.head.innerHTML =
  '<link data-rh="true" rel="canonical" href="https://maintenease.com/" />' +
- '<script type="application/ld+json" data-ld-home="organization">{"@context":"https://schema.org","@type":"Organization","name":"MaintenEase"}</script>' +
- '<script type="application/ld+json" data-ld-home="website">{"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase"}</script>';
+ HOME_STATIC_JSON_LD;
  });
  afterEach(() => {
  cleanup();
