@@ -17,15 +17,20 @@ const Footer = () => {
  if (!showFullFooter) {
  // Simple footer for main application pages
  return (
- <footer className="bg-muted/50 border-t border-border py-4">
- <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-muted-foreground">
- <span>&copy; {currentYear} Decent4. All rights reserved.</span>
- <span className="hidden sm:inline">·</span>
- <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
- <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
- <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
- </div>
- </footer>
+  <footer className="bg-muted/50 border-t border-border py-4">
+  <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-3 text-center text-sm text-muted-foreground">
+    <a href="https://daniellaunches.com/tools/maintenease" target="_blank" rel="noopener noreferrer">
+      <img src="https://daniellaunches.com/badge.svg" alt="Featured on DanielLaunches" width="200" height="44" loading="lazy" decoding="async" />
+    </a>
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+      <span>&copy; {currentYear} Decent4. All rights reserved.</span>
+      <span className="hidden sm:inline">·</span>
+      <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+      <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+      <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
+    </div>
+  </div>
+  </footer>
  );
  }
 
@@ -125,24 +130,27 @@ const Footer = () => {
  ))}
  </div>
 
- <div className="mt-12 pt-8 border-t border-background/10">
- <div className="flex flex-col md:flex-row justify-between items-center">
- <p className="text-background/80 text-sm mb-4 md:mb-0">
- &copy; {currentYear} Decent4. All rights reserved.
- </p>
- <div className="flex space-x-6">
- <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
- Privacy Policy
- </Link>
- <Link to="/terms" className="text-background/80 hover:text-background text-sm transition-colors">
- Terms of Service
- </Link>
- <Link to="/refund-policy" className="text-background/80 hover:text-background text-sm transition-colors">
- Refund Policy
- </Link>
- </div>
- </div>
- </div>
+  <div className="mt-12 pt-8 border-t border-background/10">
+  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+  <p className="text-background/80 text-sm mb-0">
+  &copy; {currentYear} Decent4. All rights reserved.
+  </p>
+  <a href="https://daniellaunches.com/tools/maintenease" target="_blank" rel="noopener noreferrer">
+    <img src="https://daniellaunches.com/badge.svg" alt="Featured on DanielLaunches" width="200" height="44" loading="lazy" decoding="async" />
+  </a>
+  <div className="flex space-x-6">
+  <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
+  Privacy Policy
+  </Link>
+  <Link to="/terms" className="text-background/80 hover:text-background text-sm transition-colors">
+  Terms of Service
+  </Link>
+  <Link to="/refund-policy" className="text-background/80 hover:text-background text-sm transition-colors">
+  Refund Policy
+  </Link>
+  </div>
+  </div>
+  </div>
  </div>
  </footer>
  );
