@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="MaintenEase" />
+    <!-- Brand-level OG/Twitter fallbacks for no-JS crawlers. Per-route values
+         are set at runtime via react-helmet-async. The homepage canonical above
+         is marked as Helmet-managed so inner routes replace it after hydration;
+         og:url is intentionally omitted here to avoid a canonical-mismatch flag. -->
+    <meta property="og:image" content="https://maintenease.com/og-image.png?v=4">
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="MaintenEase — Stop downtime before it starts. Navy blueprint card with the MaintenEase wordmark and an emerald gear-and-wrench mark." />
+    <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4">
+    <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Navy blueprint card with the MaintenEase wordmark and an emerald gear-and-wrench mark." />
+    <meta name="twitter:site" content="@maintenease" />
+    <meta name="google-site-verification" content="hHvtnhbE-j8Wb7dB5agVFGJnymG-odLvDSs0FxvHk0s" />
+    <!-- Prevent Chrome/Google Translate from mutating React-managed text nodes
+         (causes NotFoundError: Failed to execute 'removeChild' on 'Node') -->
+    <meta name="google" content="notranslate" />
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- Homepage-only structured data (Organization + WebSite). The prerender
+         step strips these blocks from non-home route documents; inner routes get
+         their own schema at runtime via react-helmet-async. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://wwgljhpuulhljumrhscg.supabase.co" crossorigin />
+    <!-- Preload the actual display font (Playfair Display 700) used by the hero H1 to reduce LCP -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <!-- Font stylesheets load async (media=print swap) so a slow/unreachable
+         fonts CDN can never block first paint; fallback fonts render instead. -->
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    </noscript>
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="https://fonts.gstatic.com/s/nunito/v26/XRXI3I6Li01BKofiOc5wtlZ2di8HDIkhdTQ3jw.woff2"
+      crossorigin
+    />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18051376894"></script>
+    <script defer data-website-id="dfid_4BRVKzjIQLv5Psqg0AK9u" data-domain="maintenease.com" src="https://datafa.st/js/script.js"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18051376894');
+      gtag('config', 'AW-18190364490', { allow_enhanced_conversions: true });
+    </script>
+  <title>MaintenEase — Stop Downtime Before It Starts</title>
+    <meta name="description" content="See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done." data-rh="true" />
+    <link data-rh="true" rel="canonical" href="https://maintenease.com/landing" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
+    <meta property="og:description" content="See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done." />
+    <meta property="og:url" content="https://maintenease.com/landing" />
+    <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
+    <meta name="twitter:description" content="See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done." />
+    <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+    <meta name="robots" content="index,follow,max-image-preview:large" data-rh="true" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/","logo":"https://maintenease.com/favicon.png","sameAs":["https://twitter.com/maintenease"]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase","url":"https://maintenease.com/","potentialAction":{"@type":"SearchAction","target":"https://maintenease.com/learn?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is there a free trial?","acceptedAnswer":{"@type":"Answer","text":"Yes — MaintenEase includes a 7-day free trial on every plan. A card is required and you can cancel anytime before day 8 to avoid charges."}},{"@type":"Question","name":"How much does MaintenEase cost?","acceptedAnswer":{"@type":"Answer","text":"Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%."}},{"@type":"Question","name":"Do I have to import my data manually?","acceptedAnswer":{"@type":"Answer","text":"No — free onboarding and data import are included so techs stop losing work between texts and whiteboards from day one."}},{"@type":"Question","name":"How does MaintenEase prevent downtime?","acceptedAnswer":{"@type":"Answer","text":"AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm."}},{"@type":"Question","name":"Can my whole crew use it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each."}},{"@type":"Question","name":"What do owners get out of it?","acceptedAnswer":{"@type":"Answer","text":"Owners stop guessing what is actually done. A clean dashboard tracks work orders, labor, and parts spend so you always know where time and money go."}}]}</script>
+  </head>
+
+  <body translate="no" class="notranslate">
+    <div id="root"><div data-prerender="static"><h1>Stop downtime before it starts.</h1>
+      <p>Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.</p>
+      <h2>Frequently asked questions</h2>
+      <h3>Is there a free trial?</h3>
+      <p>Yes — MaintenEase includes a 7-day free trial on every plan. A card is required and you can cancel anytime before day 8 to avoid charges.</p>
+      <h3>How much does MaintenEase cost?</h3>
+      <p>Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%.</p>
+      <h3>Do I have to import my data manually?</h3>
+      <p>No — free onboarding and data import are included so techs stop losing work between texts and whiteboards from day one.</p>
+      <h3>How does MaintenEase prevent downtime?</h3>
+      <p>AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm.</p>
+      <h3>Can my whole crew use it?</h3>
+      <p>Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.</p>
+      <h3>What do owners get out of it?</h3>
+      <p>Owners stop guessing what is actually done. A clean dashboard tracks work orders, labor, and parts spend so you always know where time and money go.</p>
+      <nav><ul><li><a href="/pricing">Pricing</a></li><li><a href="/features">Features</a></li></ul></nav></div></div>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
