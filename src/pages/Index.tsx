@@ -68,9 +68,9 @@ const Index = () => {
  </div>
  </section>
       <section className="container mx-auto px-4 pb-10 flex flex-col sm:flex-row items-center justify-center gap-6">
-        <a href="https://verifieddr.com/website/maintenease-com" target="_blank"><img src="https://verifieddr.com/badge/maintenease-com.svg?metric=truedr" alt="Verified DR - Verified Domain Rating for maintenease.com" width="220" height="68" /></a>
+        <a href="https://verifieddr.com/website/maintenease-com" target="_blank"><img src="https://verifieddr.com/badge/maintenease-com.svg?metric=truedr" alt="Verified DR - Verified Domain Rating for maintenease.com" width="220" height="68" loading="lazy" decoding="async" style={{ aspectRatio: '220 / 68' }} /></a>
         <a href="https://startupbase.io/products/maintenease?utm_source=startupbase&utm_medium=badge&utm_campaign=launch-badge-light" target="_blank" rel="noopener noreferrer">
-          <img src="https://statics.startupbase.io/site/badges/launched-on-sb.svg" alt="Launched on StartupBase" height="55" style={{ height: '55px', width: 'auto' }} />
+          <img src="https://statics.startupbase.io/site/badges/launched-on-sb.svg" alt="Launched on StartupBase" width="185" height="55" loading="lazy" decoding="async" style={{ height: '55px', width: '185px' }} />
         </a>
       </section>
       <SiteIndexLinks />
