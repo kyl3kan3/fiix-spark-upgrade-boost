@@ -36,7 +36,7 @@ const Index = () => {
  <MarketingJsonLd />
  <Navbar />
  <main className="flex-1">
- <div className="container mx-auto px-4 pt-10 pb-2 max-w-5xl text-center">
+        <div className="container mx-auto px-4 pt-28 md:pt-32 pb-2 max-w-5xl text-center">
  <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-foreground">
  CMMS Software for Facility & Maintenance Teams
  </h1>
