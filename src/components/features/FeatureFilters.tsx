@@ -22,7 +22,7 @@ const FeatureFilters: React.FC<FeatureFiltersProps> = ({
  {/* Category filter */}
  <div className="min-w-[200px]">
  <Select value={selectedCategory} onValueChange={onCategoryChange}>
- <SelectTrigger className="w-full border-primary/20 focus:ring-primary">
+ <SelectTrigger aria-label="Filter by category" className="w-full border-primary/20 focus:ring-primary">
  <SelectValue placeholder="Select a category" />
  </SelectTrigger>
  <SelectContent>
