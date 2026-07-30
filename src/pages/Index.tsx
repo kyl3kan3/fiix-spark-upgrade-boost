@@ -78,6 +78,9 @@ const Index = () => {
         <a href="https://seoreceipts.com/site/maintenease-293/?ref=badge&utm_source=embed&utm_medium=badge&utm_campaign=status-auto" rel="nofollow sponsored noopener" target="_blank" title="View maintenease.com's Google Search Console stats">
           <img src="https://seoreceipts.com/api/badge?slug=maintenease-293&mode=auto&theme=paper&size=card" alt="Google Search Console stats for maintenease.com" height="68" loading="lazy" decoding="async" />
         </a>
+        <a href="https://www.foundrlist.com/product/maintenease?utm_source=badge&utm_medium=embed" target="_blank" rel="noopener">
+          <img src="https://www.foundrlist.com/api/badge/maintenease" alt="Featured on FoundrList" width="150" height="48" loading="lazy" decoding="async" style={{ aspectRatio: '150 / 48' }} />
+        </a>
       </section>
       <SiteIndexLinks />
       </main>
