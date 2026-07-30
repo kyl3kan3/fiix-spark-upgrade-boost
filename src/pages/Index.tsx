@@ -75,6 +75,9 @@ const Index = () => {
         <a href="https://saasgrow.app?ref=maintenease.com" target="_blank" rel="noopener">
           <img src="https://saasgrow.app/api/badge?type=featured&style=blue" alt="MaintenEase — CMMS Software on SaaSGrow" width="240" height="54" loading="lazy" decoding="async" style={{ aspectRatio: '240 / 54' }} />
         </a>
+        <a href="https://seoreceipts.com/site/maintenease-293/?ref=badge&utm_source=embed&utm_medium=badge&utm_campaign=status-auto" rel="nofollow sponsored noopener" target="_blank" title="View maintenease.com's Google Search Console stats">
+          <img src="https://seoreceipts.com/api/badge?slug=maintenease-293&mode=auto&theme=paper&size=card" alt="Google Search Console stats for maintenease.com" height="68" loading="lazy" decoding="async" />
+        </a>
       </section>
       <SiteIndexLinks />
       </main>
