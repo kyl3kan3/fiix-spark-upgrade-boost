@@ -72,6 +72,9 @@ const Index = () => {
         <a href="https://startupbase.io/products/maintenease?utm_source=startupbase&utm_medium=badge&utm_campaign=launch-badge-light" target="_blank" rel="noopener noreferrer">
           <img src="https://statics.startupbase.io/site/badges/launched-on-sb.svg" alt="Launched on StartupBase" width="185" height="55" loading="lazy" decoding="async" style={{ height: '55px', width: '185px' }} />
         </a>
+        <a href="https://saasgrow.app?ref=maintenease.com" target="_blank" rel="noopener">
+          <img src="https://saasgrow.app/api/badge?type=featured&style=blue" alt="MaintenEase — CMMS Software on SaaSGrow" width="240" height="54" loading="lazy" decoding="async" style={{ aspectRatio: '240 / 54' }} />
+        </a>
       </section>
       <SiteIndexLinks />
       </main>
