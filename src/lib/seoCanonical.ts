@@ -8,7 +8,6 @@ const INDEXED_STATIC_PATHS = new Set([
   "/features",
   "/solutions",
   "/learn",
-  "/auth",
   "/privacy",
   "/terms",
   "/refund-policy",

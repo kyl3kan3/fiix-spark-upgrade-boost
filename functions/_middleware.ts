@@ -25,5 +25,23 @@ export async function onRequest(context: any) {
     // Tracking must never break the response.
   }
 
-  return context.next();
+  const response = await context.next();
+
+  // Keep the auth screen out of search indexes at the edge too.
+  try {
+    const { pathname } = new URL(context.request.url);
+    if (pathname === "/auth" || pathname.startsWith("/auth/")) {
+      const headers = new Headers(response.headers);
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+  } catch {
+    // Header tagging must never break the response.
+  }
+
+  return response;
 }
