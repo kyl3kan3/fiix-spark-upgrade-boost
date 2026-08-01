@@ -479,7 +479,11 @@ function bodyFor(route: Route): string {
     );
   }
   // data-prerender marks the shell; React discards it on mount.
-  return `<div data-prerender="static">${parts.join("\n      ")}</div>`;
+  // Visually hidden (still in the DOM and fully crawlable) so real visitors
+  // never see a flash of unstyled fallback text before hydration.
+  const hidden =
+    "position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;";
+  return `<div data-prerender="static" style="${hidden}">${parts.join("\n      ")}</div>`;
 }
 
 function renderRoute(route: Route): string {
