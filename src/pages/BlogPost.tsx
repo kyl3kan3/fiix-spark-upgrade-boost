@@ -221,7 +221,9 @@ const BlogPost = () => {
     "@type": "Article",
     headline: post.title,
     description,
-    image: post.hero_image_url ?? undefined,
+    // Google flags Article items with no "image" as invalid for rich results,
+    // so fall back to the brand OG asset when a post has no hero image.
+    image: [post.hero_image_url ?? `${SITE}/og-image.png?v=4`],
     datePublished: post.published_at ?? undefined,
     dateModified: post.updated_at ?? post.published_at ?? undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
