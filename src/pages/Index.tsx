@@ -81,6 +81,9 @@ const Index = () => {
         <a href="https://www.foundrlist.com/product/maintenease?utm_source=badge&utm_medium=embed" target="_blank" rel="noopener">
           <img src="https://www.foundrlist.com/api/badge/maintenease" alt="Featured on FoundrList" width="150" height="48" loading="lazy" decoding="async" style={{ aspectRatio: '150 / 48' }} />
         </a>
+        <a href="https://findly.tools/maintenease?utm_source=maintenease" target="_blank" rel="noopener noreferrer">
+          <img src="https://findly.tools/badges/findly-tools-badge-light.svg" alt="Featured on Findly.tools" width="175" height="55" loading="lazy" decoding="async" />
+        </a>
       </section>
       <SiteIndexLinks />
       </main>
