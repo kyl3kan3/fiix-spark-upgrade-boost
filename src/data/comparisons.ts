@@ -144,6 +144,12 @@ export const comparisons: Comparison[] = [
     competitor: "MaintainX",
     competitorPlan: "Essential",
     competitorPricePerUser: 21,
+    // Last substantive content change per version history (latest commit that
+    // touched this file's comparison content): 2026-07-25. No earlier reliable
+    // publication record exists in the squashed history, so publication is
+    // recorded as the same date rather than fabricating an older one.
+    datePublished: "2026-07-25",
+    dateModified: "2026-07-25",
     metaTitle: "MaintenEase vs MaintainX — CMMS Pricing Comparison (2026)",
     metaDescription:
       "MaintenEase vs MaintainX: compare features and total cost. MaintenEase charges one flat fee instead of per-user pricing as your team grows.",
