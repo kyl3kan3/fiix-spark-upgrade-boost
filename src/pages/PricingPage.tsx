@@ -96,11 +96,12 @@ export default function PricingPage() {
  "@type": "Product",
  name: "MaintenEase",
  description: "Maintenance management software for asset tracking, work orders, and inspections.",
+ image: ["https://maintenease.com/og-image.png?v=4"],
  brand: { "@type": "Brand", name: "MaintenEase" },
  offers: [
- { "@type": "Offer", name: "Starter", price: "49", priceCurrency: "USD" },
- { "@type": "Offer", name: "Pro", price: "129", priceCurrency: "USD" },
- { "@type": "Offer", name: "Business", price: "299", priceCurrency: "USD" }
+ { "@type": "Offer", name: "Starter", price: "49", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" },
+ { "@type": "Offer", name: "Pro", price: "129", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" },
+ { "@type": "Offer", name: "Business", price: "299", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" }
  ]
  })}</script>
  </Helmet>
