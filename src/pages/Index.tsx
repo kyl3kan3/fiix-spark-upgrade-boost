@@ -84,6 +84,9 @@ const Index = () => {
         <a href="https://findly.tools/maintenease?utm_source=maintenease" target="_blank" rel="noopener noreferrer">
           <img src="https://findly.tools/badges/findly-tools-badge-light.svg" alt="Featured on Findly.tools" width="175" height="55" loading="lazy" decoding="async" />
         </a>
+        <a href="https://neeed.directory" target="_blank" rel="noopener">
+          <img src="https://neeed.directory/badges/neeed-badge-light.svg" alt="Featured on neeed.directory" width="139" height="44" loading="lazy" decoding="async" style={{ aspectRatio: '139 / 44' }} />
+        </a>
       </section>
       <SiteIndexLinks />
       </main>
