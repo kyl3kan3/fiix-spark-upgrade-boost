@@ -13,6 +13,17 @@ const Cell = ({ value, accent }: { value: CompareValue; accent?: boolean }) => {
   return <span className={`text-sm ${accent ? "font-semibold text-primary" : "text-foreground"}`}>{value}</span>;
 };
 
+/** "2026-07-25" -> "July 25, 2026" (no timezone drift: parsed as UTC parts). */
+const formatDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+};
+
 const ComparePage = () => {
   const { slug = "" } = useParams();
   const c = getComparison(slug);
@@ -39,6 +50,19 @@ const ComparePage = () => {
 
   const others = comparisons.filter((o) => o.slug !== c.slug);
 
+  const updatedIso = c.dateModified ?? c.datePublished;
+  const webPageLd = updatedIso
+    ? {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: c.h1,
+        description: c.metaDescription,
+        url,
+        ...(c.datePublished ? { datePublished: c.datePublished } : {}),
+        ...(c.dateModified ? { dateModified: c.dateModified } : {}),
+      }
+    : null;
+
   return (
     <MarketingLayout>
       <Helmet>
@@ -56,6 +80,7 @@ const ComparePage = () => {
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        {webPageLd ? <script type="application/ld+json">{JSON.stringify(webPageLd)}</script> : null}
       </Helmet>
       <MarketingJsonLd />
 
@@ -68,6 +93,14 @@ const ComparePage = () => {
         </nav>
         <p className="text-sm font-semibold text-secondary mb-3 uppercase tracking-wide">CMMS comparison</p>
         <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-4 max-w-3xl text-foreground">{c.h1}</h1>
+        {updatedIso ? (
+          <p className="text-sm text-muted-foreground mb-4">
+            Last updated on{" "}
+            <time dateTime={updatedIso} className="font-medium text-foreground">
+              {formatDate(updatedIso)}
+            </time>
+          </p>
+        ) : null}
         <p className="text-xl text-muted-foreground max-w-3xl mb-8 leading-relaxed">{c.tagline}</p>
         <div className="flex flex-wrap gap-3 mb-12">
           <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui">
