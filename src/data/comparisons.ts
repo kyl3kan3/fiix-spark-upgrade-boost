@@ -23,6 +23,18 @@ export type CompetitorTier = { name: string; price: string; notes: string };
 export type BestFit = { ours: string[]; theirs: string[] };
 export type MigrationStep = { title: string; body: string };
 
+/**
+ * Content freshness dates (`datePublished` / `dateModified`).
+ *
+ * PROCESS — update `dateModified` ONLY when the substantive content of a
+ * comparison actually changes (pricing figures, feature rows, narrative
+ * sections, FAQs, best-fit or migration guidance). Do NOT bump it for typo
+ * fixes, styling, refactors or unrelated site-wide changes: spurious
+ * "freshness" signals are worse than an honest older date.
+ * Format: ISO `YYYY-MM-DD`. The visible "Last updated" line on
+ * /compare/:slug and the WebPage JSON-LD both read from these fields, so they
+ * can never drift apart.
+ */
 export type Comparison = {
   slug: string;
   competitor: string;
@@ -44,6 +56,10 @@ export type Comparison = {
   bestFit?: BestFit;
   /** Concrete switching plan (optional). */
   migrationSteps?: MigrationStep[];
+  /** ISO date (YYYY-MM-DD) this comparison was first published. */
+  datePublished?: string;
+  /** ISO date (YYYY-MM-DD) of the last substantive content change. */
+  dateModified?: string;
 };
 
 /** Standard, honest comparison rows for a per-seat competitor. */
