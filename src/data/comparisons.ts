@@ -23,6 +23,18 @@ export type CompetitorTier = { name: string; price: string; notes: string };
 export type BestFit = { ours: string[]; theirs: string[] };
 export type MigrationStep = { title: string; body: string };
 
+/**
+ * Content freshness dates (`datePublished` / `dateModified`).
+ *
+ * PROCESS — update `dateModified` ONLY when the substantive content of a
+ * comparison actually changes (pricing figures, feature rows, narrative
+ * sections, FAQs, best-fit or migration guidance). Do NOT bump it for typo
+ * fixes, styling, refactors or unrelated site-wide changes: spurious
+ * "freshness" signals are worse than an honest older date.
+ * Format: ISO `YYYY-MM-DD`. The visible "Last updated" line on
+ * /compare/:slug and the WebPage JSON-LD both read from these fields, so they
+ * can never drift apart.
+ */
 export type Comparison = {
   slug: string;
   competitor: string;
@@ -44,6 +56,10 @@ export type Comparison = {
   bestFit?: BestFit;
   /** Concrete switching plan (optional). */
   migrationSteps?: MigrationStep[];
+  /** ISO date (YYYY-MM-DD) this comparison was first published. */
+  datePublished?: string;
+  /** ISO date (YYYY-MM-DD) of the last substantive content change. */
+  dateModified?: string;
 };
 
 /** Standard, honest comparison rows for a per-seat competitor. */
@@ -128,6 +144,12 @@ export const comparisons: Comparison[] = [
     competitor: "MaintainX",
     competitorPlan: "Essential",
     competitorPricePerUser: 21,
+    // Last substantive content change per version history (latest commit that
+    // touched this file's comparison content): 2026-07-25. No earlier reliable
+    // publication record exists in the squashed history, so publication is
+    // recorded as the same date rather than fabricating an older one.
+    datePublished: "2026-07-25",
+    dateModified: "2026-07-25",
     metaTitle: "MaintenEase vs MaintainX — CMMS Pricing Comparison (2026)",
     metaDescription:
       "MaintenEase vs MaintainX: compare features and total cost. MaintenEase charges one flat fee instead of per-user pricing as your team grows.",
