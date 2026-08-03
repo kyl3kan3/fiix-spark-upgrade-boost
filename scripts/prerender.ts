@@ -409,6 +409,36 @@ function headFor(route: Route): string {
 
   // /landing is a paid-acquisition surface: crawlers must see robots + org/site/FAQ
   // structured data in the static shell (Helmet alone is invisible without JS).
+  if (route.path === "/pricing") {
+    // Google flagged Product "Missing field image" because the Product block was
+    // only emitted client-side via Helmet. Ship it in the static shell too, with
+    // image/url/availability on every offer so the item stays rich-result valid.
+    const product = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: "MaintenEase",
+      description:
+        "Maintenance management software for asset tracking, work orders, and inspections.",
+      image: [OG_IMAGE],
+      brand: { "@type": "Brand", name: "MaintenEase" },
+      offers: [
+        { name: "Starter", price: "49" },
+        { name: "Pro", price: "129" },
+        { name: "Business", price: "299" },
+      ].map((o) => ({
+        "@type": "Offer",
+        name: o.name,
+        price: o.price,
+        priceCurrency: "USD",
+        url: `${ORIGIN}/pricing`,
+        availability: "https://schema.org/InStock",
+      })),
+    };
+    tags.push(
+      `<script type="application/ld+json">${JSON.stringify(product)}</script>`,
+    );
+  }
+
   if (route.path === "/landing") {
     tags.push(
       `<meta name="robots" content="index,follow,max-image-preview:large" data-rh="true" />`,
