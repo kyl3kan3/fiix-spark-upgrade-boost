@@ -98,7 +98,7 @@ ${g.sections.map((s) => `## ${s.heading}\n\n${s.body}`).join("\n\n")}
 
 ${g.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 
-${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
+${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.url})`).join("\n")}\n\n` : ""}${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
 }
 
 for (const s of solutions) write(`solutions/${s.slug}.md`, solutionMd(s));

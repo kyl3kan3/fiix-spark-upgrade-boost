@@ -42,6 +42,40 @@ const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline:
  { slug: "maintenance-request-portal", anchor: "Maintenance request portal", tagline: "Tenants and staff submit requests." },
  { slug: "asset-management-software", anchor: "Track every appliance, HVAC unit and fixture", tagline: "Per-unit asset register with warranty and service history." },
  ],
+ "agentic-cmms": [
+ { slug: "work-order-software", anchor: "Work order software for agent-assisted workflows", tagline: "Create, assign, and track the work an authorized agent helps prepare." },
+ { slug: "asset-management-software", anchor: "Asset data for maintenance agents", tagline: "Keep equipment records and service history in one controlled system." },
+ ],
+ "ai-maintenance-assistant": [
+ { slug: "work-order-software", anchor: "Work order software with structured workflows", tagline: "Turn maintenance context into complete, trackable work." },
+ ],
+ "cmms-for-chatgpt": [
+ { slug: "asset-management-software", anchor: "Controlled asset data for AI workflows", tagline: "Keep equipment identity and history in the CMMS system of record." },
+ ],
+ "maintenance-mcp-server": [
+ { slug: "work-order-software", anchor: "Work order tools for maintenance agents", tagline: "Expose narrow actions instead of unrestricted database access." },
+ ],
+ "ai-work-order-automation": [
+ { slug: "work-order-software", anchor: "Automate work order intake", tagline: "Create, assign, and track work from one structured workflow." },
+ { slug: "maintenance-request-portal", anchor: "Capture requests before automating them", tagline: "Collect issue details and photos without requiring a login." },
+ ],
+ "equipment-risk-scoring": [
+ { slug: "asset-management-software", anchor: "Build risk scores on reliable asset history", tagline: "Centralize failures, cost, downtime, and asset criticality." },
+ ],
+ "predictive-maintenance-without-sensors": [
+ { slug: "preventive-maintenance-software", anchor: "Start with scheduled readings and inspections", tagline: "Build consistent condition history before a sensor rollout." },
+ { slug: "asset-management-software", anchor: "Connect every reading to an asset", tagline: "Keep work history and equipment context together." },
+ ],
+ "maintenance-request-qr-codes": [
+ { slug: "maintenance-request-portal", anchor: "No-login maintenance request portal", tagline: "Let tenants, staff, and guests report problems in seconds." },
+ { slug: "asset-tracking-software", anchor: "Connect QR codes to tracked assets", tagline: "Identify equipment and its location from the point of work." },
+ ],
+ "ai-native-cmms": [
+ { slug: "asset-management-software", anchor: "The asset data layer behind AI-native maintenance", tagline: "Give every workflow consistent equipment identity and history." },
+ ],
+ "agentic-maintenance-workflows": [
+ { slug: "work-order-software", anchor: "Put agent-assisted work into a controlled workflow", tagline: "Keep requests, approvals, assignments, and completion traceable." },
+ ],
 };
 
 const LearnArticle = () => {
@@ -74,6 +108,8 @@ const LearnArticle = () => {
  name: "MaintenEase",
  logo: { "@type": "ImageObject", url: "https://maintenease.com/favicon.png" },
  },
+ ...(term.published ? { datePublished: term.published } : {}),
+ ...(term.updated ? { dateModified: term.updated } : {}),
  };
  const breadcrumbLd = {
  "@context": "https://schema.org",
@@ -140,6 +176,26 @@ const LearnArticle = () => {
  </div>
  </section>
 
+ {term.sources && term.sources.length > 0 && (
+ <section className="mt-12">
+ <h2 className="text-2xl font-semibold mb-4 text-foreground">Sources and further reading</h2>
+ <ul className="space-y-3">
+ {term.sources.map((source) => (
+ <li key={source.url}>
+ <a
+ href={source.url}
+ target="_blank"
+ rel="noreferrer"
+ className="text-primary underline underline-offset-2 hover:no-underline"
+ >
+ {source.label}
+ </a>
+ </li>
+ ))}
+ </ul>
+ </section>
+ )}
+
  <section className="mt-12 p-8 rounded-xl bg-primary/5 border border-primary/20">
  <h2 className="text-2xl font-semibold mb-2 text-foreground">Put this into practice with MaintenEase</h2>
  <p className="text-foreground mb-5">
@@ -150,7 +206,9 @@ const LearnArticle = () => {
   <Link to="/auth?signup=true">Start free</Link>
   </Button>
   <Button asChild variant="outline">
-  <Link to="/cmms-cost-calculator">Run the CMMS cost calculator</Link>
+  <Link to={term.slug === "agentic-cmms" ? "/features" : "/cmms-cost-calculator"}>
+  {term.slug === "agentic-cmms" ? "Explore MaintenEase features" : "Run the CMMS cost calculator"}
+  </Link>
   </Button>
   </div>
   {term.slug !== "cmms-benchmarks-2026" && (

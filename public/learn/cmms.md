@@ -36,6 +36,7 @@ Modern cloud CMMS platforms (including MaintenEase) charge per user per month an
 
 ## Related
 
+- https://maintenease.com/learn/agentic-cmms
 - https://maintenease.com/learn/preventive-maintenance
 - https://maintenease.com/learn/work-order
 - https://maintenease.com/learn/mro

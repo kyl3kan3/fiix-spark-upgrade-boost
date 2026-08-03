@@ -1,12 +1,17 @@
+import { emergingAiGlossary } from "./emergingAiGlossary";
+
 export type GlossaryTerm = {
  slug: string;
  term: string;
  short: string;
  metaTitle: string;
  metaDescription: string;
+ published?: string;
+ updated?: string;
  sections: { heading: string; body: string }[];
  faqs: { q: string; a: string }[];
  related: string[];
+ sources?: { label: string; url: string }[];
 };
 
 export const glossary: GlossaryTerm[] = [
@@ -39,7 +44,85 @@ export const glossary: GlossaryTerm[] = [
  { q: "Do I need a CMMS if I only have a few assets?", a: "Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS." },
  { q: "Is a CMMS expensive?", a: "Modern cloud CMMS platforms (including MaintenEase) charge per user per month and start well under what a single avoided breakdown would cost." },
  ],
- related: ["preventive-maintenance", "work-order", "mro"],
+ related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro"],
+ },
+ {
+ slug: "agentic-cmms",
+ term: "Agentic CMMS: AI Agents for Maintenance Workflows",
+ short: "A CMMS that lets authorized AI agents retrieve maintenance data and complete workflow steps, such as reviewing requests or creating work orders, while preserving permissions and human oversight.",
+ metaTitle: "What Is an Agentic CMMS? AI Agents, MCP & Maintenance",
+ metaDescription: "Learn how an agentic CMMS uses AI and MCP to review assets, requests, and work orders and complete authorized maintenance workflow steps safely.",
+ published: "2026-08-03",
+ updated: "2026-08-03",
+ sections: [
+ {
+ heading: "What is an agentic CMMS?",
+ body: "An agentic CMMS is maintenance software that lets an authorized AI assistant complete defined workflow steps, not merely answer questions. Depending on its permissions, the agent can retrieve asset records, review open work orders, inspect incoming maintenance requests, or create a new work order. The CMMS remains the system of record: user identity, company access, validation rules, and audit history still govern every action. The practical difference is that people can describe an outcome in plain language while the agent handles the searching, filtering, and data entry needed to prepare it.",
+ },
+ {
+ heading: "Agentic CMMS vs a traditional CMMS",
+ body: "A traditional CMMS waits for a person to open the right screen, find the right record, and fill in each field. An agentic CMMS exposes the same controlled operations to an AI interface. A supervisor might ask for urgent work orders at a specific building, then ask the agent to create a follow-up order for the affected asset. The underlying workflow is still structured, but the interface becomes conversational and task-oriented. This can reduce administrative work without replacing the approvals, permissions, and maintenance judgment that keep physical operations safe.",
+ },
+ {
+ heading: "Agent vs chatbot vs predictive maintenance",
+ body: "These terms describe different capabilities. A chatbot explains information or drafts text. An agent can call approved tools to retrieve records or carry out a defined software action. Predictive maintenance analyzes condition readings and failure history to estimate which equipment is at risk. They can work together, but they are not interchangeable: a predictive model may flag a pump, an agent may retrieve its history and prepare a work order, and a maintenance professional decides what physical work is appropriate. Keeping those boundaries clear prevents ordinary automation from being presented as autonomous maintenance.",
+ },
+ {
+ heading: "Where Model Context Protocol fits",
+ body: "Model Context Protocol, usually shortened to MCP, is a standard way for AI applications to discover and use tools supplied by another system. A CMMS MCP server can describe operations such as list work orders, find assets, or create a work order using machine-readable input rules. The AI client does not need to understand the CMMS database or imitate clicks in a browser. It calls a narrowly defined tool, and the server applies authentication and application rules. That separation makes MCP especially useful for connecting maintenance data to AI clients while keeping the CMMS in control of access.",
+ },
+ {
+ heading: "Five practical agentic maintenance workflows",
+ body: "The most useful early workflows are administrative and reversible. An agent can summarize overdue or urgent work orders, locate an asset and its service record, review the maintenance-request inbox, group open work by location, or prepare a work order from a clearly described issue. These tasks consume planner time but do not require an AI system to diagnose equipment or make a safety-critical decision. A sensible rollout starts with read-only retrieval, measures whether the answers are accurate, and adds write actions only after the team has defined confirmation and review expectations.",
+ },
+ {
+ heading: "How MaintenEase exposes maintenance tools",
+ body: "MaintenEase includes an OAuth-authenticated MCP service for authorized accounts. Its current tool set can list work orders with an optional status filter, list assets, list tracked locations, read incoming maintenance requests, and create a work order with a title, description, priority, due date, and optional asset. Requests run as the signed-in user and use the same tenant-scoped data access as the application. This is a working product interface rather than a hypothetical AI feature, so teams can begin with focused workflows instead of handing an agent unrestricted database access.",
+ },
+ {
+ heading: "A real example: request to work order",
+ body: "Consider a facilities supervisor starting the day with: 'Show the newest maintenance requests and the urgent open work orders.' The agent can retrieve both lists and present a concise operational view. The supervisor can then say: 'Create a high-priority work order for the leaking pump request and associate it with Pump P-04.' The AI client maps that instruction to the CMMS tool's structured fields. Before the action is submitted, the client should show the proposed title, priority, asset, and due date so the supervisor can catch an incorrect match.",
+ },
+ {
+ heading: "Authentication and tenant isolation",
+ body: "An AI integration should never bypass the boundaries already enforced by the maintenance system. MaintenEase authenticates its MCP users through OAuth and sends their access token with data requests. Database row-level security then limits results to the signed-in user's company. This matters in a multi-tenant CMMS because a useful natural-language interface must not become a broader data-access path. Tokens should be treated like other application credentials, write tools should use the narrowest necessary inputs, and administrators should be able to remove access when an integration is no longer needed.",
+ },
+ {
+ heading: "Human oversight and safe write actions",
+ body: "Agentic does not have to mean autonomous. Read-only tools can usually run with low risk, while actions that change the system should be visible and intentional. A good AI client previews the exact work order it is about to create, asks for confirmation when the request is ambiguous, and reports the resulting record identifier. Maintenance teams should require human judgment for safety classification, shutdown decisions, regulatory conclusions, and instructions that could put a technician or asset at risk. The agent handles system work; qualified people remain responsible for maintenance decisions and physical execution.",
+ },
+ {
+ heading: "What to evaluate before adopting an agentic CMMS",
+ body: "Start with five questions. Does the integration authenticate individual users rather than share one master credential? Are records restricted to the correct company and role? Can administrators distinguish read tools from write tools? Does every created record retain its normal CMMS history? Can the team verify an agent's output before acting on it? Then test a small workflow with non-critical data. Accuracy, adoption, and time saved matter more than the number of AI features on a pricing page. If the system cannot explain what it can access and what it changed, it is not ready for operational use.",
+ },
+ {
+ heading: "A practical implementation sequence",
+ body: "Begin with a read-only pilot for one supervisor: open-work summaries, asset lookup, and request-inbox review. Compare the agent's results against the CMMS for two weeks and document common ambiguities such as duplicate asset names. Next, standardize asset naming and required work-order fields. Add one confirmation-gated write workflow, normally work-order creation, and review every result. Only expand to more users or tools after the audit trail and permissions behave as expected. This staged approach produces useful automation early while protecting the quality of the maintenance data that future AI and predictive models depend on.",
+ },
+ ],
+ faqs: [
+ { q: "What does agentic CMMS mean?", a: "It means a CMMS can expose authorized tools that let an AI agent retrieve maintenance records and complete defined software actions, rather than only generate conversational answers." },
+ { q: "Is an agentic CMMS the same as predictive maintenance?", a: "No. Predictive maintenance forecasts equipment risk from condition and failure data. An agentic CMMS uses software tools to retrieve information or complete workflow steps. The two capabilities can work together." },
+ { q: "What is a CMMS MCP server?", a: "A CMMS MCP server publishes structured maintenance tools through the Model Context Protocol so compatible AI clients can use them after authentication without direct database access or browser automation." },
+ { q: "Can ChatGPT or Claude create maintenance work orders?", a: "They can when connected to an authenticated CMMS tool that permits work-order creation. The integration should preserve user permissions and show the proposed action for confirmation when appropriate." },
+ { q: "Should AI be allowed to approve safety-critical maintenance?", a: "No. AI can organize information and prepare records, but qualified people should retain responsibility for safety classification, shutdown decisions, regulatory conclusions, and physical maintenance instructions." },
+ ],
+ related: [
+ "ai-maintenance-assistant",
+ "cmms-for-chatgpt",
+ "maintenance-mcp-server",
+ "ai-work-order-automation",
+ "equipment-risk-scoring",
+ "predictive-maintenance-without-sensors",
+ "maintenance-request-qr-codes",
+ "ai-native-cmms",
+ "agentic-maintenance-workflows",
+ ],
+ sources: [
+ { label: "Rockwell Automation and Augury agentic AI announcement (July 23, 2026)", url: "https://www.rockwellautomation.com/en-us/company/news/press-releases/rockwell-automation-and-augury-partner-to-improve-industrial-performance-with-agentic-ai.html" },
+ { label: "Fiix Maintenance Assistant Experience (MAX) announcement (July 14, 2026)", url: "https://fiixsoftware.com/blog/fiix-max/" },
+ { label: "Facilio AI-native CMMS announcement (July 1, 2026)", url: "https://www.prnewswire.com/news-releases/facilio-ushers-in-the-ai-native-era-of-cmms-302815869.html" },
+ ],
  },
  {
  slug: "preventive-maintenance",
@@ -309,7 +392,7 @@ export const glossary: GlossaryTerm[] = [
  { q: "Do I need expensive sensors for predictive maintenance?", a: "Not to start. Manual condition readings (temperature, vibration pens, oil samples) logged consistently in a CMMS build a usable trend. Permanent sensors pay off on the most critical assets." },
  { q: "Is predictive maintenance the same as condition-based maintenance?", a: "They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models." },
  ],
- related: ["preventive-maintenance", "condition-based-maintenance", "reactive-maintenance"],
+ related: ["agentic-cmms", "preventive-maintenance", "condition-based-maintenance", "reactive-maintenance"],
  },
  {
  slug: "corrective-maintenance",
@@ -556,8 +639,9 @@ export const glossary: GlossaryTerm[] = [
    { q: "How does a CMMS help with Root Cause Analysis?", a: "A CMMS surfaces the failure history that makes RCA possible (same asset, same failure code, repeated), stores photos and notes from the original work order, and tracks the corrective actions that come out of the analysis so nothing falls through the cracks." },
    { q: "What is the difference between RCA and RCFA?", a: "RCFA (Root Cause Failure Analysis) is RCA applied specifically to equipment failures. In maintenance the terms are used interchangeably; RCA is the broader label used across quality, safety, and operations." },
   ],
-  related: ["mtbf", "mttr", "preventive-maintenance", "corrective-maintenance"],
+ related: ["mtbf", "mttr", "preventive-maintenance", "corrective-maintenance"],
  },
+ ...emergingAiGlossary,
 ];
 
 export const getGlossaryTerm = (slug: string) =>

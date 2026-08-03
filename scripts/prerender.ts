@@ -28,6 +28,8 @@ type Route = {
   description: string;
   h1: string;
   intro: string;
+  ogType?: "website" | "article";
+  jsonLd?: Record<string, unknown>[];
   /** Extra crawlable body copy (headings/paragraphs), already escaped-safe text. */
   sections?: { heading: string; body: string }[];
   links?: { href: string; label: string }[];
@@ -139,7 +141,13 @@ const staticRoutes: Route[] = [
     h1: "CMMS cost calculator",
     intro:
       "Enter your team size and current per-seat price to see annual CMMS cost, MaintenEase flat-fee cost, and your projected savings.",
-    links: [{ href: "/compare", label: "Compare CMMS platforms" }],
+    links: [
+      { href: "/compare", label: "Compare CMMS platforms" },
+      {
+        href: "/compare/maintenease-vs-maintainx",
+        label: "See the MaintenEase vs MaintainX cost comparison",
+      },
+    ],
   },
   {
     path: "/blog",
@@ -233,21 +241,62 @@ const solutionRoutes: Route[] = solutions.map((s) => ({
   links: [{ href: "/solutions", label: "All solutions" }, { href: "/pricing", label: "Pricing" }],
 }));
 
-const learnRoutes: Route[] = glossary.map((g) => ({
-  path: `/learn/${g.slug}`,
-  title: g.metaTitle,
-  description: g.metaDescription,
-  h1: g.term,
-  intro: g.short,
-  sections: [
-    ...g.sections.map((s) => ({ heading: s.heading, body: s.body })),
-    ...g.faqs.map((f) => ({ heading: f.q, body: f.a })),
-  ],
-  links: [
-    { href: "/learn", label: "All guides" },
-    ...g.related.map((slug) => ({ href: `/learn/${slug}`, label: slug.replace(/-/g, " ") })),
-  ],
-}));
+const learnRoutes: Route[] = glossary.map((g) => {
+  const url = `${ORIGIN}/learn/${g.slug}`;
+  return {
+    path: `/learn/${g.slug}`,
+    title: g.metaTitle,
+    description: g.metaDescription,
+    h1: g.term,
+    intro: g.short,
+    ogType: "article",
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: g.term,
+        description: g.short,
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+        inLanguage: "en",
+        image: OG_IMAGE,
+        author: { "@type": "Organization", name: "MaintenEase" },
+        publisher: {
+          "@type": "Organization",
+          name: "MaintenEase",
+          logo: { "@type": "ImageObject", url: `${ORIGIN}/favicon.png` },
+        },
+        ...(g.published ? { datePublished: g.published } : {}),
+        ...(g.updated ? { dateModified: g.updated } : {}),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: g.faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Learn", item: `${ORIGIN}/learn` },
+          { "@type": "ListItem", position: 2, name: g.term, item: url },
+        ],
+      },
+    ],
+    sections: [
+      ...g.sections.map((s) => ({ heading: s.heading, body: s.body })),
+      ...g.faqs.map((f) => ({ heading: f.q, body: f.a })),
+    ],
+    links: [
+      { href: "/learn", label: "All guides" },
+      ...g.related.map((slug) => ({ href: `/learn/${slug}`, label: slug.replace(/-/g, " ") })),
+      ...(g.sources ?? []).map((source) => ({ href: source.url, label: source.label })),
+    ],
+  };
+});
 
 const compareRoutes: Route[] = comparisons.map((c) => ({
   path: `/compare/${c.slug}`,
@@ -260,7 +309,16 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
     ...c.differentiators.map((d) => ({ heading: d.title, body: d.body })),
     ...c.faqs.map((f) => ({ heading: f.q, body: f.a })),
   ],
-  links: [{ href: "/compare", label: "All comparisons" }, { href: "/pricing", label: "Pricing" }],
+  links: [
+    { href: "/compare", label: "All comparisons" },
+    { href: "/pricing", label: "Pricing" },
+    ...(["maintenease-vs-upkeep", "maintenease-vs-fiix"].includes(c.slug)
+      ? [{
+          href: "/compare/maintenease-vs-maintainx",
+          label: "Compare MaintenEase with MaintainX",
+        }]
+      : []),
+  ],
 }));
 
 const routes: Route[] = [...staticRoutes, ...solutionRoutes, ...learnRoutes, ...compareRoutes];
@@ -396,7 +454,7 @@ function headFor(route: Route): string {
     `<title>${title}</title>`,
     `<meta name="description" content="${description}" data-rh="true" />`,
     `<link data-rh="true" rel="canonical" href="${canonical}" />`,
-    `<meta property="og:type" content="website" />`,
+    `<meta property="og:type" content="${route.ogType ?? "website"}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
     `<meta property="og:url" content="${canonical}" />`,
@@ -406,6 +464,10 @@ function headFor(route: Route): string {
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${OG_IMAGE}" />`,
   ];
+
+  for (const block of route.jsonLd ?? []) {
+    tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
+  }
 
   // /landing is a paid-acquisition surface: crawlers must see robots + org/site/FAQ
   // structured data in the static shell (Helmet alone is invisible without JS).

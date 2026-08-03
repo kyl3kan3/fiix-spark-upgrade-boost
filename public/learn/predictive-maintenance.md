@@ -32,6 +32,7 @@ They are closely related. Condition-based maintenance acts when a reading crosse
 
 ## Related
 
+- https://maintenease.com/learn/agentic-cmms
 - https://maintenease.com/learn/preventive-maintenance
 - https://maintenease.com/learn/condition-based-maintenance
 - https://maintenease.com/learn/reactive-maintenance
