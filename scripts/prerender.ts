@@ -16,7 +16,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
-import { comparisons } from "../src/data/comparisons";
+import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
@@ -319,6 +319,21 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
         }]
       : []),
   ],
+  ...(c.slug === "maintenease-vs-maintainx"
+    ? {
+        jsonLd: [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: getFaqSchemaEntries(c).map((faq) => ({
+              "@type": "Question",
+              name: faq.q,
+              acceptedAnswer: { "@type": "Answer", text: faq.a },
+            })),
+          },
+        ],
+      }
+    : {}),
 }));
 
 const routes: Route[] = [...staticRoutes, ...solutionRoutes, ...learnRoutes, ...compareRoutes];

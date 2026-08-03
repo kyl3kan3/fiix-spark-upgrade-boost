@@ -301,3 +301,13 @@ export const comparisons: Comparison[] = [
 ];
 
 export const getComparison = (slug: string) => comparisons.find((c) => c.slug === slug);
+
+/**
+ * The MaintainX page has six page-specific FAQs followed by two shared
+ * migration/affiliation FAQs. Its requested FAQPage markup covers only the
+ * six page-specific questions; every other comparison marks up its full list.
+ */
+export const getFaqSchemaEntries = (comparison: Comparison) =>
+  comparison.slug === "maintenease-vs-maintainx"
+    ? comparison.faqs.slice(0, 6)
+    : comparison.faqs;

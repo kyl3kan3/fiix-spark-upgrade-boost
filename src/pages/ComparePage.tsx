@@ -5,7 +5,12 @@ import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import { Button } from "@/components/ui/button";
 import { Check, X, ArrowRight } from "lucide-react";
-import { getComparison, comparisons, type CompareValue } from "@/data/comparisons";
+import {
+  getComparison,
+  getFaqSchemaEntries,
+  comparisons,
+  type CompareValue,
+} from "@/data/comparisons";
 
 const Cell = ({ value, accent }: { value: CompareValue; accent?: boolean }) => {
   if (value === true) return <Check className={`h-5 w-5 ${accent ? "text-primary" : "text-success"}`} aria-label="Yes" />;
@@ -33,7 +38,7 @@ const ComparePage = () => {
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: c.faqs.map((f) => ({
+    mainEntity: getFaqSchemaEntries(c).map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
