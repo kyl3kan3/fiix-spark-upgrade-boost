@@ -1,0 +1,12 @@
+{
+  "serverInfo": { "name": "maintenease-mcp", "title": "MaintenEase", "version": "0.1.0" },
+  "transport": { "type": "streamable-http", "endpoint": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp" },
+  "capabilities": { "tools": { "listChanged": false } },
+  "instructions": "Tools for MaintenEase, a CMMS. List and create work orders, browse assets and locations, and read the maintenance request inbox for the signed-in user's company. All tools are tenant-scoped.",
+  "authorization": {
+    "type": "oauth2",
+    "protectedResourceMetadata": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp/.well-known/oauth-protected-resource"
+  },
+  "documentation": "https://maintenease.com/learn/maintenance-mcp-server.md",
+  "websiteUrl": "https://maintenease.com/"
+}

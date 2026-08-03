@@ -1,3 +1,43 @@
+# RFC 8288 Link headers for agent discovery. Advertised on every HTML response
+# so agents can find the API catalog, MCP server card, skills index, auth docs,
+# and OAuth metadata without scraping the page.
+/*
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
+  Link: </llms.txt>; rel="service-doc"; type="text/plain"
+  Link: </api/ai.json>; rel="service-desc"; type="application/json"
+  Link: </.well-known/mcp/server-card.json>; rel="mcp-server-card"; type="application/json"
+  Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
+  Link: </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json"
+  Link: </.well-known/oauth-authorization-server>; rel="oauth-authorization-server"; type="application/json"
+  Link: </auth.md>; rel="author"; type="text/markdown"
+
+# Well-known agent discovery documents (extensionless files need explicit types).
+/.well-known/api-catalog
+  Content-Type: application/linkset+json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+/.well-known/oauth-protected-resource
+  Content-Type: application/json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+/.well-known/oauth-authorization-server
+  Content-Type: application/json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+/.well-known/openid-configuration
+  Content-Type: application/json; charset=utf-8
+  Access-Control-Allow-Origin: *
+
+/.well-known/mcp/server-card.json
+  Access-Control-Allow-Origin: *
+
+/.well-known/agent-skills/index.json
+  Access-Control-Allow-Origin: *
+
+/auth.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Disposition: inline
+
 # Serve Markdown corpus files as plain text so AI assistants (ChatGPT, Claude,
 # Gemini) fetch and render them reliably instead of prompting a download or
 # hitting cache/timeout issues.

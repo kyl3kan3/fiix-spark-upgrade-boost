@@ -13,6 +13,18 @@ import { trackAICrawlerRequest } from "@datafast/ai-crawl";
 // Same websiteId as the browser script in index.html.
 const WEBSITE_ID = "dfid_4BRVKzjIQLv5Psqg0AK9u";
 
+// RFC 8288 Link headers advertising agent-discovery resources.
+const AGENT_LINKS = [
+  '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
+  '</llms.txt>; rel="service-doc"; type="text/plain"',
+  '</api/ai.json>; rel="service-desc"; type="application/json"',
+  '</.well-known/mcp/server-card.json>; rel="mcp-server-card"; type="application/json"',
+  '</.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"',
+  '</.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json"',
+  '</.well-known/oauth-authorization-server>; rel="oauth-authorization-server"; type="application/json"',
+  '</auth.md>; rel="author"; type="text/markdown"',
+].join(", ");
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function onRequest(context: any) {
   // Fire-and-forget: never await, so the response is never delayed.
@@ -27,12 +39,24 @@ export async function onRequest(context: any) {
 
   const response = await context.next();
 
-  // Keep the auth screen out of search indexes at the edge too.
   try {
     const { pathname } = new URL(context.request.url);
+    const headers = new Headers(response.headers);
+    let changed = false;
+
+    // Keep the auth screen out of search indexes at the edge too.
     if (pathname === "/auth" || pathname.startsWith("/auth/")) {
-      const headers = new Headers(response.headers);
       headers.set("X-Robots-Tag", "noindex, nofollow");
+      changed = true;
+    }
+
+    // Advertise agent-discovery resources on HTML documents.
+    if ((headers.get("content-type") ?? "").includes("text/html")) {
+      headers.append("Link", AGENT_LINKS);
+      changed = true;
+    }
+
+    if (changed) {
       return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
