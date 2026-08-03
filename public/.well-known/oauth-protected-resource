@@ -1,0 +1,8 @@
+{
+  "resource": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp",
+  "authorization_servers": ["https://wwgljhpuulhljumrhscg.supabase.co/auth/v1"],
+  "bearer_methods_supported": ["header"],
+  "scopes_supported": ["openid", "email", "profile"],
+  "resource_documentation": "https://maintenease.com/learn/maintenance-mcp-server.md",
+  "resource_name": "MaintenEase MCP Server"
+}
