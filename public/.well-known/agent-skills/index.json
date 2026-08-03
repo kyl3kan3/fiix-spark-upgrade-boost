@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agentskills.io/schemas/v0.2.0/index.json",
+  "version": "0.2.0",
+  "name": "MaintenEase Agent Skills",
+  "description": "Skills for working with MaintenEase, a CMMS for work orders, assets, preventive maintenance, and inspections.",
+  "skills": [
+    {
+      "name": "maintenease-cmms",
+      "type": "skill",
+      "description": "Connect to the MaintenEase MCP server to list and create work orders, browse assets and locations, and read the maintenance request inbox.",
+      "url": "https://maintenease.com/.well-known/agent-skills/maintenease-cmms/SKILL.md",
+      "sha256": "c27080ba078d9522daba52b68d31c6686fa5e57425e0b80f4fdfcd2f13a85d92"
+    }
+  ]
+}
