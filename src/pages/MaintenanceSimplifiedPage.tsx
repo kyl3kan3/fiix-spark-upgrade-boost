@@ -1,6 +1,18 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, ClipboardCheck, Wrench, BarChart3, Bell, Calendar, Users } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ClipboardCheck,
+  Wrench,
+  BarChart3,
+  Bell,
+  Calendar,
+  Users,
+  Building2,
+  Database,
+  Activity,
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,6 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { PRODUCT_LAST_MODIFIED } from "@/data/productCatalog";
 
 const URL = "https://maintenease.com/maintenance-simplified";
 const TITLE = "Maintenance Simplified: A Playbook for Small Teams";
@@ -44,8 +57,41 @@ const principles = [
   },
   {
     icon: Users,
-    title: "Flat pricing, whole crew",
-    body: "No per-seat math. Add every tech, contractor, and manager on one plan so nobody works off-system.",
+    title: "Account-level plans",
+    body: "Choose one plan for the account instead of multiplying a subscription price by every user. Published plan limits keep the tradeoffs visible before you buy.",
+  },
+];
+
+const operatingQuestions = [
+  {
+    title: "What needs attention now?",
+    body: "Put requests, corrective work, and preventive tasks in one queue. Give every item an owner, priority, due date, and status so the crew can start the day without checking texts, paper notes, and separate spreadsheets.",
+  },
+  {
+    title: "What cannot be allowed to fail?",
+    body: "Identify the assets whose failure would stop production, close a space, create a safety issue, or delay customers. Attach manuals and service history, then schedule the basic inspections and preventive work those assets require.",
+  },
+  {
+    title: "What is becoming risky?",
+    body: "Review repeat failures, falling time between failures, overdue preventive work, condition readings, repair cost, and downtime. These signals help the team inspect the right equipment before a developing problem becomes an interruption.",
+  },
+];
+
+const productDetails = [
+  {
+    icon: Building2,
+    title: "Flat account pricing, with clear plan limits",
+    body: "MaintenEase starts at $49 per month for a Starter account with two included seats. Pro is $129 per month with four included seats. Business is $299 per month with four included seats, and additional Business seats are $15 per month. The base subscription is selected for the account rather than calculated by multiplying one advertised price by every technician.",
+  },
+  {
+    icon: Database,
+    title: "Unlimited work orders and assets on Business",
+    body: "The Business plan includes unlimited assets and unlimited work orders. Starter supports up to 50 assets and 100 work orders per month; Pro supports up to 500 assets and 2,000 work orders per month. That makes capacity a visible plan choice instead of a surprise after setup.",
+  },
+  {
+    icon: Activity,
+    title: "Predictive maintenance for earlier action",
+    body: "Pro and Business include failure-risk scoring based on recorded work history and condition data. Each asset receives a 0–100 risk score with the factors behind it, helping supervisors prioritize inspections and planned work. The score supports a maintenance decision; it does not replace a technician's diagnosis.",
   },
 ];
 
@@ -69,7 +115,7 @@ const faqs = [
   },
   {
     q: "Do I need a full CMMS to simplify maintenance?",
-    a: "For a handful of assets, a shared spreadsheet works. Past ~50 assets or more than one tech, a lightweight CMMS pays back quickly because PMs stop slipping and work order history stops disappearing.",
+    a: "A shared spreadsheet can work while one person manages a small asset list. A CMMS becomes more practical when several people update work, recurring PMs need to generate reliably, or the team needs one service history for each asset.",
   },
   {
     q: "How is MaintenEase different from spreadsheets?",
@@ -77,7 +123,11 @@ const faqs = [
   },
   {
     q: "What does simplified maintenance cost?",
-    a: "MaintenEase starts at $49/month flat for the whole crew, with a 7-day free trial. Use the free cost calculator to compare against per-seat CMMS pricing for your team size.",
+    a: "MaintenEase starts at $49/month for a Starter account with two included seats and a 7-day free trial. Pro is $129/month with four included seats. Business is $299/month with four included seats, unlimited assets, and unlimited work orders; additional Business seats are $15/month.",
+  },
+  {
+    q: "Does MaintenEase include unlimited assets and work orders?",
+    a: "Yes, on the Business plan. Starter supports up to 50 assets and 100 work orders per month, while Pro supports up to 500 assets and 2,000 work orders per month. The pricing page lists the current limits for every plan.",
   },
 ];
 
@@ -104,6 +154,7 @@ const MaintenanceSimplifiedPage = () => (
           headline: TITLE,
           description: DESCRIPTION,
           mainEntityOfPage: URL,
+          dateModified: PRODUCT_LAST_MODIFIED,
           image: "https://maintenease.com/og-image.png?v=4",
           author: { "@type": "Organization", name: "MaintenEase" },
           publisher: {
@@ -166,7 +217,7 @@ const MaintenanceSimplifiedPage = () => (
             <CheckCircle2 className="h-4 w-4 text-success" /> 7-day free trial
           </span>
           <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-4 w-4 text-success" /> Flat price for the whole crew
+            <CheckCircle2 className="h-4 w-4 text-success" /> Flat account plans from $49/mo
           </span>
           <span className="flex items-center gap-1.5">
             <CheckCircle2 className="h-4 w-4 text-success" /> Free onboarding & data import
@@ -174,14 +225,35 @@ const MaintenanceSimplifiedPage = () => (
         </div>
       </section>
 
-      <section className="bg-card border-y border-border py-16">
+      <section className="bg-muted/40 border-y border-border py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="font-headline text-3xl font-bold text-foreground mb-3">
+            Simplify the decisions before you simplify the software
+          </h2>
+          <p className="text-muted-foreground mb-10 max-w-3xl leading-relaxed">
+            A simpler maintenance operation gives the team clear answers to three questions.
+            Start here, then use software to keep the answers current and visible.
+          </p>
+          <div className="grid md:grid-cols-3 gap-6">
+            {operatingQuestions.map((item, index) => (
+              <article key={item.title} className="rounded-xl border border-border bg-card p-6">
+                <span className="text-sm font-semibold text-primary">0{index + 1}</span>
+                <h3 className="font-semibold text-foreground mt-2 mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-card border-b border-border py-16">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="font-headline text-3xl font-bold text-foreground mb-3">
             The 6 principles behind simplified maintenance
           </h2>
           <p className="text-muted-foreground mb-10 max-w-2xl">
-            Every team we work with lands on the same handful of habits. Adopt these in order and
-            most of the daily chaos disappears in a month.
+            These habits create a shared operating system for the crew. Adopt them in order so
+            each step supports the next.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {principles.map(({ icon: Icon, title, body }) => (
@@ -200,7 +272,36 @@ const MaintenanceSimplifiedPage = () => (
         </div>
       </section>
 
-      <section className="container mx-auto px-4 py-16 max-w-3xl">
+      <section className="container mx-auto px-4 py-16 max-w-5xl">
+        <h2 className="font-headline text-3xl font-bold text-foreground mb-3">
+          Where MaintenEase fits
+        </h2>
+        <p className="text-muted-foreground mb-10 max-w-3xl leading-relaxed">
+          The practical value is not another dashboard. It is keeping the whole maintenance loop—
+          requests, assets, planned work, completed history, and emerging risk—in one account with
+          pricing and capacity the team can understand before rollout.
+        </p>
+        <p className="text-sm text-muted-foreground mb-8">
+          Last updated <time dateTime={PRODUCT_LAST_MODIFIED}>August 7, 2026</time>
+        </p>
+        <div className="grid md:grid-cols-3 gap-6">
+          {productDetails.map(({ icon: Icon, title, body }) => (
+            <article key={title} className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="mb-4 inline-flex items-center justify-center rounded-lg bg-secondary/10 p-3">
+                <Icon className="h-6 w-6 text-secondary" aria-hidden />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">{title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+            </article>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-muted-foreground">
+          Review the <Link to="/pricing" className="font-semibold text-primary hover:underline">current pricing and plan limits</Link> before choosing a plan.
+        </p>
+      </section>
+
+      <section className="bg-muted/40 border-y border-border py-16">
+        <div className="container mx-auto px-4 max-w-3xl">
         <h2 className="font-headline text-3xl font-bold text-foreground mb-3">
           The one-page maintenance simplified checklist
         </h2>
@@ -221,10 +322,11 @@ const MaintenanceSimplifiedPage = () => (
             </li>
           ))}
         </ol>
+        </div>
       </section>
 
-      <section className="bg-muted/40 border-y border-border py-16">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <section className="container mx-auto px-4 py-16 max-w-4xl">
+        <div>
           <h2 className="font-headline text-3xl font-bold text-foreground mb-3">
             See the numbers on your own team
           </h2>
@@ -288,8 +390,8 @@ const MaintenanceSimplifiedPage = () => (
             Ready to see maintenance simplified in your shop?
           </h2>
           <p className="text-primary-foreground/85 text-lg mb-8 max-w-2xl mx-auto">
-            Start a 7-day free trial. Import your assets, publish a QR request link, and put your
-            first PMs on autopilot the same afternoon.
+            Start a 7-day free trial. Import your assets, publish a QR request link, and work
+            through the first preventive-maintenance setup with your crew.
           </p>
           <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 uppercase tracking-wide font-semibold">
             <Link to="/auth?signup=true">

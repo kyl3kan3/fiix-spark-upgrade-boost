@@ -4,6 +4,8 @@ import Features from "@/components/Features";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import ShareButtons from "@/components/marketing/ShareButtons";
+import { featureItems } from "@/components/features/FeaturesData";
+import { buildItemListJsonLd } from "@/data/productCatalog";
 
 /**
  * Standalone /features marketing page.
@@ -38,6 +40,17 @@ const FeaturesPage = () => {
           content="Every MaintenEase feature, in one place."
         />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <script type="application/ld+json">
+          {JSON.stringify(buildItemListJsonLd(
+            "MaintenEase CMMS features",
+            "https://maintenease.com/features",
+            featureItems.map((feature) => ({
+              name: feature.title,
+              url: "https://maintenease.com/features",
+              description: feature.description,
+            })),
+          ))}
+        </script>
       </Helmet>
       <Navbar />
       <main className="flex-1 pt-24">

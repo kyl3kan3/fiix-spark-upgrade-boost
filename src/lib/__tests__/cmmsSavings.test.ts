@@ -8,7 +8,8 @@ import {
   MAX_TEAM_SIZE,
   DEFAULT_TEAM_SIZE,
 } from "@/lib/cmmsSavings";
-import { comparisons, MAINTENEASE_PRO } from "@/data/comparisons";
+import { comparisons } from "@/data/comparisons";
+import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 describe("cmmsSavings", () => {
   it("clamps team size to bounds and rounds; falls back on nonsense", () => {
@@ -18,11 +19,18 @@ describe("cmmsSavings", () => {
     expect(clampTeamSize(NaN)).toBe(DEFAULT_TEAM_SIZE);
   });
 
-  it("breakeven is the smallest team size where flat beats per-user", () => {
+  it("breakeven is the smallest team size where the applicable account plan beats per-user", () => {
     for (const c of comparisons) {
       const n = breakevenTeamSize(c.competitorPricePerUser);
-      expect(n * c.competitorPricePerUser).toBeGreaterThan(MAINTENEASE_PRO);
-      expect((n - 1) * c.competitorPricePerUser).toBeLessThanOrEqual(MAINTENEASE_PRO);
+      expect(n).toBeLessThanOrEqual(MAX_TEAM_SIZE + 1);
+      if (n <= MAX_TEAM_SIZE) {
+        expect(n * c.competitorPricePerUser).toBeGreaterThan(getMaintenEaseTeamPrice(n).monthlyPrice);
+        for (let teamSize = MIN_TEAM_SIZE; teamSize < n; teamSize += 1) {
+          expect(teamSize * c.competitorPricePerUser).toBeLessThanOrEqual(
+            getMaintenEaseTeamPrice(teamSize).monthlyPrice,
+          );
+        }
+      }
     }
   });
 
@@ -31,7 +39,7 @@ describe("cmmsSavings", () => {
     expect(r.vendors).toHaveLength(comparisons.length);
     const monthlies = r.vendors.map((v) => v.monthly);
     expect([...monthlies].sort((a, b) => b - a)).toEqual(monthlies);
-    expect(r.maxMonthly).toBe(Math.max(MAINTENEASE_PRO, ...monthlies));
+    expect(r.maxMonthly).toBe(Math.max(r.maintenease, ...monthlies));
   });
 
   it("is honest at small team sizes: cheaper rivals show negative savings", () => {

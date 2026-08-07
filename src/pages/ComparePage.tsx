@@ -63,6 +63,8 @@ const ComparePage = () => {
         name: c.h1,
         description: c.metaDescription,
         url,
+        inLanguage: "en-US",
+        about: { "@id": "https://maintenease.com/#software" },
         ...(c.datePublished ? { datePublished: c.datePublished } : {}),
         ...(c.dateModified ? { dateModified: c.dateModified } : {}),
       }
@@ -273,7 +275,7 @@ const ComparePage = () => {
         <div className="p-10 rounded-2xl text-center text-primary-foreground" style={{ background: "linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 18%))" }}>
           <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3">See the difference for your crew</h2>
           <p className="text-lg text-primary-foreground/85 mb-8 max-w-2xl mx-auto">
-            Start a 7-day free trial and bring your whole team on for one flat price.
+            Start a 7-day free trial on the plan whose included seats and capacity fit your team.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">

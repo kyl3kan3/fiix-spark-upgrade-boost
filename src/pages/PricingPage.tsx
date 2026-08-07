@@ -16,34 +16,12 @@ import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { TRIAL_DAYS } from "@/constants/trial";
 import { trackTrialEvent } from "@/lib/analytics/trialEvents";
 import { getPaddleEnvironment } from "@/lib/paddle";
-
-const PLANS = [
- {
- tier: "starter" as const,
- name: "Starter",
- monthly: 49,
- yearly: 490,
- blurb: "For small teams getting started",
- features: ["2 included seats", "Up to 50 assets", "100 work orders/mo", "Basic dashboard", "Email support"],
- },
- {
- tier: "pro" as const,
- name: "Pro",
- monthly: 129,
- yearly: 1290,
- blurb: "For growing maintenance teams",
- popular: true,
- features: ["4 included seats", "Up to 500 assets", "2,000 work orders/mo", "Full analytics & reports", "Automations", "Priority email support"],
- },
- {
- tier: "business" as const,
- name: "Business",
- monthly: 299,
- yearly: 2990,
- blurb: "For larger organizations",
- features: ["4 included seats", "$15/extra seat/mo", "Unlimited assets", "Unlimited work orders", "Full analytics & exports", "Automations + API", "SSO", "Email + chat support"],
- },
-];
+import {
+ PRODUCT_LAST_MODIFIED,
+ PRODUCT_PLANS,
+ PRODUCT_JSON_LD,
+ SOFTWARE_APPLICATION_JSON_LD,
+} from "@/data/productCatalog";
 
 export default function PricingPage() {
  const [interval, setInterval] = useState<"month" | "year">("month");
@@ -91,19 +69,8 @@ export default function PricingPage() {
  <meta name="twitter:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
  <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
- <script type="application/ld+json">{JSON.stringify({
- "@context": "https://schema.org",
- "@type": "Product",
- name: "MaintenEase",
- description: "Maintenance management software for asset tracking, work orders, and inspections.",
- image: ["https://maintenease.com/og-image.png?v=4"],
- brand: { "@type": "Brand", name: "MaintenEase" },
- offers: [
- { "@type": "Offer", name: "Starter", price: "49", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" },
- { "@type": "Offer", name: "Pro", price: "129", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" },
- { "@type": "Offer", name: "Business", price: "299", priceCurrency: "USD", url: "https://maintenease.com/pricing", availability: "https://schema.org/InStock" }
- ]
- })}</script>
+ <script type="application/ld+json">{JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>
+ <script type="application/ld+json">{JSON.stringify(PRODUCT_JSON_LD)}</script>
  </Helmet>
  <MarketingJsonLd />
  <PaymentTestModeBanner />
@@ -117,6 +84,9 @@ export default function PricingPage() {
      </h1>
      <p className="text-lg text-muted-foreground mb-8">
         Choose the plan that fits your facility's needs. 7-day free trial on every plan.
+     </p>
+     <p className="text-sm text-muted-foreground mb-6">
+       Pricing reviewed <time dateTime={PRODUCT_LAST_MODIFIED}>August 7, 2026</time>.
      </p>
      <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
        <button
@@ -152,11 +122,12 @@ export default function PricingPage() {
    Compare plans
  </h2>
  <div className="grid gap-6 md:grid-cols-3 items-center mb-10">
- {PLANS.map((plan) => {
- const price = interval === "month" ? plan.monthly : Math.round(plan.yearly / 12);
+ {PRODUCT_PLANS.map((plan) => {
+ const price = interval === "month" ? plan.monthlyPrice : Math.round(plan.annualPrice / 12);
  return (
  <Card
    key={plan.tier}
+   id={`plan-${plan.tier}`}
    className={`relative transition-ui duration-300 hover:-translate-y-1 ${
      plan.popular
        ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
@@ -175,13 +146,13 @@ export default function PricingPage() {
    </CardTitle>
    {plan.popular && <Badge className="bg-secondary text-secondary-foreground">Best Value</Badge>}
  </div>
- <p className={`text-sm ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{plan.blurb}</p>
+ <p className={`text-sm ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{plan.description}</p>
  <div className="mt-4 pb-4 border-b border-current/10">
    <span className={`text-4xl font-bold ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>${price}</span>
    <span className={plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}>/mo</span>
    {interval === "year" && (
      <div className={`text-xs mt-1 ${plan.popular ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-       billed ${plan.yearly}/year
+       billed ${plan.annualPrice}/year
      </div>
    )}
  </div>
@@ -199,7 +170,7 @@ export default function PricingPage() {
  {loadingTier === plan.tier ? "Loading…" : "Start 7-day trial"}
  </Button>
  <ul className="space-y-2 text-sm">
- {plan.features.map((f) => (
+ {plan.featureLabels.map((f) => (
  <li key={f} className="flex items-start gap-2">
    <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
    <span className={plan.popular ? "text-primary-foreground" : "text-foreground"}>{f}</span>

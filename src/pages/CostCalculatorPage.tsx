@@ -29,11 +29,11 @@ const FAQS = [
   },
   {
     q: "Is per-seat pricing ever cheaper than MaintenEase?",
-    a: "Yes — for very small crews. A 2-person team on a $21/user plan pays $42/mo, less than the $129 flat fee. The math flips fast though: per-seat overtakes the flat fee at 3 technicians for $45/user tools and at 7 for $21/user tools, and the gap keeps widening with every hire.",
+    a: "Yes. The calculator compares each published per-user price with the lowest MaintenEase plan that covers the selected team size, including Business-plan extra seats when needed. At some team sizes, a per-seat plan costs less; the results show that directly.",
   },
   {
-    q: "Does the flat fee really cover my whole crew?",
-    a: "The calculator uses the MaintenEase Pro plan ($129/mo). Compare plan details on the pricing page to pick the tier that fits your operation — every plan starts with a 7-day free trial (card required; cancel before day 8, no charge).",
+    q: "How does MaintenEase team pricing work?",
+    a: "Starter is $49 per month with 2 included seats, Pro is $129 per month with 4 included seats, and Business is $299 per month with 4 included seats. Additional Business seats are $15 per month. Plan asset and work-order limits also apply, so confirm the full plan details on the pricing page.",
   },
 ];
 
@@ -63,10 +63,12 @@ const CostCalculatorPage = () => {
   const rows = [
     {
       name: "MaintenEase",
-      plan: "Pro — flat fee",
+      plan: `${result.mainteneasePlan} — account plan`,
       monthly: result.maintenease,
       accent: true,
-      note: "whole crew included",
+      note: result.mainteneaseExtraSeats > 0
+        ? `includes ${result.mainteneaseExtraSeats} additional Business seat${result.mainteneaseExtraSeats === 1 ? "" : "s"}`
+        : "published plan price; plan capacity limits apply",
     },
     ...result.vendors.map((v) => ({
       name: v.name,
@@ -85,20 +87,20 @@ const CostCalculatorPage = () => {
   return (
     <MarketingLayout>
       <Helmet>
-        <title>CMMS Cost Calculator — Per-Seat vs Flat Fee</title>
+        <title>CMMS Cost Calculator — Per-Seat vs Account Plans</title>
         <meta
           name="description"
-          content="Free CMMS cost calculator. See what UpKeep, MaintainX, Limble, and Fiix cost for your team size vs one flat fee — including where per-seat pricing is cheaper."
+          content="Free CMMS cost calculator. Compare published per-seat pricing with MaintenEase account plans and included seats for your team size."
         />
         <link rel="canonical" href={url} />
-        <meta property="og:title" content="CMMS Cost Calculator — Per-Seat vs Flat-Fee Pricing" />
-        <meta property="og:description" content="What does a CMMS really cost for your crew? Compare per-seat pricing to one flat fee, honestly — breakevens included." />
+        <meta property="og:title" content="CMMS Cost Calculator — Per-Seat vs Account Plans" />
+        <meta property="og:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="CMMS Cost Calculator — Per-Seat vs Flat-Fee Pricing" />
-        <meta name="twitter:description" content="What does a CMMS really cost for your crew? Compare per-seat pricing to one flat fee, honestly — breakevens included." />
+        <meta name="twitter:title" content="CMMS Cost Calculator — Per-Seat vs Account Plans" />
+        <meta name="twitter:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
@@ -116,8 +118,8 @@ const CostCalculatorPage = () => {
           What does a CMMS really cost for your crew?
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl">
-          Per-seat pricing looks cheap until you add the whole team. Slide to your crew size and see the monthly
-          bill on each per-user CMMS next to one flat fee — including where per-seat is honestly the better deal.
+          Slide to your crew size and compare each listed per-user CMMS with the lowest MaintenEase account plan
+          that covers those seats, including additional Business seats when needed.
         </p>
       </section>
 
@@ -153,12 +155,16 @@ const CostCalculatorPage = () => {
           <div className="grid sm:grid-cols-3 gap-4 mb-10">
             <div className="rounded-xl border border-border bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
-                MaintenEase Pro
+                MaintenEase {result.mainteneasePlan}
               </p>
               <p className="text-2xl font-bold text-foreground tabular-nums">
                 {formatUsd(result.maintenease)}<span className="text-sm font-medium text-muted-foreground">/mo</span>
               </p>
-              <p className="text-xs text-muted-foreground mt-1">flat — team size doesn't change it</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {result.mainteneaseExtraSeats > 0
+                  ? `${result.mainteneaseExtraSeats} additional Business seat${result.mainteneaseExtraSeats === 1 ? "" : "s"}`
+                  : "included seats cover this team size"}
+              </p>
             </div>
             <div className="rounded-xl border border-border bg-background p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
@@ -216,21 +222,24 @@ const CostCalculatorPage = () => {
           <p className="text-xs text-muted-foreground mt-8 border-t border-border pt-4">
             Competitor pricing reflects publicly listed entry/standard per-user tiers as of 2026 and is illustrative
             only — verify current rates with each vendor. MaintenEase is not affiliated with UpKeep, MaintainX,
-            Limble, or Fiix. MaintenEase figure is the Pro plan; per-user plans often also require annual commitment,
-            while MaintenEase is month-to-month.
+            Limble, or Fiix. The MaintenEase figure uses the lowest published plan that covers the selected seat
+            count and includes $15/month Business extra seats when required. Asset and work-order limits may require
+            a higher plan; confirm current plan details before purchasing.
           </p>
         </div>
 
         {/* Breakeven strip */}
         <div className="mt-6 rounded-xl border border-border bg-muted/40 p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-2">When does the flat fee win?</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-2">When does each pricing model cost less?</h2>
           <p className="text-sm text-muted-foreground">
             {result.vendors
               .slice()
               .sort((a, b) => a.breakevenTeamSize - b.breakevenTeamSize)
-              .map((v) => `${v.name} from ${v.breakevenTeamSize} technicians`)
+              .map((v) => v.breakevenTeamSize <= MAX_TEAM_SIZE
+                ? `${v.name}: MaintenEase costs less from ${v.breakevenTeamSize} technicians`
+                : `${v.name}: no MaintenEase crossover within ${MAX_TEAM_SIZE} technicians`)
               .join(" · ")}
-            . Below those sizes, per-seat is genuinely cheaper — the flat fee pays off as your crew grows.
+            . Below each crossover, that listed per-seat plan costs the same or less for the selected seat count.
           </p>
         </div>
       </section>
@@ -255,7 +264,7 @@ const CostCalculatorPage = () => {
         <div className="p-10 rounded-2xl text-center text-primary-foreground" style={{ background: "linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 18%))" }}>
           <h2 className="font-headline text-3xl font-bold mb-3">Run the real numbers on your own crew</h2>
           <p className="text-lg text-primary-foreground/85 mb-8 max-w-2xl mx-auto">
-            Start a 7-day free trial — one flat price, free onboarding and data import.
+            Start a 7-day free trial with published account-plan and seat pricing, plus free onboarding and data import.
           </p>
           <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
             <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
@@ -279,8 +288,8 @@ const CostCalculatorPage = () => {
           <p className="text-sm text-muted-foreground">Share this calculator</p>
           <ShareButtons
             url={url}
-            title="CMMS Cost Calculator — Per-Seat vs Flat-Fee Pricing"
-            description="See what UpKeep, MaintainX, Limble, and Fiix cost for your team size vs one flat fee."
+            title="CMMS Cost Calculator — Per-Seat vs Account Plans"
+            description="Compare published per-seat CMMS pricing with MaintenEase account plans for your team size."
           />
         </div>
       </section>

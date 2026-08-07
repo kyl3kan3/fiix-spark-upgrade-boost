@@ -18,7 +18,7 @@ const LEAD_FORM_COPY: Record<string, { title: string; subtitle: string; cta: str
  subtitle: "Tell us how many assets you track and we'll show you the fastest way to get every one labelled, located, and live in MaintenEase.",
  cta: "Book a 20-min walkthrough",
  ctaHeadline: "Stop hunting for assets. Start scanning them.",
- ctaBody: "Most teams have their first 100 assets QR-labelled and live within a day. Start free, or book a walkthrough with a specialist.",
+ ctaBody: "Import your asset list, generate QR labels, and roll out the workflow at a pace that fits your operation. Start free, or book a walkthrough with a specialist.",
  },
  "asset-management-software": {
  title: "Talk to an asset management specialist",
@@ -173,7 +173,7 @@ const SolutionPage = () => {
  {(() => {
  const lead = LEAD_FORM_COPY[solution.slug];
  const headline = lead?.ctaHeadline ?? `Ready to see ${solution.name} in action?`;
- const body = lead?.ctaBody ?? "Start a 7-day free trial. Most teams have their first work orders running within an hour.";
+ const body = lead?.ctaBody ?? "Start a 7-day free trial and set up your first work orders with guided onboarding and free data import.";
  return (
  <section className="container mx-auto px-4 pb-20 max-w-5xl">
  <div className="p-10 rounded-2xl text-center text-primary-foreground" style={{ background: "linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 18%))" }}>

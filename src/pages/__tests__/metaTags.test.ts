@@ -62,10 +62,16 @@ describe("MarketingJsonLd component", () => {
  resolve(process.cwd(), "src/components/marketing/MarketingJsonLd.tsx"),
  "utf8",
  );
+ const catalogSource = readFileSync(
+ resolve(process.cwd(), "src/data/productCatalog.ts"),
+ "utf8",
+ );
  it("emits Organization schema", () => {
- expect(source).toMatch(/"@type":\s*"Organization"/);
+ expect(source).toMatch(/ORGANIZATION_JSON_LD/);
+ expect(catalogSource).toMatch(/"@type":\s*"Organization"/);
  });
  it("emits WebSite schema", () => {
- expect(source).toMatch(/"@type":\s*"WebSite"/);
+ expect(source).toMatch(/WEBSITE_JSON_LD/);
+ expect(catalogSource).toMatch(/"@type":\s*"WebSite"/);
  });
 });

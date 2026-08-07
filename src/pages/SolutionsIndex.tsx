@@ -4,6 +4,7 @@ import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { solutions } from "@/data/solutions";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
+import { buildItemListJsonLd } from "@/data/productCatalog";
 
 const SolutionsIndex = () => {
  return (
@@ -21,6 +22,15 @@ const SolutionsIndex = () => {
  <meta name="twitter:title" content="Solutions | MaintenEase" />
  <meta name="twitter:description" content="Work orders, preventive maintenance, facilities, and fleet — one platform." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <script type="application/ld+json">{JSON.stringify(buildItemListJsonLd(
+ "MaintenEase CMMS solutions",
+ "https://maintenease.com/solutions",
+ solutions.map((solution) => ({
+ name: solution.name,
+ url: `https://maintenease.com/solutions/${solution.slug}`,
+ description: solution.tagline,
+ })),
+ ))}</script>
  </Helmet>
  <MarketingJsonLd />
  <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">

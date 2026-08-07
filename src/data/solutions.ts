@@ -54,7 +54,7 @@ export const solutions: Solution[] = [
  intro:
  "MaintenEase turns preventive maintenance from a calendar reminder into an audited, automated process. Build schedules per asset by date, runtime hours, or meter reading. Work orders generate themselves, route to the right technician, and surface the procedure, parts, and safety steps inline. Compliance reports — fire systems, life safety, regulated inspections — export with a click.",
  benefits: [
- { title: "Fewer breakdowns", body: "Teams typically cut reactive work by 30–50% within the first year of running preventive maintenance on a schedule." },
+ { title: "Fewer avoidable breakdowns", body: "Put recurring inspections and service on a visible schedule, then compare failures before and after each PM interval so the team can adjust the work based on its own history." },
  { title: "Smoother technician days", body: "Planned work replaces firefighting. Workload is visible a week ahead, not discovered each morning." },
  { title: "Audit-ready records", body: "Every PM closes with a timestamped record, photos, and signatures — exactly what regulators and insurance carriers want to see." },
  ],
@@ -87,7 +87,7 @@ export const solutions: Solution[] = [
  benefits: [
  { title: "Multi-site visibility", body: "See backlog, response time, and PM compliance per building and per portfolio in one dashboard." },
  { title: "Happier occupants", body: "Tenants and staff get automatic status updates from the moment they submit a request to the moment work is complete." },
- { title: "Lower operating cost", body: "Standardized vendor management, warranty tracking, and parts visibility quietly trim 5–15% from facility budgets." },
+ { title: "More visible operating cost", body: "Standardized vendor records, warranty tracking, and parts visibility make it easier to find duplicate spending, missed warranty work, and costly repeat repairs." },
  ],
  features: [
  { title: "Nested locations", body: "Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly." },

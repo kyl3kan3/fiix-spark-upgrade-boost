@@ -10,7 +10,7 @@
  *   - twitter:card / twitter:title / twitter:description / twitter:image
  *   - og:image + twitter:image resolve (HTTP 200) and are image/*
  *   - FAQPage, Organization, and WebSite JSON-LD blocks parse
- *   - any SoftwareApplication markup includes Google's required rating/review
+ *   - SoftwareApplication markup is present without fabricated rating/review data
  *
  * Exits non-zero on any failure. Wire into CI before deploy.
  *
@@ -147,16 +147,12 @@ async function main() {
 
   const softwareApplication = jsonld.find(
     (b) => (b as { "@type"?: string })["@type"] === "SoftwareApplication",
-  ) as { aggregateRating?: unknown; review?: unknown } | undefined;
-  if (
-    softwareApplication &&
-    !softwareApplication.aggregateRating &&
-    !softwareApplication.review
-  ) {
-    errs.push(
-      "SoftwareApplication JSON-LD requires a genuine aggregateRating or review for Google rich results",
-    );
-  }
+  ) as { offers?: unknown[]; aggregateRating?: unknown; review?: unknown } | undefined;
+  if (!softwareApplication) errs.push("SoftwareApplication JSON-LD missing");
+  if (softwareApplication && (!softwareApplication.offers || softwareApplication.offers.length === 0))
+    errs.push("SoftwareApplication has no offers");
+  if (softwareApplication?.aggregateRating || softwareApplication?.review)
+    errs.push("SoftwareApplication must not publish unverified rating/review data");
 
   const faq = jsonld.find(
     (b) => (b as { "@type"?: string })["@type"] === "FAQPage",

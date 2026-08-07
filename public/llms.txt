@@ -1,8 +1,8 @@
 # MaintenEase
 
-> Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Flat monthly pricing instead of per-user seats. Work orders, preventive maintenance, inspections, assets, and a public request portal in one place.
+> Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Account plans include seats and published capacity limits. Work orders, preventive maintenance, inspections, assets, and a public request portal live in one place.
 
-MaintenEase Pro is a flat $129/month for the whole team. 7-day free trial. Month-to-month billing. Free data import and onboarding.
+Starter is $49/month with 2 included seats; Pro is $129/month with 4 included seats; Business is $299/month with 4 included seats. Additional Business seats are $15/month. Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders. 7-day free trial. Month-to-month billing. Free data import and onboarding.
 
 All pages below are also available as clean Markdown by appending `.md` (e.g. https://maintenease.com/solutions/work-order-software.md). See https://maintenease.com/llms-full.txt for the full corpus in one file.
 
@@ -10,7 +10,7 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 
 - [Home](https://maintenease.com/): Product overview.
 - [Features](https://maintenease.com/features): Full feature list.
-- [Pricing](https://maintenease.com/pricing): Flat monthly pricing and trial details.
+- [Pricing](https://maintenease.com/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
 - [Sign in / Sign up](https://maintenease.com/auth): Account access.
 
@@ -27,9 +27,9 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 ## Comparisons
 
 - [MaintenEase vs UpKeep](https://maintenease.com/compare/maintenease-vs-upkeep.md): The same core CMMS — without paying by the technician.
-- [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): A flat-fee alternative to per-user CMMS pricing.
-- [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx.md): Flat-fee pricing that doesn't scale with headcount.
-- [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): The flat-fee way to run preventive maintenance.
+- [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): Account plans with included seats compared with per-user pricing.
+- [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx.md): Account plans with included seats and published capacity limits.
+- [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): Account and per-user pricing for preventive maintenance teams.
 - [MaintenEase vs eMaint](https://maintenease.com/compare/maintenease-vs-emaint.md): A modern, mobile-first alternative to legacy enterprise CMMS.
 
 ## Learn (glossary)

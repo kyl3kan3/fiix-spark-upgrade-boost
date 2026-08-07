@@ -4,11 +4,12 @@
  * Competitor per-user prices come from src/data/comparisons.ts (the same
  * figures, with the same "publicly listed 2026 tiers, illustrative" caveat,
  * used by FlatFeeAdvantage and the /compare pages) so every surface tells one
- * consistent story. Deliberately honest: for small teams some per-seat rivals
- * cost LESS than the flat fee — savings go negative and the UI shows it,
- * along with each rival's breakeven team size.
+ * consistent story. Deliberately honest: some per-seat rivals cost less at
+ * certain team sizes, so savings go negative and the UI shows it alongside
+ * each rival's crossover team size.
  */
-import { comparisons, MAINTENEASE_PRO } from "@/data/comparisons";
+import { comparisons } from "@/data/comparisons";
+import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 export const MIN_TEAM_SIZE = 1;
 export const MAX_TEAM_SIZE = 50;
@@ -28,15 +29,17 @@ export interface VendorCost {
 
 export interface CmmsCostResult {
   teamSize: number;
-  /** MaintenEase Pro flat monthly price. */
+  /** Lowest published MaintenEase monthly plan that covers the seat count. */
   maintenease: number;
+  mainteneasePlan: string;
+  mainteneaseExtraSeats: number;
   /** One row per competitor, most expensive first. */
   vendors: VendorCost[];
   /** Largest monthly figure on the board (for scaling bars). */
   maxMonthly: number;
   /** Annual savings vs the priciest rival at this team size. */
   bestAnnualSavings: number;
-  /** True once every listed rival costs more than the flat fee. */
+  /** True when every listed rival costs more than the applicable account plan. */
   beatsAllVendors: boolean;
 }
 
@@ -45,12 +48,19 @@ export const clampTeamSize = (n: number): number => {
   return Math.min(MAX_TEAM_SIZE, Math.max(MIN_TEAM_SIZE, Math.round(n)));
 };
 
-/** Cheapest team size where flat beats per-user: smallest n with n*perUser > flat. */
-export const breakevenTeamSize = (perUser: number): number =>
-  Math.floor(MAINTENEASE_PRO / perUser) + 1;
+/** First team size where the listed per-user plan costs more than MaintenEase. */
+export const breakevenTeamSize = (perUser: number): number => {
+  for (let teamSize = MIN_TEAM_SIZE; teamSize <= MAX_TEAM_SIZE; teamSize += 1) {
+    if (teamSize * perUser > getMaintenEaseTeamPrice(teamSize).monthlyPrice) {
+      return teamSize;
+    }
+  }
+  return MAX_TEAM_SIZE + 1;
+};
 
 export function computeCmmsCosts(rawTeamSize: number): CmmsCostResult {
   const teamSize = clampTeamSize(rawTeamSize);
+  const maintenease = getMaintenEaseTeamPrice(teamSize);
 
   const vendors: VendorCost[] = comparisons
     .map((c) => {
@@ -60,17 +70,19 @@ export function computeCmmsCosts(rawTeamSize: number): CmmsCostResult {
         plan: c.competitorPlan,
         perUser: c.competitorPricePerUser,
         monthly,
-        monthlySavings: monthly - MAINTENEASE_PRO,
+        monthlySavings: monthly - maintenease.monthlyPrice,
         breakevenTeamSize: breakevenTeamSize(c.competitorPricePerUser),
       };
     })
     .sort((a, b) => b.monthly - a.monthly);
 
-  const maxMonthly = Math.max(MAINTENEASE_PRO, ...vendors.map((v) => v.monthly));
+  const maxMonthly = Math.max(maintenease.monthlyPrice, ...vendors.map((v) => v.monthly));
 
   return {
     teamSize,
-    maintenease: MAINTENEASE_PRO,
+    maintenease: maintenease.monthlyPrice,
+    mainteneasePlan: maintenease.plan.name,
+    mainteneaseExtraSeats: maintenease.extraSeats,
     vendors,
     maxMonthly,
     bestAnnualSavings: Math.max(0, ...vendors.map((v) => v.monthlySavings)) * 12,

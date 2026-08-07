@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { glossary } from "@/data/glossary";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
+import { buildItemListJsonLd } from "@/data/productCatalog";
 
 const LearnIndex = () => {
  return (
@@ -20,6 +21,15 @@ const LearnIndex = () => {
  <meta name="twitter:title" content="Maintenance Glossary | MaintenEase" />
  <meta name="twitter:description" content="Plain-English definitions of the terms maintenance teams use every day." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <script type="application/ld+json">{JSON.stringify(buildItemListJsonLd(
+ "MaintenEase maintenance glossary",
+ "https://maintenease.com/learn",
+ glossary.map((entry) => ({
+ name: entry.term,
+ url: `https://maintenease.com/learn/${entry.slug}`,
+ description: entry.short,
+ })),
+ ))}</script>
  </Helmet>
  <MarketingJsonLd />
  <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">

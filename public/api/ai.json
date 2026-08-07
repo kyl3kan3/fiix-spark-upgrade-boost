@@ -1,16 +1,47 @@
 {
   "name": "MaintenEase",
-  "description": "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
+  "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-03T08:50:07.753Z",
+  "generated_at": "2026-08-07T09:31:17.778Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
-    "plan": "Pro",
-    "model": "flat_monthly",
-    "price_usd_per_month": 129,
+    "model": "account_plans_with_included_seats",
+    "currency": "USD",
+    "date_modified": "2026-08-07",
     "trial_days": 7,
-    "billing": "month-to-month"
+    "billing": "month-to-month",
+    "seat_summary": "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats with additional seats at $15 per month each.",
+    "capacity_summary": "Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders.",
+    "plans": [
+      {
+        "name": "Starter",
+        "monthly_price": 49,
+        "annual_price": 490,
+        "included_seats": 2,
+        "additional_seat_monthly_price": null,
+        "asset_limit": 50,
+        "monthly_work_order_limit": 100
+      },
+      {
+        "name": "Pro",
+        "monthly_price": 129,
+        "annual_price": 1290,
+        "included_seats": 4,
+        "additional_seat_monthly_price": null,
+        "asset_limit": 500,
+        "monthly_work_order_limit": 2000
+      },
+      {
+        "name": "Business",
+        "monthly_price": 299,
+        "annual_price": 2990,
+        "included_seats": 4,
+        "additional_seat_monthly_price": 15,
+        "asset_limit": null,
+        "monthly_work_order_limit": null
+      }
+    ]
   },
   "solutions": [
     {

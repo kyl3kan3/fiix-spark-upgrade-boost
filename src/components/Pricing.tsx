@@ -2,66 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Reveal3D from "@/components/marketing/Reveal3D";
-
-const plans = [
-  {
-    name: "Starter",
-    price: "$49",
-    period: "/mo",
-    description: "For small teams getting organized.",
-    features: [
-      "2 included seats",
-      "Up to 50 assets",
-      "100 work orders/mo",
-      "Mobile app access",
-      "Email support",
-    ],
-    cta: "Start free trial",
-    highlight: false,
-  },
-  {
-    name: "Pro",
-    price: "$129",
-    period: "/mo",
-    description: "Most popular for growing maintenance teams.",
-    features: [
-      "4 included seats",
-      "Up to 500 assets",
-      "2,000 work orders/mo",
-      "Full analytics & reports",
-      "Automations",
-      "Priority support",
-    ],
-    cta: "Start free trial",
-    highlight: true,
-  },
-  {
-    name: "Business",
-    price: "$299",
-    period: "/mo",
-    description: "For larger organizations.",
-    features: [
-      "Everything in Pro",
-      "Unlimited assets & work orders",
-      "$15/extra seat/mo",
-      "Automations + API",
-      "SSO",
-      "Email + chat support",
-    ],
-    cta: "Start free trial",
-    highlight: false,
-  },
-];
-
-// Keep these claims consistent with PricingPage.tsx and the Stripe checkout
-// flow. The trial requires a card and auto-converts to paid on day 8 unless
-// cancelled — say so plainly here instead of contradicting the pricing page.
-const comparison = [
-  "7-day free trial on every plan",
-  "Card required — cancel before day 8, no charge",
-  "Cancel or change plans anytime",
-  "Free onboarding & data import",
-];
+import { COMMON_PLAN_FACTS, PRODUCT_PLANS } from "@/data/productCatalog";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -78,52 +19,52 @@ const Pricing = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-center">
-          {plans.map((plan, index) => (
+          {PRODUCT_PLANS.map((plan, index) => (
             <Reveal3D key={plan.name} delayMs={index * 120}>
             <div
               className={`relative rounded-xl border bg-card p-8 flex flex-col transition-ui duration-300 hover:-translate-y-1 ${
-                plan.highlight
+                plan.popular
                   ? "border-primary shadow-xl md:-translate-y-2 bg-primary text-primary-foreground"
                   : "border-border shadow-sm hover:border-primary/20 hover:shadow-md"
               }`}
             >
-              {plan.highlight && (
+              {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-xs font-bold px-4 py-1 rounded-full flex items-center gap-1 uppercase tracking-wide shadow-md">
                   <Sparkles className="h-3 w-3" /> Best Value
                 </div>
               )}
-              <h3 className={`text-xl font-bold font-headline ${plan.highlight ? "text-primary-foreground" : "text-primary"}`}>
+              <h3 className={`text-xl font-bold font-headline ${plan.popular ? "text-primary-foreground" : "text-primary"}`}>
                 {plan.name}
               </h3>
-              <p className={`text-sm mt-1 mb-6 ${plan.highlight ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+              <p className={`text-sm mt-1 mb-6 ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                 {plan.description}
               </p>
               <div className="mb-6 pb-6 border-b border-current/10">
-                <span className={`text-4xl font-bold ${plan.highlight ? "text-primary-foreground" : "text-foreground"}`}>
-                  {plan.price}
+                <span className={`text-4xl font-bold ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>
+                  ${plan.monthlyPrice}
                 </span>
-                <span className={plan.highlight ? "text-primary-foreground/70" : "text-muted-foreground"}>
-                  {plan.period}
+                <span className={plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}>
+                  /mo
                 </span>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f) => (
-                  <li key={f} className={`flex items-start gap-2 text-sm ${plan.highlight ? "text-primary-foreground" : "text-foreground"}`}>
-                    <Check className={`h-4 w-4 mt-0.5 shrink-0 ${plan.highlight ? "text-primary-foreground" : "text-primary"}`} />
+                {plan.featureLabels.map((f) => (
+                  <li key={f} className={`flex items-start gap-2 text-sm ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>
+                    <Check className={`h-4 w-4 mt-0.5 shrink-0 ${plan.popular ? "text-primary-foreground" : "text-primary"}`} />
                     <span>{f}</span>
                   </li>
                 ))}
               </ul>
               <Button
                 className={
-                  plan.highlight
+                  plan.popular
                     ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold uppercase tracking-wide"
                     : "w-full border-primary text-primary hover:bg-primary/5 font-semibold uppercase tracking-wide"
                 }
-                variant={plan.highlight ? "default" : "outline"}
+                variant={plan.popular ? "default" : "outline"}
                 onClick={() => navigate("/auth?signup=true")}
               >
-                {plan.cta}
+                Start free trial
               </Button>
             </div>
             </Reveal3D>
@@ -135,7 +76,7 @@ const Pricing = () => {
             Every plan includes
           </h3>
           <ul className="grid sm:grid-cols-2 gap-3">
-            {comparison.map((item) => (
+            {COMMON_PLAN_FACTS.map((item) => (
               <li key={item} className="flex items-center gap-2 text-sm text-foreground">
                 <Check className="h-4 w-4 text-primary shrink-0" />
                 <span>{item}</span>

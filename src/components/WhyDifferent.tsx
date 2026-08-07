@@ -14,9 +14,9 @@ import Reveal3D from "@/components/marketing/Reveal3D";
 const differentiators = [
   {
     icon: BadgeDollarSign,
-    title: "One flat price",
+    title: "Predictable account plans",
     detail:
-      "Every major CMMS charges per technician. MaintenEase starts at $49/mo flat — add the whole crew without the bill growing.",
+      "MaintenEase starts at $49/mo with included seats and published capacity limits. Business supports additional seats at $15/mo each.",
   },
   {
     icon: Brain,

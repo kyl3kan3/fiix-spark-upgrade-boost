@@ -3,16 +3,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Magnetic from "@/components/marketing/Magnetic";
+import { COMMON_PLAN_FACTS, PLAN_BY_TIER } from "@/data/productCatalog";
 
 // Keep these claims consistent with the canonical trial terms shown on
 // PricingPage.tsx and the TrialBanner: a 7-day trial that requires a card and
 // auto-charges on day 8 unless cancelled. Do not claim "no card required" here.
-const features = [
- "7-day free trial on every plan",
- "Card required — cancel before day 8, no charge",
- "Free onboarding & data import",
- "Cancel or change plans anytime"
-];
+const features = COMMON_PLAN_FACTS;
+const businessPlan = PLAN_BY_TIER.business;
 
 const CTA = () => {
  const navigate = useNavigate();
@@ -23,10 +20,10 @@ const CTA = () => {
  <div className="flex flex-col md:flex-row">
  <div className="md:w-1/2 p-8 md:p-16">
  <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-primary-foreground">
- Stop paying per seat. Start preventing downtime.
+ Choose a clear plan. Start preventing downtime.
  </h2>
  <p className="text-primary-foreground/80 text-lg mb-8 max-w-lg">
- Bring your whole crew onto MaintenEase for one flat price — and catch failures before they become expensive interruptions.
+ Match the account, included seats, and capacity to your operation — then use predictive maintenance to address risk before it becomes downtime.
  </p>
  <ul className="mb-10 space-y-3">
  {features.map((feature, index) => (
@@ -52,16 +49,11 @@ const CTA = () => {
               <h3 className="font-headline text-2xl font-bold mb-2 text-primary">Business Plan</h3>
               <p className="text-muted-foreground mb-6">For larger organizations with advanced needs</p>
  <div className="mb-8 pb-6 border-b border-border">
-                <span className="text-4xl font-bold text-foreground">$299</span>
+                <span className="text-4xl font-bold text-foreground">${businessPlan.monthlyPrice}</span>
                 <span className="text-muted-foreground">/month</span>
  </div>
  <ul className="mb-8 space-y-3">
- {[
-                  "All MaintenEase features included",
-                  "Unlimited assets & work orders",
-                  "Email + chat support",
-                  "SSO + API access",
-                ].map((item) => (
+ {businessPlan.featureLabels.slice(0, 6).map((item) => (
  <li key={item} className="flex items-center text-foreground text-sm">
  <CheckCircle className="h-4 w-4 mr-3 text-primary shrink-0" />
                   <span>{item}</span>

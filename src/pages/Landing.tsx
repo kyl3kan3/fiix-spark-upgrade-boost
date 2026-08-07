@@ -11,6 +11,12 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
+import {
+ PLAN_CAPACITY_SUMMARY,
+ PLAN_SEAT_SUMMARY,
+ PRICING_SUMMARY,
+ SOFTWARE_APPLICATION_JSON_LD,
+} from "@/data/productCatalog";
 
 const META_DESCRIPTION =
   "See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done.";
@@ -33,8 +39,8 @@ const benefits = [
   },
   {
     icon: Shield,
-    title: "One flat price",
-    description: "Add your whole crew for $49/mo — no per-seat surprises as you grow.",
+    title: "Account plans with included seats",
+    description: "Starter includes 2 seats, Pro includes 4, and Business supports additional seats at a published rate.",
   },
 ];
 
@@ -42,7 +48,7 @@ const checks = [
   "7-day free trial",
   "Card required — cancel anytime",
   "Free onboarding & data import",
-  "Unlimited work orders & assets",
+  "Unlimited work orders & assets on Business",
 ];
 
 // Source of truth for both the visible FAQ section and the FAQPage JSON-LD.
@@ -55,7 +61,7 @@ const faqs = [
   },
   {
     q: "How much does MaintenEase cost?",
-    a: "Plans start at $49/month for Starter (2 seats), $129/month for Pro (4 seats), and $299/month for Business. Annual billing saves 17%.",
+    a: `${PRICING_SUMMARY}. Annual billing charges ten months for a full year.`,
   },
   {
     q: "Do I have to import my data manually?",
@@ -67,7 +73,7 @@ const faqs = [
   },
   {
     q: "Can my whole crew use it?",
-    a: "Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.",
+    a: `Yes. ${PLAN_SEAT_SUMMARY} ${PLAN_CAPACITY_SUMMARY}`,
   },
   {
     q: "What do owners get out of it?",
@@ -107,7 +113,7 @@ const Landing = () => {
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
         <meta name="twitter:site" content="@maintenease" />
-        <script type="application/ld+json">
+      <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
@@ -117,7 +123,10 @@ const Landing = () => {
               acceptedAnswer: { "@type": "Answer", text: f.a },
             })),
           })}
-        </script>
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}
+      </script>
       </Helmet>
       <MarketingJsonLd />
       <Navbar />
@@ -232,10 +241,10 @@ const Landing = () => {
                 Trusted by facility teams everywhere
               </div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-primary-foreground">
-                Bring your whole crew for one flat price.
+                Choose the account plan and seat capacity that fit your crew.
               </h2>
               <p className="text-primary-foreground/80 text-lg mb-8 max-w-2xl mx-auto">
-                No per-user fees. No hidden add-ons. Start your 7-day trial and see why teams switch to
+                Included seats and Business extra-seat pricing are published up front. Start your 7-day trial and see why teams switch to
                 MaintenEase.
               </p>
               <Button

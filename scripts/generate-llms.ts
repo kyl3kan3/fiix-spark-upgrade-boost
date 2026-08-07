@@ -11,8 +11,15 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { solutions } from "../src/data/solutions";
-import { comparisons, MAINTENEASE_PRO } from "../src/data/comparisons";
+import { comparisons, MAINTENEASE_TEAM_PRICE, TEAM_SIZE } from "../src/data/comparisons";
 import { glossary } from "../src/data/glossary";
+import {
+  EXTRA_BUSINESS_SEAT_MONTHLY,
+  PLAN_CAPACITY_SUMMARY,
+  PLAN_SEAT_SUMMARY,
+  PRODUCT_LAST_MODIFIED,
+  PRODUCT_PLANS,
+} from "../src/data/productCatalog";
 
 const SITE = "https://maintenease.com";
 const PUBLIC = resolve(dirname(fileURLToPath(import.meta.url)), "../public");
@@ -73,7 +80,7 @@ ${c.intro}
 | --- | --- | --- |
 ${rows}
 
-MaintenEase Pro is a flat $${MAINTENEASE_PRO}/mo for the whole team; ${c.competitor}'s listed plan is ~$${c.competitorPricePerUser}/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+For the ${TEAM_SIZE}-person example, MaintenEase uses the Business plan plus additional seats for $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo; ${c.competitor}'s listed plan is ~$${c.competitorPricePerUser}/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
 
 ## Why teams switch
 
@@ -109,9 +116,9 @@ for (const g of glossary) write(`learn/${g.slug}.md`, glossaryMd(g));
 
 const llmsTxt = `# MaintenEase
 
-> Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Flat monthly pricing instead of per-user seats. Work orders, preventive maintenance, inspections, assets, and a public request portal in one place.
+> Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Account plans include seats and published capacity limits. Work orders, preventive maintenance, inspections, assets, and a public request portal live in one place.
 
-MaintenEase Pro is a flat $${MAINTENEASE_PRO}/month for the whole team. 7-day free trial. Month-to-month billing. Free data import and onboarding.
+${PRODUCT_PLANS.map((plan) => `${plan.name} is $${plan.monthlyPrice}/month with ${plan.includedSeats} included seats`).join("; ")}. Additional Business seats are $${EXTRA_BUSINESS_SEAT_MONTHLY}/month. ${PLAN_CAPACITY_SUMMARY} 7-day free trial. Month-to-month billing. Free data import and onboarding.
 
 All pages below are also available as clean Markdown by appending \`.md\` (e.g. ${SITE}/solutions/work-order-software.md). See ${SITE}/llms-full.txt for the full corpus in one file.
 
@@ -119,7 +126,7 @@ All pages below are also available as clean Markdown by appending \`.md\` (e.g. 
 
 - [Home](${SITE}/): Product overview.
 - [Features](${SITE}/features): Full feature list.
-- [Pricing](${SITE}/pricing): Flat monthly pricing and trial details.
+- [Pricing](${SITE}/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](${SITE}/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
 - [Sign in / Sign up](${SITE}/auth): Account access.
 
@@ -173,16 +180,27 @@ write("llms-full.txt", parts.join(""));
 const apiContent = {
   name: "MaintenEase",
   description:
-    "Modern maintenance management software (CMMS). Flat monthly pricing instead of per-user seats.",
+    "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   site: SITE,
   llms_txt: `${SITE}/llms.txt`,
   llms_full_txt: `${SITE}/llms-full.txt`,
   pricing: {
-    plan: "Pro",
-    model: "flat_monthly",
-    price_usd_per_month: MAINTENEASE_PRO,
+    model: "account_plans_with_included_seats",
+    currency: "USD",
+    date_modified: PRODUCT_LAST_MODIFIED,
     trial_days: 7,
     billing: "month-to-month",
+    seat_summary: PLAN_SEAT_SUMMARY,
+    capacity_summary: PLAN_CAPACITY_SUMMARY,
+    plans: PRODUCT_PLANS.map((plan) => ({
+      name: plan.name,
+      monthly_price: plan.monthlyPrice,
+      annual_price: plan.annualPrice,
+      included_seats: plan.includedSeats,
+      additional_seat_monthly_price: plan.extraSeatMonthlyPrice,
+      asset_limit: plan.assetLimit,
+      monthly_work_order_limit: plan.monthlyWorkOrderLimit,
+    })),
   },
   solutions: solutions.map((s) => ({
     slug: s.slug,

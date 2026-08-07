@@ -17,10 +17,36 @@ import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
+import {
+  BRAND_JSON_LD,
+  ORGANIZATION_JSON_LD,
+  PRODUCT_JSON_LD,
+  PRODUCT_LAST_MODIFIED,
+  SOFTWARE_APPLICATION_JSON_LD,
+  WEBSITE_JSON_LD,
+  buildItemListJsonLd,
+} from "../src/data/productCatalog";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
 const OG_IMAGE = `${ORIGIN}/og-image.png?v=4`;
+const FEATURE_ITEMS = [
+  ["Work Order Management", "Create, assign, and track work orders from one shared queue."],
+  ["Preventive Maintenance", "Schedule recurring maintenance and generate planned work orders."],
+  ["Asset Management", "Keep equipment details, documents, and maintenance history together."],
+  ["Predictive Maintenance", "Use risk scoring on eligible plans to prioritize inspections and planned work."],
+  ["Team Collaboration", "Coordinate assignments, updates, and notifications across the maintenance team."],
+  ["Performance Analytics", "Review maintenance reports and operational KPIs on eligible plans."],
+  ["Downtime Tracking", "Record equipment downtime and compare recurring interruptions."],
+] as const;
+const MAINTENANCE_SIMPLIFIED_FAQS = [
+  ["What does 'maintenance simplified' actually mean?", "It means running preventive maintenance, work orders, and requests from one system with one shared view — instead of juggling spreadsheets, whiteboards, group texts, and paper. The goal is fewer tools, clearer ownership, and reports the owner can trust."],
+  ["How do small teams simplify maintenance without a big rollout?", "Start with a single week of requests in one inbox, a PM schedule for your top 20 critical assets, and a QR request link staff can scan. Add more assets and workflows as the basics stick."],
+  ["Do I need a full CMMS to simplify maintenance?", "A shared spreadsheet can work while one person manages a small asset list. A CMMS becomes more practical when several people update work, recurring PMs need to generate reliably, or the team needs one service history for each asset."],
+  ["How is MaintenEase different from spreadsheets?", "Requests, PMs, work orders, assets, and reports live in one place with mobile access. PMs auto-generate, techs check off work from their phone, and owners see backlog and spend without asking for a report."],
+  ["What does simplified maintenance cost?", "MaintenEase starts at $49/month for a Starter account with two included seats and a 7-day free trial. Pro is $129/month with four included seats. Business is $299/month with four included seats, unlimited assets, and unlimited work orders; additional Business seats are $15/month."],
+  ["Does MaintenEase include unlimited assets and work orders?", "Yes, on the Business plan. Starter supports up to 50 assets and 100 work orders per month, while Pro supports up to 500 assets and 2,000 work orders per month. The pricing page lists the current limits for every plan."],
+] as const;
 
 type Route = {
   path: string;
@@ -47,10 +73,10 @@ const staticRoutes: Route[] = [
     path: "/",
     title: "MaintenEase — CMMS Software to Prevent Downtime",
     description:
-      "CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo.",
+      "CMMS for facility and maintenance teams. Track work orders, assets, inspections, and equipment risk with account plans from $49/month.",
     h1: "CMMS Software for Facility & Maintenance Teams",
     intro:
-      "Track work orders, assets, and inspections in one place, and prevent downtime with predictive maintenance — flat pricing starting at $49/mo.",
+      "Track work orders, assets, and inspections in one place, and act earlier with predictive maintenance on eligible plans. Account plans start at $49 per month.",
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
@@ -76,12 +102,12 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/pricing",
-    title: "CMMS Pricing — Flat $49/mo, No Per-Seat Fees | MaintenEase",
+    title: "CMMS Pricing — Account Plans from $49/mo | MaintenEase",
     description:
-      "Simple flat-fee CMMS pricing: Starter $49/mo, Pro $129/mo, Business $299/mo. Unlimited work orders and assets, 7-day free trial.",
+      "MaintenEase pricing: Starter $49/month, Pro $129/month, and Business $299/month, with included seats, published limits, and a 7-day trial.",
     h1: "CMMS pricing without per-seat surprises",
     intro:
-      "Starter is $49/mo, Pro is $129/mo, and Business is $299/mo. Every plan includes unlimited work orders and assets, free onboarding, and a 7-day free trial.",
+      "Starter is $49/month with 2 seats, Pro is $129/month with 4 seats, and Business is $299/month with 4 seats. Business adds seats for $15/month and includes unlimited assets and work orders.",
     links: [{ href: "/cmms-cost-calculator", label: "Estimate your savings" }],
   },
   {
@@ -92,6 +118,11 @@ const staticRoutes: Route[] = [
     h1: "Everything your maintenance team needs in one CMMS",
     intro:
       "Mobile work orders, a complete asset registry, preventive maintenance scheduling, digital inspections, predictive alerts, and cost reporting.",
+    jsonLd: [buildItemListJsonLd(
+      "MaintenEase CMMS features",
+      `${ORIGIN}/features`,
+      FEATURE_ITEMS.map(([name, description]) => ({ name, url: `${ORIGIN}/features`, description })),
+    )],
   },
   {
     path: "/maintenance-simplified",
@@ -100,7 +131,85 @@ const staticRoutes: Route[] = [
       "Maintenance simplified: a practical playbook for small teams — six principles, a starter checklist, and the numbers that prove it works.",
     h1: "Maintenance simplified: a playbook for small teams",
     intro:
-      "Six principles, a starter checklist, and a cost calculator to simplify maintenance without adding overhead.",
+      "Maintenance gets messy when work lives in five places at once. Simplify it with one request queue, one preventive-maintenance calendar, one asset history, and one view of emerging equipment risk.",
+    ogType: "article",
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: "Maintenance Simplified: A Playbook for Small Teams",
+        description: "Maintenance simplified: a practical playbook for small teams — six principles, a starter checklist, and the numbers that prove it works.",
+        mainEntityOfPage: `${ORIGIN}/maintenance-simplified`,
+        image: OG_IMAGE,
+        dateModified: PRODUCT_LAST_MODIFIED,
+        author: { "@id": `${ORIGIN}/#organization` },
+        publisher: { "@id": `${ORIGIN}/#organization` },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: MAINTENANCE_SIMPLIFIED_FAQS.map(([name, answer]) => ({
+          "@type": "Question",
+          name,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      },
+    ],
+    sections: [
+      {
+        heading: "What needs attention now?",
+        body: "Put requests, corrective work, and preventive tasks in one queue. Give every item an owner, priority, due date, and status so the crew can start the day without checking texts, paper notes, and separate spreadsheets.",
+      },
+      {
+        heading: "What cannot be allowed to fail?",
+        body: "Identify the assets whose failure would stop production, close a space, create a safety issue, or delay customers. Attach manuals and service history, then schedule the basic inspections and preventive work those assets require.",
+      },
+      {
+        heading: "What is becoming risky?",
+        body: "Review repeat failures, falling time between failures, overdue preventive work, condition readings, repair cost, and downtime. These signals help the team inspect the right equipment before a developing problem becomes an interruption.",
+      },
+      {
+        heading: "One list, not five",
+        body: "Every request, preventive-maintenance task, and repair lives on one prioritized board so nothing falls between texts, whiteboards, and inboxes.",
+      },
+      {
+        heading: "Preventive maintenance on autopilot",
+        body: "Set the interval once. Recurring preventive maintenance automatically generates work orders and assigns the right technician.",
+      },
+      {
+        heading: "Requests without training",
+        body: "A public QR link lets tenants and staff submit issues with no login, app installation, or phone tag.",
+      },
+      {
+        heading: "Assets that tell their story",
+        body: "Each asset carries its manuals, warranty, preventive-maintenance history, and cost so the next technician is not starting from zero.",
+      },
+      {
+        heading: "Reports the owner can use",
+        body: "MTBF, MTTR, backlog, and spend appear on one dashboard so the team can answer whether maintenance is under control.",
+      },
+      {
+        heading: "Account-level plans",
+        body: "Choose one plan for the account instead of multiplying a subscription price by every user. Published plan limits keep the tradeoffs visible before you buy.",
+      },
+      {
+        heading: "Flat account pricing, with clear plan limits",
+        body: "MaintenEase starts at $49 per month for a Starter account with two included seats. Pro is $129 per month with four included seats. Business is $299 per month with four included seats, and additional Business seats are $15 per month. The base subscription is selected for the account rather than calculated by multiplying one advertised price by every technician.",
+      },
+      {
+        heading: "Unlimited work orders and assets on Business",
+        body: "The Business plan includes unlimited assets and unlimited work orders. Starter supports up to 50 assets and 100 work orders per month; Pro supports up to 500 assets and 2,000 work orders per month. That makes capacity a visible plan choice instead of a surprise after setup.",
+      },
+      {
+        heading: "Predictive maintenance for earlier action",
+        body: "Pro and Business include failure-risk scoring based on recorded work history and condition data. Each asset receives a 0–100 risk score with the factors behind it, helping supervisors prioritize inspections and planned work. The score supports a maintenance decision; it does not replace a technician's diagnosis.",
+      },
+    ],
+    links: [
+      { href: "/pricing", label: "Review pricing and plan limits" },
+      { href: "/cmms-cost-calculator", label: "Compare account and per-seat costs" },
+      { href: "/learn/predictive-maintenance", label: "Learn how predictive maintenance works" },
+    ],
   },
   {
     path: "/solutions",
@@ -110,6 +219,11 @@ const staticRoutes: Route[] = [
     h1: "CMMS solutions by use case",
     intro: "Purpose-built solutions for work orders, preventive maintenance, assets, facilities, and fleets.",
     links: solutions.map((s) => ({ href: `/solutions/${s.slug}`, label: s.name })),
+    jsonLd: [buildItemListJsonLd(
+      "MaintenEase CMMS solutions",
+      `${ORIGIN}/solutions`,
+      solutions.map((solution) => ({ name: solution.name, url: `${ORIGIN}/solutions/${solution.slug}`, description: solution.tagline })),
+    )],
   },
   {
     path: "/learn",
@@ -119,6 +233,11 @@ const staticRoutes: Route[] = [
     h1: "Maintenance glossary and guides",
     intro: "Plain-English explanations of the terms, metrics, and strategies maintenance teams actually use.",
     links: glossary.map((g) => ({ href: `/learn/${g.slug}`, label: g.term })),
+    jsonLd: [buildItemListJsonLd(
+      "MaintenEase maintenance glossary",
+      `${ORIGIN}/learn`,
+      glossary.map((entry) => ({ name: entry.term, url: `${ORIGIN}/learn/${entry.slug}`, description: entry.short })),
+    )],
   },
   {
     path: "/compare",
@@ -127,7 +246,7 @@ const staticRoutes: Route[] = [
       "Compare MaintenEase with UpKeep, Limble, Fiix, MaintainX, and eMaint on pricing model, features, and total cost for a team of eight.",
     h1: "MaintenEase compared with other CMMS platforms",
     intro:
-      "Every competitor here bills per user. MaintenEase charges one flat fee — see what that means for a team of eight.",
+      "Compare each competitor's listed per-user price with MaintenEase account plans, included seats, capacity limits, and Business extra seats for a team of eight.",
     links: [
       ...comparisons.map((c) => ({ href: `/compare/${c.slug}`, label: `MaintenEase vs ${c.competitor}` })),
       { href: "/cmms-cost-calculator", label: "CMMS cost calculator" },
@@ -135,12 +254,12 @@ const staticRoutes: Route[] = [
   },
   {
     path: "/cmms-cost-calculator",
-    title: "CMMS Cost Calculator — Per-Seat vs Flat Fee | MaintenEase",
+    title: "CMMS Cost Calculator — Per-Seat vs Account Plans | MaintenEase",
     description:
-      "Free CMMS cost calculator. Enter team size and per-seat pricing to see your annual software cost versus MaintenEase flat-fee plans.",
+      "Free CMMS cost calculator comparing published per-seat prices with MaintenEase account plans and included seats.",
     h1: "CMMS cost calculator",
     intro:
-      "Enter your team size and current per-seat price to see annual CMMS cost, MaintenEase flat-fee cost, and your projected savings.",
+      "Choose a team size to compare listed per-seat CMMS costs with the lowest MaintenEase plan that covers those seats.",
     links: [
       { href: "/compare", label: "Compare CMMS platforms" },
       {
@@ -452,8 +571,8 @@ const LANDING_FAQS = [
     a: "AI alerts flag equipment issues before they turn into failures, and drag-and-drop PM calendars keep every asset on its maintenance rhythm.",
   },
   {
-    q: "Can my whole crew use it?",
-    a: "Yes. Add your whole crew for one flat price — Starter and Pro include seats up front, and Business adds extra seats for $15/month each.",
+    q: "How many seats does each plan include?",
+    a: "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats. Additional Business seats cost $15 per month each.",
   },
   {
     q: "What do owners get out of it?",
@@ -478,7 +597,17 @@ function headFor(route: Route): string {
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${OG_IMAGE}" />`,
+    ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map(
+      (block) => `<script type="application/ld+json" data-ld-static="true">${JSON.stringify(block)}</script>`,
+    ),
   ];
+
+  if (["/", "/landing", "/pricing"].includes(route.path)) {
+    tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>`);
+  }
+  if (route.path === "/pricing") {
+    tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(PRODUCT_JSON_LD)}</script>`);
+  }
 
   for (const block of route.jsonLd ?? []) {
     tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
@@ -486,59 +615,10 @@ function headFor(route: Route): string {
 
   // /landing is a paid-acquisition surface: crawlers must see robots + org/site/FAQ
   // structured data in the static shell (Helmet alone is invisible without JS).
-  if (route.path === "/pricing") {
-    // Google flagged Product "Missing field image" because the Product block was
-    // only emitted client-side via Helmet. Ship it in the static shell too, with
-    // image/url/availability on every offer so the item stays rich-result valid.
-    const product = {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      name: "MaintenEase",
-      description:
-        "Maintenance management software for asset tracking, work orders, and inspections.",
-      image: [OG_IMAGE],
-      brand: { "@type": "Brand", name: "MaintenEase" },
-      offers: [
-        { name: "Starter", price: "49" },
-        { name: "Pro", price: "129" },
-        { name: "Business", price: "299" },
-      ].map((o) => ({
-        "@type": "Offer",
-        name: o.name,
-        price: o.price,
-        priceCurrency: "USD",
-        url: `${ORIGIN}/pricing`,
-        availability: "https://schema.org/InStock",
-      })),
-    };
-    tags.push(
-      `<script type="application/ld+json">${JSON.stringify(product)}</script>`,
-    );
-  }
-
   if (route.path === "/landing") {
     tags.push(
       `<meta name="robots" content="index,follow,max-image-preview:large" data-rh="true" />`,
     );
-    const org = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "MaintenEase",
-      url: `${ORIGIN}/`,
-      logo: `${ORIGIN}/favicon.png`,
-      sameAs: ["https://twitter.com/maintenease"],
-    };
-    const website = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "MaintenEase",
-      url: `${ORIGIN}/`,
-      potentialAction: {
-        "@type": "SearchAction",
-        target: `${ORIGIN}/learn?q={search_term_string}`,
-        "query-input": "required name=search_term_string",
-      },
-    };
     const faq = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -548,7 +628,7 @@ function headFor(route: Route): string {
         acceptedAnswer: { "@type": "Answer", text: f.a },
       })),
     };
-    for (const block of [org, website, faq]) {
+    for (const block of [faq]) {
       tags.push(
         `<script type="application/ld+json">${JSON.stringify(block)}</script>`,
       );
@@ -556,7 +636,6 @@ function headFor(route: Route): string {
     // Visible FAQ copy must match FAQPage JSON-LD for rich-result eligibility.
     // bodyFor also mirrors these Q&As below.
   }
-
   return tags.join("\n    ");
 }
 
@@ -574,6 +653,13 @@ function bodyFor(route: Route): string {
     for (const f of LANDING_FAQS) {
       parts.push(`<h3>${esc(f.q)}</h3>`);
       parts.push(`<p>${esc(f.a)}</p>`);
+    }
+  }
+  if (route.path === "/maintenance-simplified") {
+    parts.push("<h2>Frequently asked questions</h2>");
+    for (const [question, answer] of MAINTENANCE_SIMPLIFIED_FAQS) {
+      parts.push(`<h3>${esc(question)}</h3>`);
+      parts.push(`<p>${esc(answer)}</p>`);
     }
   }
   if (route.links?.length) {
@@ -602,13 +688,11 @@ function renderRoute(route: Route): string {
   html = html.replace(/<link[^>]*rel="canonical"[^>]*>\s*/, "");
   html = html.replace(/<meta property="og:(?:type|title|description|url)"[^>]*>\s*/g, "");
   html = html.replace(/<meta name="twitter:(?:card|title|description)"[^>]*>\s*/g, "");
-  // Organization/WebSite JSON-LD in the shell is homepage-only.
-  if (route.path !== "/") {
-    html = html.replace(
-      /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
-      "",
-    );
-  }
+  // Replace the source shell's homepage blocks with the shared catalog nodes.
+  html = html.replace(
+    /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
+    "",
+  );
   html = html.replace("</head>", `  ${headFor(route)}\n  </head>`);
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);

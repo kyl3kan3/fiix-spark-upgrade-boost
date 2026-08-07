@@ -15,23 +15,25 @@ import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
+import { SOFTWARE_APPLICATION_JSON_LD } from "@/data/productCatalog";
 
 const Index = () => {
  return (
  <div className="min-h-screen flex flex-col bg-background text-foreground">
  <Helmet>
  <title>MaintenEase — CMMS Software to Prevent Downtime</title>
- <meta name="description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
+ <meta name="description" content="CMMS for facility and maintenance teams. Track work orders, assets, inspections, and equipment risk with account plans from $49/month." />
  <link rel="canonical" href="https://maintenease.com/" />
  <meta property="og:title" content="MaintenEase — CMMS Software to Prevent Downtime" />
- <meta property="og:description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
+ <meta property="og:description" content="Track work orders, assets, and inspections, with predictive maintenance on eligible plans and account pricing from $49/month." />
  <meta property="og:url" content="https://maintenease.com/" />
  <meta property="og:type" content="website" />
  <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase — CMMS Software to Prevent Downtime" />
- <meta name="twitter:description" content="CMMS for facility & maintenance teams. Track work orders, assets & inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." />
+ <meta name="twitter:description" content="Track work orders, assets, and inspections, with predictive maintenance on eligible plans and account pricing from $49/month." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <script type="application/ld+json">{JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>
  </Helmet>
  <MarketingJsonLd />
  <Navbar />
@@ -41,7 +43,7 @@ const Index = () => {
  CMMS Software for Facility & Maintenance Teams
  </h1>
  <p className="mt-3 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
- Track work orders, assets, and inspections in one place, and prevent downtime with predictive maintenance — flat pricing starting at $49/mo.
+ Track work orders, assets, and inspections in one place, with predictive maintenance on eligible plans and account pricing starting at $49/month.
  </p>
  </div>
  <Hero />

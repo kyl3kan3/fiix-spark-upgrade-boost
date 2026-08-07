@@ -8,7 +8,7 @@ MaintenEase turns preventive maintenance from a calendar reminder into an audite
 
 ## Benefits
 
-- **Fewer breakdowns** — Teams typically cut reactive work by 30–50% within the first year of running preventive maintenance on a schedule.
+- **Fewer avoidable breakdowns** — Put recurring inspections and service on a visible schedule, then compare failures before and after each PM interval so the team can adjust the work based on its own history.
 - **Smoother technician days** — Planned work replaces firefighting. Workload is visible a week ahead, not discovered each morning.
 - **Audit-ready records** — Every PM closes with a timestamped record, photos, and signatures — exactly what regulators and insurance carriers want to see.
 

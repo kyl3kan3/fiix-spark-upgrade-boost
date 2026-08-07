@@ -2,13 +2,15 @@ import { Check, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Reveal3D from "@/components/marketing/Reveal3D";
+import { comparisons, TEAM_SIZE } from "@/data/comparisons";
+import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 /**
- * Flat-fee pricing advantage section.
+ * Account-plan pricing comparison section.
  *
  * Most CMMS competitors (UpKeep, MaintainX, Limble, eMaint, Fiix) charge
- * per-user. MaintenEase charges a flat monthly fee. For a crew of 8 techs the
- * cost gap is 3-4x — and this is the single strongest reason to choose us.
+ * per-user. MaintenEase publishes account plans with included seats and a
+ * Business extra-seat price so the comparison can use the actual team cost.
  *
  * The previous homepage buried this story below the fold and only showed
  * absolute prices. This section makes the comparison explicit so a CMMS
@@ -19,32 +21,23 @@ import Reveal3D from "@/components/marketing/Reveal3D";
  * shifts.
  */
 
-const competitors = [
-  { name: "UpKeep", perUser: 45, label: "Starter" },
-  { name: "MaintainX", perUser: 21, label: "Essential" },
-  { name: "Limble", perUser: 28, label: "Standard" },
-  { name: "Fiix", perUser: 45, label: "Basic" },
-];
-
-const TEAM_SIZE = 8; // illustrative crew used for the comparison
-const MAINTENEASE_PRO = 129;
-
 const FlatFeeAdvantage = () => {
   const navigate = useNavigate();
+  const maintenease = getMaintenEaseTeamPrice(TEAM_SIZE);
 
   return (
     <section className="py-20 bg-card border-y border-border">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wide">
-            Flat-fee pricing
+            Published account pricing
           </span>
           <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Stop paying per technician.
+            Compare the bill for your actual crew.
           </h2>
           <p className="text-lg text-muted-foreground">
-            Every other CMMS charges by the seat. We don't. Add the whole
-            crew, scale your team, and pay one flat price.
+            MaintenEase plans include seats up front. For teams above four,
+            Business adds seats at a published $15 per month each.
           </p>
         </div>
 
@@ -65,36 +58,36 @@ const FlatFeeAdvantage = () => {
               <Check className="h-5 w-5 text-primary shrink-0" />
               <div>
                 <div className="font-semibold text-foreground">
-                  MaintenEase Pro
+                  MaintenEase {maintenease.plan.name}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Flat monthly fee
+                  {maintenease.plan.includedSeats} seats included + {maintenease.extraSeats} extra
                 </div>
               </div>
             </div>
             <div className="px-6 py-5 border-b border-border text-foreground">
-              ${MAINTENEASE_PRO}/mo flat
+              ${maintenease.plan.monthlyPrice}/mo + ${maintenease.extraSeats * 15}/mo seats
             </div>
             <div className="px-6 py-5 border-b border-border font-bold text-primary text-lg">
-              ${MAINTENEASE_PRO}/mo
+              ${maintenease.monthlyPrice}/mo
             </div>
 
-            {competitors.map((c) => {
-              const total = c.perUser * TEAM_SIZE;
-              const savings = total - MAINTENEASE_PRO;
+            {comparisons.map((c) => {
+              const total = c.competitorPricePerUser * TEAM_SIZE;
+              const savings = total - maintenease.monthlyPrice;
               return (
-                <div key={c.name} className="contents">
+                <div key={c.competitor} className="contents">
                   <div className="px-6 py-5 border-b border-border last:border-b-0 flex items-center gap-3">
                     <X className="h-5 w-5 text-muted-foreground shrink-0" />
                     <div>
-                      <div className="font-medium text-foreground">{c.name}</div>
+                      <div className="font-medium text-foreground">{c.competitor}</div>
                       <div className="text-xs text-muted-foreground">
-                        {c.label} • per-user
+                        {c.competitorPlan} • per-user
                       </div>
                     </div>
                   </div>
                   <div className="px-6 py-5 border-b border-border last:border-b-0 text-foreground">
-                    ${c.perUser}/user/mo
+                    ${c.competitorPricePerUser}/user/mo
                   </div>
                   <div className="px-6 py-5 border-b border-border last:border-b-0">
                     <div className="font-semibold text-foreground">
@@ -105,6 +98,11 @@ const FlatFeeAdvantage = () => {
                         You save ${savings}/mo
                       </div>
                     )}
+                    {savings < 0 && (
+                      <div className="text-xs text-muted-foreground font-medium">
+                        {c.competitor} is ${Math.abs(savings)}/mo less at this team size
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -112,9 +110,9 @@ const FlatFeeAdvantage = () => {
           </div>
 
           <div className="px-6 py-4 bg-muted/50 text-xs text-muted-foreground border-t border-border">
-            Competitor pricing reflects publicly listed entry/standard tiers as
-            of 2026 and is shown for comparison only. Per-user plans typically
-            require annual commitment; MaintenEase is month-to-month.
+            MaintenEase estimate uses the lowest published plan that covers {TEAM_SIZE} seats;
+            asset or work-order volume may require a higher plan. Competitor pricing reflects
+            publicly listed entry/standard tiers as of 2026 and must be verified with each vendor.
           </div>
         </div>
         </Reveal3D>

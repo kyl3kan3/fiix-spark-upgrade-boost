@@ -8,7 +8,7 @@ import Tilt3D from "@/components/marketing/Tilt3D";
  *
  * CMMS marketing usually speaks to factories and large facility teams, which
  * makes small local operators assume the product isn't for them. This section
- * says the opposite out loud: flat pricing and simple setup make MaintenEase a
+ * says the opposite out loud: published account pricing and simple setup make MaintenEase a
  * fit for any local business with equipment worth protecting.
  */
 
@@ -70,7 +70,7 @@ const LocalBusinesses = () => {
           </h2>
           <p className="text-lg text-muted-foreground">
             If your business runs on equipment that can break, MaintenEase fits —
-            one flat price, no IT department required, live in days.
+            published account plans, no IT department required, and guided onboarding.
           </p>
         </div>
 

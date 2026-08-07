@@ -3,7 +3,7 @@ import {
   comparisons,
   getComparison,
   getFaqSchemaEntries,
-  MAINTENEASE_PRO,
+  MAINTENEASE_TEAM_PRICE,
   TEAM_SIZE,
 } from "@/data/comparisons";
 
@@ -29,9 +29,11 @@ describe("comparisons data", () => {
     }
   });
 
-  it("MaintenEase is cheaper than each competitor for the reference team", () => {
+  it("uses the real MaintenEase team price even when a competitor is cheaper", () => {
     for (const c of comparisons) {
-      expect(c.competitorPricePerUser * TEAM_SIZE).toBeGreaterThan(MAINTENEASE_PRO);
+      const pricingRow = c.rows.find((row) => row.feature === `Cost for a team of ${TEAM_SIZE}`);
+      expect(pricingRow?.ours).toBe(`$${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo (${MAINTENEASE_TEAM_PRICE.plan.name})`);
+      expect(pricingRow?.theirs).toBe(`$${c.competitorPricePerUser * TEAM_SIZE}/mo`);
     }
   });
 

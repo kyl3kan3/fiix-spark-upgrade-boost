@@ -10,7 +10,7 @@ MaintenEase gives facility teams a single system across every building, floor, a
 
 - **Multi-site visibility** — See backlog, response time, and PM compliance per building and per portfolio in one dashboard.
 - **Happier occupants** — Tenants and staff get automatic status updates from the moment they submit a request to the moment work is complete.
-- **Lower operating cost** — Standardized vendor management, warranty tracking, and parts visibility quietly trim 5–15% from facility budgets.
+- **More visible operating cost** — Standardized vendor records, warranty tracking, and parts visibility make it easier to find duplicate spending, missed warranty work, and costly repeat repairs.
 
 ## Features
 

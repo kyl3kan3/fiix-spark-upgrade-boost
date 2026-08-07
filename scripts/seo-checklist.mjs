@@ -115,6 +115,38 @@ if (existsSync(distDir)) {
   if (prerenderOk === prerenderSamples.length) {
     pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
   }
+
+  // Keep the maintenance-simplified guide from regressing to its former
+  // heading-plus-intro shell. This route needs enough practical body copy for
+  // a crawler to understand the workflow and the product facts it discusses.
+  const simplifiedPath = join(distDir, "maintenance-simplified", "index.html");
+  if (!existsSync(simplifiedPath)) {
+    fail("prerender: dist/maintenance-simplified/index.html missing");
+  } else {
+    const html = readFileSync(simplifiedPath, "utf8");
+    const shellBody = html.match(/<div data-prerender="static"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
+    const text = shellBody
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&(?:amp|quot|#39);/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const wordCount = text.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)?.length ?? 0;
+    if (wordCount < 350) {
+      fail(`prerender: maintenance-simplified has only ${wordCount} words (expected at least 350)`);
+    } else {
+      pass(`Maintenance-simplified prerender has ${wordCount} words`);
+    }
+
+    for (const phrase of [
+      "Flat account pricing",
+      "unlimited assets and unlimited work orders",
+      "Predictive maintenance for earlier action",
+    ]) {
+      if (!text.toLowerCase().includes(phrase.toLowerCase())) {
+        fail(`prerender: maintenance-simplified is missing required copy: "${phrase}"`);
+      }
+    }
+  }
 } else {
   warn("dist/ not built — skipped prerender checks (run `npm run build` first)");
 }

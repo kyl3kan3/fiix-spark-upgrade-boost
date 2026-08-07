@@ -4,15 +4,15 @@
 
 Canonical URL: https://maintenease.com/compare/maintenease-vs-upkeep
 
-UpKeep is a well-known mobile-first CMMS, priced per user per month. MaintenEase covers the same essentials — work orders, assets, preventive maintenance, inspections, and mobile access — but charges one flat fee for your whole crew. For a growing team, that's the difference between a bill that climbs with every hire and one that doesn't.
+UpKeep is a well-known mobile-first CMMS priced per user per month. MaintenEase covers the same essentials — work orders, assets, preventive maintenance, inspections, and mobile access — through account plans with included seats. Business includes four seats and supports additional seats at $15 per month each.
 
 ## Side-by-side
 
 | Feature | MaintenEase | UpKeep (Starter) |
 | --- | --- | --- |
-| Pricing model | One flat monthly fee | Per user / month |
-| Cost for a team of 8 | $129/mo | $360/mo |
-| Add more technicians | Included — no per-seat charge | Charged per seat |
+| Pricing model | Account plan with included seats | Per user / month |
+| Cost for a team of 8 | $359/mo (Business) | $360/mo |
+| Add more technicians | Business: $15/extra seat after 4 | Charged per seat |
 | Billing commitment | Month-to-month | Often annual |
 | Work order management | Yes | Yes |
 | Asset management & history | Yes | Yes |
@@ -23,11 +23,11 @@ UpKeep is a well-known mobile-first CMMS, priced per user per month. MaintenEase
 | Public request portal (no login) | Yes | Varies |
 | Free onboarding & data import | Yes | Varies / paid |
 
-MaintenEase Pro is a flat $129/mo for the whole team; UpKeep's listed plan is ~$45/user/mo (publicly listed pricing as of 2026 — verify with each vendor).
+For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo; UpKeep's listed plan is ~$45/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
 
 ## Why teams switch
 
-- **One flat price, not per seat** — Add the whole maintenance team without your bill climbing. UpKeep's per-user pricing means every new technician adds to the monthly cost.
+- **Published account and seat pricing** — Starter and Pro include seats up front. Business includes four seats and lists additional seats at $15 per month each, so the team can calculate the actual bill before switching.
 - **Month-to-month** — MaintenEase is month-to-month — no annual contract required to get the listed price.
 - **Free, hands-on migration** — We import your assets and open work orders for free so switching from UpKeep doesn't mean re-keying your data.
 
@@ -35,7 +35,7 @@ MaintenEase Pro is a flat $129/mo for the whole team; UpKeep's listed plan is ~$
 
 ### How much does MaintenEase save vs UpKeep?
 
-UpKeep's listed plan is around $45 per user per month, so a team of 8 runs about $360/mo. MaintenEase Pro is a flat $129/mo for the whole team — the gap widens with every technician you add. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+UpKeep's listed plan is around $45 per user per month, so a team of 8 runs about $360/mo. The lowest published MaintenEase plan covering 8 seats is Business at $359/mo, including 4 extra seats. Asset or work-order volume can require a higher plan. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
 
 ### Is MaintenEase affiliated with UpKeep?
 
@@ -43,4 +43,4 @@ No. This page is an independent comparison based on publicly available pricing a
 
 ### Can I migrate from UpKeep to MaintenEase?
 
-Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding — most teams are live within a few days.
+Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding. The rollout timing depends on the size and condition of the data you provide.

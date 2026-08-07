@@ -24,7 +24,7 @@ const steps = [
   {
     icon: UserPlus,
     title: "Invite your team",
-    detail: "Flat pricing — bring the whole crew at no extra cost.",
+    detail: "Account plans include seats; Business supports additional seats at a published monthly rate.",
     href: "/team",
   },
   {

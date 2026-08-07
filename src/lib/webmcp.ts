@@ -3,6 +3,8 @@
 // or writes customer data; authenticated data access goes through the MCP
 // server advertised in /.well-known/mcp/server-card.json.
 
+import { PLAN_CAPACITY_SUMMARY, PRODUCT_PLANS } from "@/data/productCatalog";
+
 type WebMcpTool = {
   name: string;
   description: string;
@@ -14,12 +16,6 @@ type ModelContext = { provideContext: (ctx: { tools: WebMcpTool[] }) => void };
 
 const text = (value: string) => ({ content: [{ type: "text" as const, text: value }] });
 
-const PLANS = [
-  { name: "Starter", price: "$49/mo", seats: "2 seats included" },
-  { name: "Pro", price: "$129/mo", seats: "4 seats included" },
-  { name: "Business", price: "$299/mo", seats: "extra seats $15/mo each" },
-];
-
 const tools: WebMcpTool[] = [
   {
     name: "get_pricing",
@@ -27,8 +23,13 @@ const tools: WebMcpTool[] = [
     inputSchema: { type: "object", properties: {} },
     execute: async () =>
       text(
-        `${PLANS.map((p) => `${p.name}: ${p.price} (${p.seats})`).join("\n")}\n` +
-          "Annual billing saves 17%. Every plan includes a 7-day free trial (card required)."
+        `${PRODUCT_PLANS.map((plan) => {
+          const extraSeat = plan.extraSeatMonthlyPrice
+            ? `; additional seats $${plan.extraSeatMonthlyPrice}/mo each`
+            : "";
+          return `${plan.name}: $${plan.monthlyPrice}/mo or $${plan.annualPrice}/yr (${plan.includedSeats} seats included${extraSeat})`;
+        }).join("\n")}\n${PLAN_CAPACITY_SUMMARY}\n` +
+          "Annual billing saves about 17%. Every plan includes a 7-day free trial (card required)."
       ),
   },
   {
