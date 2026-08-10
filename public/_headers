@@ -68,3 +68,21 @@
 /api/ai.json
   Content-Type: application/json; charset=utf-8
   Content-Disposition: inline
+
+# Protected and account routes are rewritten to this shell. The response
+# header remains effective even for crawlers that ignore HTML meta tags.
+/app-shell
+  Content-Type: text/html; charset=utf-8
+  X-Robots-Tag: noindex, nofollow
+
+/auth
+  X-Robots-Tag: noindex, nofollow
+
+/forgot-password
+  X-Robots-Tag: noindex, nofollow
+
+/reset-password
+  X-Robots-Tag: noindex, nofollow
+
+/unsubscribe
+  X-Robots-Tag: noindex, nofollow

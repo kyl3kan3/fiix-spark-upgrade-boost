@@ -4,10 +4,11 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
-import { initWebMcp } from "./lib/webmcp";
 
 initSentry();
-initWebMcp();
+if (typeof navigator !== "undefined" && "modelContext" in navigator) {
+  void import("./lib/webmcp").then(({ initWebMcp }) => initWebMcp());
+}
 
 // Recover from stale dynamic-import chunks after a deploy.
 // When Vite can't load a module hash that no longer exists, force one reload.

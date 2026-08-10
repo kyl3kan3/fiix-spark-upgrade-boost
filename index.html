@@ -7,6 +7,7 @@
     <title>MaintenEase — Maintenance Management, Simplified</title>
     <meta name="author" content="MaintenEase" />
     <meta name="description" content="CMMS for facility &amp; maintenance teams. Track work orders, assets &amp; inspections, and prevent downtime with predictive AI. Flat pricing from $49/mo." data-rh="true" />
+    <meta name="robots" content="noindex,nofollow" data-spa-fallback="true" />
     <link data-rh="true" rel="canonical" href="https://maintenease.com/" />
     <!-- Brand-level OG/Twitter fallbacks for no-JS crawlers. Per-route values
          are set at runtime via react-helmet-async. The homepage canonical above
@@ -44,37 +45,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://wwgljhpuulhljumrhscg.supabase.co" crossorigin />
-    <!-- Preload the actual display font (Playfair Display 700) used by the hero H1 to reduce LCP -->
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
-    />
     <!-- Font stylesheets load async (media=print swap) so a slow/unreachable
-         fonts CDN can never block first paint; fallback fonts render instead. -->
+         fonts CDN can never block first paint. `display=optional` prevents a
+         late font swap from shifting the hero after it has painted. -->
     <link
       rel="stylesheet"
       media="print"
       onload="this.media='all'"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=optional"
     />
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=swap" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;700;800;900&family=Playfair+Display:wght@600;700&display=optional" />
     </noscript>
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="https://fonts.gstatic.com/s/nunito/v26/XRXI3I6Li01BKofiOc5wtlZ2di8HDIkhdTQ3jw.woff2"
-      crossorigin
-    />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18051376894"></script>
     <script defer data-website-id="dfid_4BRVKzjIQLv5Psqg0AK9u" data-domain="maintenease.com" src="https://datafa.st/js/script.js"></script>

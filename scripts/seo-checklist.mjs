@@ -33,7 +33,8 @@ else {
 
 // 2. Homepage description (lives in src/pages/Index.tsx Helmet)
 const indexTsx = readFileSync(join(ROOT, "src/pages/Index.tsx"), "utf8");
-const descMatch = indexTsx.match(/<meta name="description" content="([^"]+)"/);
+const descTag = indexTsx.match(/<meta\b[^>]*name="description"[^>]*>/s)?.[0] ?? "";
+const descMatch = descTag.match(/content="([^"]+)"/);
 if (!descMatch) fail("Index.tsx: homepage <meta name=\"description\"> missing");
 else {
   const d = descMatch[1];
@@ -110,10 +111,41 @@ if (existsSync(distDir)) {
     if (h1s !== 1) fail(`prerender: dist/${rel} has ${h1s} <h1> (expected exactly 1)`);
     else if (!/rel="canonical"/.test(html)) fail(`prerender: dist/${rel} has no canonical`);
     else if (!/<meta name="description"/.test(html)) fail(`prerender: dist/${rel} has no description`);
+    else if (!/<meta name="robots" content="index,follow,max-image-preview:large"/.test(html)) {
+      fail(`prerender: dist/${rel} is missing indexable robots metadata`);
+    }
     else prerenderOk++;
   }
   if (prerenderOk === prerenderSamples.length) {
     pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
+  }
+
+  const appShellPath = join(distDir, "app-shell");
+  if (!existsSync(appShellPath)) {
+    fail("routing: dist/app-shell missing");
+  } else {
+    const appShell = readFileSync(appShellPath, "utf8");
+    if (!/<meta name="robots" content="noindex,nofollow"/.test(appShell)) {
+      fail("routing: app shell is missing noindex,nofollow");
+    } else if (/rel="canonical"/.test(appShell)) {
+      fail("routing: app shell must not inherit the homepage canonical");
+    } else {
+      pass("Protected-route app shell is noindex and has no canonical");
+    }
+  }
+
+  const notFoundPath = join(distDir, "404.html");
+  if (!existsSync(notFoundPath)) {
+    fail("routing: dist/404.html missing");
+  } else if (!/<meta name="robots" content="noindex,nofollow"/.test(readFileSync(notFoundPath, "utf8"))) {
+    fail("routing: 404 document is missing noindex,nofollow");
+  } else {
+    pass("Static 404 document is noindex");
+  }
+
+  const pagesRoutes = JSON.parse(readFileSync(join(ROOT, "public", "_routes.json"), "utf8"));
+  if (pagesRoutes.exclude.includes("/assets/*")) {
+    fail("routing: _routes.json must not exclude /assets/* because it is also an application route");
   }
 
   // Keep the maintenance-simplified guide from regressing to its former
@@ -124,7 +156,7 @@ if (existsSync(distDir)) {
     fail("prerender: dist/maintenance-simplified/index.html missing");
   } else {
     const html = readFileSync(simplifiedPath, "utf8");
-    const shellBody = html.match(/<div data-prerender="static"[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? "";
+    const shellBody = html.match(/<noscript data-prerender="static"[^>]*>([\s\S]*?)<\/noscript>/)?.[1] ?? "";
     const text = shellBody
       .replace(/<[^>]+>/g, " ")
       .replace(/&(?:amp|quot|#39);/g, " ")

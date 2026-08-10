@@ -12,6 +12,7 @@ const Auth: React.FC = () => {
  <meta name="robots" content="noindex,nofollow" />
  <meta property="og:title" content="Sign in to MaintenEase" />
  <meta property="og:description" content="Sign in or create a MaintenEase account to manage your maintenance operations." />
+ <meta property="og:url" content="https://maintenease.com/auth" />
  <meta property="og:type" content="website" />
  <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
  <meta name="twitter:card" content="summary_large_image" />
