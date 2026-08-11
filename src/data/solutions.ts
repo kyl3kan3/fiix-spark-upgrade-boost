@@ -18,10 +18,10 @@ export const solutions: Solution[] = [
  name: "Work Order Software",
  h1: "Work Order Software that turns requests into completed work",
  tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
- metaTitle: "Work Order Software — Capture & Close Faster | MaintenEase",
- metaDescription: "Work order software for maintenance teams: submit, assign, prioritize and close jobs from any device, with photos, parts, costs and a full audit trail.",
+ metaTitle: "Work Order Software & Work Order Programs | MaintenEase",
+ metaDescription: "Maintenance work order software for teams that outgrew spreadsheets: submit, assign, prioritize and close jobs from any device with photos, parts and costs.",
  intro:
- "MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
+ "Most work order programs start as a spreadsheet and end as a mess. MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
  benefits: [
  { title: "Faster response", body: "Work orders route to the right technician the moment they are submitted, with mobile push alerts so urgent issues never sit in an inbox." },
  { title: "Honest reporting", body: "Every status change is timestamped. Backlog, mean time to repair, and technician throughput stop being a guess." },
@@ -42,6 +42,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Can requesters submit work without a MaintenEase login?", a: "Yes. Public request links and QR codes let staff or tenants submit issues without creating an account; they get email or SMS updates as the work progresses." },
  { q: "Do you support recurring work orders?", a: "Yes. Any recurring task lives as a preventive maintenance schedule and generates work orders automatically." },
+ { q: "What are work order programs?", a: "Work order programs are the software teams use to capture a maintenance request, assign it, track the work, and record what was done. Simple ones are little more than a shared list; a full maintenance work order software platform like MaintenEase also connects each job to an asset, its parts, its cost, and its service history." },
+ { q: "How do I choose maintenance work order software?", a: "Test it against the five things that go wrong today — requests arriving by text, jobs with no owner, no parts cost, no history, no proof of completion. Then check that technicians can actually use it one-handed on a phone, and that pricing does not jump every time you add a seasonal helper." },
  ],
  },
  {
