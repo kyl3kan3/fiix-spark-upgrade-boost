@@ -51,8 +51,8 @@ export const solutions: Solution[] = [
  name: "Preventive Maintenance Software",
  h1: "Preventive Maintenance Software that stops failures before they cost you",
  tagline: "Schedule by date, runtime, or meter — and watch reactive work shrink.",
- metaTitle: "Preventive Maintenance Software | Schedule, Track & Audit",
- metaDescription: "Preventive maintenance software that schedules work by date, runtime, or meter reading. Cut downtime and pass audits with confidence.",
+ metaTitle: "Preventive Maintenance Software — Schedules & PM Compliance",
+ metaDescription: "Preventive maintenance software that builds PM schedules by date, runtime or meter reading, auto-generates work orders, and keeps audit-ready records.",
  intro:
  "MaintenEase turns preventive maintenance from a calendar reminder into an audited, automated process. Build schedules per asset by date, runtime hours, or meter reading. Work orders generate themselves, route to the right technician, and surface the procedure, parts, and safety steps inline. Compliance reports — fire systems, life safety, regulated inspections — export with a click.",
  benefits: [
@@ -75,6 +75,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Can we import our existing PM schedule from a spreadsheet?", a: "Yes — CSV import is supported, and our team will help map columns on the first import." },
  { q: "What happens if a PM is missed?", a: "Missed PMs stay visible in a dedicated overdue queue with an aging color code, and roll up into compliance reports so they cannot be quietly forgotten." },
+ { q: "What is preventive maintenance software?", a: "Preventive maintenance software schedules recurring inspections and service against each asset, generates the work orders automatically when they come due, and records completion so PM compliance can be measured and audited." },
+ { q: "How is preventive maintenance software different from a general CMMS?", a: "PM scheduling is one module inside a CMMS. MaintenEase ships both: the preventive schedules described here plus the asset register, work order queue, inspections, and reporting they depend on." },
  ],
  },
  {
