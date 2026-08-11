@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-07T09:31:17.778Z",
+  "generated_at": "2026-08-11T19:56:33.871Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
@@ -262,6 +262,13 @@
       "short": "A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.",
       "html_url": "https://maintenease.com/learn/root-cause-analysis",
       "markdown_url": "https://maintenease.com/learn/root-cause-analysis.md"
+    },
+    {
+      "slug": "deferred-maintenance",
+      "term": "Deferred Maintenance",
+      "short": "Maintenance work that is known, needed, and postponed — usually for budget or staffing reasons — and that quietly accumulates into a backlog with a price tag.",
+      "html_url": "https://maintenease.com/learn/deferred-maintenance",
+      "markdown_url": "https://maintenease.com/learn/deferred-maintenance.md"
     },
     {
       "slug": "ai-maintenance-assistant",

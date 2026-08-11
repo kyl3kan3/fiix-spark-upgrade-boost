@@ -35,3 +35,11 @@ Yes — common providers (Samsara, Geotab, and others) can feed odometer and eng
 ### Can drivers use this without a full MaintenEase license?
 
 Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost.
+
+### What is fleet maintenance software?
+
+Fleet maintenance software manages service for vehicles and mobile equipment: meter-based PM schedules, driver inspections, repair history, parts and warranty, and the compliance records inspectors ask for.
+
+### Can I run fleet and facility maintenance in the same system?
+
+Yes. Vehicles, buildings, and production equipment are all assets in MaintenEase, so one team can run mixed fleets and facilities without a second subscription.
