@@ -121,6 +121,10 @@ const LearnArticle = () => {
  };
 
  const related = term.related
+ // Every glossary page links back to the /learn/cmms pillar so the hub page
+ // accumulates internal links from the whole cluster.
+ .concat(term.slug === "cmms" ? [] : ["cmms"])
+ .filter((s, i, arr) => arr.indexOf(s) === i)
  .map((s) => glossary.find((g) => g.slug === s))
  .filter((g): g is NonNullable<typeof g> => Boolean(g));
 
@@ -160,6 +164,35 @@ const LearnArticle = () => {
  <section key={s.heading}>
  <h2 className="text-2xl font-semibold mb-3 text-foreground">{s.heading}</h2>
  <p className="text-foreground leading-relaxed">{s.body}</p>
+ {s.table && (
+ <div className="mt-5 overflow-x-auto rounded-lg border border-border">
+ <table className="w-full text-sm">
+ {s.table.caption && (
+ <caption className="px-4 py-3 text-left text-sm text-muted-foreground">
+ {s.table.caption}
+ </caption>
+ )}
+ <thead className="bg-muted/50">
+ <tr>
+ {s.table.headers.map((h, i) => (
+ <th key={i} scope="col" className="px-4 py-3 text-left font-semibold text-foreground">
+ {h}
+ </th>
+ ))}
+ </tr>
+ </thead>
+ <tbody>
+ {s.table.rows.map((row) => (
+ <tr key={row.join("|")} className="border-t border-border">
+ {row.map((cell, i) => (
+ <td key={i} className="px-4 py-3 align-top text-foreground">{cell}</td>
+ ))}
+ </tr>
+ ))}
+ </tbody>
+ </table>
+ </div>
+ )}
  </section>
  ))}
  </div>
