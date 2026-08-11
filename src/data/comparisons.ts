@@ -309,6 +309,10 @@ export const comparisons: Comparison[] = [
     faqs: [
       pricingFaq("MaintainX", 21),
       {
+        q: "How much does MaintainX cost per user?",
+        a: "MaintainX's publicly listed 2026 tiers start with a limited free plan, then run roughly $21/user/mo for Essential, about $49/user/mo for Premium, and a custom quote for Enterprise, usually billed annually. Verify current MaintainX cost on their own pricing page before budgeting.",
+      },
+      {
         q: "At what team size does MaintenEase become cheaper than MaintainX?",
         a: "Use the CMMS cost calculator for the current estimate. It selects Starter for up to two seats, Pro for up to four, and Business above four, then adds Business seats at $15 per month each. It also shows when the listed MaintainX tier costs less.",
       },
