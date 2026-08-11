@@ -18,10 +18,10 @@ export const solutions: Solution[] = [
  name: "Work Order Software",
  h1: "Work Order Software that turns requests into completed work",
  tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
- metaTitle: "Work Order Software — Capture & Close Faster | MaintenEase",
- metaDescription: "Work order software for maintenance teams: submit, assign, prioritize and close jobs from any device, with photos, parts, costs and a full audit trail.",
+ metaTitle: "Work Order Software & Work Order Programs | MaintenEase",
+ metaDescription: "Maintenance work order software for teams that outgrew spreadsheets: submit, assign, prioritize and close jobs from any device with photos, parts and costs.",
  intro:
- "MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
+ "Most work order programs start as a spreadsheet and end as a mess. MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.",
  benefits: [
  { title: "Faster response", body: "Work orders route to the right technician the moment they are submitted, with mobile push alerts so urgent issues never sit in an inbox." },
  { title: "Honest reporting", body: "Every status change is timestamped. Backlog, mean time to repair, and technician throughput stop being a guess." },
@@ -42,6 +42,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Can requesters submit work without a MaintenEase login?", a: "Yes. Public request links and QR codes let staff or tenants submit issues without creating an account; they get email or SMS updates as the work progresses." },
  { q: "Do you support recurring work orders?", a: "Yes. Any recurring task lives as a preventive maintenance schedule and generates work orders automatically." },
+ { q: "What are work order programs?", a: "Work order programs are the software teams use to capture a maintenance request, assign it, track the work, and record what was done. Simple ones are little more than a shared list; a full maintenance work order software platform like MaintenEase also connects each job to an asset, its parts, its cost, and its service history." },
+ { q: "How do I choose maintenance work order software?", a: "Test it against the five things that go wrong today — requests arriving by text, jobs with no owner, no parts cost, no history, no proof of completion. Then check that technicians can actually use it one-handed on a phone, and that pricing does not jump every time you add a seasonal helper." },
  ],
  },
  {
@@ -49,8 +51,8 @@ export const solutions: Solution[] = [
  name: "Preventive Maintenance Software",
  h1: "Preventive Maintenance Software that stops failures before they cost you",
  tagline: "Schedule by date, runtime, or meter — and watch reactive work shrink.",
- metaTitle: "Preventive Maintenance Software | Schedule, Track & Audit",
- metaDescription: "Preventive maintenance software that schedules work by date, runtime, or meter reading. Cut downtime and pass audits with confidence.",
+ metaTitle: "Preventive Maintenance Software — Schedules & PM Compliance",
+ metaDescription: "Preventive maintenance software that builds PM schedules by date, runtime or meter reading, auto-generates work orders, and keeps audit-ready records.",
  intro:
  "MaintenEase turns preventive maintenance from a calendar reminder into an audited, automated process. Build schedules per asset by date, runtime hours, or meter reading. Work orders generate themselves, route to the right technician, and surface the procedure, parts, and safety steps inline. Compliance reports — fire systems, life safety, regulated inspections — export with a click.",
  benefits: [
@@ -73,6 +75,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Can we import our existing PM schedule from a spreadsheet?", a: "Yes — CSV import is supported, and our team will help map columns on the first import." },
  { q: "What happens if a PM is missed?", a: "Missed PMs stay visible in a dedicated overdue queue with an aging color code, and roll up into compliance reports so they cannot be quietly forgotten." },
+ { q: "What is preventive maintenance software?", a: "Preventive maintenance software schedules recurring inspections and service against each asset, generates the work orders automatically when they come due, and records completion so PM compliance can be measured and audited." },
+ { q: "How is preventive maintenance software different from a general CMMS?", a: "PM scheduling is one module inside a CMMS. MaintenEase ships both: the preventive schedules described here plus the asset register, work order queue, inspections, and reporting they depend on." },
  ],
  },
  {
@@ -111,8 +115,8 @@ export const solutions: Solution[] = [
  name: "Fleet Maintenance Software",
  h1: "Fleet Maintenance Software that keeps vehicles safe, compliant, and on the road",
  tagline: "Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.",
- metaTitle: "Fleet Maintenance Software | DVIRs, PMs & Compliance",
- metaDescription: "Fleet maintenance software with meter-based PMs, DVIRs, and audit-ready records. Keep every vehicle safe, compliant, and earning.",
+ metaTitle: "Fleet Maintenance Software — Meter PMs, DVIRs & Compliance",
+ metaDescription: "Fleet maintenance software with mileage and engine-hour PM schedules, mobile DVIRs, parts and warranty tracking, and audit-ready DOT compliance exports.",
  intro:
  "MaintenEase treats every vehicle as an asset with its own service history, parts, warranties, and PM schedule. Telematics-fed odometer readings trigger PMs the moment a threshold is crossed. Drivers complete DVIRs on their phone before and after every shift. Compliance reports export ready for any inspection.",
  benefits: [
@@ -135,6 +139,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Do you integrate with telematics providers?", a: "Yes — common providers (Samsara, Geotab, and others) can feed odometer and engine-hour readings into MaintenEase via API." },
  { q: "Can drivers use this without a full MaintenEase license?", a: "Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost." },
+ { q: "What is fleet maintenance software?", a: "Fleet maintenance software manages service for vehicles and mobile equipment: meter-based PM schedules, driver inspections, repair history, parts and warranty, and the compliance records inspectors ask for." },
+ { q: "Can I run fleet and facility maintenance in the same system?", a: "Yes. Vehicles, buildings, and production equipment are all assets in MaintenEase, so one team can run mixed fleets and facilities without a second subscription." },
  ],
  },
  {

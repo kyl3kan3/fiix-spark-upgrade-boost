@@ -35,3 +35,11 @@ Yes — CSV import is supported, and our team will help map columns on the first
 ### What happens if a PM is missed?
 
 Missed PMs stay visible in a dedicated overdue queue with an aging color code, and roll up into compliance reports so they cannot be quietly forgotten.
+
+### What is preventive maintenance software?
+
+Preventive maintenance software schedules recurring inspections and service against each asset, generates the work orders automatically when they come due, and records completion so PM compliance can be measured and audited.
+
+### How is preventive maintenance software different from a general CMMS?
+
+PM scheduling is one module inside a CMMS. MaintenEase ships both: the preventive schedules described here plus the asset register, work order queue, inspections, and reporting they depend on.

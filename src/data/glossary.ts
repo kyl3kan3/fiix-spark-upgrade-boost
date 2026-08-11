@@ -8,7 +8,12 @@ export type GlossaryTerm = {
  metaDescription: string;
  published?: string;
  updated?: string;
- sections: { heading: string; body: string }[];
+ sections: {
+ heading: string;
+ body: string;
+ /** Optional comparison table rendered under the section body. */
+ table?: { caption?: string; headers: string[]; rows: string[][] };
+ }[];
  faqs: { q: string; a: string }[];
  related: string[];
  sources?: { label: string; url: string }[];
@@ -19,16 +24,36 @@ export const glossary: GlossaryTerm[] = [
  slug: "cmms",
  term: "CMMS (Computerized Maintenance Management System)",
  short: "Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.",
- metaTitle: "What is a CMMS? A Plain-English Guide for Maintenance Teams",
- metaDescription: "A CMMS is software that centralizes work orders, assets, and preventive maintenance. Learn what it does, who needs one, and how to choose.",
+ metaTitle: "What Is a CMMS? CMMS Meaning, Systems & Software (2026)",
+ metaDescription: "CMMS meaning explained: a Computerized Maintenance Management System centralizes work orders, assets and preventive maintenance. See what CMMS systems do.",
+ published: "2026-01-15",
+ updated: "2026-08-11",
  sections: [
  {
  heading: "What does CMMS stand for?",
- body: "CMMS stands for Computerized Maintenance Management System. In practice it is the system of record for everything a maintenance team does — every asset they look after, every work order they raise, every inspection they complete, and every preventive task that comes due. Before CMMS software existed, this information lived in clipboards, whiteboards, and a tangle of spreadsheets. A modern CMMS replaces all of that with one searchable place that the whole team works from.",
+ body: "CMMS stands for Computerized Maintenance Management System. The CMMS meaning in plain English: software that acts as the system of record for everything a maintenance team does — every asset they look after, every work order they raise, every inspection they complete, and every preventive task that comes due. Before CMMS software existed, this information lived in clipboards, whiteboards, and a tangle of spreadsheets. A modern CMMS replaces all of that with one searchable place that the whole team works from. When people say \"a CMMS\", \"CMMS software\", or \"a CMMS system\", they mean the same thing.",
+ },
+ {
+ heading: "CMMS meaning, in one paragraph",
+ body: "A CMMS is a database of your physical assets wrapped in the workflows that keep them running. Each asset has an identity, a location, and a service history. Work — whether it comes from a breakdown, an inspection finding, a tenant request, or a recurring schedule — is captured as a work order attached to that asset. Technicians complete work on a phone; the system timestamps every status change. Over time this produces the reporting that maintenance managers are asked for: backlog, PM compliance, mean time to repair, cost per asset, and which equipment is quietly consuming the budget.",
  },
  {
  heading: "What does a CMMS actually do?",
  body: "Most CMMS platforms cover four core jobs. First, an asset registry: every machine, building, vehicle, or piece of equipment with its location, manuals, photos, and service history. Second, work orders: create, assign, prioritize, complete, and close them with a full audit trail. Third, preventive maintenance: recurring schedules that automatically generate work orders by date, meter reading, or runtime. Fourth, reporting: how many work orders are open, which assets fail most often, mean time between failures, technician throughput.",
+ table: {
+ caption: "The four core modules of a CMMS system",
+ headers: ["Module", "What it holds", "The question it answers"],
+ rows: [
+ ["Asset registry", "Equipment, location, manuals, warranty, service history", "What do we own and how has it behaved?"],
+ ["Work orders", "Requests, assignments, priority, parts, labor, photos", "Who is doing what, and is it done?"],
+ ["Preventive maintenance", "Recurring schedules by date, meter, or runtime", "What is due before it breaks?"],
+ ["Reporting", "Backlog, PM compliance, MTTR, MTBF, cost per asset", "Are we getting better or worse?"],
+ ],
+ },
+ },
+ {
+ heading: "Types of CMMS systems",
+ body: "CMMS systems fall into a few recognizable shapes. Cloud-based (SaaS) CMMS software is hosted by the vendor, updated continuously, and reached from a browser or mobile app — this is what most teams buy today. On-premise CMMS runs on servers you own, which some regulated or air-gapped sites still require. Mobile-first CMMS platforms are built around the technician's phone rather than a desk. Open-source and free CMMS tools remove the license cost but shift hosting, security, and support onto you. Finally, AI-native or agentic CMMS platforms add predictive scoring and let authorized AI assistants retrieve records or draft work orders under the same permissions a person has.",
  },
  {
  heading: "Who needs a CMMS?",
@@ -37,14 +62,34 @@ export const glossary: GlossaryTerm[] = [
  {
  heading: "CMMS vs EAM vs FSM",
  body: "A CMMS focuses on maintenance operations. An EAM (Enterprise Asset Management) system covers the full lifecycle of an asset, including procurement, depreciation, and disposal — it overlaps heavily with finance. FSM (Field Service Management) is geared toward dispatching technicians to customer sites and handling billing. Many teams start with a CMMS and only graduate to EAM or FSM when their needs clearly outgrow it.",
+ table: {
+ caption: "CMMS vs EAM vs FSM at a glance",
+ headers: ["", "CMMS", "EAM", "FSM"],
+ rows: [
+ ["Primary focus", "Maintaining assets you own", "Whole asset lifecycle incl. finance", "Dispatching techs to customers"],
+ ["Typical buyer", "Maintenance / facilities manager", "Operations + finance + IT", "Service business owner"],
+ ["Core objects", "Assets, work orders, PM schedules", "Assets, capital plans, depreciation", "Jobs, customers, invoices"],
+ ["Usual cost", "Lowest", "Highest", "Mid"],
+ ["Good starting point?", "Yes for most teams", "Only when finance needs it", "Only if you bill customers"],
+ ],
+ },
+ },
+ {
+ heading: "How to choose CMMS software",
+ body: "Start from the work, not the feature list. Write down the five things that go wrong most often today — PMs slipping, no service history, requests arriving by text message, unknown parts spend — and test each shortlisted product against those five. Then check three practical constraints: whether technicians will actually use it on a phone, whether your existing asset list can be imported without re-keying, and how the pricing behaves when you add a seasonal helper or a supervisor who only reads reports. Per-user pricing quietly punishes both. Finally, run a two-week pilot on one site or one asset class before rolling out everywhere.",
  },
  ],
  faqs: [
+ { q: "What is a CMMS in simple terms?", a: "A CMMS is software that keeps a list of your equipment and manages the work done on it — repairs, inspections, and recurring preventive tasks — so nothing depends on someone's memory or a spreadsheet." },
+ { q: "What does CMMS stand for?", a: "CMMS stands for Computerized Maintenance Management System." },
+ { q: "What are CMMS systems used for?", a: "CMMS systems are used to register assets, capture and assign work orders, schedule preventive maintenance by date or meter reading, record parts and labor costs, and report on backlog, PM compliance, MTTR, and MTBF." },
  { q: "Is CMMS the same as maintenance management software?", a: "Yes — the terms are used interchangeably. CMMS is the older industry acronym; maintenance management software is the plain-English version." },
+ { q: "What is the difference between a CMMS and an ERP?", a: "An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in operational detail. Many teams integrate the two so parts purchases and asset costs flow into the ERP while day-to-day maintenance stays in the CMMS." },
  { q: "Do I need a CMMS if I only have a few assets?", a: "Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS." },
- { q: "Is a CMMS expensive?", a: "Modern cloud CMMS platforms (including MaintenEase) charge per user per month and start well under what a single avoided breakdown would cost." },
+ { q: "How much does a CMMS cost?", a: "Most cloud CMMS platforms bill per user per month, commonly between $20 and $75 per technician. MaintenEase instead publishes account plans with included seats, so the bill does not change every time someone joins. Run your own headcount through the CMMS cost calculator before committing." },
+ { q: "Is there a free CMMS?", a: "Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price." },
  ],
- related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro"],
+ related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro", "deferred-maintenance", "cmms-roi"],
  },
  {
  slug: "agentic-cmms",
@@ -640,6 +685,54 @@ export const glossary: GlossaryTerm[] = [
    { q: "What is the difference between RCA and RCFA?", a: "RCFA (Root Cause Failure Analysis) is RCA applied specifically to equipment failures. In maintenance the terms are used interchangeably; RCA is the broader label used across quality, safety, and operations." },
   ],
  related: ["mtbf", "mttr", "preventive-maintenance", "corrective-maintenance"],
+ },
+ {
+ slug: "deferred-maintenance",
+ term: "Deferred Maintenance",
+ short: "Maintenance work that is known, needed, and postponed — usually for budget or staffing reasons — and that quietly accumulates into a backlog with a price tag.",
+ metaTitle: "Deferred Maintenance: Definition, Backlog & Real Cost",
+ metaDescription: "Deferred maintenance is needed work that gets postponed. Learn how the backlog is measured, what it costs, and how to reduce it with a CMMS.",
+ published: "2026-08-11",
+ updated: "2026-08-11",
+ sections: [
+ {
+ heading: "What is deferred maintenance?",
+ body: "Deferred maintenance is work that has been identified as necessary but postponed to a later budget period. It is not the same as work nobody knew about: the roof survey, the chiller inspection, or the pavement condition report already flagged the problem, and someone decided to wait. Schools, hospitals, municipalities, and property portfolios use the term formally, because the accumulated value of that postponed work has to be reported. In industrial settings the same idea appears as maintenance backlog.",
+ },
+ {
+ heading: "Why teams defer maintenance",
+ body: "Three reasons dominate. Budget: capital is allocated annually and repairs compete with visible projects. Staffing: a short-handed team triages toward whatever is currently broken, so condition-based work slides. Visibility: if the finding lives in a PDF survey rather than the maintenance system, it never becomes a scheduled work order and effectively disappears until it fails. The third cause is the easiest to fix and the most commonly ignored.",
+ },
+ {
+ heading: "The real cost of deferring work",
+ body: "Postponing work rarely holds cost flat. A small roof leak becomes deck replacement and interior damage; a missed bearing lubrication becomes a motor rebuild plus unplanned downtime. Deferred maintenance also increases risk exposure — safety incidents, compliance findings, and insurance disputes all trace back to documented-but-unaddressed conditions. Facilities teams commonly express the exposure as a Facility Condition Index (FCI): the cost of the deferred backlog divided by the current replacement value of the asset or building.",
+ table: {
+ caption: "Reading the Facility Condition Index",
+ headers: ["FCI", "Common interpretation", "What it usually implies"],
+ rows: [
+ ["Under 0.05", "Good", "Routine PM is keeping pace"],
+ ["0.05 – 0.10", "Fair", "Backlog is growing; prioritize by risk"],
+ ["0.10 – 0.30", "Poor", "Renewal funding needed, not just repairs"],
+ ["Over 0.30", "Critical", "Replacement may cost less than catching up"],
+ ],
+ },
+ },
+ {
+ heading: "How to measure your deferred maintenance backlog",
+ body: "Start by making every deferred item a record rather than a memory: one entry per finding, with the asset, the estimated cost, the consequence of continued deferral, and the source (inspection, survey, or technician note). Total the estimated cost to get the backlog value, and divide by replacement value for FCI. Track backlog age too — work deferred for three consecutive years is behaving like a decision, not a delay. A CMMS gives you this for free if findings are captured as work orders with a status and a cost estimate.",
+ },
+ {
+ heading: "Reducing the backlog without a budget increase",
+ body: "Rank the backlog by risk rather than by age or by who shouted loudest: consequence of failure multiplied by likelihood, adjusted for asset criticality. Then attack three categories first — items that threaten safety or compliance, items whose repair cost escalates fastest, and items that are cheap to close and clear noise from the list. Convert repeat findings into preventive maintenance schedules so the same item stops re-entering the backlog every year, and bring the ranked list to budget conversations with cost-of-inaction numbers attached.",
+ },
+ ],
+ faqs: [
+ { q: "What is an example of deferred maintenance?", a: "A building survey flags a failing HVAC compressor and a section of roof at end of life. Neither is funded this year, so both are recorded and postponed. That recorded, unfunded work is deferred maintenance." },
+ { q: "Is deferred maintenance the same as a maintenance backlog?", a: "They overlap. Backlog usually means all open work not yet completed, including recent requests. Deferred maintenance specifically means known work that has been consciously postponed beyond its recommended timing." },
+ { q: "How is deferred maintenance calculated?", a: "Sum the estimated cost of every identified but unfunded maintenance item. Facilities teams then divide that total by the current replacement value of the asset or portfolio to produce the Facility Condition Index." },
+ { q: "How does a CMMS reduce deferred maintenance?", a: "It keeps every deferred item as a live, costed record instead of a line in an old PDF, shows how long each item has been waiting, and converts recurring findings into preventive schedules so the backlog stops regenerating." },
+ ],
+ related: ["cmms", "preventive-maintenance", "reactive-maintenance", "corrective-maintenance", "cmms-roi"],
  },
  ...emergingAiGlossary,
 ];

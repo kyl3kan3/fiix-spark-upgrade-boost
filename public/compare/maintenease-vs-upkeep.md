@@ -33,9 +33,21 @@ For the 8-person example, MaintenEase uses the Business plan plus additional sea
 
 ## FAQ
 
+### How much does UpKeep cost per month?
+
+UpKeep's publicly listed 2026 tiers are roughly $20/user/mo (Lite), $45/user/mo (Starter), and $75/user/mo (Professional), usually on annual billing, with a custom quote above that. Requester-only users are typically free. Verify current rates on UpKeep's pricing page.
+
+### Does UpKeep have a free plan?
+
+UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.
+
 ### How much does MaintenEase save vs UpKeep?
 
 UpKeep's listed plan is around $45 per user per month, so a team of 8 runs about $360/mo. The lowest published MaintenEase plan covering 8 seats is Business at $359/mo, including 4 extra seats. Asset or work-order volume can require a higher plan. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+
+### What is the best UpKeep alternative?
+
+It depends on why you are leaving. If the trigger is per-seat cost as the crew grows, an account-plan product like MaintenEase changes the maths. If it is missing capability, compare on the specific workflow — procedures, IoT, or multi-site — rather than on price alone.
 
 ### Is MaintenEase affiliated with UpKeep?
 

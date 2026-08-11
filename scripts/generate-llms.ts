@@ -93,13 +93,17 @@ ${c.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 }
 
 function glossaryMd(g: (typeof glossary)[number]) {
+  const mdTable = (t: NonNullable<(typeof g.sections)[number]["table"]>) =>
+    `\n\n${t.caption ? `_${t.caption}_\n\n` : ""}| ${t.headers.join(" | ")} |\n| ${t.headers
+      .map(() => "---")
+      .join(" | ")} |\n${t.rows.map((r) => `| ${r.join(" | ")} |`).join("\n")}`;
   return `# ${g.term}
 
 > ${g.short}
 
 Canonical URL: ${SITE}/learn/${g.slug}
 
-${g.sections.map((s) => `## ${s.heading}\n\n${s.body}`).join("\n\n")}
+${g.sections.map((s) => `## ${s.heading}\n\n${s.body}${s.table ? mdTable(s.table) : ""}`).join("\n\n")}
 
 ## FAQ
 
