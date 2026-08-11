@@ -115,8 +115,8 @@ export const solutions: Solution[] = [
  name: "Fleet Maintenance Software",
  h1: "Fleet Maintenance Software that keeps vehicles safe, compliant, and on the road",
  tagline: "Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.",
- metaTitle: "Fleet Maintenance Software | DVIRs, PMs & Compliance",
- metaDescription: "Fleet maintenance software with meter-based PMs, DVIRs, and audit-ready records. Keep every vehicle safe, compliant, and earning.",
+ metaTitle: "Fleet Maintenance Software — Meter PMs, DVIRs & Compliance",
+ metaDescription: "Fleet maintenance software with mileage and engine-hour PM schedules, mobile DVIRs, parts and warranty tracking, and audit-ready DOT compliance exports.",
  intro:
  "MaintenEase treats every vehicle as an asset with its own service history, parts, warranties, and PM schedule. Telematics-fed odometer readings trigger PMs the moment a threshold is crossed. Drivers complete DVIRs on their phone before and after every shift. Compliance reports export ready for any inspection.",
  benefits: [
@@ -139,6 +139,8 @@ export const solutions: Solution[] = [
  faqs: [
  { q: "Do you integrate with telematics providers?", a: "Yes — common providers (Samsara, Geotab, and others) can feed odometer and engine-hour readings into MaintenEase via API." },
  { q: "Can drivers use this without a full MaintenEase license?", a: "Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost." },
+ { q: "What is fleet maintenance software?", a: "Fleet maintenance software manages service for vehicles and mobile equipment: meter-based PM schedules, driver inspections, repair history, parts and warranty, and the compliance records inspectors ask for." },
+ { q: "Can I run fleet and facility maintenance in the same system?", a: "Yes. Vehicles, buildings, and production equipment are all assets in MaintenEase, so one team can run mixed fleets and facilities without a second subscription." },
  ],
  },
  {
