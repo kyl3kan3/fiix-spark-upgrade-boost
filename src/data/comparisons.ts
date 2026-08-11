@@ -111,20 +111,86 @@ export const comparisons: Comparison[] = [
     competitor: "UpKeep",
     competitorPlan: "Starter",
     competitorPricePerUser: 45,
-    metaTitle: "MaintenEase vs UpKeep — CMMS Pricing Comparison (2026)",
+    metaTitle: "UpKeep Pricing vs MaintenEase — CMMS Cost Comparison 2026",
     metaDescription:
-      "MaintenEase vs UpKeep: compare account plans with included seats against per-technician pricing. See features and estimated team cost side by side.",
+      "UpKeep pricing explained tier by tier, compared with MaintenEase account plans and included seats. See real monthly cost for a team of 8 before you switch.",
     h1: "MaintenEase vs UpKeep",
     tagline: "The same core CMMS — without paying by the technician.",
     intro:
       "UpKeep is a well-known mobile-first CMMS priced per user per month. MaintenEase covers the same essentials — work orders, assets, preventive maintenance, inspections, and mobile access — through account plans with included seats. Business includes four seats and supports additional seats at $15 per month each.",
     rows: makeRows("UpKeep", 45),
+    competitorTiers: [
+      { name: "Lite", price: "~$20 / user / mo", notes: "Work orders and basic requests; reporting and PM depth limited." },
+      { name: "Starter", price: "~$45 / user / mo", notes: "The tier most maintenance teams land on — PMs, checklists, and reporting." },
+      { name: "Professional", price: "~$75 / user / mo", notes: "Advanced reporting, workflow automation, and integrations." },
+      { name: "Business+ / Enterprise", price: "Custom quote", notes: "Multi-site, SSO, and procurement-grade requirements." },
+    ],
+    sections: [
+      {
+        heading: "UpKeep pricing at a glance",
+        paragraphs: [
+          "UpKeep publishes a per-user, per-month ladder that is usually quoted on annual billing. As of 2026 the publicly listed tiers run roughly $20/user/mo for Lite, $45/user/mo for Starter, $75/user/mo for Professional, and a custom quote above that. Requester-only users are typically free, but anyone who completes work needs a paid seat.",
+          "That structure means your CMMS bill is a function of headcount rather than of how much maintenance you do. Eight technicians on the Starter tier is roughly $360/mo, or about $4,320 a year committed up front on an annual plan. Fifteen is roughly $675/mo.",
+          "Always verify current figures on UpKeep's own pricing page — vendor tiers change, and the numbers here are publicly listed prices captured in 2026 for comparison purposes.",
+        ],
+      },
+      {
+        heading: "How MaintenEase pricing compares",
+        paragraphs: [
+          `MaintenEase publishes account plans with seats included rather than a per-technician rate. For the illustrative team of ${TEAM_SIZE} used across this site, the lowest MaintenEase plan that covers the seat count is ${MAINTENEASE_TEAM_PRICE.plan.name} at $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo including ${MAINTENEASE_TEAM_PRICE.extraSeats} extra seats, against roughly $${45 * TEAM_SIZE}/mo for UpKeep Starter.`,
+          "The bigger difference is behaviour as the crew changes. Adding a seasonal helper, a supervisor who only reads reports, or a second-shift technician moves an UpKeep bill by a full seat each time. On MaintenEase the plan covers its included seats, and Business adds seats at a published $15/mo each, so the increase is visible before you commit to it.",
+          "MaintenEase is also month-to-month, so the listed price does not depend on signing an annual contract. Run your own headcount through the cost calculator rather than trusting either vendor's example team — there is a range where per-seat pricing genuinely wins, and the calculator shows where it flips.",
+        ],
+      },
+      {
+        heading: "Where UpKeep is the better choice",
+        paragraphs: [
+          "UpKeep is a mature, well-resourced product with a large customer base, an extensive integration marketplace, and enterprise procurement processes. If you are one to three paid users, per-seat math is simply cheaper for you. If you need deep IoT sensor programmes, an established partner ecosystem, or the reassurance of a large vendor for a long security review, UpKeep is a reasonable pick and this page is not going to pretend otherwise.",
+          "MaintenEase makes the most sense when the crew is growing, when people outside the maintenance team need visibility, and when you want AI predictive scoring, energy tracking, a no-login request portal, and free data import included rather than priced as add-ons.",
+        ],
+      },
+    ],
+    bestFit: {
+      ours: [
+        "Teams of roughly 5+ where headcount changes through the year",
+        "Operations that want supervisors and office staff to see status without buying seats",
+        "Buyers who want month-to-month billing and published seat costs",
+        "Teams that want predictive scoring, energy tracking, and a request portal included",
+      ],
+      theirs: [
+        "One to three paid users, where per-seat pricing is cheapest",
+        "Large IoT sensor deployments and an extensive integration marketplace",
+        "Enterprise procurement with long vendor security reviews",
+      ],
+    },
+    migrationSteps: [
+      { title: "Export from UpKeep", body: "Export assets, locations, open work orders, and PM schedules to CSV or Excel from your UpKeep account." },
+      { title: "Send us the files", body: "We clean and map the columns and import them for free during onboarding — no re-keying and no per-record charge." },
+      { title: "Run both for two weeks", body: "Keep UpKeep read-only while your team completes real work in MaintenEase, so nothing is lost in the switch." },
+      { title: "Cut over and cancel", body: "Once PM schedules are generating correctly and the backlog matches, close the UpKeep subscription at the end of its term." },
+    ],
     differentiators: [
       { title: "Published account and seat pricing", body: "Starter and Pro include seats up front. Business includes four seats and lists additional seats at $15 per month each, so the team can calculate the actual bill before switching." },
       { title: "Month-to-month", body: "MaintenEase is month-to-month — no annual contract required to get the listed price." },
       { title: "Free, hands-on migration", body: "We import your assets and open work orders for free so switching from UpKeep doesn't mean re-keying your data." },
     ],
-    faqs: [pricingFaq("UpKeep", 45), affiliationFaq("UpKeep"), migrationFaq("UpKeep")],
+    faqs: [
+      {
+        q: "How much does UpKeep cost per month?",
+        a: "UpKeep's publicly listed 2026 tiers are roughly $20/user/mo (Lite), $45/user/mo (Starter), and $75/user/mo (Professional), usually on annual billing, with a custom quote above that. Requester-only users are typically free. Verify current rates on UpKeep's pricing page.",
+      },
+      {
+        q: "Does UpKeep have a free plan?",
+        a: "UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.",
+      },
+      pricingFaq("UpKeep", 45),
+      {
+        q: "What is the best UpKeep alternative?",
+        a: "It depends on why you are leaving. If the trigger is per-seat cost as the crew grows, an account-plan product like MaintenEase changes the maths. If it is missing capability, compare on the specific workflow — procedures, IoT, or multi-site — rather than on price alone.",
+      },
+      affiliationFaq("UpKeep"),
+      migrationFaq("UpKeep"),
+    ],
   },
   {
     slug: "maintenease-vs-fiix",
