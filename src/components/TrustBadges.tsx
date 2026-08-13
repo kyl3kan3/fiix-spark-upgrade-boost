@@ -1,3 +1,6 @@
+import { ArrowRight, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
+
 const badges = [
   {
     href: "https://verifieddr.com/website/maintenease-com",
@@ -65,6 +68,14 @@ const badges = [
   },
 ] as const;
 
+const alternativeGuides = [
+  { label: "Fiix alternative", to: "/compare/maintenease-vs-fiix" },
+  { label: "UpKeep alternative", to: "/compare/maintenease-vs-upkeep" },
+  { label: "MaintainX alternative", to: "/compare/maintenease-vs-maintainx" },
+  { label: "Limble alternative", to: "/compare/maintenease-vs-limble" },
+  { label: "eMaint alternative", to: "/compare/maintenease-vs-emaint" },
+] as const;
+
 const TrustBadges = () => (
   <section
     aria-labelledby="trust-badges-heading"
@@ -89,7 +100,7 @@ const TrustBadges = () => (
             href={badge.href}
             target="_blank"
             rel={"rel" in badge ? badge.rel : "noopener noreferrer"}
-            className="flex min-h-24 items-center justify-center rounded-xl border border-border bg-card px-5 py-4 shadow-sm outline-none transition-[border-color,box-shadow,transform] duration-200 hover:border-primary/30 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+            className="flex min-h-24 items-center justify-center rounded-xl border border-border bg-card px-5 py-4 shadow-sm outline-none transition-[border-color,box-shadow,transform] duration-200 hover:border-primary/30 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96]"
           >
             <img
               src={badge.src}
@@ -103,6 +114,48 @@ const TrustBadges = () => (
           </a>
         ))}
       </div>
+
+      <nav
+        aria-labelledby="alternative-guides-heading"
+        className="mt-8 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6"
+      >
+        <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <h3 id="alternative-guides-heading" className="font-display text-lg font-semibold text-foreground">
+              Free CMMS alternative guides
+            </h3>
+            <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground">
+              Compare pricing and features side by side, or browse more free software options from an independent directory.
+            </p>
+          </div>
+          <a
+            href="https://freealternatives.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-10 shrink-0 items-center gap-2 self-start font-medium text-primary outline-none transition-[color,transform] duration-200 hover:text-primary/80 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96] sm:self-auto"
+          >
+            Browse FreeAlternatives.net
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+
+        <ul className="mt-3 grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-5">
+          {alternativeGuides.map((guide) => (
+            <li key={guide.to}>
+              <Link
+                to={guide.to}
+                className="group flex min-h-10 items-center justify-between gap-2 py-2 text-sm font-medium text-foreground outline-none transition-[color,transform] duration-200 hover:text-primary focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96]"
+              >
+                {guide.label}
+                <ArrowRight
+                  className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   </section>
 );
