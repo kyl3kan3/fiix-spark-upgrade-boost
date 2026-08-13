@@ -38,6 +38,10 @@ For the 8-person example, MaintenEase uses the Business plan plus additional sea
 
 MaintainX's listed plan is around $21 per user per month, so a team of 8 runs about $168/mo. The lowest published MaintenEase plan covering 8 seats is Business at $359/mo, including 4 extra seats. Asset or work-order volume can require a higher plan. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
 
+### How much does MaintainX cost per user?
+
+MaintainX's publicly listed 2026 tiers start with a limited free plan, then run roughly $21/user/mo for Essential, about $49/user/mo for Premium, and a custom quote for Enterprise, usually billed annually. Verify current MaintainX cost on their own pricing page before budgeting.
+
 ### At what team size does MaintenEase become cheaper than MaintainX?
 
 Use the CMMS cost calculator for the current estimate. It selects Starter for up to two seats, Pro for up to four, and Business above four, then adds Business seats at $15 per month each. It also shows when the listed MaintainX tier costs less.
