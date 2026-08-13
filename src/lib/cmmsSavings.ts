@@ -1,14 +1,14 @@
 /**
  * Pure math behind the /cmms-cost-calculator page.
  *
- * Competitor per-user prices come from src/data/comparisons.ts (the same
+ * Public competitor per-user prices come from src/data/comparisons.ts (the same
  * figures, with the same "publicly listed 2026 tiers, illustrative" caveat,
  * used by FlatFeeAdvantage and the /compare pages) so every surface tells one
- * consistent story. Deliberately honest: some per-seat rivals cost less at
+ * consistent story. Quote-only vendors are excluded. Deliberately honest: some per-seat rivals cost less at
  * certain team sizes, so savings go negative and the UI shows it alongside
  * each rival's crossover team size.
  */
-import { comparisons } from "@/data/comparisons";
+import { pricedComparisons } from "@/data/comparisons";
 import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 export const MIN_TEAM_SIZE = 1;
@@ -62,7 +62,7 @@ export function computeCmmsCosts(rawTeamSize: number): CmmsCostResult {
   const teamSize = clampTeamSize(rawTeamSize);
   const maintenease = getMaintenEaseTeamPrice(teamSize);
 
-  const vendors: VendorCost[] = comparisons
+  const vendors: VendorCost[] = pricedComparisons
     .map((c) => {
       const monthly = c.competitorPricePerUser * teamSize;
       return {

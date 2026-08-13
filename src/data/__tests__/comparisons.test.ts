@@ -19,9 +19,13 @@ describe("comparisons data", () => {
     expect(getComparison("nope")).toBeUndefined();
   });
 
-  it("every comparison carries pricing, rows, differentiators and faqs", () => {
+  it("every comparison carries pricing context, rows, differentiators and faqs", () => {
     for (const c of comparisons) {
-      expect(c.competitorPricePerUser).toBeGreaterThan(0);
+      if (c.competitorPricePerUser !== null) {
+        expect(c.competitorPricePerUser).toBeGreaterThan(0);
+      } else {
+        expect(c.pricingTable?.rows.every((row) => row.competitorPrice.includes("Custom"))).toBe(true);
+      }
       expect(c.rows.length).toBeGreaterThan(0);
       expect(c.differentiators.length).toBeGreaterThan(0);
       expect(c.faqs.length).toBeGreaterThan(0);
@@ -33,7 +37,21 @@ describe("comparisons data", () => {
     for (const c of comparisons) {
       const pricingRow = c.rows.find((row) => row.feature === `Cost for a team of ${TEAM_SIZE}`);
       expect(pricingRow?.ours).toBe(`$${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo (${MAINTENEASE_TEAM_PRICE.plan.name})`);
-      expect(pricingRow?.theirs).toBe(`$${c.competitorPricePerUser * TEAM_SIZE}/mo`);
+      expect(pricingRow?.theirs).toBe(
+        c.competitorPricePerUser === null
+          ? "Quote required"
+          : `$${c.competitorPricePerUser * TEAM_SIZE}/mo`,
+      );
+    }
+  });
+
+  it("uses the target pricing phrases and official-source tables", () => {
+    expect(getComparison("maintenease-vs-upkeep")?.pricingTable?.heading).toBe("UpKeep pricing in 2026");
+    expect(getComparison("maintenease-vs-maintainx")?.pricingTable?.heading).toBe("MaintainX cost in 2026");
+    expect(getComparison("maintenease-vs-limble")?.pricingTable?.heading).toBe("Limble pricing in 2026");
+    for (const slug of ["maintenease-vs-upkeep", "maintenease-vs-maintainx", "maintenease-vs-limble"]) {
+      expect(getComparison(slug)?.pricingTable?.sourceUrl).toMatch(/^https:\/\//);
+      expect(getComparison(slug)?.pricingTable?.rows.length).toBeGreaterThanOrEqual(3);
     }
   });
 

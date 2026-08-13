@@ -59,7 +59,12 @@ const CompareIndex = () => {
               <p className="text-foreground mb-3">{c.tagline}</p>
               <p className="text-sm text-muted-foreground">
                 Team of {TEAM_SIZE}: <span className="font-semibold text-primary">${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo</span> vs{" "}
-                <span className="font-medium">${c.competitorPricePerUser * TEAM_SIZE}/mo</span> on {c.competitor}
+                <span className="font-medium">
+                  {c.competitorPricePerUser === null
+                    ? "custom estimate"
+                    : `$${c.competitorPricePerUser * TEAM_SIZE}/mo`}
+                </span>{" "}
+                on {c.competitor}
               </p>
             </Link>
           ))}

@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { solutions } from "../src/data/solutions";
 import { comparisons, MAINTENEASE_TEAM_PRICE, TEAM_SIZE } from "../src/data/comparisons";
 import { glossary } from "../src/data/glossary";
+import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_CAPACITY_SUMMARY,
@@ -66,6 +67,15 @@ function compareMd(c: (typeof comparisons)[number]) {
       return `| ${r.feature} | ${fmt(r.ours)} | ${fmt(r.theirs)} |`;
     })
     .join("\n");
+  const pricingTable = c.pricingTable
+    ? `## ${c.pricingTable.heading}\n\n${c.pricingTable.summary}\n\n| Plan | ${c.competitor} price | MaintenEase price |\n| --- | --- | --- |\n${c.pricingTable.rows.map((row) => `| ${row.plan} | ${row.competitorPrice} | ${row.mainteneasePrice} |`).join("\n")}\n\nSource: [${c.pricingTable.sourceLabel}](${c.pricingTable.sourceUrl}), verified ${c.pricingTable.verifiedOn}.\n\n`
+    : "";
+  const competitorPrice = c.competitorPricePerUser === null
+    ? `${c.competitor} requires a custom estimate and does not publish a fixed dollar price.`
+    : `${c.competitor}'s listed ${c.competitorPlan} plan is $${c.competitorPricePerUser}/user/mo (publicly listed pricing as of 2026 — verify with the vendor).`;
+  const narrative = c.sections?.length
+    ? `\n\n${c.sections.map((section) => `## ${section.heading}\n\n${section.paragraphs.join("\n\n")}`).join("\n\n")}`
+    : "";
   return `# ${c.h1}
 
 > ${c.tagline}
@@ -74,13 +84,13 @@ Canonical URL: ${SITE}/compare/${c.slug}
 
 ${c.intro}
 
-## Side-by-side
+${pricingTable}## Side-by-side
 
 | Feature | MaintenEase | ${c.competitor} (${c.competitorPlan}) |
 | --- | --- | --- |
 ${rows}
 
-For the ${TEAM_SIZE}-person example, MaintenEase uses the Business plan plus additional seats for $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo; ${c.competitor}'s listed plan is ~$${c.competitorPricePerUser}/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
+For the ${TEAM_SIZE}-person example, MaintenEase uses the Business plan plus additional seats for $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo. ${competitorPrice} Asset and work-order capacity can require a higher MaintenEase plan.${narrative}
 
 ## Why teams switch
 
@@ -109,12 +119,36 @@ ${g.sections.map((s) => `## ${s.heading}\n\n${s.body}${s.table ? mdTable(s.table
 
 ${g.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 
-${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.url})`).join("\n")}\n\n` : ""}${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
+${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.url})`).join("\n")}\n\n` : ""}${g.internalLinks?.length ? `## CMMS software and comparisons\n\n${g.internalLinks.map((link) => `- [${link.label}](${SITE}${link.href})`).join("\n")}\n\n` : ""}${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
+}
+
+function templateMd(template: (typeof maintenanceTemplates)[number]) {
+  return `# ${template.h1}
+
+> ${template.intro}
+
+Canonical URL: ${SITE}/templates/${template.slug}
+
+## Included fields
+
+${template.columns.map((column) => `- **${column.name}** — ${column.purpose}`).join("\n")}
+
+## How to use it
+
+${template.steps.map((step, index) => `${index + 1}. **${step.title}** — ${step.body}`).join("\n")}
+
+## FAQ
+
+${template.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
+
+Download the free CSV from the canonical page after entering an email address.
+`;
 }
 
 for (const s of solutions) write(`solutions/${s.slug}.md`, solutionMd(s));
 for (const c of comparisons) write(`compare/${c.slug}.md`, compareMd(c));
 for (const g of glossary) write(`learn/${g.slug}.md`, glossaryMd(g));
+for (const template of maintenanceTemplates) write(`templates/${template.slug}.md`, templateMd(template));
 
 // ---- llms.txt (index) -----------------------------------------------------
 
@@ -146,6 +180,10 @@ ${comparisons.map((c) => `- [${c.h1}](${SITE}/compare/${c.slug}.md): ${c.tagline
 
 ${glossary.map((g) => `- [${g.term}](${SITE}/learn/${g.slug}.md): ${g.short}`).join("\n")}
 
+## Free maintenance templates
+
+${maintenanceTemplates.map((template) => `- [${template.title}](${SITE}/templates/${template.slug}.md): ${template.intro}`).join("\n")}
+
 ## Policies
 
 - [Privacy](${SITE}/privacy)
@@ -176,6 +214,8 @@ const parts = [
   ...comparisons.map(compareMd).map((m) => `\n---\n\n${m}`),
   "\n\n---\n\n# Learn\n",
   ...glossary.map(glossaryMd).map((m) => `\n---\n\n${m}`),
+  "\n\n---\n\n# Templates\n",
+  ...maintenanceTemplates.map(templateMd).map((m) => `\n---\n\n${m}`),
 ];
 write("llms-full.txt", parts.join(""));
 
@@ -228,6 +268,13 @@ const apiContent = {
     html_url: `${SITE}/learn/${g.slug}`,
     markdown_url: `${SITE}/learn/${g.slug}.md`,
   })),
+  templates: maintenanceTemplates.map((template) => ({
+    slug: template.slug,
+    name: template.title,
+    html_url: `${SITE}/templates/${template.slug}`,
+    markdown_url: `${SITE}/templates/${template.slug}.md`,
+    format: "text/csv",
+  })),
   blog: {
     index_html_url: `${SITE}/blog`,
     index_json_url: `${SITE}/api/blog.json`,
@@ -263,5 +310,5 @@ const apiJson = {
 write("api/ai.json", JSON.stringify(apiJson, null, 2));
 
 console.log(
-  `Wrote llms.txt, llms-full.txt, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages.`,
+  `Wrote llms.txt, llms-full.txt, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, and ${maintenanceTemplates.length} templates.`,
 );

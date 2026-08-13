@@ -62,6 +62,8 @@ import SolutionsIndex from "../SolutionsIndex";
 import SolutionPage from "../SolutionPage";
 import LearnIndex from "../LearnIndex";
 import LearnArticle from "../LearnArticle";
+import TemplatesIndex from "../TemplatesIndex";
+import TemplatePage from "../TemplatePage";
 
 const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
 
@@ -87,6 +89,13 @@ const ROUTES: RouteCase[] = [
  path: "/learn/cmms",
  routePattern: "/learn/:slug",
  element: <LearnArticle />,
+ },
+ { name: "Templates index", path: "/templates", routePattern: "/templates", element: <TemplatesIndex /> },
+ {
+ name: "Template detail",
+ path: "/templates/maintenance-log-template",
+ routePattern: "/templates/:slug",
+ element: <TemplatePage />,
  },
 ];
 

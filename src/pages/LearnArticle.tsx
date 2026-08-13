@@ -8,11 +8,6 @@ import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 // Anchor text is intentionally varied per source article — keyword-rich but
 // contextual, avoiding repetition of the same phrase across the site.
 const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline: string }[]> = {
- cmms: [
- { slug: "asset-management-software", anchor: "Asset management software for CMMS teams", tagline: "Full asset register, lifecycle and TCO reporting inside your CMMS." },
- { slug: "asset-tracking-software", anchor: "QR-code asset tracking inside your CMMS", tagline: "Scan, locate and audit every asset from one CMMS." },
- { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule and close work orders fast." },
- ],
  "preventive-maintenance": [
  { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie every PM to an asset with warranty, parts and history." },
  { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Time and meter-based PM schedules." },
@@ -250,6 +245,23 @@ const LearnArticle = () => {
   </p>
   )}
  </section>
+
+ {term.internalLinks?.length ? (
+ <section className="mt-12">
+ <h2 className="text-2xl font-semibold mb-4 text-foreground text-balance">CMMS software and comparisons</h2>
+ <div className="grid gap-3 sm:grid-cols-2">
+ {term.internalLinks.map((item) => (
+ <Link
+ key={item.href}
+ to={item.href}
+ className="flex min-h-12 items-center rounded-xl border border-border bg-card px-5 py-3 font-medium text-primary transition-[border-color,box-shadow,transform] duration-150 hover:border-primary/40 hover:shadow-sm active:scale-[0.96]"
+ >
+ {item.label}
+ </Link>
+ ))}
+ </div>
+ </section>
+ ) : null}
 
  {related.length > 0 && (
  <section className="mt-12">

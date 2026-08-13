@@ -1,6 +1,12 @@
 import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
 
-const TRACKED_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
+const TRACKED_SLUGS = new Set([
+ "asset-tracking-software",
+ "asset-management-software",
+ "maintenance-log-template",
+ "preventive-maintenance-checklist",
+ "work-order-template",
+]);
 
 export const isTrackedMarketingSlug = (slug: string) => TRACKED_SLUGS.has(slug);
 

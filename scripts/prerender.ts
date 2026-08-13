@@ -17,6 +17,7 @@ import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
+import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import {
   BRAND_JSON_LD,
   ORGANIZATION_JSON_LD,
@@ -479,6 +480,7 @@ const learnRoutes: Route[] = glossary.map((g) => {
     links: [
       { href: "/learn", label: "All guides" },
       ...g.related.map((slug) => ({ href: `/learn/${slug}`, label: slug.replace(/-/g, " ") })),
+      ...(g.internalLinks ?? []).map((link) => ({ href: link.href, label: link.label })),
       ...(g.sources ?? []).map((source) => ({ href: source.url, label: source.label })),
     ],
   };
@@ -491,6 +493,7 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
   h1: c.h1,
   intro: c.intro,
   sections: [
+    ...(c.pricingTable ? [{ heading: c.pricingTable.heading, body: c.pricingTable.summary }] : []),
     ...(c.sections ?? []).map((s) => ({ heading: s.heading, body: s.paragraphs.join(" ") })),
     ...c.differentiators.map((d) => ({ heading: d.title, body: d.body })),
     ...c.faqs.map((f) => ({ heading: f.q, body: f.a })),
@@ -522,7 +525,78 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
     : {}),
 }));
 
-const routes: Route[] = [...staticRoutes, ...solutionRoutes, ...learnRoutes, ...compareRoutes];
+const templateIndexRoute: Route = {
+  path: "/templates",
+  title: "Free Maintenance Templates & Checklists | MaintenEase",
+  description: "Download free maintenance log, preventive maintenance checklist, and work order templates for Excel and Google Sheets.",
+  h1: "Free maintenance templates that stay useful",
+  intro: "Clean, practical CSV templates for the maintenance work your team does every day.",
+  sections: maintenanceTemplates.map((template) => ({ heading: template.title, body: template.intro })),
+  links: maintenanceTemplates.map((template) => ({ href: `/templates/${template.slug}`, label: template.title })),
+  jsonLd: [buildItemListJsonLd(
+    "Free maintenance templates",
+    `${ORIGIN}/templates`,
+    maintenanceTemplates.map((template) => ({
+      name: template.title,
+      url: `${ORIGIN}/templates/${template.slug}`,
+      description: template.metaDescription,
+    })),
+  )],
+};
+
+const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
+  const url = `${ORIGIN}/templates/${template.slug}`;
+  return {
+    path: `/templates/${template.slug}`,
+    title: template.metaTitle,
+    description: template.metaDescription,
+    h1: template.h1,
+    intro: template.intro,
+    ogType: "article",
+    sections: [
+      ...template.columns.map((column) => ({ heading: column.name, body: column.purpose })),
+      ...template.steps.map((step) => ({ heading: step.title, body: step.body })),
+      ...template.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
+    ],
+    links: [
+      { href: "/templates", label: "All maintenance templates" },
+      template.relatedLearn,
+      template.relatedSolution,
+    ],
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "DigitalDocument",
+        name: template.title,
+        description: template.metaDescription,
+        url,
+        encodingFormat: "text/csv",
+        isAccessibleForFree: true,
+        datePublished: template.published,
+        dateModified: template.updated,
+        author: { "@type": "Organization", name: "MaintenEase" },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: template.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
+    ],
+  };
+});
+
+const routes: Route[] = [
+  ...staticRoutes,
+  ...solutionRoutes,
+  ...learnRoutes,
+  ...compareRoutes,
+  templateIndexRoute,
+  ...templateRoutes,
+];
 
 /* ------------------------------------------------------------------ blog --
  * Blog posts live in the database, so a no-JS crawler sees an empty shell:

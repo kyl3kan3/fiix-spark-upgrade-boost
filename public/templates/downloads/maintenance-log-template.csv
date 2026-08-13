@@ -1,0 +1,6 @@
+Date,Work Order ID,Asset ID,Asset Name,Location,Maintenance Type,Description,Technician,Labor Hours,Parts Cost,Status,Next Service Due,Notes
+2026-08-01,WO-1000,AHU-014,Rooftop Air Handler,Building A Roof,Preventive,Inspect belts and replace return-air filter,J. Rivera,1.5,28.50,Complete,2026-11-01,Belt tension within specification
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,

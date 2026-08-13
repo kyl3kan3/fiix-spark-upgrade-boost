@@ -8,7 +8,7 @@ import {
   MAX_TEAM_SIZE,
   DEFAULT_TEAM_SIZE,
 } from "@/lib/cmmsSavings";
-import { comparisons } from "@/data/comparisons";
+import { pricedComparisons } from "@/data/comparisons";
 import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 describe("cmmsSavings", () => {
@@ -20,7 +20,7 @@ describe("cmmsSavings", () => {
   });
 
   it("breakeven is the smallest team size where the applicable account plan beats per-user", () => {
-    for (const c of comparisons) {
+    for (const c of pricedComparisons) {
       const n = breakevenTeamSize(c.competitorPricePerUser);
       expect(n).toBeLessThanOrEqual(MAX_TEAM_SIZE + 1);
       if (n <= MAX_TEAM_SIZE) {
@@ -36,7 +36,7 @@ describe("cmmsSavings", () => {
 
   it("computes one row per competitor, most expensive first", () => {
     const r = computeCmmsCosts(8);
-    expect(r.vendors).toHaveLength(comparisons.length);
+    expect(r.vendors).toHaveLength(pricedComparisons.length);
     const monthlies = r.vendors.map((v) => v.monthly);
     expect([...monthlies].sort((a, b) => b - a)).toEqual(monthlies);
     expect(r.maxMonthly).toBe(Math.max(r.maintenease, ...monthlies));
@@ -53,7 +53,7 @@ describe("cmmsSavings", () => {
 
   it("beats every rival at larger team sizes", () => {
     const worstBreakeven = Math.max(
-      ...comparisons.map((c) => breakevenTeamSize(c.competitorPricePerUser)),
+      ...pricedComparisons.map((c) => breakevenTeamSize(c.competitorPricePerUser)),
     );
     const r = computeCmmsCosts(worstBreakeven);
     expect(r.beatsAllVendors).toBe(true);

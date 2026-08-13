@@ -12,7 +12,9 @@ const Footer = () => {
  p === "/landing" ||
  p.startsWith("/feature") ||
  p.startsWith("/learn") ||
- p.startsWith("/solutions");
+ p.startsWith("/solutions") ||
+ p.startsWith("/compare") ||
+ p.startsWith("/templates");
  
  if (!showFullFooter) {
  // Simple footer for main application pages
@@ -47,6 +49,7 @@ const Footer = () => {
  title: "Resources",
  links: [
  { label: "Glossary", to: "/learn" },
+ { label: "Free Templates", to: "/templates" },
  { label: "Solutions", to: "/solutions" },
  { label: "Maintenance Simplified", to: "/maintenance-simplified" },
  { label: "Compare CMMS", to: "/compare" },

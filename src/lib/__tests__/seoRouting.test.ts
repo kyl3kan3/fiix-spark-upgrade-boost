@@ -8,6 +8,8 @@ describe("SEO route policy", () => {
     "/solutions/asset-management-software",
     "/learn/preventive-maintenance",
     "/compare/maintenease-vs-fiix",
+    "/templates",
+    "/templates/maintenance-log-template",
     "/blog/reduce-unplanned-downtime",
   ])("marks %s as indexable", (path) => {
     expect(classifySeoPath(path)).toBe("indexable");

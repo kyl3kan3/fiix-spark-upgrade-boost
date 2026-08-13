@@ -23,7 +23,7 @@ eMaint (a Fluke company) is a long-established enterprise CMMS billed per user p
 | Public request portal (no login) | Yes | Varies |
 | Free onboarding & data import | Yes | Varies / paid |
 
-For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo; eMaint's listed plan is ~$69/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
+For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo. eMaint's listed Team plan is $69/user/mo (publicly listed pricing as of 2026 — verify with the vendor). Asset and work-order capacity can require a higher MaintenEase plan.
 
 ## Why teams switch
 

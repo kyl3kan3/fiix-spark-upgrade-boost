@@ -63,6 +63,12 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 - [AI-Native CMMS](https://maintenease.com/learn/ai-native-cmms.md): Maintenance software designed around AI-assisted retrieval, reasoning, and controlled actions rather than adding a generic chatbot to a legacy workflow.
 - [Agentic Maintenance Workflows](https://maintenease.com/learn/agentic-maintenance-workflows.md): Controlled maintenance processes in which an AI agent retrieves CMMS context and completes approved software steps while people retain operational authority.
 
+## Free maintenance templates
+
+- [Maintenance Log Template](https://maintenease.com/templates/maintenance-log-template.md): Record every repair, inspection, and preventive task in one consistent maintenance log. The template gives each entry an asset, owner, cost, status, and next-service date so the spreadsheet stays useful as the history grows.
+- [Preventive Maintenance Checklist](https://maintenease.com/templates/preventive-maintenance-checklist.md): Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.
+- [Work Order Template](https://maintenease.com/templates/work-order-template.md): Capture a maintenance request, turn it into assigned work, and preserve the close-out details. This work order template covers the full record from requester and priority through labor, parts, completion date, and technician notes.
+
 ## Policies
 
 - [Privacy](https://maintenease.com/privacy)

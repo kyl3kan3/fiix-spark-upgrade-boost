@@ -16,6 +16,7 @@ export type GlossaryTerm = {
  }[];
  faqs: { q: string; a: string }[];
  related: string[];
+ internalLinks?: { label: string; href: string }[];
  sources?: { label: string; url: string }[];
 };
 
@@ -24,18 +25,18 @@ export const glossary: GlossaryTerm[] = [
  slug: "cmms",
  term: "CMMS (Computerized Maintenance Management System)",
  short: "Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.",
- metaTitle: "What Is a CMMS? CMMS Meaning, Systems & Software (2026)",
+ metaTitle: "What is a CMMS? Meaning, Examples & How It Works",
  metaDescription: "CMMS meaning explained: a Computerized Maintenance Management System centralizes work orders, assets and preventive maintenance. See what CMMS systems do.",
  published: "2026-01-15",
- updated: "2026-08-11",
+ updated: "2026-08-13",
  sections: [
  {
  heading: "What does CMMS stand for?",
  body: "CMMS stands for Computerized Maintenance Management System. The CMMS meaning in plain English: software that acts as the system of record for everything a maintenance team does — every asset they look after, every work order they raise, every inspection they complete, and every preventive task that comes due. Before CMMS software existed, this information lived in clipboards, whiteboards, and a tangle of spreadsheets. A modern CMMS replaces all of that with one searchable place that the whole team works from. When people say \"a CMMS\", \"CMMS software\", or \"a CMMS system\", they mean the same thing.",
  },
  {
- heading: "CMMS meaning, in one paragraph",
- body: "A CMMS is a database of your physical assets wrapped in the workflows that keep them running. Each asset has an identity, a location, and a service history. Work — whether it comes from a breakdown, an inspection finding, a tenant request, or a recurring schedule — is captured as a work order attached to that asset. Technicians complete work on a phone; the system timestamps every status change. Over time this produces the reporting that maintenance managers are asked for: backlog, PM compliance, mean time to repair, cost per asset, and which equipment is quietly consuming the budget.",
+ heading: "CMMS meaning in plain English",
+ body: "CMMS meaning: a CMMS (computerized maintenance management system) is software that tracks work orders, assets, and preventive maintenance in one place. In practice, a CMMS system replaces the spreadsheet and the whiteboard. It gives each asset an identity, location, and service history; attaches breakdowns, inspections, requests, and recurring work to that asset; and records every status change as technicians complete work. Over time, the system produces the reporting maintenance managers need: backlog, PM compliance, mean time to repair, cost per asset, and which equipment is quietly consuming the budget.",
  },
  {
  heading: "What does a CMMS actually do?",
@@ -90,6 +91,13 @@ export const glossary: GlossaryTerm[] = [
  { q: "Is there a free CMMS?", a: "Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price." },
  ],
  related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro", "deferred-maintenance", "cmms-roi"],
+ internalLinks: [
+ { label: "work order software", href: "/solutions/work-order-software" },
+ { label: "MaintenEase vs UpKeep", href: "/compare/maintenease-vs-upkeep" },
+ { label: "MaintenEase vs MaintainX", href: "/compare/maintenease-vs-maintainx" },
+ { label: "MaintenEase vs Limble", href: "/compare/maintenease-vs-limble" },
+ { label: "asset tracking software", href: "/solutions/asset-tracking-software" },
+ ],
  },
  {
  slug: "agentic-cmms",

@@ -19,6 +19,7 @@ const INDEXABLE_ROUTES = new Set([
   "/sms-opt-in",
   "/blog",
   "/compare",
+  "/templates",
   "/cmms-cost-calculator",
 ]);
 
@@ -77,7 +78,7 @@ const REDIRECTS: Record<string, SeoRedirect> = {
   "/signup": { location: "/auth?signup=true", status: 302 },
 };
 
-const PUBLIC_DETAIL_ROUTE = /^\/(?:solutions|learn|compare|blog)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const PUBLIC_DETAIL_ROUTE = /^\/(?:solutions|learn|compare|templates|blog)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const PRIVATE_PUBLIC_ROUTE = /^\/(?:feature|r)\/[^/]+$/;
 
 export function normalizeSeoPath(pathname: string): string {
