@@ -16,6 +16,7 @@ import { resolve } from "node:path";
 const KEY_PAGES = [
  "src/pages/Index.tsx",
  "src/pages/PricingPage.tsx",
+ "src/pages/McpPage.tsx",
  "src/pages/SolutionsIndex.tsx",
  "src/pages/SolutionPage.tsx",
  "src/pages/LearnIndex.tsx",

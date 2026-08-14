@@ -58,6 +58,7 @@ vi.mock("@/components/marketing/ScrambleText", () => ({
 }));
 
 import Index from "../Index";
+import McpPage from "../McpPage";
 import SolutionsIndex from "../SolutionsIndex";
 import SolutionPage from "../SolutionPage";
 import LearnIndex from "../LearnIndex";
@@ -76,6 +77,7 @@ type RouteCase = {
 
 const ROUTES: RouteCase[] = [
  { name: "Home", path: "/", routePattern: "/", element: <Index /> },
+ { name: "MCP", path: "/mcp", routePattern: "/mcp", element: <McpPage /> },
  { name: "Solutions index", path: "/solutions", routePattern: "/solutions", element: <SolutionsIndex /> },
  {
  name: "Solution detail",

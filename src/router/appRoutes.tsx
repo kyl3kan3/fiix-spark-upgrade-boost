@@ -29,6 +29,7 @@ const CompareIndex = lazy(() => import("@/pages/CompareIndex"));
 const ComparePage = lazy(() => import("@/pages/ComparePage"));
 const TemplatesIndex = lazy(() => import("@/pages/TemplatesIndex"));
 const TemplatePage = lazy(() => import("@/pages/TemplatePage"));
+const McpPage = lazy(() => import("@/pages/McpPage"));
 const CostCalculatorPage = lazy(() => import("@/pages/CostCalculatorPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
@@ -77,6 +78,7 @@ export const AppRoutes = () => (
         <Route path="/compare/:slug" element={<ComparePage />} />
         <Route path="/templates" element={<TemplatesIndex />} />
         <Route path="/templates/:slug" element={<TemplatePage />} />
+        <Route path="/mcp" element={<McpPage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
         <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
 

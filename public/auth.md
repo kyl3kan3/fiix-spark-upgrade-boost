@@ -39,4 +39,5 @@ tenant isolation. Users revoke access from their MaintenEase account settings.
 
 Unauthenticated agents can read marketing and reference content:
 `https://maintenease.com/llms.txt`, `https://maintenease.com/llms-full.txt`,
-and `https://maintenease.com/api/ai.json`.
+`https://maintenease.com/mcp`, `https://maintenease.com/mcp.md`, and
+`https://maintenease.com/api/ai.json`.

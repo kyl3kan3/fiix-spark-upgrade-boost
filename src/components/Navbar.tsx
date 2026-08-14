@@ -52,6 +52,7 @@ const Navbar = () => {
           <div className="flex items-center gap-1">
             <Link to="/solutions" className={navLinkClass}>Solutions</Link>
             <Link to="/templates" className={navLinkClass}>Templates</Link>
+            <Link to="/mcp" className={navLinkClass}>MCP</Link>
             <Link to="/features" className={navLinkClass}>Features</Link>
             <Link to="/pricing" className={navLinkClass}>Pricing</Link>
             <Link to="/blog" className={navLinkClass}>Blog</Link>
@@ -108,6 +109,7 @@ const Navbar = () => {
           <div className="flex flex-col space-y-1">
             <a href="/solutions" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Solutions</a>
             <a href="/templates" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Templates</a>
+            <a href="/mcp" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">MCP</a>
             <a href="/features" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Features</a>
             <a href="/pricing" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Pricing</a>
             <a href="/blog" className="text-muted-foreground hover:text-primary font-medium py-2.5 border-b border-border/50 text-sm">Blog</a>

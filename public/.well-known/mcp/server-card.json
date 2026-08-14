@@ -7,6 +7,6 @@
     "type": "oauth2",
     "protectedResourceMetadata": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp/.well-known/oauth-protected-resource"
   },
-  "documentation": "https://maintenease.com/learn/maintenance-mcp-server.md",
-  "websiteUrl": "https://maintenease.com/"
+  "documentation": "https://maintenease.com/mcp.md",
+  "websiteUrl": "https://maintenease.com/mcp"
 }
