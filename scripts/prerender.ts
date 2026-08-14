@@ -18,6 +18,7 @@ import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
+import { MCP_PAGE } from "../src/data/mcpPage";
 import {
   BRAND_JSON_LD,
   ORGANIZATION_JSON_LD,
@@ -102,6 +103,7 @@ const staticRoutes: Route[] = [
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
+      { href: "/mcp", label: "MCP server for AI clients" },
       { href: "/solutions", label: "Solutions" },
       { href: "/learn", label: "Learn" },
       { href: "/compare", label: "Compare CMMS software" },
@@ -170,6 +172,61 @@ const staticRoutes: Route[] = [
       `${ORIGIN}/features`,
       FEATURE_ITEMS.map(([name, description]) => ({ name, url: `${ORIGIN}/features`, description })),
     )],
+  },
+  {
+    path: "/mcp",
+    title: MCP_PAGE.metaTitle,
+    description: MCP_PAGE.metaDescription,
+    h1: MCP_PAGE.h1,
+    intro: MCP_PAGE.intro,
+    sections: [
+      {
+        heading: "Production MCP endpoint",
+        body: `${MCP_PAGE.endpoint}. ${MCP_PAGE.protocol} transport with ${MCP_PAGE.authorization}.`,
+      },
+      ...MCP_PAGE.tools.map((tool) => ({
+        heading: `${tool.title}: ${tool.name}`,
+        body: `${tool.access} access. ${tool.description}`,
+      })),
+      ...MCP_PAGE.safeguards.map((safeguard) => ({
+        heading: safeguard.title,
+        body: safeguard.description,
+      })),
+      ...MCP_PAGE.steps.map((step) => ({ heading: step.title, body: step.description })),
+    ],
+    links: [
+      { href: "/mcp.md", label: "Clean Markdown version" },
+      { href: "/.well-known/mcp/server-card.json", label: "MCP server card" },
+      { href: "/auth.md", label: "Authentication documentation" },
+      ...MCP_PAGE.related.map((item) => ({ href: item.href, label: item.label })),
+    ],
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: MCP_PAGE.metaTitle,
+        description: MCP_PAGE.metaDescription,
+        url: `${ORIGIN}/mcp`,
+        dateModified: MCP_PAGE.updated,
+        about: {
+          "@type": "SoftwareApplication",
+          name: "MaintenEase MCP Server",
+          applicationCategory: "BusinessApplication",
+          applicationSubCategory: "Model Context Protocol server for CMMS software",
+          operatingSystem: "Remote service",
+          url: `${ORIGIN}/mcp`,
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: MCP_PAGE.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
+    ],
   },
   {
     path: "/maintenance-simplified",
@@ -799,6 +856,13 @@ function bodyFor(route: Route): string {
     for (const [question, answer] of MAINTENANCE_SIMPLIFIED_FAQS) {
       parts.push(`<h3>${esc(question)}</h3>`);
       parts.push(`<p>${esc(answer)}</p>`);
+    }
+  }
+  if (route.path === "/mcp") {
+    parts.push("<h2>MCP server questions</h2>");
+    for (const faq of MCP_PAGE.faqs) {
+      parts.push(`<h3>${esc(faq.q)}</h3>`);
+      parts.push(`<p>${esc(faq.a)}</p>`);
     }
   }
   if (route.links?.length) {

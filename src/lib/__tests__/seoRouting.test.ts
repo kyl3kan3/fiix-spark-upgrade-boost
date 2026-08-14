@@ -5,6 +5,7 @@ describe("SEO route policy", () => {
   it.each([
     "/",
     "/pricing",
+    "/mcp",
     "/solutions/asset-management-software",
     "/learn/preventive-maintenance",
     "/compare/maintenease-vs-fiix",

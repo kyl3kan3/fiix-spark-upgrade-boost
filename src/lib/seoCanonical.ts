@@ -15,6 +15,7 @@ const INDEXED_STATIC_PATHS = new Set([
   "/blog",
   "/compare",
   "/templates",
+  "/mcp",
   "/cmms-cost-calculator",
 ]);
 

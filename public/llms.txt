@@ -12,6 +12,7 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 - [Features](https://maintenease.com/features): Full feature list.
 - [Pricing](https://maintenease.com/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
+- [MCP server for ChatGPT and Claude](https://maintenease.com/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
 - [Sign in / Sign up](https://maintenease.com/auth): Account access.
 
 ## Solutions

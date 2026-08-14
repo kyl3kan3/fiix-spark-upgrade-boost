@@ -1,3 +1,4 @@
+import { ArrowRight, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
@@ -16,6 +17,26 @@ const SiteIndexLinks = () => {
  className="border-t border-border bg-muted/30 py-16"
  >
  <div className="container mx-auto px-4">
+ <div className="mb-10 flex flex-col gap-5 rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
+ <div className="flex items-start gap-4">
+ <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+ <Bot className="h-5 w-5" aria-hidden="true" />
+ </div>
+ <div>
+ <h2 className="text-xl font-semibold text-foreground text-balance">Connect AI assistants through MaintenEase MCP</h2>
+ <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground text-pretty">
+ Discover OAuth-secured tools for work orders, assets, locations, and maintenance requests.
+ </p>
+ </div>
+ </div>
+ <Link
+ to="/mcp"
+ className="group inline-flex min-h-11 shrink-0 items-center gap-2 self-start rounded-xl bg-primary py-3 pl-5 pr-[18px] font-semibold text-primary-foreground shadow-sm transition-[background-color,box-shadow,transform] duration-150 hover:bg-primary/90 hover:shadow-md active:scale-[0.96] sm:self-auto"
+ >
+ Explore the MCP server
+ <ArrowRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-1" aria-hidden="true" />
+ </Link>
+ </div>
  <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">

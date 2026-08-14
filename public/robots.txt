@@ -24,5 +24,6 @@ Sitemap: https://maintenease.com/sitemap.xml
 # JSON index:     https://maintenease.com/api/ai.json
 # API catalog:    https://maintenease.com/.well-known/api-catalog
 # Agent skills:   https://maintenease.com/.well-known/agent-skills/index.json
+# MCP landing:    https://maintenease.com/mcp
 # MCP card:       https://maintenease.com/.well-known/mcp/server-card.json
 # Agent auth:     https://maintenease.com/auth.md

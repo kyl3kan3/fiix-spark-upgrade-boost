@@ -20,6 +20,7 @@ const INDEXABLE_ROUTES = new Set([
   "/blog",
   "/compare",
   "/templates",
+  "/mcp",
   "/cmms-cost-calculator",
 ]);
 

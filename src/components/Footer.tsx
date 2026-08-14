@@ -14,7 +14,8 @@ const Footer = () => {
  p.startsWith("/learn") ||
  p.startsWith("/solutions") ||
  p.startsWith("/compare") ||
- p.startsWith("/templates");
+ p.startsWith("/templates") ||
+ p === "/mcp";
  
  if (!showFullFooter) {
  // Simple footer for main application pages
@@ -50,11 +51,12 @@ const Footer = () => {
  links: [
  { label: "Glossary", to: "/learn" },
  { label: "Free Templates", to: "/templates" },
+ { label: "MCP for AI", to: "/mcp" },
  { label: "Solutions", to: "/solutions" },
  { label: "Maintenance Simplified", to: "/maintenance-simplified" },
  { label: "Compare CMMS", to: "/compare" },
  { label: "Cost Calculator", to: "/cmms-cost-calculator" },
- { label: "API", to: "#" },
+ { label: "MCP server card", to: "https://maintenease.com/.well-known/mcp/server-card.json" },
  { label: "Status", to: "#" },
  { label: "Help Center", to: "#" },
  ],

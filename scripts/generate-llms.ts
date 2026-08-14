@@ -14,6 +14,7 @@ import { solutions } from "../src/data/solutions";
 import { comparisons, MAINTENEASE_TEAM_PRICE, TEAM_SIZE } from "../src/data/comparisons";
 import { glossary } from "../src/data/glossary";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
+import { MCP_PAGE } from "../src/data/mcpPage";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_CAPACITY_SUMMARY,
@@ -145,10 +146,52 @@ Download the free CSV from the canonical page after entering an email address.
 `;
 }
 
+function mcpMd() {
+  return `# ${MCP_PAGE.h1}
+
+> ${MCP_PAGE.intro}
+
+Canonical URL: ${SITE}/mcp
+
+MCP endpoint: \`${MCP_PAGE.endpoint}\`
+
+Server card: ${MCP_PAGE.serverCardUrl}
+
+Transport: ${MCP_PAGE.protocol}
+
+Authorization: ${MCP_PAGE.authorization}
+
+## Available tools
+
+${MCP_PAGE.tools.map((tool) => `- **\`${tool.name}\`** (${tool.access}) — ${tool.description}`).join("\n")}
+
+## Security and access
+
+${MCP_PAGE.safeguards.map((safeguard) => `- **${safeguard.title}** — ${safeguard.description}`).join("\n")}
+
+## Connection flow
+
+${MCP_PAGE.steps.map((step, index) => `${index + 1}. **${step.title}** — ${step.description}`).join("\n")}
+
+## FAQ
+
+${MCP_PAGE.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
+
+## Machine-readable resources
+
+- [MCP server card](${MCP_PAGE.serverCardUrl})
+- [Authentication documentation](${MCP_PAGE.authDocumentationUrl})
+- [Concise AI index](${SITE}/llms.txt)
+- [Full AI corpus](${SITE}/llms-full.txt)
+- [Structured AI catalog](${SITE}/api/ai.json)
+`;
+}
+
 for (const s of solutions) write(`solutions/${s.slug}.md`, solutionMd(s));
 for (const c of comparisons) write(`compare/${c.slug}.md`, compareMd(c));
 for (const g of glossary) write(`learn/${g.slug}.md`, glossaryMd(g));
 for (const template of maintenanceTemplates) write(`templates/${template.slug}.md`, templateMd(template));
+write("mcp.md", mcpMd());
 
 // ---- llms.txt (index) -----------------------------------------------------
 
@@ -166,6 +209,7 @@ All pages below are also available as clean Markdown by appending \`.md\` (e.g. 
 - [Features](${SITE}/features): Full feature list.
 - [Pricing](${SITE}/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](${SITE}/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
+- [MCP server for ChatGPT and Claude](${SITE}/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
 - [Sign in / Sign up](${SITE}/auth): Account access.
 
 ## Solutions
@@ -208,6 +252,8 @@ write("llms.txt", llmsTxt);
 
 const parts = [
   `# MaintenEase — Full AI-agent corpus\n\nGenerated from ${SITE}. See ${SITE}/llms.txt for the index.\n`,
+  "\n\n---\n\n# MCP server\n",
+  mcpMd(),
   "\n\n---\n\n# Solutions\n",
   ...solutions.map(solutionMd).map((m) => `\n---\n\n${m}`),
   "\n\n---\n\n# Comparisons\n",
@@ -228,6 +274,20 @@ const apiContent = {
   site: SITE,
   llms_txt: `${SITE}/llms.txt`,
   llms_full_txt: `${SITE}/llms-full.txt`,
+  mcp: {
+    html_url: `${SITE}/mcp`,
+    markdown_url: `${SITE}/mcp.md`,
+    endpoint: MCP_PAGE.endpoint,
+    server_card_url: MCP_PAGE.serverCardUrl,
+    auth_documentation_url: MCP_PAGE.authDocumentationUrl,
+    transport: MCP_PAGE.protocol,
+    authorization: MCP_PAGE.authorization,
+    tools: MCP_PAGE.tools.map((tool) => ({
+      name: tool.name,
+      access: tool.access,
+      description: tool.description,
+    })),
+  },
   pricing: {
     model: "account_plans_with_included_seats",
     currency: "USD",
@@ -310,5 +370,5 @@ const apiJson = {
 write("api/ai.json", JSON.stringify(apiJson, null, 2));
 
 console.log(
-  `Wrote llms.txt, llms-full.txt, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, and ${maintenanceTemplates.length} templates.`,
+  `Wrote llms.txt, llms-full.txt, the MCP page, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, and ${maintenanceTemplates.length} templates.`,
 );

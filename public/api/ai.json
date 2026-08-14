@@ -2,9 +2,45 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-13T18:07:45.295Z",
+  "generated_at": "2026-08-14T12:08:46.302Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
+  "mcp": {
+    "html_url": "https://maintenease.com/mcp",
+    "markdown_url": "https://maintenease.com/mcp.md",
+    "endpoint": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp",
+    "server_card_url": "https://maintenease.com/.well-known/mcp/server-card.json",
+    "auth_documentation_url": "https://maintenease.com/auth.md",
+    "transport": "Streamable HTTP",
+    "authorization": "OAuth 2.1 with PKCE",
+    "tools": [
+      {
+        "name": "list_work_orders",
+        "access": "Read",
+        "description": "List the signed-in company's work orders and optionally filter them by status."
+      },
+      {
+        "name": "create_work_order",
+        "access": "Write",
+        "description": "Create an authorized work order with a title, description, priority, due date, and optional asset."
+      },
+      {
+        "name": "list_assets",
+        "access": "Read",
+        "description": "Browse equipment and assets available to the signed-in user's company."
+      },
+      {
+        "name": "list_locations",
+        "access": "Read",
+        "description": "List the sites, buildings, rooms, and other locations the company tracks."
+      },
+      {
+        "name": "list_maintenance_requests",
+        "access": "Read",
+        "description": "Read the maintenance request inbox before turning a valid request into tracked work."
+      }
+    ]
+  },
   "pricing": {
     "model": "account_plans_with_included_seats",
     "currency": "USD",
