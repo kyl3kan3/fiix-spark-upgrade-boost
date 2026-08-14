@@ -120,6 +120,37 @@ if (existsSync(distDir)) {
     pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
   }
 
+  const homePrerender = readFileSync(join(distDir, "index.html"), "utf8");
+  const discoveryTargets = [
+    "/mcp",
+    "/learn/deferred-maintenance",
+    "/templates",
+    "/templates/maintenance-log-template",
+    "/templates/preventive-maintenance-checklist",
+    "/templates/work-order-template",
+    "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026",
+  ];
+  const missingDiscoveryTargets = discoveryTargets.filter(
+    (path) => !homePrerender.includes(`href="${path}"`),
+  );
+  if (missingDiscoveryTargets.length > 0) {
+    fail(`prerender: homepage is missing direct discovery links: ${missingDiscoveryTargets.join(", ")}`);
+  } else {
+    pass(`Homepage prerender directly links ${discoveryTargets.length} priority discovery routes`);
+  }
+
+  const landingPrerenderPath = join(distDir, "landing", "index.html");
+  if (!existsSync(landingPrerenderPath)) {
+    fail("prerender: dist/landing/index.html missing");
+  } else {
+    const landingPrerender = readFileSync(landingPrerenderPath, "utf8");
+    if (!landingPrerender.includes('rel="canonical" href="https://maintenease.com/"')) {
+      fail("prerender: /landing must consolidate to the homepage canonical");
+    } else {
+      pass("Paid landing-page variant consolidates to the homepage canonical");
+    }
+  }
+
   const appShellPath = join(distDir, "app-shell");
   if (!existsSync(appShellPath)) {
     fail("routing: dist/app-shell missing");

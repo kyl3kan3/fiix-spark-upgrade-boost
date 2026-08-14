@@ -1,6 +1,11 @@
 // Cloudflare Pages Function — dynamic /sitemap.xml.
 // Overrides the static public/sitemap.xml so blog posts are always fresh.
 // Combines the static marketing routes with rows from public.blog_posts.
+import {
+  STATIC_SITEMAP_ENTRIES,
+  type SitemapEntry,
+} from "../src/data/sitemapEntries";
+
 const SITE = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
 const SUPABASE_ANON =
@@ -12,17 +17,21 @@ interface BlogRow {
   published_at: string | null;
 }
 
-const STATIC_ENTRIES: { path: string; priority: string; changefreq: string }[] = [
-  { path: "/", priority: "1.0", changefreq: "weekly" },
-  { path: "/pricing", priority: "0.9", changefreq: "monthly" },
-  { path: "/features", priority: "0.8", changefreq: "monthly" },
-  { path: "/solutions", priority: "0.9", changefreq: "weekly" },
-  { path: "/learn", priority: "0.8", changefreq: "weekly" },
-  { path: "/blog", priority: "0.8", changefreq: "weekly" },
-];
-
 function esc(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderEntry(entry: SitemapEntry): string {
+  return [
+    "  <url>",
+    `    <loc>${SITE}${entry.path}</loc>`,
+    entry.lastmod ? `    <lastmod>${entry.lastmod}</lastmod>` : null,
+    entry.changefreq ? `    <changefreq>${entry.changefreq}</changefreq>` : null,
+    entry.priority ? `    <priority>${entry.priority}</priority>` : null,
+    "  </url>",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,12 +52,15 @@ export const onRequestGet = async (_context: any) => {
     // Sitemap must still return static entries if the DB call fails.
   }
 
-  const urls: string[] = [];
-  for (const e of STATIC_ENTRIES) {
-    urls.push(
-      `  <url>\n    <loc>${SITE}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
-    );
-  }
+  const latestBlogLastmod = posts
+    .map((post) => (post.updated_at ?? post.published_at ?? "").slice(0, 10))
+    .filter(Boolean)
+    .sort()
+    .at(-1);
+  const urls = STATIC_SITEMAP_ENTRIES.map((entry) =>
+    renderEntry(entry.path === "/blog" ? { ...entry, lastmod: latestBlogLastmod } : entry),
+  );
+
   for (const p of posts) {
     const lastmod = (p.updated_at ?? p.published_at ?? "").slice(0, 10);
     urls.push(

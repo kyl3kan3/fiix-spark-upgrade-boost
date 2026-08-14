@@ -213,6 +213,7 @@ export const glossary: GlossaryTerm[] = [
  short: "A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.",
  metaTitle: "What is a Work Order? Anatomy, Lifecycle, and Examples",
  metaDescription: "A work order is the formal record of a maintenance task. Learn what fields it contains, how it flows through statuses, and best practices.",
+ updated: "2026-08-14",
  sections: [
  {
  heading: "Definition",
@@ -236,6 +237,11 @@ export const glossary: GlossaryTerm[] = [
  { q: "How long should a work order stay open?", a: "Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign." },
  ],
  related: ["cmms", "preventive-maintenance", "facility-maintenance"],
+ internalLinks: [
+ { label: "work order software", href: "/solutions/work-order-software" },
+ { label: "free maintenance work order template", href: "/templates/work-order-template" },
+ { label: "modern work order management guide", href: "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026" },
+ ],
  },
  {
  slug: "facility-maintenance",

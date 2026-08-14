@@ -20,10 +20,13 @@ import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import {
+  FEATURED_DISCOVERY_RESOURCES,
+  SOLUTION_RESOURCES,
+} from "../src/data/seoResources";
+import {
   BRAND_JSON_LD,
   ORGANIZATION_JSON_LD,
   PRODUCT_JSON_LD,
-  PRODUCT_LAST_MODIFIED,
   PRODUCT_PLANS,
   COMMON_PLAN_FACTS,
   SOFTWARE_APPLICATION_JSON_LD,
@@ -54,6 +57,7 @@ const MAINTENANCE_SIMPLIFIED_FAQS = [
 
 type Route = {
   path: string;
+  canonicalPath?: string;
   title: string;
   description: string;
   h1: string;
@@ -72,6 +76,9 @@ const esc = (s: string) =>
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+
+const uniqueLinks = (links: Array<{ href: string; label: string }>) =>
+  Array.from(new Map(links.map((link) => [link.href, link])).values());
 
 const staticRoutes: Route[] = [
   {
@@ -100,19 +107,41 @@ const staticRoutes: Route[] = [
         body: "Starter costs $49 per month with two included seats, Pro costs $129 per month with four included seats, and Business costs $299 per month with four included seats. Business supports additional seats for $15 per month each.",
       },
     ],
-    links: [
+    links: uniqueLinks([
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
       { href: "/mcp", label: "MCP server for AI clients" },
       { href: "/solutions", label: "Solutions" },
       { href: "/learn", label: "Learn" },
+      { href: "/templates", label: "Free maintenance templates" },
       { href: "/compare", label: "Compare CMMS software" },
       { href: "/cmms-cost-calculator", label: "CMMS cost calculator" },
       { href: "/blog", label: "Blog" },
-    ],
+      ...FEATURED_DISCOVERY_RESOURCES.map((resource) => ({
+        href: resource.href,
+        label: resource.title,
+      })),
+      ...solutions.map((solution) => ({
+        href: `/solutions/${solution.slug}`,
+        label: solution.name,
+      })),
+      ...maintenanceTemplates.map((template) => ({
+        href: `/templates/${template.slug}`,
+        label: template.title,
+      })),
+      ...glossary.map((entry) => ({
+        href: `/learn/${entry.slug}`,
+        label: entry.term,
+      })),
+      ...comparisons.map((comparison) => ({
+        href: `/compare/${comparison.slug}`,
+        label: comparison.h1,
+      })),
+    ]),
   },
   {
     path: "/landing",
+    canonicalPath: "/",
     title: "MaintenEase — Stop Downtime Before It Starts",
     description:
       "See how MaintenEase helps technicians manage work orders, preventive maintenance, assets, and costs—so teams prevent downtime and prove what gets done.",
@@ -245,7 +274,8 @@ const staticRoutes: Route[] = [
         description: "Maintenance simplified: a practical playbook for small teams — six principles, a starter checklist, and the numbers that prove it works.",
         mainEntityOfPage: `${ORIGIN}/maintenance-simplified`,
         image: OG_IMAGE,
-        dateModified: PRODUCT_LAST_MODIFIED,
+        datePublished: "2026-07-20",
+        dateModified: "2026-08-14",
         author: { "@id": `${ORIGIN}/#organization` },
         publisher: { "@id": `${ORIGIN}/#organization` },
       },
@@ -313,6 +343,8 @@ const staticRoutes: Route[] = [
       { href: "/pricing", label: "Review pricing and plan limits" },
       { href: "/cmms-cost-calculator", label: "Compare account and per-seat costs" },
       { href: "/learn/predictive-maintenance", label: "Learn how predictive maintenance works" },
+      { href: "/learn/deferred-maintenance", label: "Prioritize deferred maintenance" },
+      { href: "/templates", label: "Download free maintenance templates" },
     ],
   },
   {
@@ -471,19 +503,27 @@ const staticRoutes: Route[] = [
   },
 ];
 
-const solutionRoutes: Route[] = solutions.map((s) => ({
-  path: `/solutions/${s.slug}`,
-  title: s.metaTitle,
-  description: s.metaDescription,
-  h1: s.h1,
-  intro: s.intro,
-  sections: [
-    ...s.benefits.map((b) => ({ heading: b.title, body: b.body })),
-    ...s.features.map((f) => ({ heading: f.title, body: f.body })),
-    ...s.faqs.map((f) => ({ heading: f.q, body: f.a })),
-  ],
-  links: [{ href: "/solutions", label: "All solutions" }, { href: "/pricing", label: "Pricing" }],
-}));
+const solutionRoutes: Route[] = solutions.map((s) => {
+  const resources = SOLUTION_RESOURCES[s.slug] ?? [];
+  return {
+    path: `/solutions/${s.slug}`,
+    title: s.metaTitle,
+    description: s.metaDescription,
+    h1: s.h1,
+    intro: s.intro,
+    sections: [
+      ...s.benefits.map((b) => ({ heading: b.title, body: b.body })),
+      ...s.features.map((f) => ({ heading: f.title, body: f.body })),
+      ...resources.map((resource) => ({ heading: resource.title, body: resource.description })),
+      ...s.faqs.map((f) => ({ heading: f.q, body: f.a })),
+    ],
+    links: [
+      { href: "/solutions", label: "All solutions" },
+      { href: "/pricing", label: "Pricing" },
+      ...resources.map((resource) => ({ href: resource.href, label: resource.title })),
+    ],
+  };
+});
 
 const learnRoutes: Route[] = glossary.map((g) => {
   const url = `${ORIGIN}/learn/${g.slug}`;
@@ -779,7 +819,8 @@ const LANDING_FAQS = [
 ] as const;
 
 function headFor(route: Route): string {
-  const canonical = route.path === "/" ? `${ORIGIN}/` : `${ORIGIN}${route.path}`;
+  const canonicalPath = route.canonicalPath ?? route.path;
+  const canonical = canonicalPath === "/" ? `${ORIGIN}/` : `${ORIGIN}${canonicalPath}`;
   const title = esc(route.title);
   const description = esc(route.description);
   const tags = [

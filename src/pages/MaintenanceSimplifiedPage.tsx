@@ -22,10 +22,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { PRODUCT_LAST_MODIFIED } from "@/data/productCatalog";
 
 const URL = "https://maintenease.com/maintenance-simplified";
 const TITLE = "Maintenance Simplified: A Playbook for Small Teams";
+const DATE_PUBLISHED = "2026-07-20";
+const DATE_MODIFIED = "2026-08-14";
 const DESCRIPTION =
   "Maintenance simplified — a practical playbook, checklist, and free calculator to run PMs, work orders, and reports without the spreadsheet mess.";
 
@@ -154,7 +155,8 @@ const MaintenanceSimplifiedPage = () => (
           headline: TITLE,
           description: DESCRIPTION,
           mainEntityOfPage: URL,
-          dateModified: PRODUCT_LAST_MODIFIED,
+          datePublished: DATE_PUBLISHED,
+          dateModified: DATE_MODIFIED,
           image: "https://maintenease.com/og-image.png?v=4",
           author: { "@type": "Organization", name: "MaintenEase" },
           publisher: {
@@ -282,7 +284,7 @@ const MaintenanceSimplifiedPage = () => (
           pricing and capacity the team can understand before rollout.
         </p>
         <p className="text-sm text-muted-foreground mb-8">
-          Last updated <time dateTime={PRODUCT_LAST_MODIFIED}>August 7, 2026</time>
+          Last updated <time dateTime={DATE_MODIFIED}>August 14, 2026</time>
         </p>
         <div className="grid md:grid-cols-3 gap-6">
           {productDetails.map(({ icon: Icon, title, body }) => (
@@ -339,7 +341,7 @@ const MaintenanceSimplifiedPage = () => (
               Open the free calculator <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          <div className="mt-10 grid sm:grid-cols-3 gap-4 text-sm">
+          <div className="mt-10 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
             <Link
               to="/learn/cmms"
               className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui"
@@ -360,6 +362,20 @@ const MaintenanceSimplifiedPage = () => (
             >
               <p className="font-semibold text-foreground mb-1">MTTR & MTBF</p>
               <p className="text-muted-foreground">The two numbers owners want to see.</p>
+            </Link>
+            <Link
+              to="/learn/deferred-maintenance"
+              className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui"
+            >
+              <p className="font-semibold text-foreground mb-1">Deferred maintenance</p>
+              <p className="text-muted-foreground">Prioritize backlog by risk, cost, and consequence.</p>
+            </Link>
+            <Link
+              to="/templates"
+              className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui"
+            >
+              <p className="font-semibold text-foreground mb-1">Free maintenance templates</p>
+              <p className="text-muted-foreground">Start with a log, PM checklist, or work-order sheet.</p>
             </Link>
           </div>
         </div>

@@ -41,6 +41,10 @@ export function canonicalUrlForPath(pathname: string): string | null {
     return null;
   }
 
+  // /landing is the paid-acquisition variant of the homepage. Keep it
+  // available to campaigns while consolidating its search signals to `/`.
+  if (normalizedPath === "/landing") return `${SITE_ORIGIN}/`;
+
   return normalizedPath === "/"
     ? `${SITE_ORIGIN}/`
     : `${SITE_ORIGIN}${normalizedPath}`;
