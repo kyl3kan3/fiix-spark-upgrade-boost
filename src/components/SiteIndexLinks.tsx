@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
 import { comparisons } from "@/data/comparisons";
+import { maintenanceTemplates } from "@/data/maintenanceTemplates";
 
 /**
  * Internal-link block rendered on the homepage so Googlebot can discover
@@ -15,7 +16,7 @@ const SiteIndexLinks = () => {
  className="border-t border-border bg-muted/30 py-16"
  >
  <div className="container mx-auto px-4">
- <div className="grid gap-12 md:grid-cols-3">
+ <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
  Solutions
@@ -31,6 +32,27 @@ const SiteIndexLinks = () => {
  className="text-sm text-foreground/80 hover:text-primary hover:underline"
  >
  {s.name}
+ </Link>
+ </li>
+ ))}
+ </ul>
+ </div>
+
+ <div>
+ <h2 className="mb-4 text-2xl font-semibold text-foreground">
+ Templates
+ </h2>
+ <p className="mb-6 text-sm text-muted-foreground">
+ Free maintenance spreadsheets and checklists.
+ </p>
+ <ul className="grid gap-2">
+ {maintenanceTemplates.map((template) => (
+ <li key={template.slug}>
+ <Link
+ to={`/templates/${template.slug}`}
+ className="text-sm text-foreground/80 hover:text-primary hover:underline"
+ >
+ {template.title}
  </Link>
  </li>
  ))}

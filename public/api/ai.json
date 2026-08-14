@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-11T19:56:33.871Z",
+  "generated_at": "2026-08-13T18:07:45.295Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "pricing": {
@@ -98,8 +98,8 @@
     {
       "slug": "maintenease-vs-upkeep",
       "competitor": "UpKeep",
-      "competitor_plan": "Starter",
-      "competitor_price_per_user_usd": 45,
+      "competitor_plan": "Premium",
+      "competitor_price_per_user_usd": 55,
       "html_url": "https://maintenease.com/compare/maintenease-vs-upkeep",
       "markdown_url": "https://maintenease.com/compare/maintenease-vs-upkeep.md"
     },
@@ -115,7 +115,7 @@
       "slug": "maintenease-vs-maintainx",
       "competitor": "MaintainX",
       "competitor_plan": "Essential",
-      "competitor_price_per_user_usd": 21,
+      "competitor_price_per_user_usd": 20,
       "html_url": "https://maintenease.com/compare/maintenease-vs-maintainx",
       "markdown_url": "https://maintenease.com/compare/maintenease-vs-maintainx.md"
     },
@@ -123,7 +123,7 @@
       "slug": "maintenease-vs-limble",
       "competitor": "Limble",
       "competitor_plan": "Standard",
-      "competitor_price_per_user_usd": 28,
+      "competitor_price_per_user_usd": null,
       "html_url": "https://maintenease.com/compare/maintenease-vs-limble",
       "markdown_url": "https://maintenease.com/compare/maintenease-vs-limble.md"
     },
@@ -332,6 +332,29 @@
       "short": "Controlled maintenance processes in which an AI agent retrieves CMMS context and completes approved software steps while people retain operational authority.",
       "html_url": "https://maintenease.com/learn/agentic-maintenance-workflows",
       "markdown_url": "https://maintenease.com/learn/agentic-maintenance-workflows.md"
+    }
+  ],
+  "templates": [
+    {
+      "slug": "maintenance-log-template",
+      "name": "Maintenance Log Template",
+      "html_url": "https://maintenease.com/templates/maintenance-log-template",
+      "markdown_url": "https://maintenease.com/templates/maintenance-log-template.md",
+      "format": "text/csv"
+    },
+    {
+      "slug": "preventive-maintenance-checklist",
+      "name": "Preventive Maintenance Checklist",
+      "html_url": "https://maintenease.com/templates/preventive-maintenance-checklist",
+      "markdown_url": "https://maintenease.com/templates/preventive-maintenance-checklist.md",
+      "format": "text/csv"
+    },
+    {
+      "slug": "work-order-template",
+      "name": "Work Order Template",
+      "html_url": "https://maintenease.com/templates/work-order-template",
+      "markdown_url": "https://maintenease.com/templates/work-order-template.md",
+      "format": "text/csv"
     }
   ],
   "blog": {

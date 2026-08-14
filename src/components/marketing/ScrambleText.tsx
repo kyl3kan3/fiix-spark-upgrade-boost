@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 
 /**
  * Scramble-in heading effect: characters cycle through glyphs and resolve
- * left-to-right into the final text over ~0.8s on mount. Screen readers get
- * the final text immediately (aria-label + aria-hidden scramble), and
- * prefers-reduced-motion renders the plain text with no animation.
+ * left-to-right into the final text over ~0.8s on mount. The final text stays
+ * invisibly in normal flow while the animation is overlaid, so changing glyph
+ * widths cannot move the surrounding hero content. Screen readers get the
+ * final text immediately, and reduced-motion users get no animation.
  */
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+=<>/";
@@ -62,9 +63,12 @@ const ScrambleText = ({ text, delayMs = 0, className }: ScrambleTextProps) => {
   }, [text, delayMs]);
 
   return (
-    <span className={className}>
-      <span aria-hidden="true">{display}</span>
-      <span className="sr-only">{text}</span>
+    <span
+      className={["relative inline-block whitespace-nowrap", className].filter(Boolean).join(" ")}
+      aria-label={text}
+    >
+      <span aria-hidden="true" className="invisible">{text}</span>
+      <span aria-hidden="true" className="absolute inset-0">{display}</span>
     </span>
   );
 };

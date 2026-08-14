@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons } from "../src/data/comparisons";
+import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 
 const BASE_URL = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
@@ -49,6 +50,15 @@ const compareEntries: SitemapEntry[] = [
   { path: "/cmms-cost-calculator", changefreq: "monthly", priority: "0.8" },
   ...comparisons.map((c) => ({
     path: `/compare/${c.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.8",
+  })),
+];
+
+const templateEntries: SitemapEntry[] = [
+  { path: "/templates", changefreq: "monthly", priority: "0.8" },
+  ...maintenanceTemplates.map((template) => ({
+    path: `/templates/${template.slug}`,
     changefreq: "monthly" as const,
     priority: "0.8",
   })),
@@ -100,6 +110,7 @@ const entries = [
   ...solutionEntries,
   ...learnEntries,
   ...compareEntries,
+  ...templateEntries,
   ...blogEntries,
 ];
 

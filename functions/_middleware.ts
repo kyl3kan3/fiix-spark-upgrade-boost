@@ -9,6 +9,7 @@
 // 3. `public/_routes.json` (already in this repo) tells Pages to skip static
 //    assets so this Function only fires for HTML / crawler-facing files.
 import { trackAICrawlerRequest } from "@datafast/ai-crawl";
+import { classifySeoPath, redirectForPath } from "../src/lib/seoRouting";
 
 // Same websiteId as the browser script in index.html.
 const WEBSITE_ID = "dfid_4BRVKzjIQLv5Psqg0AK9u";
@@ -27,6 +28,7 @@ const AGENT_LINKS = [
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function onRequest(context: any) {
+  const requestUrl = new URL(context.request.url);
   // Fire-and-forget: never await, so the response is never delayed.
   // Cloudflare's context.waitUntil is used internally by the package.
   try {
@@ -37,23 +39,39 @@ export async function onRequest(context: any) {
     // Tracking must never break the response.
   }
 
-  const response = await context.next();
+  const isDocumentRequest = context.request.method === "GET" || context.request.method === "HEAD";
+  const redirect = redirectForPath(requestUrl.pathname);
+  if (redirect && isDocumentRequest) {
+    return Response.redirect(new URL(redirect.location, requestUrl.origin), redirect.status);
+  }
+
+  const routeKind = classifySeoPath(requestUrl.pathname);
+  const useAppShell = routeKind === "noindex" && requestUrl.pathname !== "/auth" && isDocumentRequest;
+  const appShellRequest = useAppShell
+    ? new Request(new URL("/app-shell", requestUrl.origin), context.request)
+    : undefined;
+  const response = await context.next(appShellRequest);
 
   try {
-    const { pathname } = new URL(context.request.url);
     const headers = new Headers(response.headers);
     let changed = false;
-
-    // Keep the auth screen out of search indexes at the edge too.
-    if (pathname === "/auth" || pathname.startsWith("/auth/")) {
-      headers.set("X-Robots-Tag", "noindex, nofollow");
-      changed = true;
-    }
 
     // Advertise agent-discovery resources on HTML documents.
     if ((headers.get("content-type") ?? "").includes("text/html")) {
       headers.append("Link", AGENT_LINKS);
+      const isNotFound = routeKind === "not-found" || response.status >= 400;
+      if (routeKind === "noindex" || isNotFound) {
+        headers.set("X-Robots-Tag", "noindex, nofollow");
+      }
       changed = true;
+
+      if (isNotFound && response.status < 400) {
+        return new Response(response.body, {
+          status: 404,
+          statusText: "Not Found",
+          headers,
+        });
+      }
     }
 
     if (changed) {

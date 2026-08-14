@@ -23,7 +23,7 @@ Fiix is an established CMMS with deep asset features, billed per user per month.
 | Public request portal (no login) | Yes | Varies |
 | Free onboarding & data import | Yes | Varies / paid |
 
-For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo; Fiix's listed plan is ~$45/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
+For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo. Fiix's listed Basic plan is $45/user/mo (publicly listed pricing as of 2026 — verify with the vendor). Asset and work-order capacity can require a higher MaintenEase plan.
 
 ## Why teams switch
 

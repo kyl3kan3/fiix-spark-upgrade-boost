@@ -12,16 +12,15 @@ const Footer = () => {
  p === "/landing" ||
  p.startsWith("/feature") ||
  p.startsWith("/learn") ||
- p.startsWith("/solutions");
+ p.startsWith("/solutions") ||
+ p.startsWith("/compare") ||
+ p.startsWith("/templates");
  
  if (!showFullFooter) {
  // Simple footer for main application pages
  return (
   <footer className="bg-muted/50 border-t border-border py-4">
   <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-3 text-center text-sm text-muted-foreground">
-    <a href="https://daniellaunches.com/tools/maintenease" target="_blank" rel="noopener noreferrer">
-      <img src="https://daniellaunches.com/badge.svg" alt="Featured on DanielLaunches" width="200" height="44" loading="lazy" decoding="async" />
-    </a>
     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
       <span>&copy; {currentYear} Decent4. All rights reserved.</span>
       <span className="hidden sm:inline">·</span>
@@ -50,6 +49,7 @@ const Footer = () => {
  title: "Resources",
  links: [
  { label: "Glossary", to: "/learn" },
+ { label: "Free Templates", to: "/templates" },
  { label: "Solutions", to: "/solutions" },
  { label: "Maintenance Simplified", to: "/maintenance-simplified" },
  { label: "Compare CMMS", to: "/compare" },
@@ -135,9 +135,6 @@ const Footer = () => {
   <p className="text-background/80 text-sm mb-0">
   &copy; {currentYear} Decent4. All rights reserved.
   </p>
-  <a href="https://daniellaunches.com/tools/maintenease" target="_blank" rel="noopener noreferrer">
-    <img src="https://daniellaunches.com/badge.svg" alt="Featured on DanielLaunches" width="200" height="44" loading="lazy" decoding="async" />
-  </a>
   <div className="flex space-x-6">
   <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
   Privacy Policy

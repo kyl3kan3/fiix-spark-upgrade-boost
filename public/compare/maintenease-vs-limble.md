@@ -4,16 +4,28 @@
 
 Canonical URL: https://maintenease.com/compare/maintenease-vs-limble
 
-Limble is a modern CMMS billed per user per month. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — through account plans with included seats. Business adds seats at a published $15 per month each.
+Limble is a modern CMMS that now asks buyers to calculate an estimate or request pricing rather than publishing dollar amounts for its Standard, Premium+, and Enterprise plans. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — through published account plans with included seats. Business adds seats at $15 per month each.
+
+## Limble pricing in 2026
+
+Limble publishes the features in Standard, Premium+, and Enterprise, but it does not publish fixed dollar prices. Its official pricing page sends buyers to a calculator for an estimate, so the only defensible current price is 'custom estimate' until Limble provides your quote.
+
+| Plan | Limble price | MaintenEase price |
+| --- | --- | --- |
+| Standard | Custom estimate | Starter: $49/mo (2 seats) |
+| Premium+ | Custom estimate | Pro: $129/mo (4 seats) |
+| Enterprise | Custom estimate | Business: $299/mo (4 seats) |
+
+Source: [Limble's official pricing page](https://limble.com/pricing), verified 2026-08-13.
 
 ## Side-by-side
 
 | Feature | MaintenEase | Limble (Standard) |
 | --- | --- | --- |
-| Pricing model | Account plan with included seats | Per user / month |
-| Cost for a team of 8 | $359/mo (Business) | $224/mo |
+| Pricing model | Account plan with included seats | Custom estimate |
+| Cost for a team of 8 | $359/mo (Business) | Quote required |
 | Add more technicians | Business: $15/extra seat after 4 | Charged per seat |
-| Billing commitment | Month-to-month | Often annual |
+| Billing commitment | Month-to-month | Confirm in quote |
 | Work order management | Yes | Yes |
 | Asset management & history | Yes | Yes |
 | Preventive maintenance scheduling | Yes | Yes |
@@ -23,7 +35,13 @@ Limble is a modern CMMS billed per user per month. MaintenEase covers the same d
 | Public request portal (no login) | Yes | Varies |
 | Free onboarding & data import | Yes | Varies / paid |
 
-For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo; Limble's listed plan is ~$28/user/mo (publicly listed pricing as of 2026 — verify with each vendor). Asset and work-order capacity can require a higher MaintenEase plan.
+For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo. Limble requires a custom estimate and does not publish a fixed dollar price. Asset and work-order capacity can require a higher MaintenEase plan.
+
+## Why Limble cost requires a quote
+
+Limble's current pricing page describes three plans and provides a two-question calculator, but it does not expose a per-user or account price in the public page content. Team size, plan, and negotiated terms can therefore change the quote.
+
+That makes a direct monthly-cost claim unreliable. Ask Limble for the all-in monthly and annual totals, implementation cost, minimum seat count, and renewal terms, then compare that written quote with MaintenEase's published account price.
 
 ## Why teams switch
 
@@ -33,9 +51,9 @@ For the 8-person example, MaintenEase uses the Business plan plus additional sea
 
 ## FAQ
 
-### How much does MaintenEase save vs Limble?
+### How much does Limble cost?
 
-Limble's listed plan is around $28 per user per month, so a team of 8 runs about $224/mo. The lowest published MaintenEase plan covering 8 seats is Business at $359/mo, including 4 extra seats. Asset or work-order volume can require a higher plan. Figures are based on publicly listed pricing as of 2026; check each vendor for current rates.
+Limble pricing is not published as a fixed dollar amount in 2026. Standard, Premium+, and Enterprise all route buyers to Limble's calculator for a custom estimate. Ask for the total monthly and annual price, implementation fees, minimum seats, and renewal terms before comparing it with another CMMS.
 
 ### Is MaintenEase affiliated with Limble?
 

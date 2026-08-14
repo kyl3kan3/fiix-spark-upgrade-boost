@@ -2,15 +2,16 @@ import { Check, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Reveal3D from "@/components/marketing/Reveal3D";
-import { comparisons, TEAM_SIZE } from "@/data/comparisons";
+import { pricedComparisons, TEAM_SIZE } from "@/data/comparisons";
 import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
 
 /**
  * Account-plan pricing comparison section.
  *
- * Most CMMS competitors (UpKeep, MaintainX, Limble, eMaint, Fiix) charge
- * per-user. MaintenEase publishes account plans with included seats and a
- * Business extra-seat price so the comparison can use the actual team cost.
+ * CMMS competitors with a current public per-user price are compared here.
+ * Quote-only vendors are kept on their detailed comparison pages and excluded
+ * from calculator math. MaintenEase publishes account plans with included
+ * seats and a Business extra-seat price so the comparison can use actual cost.
  *
  * The previous homepage buried this story below the fold and only showed
  * absolute prices. This section makes the comparison explicit so a CMMS
@@ -72,7 +73,7 @@ const FlatFeeAdvantage = () => {
               ${maintenease.monthlyPrice}/mo
             </div>
 
-            {comparisons.map((c) => {
+            {pricedComparisons.map((c) => {
               const total = c.competitorPricePerUser * TEAM_SIZE;
               const savings = total - maintenease.monthlyPrice;
               return (

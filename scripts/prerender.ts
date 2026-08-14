@@ -17,11 +17,14 @@ import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
+import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import {
   BRAND_JSON_LD,
   ORGANIZATION_JSON_LD,
   PRODUCT_JSON_LD,
   PRODUCT_LAST_MODIFIED,
+  PRODUCT_PLANS,
+  COMMON_PLAN_FACTS,
   SOFTWARE_APPLICATION_JSON_LD,
   WEBSITE_JSON_LD,
   buildItemListJsonLd,
@@ -56,6 +59,7 @@ type Route = {
   intro: string;
   ogType?: "website" | "article";
   jsonLd?: Record<string, unknown>[];
+  indexable?: boolean;
   /** Extra crawlable body copy (headings/paragraphs), already escaped-safe text. */
   sections?: { heading: string; body: string }[];
   links?: { href: string; label: string }[];
@@ -77,6 +81,24 @@ const staticRoutes: Route[] = [
     h1: "CMMS Software for Facility & Maintenance Teams",
     intro:
       "Track work orders, assets, and inspections in one place, and act earlier with predictive maintenance on eligible plans. Account plans start at $49 per month.",
+    sections: [
+      {
+        heading: "One work queue for the maintenance team",
+        body: "Create, assign, prioritize, and close corrective and preventive work orders from one shared queue. Technicians can update work from a phone while supervisors keep ownership, due dates, parts, labor, and status visible without chasing separate spreadsheets or text threads.",
+      },
+      {
+        heading: "Preventive maintenance tied to each asset",
+        body: "Build recurring maintenance schedules around the equipment that needs the work. Generated work orders, inspection results, manuals, photos, and service history stay connected to the asset so the next technician has useful context before starting.",
+      },
+      {
+        heading: "Prioritize emerging equipment risk",
+        body: "Pro and Business plans include predictive maintenance tools that help teams review recorded work history and condition data. Risk indicators support inspection and planning decisions; they do not replace a qualified technician's diagnosis or the safety procedures for the equipment.",
+      },
+      {
+        heading: "Published account pricing",
+        body: "Starter costs $49 per month with two included seats, Pro costs $129 per month with four included seats, and Business costs $299 per month with four included seats. Business supports additional seats for $15 per month each.",
+      },
+    ],
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
@@ -95,6 +117,20 @@ const staticRoutes: Route[] = [
     h1: "Stop downtime before it starts.",
     intro:
       "Techs stop losing work between texts and whiteboards. Owners stop guessing what is actually done.",
+    sections: [
+      {
+        heading: "Work orders technicians can update anywhere",
+        body: "Give every request an owner, priority, due date, checklist, and status. Mobile access lets technicians record labor, parts, notes, and completion details at the asset instead of recreating the day from memory.",
+      },
+      {
+        heading: "Recurring maintenance without calendar busywork",
+        body: "Set preventive maintenance intervals once and let planned work enter the same queue as corrective requests. Supervisors can see overdue work, upcoming tasks, and asset history without maintaining a second scheduling system.",
+      },
+      {
+        heading: "Clear costs and capacity before signup",
+        body: "Every plan publishes its included seats, asset capacity, and monthly work-order capacity. Starter begins at $49 per month, and every plan includes a 7-day trial, free onboarding, and data import.",
+      },
+    ],
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
@@ -108,6 +144,16 @@ const staticRoutes: Route[] = [
     h1: "CMMS pricing without per-seat surprises",
     intro:
       "Starter is $49/month with 2 seats, Pro is $129/month with 4 seats, and Business is $299/month with 4 seats. Business adds seats for $15/month and includes unlimited assets and work orders.",
+    sections: [
+      ...PRODUCT_PLANS.map((plan) => ({
+        heading: `${plan.name}: $${plan.monthlyPrice} per month`,
+        body: `${plan.description} Annual billing is $${plan.annualPrice}. ${plan.featureLabels.join(". ")}.`,
+      })),
+      {
+        heading: "Included with every plan",
+        body: COMMON_PLAN_FACTS.join(". ") + ".",
+      },
+    ],
     links: [{ href: "/cmms-cost-calculator", label: "Estimate your savings" }],
   },
   {
@@ -118,6 +164,7 @@ const staticRoutes: Route[] = [
     h1: "Everything your maintenance team needs in one CMMS",
     intro:
       "Mobile work orders, a complete asset registry, preventive maintenance scheduling, digital inspections, predictive alerts, and cost reporting.",
+    sections: FEATURE_ITEMS.map(([heading, body]) => ({ heading, body })),
     jsonLd: [buildItemListJsonLd(
       "MaintenEase CMMS features",
       `${ORIGIN}/features`,
@@ -218,6 +265,7 @@ const staticRoutes: Route[] = [
       "Work order software, preventive maintenance, asset tracking, facility and fleet maintenance — see how MaintenEase fits your use case.",
     h1: "CMMS solutions by use case",
     intro: "Purpose-built solutions for work orders, preventive maintenance, assets, facilities, and fleets.",
+    sections: solutions.map((solution) => ({ heading: solution.name, body: solution.intro })),
     links: solutions.map((s) => ({ href: `/solutions/${s.slug}`, label: s.name })),
     jsonLd: [buildItemListJsonLd(
       "MaintenEase CMMS solutions",
@@ -232,6 +280,7 @@ const staticRoutes: Route[] = [
       "Plain-English guides to CMMS, preventive and predictive maintenance, MTBF, MTTR, root cause analysis, and maintenance benchmarks.",
     h1: "Maintenance glossary and guides",
     intro: "Plain-English explanations of the terms, metrics, and strategies maintenance teams actually use.",
+    sections: glossary.slice(0, 12).map((entry) => ({ heading: entry.term, body: entry.short })),
     links: glossary.map((g) => ({ href: `/learn/${g.slug}`, label: g.term })),
     jsonLd: [buildItemListJsonLd(
       "MaintenEase maintenance glossary",
@@ -247,6 +296,10 @@ const staticRoutes: Route[] = [
     h1: "MaintenEase compared with other CMMS platforms",
     intro:
       "Compare each competitor's listed per-user price with MaintenEase account plans, included seats, capacity limits, and Business extra seats for a team of eight.",
+    sections: comparisons.map((comparison) => ({
+      heading: `MaintenEase vs ${comparison.competitor}`,
+      body: comparison.intro,
+    })),
     links: [
       ...comparisons.map((c) => ({ href: `/compare/${c.slug}`, label: `MaintenEase vs ${c.competitor}` })),
       { href: "/cmms-cost-calculator", label: "CMMS cost calculator" },
@@ -260,6 +313,20 @@ const staticRoutes: Route[] = [
     h1: "CMMS cost calculator",
     intro:
       "Choose a team size to compare listed per-seat CMMS costs with the lowest MaintenEase plan that covers those seats.",
+    sections: [
+      {
+        heading: "Compare the same team size",
+        body: "Enter the number of people who need access. The calculator multiplies a competitor's published per-user monthly price by that team size, then compares it with the lowest MaintenEase account plan whose included seats can cover the team.",
+      },
+      {
+        heading: "Account for included and additional seats",
+        body: "Starter includes two seats and Pro includes four. Business includes four seats and supports additional seats for $15 per month each. Asset and work-order capacity can also determine which plan fits, so review the published limits before choosing.",
+      },
+      {
+        heading: "Treat the result as an estimate",
+        body: "The calculation uses public list prices and does not include negotiated contracts, implementation charges, taxes, add-ons, or future pricing changes. Confirm the current quote and required features with each vendor before making a purchasing decision.",
+      },
+    ],
     links: [
       { href: "/compare", label: "Compare CMMS platforms" },
       {
@@ -287,6 +354,7 @@ const staticRoutes: Route[] = [
     h1: "Sign in or create your MaintenEase account",
     intro:
       "Access your MaintenEase workspace to manage assets, work orders, inspections, and your maintenance team.",
+    indexable: false,
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/features", label: "Features" },
@@ -412,6 +480,7 @@ const learnRoutes: Route[] = glossary.map((g) => {
     links: [
       { href: "/learn", label: "All guides" },
       ...g.related.map((slug) => ({ href: `/learn/${slug}`, label: slug.replace(/-/g, " ") })),
+      ...(g.internalLinks ?? []).map((link) => ({ href: link.href, label: link.label })),
       ...(g.sources ?? []).map((source) => ({ href: source.url, label: source.label })),
     ],
   };
@@ -424,6 +493,7 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
   h1: c.h1,
   intro: c.intro,
   sections: [
+    ...(c.pricingTable ? [{ heading: c.pricingTable.heading, body: c.pricingTable.summary }] : []),
     ...(c.sections ?? []).map((s) => ({ heading: s.heading, body: s.paragraphs.join(" ") })),
     ...c.differentiators.map((d) => ({ heading: d.title, body: d.body })),
     ...c.faqs.map((f) => ({ heading: f.q, body: f.a })),
@@ -455,7 +525,78 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
     : {}),
 }));
 
-const routes: Route[] = [...staticRoutes, ...solutionRoutes, ...learnRoutes, ...compareRoutes];
+const templateIndexRoute: Route = {
+  path: "/templates",
+  title: "Free Maintenance Templates & Checklists | MaintenEase",
+  description: "Download free maintenance log, preventive maintenance checklist, and work order templates for Excel and Google Sheets.",
+  h1: "Free maintenance templates that stay useful",
+  intro: "Clean, practical CSV templates for the maintenance work your team does every day.",
+  sections: maintenanceTemplates.map((template) => ({ heading: template.title, body: template.intro })),
+  links: maintenanceTemplates.map((template) => ({ href: `/templates/${template.slug}`, label: template.title })),
+  jsonLd: [buildItemListJsonLd(
+    "Free maintenance templates",
+    `${ORIGIN}/templates`,
+    maintenanceTemplates.map((template) => ({
+      name: template.title,
+      url: `${ORIGIN}/templates/${template.slug}`,
+      description: template.metaDescription,
+    })),
+  )],
+};
+
+const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
+  const url = `${ORIGIN}/templates/${template.slug}`;
+  return {
+    path: `/templates/${template.slug}`,
+    title: template.metaTitle,
+    description: template.metaDescription,
+    h1: template.h1,
+    intro: template.intro,
+    ogType: "article",
+    sections: [
+      ...template.columns.map((column) => ({ heading: column.name, body: column.purpose })),
+      ...template.steps.map((step) => ({ heading: step.title, body: step.body })),
+      ...template.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
+    ],
+    links: [
+      { href: "/templates", label: "All maintenance templates" },
+      template.relatedLearn,
+      template.relatedSolution,
+    ],
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "DigitalDocument",
+        name: template.title,
+        description: template.metaDescription,
+        url,
+        encodingFormat: "text/csv",
+        isAccessibleForFree: true,
+        datePublished: template.published,
+        dateModified: template.updated,
+        author: { "@type": "Organization", name: "MaintenEase" },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: template.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
+    ],
+  };
+});
+
+const routes: Route[] = [
+  ...staticRoutes,
+  ...solutionRoutes,
+  ...learnRoutes,
+  ...compareRoutes,
+  templateIndexRoute,
+  ...templateRoutes,
+];
 
 /* ------------------------------------------------------------------ blog --
  * Blog posts live in the database, so a no-JS crawler sees an empty shell:
@@ -587,6 +728,7 @@ function headFor(route: Route): string {
   const tags = [
     `<title>${title}</title>`,
     `<meta name="description" content="${description}" data-rh="true" />`,
+    `<meta name="robots" content="${route.indexable === false ? "noindex,nofollow" : "index,follow,max-image-preview:large"}" data-rh="true" />`,
     `<link data-rh="true" rel="canonical" href="${canonical}" />`,
     `<meta property="og:type" content="${route.ogType ?? "website"}" />`,
     `<meta property="og:title" content="${title}" />`,
@@ -613,12 +755,9 @@ function headFor(route: Route): string {
     tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
   }
 
-  // /landing is a paid-acquisition surface: crawlers must see robots + org/site/FAQ
+  // /landing is a paid-acquisition surface: crawlers must see org/site/FAQ
   // structured data in the static shell (Helmet alone is invisible without JS).
   if (route.path === "/landing") {
-    tags.push(
-      `<meta name="robots" content="index,follow,max-image-preview:large" data-rh="true" />`,
-    );
     const faq = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -671,12 +810,9 @@ function bodyFor(route: Route): string {
         "</ul></nav>",
     );
   }
-  // data-prerender marks the shell; React discards it on mount.
-  // Visually hidden (still in the DOM and fully crawlable) so real visitors
-  // never see a flash of unstyled fallback text before hydration.
-  const hidden =
-    "position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;";
-  return `<div data-prerender="static" style="${hidden}">${parts.join("\n      ")}</div>`;
+  // A semantic no-JS fallback avoids shipping crawler-only hidden content.
+  // JavaScript visitors never render <noscript>; React replaces #root normally.
+  return `<noscript data-prerender="static"><main style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${parts.join("\n      ")}</main></noscript>`;
 }
 
 function renderRoute(route: Route): string {
@@ -685,6 +821,7 @@ function renderRoute(route: Route): string {
   // Replace the shell's title / description / canonical with route-specific tags.
   html = html.replace(/<title>[\s\S]*?<\/title>\s*/, "");
   html = html.replace(/<meta name="description"[^>]*>\s*/, "");
+  html = html.replace(/<meta name="robots"[^>]*>\s*/, "");
   html = html.replace(/<link[^>]*rel="canonical"[^>]*>\s*/, "");
   html = html.replace(/<meta property="og:(?:type|title|description|url)"[^>]*>\s*/g, "");
   html = html.replace(/<meta name="twitter:(?:card|title|description)"[^>]*>\s*/g, "");
@@ -698,6 +835,27 @@ function renderRoute(route: Route): string {
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
   return html;
 }
+
+function renderAppShell(): string {
+  let html = shell;
+  html = html.replace(/<title>[\s\S]*?<\/title>\s*/, "");
+  html = html.replace(/<meta name="description"[^>]*>\s*/, "");
+  html = html.replace(/<meta name="robots"[^>]*>\s*/, "");
+  html = html.replace(/<link[^>]*rel="canonical"[^>]*>\s*/, "");
+  html = html.replace(
+    /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
+    "",
+  );
+  const head = [
+    "<title>MaintenEase workspace</title>",
+    '<meta name="description" content="Secure MaintenEase application workspace." />',
+    '<meta name="robots" content="noindex,nofollow" />',
+  ].join("\n    ");
+  return html.replace("</head>", `  ${head}\n  </head>`);
+}
+
+const appShellPath = join(DIST, "app-shell");
+writeFileSync(appShellPath, renderAppShell());
 
 let written = 0;
 for (const route of routes) {

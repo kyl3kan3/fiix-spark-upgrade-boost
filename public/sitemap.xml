@@ -272,6 +272,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://maintenease.com/templates</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/templates/maintenance-log-template</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/templates/preventive-maintenance-checklist</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/templates/work-order-template</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://maintenease.com/blog/fixed-price-maintenance-software-ending-the-per-user-tax-in-2026</loc>
     <lastmod>2026-07-14</lastmod>
     <changefreq>weekly</changefreq>

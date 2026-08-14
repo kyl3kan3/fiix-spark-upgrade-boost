@@ -120,6 +120,53 @@ const ComparePage = () => {
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{c.intro}</p>
       </section>
 
+      {c.pricingTable ? (
+        <section className="container mx-auto max-w-4xl px-4 pb-16">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8">
+            <h2 className="font-headline text-2xl font-bold text-foreground text-balance sm:text-3xl">
+              {c.pricingTable.heading}
+            </h2>
+            <p className="mt-4 max-w-3xl text-muted-foreground leading-relaxed text-pretty">
+              {c.pricingTable.summary}
+            </p>
+            <div className="mt-6 overflow-x-auto rounded-xl border border-border">
+              <table className="w-full min-w-[620px] text-left text-sm">
+                <caption className="sr-only">
+                  {c.competitor} plan prices compared with MaintenEase account prices
+                </caption>
+                <thead className="bg-muted/60">
+                  <tr>
+                    <th scope="col" className="px-4 py-3 font-semibold text-foreground">Plan</th>
+                    <th scope="col" className="px-4 py-3 font-semibold text-foreground">{c.competitor} price</th>
+                    <th scope="col" className="px-4 py-3 font-semibold text-primary">MaintenEase price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {c.pricingTable.rows.map((row) => (
+                    <tr key={row.plan} className="border-t border-border">
+                      <th scope="row" className="px-4 py-4 font-semibold text-foreground">{row.plan}</th>
+                      <td className="px-4 py-4 text-foreground tabular-nums">{row.competitorPrice}</td>
+                      <td className="bg-primary/5 px-4 py-4 font-medium text-primary tabular-nums">{row.mainteneasePrice}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Verified <time dateTime={c.pricingTable.verifiedOn}>{formatDate(c.pricingTable.verifiedOn)}</time> from{" "}
+              <a
+                href={c.pricingTable.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-10 items-center font-medium text-primary underline underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-primary/80 active:scale-[0.96]"
+              >
+                {c.pricingTable.sourceLabel}
+              </a>.
+            </p>
+          </div>
+        </section>
+      ) : null}
+
       {/* Comparison table */}
       <section className="bg-muted/40 border-y border-border py-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -149,8 +196,10 @@ const ComparePage = () => {
               ))}
             </div>
             <div className="px-4 py-3 bg-muted/50 text-xs text-muted-foreground border-t border-border">
-              {c.competitor} pricing reflects its publicly listed {c.competitorPlan} tier (~${c.competitorPricePerUser}/user/mo) as of 2026
-              and is shown for comparison only. MaintenEase is not affiliated with {c.competitor}; verify current details on the vendor's site.
+              {c.competitorPricePerUser === null
+                ? `${c.competitor} does not publish a fixed dollar price for its ${c.competitorPlan} plan; request a current estimate from the vendor.`
+                : `${c.competitor} pricing reflects its publicly listed ${c.competitorPlan} tier ($${c.competitorPricePerUser}/user/mo) as of 2026 and is shown for comparison only.`}{" "}
+              MaintenEase is not affiliated with {c.competitor}; verify current details on the vendor's site.
             </div>
           </div>
         </div>
@@ -190,8 +239,9 @@ const ComparePage = () => {
             {c.competitor} plans at a glance
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Publicly listed tiers as of 2026, shown so you can compare like with like. Advertised per-user
-            rates usually assume an annual commitment — verify current pricing on {c.competitor}'s own site.
+            {c.competitorPricePerUser === null
+              ? `Publicly listed plan names and features as of 2026. ${c.competitor} requires a custom estimate, so verify the total and contract terms with the vendor.`
+              : `Publicly listed tiers as of 2026, shown so you can compare like with like. Advertised per-user rates may assume an annual commitment — verify current pricing on ${c.competitor}'s own site.`}
           </p>
           <div className="overflow-hidden rounded-xl border border-border bg-card divide-y divide-border">
             {c.competitorTiers.map((t) => (

@@ -3,12 +3,11 @@
  *
  * These exist to capture high-intent "MaintenEase vs <competitor>" and
  * "<competitor> alternative" searches and to earn relevant links. The honest,
- * verifiable angle is pricing model: every listed competitor bills per user,
- * MaintenEase publishes account plans with included seats. Per-user prices mirror the figures already
- * used (with the same disclaimer) in src/components/FlatFeeAdvantage.tsx and
- * reflect publicly listed entry/standard tiers as of 2026 — illustrative, not a
- * live quote. Feature rows we can't verify per-plan are marked "Varies" rather
- * than asserted as missing, so the comparison stays fair and defensible.
+ * verifiable angle is pricing model: MaintenEase publishes account plans with
+ * included seats, while rivals either publish per-user pricing or require an
+ * estimate. Public prices feed the calculator; quote-only vendors are excluded
+ * from cost math. Feature rows we can't verify per plan are marked "Varies"
+ * rather than asserted as missing, so the comparison stays fair and defensible.
  */
 import {
   PLAN_BY_TIER,
@@ -26,6 +25,15 @@ export type CompareRow = { feature: string; ours: CompareValue; theirs: CompareV
 /** Optional long-form blocks, used by comparisons that need real depth. */
 export type CompareSection = { heading: string; paragraphs: string[] };
 export type CompetitorTier = { name: string; price: string; notes: string };
+export type PricingTableRow = { plan: string; competitorPrice: string; mainteneasePrice: string };
+export type PricingTable = {
+  heading: string;
+  summary: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  verifiedOn: string;
+  rows: PricingTableRow[];
+};
 export type BestFit = { ours: string[]; theirs: string[] };
 export type MigrationStep = { title: string; body: string };
 
@@ -45,7 +53,8 @@ export type Comparison = {
   slug: string;
   competitor: string;
   competitorPlan: string;
-  competitorPricePerUser: number;
+  /** Public per-user list price used in calculators, or null when the vendor requires a quote. */
+  competitorPricePerUser: number | null;
   metaTitle: string;
   metaDescription: string;
   h1: string;
@@ -58,6 +67,8 @@ export type Comparison = {
   sections?: CompareSection[];
   /** Publicly listed competitor plan ladder (optional). */
   competitorTiers?: CompetitorTier[];
+  /** Snippet-friendly current pricing table with an official vendor source. */
+  pricingTable?: PricingTable;
   /** Honest "pick them / pick us" guidance (optional). */
   bestFit?: BestFit;
   /** Concrete switching plan (optional). */
@@ -69,16 +80,21 @@ export type Comparison = {
 };
 
 /** Standard, honest comparison rows for a per-seat competitor. */
-const makeRows = (competitor: string, pricePerUser: number): CompareRow[] => [
-  { feature: "Pricing model", ours: "Account plan with included seats", theirs: "Per user / month", highlight: true },
+const makeRows = (competitor: string, pricePerUser: number | null): CompareRow[] => [
+  {
+    feature: "Pricing model",
+    ours: "Account plan with included seats",
+    theirs: pricePerUser === null ? "Custom estimate" : "Per user / month",
+    highlight: true,
+  },
   {
     feature: `Cost for a team of ${TEAM_SIZE}`,
     ours: `$${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo (${MAINTENEASE_TEAM_PRICE.plan.name})`,
-    theirs: `$${pricePerUser * TEAM_SIZE}/mo`,
+    theirs: pricePerUser === null ? "Quote required" : `$${pricePerUser * TEAM_SIZE}/mo`,
     highlight: true,
   },
   { feature: "Add more technicians", ours: "Business: $15/extra seat after 4", theirs: "Charged per seat", highlight: true },
-  { feature: "Billing commitment", ours: "Month-to-month", theirs: "Often annual" },
+  { feature: "Billing commitment", ours: "Month-to-month", theirs: pricePerUser === null ? "Confirm in quote" : "Often annual" },
   { feature: "Work order management", ours: true, theirs: true },
   { feature: "Asset management & history", ours: true, theirs: true },
   { feature: "Preventive maintenance scheduling", ours: true, theirs: true },
@@ -107,10 +123,10 @@ const migrationFaq = (competitor: string) => ({
 export const comparisons: Comparison[] = [
   {
     slug: "maintenease-vs-upkeep",
-    dateModified: PRODUCT_LAST_MODIFIED,
+    dateModified: "2026-08-13",
     competitor: "UpKeep",
-    competitorPlan: "Starter",
-    competitorPricePerUser: 45,
+    competitorPlan: "Premium",
+    competitorPricePerUser: 55,
     metaTitle: "UpKeep Pricing vs MaintenEase — CMMS Cost Comparison 2026",
     metaDescription:
       "UpKeep pricing explained tier by tier, compared with MaintenEase account plans and included seats. See real monthly cost for a team of 8 before you switch.",
@@ -118,26 +134,40 @@ export const comparisons: Comparison[] = [
     tagline: "The same core CMMS — without paying by the technician.",
     intro:
       "UpKeep is a well-known mobile-first CMMS priced per user per month. MaintenEase covers the same essentials — work orders, assets, preventive maintenance, inspections, and mobile access — through account plans with included seats. Business includes four seats and supports additional seats at $15 per month each.",
-    rows: makeRows("UpKeep", 45),
+    rows: makeRows("UpKeep", 55),
+    pricingTable: {
+      heading: "UpKeep pricing in 2026",
+      summary:
+        "UpKeep currently lists Essential at $24 per user per month and Premium at $55 per user per month. Premium is the first listed tier with preventive-maintenance scheduling, so it is the more useful CMMS comparison for most maintenance teams.",
+      sourceLabel: "UpKeep's official pricing page",
+      sourceUrl: "https://upkeep.com/pricing/?selected_plan=professional",
+      verifiedOn: "2026-08-13",
+      rows: [
+        { plan: "Essential", competitorPrice: "$24/user/mo", mainteneasePrice: "Starter: $49/mo (2 seats)" },
+        { plan: "Premium", competitorPrice: "$55/user/mo", mainteneasePrice: "Pro: $129/mo (4 seats)" },
+        { plan: "Professional", competitorPrice: "Custom quote", mainteneasePrice: "Business: $299/mo (4 seats)" },
+        { plan: "Enterprise", competitorPrice: "Custom quote", mainteneasePrice: "Business: $299/mo + $15/additional seat" },
+      ],
+    },
     competitorTiers: [
-      { name: "Lite", price: "~$20 / user / mo", notes: "Work orders and basic requests; reporting and PM depth limited." },
-      { name: "Starter", price: "~$45 / user / mo", notes: "The tier most maintenance teams land on — PMs, checklists, and reporting." },
-      { name: "Professional", price: "~$75 / user / mo", notes: "Advanced reporting, workflow automation, and integrations." },
-      { name: "Business+ / Enterprise", price: "Custom quote", notes: "Multi-site, SSO, and procurement-grade requirements." },
+      { name: "Essential", price: "$24 / user / mo", notes: "Work orders, requests, mobile access, and basic reporting; preventive scheduling is not listed." },
+      { name: "Premium", price: "$55 / user / mo", notes: "Adds preventive-maintenance scheduling, checklists, inventory, labor tracking, and 30-day analytics." },
+      { name: "Professional", price: "Custom quote", notes: "Advanced controls and reporting for larger operations." },
+      { name: "Enterprise", price: "Custom quote", notes: "Enterprise requirements and negotiated terms." },
     ],
     sections: [
       {
-        heading: "UpKeep pricing at a glance",
+        heading: "What the UpKeep plan ladder means",
         paragraphs: [
-          "UpKeep publishes a per-user, per-month ladder that is usually quoted on annual billing. As of 2026 the publicly listed tiers run roughly $20/user/mo for Lite, $45/user/mo for Starter, $75/user/mo for Professional, and a custom quote above that. Requester-only users are typically free, but anyone who completes work needs a paid seat.",
-          "That structure means your CMMS bill is a function of headcount rather than of how much maintenance you do. Eight technicians on the Starter tier is roughly $360/mo, or about $4,320 a year committed up front on an annual plan. Fifteen is roughly $675/mo.",
-          "Always verify current figures on UpKeep's own pricing page — vendor tiers change, and the numbers here are publicly listed prices captured in 2026 for comparison purposes.",
+          "UpKeep's public pricing is per user per month. Essential is $24/user/mo, while Premium is $55/user/mo and is the first listed tier that includes preventive-maintenance scheduling. Professional and Enterprise require a quote.",
+          "That structure means the bill grows with headcount. Five users on Premium cost about $275/month and eight cost about $440/month before add-ons or negotiated terms.",
+          "The table above was verified against UpKeep's official pricing page on August 13, 2026. Vendor prices and packaging can change, so follow the source link before budgeting.",
         ],
       },
       {
         heading: "How MaintenEase pricing compares",
         paragraphs: [
-          `MaintenEase publishes account plans with seats included rather than a per-technician rate. For the illustrative team of ${TEAM_SIZE} used across this site, the lowest MaintenEase plan that covers the seat count is ${MAINTENEASE_TEAM_PRICE.plan.name} at $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo including ${MAINTENEASE_TEAM_PRICE.extraSeats} extra seats, against roughly $${45 * TEAM_SIZE}/mo for UpKeep Starter.`,
+          `MaintenEase publishes account plans with seats included rather than a per-technician rate. For the illustrative team of ${TEAM_SIZE} used across this site, the lowest MaintenEase plan that covers the seat count is ${MAINTENEASE_TEAM_PRICE.plan.name} at $${MAINTENEASE_TEAM_PRICE.monthlyPrice}/mo including ${MAINTENEASE_TEAM_PRICE.extraSeats} extra seats, against roughly $${55 * TEAM_SIZE}/mo for UpKeep Premium.`,
           "The bigger difference is behaviour as the crew changes. Adding a seasonal helper, a supervisor who only reads reports, or a second-shift technician moves an UpKeep bill by a full seat each time. On MaintenEase the plan covers its included seats, and Business adds seats at a published $15/mo each, so the increase is visible before you commit to it.",
           "MaintenEase is also month-to-month, so the listed price does not depend on signing an annual contract. Run your own headcount through the cost calculator rather than trusting either vendor's example team — there is a range where per-seat pricing genuinely wins, and the calculator shows where it flips.",
         ],
@@ -177,13 +207,13 @@ export const comparisons: Comparison[] = [
     faqs: [
       {
         q: "How much does UpKeep cost per month?",
-        a: "UpKeep's publicly listed 2026 tiers are roughly $20/user/mo (Lite), $45/user/mo (Starter), and $75/user/mo (Professional), usually on annual billing, with a custom quote above that. Requester-only users are typically free. Verify current rates on UpKeep's pricing page.",
+        a: "UpKeep pricing starts at $24 per user per month for Essential. Premium is $55 per user per month and is the first listed tier with preventive-maintenance scheduling, so a 5-person maintenance team pays roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices verified August 13, 2026; check UpKeep's pricing page for changes.",
       },
       {
         q: "Does UpKeep have a free plan?",
         a: "UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.",
       },
-      pricingFaq("UpKeep", 45),
+      pricingFaq("UpKeep", 55),
       {
         q: "What is the best UpKeep alternative?",
         a: "It depends on why you are leaving. If the trigger is per-seat cost as the crew grows, an account-plan product like MaintenEase changes the maths. If it is missing capability, compare on the specific workflow — procedures, IoT, or multi-site — rather than on price alone.",
@@ -217,13 +247,13 @@ export const comparisons: Comparison[] = [
     slug: "maintenease-vs-maintainx",
     competitor: "MaintainX",
     competitorPlan: "Essential",
-    competitorPricePerUser: 21,
+    competitorPricePerUser: 20,
     // Last substantive content change per version history (latest commit that
     // touched this file's comparison content): 2026-07-25. No earlier reliable
     // publication record exists in the squashed history, so publication is
     // recorded as the same date rather than fabricating an older one.
     datePublished: "2026-07-25",
-    dateModified: PRODUCT_LAST_MODIFIED,
+    dateModified: "2026-08-13",
     metaTitle: "MaintenEase vs MaintainX — CMMS Pricing Comparison (2026)",
     metaDescription:
       "MaintenEase vs MaintainX: compare features and estimated team cost across MaintenEase account plans and MaintainX per-user pricing.",
@@ -231,7 +261,21 @@ export const comparisons: Comparison[] = [
     tagline: "Account plans with included seats and published capacity limits.",
     intro:
       "MaintainX is a popular work-order and procedure app billed per user per month, with a free tier for very small teams and paid tiers that unlock reporting, PMs, and analytics. MaintenEase covers the same everyday workflow — work orders, assets and history, preventive maintenance, inspections, mobile access, and reporting — through account plans with included seats. This page lays out where the products overlap, where MaintainX is the better fit, and how the published pricing models compare.",
-    rows: makeRows("MaintainX", 21),
+    rows: makeRows("MaintainX", 20),
+    pricingTable: {
+      heading: "MaintainX cost in 2026",
+      summary:
+        "MaintainX lists a free Basic plan, Essential at $20 per user per month on annual billing ($25 monthly), and Premium at $65 per user per month annually ($75 monthly). Requesters remain free; paid users drive the recurring cost.",
+      sourceLabel: "MaintainX's official pricing page",
+      sourceUrl: "https://www.getmaintainx.com/pricing",
+      verifiedOn: "2026-08-13",
+      rows: [
+        { plan: "Basic", competitorPrice: "Free", mainteneasePrice: "7-day free trial" },
+        { plan: "Essential", competitorPrice: "$20/user/mo annual; $25 monthly", mainteneasePrice: "Starter: $49/mo (2 seats)" },
+        { plan: "Premium", competitorPrice: "$65/user/mo annual; $75 monthly", mainteneasePrice: "Pro: $129/mo (4 seats)" },
+        { plan: "Enterprise", competitorPrice: "Custom quote", mainteneasePrice: "Business: $299/mo (4 seats)" },
+      ],
+    },
     sections: [
       {
         heading: "The short answer",
@@ -244,7 +288,7 @@ export const comparisons: Comparison[] = [
       {
         heading: "Cost as your crew grows",
         paragraphs: [
-          "Per-seat pricing means your software bill is a function of headcount. At a publicly listed ~$21/user/mo, five paid users is about $105/mo, eight is about $168/mo, fifteen is about $315/mo, and twenty-five is about $525/mo. MaintenEase Pro stays at $129/mo across all of those, and Business is $299/mo when you need the larger plan's limits.",
+          "Per-seat pricing means your software bill is a function of headcount. At the publicly listed $20/user/mo annual rate for Essential, five paid users are $100/mo, eight are $160/mo, fifteen are $300/mo, and twenty-five are $500/mo. The month-to-month Essential rate is $25/user/mo. MaintenEase account pricing uses included seats and publishes the Business extra-seat rate.",
           "That difference compounds in two places people forget to model. First, seasonal or part-time technicians: with per-seat billing, a summer helper is a line item, so teams share logins or leave people off the system — and the work history gets worse. Second, the people who only need to look: supervisors, office staff, and contractors who check status once a week still consume a seat on most per-seat plans.",
           "Use the MaintenEase cost calculator to run your own headcount rather than trusting a table on a vendor's page — it shows the crossover point where per-seat becomes more expensive, including the range where per-seat wins.",
         ],
@@ -276,8 +320,8 @@ export const comparisons: Comparison[] = [
     ],
     competitorTiers: [
       { name: "Basic", price: "Free", notes: "Publicly listed free tier for very small teams, with usage limits." },
-      { name: "Essential", price: "~$21 / user / mo", notes: "Entry paid tier used for the cost comparison on this page." },
-      { name: "Premium", price: "~$49 / user / mo", notes: "Adds higher-tier reporting and analytics capability." },
+      { name: "Essential", price: "$20 annual / $25 monthly per user", notes: "Entry paid tier used for the cost comparison on this page." },
+      { name: "Premium", price: "$65 annual / $75 monthly per user", notes: "Adds higher-tier reporting and analytics capability." },
       { name: "Enterprise", price: "Custom quote", notes: "Negotiated pricing and enterprise controls." },
     ],
     bestFit: {
@@ -307,10 +351,10 @@ export const comparisons: Comparison[] = [
       { title: "Free, hands-on onboarding", body: "We import your assets, open work orders, and PM schedules and help build the initial setup. Timing depends on the volume and condition of the source data." },
     ],
     faqs: [
-      pricingFaq("MaintainX", 21),
+      pricingFaq("MaintainX", 20),
       {
         q: "How much does MaintainX cost per user?",
-        a: "MaintainX's publicly listed 2026 tiers start with a limited free plan, then run roughly $21/user/mo for Essential, about $49/user/mo for Premium, and a custom quote for Enterprise, usually billed annually. Verify current MaintainX cost on their own pricing page before budgeting.",
+        a: "MaintainX cost starts at $0 for Basic. Essential is $20 per user per month with annual billing or $25 monthly; Premium is $65 per user per month annually or $75 monthly. Enterprise requires a quote. Prices verified August 13, 2026; check MaintainX's pricing page for changes.",
       },
       {
         q: "At what team size does MaintenEase become cheaper than MaintainX?",
@@ -338,24 +382,58 @@ export const comparisons: Comparison[] = [
   },
   {
     slug: "maintenease-vs-limble",
-    dateModified: PRODUCT_LAST_MODIFIED,
+    dateModified: "2026-08-13",
     competitor: "Limble",
     competitorPlan: "Standard",
-    competitorPricePerUser: 28,
+    competitorPricePerUser: null,
     metaTitle: "MaintenEase vs Limble — CMMS Pricing Comparison (2026)",
     metaDescription:
       "MaintenEase vs Limble CMMS: compare account plans with included seats against per-user pricing across work orders, assets, PM, and estimated team cost.",
     h1: "MaintenEase vs Limble",
     tagline: "Account and per-user pricing for preventive maintenance teams.",
     intro:
-      "Limble is a modern CMMS billed per user per month. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — through account plans with included seats. Business adds seats at a published $15 per month each.",
-    rows: makeRows("Limble", 28),
+      "Limble is a modern CMMS that now asks buyers to calculate an estimate or request pricing rather than publishing dollar amounts for its Standard, Premium+, and Enterprise plans. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — through published account plans with included seats. Business adds seats at $15 per month each.",
+    rows: makeRows("Limble", null),
+    pricingTable: {
+      heading: "Limble pricing in 2026",
+      summary:
+        "Limble publishes the features in Standard, Premium+, and Enterprise, but it does not publish fixed dollar prices. Its official pricing page sends buyers to a calculator for an estimate, so the only defensible current price is 'custom estimate' until Limble provides your quote.",
+      sourceLabel: "Limble's official pricing page",
+      sourceUrl: "https://limble.com/pricing",
+      verifiedOn: "2026-08-13",
+      rows: [
+        { plan: "Standard", competitorPrice: "Custom estimate", mainteneasePrice: "Starter: $49/mo (2 seats)" },
+        { plan: "Premium+", competitorPrice: "Custom estimate", mainteneasePrice: "Pro: $129/mo (4 seats)" },
+        { plan: "Enterprise", competitorPrice: "Custom estimate", mainteneasePrice: "Business: $299/mo (4 seats)" },
+      ],
+    },
+    competitorTiers: [
+      { name: "Standard", price: "Custom estimate", notes: "Unlimited assets, work orders, PMs, requesters, and custom dashboards." },
+      { name: "Premium+", price: "Custom estimate", notes: "Adds offline mode, parts, vendors, purchasing, meter scheduling, API access, and a customer success manager." },
+      { name: "Enterprise", price: "Custom estimate", notes: "Adds multi-location controls, custom roles and approvals, compliance, SSO, and integrations." },
+    ],
+    sections: [
+      {
+        heading: "Why Limble cost requires a quote",
+        paragraphs: [
+          "Limble's current pricing page describes three plans and provides a two-question calculator, but it does not expose a per-user or account price in the public page content. Team size, plan, and negotiated terms can therefore change the quote.",
+          "That makes a direct monthly-cost claim unreliable. Ask Limble for the all-in monthly and annual totals, implementation cost, minimum seat count, and renewal terms, then compare that written quote with MaintenEase's published account price.",
+        ],
+      },
+    ],
     differentiators: [
       { title: "Costs you can calculate", body: "Included seats and the Business extra-seat rate are published, so a new hire's effect on the software bill is visible in advance." },
       { title: "Everything in one place", body: "Work orders, assets, PMs, predictive maintenance, and energy tracking under one login." },
       { title: "Switch for free", body: "Free data import and onboarding make moving from Limble low-effort." },
     ],
-    faqs: [pricingFaq("Limble", 28), affiliationFaq("Limble"), migrationFaq("Limble")],
+    faqs: [
+      {
+        q: "How much does Limble cost?",
+        a: "Limble pricing is not published as a fixed dollar amount in 2026. Standard, Premium+, and Enterprise all route buyers to Limble's calculator for a custom estimate. Ask for the total monthly and annual price, implementation fees, minimum seats, and renewal terms before comparing it with another CMMS.",
+      },
+      affiliationFaq("Limble"),
+      migrationFaq("Limble"),
+    ],
   },
   {
     slug: "maintenease-vs-emaint",
@@ -379,6 +457,13 @@ export const comparisons: Comparison[] = [
     faqs: [pricingFaq("eMaint", 69), affiliationFaq("eMaint"), migrationFaq("eMaint")],
   },
 ];
+
+export type PricedComparison = Comparison & { competitorPricePerUser: number };
+
+/** Comparisons with a current public per-user price, safe for cost calculators. */
+export const pricedComparisons = comparisons.filter(
+  (comparison): comparison is PricedComparison => comparison.competitorPricePerUser !== null,
+);
 
 export const getComparison = (slug: string) => comparisons.find((c) => c.slug === slug);
 
