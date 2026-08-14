@@ -4,7 +4,7 @@
  *
  * Fetches the rendered HTML and asserts:
  *   - <title> and <meta name="description"> exist
- *   - <link rel="canonical"> points at the /landing URL
+ *   - <link rel="canonical"> consolidates the paid landing variant to `/`
  *   - <meta name="robots"> exists and does not block indexing
  *   - og:title / og:description / og:url / og:type / og:image
  *   - twitter:card / twitter:title / twitter:description / twitter:image
@@ -21,6 +21,7 @@
 
 const BASE_URL = process.env.BASE_URL ?? "https://maintenease.com";
 const PATH = "/landing";
+const EXPECTED_CANONICAL = "https://maintenease.com/";
 
 function extract(
   html: string,
@@ -109,8 +110,8 @@ async function main() {
 
   const canonical = extractCanonical(html);
   if (!canonical) errs.push('<link rel="canonical"> missing');
-  else if (!canonical.endsWith(PATH))
-    errs.push(`canonical "${canonical}" does not point at ${PATH}`);
+  else if (canonical !== EXPECTED_CANONICAL)
+    errs.push(`canonical "${canonical}" does not consolidate to ${EXPECTED_CANONICAL}`);
 
   const robots = extract(html, "name", "robots");
   if (!robots) errs.push('<meta name="robots"> missing');

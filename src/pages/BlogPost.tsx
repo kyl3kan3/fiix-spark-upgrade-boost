@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft } from "lucide-react";
+import { blogBodyHasFaqHeading, getSupplementalBlogFaqs } from "@/lib/blogContent";
 
 interface FaqItem {
   question: string;
@@ -152,6 +153,14 @@ const BlogPost = () => {
     if (!Array.isArray(raw)) return [];
     return raw.filter((f): f is FaqItem => Boolean(f?.question && f?.answer));
   }, [post]);
+  const supplementalFaqs = useMemo(
+    () => getSupplementalBlogFaqs(post?.content_html, faqs),
+    [faqs, post?.content_html],
+  );
+  const faqHeadingInBody = useMemo(
+    () => blogBodyHasFaqHeading(post?.content_html),
+    [post?.content_html],
+  );
 
   if (loading) {
     const loadingUrl = `${SITE}/blog/${slug}`;
@@ -312,11 +321,13 @@ const BlogPost = () => {
           </div>
         )}
 
-        {faqs.length > 0 && (
+        {supplementalFaqs.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              {faqHeadingInBody ? "More frequently asked questions" : "Frequently Asked Questions"}
+            </h2>
             <Accordion type="single" collapsible defaultValue="faq-0" className="w-full">
-              {faqs.map((f, i) => (
+              {supplementalFaqs.map((f, i) => (
                 <AccordionItem key={i} value={`faq-${i}`}>
                   <AccordionTrigger className="text-left cursor-pointer">
                     {f.question}

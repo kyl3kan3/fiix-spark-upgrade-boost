@@ -9,6 +9,7 @@ import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
+import { SOLUTION_RESOURCES } from "@/data/seoResources";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -65,6 +66,7 @@ const SolutionPage = () => {
  };
 
  const others = solutions.filter((s) => s.slug !== solution.slug);
+ const relatedResources = SOLUTION_RESOURCES[solution.slug] ?? [];
 
  return (
  <MarketingLayout>
@@ -155,6 +157,30 @@ const SolutionPage = () => {
  </ul>
  </div>
  </section>
+
+ {relatedResources.length > 0 && (
+ <section className="container mx-auto px-4 py-16 max-w-5xl">
+ <h2 className="font-headline text-3xl font-bold mb-3 text-foreground">Put the workflow into practice</h2>
+ <p className="mb-8 max-w-3xl leading-relaxed text-muted-foreground">
+ Use these guides and templates to define the process first, then move the repeatable work into MaintenEase when the team is ready.
+ </p>
+ <div className="grid gap-5 md:grid-cols-3">
+ {relatedResources.map((resource) => (
+ <Link
+ key={resource.href}
+ to={resource.href}
+ className="group rounded-xl border border-border bg-card p-6 shadow-sm transition-ui hover:border-primary/30 hover:shadow-md"
+ >
+ <h3 className="font-semibold text-foreground group-hover:text-primary">{resource.title}</h3>
+ <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
+ <span className="mt-5 inline-flex items-center text-sm font-semibold text-primary">
+ Read the resource <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+ </span>
+ </Link>
+ ))}
+ </div>
+ </section>
+ )}
 
  {/* FAQ section */}
  <section className="container mx-auto px-4 py-16 max-w-3xl">

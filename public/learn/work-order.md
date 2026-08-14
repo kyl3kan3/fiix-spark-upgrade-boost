@@ -30,6 +30,12 @@ A request is what an end user submits ('the printer is broken'). The maintenance
 
 Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign.
 
+## CMMS software and comparisons
+
+- [work order software](https://maintenease.com/solutions/work-order-software)
+- [free maintenance work order template](https://maintenease.com/templates/work-order-template)
+- [modern work order management guide](https://maintenease.com/blog/the-ultimate-guide-to-modern-work-order-management-in-2026)
+
 ## Related
 
 - https://maintenease.com/learn/cmms

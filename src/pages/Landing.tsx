@@ -92,14 +92,14 @@ const Landing = () => {
           name="description"
           content={META_DESCRIPTION}
         />
-        <link rel="canonical" href="https://maintenease.com/landing" />
+        <link rel="canonical" href="https://maintenease.com/" />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta
           property="og:description"
           content={META_DESCRIPTION}
         />
-        <meta property="og:url" content="https://maintenease.com/landing" />
+        <meta property="og:url" content="https://maintenease.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta property="og:image:width" content="1200" />

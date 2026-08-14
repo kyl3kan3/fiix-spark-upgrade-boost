@@ -1,9 +1,10 @@
-import { ArrowRight, Bot } from "lucide-react";
+import { ArrowRight, BookOpen, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
 import { comparisons } from "@/data/comparisons";
 import { maintenanceTemplates } from "@/data/maintenanceTemplates";
+import { FEATURED_DISCOVERY_RESOURCES } from "@/data/seoResources";
 
 /**
  * Internal-link block rendered on the homepage so Googlebot can discover
@@ -37,10 +38,39 @@ const SiteIndexLinks = () => {
  <ArrowRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-1" aria-hidden="true" />
  </Link>
  </div>
+ <nav
+ aria-label="Featured maintenance resources"
+ className="mb-12 rounded-3xl border border-border bg-background p-6 sm:p-8"
+ >
+ <div className="mb-6 flex items-start gap-4">
+ <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+ <BookOpen className="h-5 w-5" aria-hidden="true" />
+ </div>
+ <div>
+ <h2 className="text-xl font-semibold text-foreground text-balance">Start with these maintenance resources</h2>
+ <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground text-pretty">
+ Practical guides and downloads for planning work, reducing backlog, and building a repeatable maintenance process.
+ </p>
+ </div>
+ </div>
+ <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+ {FEATURED_DISCOVERY_RESOURCES.map((resource) => (
+ <li key={resource.href}>
+ <Link
+ to={resource.href}
+ className="group block h-full rounded-2xl border border-border bg-card p-5 transition-[border-color,box-shadow,transform] duration-150 hover:border-primary/30 hover:shadow-md active:scale-[0.98]"
+ >
+ <span className="font-semibold text-foreground group-hover:text-primary">{resource.title}</span>
+ <span className="mt-2 block text-sm leading-relaxed text-muted-foreground">{resource.description}</span>
+ </Link>
+ </li>
+ ))}
+ </ul>
+ </nav>
  <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
- Solutions
+ <Link to="/solutions" className="hover:text-primary hover:underline">Solutions</Link>
  </h2>
  <p className="mb-6 text-sm text-muted-foreground">
  Purpose-built workflows for every maintenance use case.
@@ -61,7 +91,7 @@ const SiteIndexLinks = () => {
 
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
- Templates
+ <Link to="/templates" className="hover:text-primary hover:underline">Templates</Link>
  </h2>
  <p className="mb-6 text-sm text-muted-foreground">
  Free maintenance spreadsheets and checklists.
@@ -82,7 +112,7 @@ const SiteIndexLinks = () => {
 
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
- Learn
+ <Link to="/learn" className="hover:text-primary hover:underline">Learn</Link>
  </h2>
  <p className="mb-6 text-sm text-muted-foreground">
  Plain-English guides to the concepts behind modern maintenance.
@@ -103,7 +133,7 @@ const SiteIndexLinks = () => {
 
  <div>
  <h2 className="mb-4 text-2xl font-semibold text-foreground">
- Compare
+ <Link to="/compare" className="hover:text-primary hover:underline">Compare</Link>
  </h2>
  <p className="mb-6 text-sm text-muted-foreground">
  See how MaintenEase stacks up against other CMMS platforms.

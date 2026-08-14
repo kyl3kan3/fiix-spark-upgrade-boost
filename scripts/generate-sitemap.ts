@@ -2,68 +2,15 @@
 // Runs on predev and prebuild so every deploy ships an up-to-date sitemap.
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { solutions } from "../src/data/solutions";
-import { glossary } from "../src/data/glossary";
-import { comparisons } from "../src/data/comparisons";
-import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
+import {
+  STATIC_SITEMAP_ENTRIES,
+  type SitemapEntry,
+} from "../src/data/sitemapEntries";
 
 const BASE_URL = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
-
-interface SitemapEntry {
-  path: string;
-  lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority?: string;
-}
-
-const staticEntries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/landing", changefreq: "weekly", priority: "0.9" },
-  { path: "/maintenance-simplified", changefreq: "monthly", priority: "0.8" },
-  { path: "/pricing", changefreq: "monthly", priority: "0.9" },
-  { path: "/features", changefreq: "monthly", priority: "0.8" },
-  { path: "/mcp", changefreq: "monthly", priority: "0.9" },
-  { path: "/solutions", changefreq: "weekly", priority: "0.9" },
-  { path: "/learn", changefreq: "weekly", priority: "0.8" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
-  { path: "/terms", changefreq: "yearly", priority: "0.3" },
-  { path: "/refund-policy", changefreq: "yearly", priority: "0.3" },
-  { path: "/sms-opt-in", changefreq: "yearly", priority: "0.2" },
-];
-
-const solutionEntries: SitemapEntry[] = solutions.map((s) => ({
-  path: `/solutions/${s.slug}`,
-  changefreq: "monthly",
-  priority: "0.8",
-}));
-
-const learnEntries: SitemapEntry[] = glossary.map((g) => ({
-  path: `/learn/${g.slug}`,
-  changefreq: "monthly",
-  priority: "0.7",
-}));
-
-const compareEntries: SitemapEntry[] = [
-  { path: "/compare", changefreq: "monthly", priority: "0.8" },
-  { path: "/cmms-cost-calculator", changefreq: "monthly", priority: "0.8" },
-  ...comparisons.map((c) => ({
-    path: `/compare/${c.slug}`,
-    changefreq: "monthly" as const,
-    priority: "0.8",
-  })),
-];
-
-const templateEntries: SitemapEntry[] = [
-  { path: "/templates", changefreq: "monthly", priority: "0.8" },
-  ...maintenanceTemplates.map((template) => ({
-    path: `/templates/${template.slug}`,
-    changefreq: "monthly" as const,
-    priority: "0.8",
-  })),
-];
 
 async function fetchBlogEntries(): Promise<SitemapEntry[]> {
   try {
@@ -98,20 +45,10 @@ const latestBlogLastmod = blogEntries
   .filter((lastmod): lastmod is string => Boolean(lastmod))
   .sort()
   .at(-1);
-const blogIndexEntry: SitemapEntry = {
-  path: "/blog",
-  lastmod: latestBlogLastmod,
-  changefreq: "daily",
-  priority: "0.8",
-};
-
 const entries = [
-  ...staticEntries,
-  blogIndexEntry,
-  ...solutionEntries,
-  ...learnEntries,
-  ...compareEntries,
-  ...templateEntries,
+  ...STATIC_SITEMAP_ENTRIES.map((entry) =>
+    entry.path === "/blog" ? { ...entry, lastmod: latestBlogLastmod } : entry,
+  ),
   ...blogEntries,
 ];
 

@@ -44,6 +44,11 @@ describe("canonicalUrlForPath", () => {
     expect(canonicalUrlForPath("/learn/cmms/")).toBe(`${SITE_ORIGIN}/learn/cmms`);
   });
 
+  it("consolidates the paid landing-page variant to the homepage", () => {
+    expect(canonicalUrlForPath("/landing")).toBe(`${SITE_ORIGIN}/`);
+    expect(sitemapUrls()).not.toContain(`${SITE_ORIGIN}/landing`);
+  });
+
   it("does not canonicalize private, utility, or malformed paths", () => {
     expect(canonicalUrlForPath("/dashboard")).toBeNull();
     expect(canonicalUrlForPath("/forgot-password")).toBeNull();
@@ -58,12 +63,10 @@ describe("canonicalUrlForPath", () => {
       const url = entry.querySelector("loc")?.textContent?.trim() ?? "";
       const lastmod = entry.querySelector("lastmod")?.textContent?.trim();
 
+      if (lastmod) expect(lastmod, `${url} should use an ISO date`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+
       if (url === `${SITE_ORIGIN}/blog` || url.startsWith(`${SITE_ORIGIN}/blog/`)) {
-        expect(lastmod, `${url} should use its database-backed modification date`).toMatch(
-          /^\d{4}-\d{2}-\d{2}$/,
-        );
-      } else {
-        expect(lastmod, `${url} must not be stamped with the build date`).toBeUndefined();
+        expect(lastmod, `${url} should use its database-backed modification date`).toBeTruthy();
       }
     }
   });
@@ -120,6 +123,32 @@ describe("CanonicalUrl", () => {
 
     await waitFor(() => {
       expect(document.head.querySelectorAll('link[rel="canonical"]')).toHaveLength(0);
+      expect(document.head.querySelector('meta[name="robots"]')?.getAttribute("content")).toBe(
+        "noindex,nofollow",
+      );
+    });
+  });
+
+  it("replaces the fallback noindex directive on public routes", async () => {
+    document.head.innerHTML =
+      '<meta data-rh="true" name="robots" content="noindex,nofollow" />';
+
+    render(
+      <HelmetProvider>
+        <MemoryRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          initialEntries={["/templates"]}
+        >
+          <CanonicalUrl />
+        </MemoryRouter>
+      </HelmetProvider>,
+    );
+
+    await waitFor(() => {
+      expect(document.head.querySelectorAll('meta[name="robots"]')).toHaveLength(1);
+      expect(document.head.querySelector('meta[name="robots"]')?.getAttribute("content")).toBe(
+        "index,follow,max-image-preview:large",
+      );
     });
   });
 });
