@@ -120,6 +120,42 @@ if (existsSync(distDir)) {
     pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
   }
 
+  for (const rel of prerenderSamples) {
+    const html = readFileSync(join(distDir, rel), "utf8");
+    if (!/<link rel="alternate" type="text\/markdown" href="https:\/\/maintenease\.com\//.test(html)) {
+      fail(`prerender: dist/${rel} has no explicit Markdown alternate`);
+    }
+  }
+
+  const sitemap = readFileSync(join(ROOT, "public", "sitemap.xml"), "utf8");
+  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const llmsIndex = readFileSync(join(ROOT, "public", "llms.txt"), "utf8");
+  let markdownAlternatives = 0;
+  for (const sitemapUrl of sitemapUrls) {
+    const pathname = new URL(sitemapUrl).pathname;
+    // Published blog posts are served by functions/blog/[slug].md.ts from the
+    // database, while the blog index itself is build-time Markdown.
+    if (pathname.startsWith("/blog/")) continue;
+
+    const markdownPath = pathname === "/" ? "/index.md" : `${pathname}.md`;
+    const markdownFile = join(distDir, markdownPath.replace(/^\//, ""));
+    if (!existsSync(markdownFile)) {
+      fail(`markdown: ${markdownPath} missing for ${pathname}`);
+      continue;
+    }
+    const markdown = readFileSync(markdownFile, "utf8");
+    if (!markdown.startsWith("# ") || !/Canonical (?:HTML|URL): https:\/\/maintenease\.com\//.test(markdown)) {
+      fail(`markdown: ${markdownPath} is missing a title or canonical HTML URL`);
+    }
+    if (!llmsIndex.includes(`Markdown: https://maintenease.com${markdownPath}`)) {
+      fail(`llms.txt: complete URL directory is missing ${markdownPath}`);
+    }
+    markdownAlternatives++;
+  }
+  if (markdownAlternatives > 0) {
+    pass(`${markdownAlternatives} canonical non-blog pages have explicit Markdown alternatives`);
+  }
+
   const homePrerender = readFileSync(join(distDir, "index.html"), "utf8");
   const discoveryTargets = [
     "/mcp",

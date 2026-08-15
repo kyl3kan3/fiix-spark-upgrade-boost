@@ -38,12 +38,13 @@
   Content-Type: text/markdown; charset=utf-8
   Content-Disposition: inline
 
-# Serve Markdown corpus files as plain text so AI assistants (ChatGPT, Claude,
-# Gemini) fetch and render them reliably instead of prompting a download or
-# hitting cache/timeout issues.
+# Serve Markdown files with their registered media type. Edge middleware also
+# supports requesting these representations from the canonical page URL with
+# `Accept: text/markdown` and adds Content-Location plus canonical Link headers.
 /*.md
-  Content-Type: text/plain; charset=utf-8
+  Content-Type: text/markdown; charset=utf-8
   Content-Disposition: inline
+  Vary: Accept
 
 /llms.txt
   Content-Type: text/plain; charset=utf-8
@@ -54,16 +55,24 @@
   Content-Disposition: inline
 
 /solutions/*.md
-  Content-Type: text/plain; charset=utf-8
+  Content-Type: text/markdown; charset=utf-8
   Content-Disposition: inline
+  Vary: Accept
 
 /compare/*.md
-  Content-Type: text/plain; charset=utf-8
+  Content-Type: text/markdown; charset=utf-8
   Content-Disposition: inline
+  Vary: Accept
 
 /learn/*.md
-  Content-Type: text/plain; charset=utf-8
+  Content-Type: text/markdown; charset=utf-8
   Content-Disposition: inline
+  Vary: Accept
+
+/templates/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Disposition: inline
+  Vary: Accept
 
 /api/ai.json
   Content-Type: application/json; charset=utf-8

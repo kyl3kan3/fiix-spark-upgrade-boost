@@ -12,7 +12,7 @@
  * children, so the shell is discarded the moment JS runs. Nothing about the
  * interactive app changes.
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
@@ -33,6 +33,7 @@ import {
   WEBSITE_JSON_LD,
   buildItemListJsonLd,
 } from "../src/data/productCatalog";
+import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
@@ -369,7 +370,7 @@ const staticRoutes: Route[] = [
       "Plain-English guides to CMMS, preventive and predictive maintenance, MTBF, MTTR, root cause analysis, and maintenance benchmarks.",
     h1: "Maintenance glossary and guides",
     intro: "Plain-English explanations of the terms, metrics, and strategies maintenance teams actually use.",
-    sections: glossary.slice(0, 12).map((entry) => ({ heading: entry.term, body: entry.short })),
+    sections: glossary.map((entry) => ({ heading: entry.term, body: entry.short })),
     links: glossary.map((g) => ({ href: `/learn/${g.slug}`, label: g.term })),
     jsonLd: [buildItemListJsonLd(
       "MaintenEase maintenance glossary",
@@ -415,6 +416,13 @@ const staticRoutes: Route[] = [
         heading: "Treat the result as an estimate",
         body: "The calculation uses public list prices and does not include negotiated contracts, implementation charges, taxes, add-ons, or future pricing changes. Confirm the current quote and required features with each vendor before making a purchasing decision.",
       },
+      ...[2, 4, 8, 12].map((teamSize) => {
+        const result = computeCmmsCosts(teamSize);
+        return {
+          heading: `Static example: ${teamSize}-person maintenance team`,
+          body: `MaintenEase ${result.mainteneasePlan} is ${formatUsd(result.maintenease)} per month for ${teamSize} people${result.mainteneaseExtraSeats ? `, including ${result.mainteneaseExtraSeats} additional Business seats` : ""}. ${result.vendors.map((vendor) => `${vendor.name} ${vendor.plan} is ${formatUsd(vendor.monthly)} per month at its published $${vendor.perUser}-per-user price`).join("; ")}.`,
+        };
+      }),
     ],
     links: [
       { href: "/compare", label: "Compare CMMS platforms" },
@@ -457,6 +465,19 @@ const staticRoutes: Route[] = [
     h1: "Privacy Notice",
     intro:
       "How MaintenEase collects, uses, stores, and protects your personal data, and the rights you have over that information.",
+    sections: [
+      { heading: "1. Who we are", body: "This Privacy Notice is issued by Decent4, trading as MaintenEase. Decent4 is the data controller responsible for personal data processed through the Service. Questions may be sent to info@decent4.com." },
+      { heading: "2. Categories of personal data we collect", body: "We process account and profile details, operational records such as assets and work orders, support messages, usage and device telemetry, and payment status. Paddle processes payment-card details as Merchant of Record; MaintenEase does not store full card details." },
+      { heading: "3. Purposes and legal basis", body: "We use data to create accounts, operate and secure the Service, prevent abuse, improve the product, provide support, send consented marketing, and meet legal, accounting, and tax obligations. The applicable bases include contract performance, legitimate interests, consent, and legal obligation." },
+      { heading: "4. How we share data", body: "Data may be shared with service providers and subprocessors, Paddle for subscriptions and tax handling, professional advisers, and authorities when law requires it or our rights must be protected." },
+      { heading: "5. Data retention", body: "We keep data while an account is active and as needed to provide the Service. After closure, data is retained only for legal, accounting, and dispute-resolution needs, then deleted or anonymized." },
+      { heading: "6. Your rights", body: "Depending on applicable law, you may request access, correction, deletion, restriction, objection, portability, or withdrawal of consent, and may complain to a supervisory authority. Contact info@decent4.com to exercise these rights." },
+      { heading: "7. International transfers", body: "When data moves outside its originating country, we rely on safeguards such as Standard Contractual Clauses or adequacy decisions." },
+      { heading: "8. Security", body: "MaintenEase uses measures including encryption in transit, access controls, and audit logging to protect personal data from unauthorized access, alteration, or loss." },
+      { heading: "9. Cookies", body: "Strictly necessary cookies operate the Service. Consent is requested before analytics or marketing cookies are used where required, with controls for managing preferences." },
+      { heading: "10. Changes to this notice", body: "This notice may change over time. The visible Last updated date reflects the latest revision." },
+      { heading: "11. SMS messaging program", body: "When a user opts in, MaintenEase processes the mobile number and consent record to send requested operational messages. Mobile numbers and SMS consent are not sold or shared for third-party marketing. Twilio receives only the information needed to deliver messages. Reply STOP to opt out or HELP for assistance." },
+    ],
     links: [
       { href: "/terms", label: "Terms of service" },
       { href: "/", label: "Home" },
@@ -470,6 +491,21 @@ const staticRoutes: Route[] = [
     h1: "Terms & Conditions",
     intro:
       "The terms governing your use of MaintenEase, including subscriptions, acceptable use, and account termination.",
+    sections: [
+      { heading: "1. Who you are contracting with", body: "These Terms form an agreement between the user and Decent4, trading as MaintenEase. Creating an account or using the Service means accepting these Terms." },
+      { heading: "2. Authority and eligibility", body: "A person using the Service for an organization represents that they can bind that organization. Individual users must be of legal age in their jurisdiction." },
+      { heading: "3. The Service", body: "MaintenEase is a maintenance management platform for assets, work orders, inspections, checklists, and related operations. Features may be changed, added, or removed over time." },
+      { heading: "4. Account and credentials", body: "Users must provide accurate information, protect their login credentials, and take responsibility for activity under their accounts." },
+      { heading: "5. Acceptable use", body: "The Service may not be used unlawfully or deceptively, for spam, to infringe others' rights, to distribute malware, to interfere with security or integrity, or to bypass access controls." },
+      { heading: "6. Intellectual property", body: "Decent4 retains rights in the Service, software, documentation, designs, and branding. Customers retain uploaded content and grant the limited rights required to host and process it for the Service." },
+      { heading: "7. Service availability", body: "MaintenEase works to keep the Service available but does not guarantee uninterrupted or error-free operation. Implied warranties are disclaimed to the fullest extent permitted by law." },
+      { heading: "8. Payment, subscriptions, and refunds", body: "Paddle.com is Merchant of Record and handles checkout, billing, tax, cancellation mechanics, and returns under its Buyer Terms. The MaintenEase Refund Policy also applies." },
+      { heading: "9. Suspension and termination", body: "Access may be suspended or terminated for material breach, non-payment, security or fraud risk, or serious policy violations. A customer may stop using the Service at any time." },
+      { heading: "10. Liability", body: "To the fullest extent allowed by law, aggregate liability is limited to fees paid in the preceding 12 months, and indirect or consequential damages are excluded. Legally non-excludable liability remains unaffected." },
+      { heading: "11. Governing law", body: "The laws applicable at Decent4's place of establishment govern these Terms, and disputes go to the competent courts of that jurisdiction." },
+      { heading: "12. Changes to these Terms", body: "Terms may be updated. Continued use after an update takes effect constitutes acceptance of the revised Terms." },
+      { heading: "13. SMS messaging terms", body: "Opted-in users agree to recurring operational SMS messages. Consent is not a condition of purchase; message and data rates may apply. Reply STOP to cancel or HELP for assistance, or contact info@decent4.com." },
+    ],
     links: [
       { href: "/privacy", label: "Privacy notice" },
       { href: "/refund-policy", label: "Refund policy" },
@@ -483,6 +519,12 @@ const staticRoutes: Route[] = [
     h1: "Refund Policy",
     intro:
       "How the 7-day free trial works, how cancellations are handled, and when MaintenEase issues refunds.",
+    sections: [
+      { heading: "30-day money-back guarantee", body: "Decent4, trading as MaintenEase, offers a 30-day money-back guarantee. A customer who is not satisfied may request a full refund within 30 days of the order date." },
+      { heading: "How to request a refund", body: "Refunds are processed by Paddle, the Merchant of Record. Visit paddle.net and look up the order with the checkout email, or email info@decent4.com for help." },
+      { heading: "Free trials", body: "Paid plans begin with a 7-day free trial. Cancel before the trial ends to avoid a charge; no refund is needed when no charge was made." },
+      { heading: "Subscription renewals", body: "Subscriptions renew automatically. Cancellation stops future charges but does not automatically refund the current billing period. Current-period refund requests must be made within the 30-day window." },
+    ],
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/terms", label: "Terms of service" },
@@ -496,6 +538,12 @@ const staticRoutes: Route[] = [
     h1: "SMS notifications and opt-in",
     intro:
       "What MaintenEase texts you about, how to opt in or out at any time, and how message frequency and carrier charges work.",
+    sections: [
+      { heading: "What you will receive", body: "Opted-in users may receive work-order assignments and status updates, inspection and checklist reminders, account and security alerts, and occasional service announcements from MaintenEase." },
+      { heading: "Message frequency and charges", body: "Messages recur based on account activity, typically up to about 10 per week. Message and data rates may apply, and carriers are not liable for delayed or undelivered messages." },
+      { heading: "Consent and opt-out", body: "Consent is not a condition of purchase. Reply STOP at any time to cancel or HELP for assistance. For support, email info@decent4.com." },
+      { heading: "Submitting the opt-in form", body: "The secure form validates an E.164 mobile number, such as +15558675310, and requires explicit consent. If JavaScript is unavailable, contact info@decent4.com for an accessible enrollment option." },
+    ],
     links: [
       { href: "/privacy", label: "Privacy notice" },
       { href: "/terms", label: "Terms of service" },
@@ -657,6 +705,7 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
     ],
     links: [
       { href: "/templates", label: "All maintenance templates" },
+      { href: template.downloadPath, label: `Download ${template.title} as CSV` },
       template.relatedLearn,
       template.relatedSolution,
     ],
@@ -828,6 +877,9 @@ function headFor(route: Route): string {
     `<meta name="description" content="${description}" data-rh="true" />`,
     `<meta name="robots" content="${route.indexable === false ? "noindex,nofollow" : "index,follow,max-image-preview:large"}" data-rh="true" />`,
     `<link data-rh="true" rel="canonical" href="${canonical}" />`,
+    route.indexable === false
+      ? ""
+      : `<link rel="alternate" type="text/markdown" href="${ORIGIN}${route.path === "/" ? "/index.md" : `${route.path}.md`}" />`,
     `<meta property="og:type" content="${route.ogType ?? "website"}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
@@ -880,7 +932,7 @@ function bodyFor(route: Route): string {
   const parts = [
     `<h1>${esc(route.h1)}</h1>`,
     `<p>${esc(route.intro)}</p>`,
-    ...(route.sections ?? []).slice(0, 12).flatMap((s) => [
+    ...(route.sections ?? []).flatMap((s) => [
       `<h2>${esc(s.heading)}</h2>`,
       `<p>${esc(s.body)}</p>`,
     ]),
@@ -918,6 +970,48 @@ function bodyFor(route: Route): string {
   // A semantic no-JS fallback avoids shipping crawler-only hidden content.
   // JavaScript visitors never render <noscript>; React replaces #root normally.
   return `<noscript data-prerender="static"><main style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${parts.join("\n      ")}</main></noscript>`;
+}
+
+function markdownFor(route: Route): string {
+  const canonicalPath = route.canonicalPath ?? route.path;
+  const canonical = canonicalPath === "/" ? `${ORIGIN}/` : `${ORIGIN}${canonicalPath}`;
+  const markdownPath = route.path === "/" ? "/index.md" : `${route.path}.md`;
+  const lines = [
+    `# ${route.h1}`,
+    "",
+    `> ${route.intro}`,
+    "",
+    `Canonical HTML: ${canonical}`,
+    `Markdown URL: ${ORIGIN}${markdownPath}`,
+  ];
+
+  for (const section of route.sections ?? []) {
+    lines.push("", `## ${section.heading}`, "", section.body);
+  }
+
+  const faqs = route.path === "/landing"
+    ? LANDING_FAQS.map((faq) => [faq.q, faq.a] as const)
+    : route.path === "/maintenance-simplified"
+      ? MAINTENANCE_SIMPLIFIED_FAQS
+      : route.path === "/mcp"
+        ? MCP_PAGE.faqs.map((faq) => [faq.q, faq.a] as const)
+        : [];
+  if (faqs.length) {
+    lines.push("", "## Frequently asked questions");
+    for (const [question, answer] of faqs) {
+      lines.push("", `### ${question}`, "", answer);
+    }
+  }
+
+  if (route.links?.length) {
+    lines.push("", "## Related resources", "");
+    for (const link of uniqueLinks(route.links)) {
+      const href = /^(?:https?:|mailto:)/.test(link.href) ? link.href : `${ORIGIN}${link.href}`;
+      lines.push(`- [${link.label}](${href})`);
+    }
+  }
+
+  return `${lines.join("\n").trim()}\n`;
 }
 
 function renderRoute(route: Route): string {
@@ -963,6 +1057,7 @@ const appShellPath = join(DIST, "app-shell");
 writeFileSync(appShellPath, renderAppShell());
 
 let written = 0;
+let markdownWritten = 0;
 for (const route of routes) {
   const html = renderRoute(route);
   // Write both `<path>/index.html` and `<path>.html` so clean URLs resolve on
@@ -979,6 +1074,20 @@ for (const route of routes) {
     writeFileSync(outPath, html);
     written++;
   }
+
+  // Published blog posts already have a dynamic, database-backed Markdown
+  // function. All other public pages get a build-time representation. Preserve
+  // richer data-generated Markdown files that were copied from public/.
+  if (route.indexable !== false && !route.path.startsWith("/blog/")) {
+    const markdownPath = route.path === "/"
+      ? join(DIST, "index.md")
+      : join(DIST, `${route.path.replace(/^\//, "")}.md`);
+    if (!existsSync(markdownPath)) {
+      mkdirSync(dirname(markdownPath), { recursive: true });
+      writeFileSync(markdownPath, markdownFor(route));
+      markdownWritten++;
+    }
+  }
 }
 
-console.log(`[prerender] wrote ${written} static route documents → dist/`);
+console.log(`[prerender] wrote ${written} HTML documents and ${markdownWritten} missing Markdown alternatives → dist/`);

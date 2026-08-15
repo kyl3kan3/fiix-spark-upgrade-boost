@@ -4,16 +4,15 @@
 
 Starter is $49/month with 2 included seats; Pro is $129/month with 4 included seats; Business is $299/month with 4 included seats. Additional Business seats are $15/month. Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders. 7-day free trial. Month-to-month billing. Free data import and onboarding.
 
-All pages below are also available as clean Markdown by appending `.md` (e.g. https://maintenease.com/solutions/work-order-software.md). See https://maintenease.com/llms-full.txt for the full corpus in one file.
+Every canonical public page below has an explicit Markdown URL. Do not guess or construct a URL: use the complete directory in this file or https://maintenease.com/api/ai.json. Clients may also request a canonical HTML URL with `Accept: text/markdown`; negotiated responses send `Vary: Accept`, `Content-Location`, and canonical/alternate `Link` headers. See https://maintenease.com/llms-full.txt for the combined corpus.
 
 ## Product
 
-- [Home](https://maintenease.com/): Product overview.
-- [Features](https://maintenease.com/features): Full feature list.
-- [Pricing](https://maintenease.com/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
-- [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
+- [Home](https://maintenease.com/index.md): Product overview.
+- [Features](https://maintenease.com/features.md): Full feature list.
+- [Pricing](https://maintenease.com/pricing.md): Account-plan pricing, included seats, capacity limits, and trial details.
+- [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator.md): Estimate savings vs per-user CMMS pricing.
 - [MCP server for ChatGPT and Claude](https://maintenease.com/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
-- [Sign in / Sign up](https://maintenease.com/auth): Account access.
 
 ## Solutions
 
@@ -72,10 +71,10 @@ All pages below are also available as clean Markdown by appending `.md` (e.g. ht
 
 ## Policies
 
-- [Privacy](https://maintenease.com/privacy)
-- [Terms](https://maintenease.com/terms)
-- [Refund policy](https://maintenease.com/refund-policy)
-- [SMS opt-in](https://maintenease.com/sms-opt-in)
+- [Privacy](https://maintenease.com/privacy.md)
+- [Terms](https://maintenease.com/terms.md)
+- [Refund policy](https://maintenease.com/refund-policy.md)
+- [SMS opt-in](https://maintenease.com/sms-opt-in.md)
 
 ## Blog
 
@@ -85,4 +84,66 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 `https://maintenease.com/blog/<slug>.md`.
 
 - [Blog index (HTML)](https://maintenease.com/blog)
+- [Blog index (Markdown)](https://maintenease.com/blog.md)
 - [Blog index (JSON, agent-friendly)](https://maintenease.com/api/blog.json)
+
+## Complete canonical URL directory
+
+- **Home** — HTML: https://maintenease.com/ — Markdown: https://maintenease.com/index.md
+- **Maintenance Simplified** — HTML: https://maintenease.com/maintenance-simplified — Markdown: https://maintenease.com/maintenance-simplified.md
+- **Pricing** — HTML: https://maintenease.com/pricing — Markdown: https://maintenease.com/pricing.md
+- **Features** — HTML: https://maintenease.com/features — Markdown: https://maintenease.com/features.md
+- **Mcp** — HTML: https://maintenease.com/mcp — Markdown: https://maintenease.com/mcp.md
+- **Solutions** — HTML: https://maintenease.com/solutions — Markdown: https://maintenease.com/solutions.md
+- **Learn** — HTML: https://maintenease.com/learn — Markdown: https://maintenease.com/learn.md
+- **Blog** — HTML: https://maintenease.com/blog — Markdown: https://maintenease.com/blog.md
+- **Privacy** — HTML: https://maintenease.com/privacy — Markdown: https://maintenease.com/privacy.md
+- **Terms** — HTML: https://maintenease.com/terms — Markdown: https://maintenease.com/terms.md
+- **Refund Policy** — HTML: https://maintenease.com/refund-policy — Markdown: https://maintenease.com/refund-policy.md
+- **Sms Opt In** — HTML: https://maintenease.com/sms-opt-in — Markdown: https://maintenease.com/sms-opt-in.md
+- **Work Order Software** — HTML: https://maintenease.com/solutions/work-order-software — Markdown: https://maintenease.com/solutions/work-order-software.md
+- **Preventive Maintenance Software** — HTML: https://maintenease.com/solutions/preventive-maintenance-software — Markdown: https://maintenease.com/solutions/preventive-maintenance-software.md
+- **Facility Maintenance Software** — HTML: https://maintenease.com/solutions/facility-maintenance-software — Markdown: https://maintenease.com/solutions/facility-maintenance-software.md
+- **Fleet Maintenance Software** — HTML: https://maintenease.com/solutions/fleet-maintenance-software — Markdown: https://maintenease.com/solutions/fleet-maintenance-software.md
+- **Maintenance Request Portal** — HTML: https://maintenease.com/solutions/maintenance-request-portal — Markdown: https://maintenease.com/solutions/maintenance-request-portal.md
+- **Asset Tracking Software** — HTML: https://maintenease.com/solutions/asset-tracking-software — Markdown: https://maintenease.com/solutions/asset-tracking-software.md
+- **Asset Management Software** — HTML: https://maintenease.com/solutions/asset-management-software — Markdown: https://maintenease.com/solutions/asset-management-software.md
+- **Cmms** — HTML: https://maintenease.com/learn/cmms — Markdown: https://maintenease.com/learn/cmms.md
+- **Agentic Cmms** — HTML: https://maintenease.com/learn/agentic-cmms — Markdown: https://maintenease.com/learn/agentic-cmms.md
+- **Preventive Maintenance** — HTML: https://maintenease.com/learn/preventive-maintenance — Markdown: https://maintenease.com/learn/preventive-maintenance.md
+- **Work Order** — HTML: https://maintenease.com/learn/work-order — Markdown: https://maintenease.com/learn/work-order.md
+- **Facility Maintenance** — HTML: https://maintenease.com/learn/facility-maintenance — Markdown: https://maintenease.com/learn/facility-maintenance.md
+- **Fleet Maintenance** — HTML: https://maintenease.com/learn/fleet-maintenance — Markdown: https://maintenease.com/learn/fleet-maintenance.md
+- **Mro** — HTML: https://maintenease.com/learn/mro — Markdown: https://maintenease.com/learn/mro.md
+- **Building Maintenance** — HTML: https://maintenease.com/learn/building-maintenance — Markdown: https://maintenease.com/learn/building-maintenance.md
+- **Property Maintenance** — HTML: https://maintenease.com/learn/property-maintenance — Markdown: https://maintenease.com/learn/property-maintenance.md
+- **Reactive Maintenance** — HTML: https://maintenease.com/learn/reactive-maintenance — Markdown: https://maintenease.com/learn/reactive-maintenance.md
+- **Predictive Maintenance** — HTML: https://maintenease.com/learn/predictive-maintenance — Markdown: https://maintenease.com/learn/predictive-maintenance.md
+- **Corrective Maintenance** — HTML: https://maintenease.com/learn/corrective-maintenance — Markdown: https://maintenease.com/learn/corrective-maintenance.md
+- **Condition Based Maintenance** — HTML: https://maintenease.com/learn/condition-based-maintenance — Markdown: https://maintenease.com/learn/condition-based-maintenance.md
+- **Mtbf** — HTML: https://maintenease.com/learn/mtbf — Markdown: https://maintenease.com/learn/mtbf.md
+- **Mttr** — HTML: https://maintenease.com/learn/mttr — Markdown: https://maintenease.com/learn/mttr.md
+- **Cmms Benchmarks 2026** — HTML: https://maintenease.com/learn/cmms-benchmarks-2026 — Markdown: https://maintenease.com/learn/cmms-benchmarks-2026.md
+- **Cmms Roi** — HTML: https://maintenease.com/learn/cmms-roi — Markdown: https://maintenease.com/learn/cmms-roi.md
+- **Root Cause Analysis** — HTML: https://maintenease.com/learn/root-cause-analysis — Markdown: https://maintenease.com/learn/root-cause-analysis.md
+- **Deferred Maintenance** — HTML: https://maintenease.com/learn/deferred-maintenance — Markdown: https://maintenease.com/learn/deferred-maintenance.md
+- **Ai Maintenance Assistant** — HTML: https://maintenease.com/learn/ai-maintenance-assistant — Markdown: https://maintenease.com/learn/ai-maintenance-assistant.md
+- **Cmms For Chatgpt** — HTML: https://maintenease.com/learn/cmms-for-chatgpt — Markdown: https://maintenease.com/learn/cmms-for-chatgpt.md
+- **Maintenance Mcp Server** — HTML: https://maintenease.com/learn/maintenance-mcp-server — Markdown: https://maintenease.com/learn/maintenance-mcp-server.md
+- **Ai Work Order Automation** — HTML: https://maintenease.com/learn/ai-work-order-automation — Markdown: https://maintenease.com/learn/ai-work-order-automation.md
+- **Equipment Risk Scoring** — HTML: https://maintenease.com/learn/equipment-risk-scoring — Markdown: https://maintenease.com/learn/equipment-risk-scoring.md
+- **Predictive Maintenance Without Sensors** — HTML: https://maintenease.com/learn/predictive-maintenance-without-sensors — Markdown: https://maintenease.com/learn/predictive-maintenance-without-sensors.md
+- **Maintenance Request Qr Codes** — HTML: https://maintenease.com/learn/maintenance-request-qr-codes — Markdown: https://maintenease.com/learn/maintenance-request-qr-codes.md
+- **Ai Native Cmms** — HTML: https://maintenease.com/learn/ai-native-cmms — Markdown: https://maintenease.com/learn/ai-native-cmms.md
+- **Agentic Maintenance Workflows** — HTML: https://maintenease.com/learn/agentic-maintenance-workflows — Markdown: https://maintenease.com/learn/agentic-maintenance-workflows.md
+- **Compare** — HTML: https://maintenease.com/compare — Markdown: https://maintenease.com/compare.md
+- **Cmms Cost Calculator** — HTML: https://maintenease.com/cmms-cost-calculator — Markdown: https://maintenease.com/cmms-cost-calculator.md
+- **Maintenease Vs Upkeep** — HTML: https://maintenease.com/compare/maintenease-vs-upkeep — Markdown: https://maintenease.com/compare/maintenease-vs-upkeep.md
+- **Maintenease Vs Fiix** — HTML: https://maintenease.com/compare/maintenease-vs-fiix — Markdown: https://maintenease.com/compare/maintenease-vs-fiix.md
+- **Maintenease Vs Maintainx** — HTML: https://maintenease.com/compare/maintenease-vs-maintainx — Markdown: https://maintenease.com/compare/maintenease-vs-maintainx.md
+- **Maintenease Vs Limble** — HTML: https://maintenease.com/compare/maintenease-vs-limble — Markdown: https://maintenease.com/compare/maintenease-vs-limble.md
+- **Maintenease Vs Emaint** — HTML: https://maintenease.com/compare/maintenease-vs-emaint — Markdown: https://maintenease.com/compare/maintenease-vs-emaint.md
+- **Templates** — HTML: https://maintenease.com/templates — Markdown: https://maintenease.com/templates.md
+- **Maintenance Log Template** — HTML: https://maintenease.com/templates/maintenance-log-template — Markdown: https://maintenease.com/templates/maintenance-log-template.md
+- **Preventive Maintenance Checklist** — HTML: https://maintenease.com/templates/preventive-maintenance-checklist — Markdown: https://maintenease.com/templates/preventive-maintenance-checklist.md
+- **Work Order Template** — HTML: https://maintenease.com/templates/work-order-template — Markdown: https://maintenease.com/templates/work-order-template.md

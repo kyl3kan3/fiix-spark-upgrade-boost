@@ -33,4 +33,4 @@ A request reports a need. A work order is the approved, assigned, and trackable 
 
 Yes. The CSV opens in Excel, Google Sheets, Apple Numbers, and other spreadsheet applications.
 
-Download the free CSV from the canonical page after entering an email address.
+Direct CSV: https://maintenease.com/templates/downloads/work-order-template.csv

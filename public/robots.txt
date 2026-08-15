@@ -22,6 +22,8 @@ Sitemap: https://maintenease.com/sitemap.xml
 # Concise index:  https://maintenease.com/llms.txt
 # Full corpus:    https://maintenease.com/llms-full.txt
 # JSON index:     https://maintenease.com/api/ai.json
+# Markdown:       explicit URLs are listed in llms.txt; canonical pages also
+#                 negotiate Markdown when Accept: text/markdown is sent
 # API catalog:    https://maintenease.com/.well-known/api-catalog
 # Agent skills:   https://maintenease.com/.well-known/agent-skills/index.json
 # MCP landing:    https://maintenease.com/mcp
