@@ -15,6 +15,7 @@ import { comparisons, MAINTENEASE_TEAM_PRICE, TEAM_SIZE } from "../src/data/comp
 import { glossary } from "../src/data/glossary";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import { MCP_PAGE } from "../src/data/mcpPage";
+import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_CAPACITY_SUMMARY,
@@ -30,6 +31,19 @@ function write(path: string, body: string) {
   const full = resolve(PUBLIC, path);
   mkdirSync(dirname(full), { recursive: true });
   writeFileSync(full, body.trimStart() + (body.endsWith("\n") ? "" : "\n"));
+}
+
+function markdownPathForPage(path: string): string {
+  return path === "/" ? "/index.md" : `${path}.md`;
+}
+
+function routeLabel(path: string): string {
+  if (path === "/") return "Home";
+  const slug = path.split("/").filter(Boolean).at(-1) ?? "Home";
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 // ---- Per-page markdown ----------------------------------------------------
@@ -142,7 +156,7 @@ ${template.steps.map((step, index) => `${index + 1}. **${step.title}** — ${ste
 
 ${template.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
 
-Download the free CSV from the canonical page after entering an email address.
+Direct CSV: ${SITE}${template.downloadPath}
 `;
 }
 
@@ -201,16 +215,15 @@ const llmsTxt = `# MaintenEase
 
 ${PRODUCT_PLANS.map((plan) => `${plan.name} is $${plan.monthlyPrice}/month with ${plan.includedSeats} included seats`).join("; ")}. Additional Business seats are $${EXTRA_BUSINESS_SEAT_MONTHLY}/month. ${PLAN_CAPACITY_SUMMARY} 7-day free trial. Month-to-month billing. Free data import and onboarding.
 
-All pages below are also available as clean Markdown by appending \`.md\` (e.g. ${SITE}/solutions/work-order-software.md). See ${SITE}/llms-full.txt for the full corpus in one file.
+Every canonical public page below has an explicit Markdown URL. Do not guess or construct a URL: use the complete directory in this file or ${SITE}/api/ai.json. Clients may also request a canonical HTML URL with \`Accept: text/markdown\`; negotiated responses send \`Vary: Accept\`, \`Content-Location\`, and canonical/alternate \`Link\` headers. See ${SITE}/llms-full.txt for the combined corpus.
 
 ## Product
 
-- [Home](${SITE}/): Product overview.
-- [Features](${SITE}/features): Full feature list.
-- [Pricing](${SITE}/pricing): Account-plan pricing, included seats, capacity limits, and trial details.
-- [CMMS cost calculator](${SITE}/cmms-cost-calculator): Estimate savings vs per-user CMMS pricing.
+- [Home](${SITE}/index.md): Product overview.
+- [Features](${SITE}/features.md): Full feature list.
+- [Pricing](${SITE}/pricing.md): Account-plan pricing, included seats, capacity limits, and trial details.
+- [CMMS cost calculator](${SITE}/cmms-cost-calculator.md): Estimate savings vs per-user CMMS pricing.
 - [MCP server for ChatGPT and Claude](${SITE}/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
-- [Sign in / Sign up](${SITE}/auth): Account access.
 
 ## Solutions
 
@@ -230,10 +243,10 @@ ${maintenanceTemplates.map((template) => `- [${template.title}](${SITE}/template
 
 ## Policies
 
-- [Privacy](${SITE}/privacy)
-- [Terms](${SITE}/terms)
-- [Refund policy](${SITE}/refund-policy)
-- [SMS opt-in](${SITE}/sms-opt-in)
+- [Privacy](${SITE}/privacy.md)
+- [Terms](${SITE}/terms.md)
+- [Refund policy](${SITE}/refund-policy.md)
+- [SMS opt-in](${SITE}/sms-opt-in.md)
 
 ## Blog
 
@@ -243,7 +256,16 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 \`${SITE}/blog/<slug>.md\`.
 
 - [Blog index (HTML)](${SITE}/blog)
+- [Blog index (Markdown)](${SITE}/blog.md)
 - [Blog index (JSON, agent-friendly)](${SITE}/api/blog.json)
+
+## Complete canonical URL directory
+
+${STATIC_SITEMAP_ENTRIES.map((entry) => {
+  const htmlUrl = entry.path === "/" ? `${SITE}/` : `${SITE}${entry.path}`;
+  const markdownUrl = `${SITE}${markdownPathForPage(entry.path)}`;
+  return `- **${routeLabel(entry.path)}** — HTML: ${htmlUrl} — Markdown: ${markdownUrl}`;
+}).join("\n")}
 `;
 
 write("llms.txt", llmsTxt);
@@ -274,6 +296,16 @@ const apiContent = {
   site: SITE,
   llms_txt: `${SITE}/llms.txt`,
   llms_full_txt: `${SITE}/llms-full.txt`,
+  content_negotiation: {
+    request_header: "Accept: text/markdown",
+    varies_on: "Accept",
+    response_headers: ["Content-Location", "Link"],
+  },
+  pages: STATIC_SITEMAP_ENTRIES.map((entry) => ({
+    path: entry.path,
+    html_url: entry.path === "/" ? `${SITE}/` : `${SITE}${entry.path}`,
+    markdown_url: `${SITE}${markdownPathForPage(entry.path)}`,
+  })),
   mcp: {
     html_url: `${SITE}/mcp`,
     markdown_url: `${SITE}/mcp.md`,

@@ -19,7 +19,7 @@
         { "href": "https://maintenease.com/.well-known/mcp/server-card.json", "type": "application/json", "title": "MaintenEase MCP server card" }
       ],
       "service-doc": [
-        { "href": "https://maintenease.com/learn/maintenance-mcp-server.md", "type": "text/plain", "title": "How to connect an AI assistant to MaintenEase" }
+        { "href": "https://maintenease.com/learn/maintenance-mcp-server.md", "type": "text/markdown", "title": "How to connect an AI assistant to MaintenEase" }
       ],
       "oauth-protected-resource": [
         { "href": "https://wwgljhpuulhljumrhscg.supabase.co/functions/v1/mcp/.well-known/oauth-protected-resource", "type": "application/json" }

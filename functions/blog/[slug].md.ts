@@ -91,8 +91,11 @@ export const onRequestGet = async (context: any) => {
 
   return new Response(md + "\n", {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Type": "text/markdown; charset=utf-8",
       "Content-Disposition": "inline",
+      "Content-Location": `/blog/${post.slug}.md`,
+      "Link": `</blog/${post.slug}>; rel="canonical"; type="text/html"`,
+      "Vary": "Accept",
       "Cache-Control": "public, max-age=600",
     },
   });

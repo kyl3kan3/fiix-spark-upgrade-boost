@@ -9,6 +9,14 @@
 // 3. `public/_routes.json` (already in this repo) tells Pages to skip static
 //    assets so this Function only fires for HTML / crawler-facing files.
 import { trackAICrawlerRequest } from "@datafast/ai-crawl";
+import {
+  acceptsMarkdown,
+  appendVary,
+  htmlPathForMarkdown,
+  identifyCrawler,
+  MARKDOWN_MEDIA_TYPE,
+  markdownPathForPage,
+} from "../src/lib/contentNegotiation";
 import { classifySeoPath, redirectForPath } from "../src/lib/seoRouting";
 
 // Same websiteId as the browser script in index.html.
@@ -25,6 +33,13 @@ const AGENT_LINKS = [
   '</.well-known/oauth-authorization-server>; rel="oauth-authorization-server"; type="application/json"',
   '</auth.md>; rel="author"; type="text/markdown"',
 ].join(", ");
+
+const rewriteDocumentRequest = (url: URL, request: Request) =>
+  new Request(url, {
+    method: request.method,
+    headers: request.headers,
+    redirect: request.redirect,
+  });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function onRequest(context: any) {
@@ -48,17 +63,57 @@ export async function onRequest(context: any) {
   const routeKind = classifySeoPath(requestUrl.pathname);
   const useAppShell = routeKind === "noindex" && requestUrl.pathname !== "/auth" && isDocumentRequest;
   const appShellRequest = useAppShell
-    ? new Request(new URL("/app-shell", requestUrl.origin), context.request)
+    ? rewriteDocumentRequest(new URL("/app-shell", requestUrl.origin), context.request)
     : undefined;
-  const response = await context.next(appShellRequest);
+  const negotiatedMarkdownPath =
+    routeKind === "indexable" &&
+    isDocumentRequest &&
+    acceptsMarkdown(context.request.headers.get("Accept"))
+      ? markdownPathForPage(requestUrl.pathname)
+      : null;
+  const downstreamRequest = negotiatedMarkdownPath
+    ? rewriteDocumentRequest(new URL(negotiatedMarkdownPath, requestUrl.origin), context.request)
+    : appShellRequest;
+  const response = await context.next(downstreamRequest);
 
   try {
     const headers = new Headers(response.headers);
     let changed = false;
+    const explicitMarkdownHtmlPath = htmlPathForMarkdown(requestUrl.pathname);
+    const explicitMarkdownPage =
+      explicitMarkdownHtmlPath && classifySeoPath(explicitMarkdownHtmlPath) === "indexable"
+        ? requestUrl.pathname
+        : null;
+    const servedMarkdownPath = negotiatedMarkdownPath ??
+      explicitMarkdownPage;
+    const isMarkdownResponse = Boolean(servedMarkdownPath && response.status < 400);
+
+    if (isMarkdownResponse && servedMarkdownPath) {
+      const canonicalPath = explicitMarkdownHtmlPath ?? requestUrl.pathname;
+      headers.set("Content-Type", `${MARKDOWN_MEDIA_TYPE}; charset=utf-8`);
+      headers.set("Content-Disposition", "inline");
+      headers.set("Content-Location", servedMarkdownPath);
+      headers.append(
+        "Link",
+        `<${canonicalPath}>; rel="canonical"; type="text/html"`,
+      );
+      appendVary(headers, "Accept");
+      changed = true;
+    }
 
     // Advertise agent-discovery resources on HTML documents.
     if ((headers.get("content-type") ?? "").includes("text/html")) {
       headers.append("Link", AGENT_LINKS);
+      if (routeKind === "indexable") {
+        const alternatePath = markdownPathForPage(requestUrl.pathname);
+        if (alternatePath) {
+          headers.append(
+            "Link",
+            `<${alternatePath}>; rel="alternate"; type="${MARKDOWN_MEDIA_TYPE}"`,
+          );
+          appendVary(headers, "Accept");
+        }
+      }
       const isNotFound = routeKind === "not-found" || response.status >= 400;
       if (routeKind === "noindex" || isNotFound) {
         headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -72,6 +127,20 @@ export async function onRequest(context: any) {
           headers,
         });
       }
+    }
+
+    const crawler = identifyCrawler(context.request.headers.get("User-Agent"));
+    if (crawler || negotiatedMarkdownPath) {
+      // Deliberate structured server log for crawler observability.
+      // eslint-disable-next-line no-console
+      console.info(JSON.stringify({
+        event: "crawler_document_request",
+        crawler: crawler ?? "markdown-client",
+        method: context.request.method,
+        path: requestUrl.pathname,
+        representation: isMarkdownResponse ? "markdown" : "html",
+        status: response.status,
+      }));
     }
 
     if (changed) {

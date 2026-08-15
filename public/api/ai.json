@@ -2,9 +2,309 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-14T12:08:46.302Z",
+  "generated_at": "2026-08-15T00:03:40.179Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
+  "content_negotiation": {
+    "request_header": "Accept: text/markdown",
+    "varies_on": "Accept",
+    "response_headers": [
+      "Content-Location",
+      "Link"
+    ]
+  },
+  "pages": [
+    {
+      "path": "/",
+      "html_url": "https://maintenease.com/",
+      "markdown_url": "https://maintenease.com/index.md"
+    },
+    {
+      "path": "/maintenance-simplified",
+      "html_url": "https://maintenease.com/maintenance-simplified",
+      "markdown_url": "https://maintenease.com/maintenance-simplified.md"
+    },
+    {
+      "path": "/pricing",
+      "html_url": "https://maintenease.com/pricing",
+      "markdown_url": "https://maintenease.com/pricing.md"
+    },
+    {
+      "path": "/features",
+      "html_url": "https://maintenease.com/features",
+      "markdown_url": "https://maintenease.com/features.md"
+    },
+    {
+      "path": "/mcp",
+      "html_url": "https://maintenease.com/mcp",
+      "markdown_url": "https://maintenease.com/mcp.md"
+    },
+    {
+      "path": "/solutions",
+      "html_url": "https://maintenease.com/solutions",
+      "markdown_url": "https://maintenease.com/solutions.md"
+    },
+    {
+      "path": "/learn",
+      "html_url": "https://maintenease.com/learn",
+      "markdown_url": "https://maintenease.com/learn.md"
+    },
+    {
+      "path": "/blog",
+      "html_url": "https://maintenease.com/blog",
+      "markdown_url": "https://maintenease.com/blog.md"
+    },
+    {
+      "path": "/privacy",
+      "html_url": "https://maintenease.com/privacy",
+      "markdown_url": "https://maintenease.com/privacy.md"
+    },
+    {
+      "path": "/terms",
+      "html_url": "https://maintenease.com/terms",
+      "markdown_url": "https://maintenease.com/terms.md"
+    },
+    {
+      "path": "/refund-policy",
+      "html_url": "https://maintenease.com/refund-policy",
+      "markdown_url": "https://maintenease.com/refund-policy.md"
+    },
+    {
+      "path": "/sms-opt-in",
+      "html_url": "https://maintenease.com/sms-opt-in",
+      "markdown_url": "https://maintenease.com/sms-opt-in.md"
+    },
+    {
+      "path": "/solutions/work-order-software",
+      "html_url": "https://maintenease.com/solutions/work-order-software",
+      "markdown_url": "https://maintenease.com/solutions/work-order-software.md"
+    },
+    {
+      "path": "/solutions/preventive-maintenance-software",
+      "html_url": "https://maintenease.com/solutions/preventive-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/preventive-maintenance-software.md"
+    },
+    {
+      "path": "/solutions/facility-maintenance-software",
+      "html_url": "https://maintenease.com/solutions/facility-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/facility-maintenance-software.md"
+    },
+    {
+      "path": "/solutions/fleet-maintenance-software",
+      "html_url": "https://maintenease.com/solutions/fleet-maintenance-software",
+      "markdown_url": "https://maintenease.com/solutions/fleet-maintenance-software.md"
+    },
+    {
+      "path": "/solutions/maintenance-request-portal",
+      "html_url": "https://maintenease.com/solutions/maintenance-request-portal",
+      "markdown_url": "https://maintenease.com/solutions/maintenance-request-portal.md"
+    },
+    {
+      "path": "/solutions/asset-tracking-software",
+      "html_url": "https://maintenease.com/solutions/asset-tracking-software",
+      "markdown_url": "https://maintenease.com/solutions/asset-tracking-software.md"
+    },
+    {
+      "path": "/solutions/asset-management-software",
+      "html_url": "https://maintenease.com/solutions/asset-management-software",
+      "markdown_url": "https://maintenease.com/solutions/asset-management-software.md"
+    },
+    {
+      "path": "/learn/cmms",
+      "html_url": "https://maintenease.com/learn/cmms",
+      "markdown_url": "https://maintenease.com/learn/cmms.md"
+    },
+    {
+      "path": "/learn/agentic-cmms",
+      "html_url": "https://maintenease.com/learn/agentic-cmms",
+      "markdown_url": "https://maintenease.com/learn/agentic-cmms.md"
+    },
+    {
+      "path": "/learn/preventive-maintenance",
+      "html_url": "https://maintenease.com/learn/preventive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/preventive-maintenance.md"
+    },
+    {
+      "path": "/learn/work-order",
+      "html_url": "https://maintenease.com/learn/work-order",
+      "markdown_url": "https://maintenease.com/learn/work-order.md"
+    },
+    {
+      "path": "/learn/facility-maintenance",
+      "html_url": "https://maintenease.com/learn/facility-maintenance",
+      "markdown_url": "https://maintenease.com/learn/facility-maintenance.md"
+    },
+    {
+      "path": "/learn/fleet-maintenance",
+      "html_url": "https://maintenease.com/learn/fleet-maintenance",
+      "markdown_url": "https://maintenease.com/learn/fleet-maintenance.md"
+    },
+    {
+      "path": "/learn/mro",
+      "html_url": "https://maintenease.com/learn/mro",
+      "markdown_url": "https://maintenease.com/learn/mro.md"
+    },
+    {
+      "path": "/learn/building-maintenance",
+      "html_url": "https://maintenease.com/learn/building-maintenance",
+      "markdown_url": "https://maintenease.com/learn/building-maintenance.md"
+    },
+    {
+      "path": "/learn/property-maintenance",
+      "html_url": "https://maintenease.com/learn/property-maintenance",
+      "markdown_url": "https://maintenease.com/learn/property-maintenance.md"
+    },
+    {
+      "path": "/learn/reactive-maintenance",
+      "html_url": "https://maintenease.com/learn/reactive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/reactive-maintenance.md"
+    },
+    {
+      "path": "/learn/predictive-maintenance",
+      "html_url": "https://maintenease.com/learn/predictive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/predictive-maintenance.md"
+    },
+    {
+      "path": "/learn/corrective-maintenance",
+      "html_url": "https://maintenease.com/learn/corrective-maintenance",
+      "markdown_url": "https://maintenease.com/learn/corrective-maintenance.md"
+    },
+    {
+      "path": "/learn/condition-based-maintenance",
+      "html_url": "https://maintenease.com/learn/condition-based-maintenance",
+      "markdown_url": "https://maintenease.com/learn/condition-based-maintenance.md"
+    },
+    {
+      "path": "/learn/mtbf",
+      "html_url": "https://maintenease.com/learn/mtbf",
+      "markdown_url": "https://maintenease.com/learn/mtbf.md"
+    },
+    {
+      "path": "/learn/mttr",
+      "html_url": "https://maintenease.com/learn/mttr",
+      "markdown_url": "https://maintenease.com/learn/mttr.md"
+    },
+    {
+      "path": "/learn/cmms-benchmarks-2026",
+      "html_url": "https://maintenease.com/learn/cmms-benchmarks-2026",
+      "markdown_url": "https://maintenease.com/learn/cmms-benchmarks-2026.md"
+    },
+    {
+      "path": "/learn/cmms-roi",
+      "html_url": "https://maintenease.com/learn/cmms-roi",
+      "markdown_url": "https://maintenease.com/learn/cmms-roi.md"
+    },
+    {
+      "path": "/learn/root-cause-analysis",
+      "html_url": "https://maintenease.com/learn/root-cause-analysis",
+      "markdown_url": "https://maintenease.com/learn/root-cause-analysis.md"
+    },
+    {
+      "path": "/learn/deferred-maintenance",
+      "html_url": "https://maintenease.com/learn/deferred-maintenance",
+      "markdown_url": "https://maintenease.com/learn/deferred-maintenance.md"
+    },
+    {
+      "path": "/learn/ai-maintenance-assistant",
+      "html_url": "https://maintenease.com/learn/ai-maintenance-assistant",
+      "markdown_url": "https://maintenease.com/learn/ai-maintenance-assistant.md"
+    },
+    {
+      "path": "/learn/cmms-for-chatgpt",
+      "html_url": "https://maintenease.com/learn/cmms-for-chatgpt",
+      "markdown_url": "https://maintenease.com/learn/cmms-for-chatgpt.md"
+    },
+    {
+      "path": "/learn/maintenance-mcp-server",
+      "html_url": "https://maintenease.com/learn/maintenance-mcp-server",
+      "markdown_url": "https://maintenease.com/learn/maintenance-mcp-server.md"
+    },
+    {
+      "path": "/learn/ai-work-order-automation",
+      "html_url": "https://maintenease.com/learn/ai-work-order-automation",
+      "markdown_url": "https://maintenease.com/learn/ai-work-order-automation.md"
+    },
+    {
+      "path": "/learn/equipment-risk-scoring",
+      "html_url": "https://maintenease.com/learn/equipment-risk-scoring",
+      "markdown_url": "https://maintenease.com/learn/equipment-risk-scoring.md"
+    },
+    {
+      "path": "/learn/predictive-maintenance-without-sensors",
+      "html_url": "https://maintenease.com/learn/predictive-maintenance-without-sensors",
+      "markdown_url": "https://maintenease.com/learn/predictive-maintenance-without-sensors.md"
+    },
+    {
+      "path": "/learn/maintenance-request-qr-codes",
+      "html_url": "https://maintenease.com/learn/maintenance-request-qr-codes",
+      "markdown_url": "https://maintenease.com/learn/maintenance-request-qr-codes.md"
+    },
+    {
+      "path": "/learn/ai-native-cmms",
+      "html_url": "https://maintenease.com/learn/ai-native-cmms",
+      "markdown_url": "https://maintenease.com/learn/ai-native-cmms.md"
+    },
+    {
+      "path": "/learn/agentic-maintenance-workflows",
+      "html_url": "https://maintenease.com/learn/agentic-maintenance-workflows",
+      "markdown_url": "https://maintenease.com/learn/agentic-maintenance-workflows.md"
+    },
+    {
+      "path": "/compare",
+      "html_url": "https://maintenease.com/compare",
+      "markdown_url": "https://maintenease.com/compare.md"
+    },
+    {
+      "path": "/cmms-cost-calculator",
+      "html_url": "https://maintenease.com/cmms-cost-calculator",
+      "markdown_url": "https://maintenease.com/cmms-cost-calculator.md"
+    },
+    {
+      "path": "/compare/maintenease-vs-upkeep",
+      "html_url": "https://maintenease.com/compare/maintenease-vs-upkeep",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-upkeep.md"
+    },
+    {
+      "path": "/compare/maintenease-vs-fiix",
+      "html_url": "https://maintenease.com/compare/maintenease-vs-fiix",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-fiix.md"
+    },
+    {
+      "path": "/compare/maintenease-vs-maintainx",
+      "html_url": "https://maintenease.com/compare/maintenease-vs-maintainx",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-maintainx.md"
+    },
+    {
+      "path": "/compare/maintenease-vs-limble",
+      "html_url": "https://maintenease.com/compare/maintenease-vs-limble",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-limble.md"
+    },
+    {
+      "path": "/compare/maintenease-vs-emaint",
+      "html_url": "https://maintenease.com/compare/maintenease-vs-emaint",
+      "markdown_url": "https://maintenease.com/compare/maintenease-vs-emaint.md"
+    },
+    {
+      "path": "/templates",
+      "html_url": "https://maintenease.com/templates",
+      "markdown_url": "https://maintenease.com/templates.md"
+    },
+    {
+      "path": "/templates/maintenance-log-template",
+      "html_url": "https://maintenease.com/templates/maintenance-log-template",
+      "markdown_url": "https://maintenease.com/templates/maintenance-log-template.md"
+    },
+    {
+      "path": "/templates/preventive-maintenance-checklist",
+      "html_url": "https://maintenease.com/templates/preventive-maintenance-checklist",
+      "markdown_url": "https://maintenease.com/templates/preventive-maintenance-checklist.md"
+    },
+    {
+      "path": "/templates/work-order-template",
+      "html_url": "https://maintenease.com/templates/work-order-template",
+      "markdown_url": "https://maintenease.com/templates/work-order-template.md"
+    }
+  ],
   "mcp": {
     "html_url": "https://maintenease.com/mcp",
     "markdown_url": "https://maintenease.com/mcp.md",

@@ -2,12 +2,6 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, Building2, Zap, Calendar, BarChart3, Shield } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -218,18 +212,17 @@ const Landing = () => {
                 Everything you need to know before starting your trial.
               </p>
             </div>
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((f, i) => (
-                <AccordionItem key={f.q} value={`faq-${i}`}>
-                  <AccordionTrigger className="text-left font-semibold">
+            <div className="w-full divide-y divide-border border-y border-border">
+              {faqs.map((f) => (
+                <details key={f.q} className="group py-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-semibold text-foreground marker:content-none">
                     {f.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
+                    <span aria-hidden="true" className="text-xl font-normal text-primary transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="pt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+                </details>
               ))}
-            </Accordion>
+            </div>
           </div>
           <div className="container mx-auto px-4 max-w-4xl">
             <div

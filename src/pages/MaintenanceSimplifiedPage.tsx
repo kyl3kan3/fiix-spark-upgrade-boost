@@ -16,12 +16,6 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 const URL = "https://maintenease.com/maintenance-simplified";
 const TITLE = "Maintenance Simplified: A Playbook for Small Teams";
@@ -385,16 +379,17 @@ const MaintenanceSimplifiedPage = () => (
         <h2 className="font-headline text-3xl font-bold text-foreground mb-8">
           Maintenance simplified — FAQ
         </h2>
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((f, i) => (
-            <AccordionItem key={f.q} value={`faq-${i}`}>
-              <AccordionTrigger className="text-left font-semibold">{f.q}</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
-                {f.a}
-              </AccordionContent>
-            </AccordionItem>
+        <div className="w-full divide-y divide-border border-y border-border">
+          {faqs.map((f) => (
+            <details key={f.q} className="group py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-semibold text-foreground marker:content-none">
+                {f.q}
+                <span aria-hidden="true" className="text-xl font-normal text-primary transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <p className="pt-3 text-muted-foreground leading-relaxed">{f.a}</p>
+            </details>
           ))}
-        </Accordion>
+        </div>
       </section>
 
       <section className="container mx-auto px-4 pb-20 max-w-4xl">
