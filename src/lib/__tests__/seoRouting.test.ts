@@ -6,6 +6,7 @@ describe("SEO route policy", () => {
     "/",
     "/pricing",
     "/mcp",
+    "/support",
     "/solutions/asset-management-software",
     "/learn/preventive-maintenance",
     "/compare/maintenease-vs-fiix",

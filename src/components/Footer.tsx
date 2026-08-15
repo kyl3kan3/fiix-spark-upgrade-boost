@@ -15,7 +15,8 @@ const Footer = () => {
  p.startsWith("/solutions") ||
  p.startsWith("/compare") ||
  p.startsWith("/templates") ||
- p === "/mcp";
+ p === "/mcp" ||
+ p === "/support";
  
  if (!showFullFooter) {
  // Simple footer for main application pages
@@ -28,6 +29,8 @@ const Footer = () => {
       <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
       <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
       <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
+      <span className="hidden sm:inline">·</span>
+      <Link to="/support" className="hover:text-foreground transition-colors">Support</Link>
     </div>
   </div>
   </footer>
@@ -57,8 +60,7 @@ const Footer = () => {
  { label: "Compare CMMS", to: "/compare" },
  { label: "Cost Calculator", to: "/cmms-cost-calculator" },
  { label: "MCP server card", to: "https://maintenease.com/.well-known/mcp/server-card.json" },
- { label: "Status", to: "#" },
- { label: "Help Center", to: "#" },
+ { label: "Support", to: "/support" },
  ],
  },
  {

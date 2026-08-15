@@ -20,6 +20,12 @@ import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import {
+  SUPPORT_FAQS,
+  SUPPORT_PAGE,
+  SUPPORT_REQUEST_CHECKLIST,
+  SUPPORT_TOPICS,
+} from "../src/data/supportPage";
+import {
   FEATURED_DISCOVERY_RESOURCES,
   SOLUTION_RESOURCES,
 } from "../src/data/seoResources";
@@ -439,6 +445,56 @@ const staticRoutes: Route[] = [
       "Articles on maintenance management, CMMS adoption, preventive maintenance strategy, and reducing unplanned downtime.",
     h1: "MaintenEase blog",
     intro: "Practical writing on maintenance management, CMMS adoption, and reducing unplanned downtime.",
+  },
+  {
+    path: "/support",
+    title: SUPPORT_PAGE.title,
+    description: SUPPORT_PAGE.description,
+    h1: SUPPORT_PAGE.h1,
+    intro: SUPPORT_PAGE.intro,
+    sections: [
+      {
+        heading: "Contact MaintenEase support",
+        body: `Email ${SUPPORT_PAGE.email} for account, billing, import, and product questions. Response time varies by plan and request complexity.`,
+      },
+      {
+        heading: "What to include in a support request",
+        body: SUPPORT_REQUEST_CHECKLIST.join("; "),
+      },
+      ...SUPPORT_TOPICS.map((topic) => ({
+        heading: topic.title,
+        body: topic.description,
+      })),
+      {
+        heading: "Security and emergency guidance",
+        body: "Never email passwords, access tokens, private keys, or payment-card details. MaintenEase provides software support and does not monitor equipment or dispatch emergency services. Follow your organization’s emergency procedure for an immediate hazard.",
+      },
+    ],
+    links: [
+      { href: SUPPORT_PAGE.emailHref, label: `Email ${SUPPORT_PAGE.email}` },
+      { href: "/help", label: "Open the signed-in Help Center" },
+      { href: "/forgot-password", label: "Reset a forgotten password" },
+      ...SUPPORT_TOPICS.map((topic) => ({ href: topic.href, label: topic.cta })),
+    ],
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        name: SUPPORT_PAGE.title,
+        description: SUPPORT_PAGE.description,
+        url: SUPPORT_PAGE.canonicalUrl,
+        dateModified: SUPPORT_PAGE.updated,
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: SUPPORT_FAQS.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
+    ],
   },
   // These routes ship in the sitemap, so they need their own canonical in the
   // no-JS HTML — otherwise they inherit the homepage canonical from the shell
@@ -995,7 +1051,9 @@ function markdownFor(route: Route): string {
       ? MAINTENANCE_SIMPLIFIED_FAQS
       : route.path === "/mcp"
         ? MCP_PAGE.faqs.map((faq) => [faq.q, faq.a] as const)
-        : [];
+        : route.path === "/support"
+          ? SUPPORT_FAQS.map((faq) => [faq.q, faq.a] as const)
+          : [];
   if (faqs.length) {
     lines.push("", "## Frequently asked questions");
     for (const [question, answer] of faqs) {

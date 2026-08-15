@@ -23,6 +23,7 @@ const KEY_PAGES = [
  "src/pages/LearnArticle.tsx",
  "src/pages/TemplatesIndex.tsx",
  "src/pages/TemplatePage.tsx",
+ "src/pages/SupportPage.tsx",
 ];
 
 const OG_IMAGE_URL = "https://maintenease.com/og-image.png?v=4";

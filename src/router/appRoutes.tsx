@@ -37,6 +37,7 @@ const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Landing = lazy(() => import("@/pages/Landing"));
 const MaintenanceSimplifiedPage = lazy(() => import("@/pages/MaintenanceSimplifiedPage"));
+const SupportPage = lazy(() => import("@/pages/SupportPage"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -81,6 +82,7 @@ export const AppRoutes = () => (
         <Route path="/mcp" element={<McpPage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
         <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
+        <Route path="/support" element={<SupportPage />} />
 
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />

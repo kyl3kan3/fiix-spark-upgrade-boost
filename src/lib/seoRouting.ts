@@ -22,6 +22,7 @@ const INDEXABLE_ROUTES = new Set([
   "/templates",
   "/mcp",
   "/cmms-cost-calculator",
+  "/support",
 ]);
 
 const NOINDEX_ROUTES = new Set([

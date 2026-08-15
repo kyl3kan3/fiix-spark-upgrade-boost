@@ -12,6 +12,7 @@ describe("static sitemap entries", () => {
 
   it.each([
     "/mcp",
+    "/support",
     "/maintenance-simplified",
     "/solutions/preventive-maintenance-software",
     "/learn/deferred-maintenance",

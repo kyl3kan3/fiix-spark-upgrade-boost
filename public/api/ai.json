@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-15T00:03:40.179Z",
+  "generated_at": "2026-08-15T11:04:27.386Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -53,6 +53,11 @@
       "path": "/blog",
       "html_url": "https://maintenease.com/blog",
       "markdown_url": "https://maintenease.com/blog.md"
+    },
+    {
+      "path": "/support",
+      "html_url": "https://maintenease.com/support",
+      "markdown_url": "https://maintenease.com/support.md"
     },
     {
       "path": "/privacy",

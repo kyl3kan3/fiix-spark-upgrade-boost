@@ -65,6 +65,7 @@ import LearnIndex from "../LearnIndex";
 import LearnArticle from "../LearnArticle";
 import TemplatesIndex from "../TemplatesIndex";
 import TemplatePage from "../TemplatePage";
+import SupportPage from "../SupportPage";
 
 const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
 
@@ -99,6 +100,7 @@ const ROUTES: RouteCase[] = [
  routePattern: "/templates/:slug",
  element: <TemplatePage />,
  },
+ { name: "Support", path: "/support", routePattern: "/support", element: <SupportPage /> },
 ];
 
 function renderRoute(route: RouteCase) {
