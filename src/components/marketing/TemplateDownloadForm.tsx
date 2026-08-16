@@ -15,6 +15,12 @@ type TemplateDownloadFormProps = {
   templateTitle: string;
   downloadPath: string;
   downloadFilename: string;
+  downloads?: {
+    label: string;
+    format: string;
+    path: string;
+    filename: string;
+  }[];
 };
 
 const TemplateDownloadForm = ({
@@ -22,6 +28,7 @@ const TemplateDownloadForm = ({
   templateTitle,
   downloadPath,
   downloadFilename,
+  downloads,
 }: TemplateDownloadFormProps) => {
   const emailId = useId();
   const errorId = `${emailId}-error`;
@@ -29,6 +36,11 @@ const TemplateDownloadForm = ({
   const [emailError, setEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const choices = downloads?.length
+    ? downloads
+    : [{ label: "Spreadsheet", format: "CSV", path: downloadPath, filename: downloadFilename }];
+  const [selectedPath, setSelectedPath] = useState(choices[0].path);
+  const selectedDownload = choices.find((choice) => choice.path === selectedPath) ?? choices[0];
 
   useEffect(() => {
     void trackMarketingEvent({
@@ -38,10 +50,19 @@ const TemplateDownloadForm = ({
     });
   }, [sourceSlug]);
 
-  const startDownload = () => {
+  const startDownload = (resource = selectedDownload) => {
+    void trackMarketingEvent({
+      eventType: "template_download",
+      pageSlug: sourceSlug,
+      metadata: {
+        resource: templateTitle,
+        format: resource.format,
+        filename: resource.filename,
+      },
+    });
     const anchor = document.createElement("a");
-    anchor.href = downloadPath;
-    anchor.download = downloadFilename;
+    anchor.href = resource.path;
+    anchor.download = resource.filename;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -71,11 +92,15 @@ const TemplateDownloadForm = ({
       });
 
       setSubmitted(true);
-      startDownload();
+      startDownload(selectedDownload);
       void trackMarketingEvent({
         eventType: "lead_submit",
         pageSlug: sourceSlug,
-        metadata: { resource: templateTitle, ...getAttributionMetadata() },
+        metadata: {
+          resource: templateTitle,
+          format: selectedDownload.format,
+          ...getAttributionMetadata(),
+        },
       });
     } catch {
       toast({
@@ -94,16 +119,22 @@ const TemplateDownloadForm = ({
         <CheckCircle2 className="h-9 w-9 text-primary" aria-hidden="true" />
         <h2 className="mt-4 text-2xl font-semibold text-foreground text-balance">Your template is downloading</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-          If it did not start, use the button below. The CSV opens in Excel, Google Sheets, and Apple Numbers.
+          If it did not start, choose the format below. You can download every version without entering your email again.
         </p>
-        <Button
-          type="button"
-          onClick={startDownload}
-          className="mt-5 min-h-11 transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.96]"
-        >
-          <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-          Download again
-        </Button>
+        <div className="mt-5 grid gap-2">
+          {choices.map((choice) => (
+            <Button
+              key={choice.path}
+              type="button"
+              variant={choice.path === selectedDownload.path ? "default" : "outline"}
+              onClick={() => startDownload(choice)}
+              className="min-h-11 justify-start transition-[transform,background-color,box-shadow,border-color] duration-150 active:scale-[0.96]"
+            >
+              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+              {choice.label} ({choice.format})
+            </Button>
+          ))}
+        </div>
       </div>
     );
   }
@@ -113,8 +144,37 @@ const TemplateDownloadForm = ({
       <p className="text-sm font-semibold uppercase tracking-wide text-primary">Instant download</p>
       <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">Get the free template</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-        Enter your email and the CSV download will start immediately.
+        Enter your email and the selected download will start immediately.
       </p>
+
+      {choices.length > 1 ? (
+        <fieldset className="mt-6">
+          <legend className="text-sm font-medium text-foreground">Choose a format</legend>
+          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {choices.map((choice, index) => {
+              const choiceId = `${emailId}-format-${index}`;
+              return (
+                <label
+                  key={choice.path}
+                  htmlFor={choiceId}
+                  className={`flex min-h-11 cursor-pointer items-center rounded-xl px-3 py-2 text-sm font-medium shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-[background-color,box-shadow,transform] duration-150 active:scale-[0.96] ${choice.path === selectedPath ? "bg-primary/10 text-primary shadow-[0_0_0_2px_hsl(var(--primary))]" : "bg-background text-foreground hover:bg-muted/50"}`}
+                >
+                  <input
+                    id={choiceId}
+                    type="radio"
+                    name="download_format"
+                    value={choice.path}
+                    checked={choice.path === selectedPath}
+                    onChange={() => setSelectedPath(choice.path)}
+                    className="mr-2 h-4 w-4 accent-[hsl(var(--primary))]"
+                  />
+                  <span>{choice.label}<span className="ml-1 text-xs text-muted-foreground">{choice.format}</span></span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      ) : null}
 
       <div className="mt-6">
         <Label htmlFor={emailId}>Work email</Label>
@@ -150,7 +210,7 @@ const TemplateDownloadForm = ({
         ) : (
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
         )}
-        {submitting ? "Preparing download…" : "Download free CSV"}
+        {submitting ? "Preparing download…" : `Download free ${selectedDownload.format}`}
       </Button>
 
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground">

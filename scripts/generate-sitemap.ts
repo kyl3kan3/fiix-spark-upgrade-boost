@@ -6,6 +6,7 @@ import {
   STATIC_SITEMAP_ENTRIES,
   type SitemapEntry,
 } from "../src/data/sitemapEntries";
+import { redirectForPath } from "../src/lib/seoRouting";
 
 const BASE_URL = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
@@ -27,12 +28,14 @@ async function fetchBlogEntries(): Promise<SitemapEntry[]> {
       updated_at: string | null;
       published_at: string | null;
     }>;
-    return rows.map((r) => ({
-      path: `/blog/${r.slug}`,
-      lastmod: (r.updated_at ?? r.published_at ?? "").slice(0, 10) || undefined,
-      changefreq: "weekly" as const,
-      priority: "0.7",
-    }));
+    return rows
+      .map((r) => ({
+        path: `/blog/${r.slug}`,
+        lastmod: (r.updated_at ?? r.published_at ?? "").slice(0, 10) || undefined,
+        changefreq: "weekly" as const,
+        priority: "0.7",
+      }))
+      .filter((entry) => !redirectForPath(entry.path));
   } catch (err) {
     console.warn(`[sitemap] blog fetch error: ${(err as Error).message}`);
     return [];

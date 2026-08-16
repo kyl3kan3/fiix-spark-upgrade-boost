@@ -38,6 +38,16 @@ const LearnIndex = () => {
  <p className="text-lg text-foreground max-w-3xl mb-12">
  Plain-English definitions of the terms maintenance, facilities, and fleet teams use every day. Skim, search, or send a link to a colleague.
  </p>
+ <Link
+ to="/facility-management"
+ className="mb-8 block rounded-2xl bg-primary/5 p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] transition-[box-shadow,transform] duration-150 hover:shadow-md active:scale-[0.96]"
+ >
+ <p className="text-sm font-semibold uppercase tracking-wide text-primary">Featured hub</p>
+ <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">Facility management guide</h2>
+ <p className="mt-2 max-w-3xl leading-relaxed text-muted-foreground text-pretty">
+ Navigate facility operations, maintenance, work orders, inspections, assets, compliance, space, vendors, software selection, and KPIs.
+ </p>
+ </Link>
  <div className="grid sm:grid-cols-2 gap-4">
  {glossary.map((g) => (
  <Link

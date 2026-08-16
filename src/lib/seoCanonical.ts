@@ -4,6 +4,7 @@ const INDEXED_STATIC_PATHS = new Set([
   "/",
   "/landing",
   "/maintenance-simplified",
+  "/facility-management",
   "/pricing",
   "/features",
   "/solutions",

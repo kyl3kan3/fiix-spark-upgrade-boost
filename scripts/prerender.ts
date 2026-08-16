@@ -18,6 +18,11 @@ import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
+import {
+  FACILITY_MANAGEMENT_FAQS,
+  FACILITY_MANAGEMENT_PAGE,
+  FACILITY_MANAGEMENT_PATHS,
+} from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import {
   SUPPORT_FAQS,
@@ -40,6 +45,7 @@ import {
   buildItemListJsonLd,
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
+import { redirectForPath } from "../src/lib/seoRouting";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
@@ -352,6 +358,52 @@ const staticRoutes: Route[] = [
       { href: "/learn/predictive-maintenance", label: "Learn how predictive maintenance works" },
       { href: "/learn/deferred-maintenance", label: "Prioritize deferred maintenance" },
       { href: "/templates", label: "Download free maintenance templates" },
+    ],
+  },
+  {
+    path: "/facility-management",
+    title: FACILITY_MANAGEMENT_PAGE.metaTitle,
+    description: FACILITY_MANAGEMENT_PAGE.metaDescription,
+    h1: FACILITY_MANAGEMENT_PAGE.title,
+    intro: FACILITY_MANAGEMENT_PAGE.description,
+    ogType: "article",
+    sections: [
+      ...FACILITY_MANAGEMENT_PATHS.map((path) => ({
+        heading: path.title,
+        body: path.description,
+      })),
+      ...FACILITY_MANAGEMENT_FAQS.map((faq) => ({ heading: faq.q, body: faq.a })),
+    ],
+    links: [
+      ...FACILITY_MANAGEMENT_PATHS.filter((path) => !path.href.startsWith("#")).map((path) => ({
+        href: path.href,
+        label: path.cta,
+      })),
+      { href: "/solutions/facility-maintenance-software", label: "Facility maintenance software" },
+      { href: "/auth?signup=true", label: "Start a facility workspace" },
+    ],
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: FACILITY_MANAGEMENT_PAGE.title,
+        description: FACILITY_MANAGEMENT_PAGE.description,
+        mainEntityOfPage: `${ORIGIN}/facility-management`,
+        image: OG_IMAGE,
+        datePublished: FACILITY_MANAGEMENT_PAGE.published,
+        dateModified: FACILITY_MANAGEMENT_PAGE.updated,
+        author: { "@id": `${ORIGIN}/#organization` },
+        publisher: { "@id": `${ORIGIN}/#organization` },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: FACILITY_MANAGEMENT_FAQS.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
     ],
   },
   {
@@ -708,6 +760,7 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
           label: "Compare MaintenEase with MaintainX",
         }]
       : []),
+    ...(c.sources ?? []).map((source) => ({ href: source.url, label: source.label })),
   ],
   ...(c.slug === "maintenease-vs-maintainx"
     ? {
@@ -761,7 +814,10 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
     ],
     links: [
       { href: "/templates", label: "All maintenance templates" },
-      { href: template.downloadPath, label: `Download ${template.title} as CSV` },
+      ...(template.downloads ?? [{ label: "Spreadsheet", format: "CSV", path: template.downloadPath }]).map((download) => ({
+        href: download.path,
+        label: `Download ${template.title} as ${download.label} (${download.format})`,
+      })),
       template.relatedLearn,
       template.relatedSolution,
     ],
@@ -772,7 +828,7 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
         name: template.title,
         description: template.metaDescription,
         url,
-        encodingFormat: "text/csv",
+        encodingFormat: template.downloads?.map((download) => download.format) ?? ["CSV"],
         isAccessibleForFree: true,
         datePublished: template.published,
         dateModified: template.updated,
@@ -852,7 +908,9 @@ async function fetchBlogPosts(): Promise<BlogRow[]> {
   }
 }
 
-const blogPosts = await fetchBlogPosts();
+const blogPosts = (await fetchBlogPosts()).filter(
+  (post) => !redirectForPath(`/blog/${post.slug}`),
+);
 
 if (blogPosts.length) {
   const blogIndex = routes.find((r) => r.path === "/blog");

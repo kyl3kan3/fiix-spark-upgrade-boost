@@ -75,6 +75,63 @@ Use the MCP server card, the clean Markdown version of this page, llms.txt, llms
 
 ---
 
+# Facility management
+# Facility Management Guide: Operations, Maintenance, Software, and KPIs
+
+> Facility management connects people, buildings, services, and operating processes so the built environment stays safe, functional, efficient, and ready for the organization it supports.
+
+Canonical URL: https://maintenease.com/facility-management
+
+## Facility management workstreams
+
+- **Facility maintenance** — Build the operating plan for HVAC, electrical, plumbing, life safety, envelope, grounds, and occupant-facing repairs. [Plan facility maintenance](https://maintenease.com/learn/facility-maintenance)
+- **Work orders and requests** — Standardize intake, triage, assignment, priorities, service levels, labor, parts, communication, and close-out evidence. [Design the work-order flow](https://maintenease.com/solutions/work-order-software)
+- **Inspections and preventive work** — Turn recurring building checks and required tests into scheduled tasks with acceptance criteria and follow-up work. [Build the PM program](https://maintenease.com/learn/preventive-maintenance)
+- **Asset management** — Create a location-based register for maintainable equipment, documents, warranty, criticality, condition, and service history. [Organize facility assets](https://maintenease.com/solutions/asset-management-software)
+- **Compliance and audit evidence** — Map each obligation to the asset, frequency, procedure, responsible role, result, exception, and retained record.
+- **Space and occupant experience** — Connect room use, workplace changes, accessibility, comfort, cleaning, security, and service requests to location data.
+- **Vendors and service partners** — Control scope, access, certificates, dispatch, performance, cost, warranty, and completed-work documentation.
+- **Facility management software** — Evaluate CMMS, CAFM, IWMS, EAM, and point solutions against the workflows, integrations, and reporting you actually need. [Compare system types](https://maintenease.com/learn/cmms)
+
+## Facility management KPIs
+
+| KPI | Definition | Decision supported |
+| --- | --- | --- |
+| PM compliance | Preventive work completed on time / preventive work due | Scheduling discipline and audit readiness |
+| Urgent response time | Time from accepted request to first qualified response | How quickly the service model reacts |
+| Work-order cycle time | Time from approval to verified completion | End-to-end flow, including waiting |
+| Reactive work % | Reactive labor hours / total maintenance labor hours | How much capacity is controlled versus interrupted |
+| Backlog age | Open approved work grouped by age and risk | Whether risk is accumulating out of view |
+| Repeat work rate | Repeat work on the same asset or issue / completed work | Repair quality and unresolved root causes |
+| Cost by building or asset | Labor + parts + vendor cost by service object | Where operating expense and renewal risk concentrate |
+| Occupant service level | Requests completed within the promised service level / eligible requests | Reliability of the occupant experience |
+
+## FAQ
+
+### What is facility management?
+
+Facility management is the organizational function that coordinates people, place, and process in the built environment. In practice it covers operations, maintenance, safety, services, space, vendors, technology, and performance so facilities support the core organization.
+
+### What is the difference between facility management and facility maintenance?
+
+Facility maintenance is the technical upkeep of buildings and equipment. Facility management is broader: it includes maintenance plus services, space, security, sustainability, workplace experience, sourcing, budgets, risk, and strategy.
+
+### What software do facility managers use?
+
+A CMMS manages maintenance assets, work orders, preventive schedules, and history. CAFM and IWMS products add capabilities such as space, moves, leases, and workplace services. EAM platforms extend asset lifecycle and financial control. The right choice depends on the operating workflows and integrations in scope.
+
+### Which facility management KPIs should a small team start with?
+
+Start with PM compliance, urgent response time, work-order cycle time, reactive-work percentage, backlog age by risk, repeat work, and cost by building or asset. Add space, energy, vendor, and occupant metrics only when those decisions have reliable data owners.
+
+## Sources
+
+- [International Facility Management Association: What is facility management?](https://www.ifma.org/about/what-is-fm/)
+- [ISO 41011:2024 facility management vocabulary](https://www.iso.org/standard/82405.html)
+
+
+---
+
 # Solutions
 
 ---
@@ -420,7 +477,7 @@ UpKeep is a well-known mobile-first CMMS priced per user per month. MaintenEase 
 
 ## UpKeep pricing in 2026
 
-UpKeep currently lists Essential at $24 per user per month and Premium at $55 per user per month. Premium is the first listed tier with preventive-maintenance scheduling, so it is the more useful CMMS comparison for most maintenance teams.
+UpKeep lists Essential at $24 per paid user per month and Premium at $55 per paid user per month. Premium is the first public tier with PM scheduling, custom checklists, inventory costing, labor tracking, and 30-day analytics. Professional and Enterprise use custom pricing, and implementation or training packages are separate add-ons.
 
 | Plan | UpKeep price | MaintenEase price |
 | --- | --- | --- |
@@ -429,7 +486,7 @@ UpKeep currently lists Essential at $24 per user per month and Premium at $55 pe
 | Professional | Custom quote | Business: $299/mo (4 seats) |
 | Enterprise | Custom quote | Business: $299/mo + $15/additional seat |
 
-Source: [UpKeep's official pricing page](https://upkeep.com/pricing/?selected_plan=professional), verified 2026-08-13.
+Source: [UpKeep's official pricing page](https://upkeep.com/pricing/?selected_plan=professional), verified 2026-08-16.
 
 ## Side-by-side
 
@@ -456,7 +513,15 @@ UpKeep's public pricing is per user per month. Essential is $24/user/mo, while P
 
 That structure means the bill grows with headcount. Five users on Premium cost about $275/month and eight cost about $440/month before add-ons or negotiated terms.
 
-The table above was verified against UpKeep's official pricing page on August 13, 2026. Vendor prices and packaging can change, so follow the source link before budgeting.
+UpKeep says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users do. Model the people who will administer or complete work separately from people who only request or view it rather than multiplying the price by total headcount.
+
+The public add-on list shows training-only service at $500, Quickstart implementation and training at $1,500, expanded training at $5,000, and custom Enterprise implementation by quote. The table above and these packages were verified against UpKeep's official pricing page on August 16, 2026. Packaging can change, so follow the source before budgeting.
+
+## Feature limits that change the right tier
+
+Essential is positioned for teams leaving paper or spreadsheets, but UpKeep's public plan comparison does not include PM scheduling, checklists, inventory management, time-and-cost tracking, or full drill-down reporting on that tier. Premium adds those core preventive-maintenance workflows but lists only 30 days of analytics history.
+
+Professional is the first public tier with mobile offline mode, an external request portal, full analytics history, asset lifecycle tracking, and signature capture. Enterprise is the tier for multi-site modules, workflow automation, reliability and downtime reporting, purchase orders, API and custom integrations, SSO, custom roles, and custom dashboards. Buyers should map required workflows to the tier before comparing per-user price.
 
 ## How MaintenEase pricing compares
 
@@ -472,6 +537,12 @@ UpKeep is a mature, well-resourced product with a large customer base, an extens
 
 MaintenEase makes the most sense when the crew is growing, when people outside the maintenance team need visibility, and when you want AI predictive scoring, energy tracking, a no-login request portal, and free data import included rather than priced as add-ons.
 
+## Migration considerations before switching from UpKeep
+
+Export and reconcile assets, locations, open work orders, completed history, parts, users, files, PM schedules, checklists, meter readings, and custom fields before changing systems. Preserve stable IDs and parent-child relationships so asset history does not split during import. UpKeep's current work-order export documentation says a single export can include up to 500 work orders, so larger histories may require filtered batches and a reconciliation total.
+
+Decide how status, priority, category, user, and location values map before the import. Test a sample that includes attachments, recurring schedules, child assets, parts usage, and closed work. Run both systems during a short controlled cutover, freeze configuration changes, reconcile open work and next-due PM dates, then keep the old account read-only until the retention and contract requirements are satisfied.
+
 ## Why teams switch
 
 - **Published account and seat pricing** — Starter and Pro include seats up front. Business includes four seats and lists additional seats at $15 per month each, so the team can calculate the actual bill before switching.
@@ -482,11 +553,11 @@ MaintenEase makes the most sense when the crew is growing, when people outside t
 
 ### How much does UpKeep cost per month?
 
-UpKeep pricing starts at $24 per user per month for Essential. Premium is $55 per user per month and is the first listed tier with preventive-maintenance scheduling, so a 5-person maintenance team pays roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices verified August 13, 2026; check UpKeep's pricing page for changes.
+UpKeep pricing starts at $24 per paid user per month for Essential. Premium is $55 per paid user per month and is the first public tier with PM scheduling, so five paid Premium users cost roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices and packaging verified August 16, 2026; check UpKeep's pricing page for changes.
 
 ### Does UpKeep have a free plan?
 
-UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.
+UpKeep offers a free trial and says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users require paid licenses, so classify each role by the work it performs before estimating cost.
 
 ### How much does MaintenEase save vs UpKeep?
 
@@ -503,6 +574,12 @@ No. This page is an independent comparison based on publicly available pricing a
 ### Can I migrate from UpKeep to MaintenEase?
 
 Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding. The rollout timing depends on the size and condition of the data you provide.
+
+## Vendor sources checked
+
+- [UpKeep official pricing and plan comparison](https://upkeep.com/pricing/?selected_plan=professional)
+- [UpKeep Help: Work-order export limits and formats](https://help.onupkeep.com/en/collections/3653439-upkeep-work-orders)
+- [UpKeep Help: Asset hierarchy and history behavior](https://help.onupkeep.com/en/articles/4658340-create-and-edit-assets)
 
 ---
 
@@ -803,9 +880,9 @@ Yes. Export your assets and work orders (CSV/Excel) and our team imports them fo
 
 ---
 
-# CMMS (Computerized Maintenance Management System)
+# Maintenance Management Systems (CMMS): Complete Buyer's Guide
 
-> Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.
+> Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
 
 Canonical URL: https://maintenease.com/learn/cmms
 
@@ -856,6 +933,24 @@ _CMMS vs EAM vs FSM at a glance_
 
 Start from the work, not the feature list. Write down the five things that go wrong most often today — PMs slipping, no service history, requests arriving by text message, unknown parts spend — and test each shortlisted product against those five. Then check three practical constraints: whether technicians will actually use it on a phone, whether your existing asset list can be imported without re-keying, and how the pricing behaves when you add a seasonal helper or a supervisor who only reads reports. Per-user pricing quietly punishes both. Finally, run a two-week pilot on one site or one asset class before rolling out everywhere.
 
+## Maintenance management system evaluation checklist
+
+Require each vendor to demonstrate the same real workflow: submit a request, approve it, attach it to an asset, assign it on mobile, record labor and parts, close it, and find the history again. Confirm recurring schedules, meter triggers, inspection evidence, role permissions, exports, implementation support, API access, support hours, and the exact cost at today's and next year's headcount. A feature is only useful when the people doing the work can complete it quickly and managers can retrieve the resulting record later.
+
+_Questions to answer before selecting a maintenance management system_
+
+| Decision area | Evidence to request | Common warning sign |
+| --- | --- | --- |
+| Technician workflow | A complete work order on the actual mobile experience | The demo relies on administrator screens |
+| Preventive maintenance | Time, meter, and completion-based schedules | Recurring tasks cannot be audited or adjusted |
+| Data portability | Sample import and a full export in a usable format | Migration depends on manual re-entry |
+| Reporting | Backlog, PM compliance, MTBF, MTTR, and cost by asset | Reports require a higher tier not included in the quote |
+| Pricing | Written seat, capacity, add-on, and implementation costs | The quote omits likely users or required modules |
+
+## A practical 30-day CMMS rollout
+
+In week one, clean the asset list and agree on locations, priorities, statuses, and required close-out fields. In week two, import one site or asset class and build the highest-risk preventive schedules. In week three, train technicians on a small number of mobile workflows and run real work in the system. In week four, reconcile the backlog, correct data issues, publish a basic KPI baseline, and decide what to expand next. A focused rollout creates usable history faster than attempting to configure every possible field before launch.
+
 ## FAQ
 
 ### What is a CMMS in simple terms?
@@ -870,9 +965,9 @@ CMMS stands for Computerized Maintenance Management System.
 
 CMMS systems are used to register assets, capture and assign work orders, schedule preventive maintenance by date or meter reading, record parts and labor costs, and report on backlog, PM compliance, MTTR, and MTBF.
 
-### Is CMMS the same as maintenance management software?
+### Is a CMMS the same as a maintenance management system?
 
-Yes — the terms are used interchangeably. CMMS is the older industry acronym; maintenance management software is the plain-English version.
+Usually, yes. Maintenance management system and maintenance management software are broad plain-English terms; CMMS is the established acronym for software that manages assets, work orders, preventive schedules, and maintenance reporting.
 
 ### What is the difference between a CMMS and an ERP?
 
@@ -892,6 +987,9 @@ Yes — some vendors offer limited free tiers, and open-source CMMS software exi
 
 ## CMMS software and comparisons
 
+- [preventive maintenance guide](https://maintenease.com/learn/preventive-maintenance)
+- [facility management guide](https://maintenease.com/facility-management)
+- [work order template for Word and Sheets](https://maintenease.com/templates/work-order-template)
 - [work order software](https://maintenease.com/solutions/work-order-software)
 - [MaintenEase vs UpKeep](https://maintenease.com/compare/maintenease-vs-upkeep)
 - [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx)
@@ -1001,43 +1099,290 @@ No. AI can organize information and prepare records, but qualified people should
 
 ---
 
-# Preventive Maintenance
+# Preventive Maintenance: Complete Guide, Schedule, Examples, and Templates
 
-> Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.
+> Preventive maintenance is planned work performed before functional failure, triggered by time, usage, condition findings, or asset risk to reduce avoidable downtime and preserve equipment performance.
 
 Canonical URL: https://maintenease.com/learn/preventive-maintenance
 
-## Definition
+## Preventive maintenance definition
 
-Preventive maintenance (PM) is any service task performed on a recurring schedule with the goal of preventing failure rather than reacting to it. Schedules can be time-based (every 30 days), runtime-based (every 250 operating hours), meter-based (every 5,000 miles), or condition-based (when a sensor reading crosses a threshold). The opposite of preventive maintenance is reactive or run-to-failure maintenance.
+Preventive maintenance (PM) is planned inspection, servicing, adjustment, or replacement performed before an asset reaches functional failure. The trigger may be a calendar interval, operating hours, mileage, production cycles, a condition reading, or a risk review. PM is not simply 'maintenance done early': each task needs a defined asset, trigger, procedure, acceptance criterion, owner, and completion record so the team can determine whether the work is preventing the failure mode it targets.
 
-## Why it matters
+## Preventive vs predictive vs reactive maintenance
 
-Studies across multiple industries consistently find that a dollar spent on preventive work avoids three to nine dollars of reactive repair, lost production, and emergency overtime. Preventive maintenance also extends asset life, smooths out the workload for technicians, and turns chaotic days into planned ones. It is the single biggest lever a maintenance team has to control cost.
+Preventive maintenance acts at a planned interval before failure. Predictive maintenance estimates when failure risk is rising from condition and history, while reactive maintenance begins after the asset can no longer perform its required function. A sound strategy uses all three deliberately: preventive work for age- or usage-related failure modes, predictive or condition-based work when a measurable signal exists, and run-to-failure only for low-consequence items that are inexpensive and quick to replace.
 
-## How to set a PM schedule
+_How common maintenance strategies differ_
 
-Start with the manufacturer's recommended intervals — they are conservative, but they are a defensible starting point. Layer in observed failure patterns from your own history (every CMMS will surface these). Group PMs by asset, by location, and by trade so a single technician visit knocks out several tasks at once. Review schedules quarterly: tasks that have never found anything wrong are candidates to lengthen, and assets that keep failing between PMs are candidates to shorten.
+| Strategy | Work trigger | Best fit | Example |
+| --- | --- | --- | --- |
+| Preventive | Time, meter, or planned interval | Known wear, required inspections, stable service intervals | Replace an air filter every 90 days |
+| Predictive | Forecast from condition trends and history | Critical assets with useful failure signals | Plan a bearing change from vibration trend |
+| Condition-based | Measured value crosses a limit | Assets that can be inspected or monitored | Create work when pressure drop exceeds the limit |
+| Reactive | Functional failure | Low-risk, non-critical, replaceable items | Replace a non-critical lamp after it fails |
 
-## Common preventive maintenance tasks
+## How to implement a preventive maintenance program
 
-Lubrication, filter changes, belt and bearing inspections, calibration checks, fluid sampling, infrared scans of electrical panels, fire-system tests, HVAC coil cleans, vehicle oil changes, and tire rotations. Most preventive work is short, predictable, and ideal for assigning to junior technicians from a checklist.
+Start with a controlled scope instead of scheduling every asset at once. First, inventory assets and normalize their names and locations. Second, rank criticality by safety, service, production, environmental, and cost consequences. Third, identify the failure modes worth preventing. Fourth, choose a task and trigger that can detect or reduce each failure mode. Fifth, write a short procedure with pass/fail criteria, tools, parts, and safety requirements. Sixth, load the schedule and assign ownership. Seventh, review findings, overdue work, emergency failures, and labor demand each month, then change intervals only when the evidence supports it.
+
+## Four ways to schedule preventive maintenance
+
+Use the trigger that most closely represents exposure to the failure mode. Calendar schedules are simple but can over-maintain assets with variable usage. Meter schedules follow actual use. Condition triggers respond to what technicians or sensors observe. Risk-based schedules set tighter controls where the consequence of failure is higher, even when two assets are otherwise similar. Regulatory, code, warranty, and manufacturer requirements remain minimum constraints; operational history helps refine the schedule beyond them.
+
+_Preventive maintenance scheduling methods_
+
+| Method | Trigger example | Use when | Watch for |
+| --- | --- | --- | --- |
+| Time-based | Every 30, 90, or 365 days | Exposure is steady or an inspection is required by date | Seasonality and duplicate work |
+| Meter-based | Every 500 runtime hours or 5,000 miles | Wear follows equipment use | Missing or late meter readings |
+| Condition-based | Temperature, vibration, pressure, wear, or inspection result | A measurable condition indicates deterioration | Thresholds without an action rule |
+| Risk-based | Criticality score and failure consequence | Resources must be concentrated on the most consequential assets | Ignoring low-cost quick wins or new risks |
+
+## How to choose a maintenance frequency
+
+Begin with the strictest applicable requirement from regulation, code, warranty, manufacturer guidance, or internal engineering standards. Then compare the interval with operating hours, environment, duty cycle, redundancy, and failure history. Shorten the interval when failures occur between services, findings repeatedly exceed limits, or consequence is unacceptable. Consider lengthening it when several cycles produce no actionable findings and the risk remains controlled. Record the reason, approver, effective date, and next review so frequency changes are auditable rather than informal.
+
+_Evidence for adjusting a PM interval_
+
+| Observed pattern | Likely action | Evidence to preserve |
+| --- | --- | --- |
+| Failure occurs before the next PM | Shorten interval or redesign the task | Failure code, elapsed time, work history |
+| Repeated defect at the same inspection point | Improve the task, training, or underlying design | Finding, measurement, corrective work |
+| No finding across several cycles | Review for safe extension or elimination | Completed checks, operating exposure, risk approval |
+| Usage varies substantially | Move from calendar to meter trigger | Runtime, mileage, cycles, or production volume |
+
+## Preventive maintenance examples by industry
+
+The program structure stays consistent across industries even though assets and triggers change. Each example below connects a failure mode to a specific trigger and a record that can be reviewed later.
+
+_Examples for facilities, fleets, manufacturing, and commercial buildings_
+
+| Environment | Asset and task | Typical trigger | Completion evidence |
+| --- | --- | --- | --- |
+| Facilities | Emergency generator load test and fuel-system inspection | Monthly test plus runtime-based service | Readings, exceptions, technician, corrective order |
+| Fleet | Engine oil and filter service | Mileage, engine hours, or oil-life reading | Odometer, parts, service date, next due |
+| Manufacturing | Conveyor drive inspection and lubrication | Operating hours with weekly visual checks | Condition finding, lubrication quantity, follow-up work |
+| Commercial building | Air-handling-unit filter and belt inspection | Pressure drop plus seasonal calendar review | Pressure reading, belt condition, filter used |
+
+## Plan preventive maintenance labor capacity
+
+A schedule is feasible only when required labor fits the team's productive capacity. Estimate monthly PM demand as asset count multiplied by PM events per asset multiplied by average task hours. Compare that with technician count multiplied by productive maintenance hours per technician. Keep corrective and emergency capacity outside the PM commitment instead of assuming every paid hour is schedulable. Use the calculator on this page to expose the gap before adding more recurring work.
+
+## Preventive maintenance KPIs
+
+Track PM compliance as completed-on-time PM work divided by PM work due. Pair it with schedule compliance, emergency-work percentage, planned-maintenance percentage, findings that generate corrective work, repeat failures, MTBF, and PM labor hours. A high completion rate is not proof of effectiveness by itself: the program should also reduce targeted failures without consuming more labor than the avoided risk justifies.
+
+_A compact preventive maintenance scorecard_
+
+| Metric | Calculation | What it reveals |
+| --- | --- | --- |
+| PM compliance | On-time PMs / PMs due × 100 | Whether required recurring work is completed when promised |
+| Planned maintenance % | Planned maintenance hours / total maintenance hours × 100 | How much labor is controlled before the day begins |
+| Emergency work % | Emergency labor hours / total maintenance hours × 100 | How much capacity is consumed by urgent failures |
+| MTBF | Operating time / failure count | Whether reliability is improving |
+| MTTR | Total restoration time / repair count | How quickly failed assets return to service |
+
+## How a CMMS supports preventive maintenance
+
+A CMMS connects each preventive schedule to the asset, location, procedure, assigned role, parts, and safety information. When the trigger is reached, the system generates a work order; the technician records findings and completion evidence; failed checks create corrective work; and the asset history feeds interval reviews, MTBF, MTTR, backlog, and cost analysis. This closes the loop between planning and reliability instead of leaving completed checklists in a folder.
+
+## Preventive maintenance launch checklist
+
+Before launch, confirm that each scheduled task has an asset ID, responsible role, trigger, estimated duration, procedure, acceptance limit, safety requirements, parts or tools, escalation rule, and next-due logic. Pilot the program on a critical but manageable asset group for four to six weeks. Review technician feedback and the labor-capacity result, correct the procedures, and only then expand to the next group.
 
 ## FAQ
 
+### What is preventive maintenance in simple terms?
+
+Preventive maintenance is planned inspection or service completed before equipment fails. The work is triggered by time, use, condition, or risk and recorded against the asset.
+
 ### How is preventive maintenance different from predictive maintenance?
 
-Preventive runs on a fixed schedule. Predictive uses live sensor data (vibration, temperature, current draw) to trigger work only when the asset shows it is needed.
+Preventive maintenance follows a defined interval or rule. Predictive maintenance uses condition trends and history to forecast when failure risk is increasing. Predictive work can reduce unnecessary fixed-interval service when reliable signals exist.
 
-### What percentage of work should be preventive?
+### What are the four common preventive maintenance scheduling methods?
 
-World-class maintenance teams typically run 70–80% planned (preventive + scheduled) and 20–30% reactive. Most teams start much closer to 20/80 and improve from there.
+Time-based, meter-based, condition-based, and risk-based scheduling are the four common methods. Many programs combine them and still honor regulatory, warranty, and manufacturer requirements.
+
+### How often should preventive maintenance be performed?
+
+There is no universal interval. Start with applicable requirements and manufacturer guidance, then account for duty cycle, environment, criticality, and failure history. Adjust only through a documented review.
+
+### What should a preventive maintenance checklist include?
+
+Include the asset, trigger, task steps, safety requirements, tools and parts, measurable acceptance criteria, owner, estimated duration, findings, escalation rule, completion date, and next due date.
+
+### Can a spreadsheet manage preventive maintenance?
+
+A spreadsheet can support a small stable program. A CMMS becomes more practical when schedules must generate work automatically, multiple technicians update status, findings create follow-up work, or audits require reliable asset history.
+
+## Sources
+
+- [OSHA process-equipment inspection and testing guidance](https://www.osha.gov/chemical-executive-order/psm-terminology)
+
+## CMMS software and comparisons
+
+- [download the preventive maintenance checklist](https://maintenease.com/templates/preventive-maintenance-checklist)
+- [work order workflow](https://maintenease.com/learn/work-order)
+- [asset management software](https://maintenease.com/solutions/asset-management-software)
+- [preventive maintenance software](https://maintenease.com/solutions/preventive-maintenance-software)
+- [facility management guide](https://maintenease.com/facility-management)
 
 ## Related
 
 - https://maintenease.com/learn/cmms
 - https://maintenease.com/learn/work-order
 - https://maintenease.com/learn/fleet-maintenance
+- https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/mtbf
+- https://maintenease.com/learn/mttr
+- https://maintenease.com/learn/total-productive-maintenance
+
+---
+
+# Total Productive Maintenance: The 8 Pillars, KPIs, and Implementation Plan
+
+> Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.
+
+Canonical URL: https://maintenease.com/learn/total-productive-maintenance
+
+## What is total productive maintenance?
+
+Total productive maintenance (TPM) is a management system for improving production-system effectiveness by preventing equipment-related loss across the asset life cycle. The Japan Institute of Plant Maintenance introduced TPM in 1971 and describes it as participation across functions and levels, not a maintenance-department project. The practical aim is to make abnormalities visible, restore basic equipment conditions, remove recurring losses, improve skills, and design future equipment and processes for reliable operation.
+
+## The eight pillars of TPM
+
+The pillars work as one system. Autonomous maintenance gives operators clear daily ownership without turning them into maintenance technicians. Planned maintenance controls technical work. Focused improvement removes chronic losses, while quality, early equipment management, training, safety, and administrative TPM prevent the same losses from being designed or managed back into the operation.
+
+_The classic eight TPM pillars with operating examples_
+
+| Pillar | Operating example | Evidence in the maintenance system |
+| --- | --- | --- |
+| Focused improvement | Cross-functional team removes a recurring minor stop | Loss code, root cause, action, before/after result |
+| Autonomous maintenance | Operators clean, inspect, lubricate, and tag abnormalities | Operator checklist, finding, escalation work order |
+| Planned maintenance | Maintenance schedules work from failure modes and condition | PM plan, labor, parts, meter readings, history |
+| Quality maintenance | Control equipment conditions that create defects | Quality limit, inspection result, corrective action |
+| Early equipment management | Reliability and maintainability are reviewed before acceptance | Commissioning punch list, standard job plan, spare-parts plan |
+| Education and training | Skill gaps are mapped to equipment tasks | Qualification, training record, procedure revision |
+| Safety, health, and environment | Hazards and environmental losses are designed out | Risk control, inspection, incident follow-up |
+| Office TPM | Planning, purchasing, and stores remove delays and errors | Approval time, stockout, vendor, and schedule data |
+
+## A phased 30/60/90-day TPM implementation plan
+
+A 90-day plan should prove the operating model on one pilot area, not claim company-wide TPM maturity. Choose a constrained line or asset family with visible loss, stable leadership support, and enough data to establish a baseline. Expand only after roles, standards, escalation, and review routines work in practice.
+
+_TPM pilot roadmap_
+
+| Phase | Primary work | Exit evidence |
+| --- | --- | --- |
+| Days 1-30: Baseline | Name the sponsor and pilot; map losses; restore basic conditions; define safety boundaries; baseline OEE, downtime, MTBF, MTTR, and planned work | Signed charter, asset list, loss Pareto, red-tag backlog, baseline scorecard |
+| Days 31-60: Standardize | Launch operator checks; revise PM tasks; train operators and technicians; create escalation rules; run one focused-improvement event | Used checklists, completed work orders, skill matrix, first verified countermeasure |
+| Days 61-90: Control | Audit standards; close recurring-loss actions; review KPI movement; stabilize parts and job plans; decide whether to expand | Audit result, sustained action ownership, updated standards, expansion decision |
+
+## TPM KPIs and calculations
+
+Use a small, balanced scorecard. OEE summarizes productive use of planned production time, but it can hide the source of loss, so retain the availability, performance, and quality components. Maintenance metrics explain whether equipment reliability and restoration are changing. Review hours and event counts behind the percentages so a small denominator does not create a misleading trend.
+
+_Core TPM formulas_
+
+| Metric | Formula | Interpretation |
+| --- | --- | --- |
+| Availability | Run time / planned production time | Loss from breakdowns and setup or adjustment stops |
+| Performance | Ideal cycle time × total count / run time | Loss from speed reduction and small stops |
+| Quality | Good count / total count | Loss from defects and startup scrap |
+| OEE | Availability × performance × quality | Share of planned production time that is fully productive |
+| Planned maintenance % | Planned maintenance hours / total maintenance hours × 100 | How much maintenance labor is controlled in advance |
+| MTBF | Operating time / functional failures | Average operating exposure between failures |
+| MTTR | Total restoration time / completed repairs | Average time required to restore service |
+| Downtime rate | Downtime / planned production time × 100 | Share of planned time unavailable |
+
+## TPM audit worksheet
+
+Score each statement from 0 to 3: 0 means not defined, 1 means documented but inconsistent, 2 means routinely followed, and 3 means verified and improving. Require evidence for every score. A high self-rating without current records is a discussion prompt, not an audit result.
+
+_Ten-question TPM pilot audit_
+
+| Audit question | Evidence to inspect |
+| --- | --- |
+| Are pilot losses defined and ranked? | Loss tree, Pareto, agreed definitions |
+| Are equipment basic conditions restored? | Red tags, leaks, guards, cleaning and lubrication standards |
+| Do operators complete safe autonomous tasks? | Used checks, abnormalities, escalations |
+| Do PM tasks address known failure modes? | Failure-mode link, procedure, interval rationale |
+| Are defects linked to equipment conditions? | Quality limits, defect code, equipment finding |
+| Are skills matched to assigned work? | Skill matrix, qualification, observed performance |
+| Are safety boundaries explicit? | Lockout rules, permitted operator tasks, risk review |
+| Are recurring losses assigned to an owner? | Action log, due date, verification |
+| Are parts and job plans ready before planned work? | Kitted parts, job plan, schedule attainment |
+| Does the weekly review change standards or priorities? | Minutes, revised task, closed-loop action |
+
+## How work orders and asset history support TPM
+
+TPM depends on evidence moving across teams. Operator findings should create traceable work rather than disappear on a board. Work orders preserve the symptom, loss category, asset, priority, labor, parts, cause, repair, downtime, and verification. Asset history then shows recurring failures, interval performance, restoration time, and the effect of countermeasures. A CMMS does not create participation, but it gives the pilot one shared operational record and prevents each pillar from maintaining a separate spreadsheet.
+
+## TPM vs preventive, RCM, and lean maintenance
+
+These approaches overlap but answer different questions. TPM is the broad participation and loss-elimination system. Preventive maintenance is a work strategy inside it. Reliability-centered maintenance selects appropriate policies by functions, failures, consequences, and technically effective tasks. Lean maintenance applies lean thinking to maintenance flow and waste. A plant can use RCM to redesign the maintenance program, execute selected PM and condition tasks through a CMMS, and sustain the routines through TPM.
+
+_Where common maintenance approaches differ_
+
+| Approach | Primary question | Typical scope | Distinctive feature |
+| --- | --- | --- | --- |
+| TPM | How do all functions prevent and remove production losses? | Organization and operating system | Operator ownership and cross-functional pillars |
+| Preventive maintenance | What planned work should occur before failure? | Tasks and schedules | Time, usage, condition, or risk trigger |
+| Reliability-centered maintenance | What policy preserves required functions at acceptable risk? | Asset systems and failure modes | Consequence-based task selection |
+| Lean maintenance | How can maintenance flow create more value with less waste? | Planning, execution, materials, information | Queue, handoff, motion, waiting, and rework reduction |
+
+## Common TPM implementation failures
+
+TPM stalls when it becomes a cleaning campaign, a maintenance-only project, or an OEE reporting exercise. Other warning signs include unsafe transfer of technical tasks to operators, too many pilot assets, scores without evidence, unresolved red tags, PMs copied from manuals without failure-mode logic, and improvement events whose gains never become standard work. Leadership must protect time for the routines and remove cross-functional barriers that the maintenance team cannot solve alone.
+
+## FAQ
+
+### What does TPM stand for?
+
+TPM stands for total productive maintenance. It is a cross-functional management system for preventing equipment and production losses across the asset life cycle.
+
+### What are the eight pillars of total productive maintenance?
+
+Focused improvement, autonomous maintenance, planned maintenance, quality maintenance, early equipment management, education and training, safety-health-environment, and office TPM are the classic eight pillars.
+
+### Is autonomous maintenance the same as operators repairing machines?
+
+No. Autonomous maintenance gives trained operators defined, safe tasks such as cleaning, inspection, lubrication, basic adjustment, and abnormality tagging. Technical repairs and safety-critical work remain with qualified personnel.
+
+### How is OEE calculated?
+
+OEE equals availability multiplied by performance multiplied by quality. Use decimals or percentages consistently, and review the three components separately to locate the loss.
+
+### Can a company implement TPM in 90 days?
+
+A company can establish and evaluate one TPM pilot in 90 days. Company-wide behavior, standards, and improvement routines take longer and should expand only after the pilot is stable.
+
+### Does TPM require CMMS software?
+
+No, but a CMMS helps preserve work orders, asset history, operator findings, PM schedules, failure codes, labor, parts, and KPI inputs in one shared record.
+
+## Sources
+
+- [Japan Institute of Plant Maintenance: TPM definition and history](https://www.jipm.or.jp/business/tpm/)
+- [NIST MEP: TPM downtime and capacity case study](https://www.nist.gov/mep/successstories/2022/total-productive-maintenance-reduces-equipment-downtime-and-lost-capacity)
+
+## CMMS software and comparisons
+
+- [preventive maintenance guide and labor calculator](https://maintenease.com/learn/preventive-maintenance)
+- [free preventive maintenance checklist](https://maintenease.com/templates/preventive-maintenance-checklist)
+- [work order software](https://maintenease.com/solutions/work-order-software)
+- [asset management software](https://maintenease.com/solutions/asset-management-software)
+
+## Related
+
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/cmms
+- https://maintenease.com/learn/mtbf
+- https://maintenease.com/learn/mttr
+- https://maintenease.com/learn/root-cause-analysis
+- https://maintenease.com/learn/condition-based-maintenance
 
 ---
 
@@ -1118,6 +1463,12 @@ They overlap heavily. 'Facility' tends to imply a broader scope including non-bu
 ### Who is responsible for facility maintenance?
 
 In owner-occupied buildings, an internal facilities team. In leased space, responsibility is split between landlord and tenant per the lease; the CMMS should reflect that split.
+
+## CMMS software and comparisons
+
+- [facility management operations hub](https://maintenease.com/facility-management)
+- [facility maintenance software](https://maintenease.com/solutions/facility-maintenance-software)
+- [preventive maintenance guide](https://maintenease.com/learn/preventive-maintenance)
 
 ## Related
 
@@ -2352,7 +2703,9 @@ Yes. The download is a CSV file, so it opens in Microsoft Excel, Google Sheets, 
 
 Update it when work is completed, not at the end of the week. Same-day entries preserve accurate labor, parts, failure details, and follow-up dates.
 
-Direct CSV: https://maintenease.com/templates/downloads/maintenance-log-template.csv
+## Direct downloads
+
+- [Spreadsheet (CSV)](https://maintenease.com/templates/downloads/maintenance-log-template.csv)
 
 ---
 
@@ -2391,13 +2744,15 @@ Start with the manufacturer recommendation, regulatory requirement, asset critic
 
 Yes. It downloads as CSV and opens in Excel, Google Sheets, Apple Numbers, and most spreadsheet tools.
 
-Direct CSV: https://maintenease.com/templates/downloads/preventive-maintenance-checklist.csv
+## Direct downloads
+
+- [Spreadsheet (CSV)](https://maintenease.com/templates/downloads/preventive-maintenance-checklist.csv)
 
 ---
 
-# Free maintenance work order template
+# Free work order template for Word, PDF, and Google Sheets
 
-> Capture a maintenance request, turn it into assigned work, and preserve the close-out details. This work order template covers the full record from requester and priority through labor, parts, completion date, and technician notes.
+> Choose a field-ready Word form, print-ready PDF, formula-driven spreadsheet for Excel or Google Sheets, or a plain CSV. Every format follows the same maintenance work order from request and approval through assignment, labor, parts, cause, repair, and verified close-out.
 
 Canonical URL: https://maintenease.com/templates/work-order-template
 
@@ -2426,8 +2781,21 @@ A work order should include a unique ID, requester, priority, status, location, 
 
 A request reports a need. A work order is the approved, assigned, and trackable record used to plan and complete that work.
 
-### Can I use this work order template in Excel?
+### Can I download this work order template in Word?
 
-Yes. The CSV opens in Excel, Google Sheets, Apple Numbers, and other spreadsheet applications.
+Yes. The DOCX is an editable two-page maintenance work order form designed for Microsoft Word and compatible document editors.
 
-Direct CSV: https://maintenease.com/templates/downloads/work-order-template.csv
+### Is there a printable work order PDF?
+
+Yes. The PDF uses the same request, planning, execution, parts, labor, and close-out sections in a print-ready layout.
+
+### Can I use the spreadsheet in Google Sheets?
+
+Yes. Upload the XLSX to Google Drive and open it with Google Sheets. The workbook includes editable dropdowns, formulas, a print view, and reference lists.
+
+## Direct downloads
+
+- [Word (DOCX)](https://maintenease.com/templates/downloads/work-order-template.docx)
+- [Printable PDF (PDF)](https://maintenease.com/templates/downloads/work-order-template.pdf)
+- [Excel / Google Sheets (XLSX)](https://maintenease.com/templates/downloads/work-order-template.xlsx)
+- [Plain spreadsheet (CSV)](https://maintenease.com/templates/downloads/work-order-template.csv)

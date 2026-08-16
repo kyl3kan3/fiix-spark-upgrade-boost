@@ -6,6 +6,7 @@
 /sms /sms-opt-in 301
 /login /auth 302
 /signup /auth?signup=true 302
+/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026 /learn/preventive-maintenance 301
 
 # Client-rendered, non-indexable routes use a dedicated noindex app shell.
 # These rules cover static hosts; the Pages middleware performs the equivalent

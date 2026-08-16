@@ -36,6 +36,7 @@ export type PricingTable = {
 };
 export type BestFit = { ours: string[]; theirs: string[] };
 export type MigrationStep = { title: string; body: string };
+export type ComparisonSource = { label: string; url: string };
 
 /**
  * Content freshness dates (`datePublished` / `dateModified`).
@@ -73,6 +74,8 @@ export type Comparison = {
   bestFit?: BestFit;
   /** Concrete switching plan (optional). */
   migrationSteps?: MigrationStep[];
+  /** Primary vendor documentation used for time-sensitive claims. */
+  sources?: ComparisonSource[];
   /** ISO date (YYYY-MM-DD) this comparison was first published. */
   datePublished?: string;
   /** ISO date (YYYY-MM-DD) of the last substantive content change. */
@@ -123,11 +126,12 @@ const migrationFaq = (competitor: string) => ({
 export const comparisons: Comparison[] = [
   {
     slug: "maintenease-vs-upkeep",
-    dateModified: "2026-08-13",
+    datePublished: "2026-08-13",
+    dateModified: "2026-08-16",
     competitor: "UpKeep",
     competitorPlan: "Premium",
     competitorPricePerUser: 55,
-    metaTitle: "UpKeep Pricing vs MaintenEase — CMMS Cost Comparison 2026",
+    metaTitle: "UpKeep Pricing 2026: Plans, Limits & MaintenEase Cost",
     metaDescription:
       "UpKeep pricing explained tier by tier, compared with MaintenEase account plans and included seats. See real monthly cost for a team of 8 before you switch.",
     h1: "MaintenEase vs UpKeep",
@@ -138,10 +142,10 @@ export const comparisons: Comparison[] = [
     pricingTable: {
       heading: "UpKeep pricing in 2026",
       summary:
-        "UpKeep currently lists Essential at $24 per user per month and Premium at $55 per user per month. Premium is the first listed tier with preventive-maintenance scheduling, so it is the more useful CMMS comparison for most maintenance teams.",
+        "UpKeep lists Essential at $24 per paid user per month and Premium at $55 per paid user per month. Premium is the first public tier with PM scheduling, custom checklists, inventory costing, labor tracking, and 30-day analytics. Professional and Enterprise use custom pricing, and implementation or training packages are separate add-ons.",
       sourceLabel: "UpKeep's official pricing page",
       sourceUrl: "https://upkeep.com/pricing/?selected_plan=professional",
-      verifiedOn: "2026-08-13",
+      verifiedOn: "2026-08-16",
       rows: [
         { plan: "Essential", competitorPrice: "$24/user/mo", mainteneasePrice: "Starter: $49/mo (2 seats)" },
         { plan: "Premium", competitorPrice: "$55/user/mo", mainteneasePrice: "Pro: $129/mo (4 seats)" },
@@ -150,10 +154,10 @@ export const comparisons: Comparison[] = [
       ],
     },
     competitorTiers: [
-      { name: "Essential", price: "$24 / user / mo", notes: "Work orders, requests, mobile access, and basic reporting; preventive scheduling is not listed." },
-      { name: "Premium", price: "$55 / user / mo", notes: "Adds preventive-maintenance scheduling, checklists, inventory, labor tracking, and 30-day analytics." },
-      { name: "Professional", price: "Custom quote", notes: "Advanced controls and reporting for larger operations." },
-      { name: "Enterprise", price: "Custom quote", notes: "Enterprise requirements and negotiated terms." },
+      { name: "Essential", price: "$24 / paid user / mo", notes: "Unlimited work orders and locations plus Nova AI; the public comparison does not include PM scheduling, inventory, or time-and-cost tracking." },
+      { name: "Premium", price: "$55 / paid user / mo", notes: "Adds PM scheduling, custom checklists, parts and inventory costing, time and labor tracking, UpKeep Studio, and 30-day analytics history." },
+      { name: "Professional", price: "Custom quote", notes: "Adds mobile offline mode, external request portal, full analytics history, asset lifecycle tracking, and signature capture." },
+      { name: "Enterprise", price: "Custom quote", notes: "Adds multi-site modules, workflow automation, reliability and downtime tracking, purchase orders, API and integrations, SSO, custom roles, and dashboards." },
     ],
     sections: [
       {
@@ -161,7 +165,15 @@ export const comparisons: Comparison[] = [
         paragraphs: [
           "UpKeep's public pricing is per user per month. Essential is $24/user/mo, while Premium is $55/user/mo and is the first listed tier that includes preventive-maintenance scheduling. Professional and Enterprise require a quote.",
           "That structure means the bill grows with headcount. Five users on Premium cost about $275/month and eight cost about $440/month before add-ons or negotiated terms.",
-          "The table above was verified against UpKeep's official pricing page on August 13, 2026. Vendor prices and packaging can change, so follow the source link before budgeting.",
+          "UpKeep says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users do. Model the people who will administer or complete work separately from people who only request or view it rather than multiplying the price by total headcount.",
+          "The public add-on list shows training-only service at $500, Quickstart implementation and training at $1,500, expanded training at $5,000, and custom Enterprise implementation by quote. The table above and these packages were verified against UpKeep's official pricing page on August 16, 2026. Packaging can change, so follow the source before budgeting.",
+        ],
+      },
+      {
+        heading: "Feature limits that change the right tier",
+        paragraphs: [
+          "Essential is positioned for teams leaving paper or spreadsheets, but UpKeep's public plan comparison does not include PM scheduling, checklists, inventory management, time-and-cost tracking, or full drill-down reporting on that tier. Premium adds those core preventive-maintenance workflows but lists only 30 days of analytics history.",
+          "Professional is the first public tier with mobile offline mode, an external request portal, full analytics history, asset lifecycle tracking, and signature capture. Enterprise is the tier for multi-site modules, workflow automation, reliability and downtime reporting, purchase orders, API and custom integrations, SSO, custom roles, and custom dashboards. Buyers should map required workflows to the tier before comparing per-user price.",
         ],
       },
       {
@@ -179,6 +191,13 @@ export const comparisons: Comparison[] = [
           "MaintenEase makes the most sense when the crew is growing, when people outside the maintenance team need visibility, and when you want AI predictive scoring, energy tracking, a no-login request portal, and free data import included rather than priced as add-ons.",
         ],
       },
+      {
+        heading: "Migration considerations before switching from UpKeep",
+        paragraphs: [
+          "Export and reconcile assets, locations, open work orders, completed history, parts, users, files, PM schedules, checklists, meter readings, and custom fields before changing systems. Preserve stable IDs and parent-child relationships so asset history does not split during import. UpKeep's current work-order export documentation says a single export can include up to 500 work orders, so larger histories may require filtered batches and a reconciliation total.",
+          "Decide how status, priority, category, user, and location values map before the import. Test a sample that includes attachments, recurring schedules, child assets, parts usage, and closed work. Run both systems during a short controlled cutover, freeze configuration changes, reconcile open work and next-due PM dates, then keep the old account read-only until the retention and contract requirements are satisfied.",
+        ],
+      },
     ],
     bestFit: {
       ours: [
@@ -194,7 +213,7 @@ export const comparisons: Comparison[] = [
       ],
     },
     migrationSteps: [
-      { title: "Export from UpKeep", body: "Export assets, locations, open work orders, and PM schedules to CSV or Excel from your UpKeep account." },
+      { title: "Inventory and export", body: "Export assets, locations, users, parts, open work, PM schedules, and history. UpKeep currently documents a 500-work-order limit per export, so reconcile large histories in batches." },
       { title: "Send us the files", body: "We clean and map the columns and import them for free during onboarding — no re-keying and no per-record charge." },
       { title: "Run both for two weeks", body: "Keep UpKeep read-only while your team completes real work in MaintenEase, so nothing is lost in the switch." },
       { title: "Cut over and cancel", body: "Once PM schedules are generating correctly and the backlog matches, close the UpKeep subscription at the end of its term." },
@@ -207,11 +226,11 @@ export const comparisons: Comparison[] = [
     faqs: [
       {
         q: "How much does UpKeep cost per month?",
-        a: "UpKeep pricing starts at $24 per user per month for Essential. Premium is $55 per user per month and is the first listed tier with preventive-maintenance scheduling, so a 5-person maintenance team pays roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices verified August 13, 2026; check UpKeep's pricing page for changes.",
+        a: "UpKeep pricing starts at $24 per paid user per month for Essential. Premium is $55 per paid user per month and is the first public tier with PM scheduling, so five paid Premium users cost roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices and packaging verified August 16, 2026; check UpKeep's pricing page for changes.",
       },
       {
         q: "Does UpKeep have a free plan?",
-        a: "UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.",
+        a: "UpKeep offers a free trial and says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users require paid licenses, so classify each role by the work it performs before estimating cost.",
       },
       pricingFaq("UpKeep", 55),
       {
@@ -220,6 +239,11 @@ export const comparisons: Comparison[] = [
       },
       affiliationFaq("UpKeep"),
       migrationFaq("UpKeep"),
+    ],
+    sources: [
+      { label: "UpKeep official pricing and plan comparison", url: "https://upkeep.com/pricing/?selected_plan=professional" },
+      { label: "UpKeep Help: Work-order export limits and formats", url: "https://help.onupkeep.com/en/collections/3653439-upkeep-work-orders" },
+      { label: "UpKeep Help: Asset hierarchy and history behavior", url: "https://help.onupkeep.com/en/articles/4658340-create-and-edit-assets" },
     ],
   },
   {

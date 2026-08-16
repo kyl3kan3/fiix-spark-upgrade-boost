@@ -30,6 +30,12 @@ They overlap heavily. 'Facility' tends to imply a broader scope including non-bu
 
 In owner-occupied buildings, an internal facilities team. In leased space, responsibility is split between landlord and tenant per the lease; the CMMS should reflect that split.
 
+## CMMS software and comparisons
+
+- [facility management operations hub](https://maintenease.com/facility-management)
+- [facility maintenance software](https://maintenease.com/solutions/facility-maintenance-software)
+- [preventive maintenance guide](https://maintenease.com/learn/preventive-maintenance)
+
 ## Related
 
 - https://maintenease.com/learn/building-maintenance

@@ -13,6 +13,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [Pricing](https://maintenease.com/pricing.md): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](https://maintenease.com/cmms-cost-calculator.md): Estimate savings vs per-user CMMS pricing.
 - [MCP server for ChatGPT and Claude](https://maintenease.com/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
+- [Facility management guide](https://maintenease.com/facility-management.md): Operations, maintenance, work orders, inspections, compliance, vendors, software, and KPIs.
 
 ## Solutions
 
@@ -34,9 +35,10 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 
 ## Learn (glossary)
 
-- [CMMS (Computerized Maintenance Management System)](https://maintenease.com/learn/cmms.md): Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.
+- [Maintenance Management Systems (CMMS): Complete Buyer's Guide](https://maintenease.com/learn/cmms.md): Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
 - [Agentic CMMS: AI Agents for Maintenance Workflows](https://maintenease.com/learn/agentic-cmms.md): A CMMS that lets authorized AI agents retrieve maintenance data and complete workflow steps, such as reviewing requests or creating work orders, while preserving permissions and human oversight.
-- [Preventive Maintenance](https://maintenease.com/learn/preventive-maintenance.md): Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.
+- [Preventive Maintenance: Complete Guide, Schedule, Examples, and Templates](https://maintenease.com/learn/preventive-maintenance.md): Preventive maintenance is planned work performed before functional failure, triggered by time, usage, condition findings, or asset risk to reduce avoidable downtime and preserve equipment performance.
+- [Total Productive Maintenance: The 8 Pillars, KPIs, and Implementation Plan](https://maintenease.com/learn/total-productive-maintenance.md): Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.
 - [Work Order](https://maintenease.com/learn/work-order.md): A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.
 - [Facility Maintenance](https://maintenease.com/learn/facility-maintenance.md): All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.
 - [Fleet Maintenance](https://maintenease.com/learn/fleet-maintenance.md): Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.
@@ -67,7 +69,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 
 - [Maintenance Log Template](https://maintenease.com/templates/maintenance-log-template.md): Record every repair, inspection, and preventive task in one consistent maintenance log. The template gives each entry an asset, owner, cost, status, and next-service date so the spreadsheet stays useful as the history grows.
 - [Preventive Maintenance Checklist](https://maintenease.com/templates/preventive-maintenance-checklist.md): Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.
-- [Work Order Template](https://maintenease.com/templates/work-order-template.md): Capture a maintenance request, turn it into assigned work, and preserve the close-out details. This work order template covers the full record from requester and priority through labor, parts, completion date, and technician notes.
+- [Work Order Template](https://maintenease.com/templates/work-order-template.md): Choose a field-ready Word form, print-ready PDF, formula-driven spreadsheet for Excel or Google Sheets, or a plain CSV. Every format follows the same maintenance work order from request and approval through assignment, labor, parts, cause, repair, and verified close-out.
 
 ## Policies
 
@@ -91,6 +93,7 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 
 - **Home** — HTML: https://maintenease.com/ — Markdown: https://maintenease.com/index.md
 - **Maintenance Simplified** — HTML: https://maintenease.com/maintenance-simplified — Markdown: https://maintenease.com/maintenance-simplified.md
+- **Facility Management** — HTML: https://maintenease.com/facility-management — Markdown: https://maintenease.com/facility-management.md
 - **Pricing** — HTML: https://maintenease.com/pricing — Markdown: https://maintenease.com/pricing.md
 - **Features** — HTML: https://maintenease.com/features — Markdown: https://maintenease.com/features.md
 - **Mcp** — HTML: https://maintenease.com/mcp — Markdown: https://maintenease.com/mcp.md
@@ -112,6 +115,7 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Cmms** — HTML: https://maintenease.com/learn/cmms — Markdown: https://maintenease.com/learn/cmms.md
 - **Agentic Cmms** — HTML: https://maintenease.com/learn/agentic-cmms — Markdown: https://maintenease.com/learn/agentic-cmms.md
 - **Preventive Maintenance** — HTML: https://maintenease.com/learn/preventive-maintenance — Markdown: https://maintenease.com/learn/preventive-maintenance.md
+- **Total Productive Maintenance** — HTML: https://maintenease.com/learn/total-productive-maintenance — Markdown: https://maintenease.com/learn/total-productive-maintenance.md
 - **Work Order** — HTML: https://maintenease.com/learn/work-order — Markdown: https://maintenease.com/learn/work-order.md
 - **Facility Maintenance** — HTML: https://maintenease.com/learn/facility-maintenance — Markdown: https://maintenease.com/learn/facility-maintenance.md
 - **Fleet Maintenance** — HTML: https://maintenease.com/learn/fleet-maintenance — Markdown: https://maintenease.com/learn/fleet-maintenance.md

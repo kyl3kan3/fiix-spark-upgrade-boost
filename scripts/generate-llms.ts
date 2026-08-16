@@ -14,6 +14,13 @@ import { solutions } from "../src/data/solutions";
 import { comparisons, MAINTENEASE_TEAM_PRICE, TEAM_SIZE } from "../src/data/comparisons";
 import { glossary } from "../src/data/glossary";
 import { maintenanceTemplates } from "../src/data/maintenanceTemplates";
+import {
+  FACILITY_MANAGEMENT_FAQS,
+  FACILITY_MANAGEMENT_KPIS,
+  FACILITY_MANAGEMENT_PAGE,
+  FACILITY_MANAGEMENT_PATHS,
+  FACILITY_MANAGEMENT_SOURCES,
+} from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
 import {
@@ -91,6 +98,9 @@ function compareMd(c: (typeof comparisons)[number]) {
   const narrative = c.sections?.length
     ? `\n\n${c.sections.map((section) => `## ${section.heading}\n\n${section.paragraphs.join("\n\n")}`).join("\n\n")}`
     : "";
+  const vendorSources = c.sources?.length
+    ? `\n\n## Vendor sources checked\n\n${c.sources.map((source) => `- [${source.label}](${source.url})`).join("\n")}`
+    : "";
   return `# ${c.h1}
 
 > ${c.tagline}
@@ -113,7 +123,7 @@ ${c.differentiators.map((d) => `- **${d.title}** — ${d.body}`).join("\n")}
 
 ## FAQ
 
-${c.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
+${c.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}${vendorSources}
 `;
 }
 
@@ -138,6 +148,11 @@ ${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.
 }
 
 function templateMd(template: (typeof maintenanceTemplates)[number]) {
+  const downloads = template.downloads ?? [{
+    label: "Spreadsheet",
+    format: "CSV",
+    path: template.downloadPath,
+  }];
   return `# ${template.h1}
 
 > ${template.intro}
@@ -156,7 +171,9 @@ ${template.steps.map((step, index) => `${index + 1}. **${step.title}** — ${ste
 
 ${template.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
 
-Direct CSV: ${SITE}${template.downloadPath}
+## Direct downloads
+
+${downloads.map((download) => `- [${download.label} (${download.format})](${SITE}${download.path})`).join("\n")}
 `;
 }
 
@@ -201,11 +218,39 @@ ${MCP_PAGE.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
 `;
 }
 
+function facilityManagementMd() {
+  return `# ${FACILITY_MANAGEMENT_PAGE.title}
+
+> ${FACILITY_MANAGEMENT_PAGE.description}
+
+Canonical URL: ${SITE}/facility-management
+
+## Facility management workstreams
+
+${FACILITY_MANAGEMENT_PATHS.map((path) => `- **${path.title}** — ${path.description}${path.href.startsWith("#") ? "" : ` [${path.cta}](${SITE}${path.href})`}`).join("\n")}
+
+## Facility management KPIs
+
+| KPI | Definition | Decision supported |
+| --- | --- | --- |
+${FACILITY_MANAGEMENT_KPIS.map((row) => `| ${row.join(" | ")} |`).join("\n")}
+
+## FAQ
+
+${FACILITY_MANAGEMENT_FAQS.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
+
+## Sources
+
+${FACILITY_MANAGEMENT_SOURCES.map((source) => `- [${source.label}](${source.url})`).join("\n")}
+`;
+}
+
 for (const s of solutions) write(`solutions/${s.slug}.md`, solutionMd(s));
 for (const c of comparisons) write(`compare/${c.slug}.md`, compareMd(c));
 for (const g of glossary) write(`learn/${g.slug}.md`, glossaryMd(g));
 for (const template of maintenanceTemplates) write(`templates/${template.slug}.md`, templateMd(template));
 write("mcp.md", mcpMd());
+write("facility-management.md", facilityManagementMd());
 
 // ---- llms.txt (index) -----------------------------------------------------
 
@@ -224,6 +269,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [Pricing](${SITE}/pricing.md): Account-plan pricing, included seats, capacity limits, and trial details.
 - [CMMS cost calculator](${SITE}/cmms-cost-calculator.md): Estimate savings vs per-user CMMS pricing.
 - [MCP server for ChatGPT and Claude](${SITE}/mcp.md): OAuth-secured CMMS tools for work orders, assets, locations, and maintenance requests.
+- [Facility management guide](${SITE}/facility-management.md): Operations, maintenance, work orders, inspections, compliance, vendors, software, and KPIs.
 
 ## Solutions
 
@@ -276,6 +322,8 @@ const parts = [
   `# MaintenEase — Full AI-agent corpus\n\nGenerated from ${SITE}. See ${SITE}/llms.txt for the index.\n`,
   "\n\n---\n\n# MCP server\n",
   mcpMd(),
+  "\n\n---\n\n# Facility management\n",
+  facilityManagementMd(),
   "\n\n---\n\n# Solutions\n",
   ...solutions.map(solutionMd).map((m) => `\n---\n\n${m}`),
   "\n\n---\n\n# Comparisons\n",
@@ -365,7 +413,10 @@ const apiContent = {
     name: template.title,
     html_url: `${SITE}/templates/${template.slug}`,
     markdown_url: `${SITE}/templates/${template.slug}.md`,
-    format: "text/csv",
+    formats: (template.downloads ?? [{ format: "CSV", path: template.downloadPath }]).map((download) => ({
+      format: download.format,
+      download_url: `${SITE}${download.path}`,
+    })),
   })),
   blog: {
     index_html_url: `${SITE}/blog`,

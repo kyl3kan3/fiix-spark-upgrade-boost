@@ -13,13 +13,14 @@ describe("maintenance templates", () => {
     expect(new Set(maintenanceTemplates.map((template) => template.slug)).size).toBe(3);
   });
 
-  it("backs every landing page with a non-empty CSV download", () => {
+  it("backs every landing page with non-empty downloadable files", () => {
     for (const template of maintenanceTemplates) {
-      const filePath = resolve(process.cwd(), "public", template.downloadPath.replace(/^\//, ""));
-      expect(existsSync(filePath), `${template.slug} download is missing`).toBe(true);
-      const csv = readFileSync(filePath, "utf8");
-      expect(csv.split("\n")[0].split(",").length).toBeGreaterThanOrEqual(6);
-      expect(csv.trim().split("\n").length).toBeGreaterThanOrEqual(3);
+      const downloads = template.downloads ?? [{ path: template.downloadPath, format: "CSV" }];
+      for (const download of downloads) {
+        const filePath = resolve(process.cwd(), "public", download.path.replace(/^\//, ""));
+        expect(existsSync(filePath), `${template.slug} ${download.format} download is missing`).toBe(true);
+        expect(readFileSync(filePath).byteLength).toBeGreaterThan(100);
+      }
     }
   });
 

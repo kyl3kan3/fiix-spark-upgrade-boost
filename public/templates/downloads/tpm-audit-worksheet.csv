@@ -1,0 +1,11 @@
+Audit Area,Audit Question,Score (0-3),Evidence Reviewed,Gap or Finding,Owner,Due Date,Verification Result,Verification Date
+Loss baseline,Are pilot losses defined consistently and ranked?,,,,,,,
+Basic conditions,Are cleaning lubrication guarding leaks and obvious defects controlled?,,,,,,,
+Autonomous maintenance,Do operators complete defined safe checks and escalate abnormalities?,,,,,,,
+Planned maintenance,Do PM tasks address documented failure modes and use justified intervals?,,,,,,,
+Quality maintenance,Are defect-producing equipment conditions defined and monitored?,,,,,,,
+Skills,Are assigned tasks matched to current qualifications and training?,,,,,,,
+Safety health environment,Are task boundaries hazards and controls explicit?,,,,,,,
+Focused improvement,Are recurring losses assigned with root cause countermeasure and verification?,,,,,,,
+Planning and materials,Are job plans tools permits and parts ready before scheduled work?,,,,,,,
+Management system,Does the weekly review update standards priorities and ownership?,,,,,,,

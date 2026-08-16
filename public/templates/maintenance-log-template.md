@@ -33,4 +33,6 @@ Yes. The download is a CSV file, so it opens in Microsoft Excel, Google Sheets, 
 
 Update it when work is completed, not at the end of the week. Same-day entries preserve accurate labor, parts, failure details, and follow-up dates.
 
-Direct CSV: https://maintenease.com/templates/downloads/maintenance-log-template.csv
+## Direct downloads
+
+- [Spreadsheet (CSV)](https://maintenease.com/templates/downloads/maintenance-log-template.csv)

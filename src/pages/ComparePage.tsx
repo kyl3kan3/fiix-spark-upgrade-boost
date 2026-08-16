@@ -305,6 +305,24 @@ const ComparePage = () => {
         </section>
       ) : null}
 
+      {c.sources?.length ? (
+        <section className="container mx-auto max-w-3xl px-4 pb-12">
+          <h2 className="font-headline text-2xl font-bold text-foreground text-balance">Vendor sources checked</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground text-pretty">
+            Time-sensitive pricing, packaging, user-type, export, and migration details were checked against the vendor documentation below. Verify them again before signing a contract.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {c.sources.map((source) => (
+              <li key={source.url}>
+                <a href={source.url} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center text-sm font-medium text-primary underline underline-offset-4 hover:no-underline">
+                  {source.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {/* FAQ */}
       <section className="bg-muted/40 border-y border-border py-16">
         <div className="container mx-auto px-4 max-w-3xl">

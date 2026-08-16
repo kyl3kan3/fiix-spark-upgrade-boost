@@ -1,9 +1,18 @@
 import { Helmet } from "react-helmet-async";
+import { Download, FileCheck2 } from "lucide-react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import { getGlossaryTerm, glossary } from "@/data/glossary";
 import { Button } from "@/components/ui/button";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
+import PreventiveMaintenanceCapacityCalculator from "@/components/marketing/PreventiveMaintenanceCapacityCalculator";
+import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
+
+const sectionId = (heading: string) =>
+ heading
+ .toLowerCase()
+ .replace(/[^a-z0-9]+/g, "-")
+ .replace(/^-|-$/g, "");
 
 // Anchor text is intentionally varied per source article — keyword-rich but
 // contextual, avoiding repetition of the same phrase across the site.
@@ -124,6 +133,16 @@ const LearnArticle = () => {
  .filter((g): g is NonNullable<typeof g> => Boolean(g));
 
  const relatedSolutions = RELATED_SOLUTIONS[term.slug] ?? [];
+ const hasOnPageNavigation = term.sections.length >= 6;
+ const isPreventiveGuide = term.slug === "preventive-maintenance";
+ const isTpmGuide = term.slug === "total-productive-maintenance";
+ const trackTpmDownload = (format: string, filename: string) => {
+  void trackMarketingEvent({
+   eventType: "template_download",
+   pageSlug: term.slug,
+   metadata: { resource: "TPM implementation toolkit", format, filename },
+  });
+ };
 
  return (
  <MarketingLayout>
@@ -151,14 +170,30 @@ const LearnArticle = () => {
  <span className="mx-2">/</span>
  <span className="text-foreground">{term.term}</span>
  </nav>
- <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">{term.term}</h1>
- <p className="text-xl text-foreground mb-10">{term.short}</p>
+ <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4 text-balance">{term.term}</h1>
+ <p className="text-xl text-foreground mb-10 text-pretty">{term.short}</p>
+
+ {hasOnPageNavigation && (
+ <nav aria-label="On this page" className="mb-12 rounded-2xl bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
+ <p className="text-sm font-semibold uppercase tracking-wide text-primary">On this page</p>
+ <ol className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+ {term.sections.map((section, index) => (
+ <li key={section.heading}>
+ <a href={`#${sectionId(section.heading)}`} className="inline-flex min-h-10 items-center text-foreground underline decoration-border underline-offset-4 transition-colors duration-150 hover:text-primary">
+ <span className="mr-2 text-muted-foreground tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+ {section.heading}
+ </a>
+ </li>
+ ))}
+ </ol>
+ </nav>
+ )}
 
  <div className="space-y-10">
  {term.sections.map((s) => (
- <section key={s.heading}>
- <h2 className="text-2xl font-semibold mb-3 text-foreground">{s.heading}</h2>
- <p className="text-foreground leading-relaxed">{s.body}</p>
+ <section key={s.heading} id={sectionId(s.heading)} className="scroll-mt-24">
+ <h2 className="text-2xl font-semibold mb-3 text-foreground text-balance">{s.heading}</h2>
+ <p className="text-foreground leading-relaxed text-pretty">{s.body}</p>
  {s.table && (
  <div className="mt-5 overflow-x-auto rounded-lg border border-border">
  <table className="w-full text-sm">
@@ -188,9 +223,48 @@ const LearnArticle = () => {
  </table>
  </div>
  )}
+ {isPreventiveGuide && s.heading === "Plan preventive maintenance labor capacity" ? (
+ <PreventiveMaintenanceCapacityCalculator />
+ ) : null}
  </section>
  ))}
  </div>
+
+ {(isPreventiveGuide || isTpmGuide) && (
+ <section className="mt-12 rounded-3xl bg-primary/5 p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] sm:p-8">
+ <div className="flex items-start gap-3">
+ <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-background text-primary shadow-sm">
+ <FileCheck2 className="h-5 w-5" aria-hidden="true" />
+ </span>
+ <div>
+ <h2 className="text-2xl font-semibold text-foreground text-balance">
+ {isPreventiveGuide ? "Preventive maintenance templates" : "TPM audit and implementation downloads"}
+ </h2>
+ <p className="mt-2 leading-relaxed text-muted-foreground text-pretty">
+ {isPreventiveGuide
+ ? "Use the schedule fields from this guide in a ready-to-edit checklist, then move recurring work into MaintenEase when assignments and evidence need one shared workflow."
+ : "Use the audit to establish a pilot baseline and the 90-day checklist to keep owners, evidence, and review dates visible."}
+ </p>
+ </div>
+ </div>
+ <div className="mt-5 flex flex-wrap gap-3">
+ {isPreventiveGuide ? (
+ <Link to="/templates/preventive-maintenance-checklist" className="inline-flex min-h-11 items-center rounded-xl bg-primary pl-5 pr-[18px] py-2.5 font-semibold text-primary-foreground transition-[background-color,box-shadow,transform] duration-150 hover:bg-primary-variant hover:shadow-md active:scale-[0.96]">
+ Get the PM checklist <Download className="ml-2 h-4 w-4" aria-hidden="true" />
+ </Link>
+ ) : (
+ <>
+ <a href="/templates/downloads/tpm-audit-worksheet.csv" download onClick={() => trackTpmDownload("CSV", "tpm-audit-worksheet.csv")} className="inline-flex min-h-11 items-center rounded-xl bg-primary pl-5 pr-[18px] py-2.5 font-semibold text-primary-foreground transition-[background-color,box-shadow,transform] duration-150 hover:bg-primary-variant hover:shadow-md active:scale-[0.96]">
+ Download TPM audit <Download className="ml-2 h-4 w-4" aria-hidden="true" />
+ </a>
+ <a href="/templates/downloads/tpm-90-day-implementation-checklist.csv" download onClick={() => trackTpmDownload("CSV", "tpm-90-day-implementation-checklist.csv")} className="inline-flex min-h-11 items-center rounded-xl bg-background px-5 py-2.5 font-semibold text-primary shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-[box-shadow,transform] duration-150 hover:shadow-md active:scale-[0.96]">
+ Download 90-day checklist <Download className="ml-2 h-4 w-4" aria-hidden="true" />
+ </a>
+ </>
+ )}
+ </div>
+ </section>
+ )}
 
  <section className="mt-12">
  <h2 className="text-2xl font-semibold mb-4 text-foreground">Frequently asked questions</h2>
@@ -225,13 +299,19 @@ const LearnArticle = () => {
  )}
 
  <section className="mt-12 p-8 rounded-xl bg-primary/5 border border-primary/20">
- <h2 className="text-2xl font-semibold mb-2 text-foreground">Put this into practice with MaintenEase</h2>
+ <h2 className="text-2xl font-semibold mb-2 text-foreground text-balance">
+ {isPreventiveGuide ? "Create your preventive maintenance program in MaintenEase" : isTpmGuide ? "Turn TPM findings into traceable maintenance work" : "Put this into practice with MaintenEase"}
+ </h2>
  <p className="text-foreground mb-5">
- MaintenEase is modern maintenance management software built for teams that want to stop firefighting. Start free and see your work in one place in minutes.
+ {isPreventiveGuide
+ ? "Connect schedules, procedures, work orders, findings, and asset history so every PM creates usable evidence instead of another isolated checklist."
+ : isTpmGuide
+ ? "Keep operator findings, planned work, causes, downtime, labor, and countermeasures connected to each asset while your TPM routines mature."
+ : "MaintenEase is modern maintenance management software built for teams that want to stop firefighting. Start free and see your work in one place in minutes."}
  </p>
   <div className="flex flex-wrap gap-3">
   <Button asChild>
-  <Link to="/auth?signup=true">Start free</Link>
+  <Link to="/auth?signup=true">{isPreventiveGuide ? "Create a PM program" : "Start free"}</Link>
   </Button>
   <Button asChild variant="outline">
   <Link to={term.slug === "agentic-cmms" ? "/features" : "/cmms-cost-calculator"}>

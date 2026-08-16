@@ -5,6 +5,7 @@ describe("SEO route policy", () => {
   it.each([
     "/",
     "/pricing",
+    "/facility-management",
     "/mcp",
     "/support",
     "/solutions/asset-management-software",
@@ -44,6 +45,10 @@ describe("SEO route policy", () => {
   it("maps legacy routes to one canonical destination", () => {
     expect(redirectForPath("/privacy-policy/")).toEqual({ location: "/privacy", status: 301 });
     expect(redirectForPath("/signup")).toEqual({ location: "/auth?signup=true", status: 302 });
+    expect(redirectForPath("/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026")).toEqual({
+      location: "/learn/preventive-maintenance",
+      status: 301,
+    });
     expect(redirectForPath("/pricing")).toBeNull();
   });
 });

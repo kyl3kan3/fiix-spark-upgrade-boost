@@ -6,6 +6,11 @@ export type SeoResource = {
 
 export const FEATURED_DISCOVERY_RESOURCES: SeoResource[] = [
   {
+    href: "/facility-management",
+    title: "Facility management operations hub",
+    description: "Connect maintenance, work orders, inspections, assets, compliance, vendors, space, software, and KPIs.",
+  },
+  {
     href: "/maintenance-simplified",
     title: "Maintenance simplified playbook",
     description: "A practical operating model for small maintenance teams.",

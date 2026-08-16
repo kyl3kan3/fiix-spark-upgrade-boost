@@ -1,0 +1,3 @@
+*.docx -text -diff
+*.pdf -text -diff
+*.xlsx -text -diff

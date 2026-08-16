@@ -5,6 +5,7 @@ import {
   STATIC_SITEMAP_ENTRIES,
   type SitemapEntry,
 } from "../src/data/sitemapEntries";
+import { redirectForPath } from "../src/lib/seoRouting";
 
 const SITE = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
@@ -52,7 +53,8 @@ export const onRequestGet = async (_context: any) => {
     // Sitemap must still return static entries if the DB call fails.
   }
 
-  const latestBlogLastmod = posts
+  const publishedPosts = posts.filter((post) => !redirectForPath(`/blog/${post.slug}`));
+  const latestBlogLastmod = publishedPosts
     .map((post) => (post.updated_at ?? post.published_at ?? "").slice(0, 10))
     .filter(Boolean)
     .sort()
@@ -61,7 +63,7 @@ export const onRequestGet = async (_context: any) => {
     renderEntry(entry.path === "/blog" ? { ...entry, lastmod: latestBlogLastmod } : entry),
   );
 
-  for (const p of posts) {
+  for (const p of publishedPosts) {
     const lastmod = (p.updated_at ?? p.published_at ?? "").slice(0, 10);
     urls.push(
       `  <url>\n    <loc>${SITE}/blog/${esc(p.slug)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`,

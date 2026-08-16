@@ -33,4 +33,6 @@ Start with the manufacturer recommendation, regulatory requirement, asset critic
 
 Yes. It downloads as CSV and opens in Excel, Google Sheets, Apple Numbers, and most spreadsheet tools.
 
-Direct CSV: https://maintenease.com/templates/downloads/preventive-maintenance-checklist.csv
+## Direct downloads
+
+- [Spreadsheet (CSV)](https://maintenease.com/templates/downloads/preventive-maintenance-checklist.csv)

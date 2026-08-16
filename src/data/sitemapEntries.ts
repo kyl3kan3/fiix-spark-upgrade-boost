@@ -32,6 +32,12 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
     changefreq: "monthly",
     priority: "0.8",
   },
+  {
+    path: "/facility-management",
+    lastmod: "2026-08-16",
+    changefreq: "monthly",
+    priority: "0.9",
+  },
   { path: "/pricing", lastmod: PRODUCT_LAST_MODIFIED, changefreq: "monthly", priority: "0.9" },
   { path: "/features", lastmod: PRODUCT_LAST_MODIFIED, changefreq: "monthly", priority: "0.8" },
   { path: "/mcp", lastmod: MCP_PAGE.updated, changefreq: "monthly", priority: "0.9" },

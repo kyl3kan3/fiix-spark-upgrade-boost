@@ -1,6 +1,6 @@
-# Free maintenance work order template
+# Free work order template for Word, PDF, and Google Sheets
 
-> Capture a maintenance request, turn it into assigned work, and preserve the close-out details. This work order template covers the full record from requester and priority through labor, parts, completion date, and technician notes.
+> Choose a field-ready Word form, print-ready PDF, formula-driven spreadsheet for Excel or Google Sheets, or a plain CSV. Every format follows the same maintenance work order from request and approval through assignment, labor, parts, cause, repair, and verified close-out.
 
 Canonical URL: https://maintenease.com/templates/work-order-template
 
@@ -29,8 +29,21 @@ A work order should include a unique ID, requester, priority, status, location, 
 
 A request reports a need. A work order is the approved, assigned, and trackable record used to plan and complete that work.
 
-### Can I use this work order template in Excel?
+### Can I download this work order template in Word?
 
-Yes. The CSV opens in Excel, Google Sheets, Apple Numbers, and other spreadsheet applications.
+Yes. The DOCX is an editable two-page maintenance work order form designed for Microsoft Word and compatible document editors.
 
-Direct CSV: https://maintenease.com/templates/downloads/work-order-template.csv
+### Is there a printable work order PDF?
+
+Yes. The PDF uses the same request, planning, execution, parts, labor, and close-out sections in a print-ready layout.
+
+### Can I use the spreadsheet in Google Sheets?
+
+Yes. Upload the XLSX to Google Drive and open it with Google Sheets. The workbook includes editable dropdowns, formulas, a print view, and reference lists.
+
+## Direct downloads
+
+- [Word (DOCX)](https://maintenease.com/templates/downloads/work-order-template.docx)
+- [Printable PDF (PDF)](https://maintenease.com/templates/downloads/work-order-template.pdf)
+- [Excel / Google Sheets (XLSX)](https://maintenease.com/templates/downloads/work-order-template.xlsx)
+- [Plain spreadsheet (CSV)](https://maintenease.com/templates/downloads/work-order-template.csv)

@@ -5,6 +5,8 @@ const TRACKED_SLUGS = new Set([
  "asset-management-software",
  "maintenance-log-template",
  "preventive-maintenance-checklist",
+ "preventive-maintenance",
+ "total-productive-maintenance",
  "work-order-template",
 ]);
 

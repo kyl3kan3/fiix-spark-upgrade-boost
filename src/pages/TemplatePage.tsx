@@ -27,7 +27,7 @@ const TemplatePage = () => {
     name: template.title,
     description: template.metaDescription,
     url,
-    encodingFormat: "text/csv",
+    encodingFormat: template.downloads?.map((download) => download.format) ?? ["CSV"],
     isAccessibleForFree: true,
     datePublished: template.published,
     dateModified: template.updated,
@@ -100,9 +100,23 @@ const TemplatePage = () => {
               templateTitle={template.title}
               downloadPath={template.downloadPath}
               downloadFilename={template.downloadFilename}
+              downloads={template.downloads}
             />
           </div>
         </section>
+
+        {template.downloads?.length ? (
+          <section className="container mx-auto max-w-6xl px-4 pb-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {template.downloads.map((download) => (
+                <div key={download.path} className="rounded-2xl bg-card p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{download.format}</p>
+                  <p className="mt-1 font-semibold text-foreground">{download.label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="border-y border-border bg-muted/30 py-14">
           <div className="container mx-auto max-w-6xl px-4">

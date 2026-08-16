@@ -8,7 +8,7 @@ UpKeep is a well-known mobile-first CMMS priced per user per month. MaintenEase 
 
 ## UpKeep pricing in 2026
 
-UpKeep currently lists Essential at $24 per user per month and Premium at $55 per user per month. Premium is the first listed tier with preventive-maintenance scheduling, so it is the more useful CMMS comparison for most maintenance teams.
+UpKeep lists Essential at $24 per paid user per month and Premium at $55 per paid user per month. Premium is the first public tier with PM scheduling, custom checklists, inventory costing, labor tracking, and 30-day analytics. Professional and Enterprise use custom pricing, and implementation or training packages are separate add-ons.
 
 | Plan | UpKeep price | MaintenEase price |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ UpKeep currently lists Essential at $24 per user per month and Premium at $55 pe
 | Professional | Custom quote | Business: $299/mo (4 seats) |
 | Enterprise | Custom quote | Business: $299/mo + $15/additional seat |
 
-Source: [UpKeep's official pricing page](https://upkeep.com/pricing/?selected_plan=professional), verified 2026-08-13.
+Source: [UpKeep's official pricing page](https://upkeep.com/pricing/?selected_plan=professional), verified 2026-08-16.
 
 ## Side-by-side
 
@@ -44,7 +44,15 @@ UpKeep's public pricing is per user per month. Essential is $24/user/mo, while P
 
 That structure means the bill grows with headcount. Five users on Premium cost about $275/month and eight cost about $440/month before add-ons or negotiated terms.
 
-The table above was verified against UpKeep's official pricing page on August 13, 2026. Vendor prices and packaging can change, so follow the source link before budgeting.
+UpKeep says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users do. Model the people who will administer or complete work separately from people who only request or view it rather than multiplying the price by total headcount.
+
+The public add-on list shows training-only service at $500, Quickstart implementation and training at $1,500, expanded training at $5,000, and custom Enterprise implementation by quote. The table above and these packages were verified against UpKeep's official pricing page on August 16, 2026. Packaging can change, so follow the source before budgeting.
+
+## Feature limits that change the right tier
+
+Essential is positioned for teams leaving paper or spreadsheets, but UpKeep's public plan comparison does not include PM scheduling, checklists, inventory management, time-and-cost tracking, or full drill-down reporting on that tier. Premium adds those core preventive-maintenance workflows but lists only 30 days of analytics history.
+
+Professional is the first public tier with mobile offline mode, an external request portal, full analytics history, asset lifecycle tracking, and signature capture. Enterprise is the tier for multi-site modules, workflow automation, reliability and downtime reporting, purchase orders, API and custom integrations, SSO, custom roles, and custom dashboards. Buyers should map required workflows to the tier before comparing per-user price.
 
 ## How MaintenEase pricing compares
 
@@ -60,6 +68,12 @@ UpKeep is a mature, well-resourced product with a large customer base, an extens
 
 MaintenEase makes the most sense when the crew is growing, when people outside the maintenance team need visibility, and when you want AI predictive scoring, energy tracking, a no-login request portal, and free data import included rather than priced as add-ons.
 
+## Migration considerations before switching from UpKeep
+
+Export and reconcile assets, locations, open work orders, completed history, parts, users, files, PM schedules, checklists, meter readings, and custom fields before changing systems. Preserve stable IDs and parent-child relationships so asset history does not split during import. UpKeep's current work-order export documentation says a single export can include up to 500 work orders, so larger histories may require filtered batches and a reconciliation total.
+
+Decide how status, priority, category, user, and location values map before the import. Test a sample that includes attachments, recurring schedules, child assets, parts usage, and closed work. Run both systems during a short controlled cutover, freeze configuration changes, reconcile open work and next-due PM dates, then keep the old account read-only until the retention and contract requirements are satisfied.
+
 ## Why teams switch
 
 - **Published account and seat pricing** — Starter and Pro include seats up front. Business includes four seats and lists additional seats at $15 per month each, so the team can calculate the actual bill before switching.
@@ -70,11 +84,11 @@ MaintenEase makes the most sense when the crew is growing, when people outside t
 
 ### How much does UpKeep cost per month?
 
-UpKeep pricing starts at $24 per user per month for Essential. Premium is $55 per user per month and is the first listed tier with preventive-maintenance scheduling, so a 5-person maintenance team pays roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices verified August 13, 2026; check UpKeep's pricing page for changes.
+UpKeep pricing starts at $24 per paid user per month for Essential. Premium is $55 per paid user per month and is the first public tier with PM scheduling, so five paid Premium users cost roughly $275/month before add-ons. Professional and Enterprise require a quote. Prices and packaging verified August 16, 2026; check UpKeep's pricing page for changes.
 
 ### Does UpKeep have a free plan?
 
-UpKeep offers a free trial and free requester accounts, but technicians who complete work require a paid seat. Free requester access is not a substitute for a paid plan once your team is doing the work in the system.
+UpKeep offers a free trial and says View Only, Requester, and Third-Party users do not require paid licenses. Admin, Technical, and Limited Technical users require paid licenses, so classify each role by the work it performs before estimating cost.
 
 ### How much does MaintenEase save vs UpKeep?
 
@@ -91,3 +105,9 @@ No. This page is an independent comparison based on publicly available pricing a
 ### Can I migrate from UpKeep to MaintenEase?
 
 Yes. Export your assets and work orders (CSV/Excel) and our team imports them for free during onboarding. The rollout timing depends on the size and condition of the data you provide.
+
+## Vendor sources checked
+
+- [UpKeep official pricing and plan comparison](https://upkeep.com/pricing/?selected_plan=professional)
+- [UpKeep Help: Work-order export limits and formats](https://help.onupkeep.com/en/collections/3653439-upkeep-work-orders)
+- [UpKeep Help: Asset hierarchy and history behavior](https://help.onupkeep.com/en/articles/4658340-create-and-edit-assets)

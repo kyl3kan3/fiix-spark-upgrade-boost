@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-15T11:04:27.386Z",
+  "generated_at": "2026-08-16T22:02:05.781Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -23,6 +23,11 @@
       "path": "/maintenance-simplified",
       "html_url": "https://maintenease.com/maintenance-simplified",
       "markdown_url": "https://maintenease.com/maintenance-simplified.md"
+    },
+    {
+      "path": "/facility-management",
+      "html_url": "https://maintenease.com/facility-management",
+      "markdown_url": "https://maintenease.com/facility-management.md"
     },
     {
       "path": "/pricing",
@@ -128,6 +133,11 @@
       "path": "/learn/preventive-maintenance",
       "html_url": "https://maintenease.com/learn/preventive-maintenance",
       "markdown_url": "https://maintenease.com/learn/preventive-maintenance.md"
+    },
+    {
+      "path": "/learn/total-productive-maintenance",
+      "html_url": "https://maintenease.com/learn/total-productive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/total-productive-maintenance.md"
     },
     {
       "path": "/learn/work-order",
@@ -480,8 +490,8 @@
   "glossary": [
     {
       "slug": "cmms",
-      "term": "CMMS (Computerized Maintenance Management System)",
-      "short": "Software that centralizes work orders, assets, and preventive maintenance schedules so teams stop relying on spreadsheets and paper.",
+      "term": "Maintenance Management Systems (CMMS): Complete Buyer's Guide",
+      "short": "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
       "html_url": "https://maintenease.com/learn/cmms",
       "markdown_url": "https://maintenease.com/learn/cmms.md"
     },
@@ -494,10 +504,17 @@
     },
     {
       "slug": "preventive-maintenance",
-      "term": "Preventive Maintenance",
-      "short": "Scheduled service performed before equipment fails — by calendar date, runtime hours, or meter reading — to extend asset life and avoid downtime.",
+      "term": "Preventive Maintenance: Complete Guide, Schedule, Examples, and Templates",
+      "short": "Preventive maintenance is planned work performed before functional failure, triggered by time, usage, condition findings, or asset risk to reduce avoidable downtime and preserve equipment performance.",
       "html_url": "https://maintenease.com/learn/preventive-maintenance",
       "markdown_url": "https://maintenease.com/learn/preventive-maintenance.md"
+    },
+    {
+      "slug": "total-productive-maintenance",
+      "term": "Total Productive Maintenance: The 8 Pillars, KPIs, and Implementation Plan",
+      "short": "Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.",
+      "html_url": "https://maintenease.com/learn/total-productive-maintenance",
+      "markdown_url": "https://maintenease.com/learn/total-productive-maintenance.md"
     },
     {
       "slug": "work-order",
@@ -681,21 +698,48 @@
       "name": "Maintenance Log Template",
       "html_url": "https://maintenease.com/templates/maintenance-log-template",
       "markdown_url": "https://maintenease.com/templates/maintenance-log-template.md",
-      "format": "text/csv"
+      "formats": [
+        {
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/maintenance-log-template.csv"
+        }
+      ]
     },
     {
       "slug": "preventive-maintenance-checklist",
       "name": "Preventive Maintenance Checklist",
       "html_url": "https://maintenease.com/templates/preventive-maintenance-checklist",
       "markdown_url": "https://maintenease.com/templates/preventive-maintenance-checklist.md",
-      "format": "text/csv"
+      "formats": [
+        {
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/preventive-maintenance-checklist.csv"
+        }
+      ]
     },
     {
       "slug": "work-order-template",
       "name": "Work Order Template",
       "html_url": "https://maintenease.com/templates/work-order-template",
       "markdown_url": "https://maintenease.com/templates/work-order-template.md",
-      "format": "text/csv"
+      "formats": [
+        {
+          "format": "DOCX",
+          "download_url": "https://maintenease.com/templates/downloads/work-order-template.docx"
+        },
+        {
+          "format": "PDF",
+          "download_url": "https://maintenease.com/templates/downloads/work-order-template.pdf"
+        },
+        {
+          "format": "XLSX",
+          "download_url": "https://maintenease.com/templates/downloads/work-order-template.xlsx"
+        },
+        {
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/work-order-template.csv"
+        }
+      ]
     }
   ],
   "blog": {

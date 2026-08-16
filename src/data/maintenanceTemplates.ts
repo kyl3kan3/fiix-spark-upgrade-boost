@@ -8,6 +8,12 @@ export type MaintenanceTemplate = {
   intro: string;
   downloadPath: string;
   downloadFilename: string;
+  downloads?: {
+    label: string;
+    format: string;
+    path: string;
+    filename: string;
+  }[];
   published: string;
   updated: string;
   includes: string[];
@@ -116,17 +122,43 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
   {
     slug: "work-order-template",
     title: "Work Order Template",
-    metaTitle: "Free Work Order Template for Maintenance Teams",
+    metaTitle: "Work Order Template Word, PDF & Google Sheets (Free)",
     metaDescription:
-      "Download a free maintenance work order template with priority, status, requester, asset, assignment, schedule, labor, parts, and completion fields.",
-    h1: "Free maintenance work order template",
-    eyebrow: "Free CSV template",
+      "Download a free maintenance work order template in Word, printable PDF, Excel and Google Sheets formats with planning, labor, parts, and close-out fields.",
+    h1: "Free work order template for Word, PDF, and Google Sheets",
+    eyebrow: "Four free formats",
     intro:
-      "Capture a maintenance request, turn it into assigned work, and preserve the close-out details. This work order template covers the full record from requester and priority through labor, parts, completion date, and technician notes.",
-    downloadPath: "/templates/downloads/work-order-template.csv",
-    downloadFilename: "work-order-template.csv",
+      "Choose a field-ready Word form, print-ready PDF, formula-driven spreadsheet for Excel or Google Sheets, or a plain CSV. Every format follows the same maintenance work order from request and approval through assignment, labor, parts, cause, repair, and verified close-out.",
+    downloadPath: "/templates/downloads/work-order-template.docx",
+    downloadFilename: "work-order-template.docx",
+    downloads: [
+      {
+        label: "Word",
+        format: "DOCX",
+        path: "/templates/downloads/work-order-template.docx",
+        filename: "work-order-template.docx",
+      },
+      {
+        label: "Printable PDF",
+        format: "PDF",
+        path: "/templates/downloads/work-order-template.pdf",
+        filename: "work-order-template.pdf",
+      },
+      {
+        label: "Excel / Google Sheets",
+        format: "XLSX",
+        path: "/templates/downloads/work-order-template.xlsx",
+        filename: "work-order-template.xlsx",
+      },
+      {
+        label: "Plain spreadsheet",
+        format: "CSV",
+        path: "/templates/downloads/work-order-template.csv",
+        filename: "work-order-template.csv",
+      },
+    ],
     published: "2026-08-13",
-    updated: "2026-08-13",
+    updated: "2026-08-16",
     includes: [
       "Requester, priority, status, and location",
       "Asset identifiers and a complete problem description",
@@ -154,7 +186,9 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
     faqs: [
       { q: "What should a maintenance work order include?", a: "A work order should include a unique ID, requester, priority, status, location, asset, problem description, assignee, schedule, labor, parts, completion date, and close-out notes." },
       { q: "What is the difference between a work request and a work order?", a: "A request reports a need. A work order is the approved, assigned, and trackable record used to plan and complete that work." },
-      { q: "Can I use this work order template in Excel?", a: "Yes. The CSV opens in Excel, Google Sheets, Apple Numbers, and other spreadsheet applications." },
+      { q: "Can I download this work order template in Word?", a: "Yes. The DOCX is an editable two-page maintenance work order form designed for Microsoft Word and compatible document editors." },
+      { q: "Is there a printable work order PDF?", a: "Yes. The PDF uses the same request, planning, execution, parts, labor, and close-out sections in a print-ready layout." },
+      { q: "Can I use the spreadsheet in Google Sheets?", a: "Yes. Upload the XLSX to Google Drive and open it with Google Sheets. The workbook includes editable dropdowns, formulas, a print view, and reference lists." },
     ],
     relatedLearn: { label: "Work order meaning and workflow", href: "/learn/work-order" },
     relatedSolution: { label: "Work order software", href: "/solutions/work-order-software" },

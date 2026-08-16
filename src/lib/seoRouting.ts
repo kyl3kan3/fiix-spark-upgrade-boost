@@ -9,6 +9,7 @@ const INDEXABLE_ROUTES = new Set([
   "/",
   "/landing",
   "/maintenance-simplified",
+  "/facility-management",
   "/pricing",
   "/features",
   "/solutions",
@@ -78,6 +79,10 @@ const REDIRECTS: Record<string, SeoRedirect> = {
   "/sms": { location: "/sms-opt-in", status: 301 },
   "/login": { location: "/auth", status: 302 },
   "/signup": { location: "/auth?signup=true", status: 302 },
+  "/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026": {
+    location: "/learn/preventive-maintenance",
+    status: 301,
+  },
 };
 
 const PUBLIC_DETAIL_ROUTE = /^\/(?:solutions|learn|compare|templates|blog)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;

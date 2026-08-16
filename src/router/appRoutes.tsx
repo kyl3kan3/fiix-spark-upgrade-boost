@@ -37,6 +37,7 @@ const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Landing = lazy(() => import("@/pages/Landing"));
 const MaintenanceSimplifiedPage = lazy(() => import("@/pages/MaintenanceSimplifiedPage"));
+const FacilityManagementPage = lazy(() => import("@/pages/FacilityManagementPage"));
 const SupportPage = lazy(() => import("@/pages/SupportPage"));
 
 const RouteLoadingFallback = () => (
@@ -82,9 +83,14 @@ export const AppRoutes = () => (
         <Route path="/mcp" element={<McpPage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
         <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
+        <Route path="/facility-management" element={<FacilityManagementPage />} />
         <Route path="/support" element={<SupportPage />} />
 
         <Route path="/blog" element={<BlogIndex />} />
+        <Route
+          path="/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026"
+          element={<Navigate to="/learn/preventive-maintenance" replace />}
+        />
         <Route path="/blog/:slug" element={<BlogPost />} />
 
         <Route path="/r/:slug" element={<PublicRequestPortal />} />
