@@ -55,6 +55,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [CMMS ROI & Cost Savings](https://maintenease.com/learn/cmms-roi.md): How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.
 - [Root Cause Analysis (RCA)](https://maintenease.com/learn/root-cause-analysis.md): A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.
 - [Deferred Maintenance](https://maintenease.com/learn/deferred-maintenance.md): Maintenance work that is known, needed, and postponed — usually for budget or staffing reasons — and that quietly accumulates into a backlog with a price tag.
+- [Infrared Thermography Camera Guide for Maintenance Inspections](https://maintenease.com/learn/infrared-thermography-inspection.md): Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.
 - [AI Maintenance Assistant](https://maintenease.com/learn/ai-maintenance-assistant.md): An AI interface that helps maintenance teams find records, summarize work, prepare actions, and spend less time navigating CMMS screens.
 - [CMMS for ChatGPT](https://maintenease.com/learn/cmms-for-chatgpt.md): A secure connection that lets ChatGPT use approved CMMS tools to retrieve maintenance records or complete defined workflow steps for an authenticated user.
 - [Maintenance MCP Server](https://maintenease.com/learn/maintenance-mcp-server.md): A Model Context Protocol service that exposes controlled maintenance data and actions to compatible AI clients without granting direct database access.
@@ -70,6 +71,12 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [Maintenance Log Template](https://maintenease.com/templates/maintenance-log-template.md): Record every repair, inspection, and preventive task in one consistent maintenance log. The template gives each entry an asset, owner, cost, status, and next-service date so the spreadsheet stays useful as the history grows.
 - [Preventive Maintenance Checklist](https://maintenease.com/templates/preventive-maintenance-checklist.md): Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.
 - [Work Order Template](https://maintenease.com/templates/work-order-template.md): Choose a field-ready Word form, print-ready PDF, formula-driven spreadsheet for Excel or Google Sheets, or a plain CSV. Every format follows the same maintenance work order from request and approval through assignment, labor, parts, cause, repair, and verified close-out.
+- [Preliminary Hazard Analysis Template](https://maintenease.com/templates/preliminary-hazard-analysis-template.md): Screen a maintenance task or change for credible hazards before detailed design or execution. The worksheet connects each scenario to causes, consequences, initial risk, controls, residual risk, an accountable owner, and a corrective work-order reference.
+
+## Maintenance tools
+
+- [Maintenance SOP generator](https://maintenease.com/tools/maintenance-sop-generator.md): Turn maintenance know-how into a reviewable standard operating procedure. Enter the job context and controls once, preview the result, then export an editable Word document or a field-ready PDF.
+- [Maintenance root-cause fishbone generator](https://maintenease.com/tools/root-cause-fishbone-generator.md): Organize possible causes around a precise equipment problem before the investigation jumps to a favorite answer. Use maintenance-specific categories, refine the evidence with your team, and export a clean SVG for the work-order record or review meeting.
 
 ## Policies
 
@@ -132,6 +139,7 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Cmms Roi** — HTML: https://maintenease.com/learn/cmms-roi — Markdown: https://maintenease.com/learn/cmms-roi.md
 - **Root Cause Analysis** — HTML: https://maintenease.com/learn/root-cause-analysis — Markdown: https://maintenease.com/learn/root-cause-analysis.md
 - **Deferred Maintenance** — HTML: https://maintenease.com/learn/deferred-maintenance — Markdown: https://maintenease.com/learn/deferred-maintenance.md
+- **Infrared Thermography Inspection** — HTML: https://maintenease.com/learn/infrared-thermography-inspection — Markdown: https://maintenease.com/learn/infrared-thermography-inspection.md
 - **Ai Maintenance Assistant** — HTML: https://maintenease.com/learn/ai-maintenance-assistant — Markdown: https://maintenease.com/learn/ai-maintenance-assistant.md
 - **Cmms For Chatgpt** — HTML: https://maintenease.com/learn/cmms-for-chatgpt — Markdown: https://maintenease.com/learn/cmms-for-chatgpt.md
 - **Maintenance Mcp Server** — HTML: https://maintenease.com/learn/maintenance-mcp-server — Markdown: https://maintenease.com/learn/maintenance-mcp-server.md
@@ -143,6 +151,8 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Agentic Maintenance Workflows** — HTML: https://maintenease.com/learn/agentic-maintenance-workflows — Markdown: https://maintenease.com/learn/agentic-maintenance-workflows.md
 - **Compare** — HTML: https://maintenease.com/compare — Markdown: https://maintenease.com/compare.md
 - **Cmms Cost Calculator** — HTML: https://maintenease.com/cmms-cost-calculator — Markdown: https://maintenease.com/cmms-cost-calculator.md
+- **Maintenance Sop Generator** — HTML: https://maintenease.com/tools/maintenance-sop-generator — Markdown: https://maintenease.com/tools/maintenance-sop-generator.md
+- **Root Cause Fishbone Generator** — HTML: https://maintenease.com/tools/root-cause-fishbone-generator — Markdown: https://maintenease.com/tools/root-cause-fishbone-generator.md
 - **Maintenease Vs Upkeep** — HTML: https://maintenease.com/compare/maintenease-vs-upkeep — Markdown: https://maintenease.com/compare/maintenease-vs-upkeep.md
 - **Maintenease Vs Fiix** — HTML: https://maintenease.com/compare/maintenease-vs-fiix — Markdown: https://maintenease.com/compare/maintenease-vs-fiix.md
 - **Maintenease Vs Maintainx** — HTML: https://maintenease.com/compare/maintenease-vs-maintainx — Markdown: https://maintenease.com/compare/maintenease-vs-maintainx.md
@@ -152,3 +162,4 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Maintenance Log Template** — HTML: https://maintenease.com/templates/maintenance-log-template — Markdown: https://maintenease.com/templates/maintenance-log-template.md
 - **Preventive Maintenance Checklist** — HTML: https://maintenease.com/templates/preventive-maintenance-checklist — Markdown: https://maintenease.com/templates/preventive-maintenance-checklist.md
 - **Work Order Template** — HTML: https://maintenease.com/templates/work-order-template — Markdown: https://maintenease.com/templates/work-order-template.md
+- **Preliminary Hazard Analysis Template** — HTML: https://maintenease.com/templates/preliminary-hazard-analysis-template — Markdown: https://maintenease.com/templates/preliminary-hazard-analysis-template.md

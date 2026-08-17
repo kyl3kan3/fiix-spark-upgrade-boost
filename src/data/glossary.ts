@@ -695,6 +695,10 @@ export const glossary: GlossaryTerm[] = [
  { q: "Is predictive maintenance the same as condition-based maintenance?", a: "They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models." },
  ],
  related: ["agentic-cmms", "preventive-maintenance", "condition-based-maintenance", "reactive-maintenance"],
+ internalLinks: [
+ { label: "infrared thermography camera inspection guide", href: "/learn/infrared-thermography-inspection" },
+ { label: "preventive maintenance software", href: "/solutions/preventive-maintenance-software" },
+ ],
  },
  {
  slug: "corrective-maintenance",
@@ -940,8 +944,12 @@ export const glossary: GlossaryTerm[] = [
    { q: "Who should lead an RCA?", a: "A maintenance supervisor or reliability engineer usually facilitates, but the technician who did the repair must be in the room — they hold the most useful evidence. Involve operators too when human factors are in play." },
    { q: "How does a CMMS help with Root Cause Analysis?", a: "A CMMS surfaces the failure history that makes RCA possible (same asset, same failure code, repeated), stores photos and notes from the original work order, and tracks the corrective actions that come out of the analysis so nothing falls through the cracks." },
    { q: "What is the difference between RCA and RCFA?", a: "RCFA (Root Cause Failure Analysis) is RCA applied specifically to equipment failures. In maintenance the terms are used interchangeably; RCA is the broader label used across quality, safety, and operations." },
-  ],
+ ],
  related: ["mtbf", "mttr", "preventive-maintenance", "corrective-maintenance"],
+ internalLinks: [
+ { label: "maintenance fishbone diagram generator", href: "/tools/root-cause-fishbone-generator" },
+ { label: "work order template", href: "/templates/work-order-template" },
+ ],
  },
  {
  slug: "deferred-maintenance",
@@ -990,6 +998,70 @@ export const glossary: GlossaryTerm[] = [
  { q: "How does a CMMS reduce deferred maintenance?", a: "It keeps every deferred item as a live, costed record instead of a line in an old PDF, shows how long each item has been waiting, and converts recurring findings into preventive schedules so the backlog stops regenerating." },
  ],
  related: ["cmms", "preventive-maintenance", "reactive-maintenance", "corrective-maintenance", "cmms-roi"],
+ },
+ {
+ slug: "infrared-thermography-inspection",
+ term: "Infrared Thermography Camera Guide for Maintenance Inspections",
+ short: "Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.",
+ metaTitle: "Infrared Thermography Camera Guide for Maintenance",
+ metaDescription: "Choose and use an infrared thermography camera for maintenance routes. Learn specifications, inspection controls, severity triage, documentation, and work-order follow-up.",
+ published: "2026-08-17",
+ updated: "2026-08-17",
+ sections: [
+ {
+ heading: "What an infrared thermography camera does",
+ body: "An infrared thermography camera converts detected infrared radiation into a thermal image and estimated surface temperatures. Maintenance teams use the patterns to compare similar components, find unexpected hot or cold areas, and trend changes over time on electrical connections, motors, bearings, steam systems, insulation, roofs, process equipment, and building envelopes. A thermal pattern is an inspection finding, not a standalone diagnosis: load, emissivity, reflected temperature, distance, focus, weather, and operating state can all change the image.",
+ },
+ {
+ heading: "How to choose a camera for maintenance work",
+ body: "Match the camera to the smallest target, working distance, temperature range, and environment in the route. Compare detector resolution and field of view together, not resolution alone. Check thermal sensitivity for subtle building or mechanical differences, temperature accuracy for measurement work, focus options, measurement tools, voice or text annotations, visible-light pairing, route support, reporting software, battery life, environmental rating, calibration support, and whether the model can safely be used from the required distance. A low-cost camera can be useful for close comparative checks; small electrical targets at distance usually require more pixels on target and better optics.",
+ table: {
+ caption: "Infrared camera specifications that affect maintenance inspections",
+ headers: ["Specification", "Why it matters", "Question to test"],
+ rows: [
+ ["Detector resolution and optics", "Determine how many pixels cover the target at the inspection distance", "Can the camera resolve the smallest connection, bearing, or insulation defect from the safe position?"],
+ ["Thermal sensitivity", "Affects the ability to distinguish small temperature differences", "Are subtle envelope, moisture, or mechanical patterns part of the route?"],
+ ["Temperature range and accuracy", "Set the measurable range and stated uncertainty", "Does the range cover normal and abnormal equipment temperatures with margin?"],
+ ["Focus and measurement controls", "Poor focus and incorrect parameters weaken temperature data", "Can the operator control focus, emissivity, reflected temperature, distance, and span?"],
+ ["Route and reporting workflow", "Keeps inspection points, settings, images, notes, and history together", "Can results be tied to a stable asset ID and exported into the maintenance record?"],
+ ],
+ },
+ },
+ {
+ heading: "Build a repeatable thermography inspection route",
+ body: "Give every inspection point a stable asset and component ID, safe viewing position, reference image, required operating state or load, camera and lens, measurement parameters, image framing, and comparison method. Capture thermal and visible images from the same position. Record load, ambient conditions, emissivity, reflected apparent temperature, distance, focus, maximum and reference temperatures, delta-T comparison, observed pattern, and operator. Repeatable routes matter more than isolated attractive images because trend quality depends on comparable conditions.",
+ },
+ {
+ heading: "Use severity bands as a triage workflow",
+ body: "Do not copy a universal temperature table into every program. A defensible severity decision considers the component type and rating, absolute temperature, temperature rise above a similar loaded component or ambient reference, load at inspection, failure consequence, rate of change, measurement uncertainty, and applicable manufacturer or site criteria. Use local bands such as monitor, plan, urgent, and immediate only after a qualified program owner defines the thresholds and actions. An immediate electrical hazard follows the site electrical-safety procedure; it is not handled as an ordinary work-order priority.",
+ },
+ {
+ heading: "Turn a thermal finding into a work order",
+ body: "Create a follow-up record with the asset and component ID, thermal and visible images, measurement settings, operating conditions, apparent and reference temperatures, delta-T, severity rationale, suspected failure modes, required safety controls, responsible trade, due date, and verification plan. After repair, capture a comparable image under similar load and close the work order only when the acceptance criterion is met. Keep both the original and verification images in the asset history.",
+ },
+ {
+ heading: "Electrical thermography safety",
+ body: "Opening or approaching energized electrical equipment can expose a worker to shock and arc-flash hazards even though the camera itself is non-contact. Only people qualified for the specific equipment and task should perform testing on or near exposed energized parts, using the organization’s electrical-safety program, approach boundaries, PPE, equipment condition controls, and approved procedure. When safe access cannot be established, change the method or operating condition rather than treating the camera as protection.",
+ },
+ ],
+ faqs: [
+ { q: "What is the best infrared thermography camera for maintenance?", a: "The best camera is the one that resolves the smallest target from the required safe distance, covers the temperature range, and fits the route and reporting workflow. Detector resolution, optics, focus, thermal sensitivity, accuracy, annotations, calibration support, and software matter more than one headline specification." },
+ { q: "Can an infrared camera see through walls or electrical panels?", a: "No. A thermal camera primarily shows infrared radiation from the visible surface. It does not see through ordinary walls or closed metal panels. Apparent patterns can still be influenced by surface finish, reflections, airflow, and internal heat transfer." },
+ { q: "How often should thermography inspections be performed?", a: "Set frequency from asset criticality, failure history, operating cycle, electrical or mechanical risk, manufacturer guidance, and the rate at which conditions can change. High-consequence or deteriorating equipment may need shorter intervals than stable low-risk assets." },
+ { q: "Does a hot spot always mean the component is failing?", a: "No. Load, emissivity, reflections, geometry, airflow, focus, and normal design can create apparent temperature differences. Confirm the image under known conditions and combine it with inspection, electrical, mechanical, or process evidence before diagnosing the failure mode." },
+ ],
+ related: ["predictive-maintenance", "condition-based-maintenance", "preventive-maintenance", "root-cause-analysis"],
+ internalLinks: [
+ { label: "preliminary hazard analysis template", href: "/templates/preliminary-hazard-analysis-template" },
+ { label: "preventive maintenance software", href: "/solutions/preventive-maintenance-software" },
+ { label: "asset management software", href: "/solutions/asset-management-software" },
+ ],
+ sources: [
+ { label: "U.S. Department of Energy: Operations & Maintenance Best Practices Guide", url: "https://www1.eere.energy.gov/femp/pdfs/om_6.pdf" },
+ { label: "OSHA: Training and PPE for testing on electrical equipment", url: "https://www.osha.gov/laws-regs/standardinterpretations/1998-06-22-0" },
+ { label: "FLIR documentation: Inspection Route", url: "https://docs.flir.com/T810587/en-US/latest/s18.html" },
+ { label: "FLIR: How emissivity affects thermal imaging", url: "https://www.flir.com/discover/professional-tools/how-does-emissivity-affect-thermal-imaging/" },
+ ],
  },
  ...emergingAiGlossary,
 ];

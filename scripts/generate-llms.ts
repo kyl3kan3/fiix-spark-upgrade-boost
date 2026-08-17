@@ -23,6 +23,7 @@ import {
 } from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
+import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_CAPACITY_SUMMARY,
@@ -245,10 +246,30 @@ ${FACILITY_MANAGEMENT_SOURCES.map((source) => `- [${source.label}](${source.url}
 `;
 }
 
+function secondPassToolMd(page: (typeof SECOND_PASS_TOOL_PAGES)[number]) {
+  return `# ${page.h1}
+
+> ${page.intro}
+
+Canonical URL: ${SITE}${page.path}
+
+${page.sections.map((section) => `## ${section.heading}\n\n${section.body}`).join("\n\n")}
+
+## FAQ
+
+${page.faqs.map((faq) => `### ${faq.q}\n\n${faq.a}`).join("\n\n")}
+
+## Related resources
+
+${page.related.map((item) => `- [${item.label}](${SITE}${item.href})`).join("\n")}
+`;
+}
+
 for (const s of solutions) write(`solutions/${s.slug}.md`, solutionMd(s));
 for (const c of comparisons) write(`compare/${c.slug}.md`, compareMd(c));
 for (const g of glossary) write(`learn/${g.slug}.md`, glossaryMd(g));
 for (const template of maintenanceTemplates) write(`templates/${template.slug}.md`, templateMd(template));
+for (const page of SECOND_PASS_TOOL_PAGES) write(`tools/${page.slug}.md`, secondPassToolMd(page));
 write("mcp.md", mcpMd());
 write("facility-management.md", facilityManagementMd());
 
@@ -286,6 +307,10 @@ ${glossary.map((g) => `- [${g.term}](${SITE}/learn/${g.slug}.md): ${g.short}`).j
 ## Free maintenance templates
 
 ${maintenanceTemplates.map((template) => `- [${template.title}](${SITE}/templates/${template.slug}.md): ${template.intro}`).join("\n")}
+
+## Maintenance tools
+
+${SECOND_PASS_TOOL_PAGES.map((page) => `- [${page.h1}](${SITE}${page.path}.md): ${page.intro}`).join("\n")}
 
 ## Policies
 
@@ -332,6 +357,8 @@ const parts = [
   ...glossary.map(glossaryMd).map((m) => `\n---\n\n${m}`),
   "\n\n---\n\n# Templates\n",
   ...maintenanceTemplates.map(templateMd).map((m) => `\n---\n\n${m}`),
+  "\n\n---\n\n# Maintenance tools\n",
+  ...SECOND_PASS_TOOL_PAGES.map(secondPassToolMd).map((m) => `\n---\n\n${m}`),
 ];
 write("llms-full.txt", parts.join(""));
 
@@ -453,5 +480,5 @@ const apiJson = {
 write("api/ai.json", JSON.stringify(apiJson, null, 2));
 
 console.log(
-  `Wrote llms.txt, llms-full.txt, the MCP page, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, and ${maintenanceTemplates.length} templates.`,
+  `Wrote llms.txt, llms-full.txt, the MCP page, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, ${maintenanceTemplates.length} templates, and ${SECOND_PASS_TOOL_PAGES.length} maintenance tools.`,
 );

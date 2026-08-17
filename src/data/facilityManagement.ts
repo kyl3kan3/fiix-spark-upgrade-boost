@@ -6,7 +6,7 @@ export const FACILITY_MANAGEMENT_PAGE = {
   description:
     "Facility management connects people, buildings, services, and operating processes so the built environment stays safe, functional, efficient, and ready for the organization it supports.",
   published: "2026-08-16",
-  updated: "2026-08-16",
+  updated: "2026-08-17",
 } as const;
 
 export const FACILITY_MANAGEMENT_PATHS = [
@@ -43,6 +43,13 @@ export const FACILITY_MANAGEMENT_PATHS = [
     description: "Map each obligation to the asset, frequency, procedure, responsible role, result, exception, and retained record.",
     href: "#compliance-and-risk",
     cta: "Structure compliance work",
+    icon: "shield",
+  },
+  {
+    title: "Hazard analysis and maintenance procedures",
+    description: "Screen maintenance hazards, define controls, issue approved SOPs, and turn unresolved risk into assigned corrective work.",
+    href: "/templates/preliminary-hazard-analysis-template",
+    cta: "Start a preliminary hazard analysis",
     icon: "shield",
   },
   {

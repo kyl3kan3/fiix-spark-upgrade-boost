@@ -4,13 +4,14 @@ import { resolve } from "node:path";
 import { getMaintenanceTemplate, maintenanceTemplates } from "@/data/maintenanceTemplates";
 
 describe("maintenance templates", () => {
-  it("publishes the three keyword-plan templates with unique slugs", () => {
+  it("publishes the four keyword-plan templates with unique slugs", () => {
     expect(maintenanceTemplates.map((template) => template.slug)).toEqual([
       "maintenance-log-template",
       "preventive-maintenance-checklist",
       "work-order-template",
+      "preliminary-hazard-analysis-template",
     ]);
-    expect(new Set(maintenanceTemplates.map((template) => template.slug)).size).toBe(3);
+    expect(new Set(maintenanceTemplates.map((template) => template.slug)).size).toBe(4);
   });
 
   it("backs every landing page with non-empty downloadable files", () => {
@@ -31,7 +32,7 @@ describe("maintenance templates", () => {
       expect(template.columns.length).toBeGreaterThanOrEqual(6);
       expect(template.steps.length).toBeGreaterThanOrEqual(3);
       expect(template.faqs.length).toBeGreaterThanOrEqual(3);
-      expect(template.relatedLearn.href).toMatch(/^\/learn\//);
+      expect(template.relatedLearn.href).toMatch(/^\/(learn|tools)\//);
       expect(template.relatedSolution.href).toMatch(/^\/solutions\//);
       expect(getMaintenanceTemplate(template.slug)).toBe(template);
     }

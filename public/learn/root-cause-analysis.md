@@ -42,6 +42,11 @@ A CMMS surfaces the failure history that makes RCA possible (same asset, same fa
 
 RCFA (Root Cause Failure Analysis) is RCA applied specifically to equipment failures. In maintenance the terms are used interchangeably; RCA is the broader label used across quality, safety, and operations.
 
+## CMMS software and comparisons
+
+- [maintenance fishbone diagram generator](https://maintenease.com/tools/root-cause-fishbone-generator)
+- [work order template](https://maintenease.com/templates/work-order-template)
+
 ## Related
 
 - https://maintenease.com/learn/mtbf

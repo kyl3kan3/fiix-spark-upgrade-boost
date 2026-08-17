@@ -22,17 +22,17 @@ const TemplatesIndex = () => (
       <title>Free Maintenance Templates & Checklists | MaintenEase</title>
       <meta
         name="description"
-        content="Download free maintenance log, preventive maintenance checklist, and work order templates for Excel and Google Sheets."
+        content="Download free maintenance logs, preventive-maintenance checklists, work orders, and preliminary hazard analysis templates for Excel and Google Sheets."
       />
       <link rel="canonical" href="https://maintenease.com/templates" />
       <meta property="og:title" content="Free maintenance templates and checklists" />
-      <meta property="og:description" content="Practical CSV templates for maintenance logs, preventive work, and work orders." />
+      <meta property="og:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
       <meta property="og:url" content="https://maintenease.com/templates" />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Free maintenance templates and checklists" />
-      <meta name="twitter:description" content="Practical CSV templates for maintenance logs, preventive work, and work orders." />
+      <meta name="twitter:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
     </Helmet>

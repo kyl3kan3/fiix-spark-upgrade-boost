@@ -74,6 +74,11 @@
   Content-Disposition: inline
   Vary: Accept
 
+/tools/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Disposition: inline
+  Vary: Accept
+
 /api/ai.json
   Content-Type: application/json; charset=utf-8
   Content-Disposition: inline

@@ -13,6 +13,10 @@ describe("SEO route policy", () => {
     "/compare/maintenease-vs-fiix",
     "/templates",
     "/templates/maintenance-log-template",
+    "/templates/preliminary-hazard-analysis-template",
+    "/learn/infrared-thermography-inspection",
+    "/tools/maintenance-sop-generator",
+    "/tools/root-cause-fishbone-generator",
     "/blog/reduce-unplanned-downtime",
   ])("marks %s as indexable", (path) => {
     expect(classifySeoPath(path)).toBe("indexable");
@@ -31,7 +35,7 @@ describe("SEO route policy", () => {
     expect(classifySeoPath(path)).toBe("noindex");
   });
 
-  it.each(["/does-not-exist", "/solutions/too/many-segments", "/api/private"]) (
+  it.each(["/does-not-exist", "/solutions/too/many-segments", "/tools/unknown-generator", "/api/private"]) (
     "marks %s as not found",
     (path) => {
       expect(classifySeoPath(path)).toBe("not-found");

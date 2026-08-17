@@ -11,6 +11,7 @@ Canonical URL: https://maintenease.com/facility-management
 - **Inspections and preventive work** — Turn recurring building checks and required tests into scheduled tasks with acceptance criteria and follow-up work. [Build the PM program](https://maintenease.com/learn/preventive-maintenance)
 - **Asset management** — Create a location-based register for maintainable equipment, documents, warranty, criticality, condition, and service history. [Organize facility assets](https://maintenease.com/solutions/asset-management-software)
 - **Compliance and audit evidence** — Map each obligation to the asset, frequency, procedure, responsible role, result, exception, and retained record.
+- **Hazard analysis and maintenance procedures** — Screen maintenance hazards, define controls, issue approved SOPs, and turn unresolved risk into assigned corrective work. [Start a preliminary hazard analysis](https://maintenease.com/templates/preliminary-hazard-analysis-template)
 - **Space and occupant experience** — Connect room use, workplace changes, accessibility, comfort, cleaning, security, and service requests to location data.
 - **Vendors and service partners** — Control scope, access, certificates, dispatch, performance, cost, warranty, and completed-work documentation.
 - **Facility management software** — Evaluate CMMS, CAFM, IWMS, EAM, and point solutions against the workflows, integrations, and reporting you actually need. [Compare system types](https://maintenease.com/learn/cmms)

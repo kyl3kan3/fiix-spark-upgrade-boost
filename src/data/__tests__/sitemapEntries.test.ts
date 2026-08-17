@@ -20,6 +20,10 @@ describe("static sitemap entries", () => {
     "/templates/maintenance-log-template",
     "/templates/preventive-maintenance-checklist",
     "/templates/work-order-template",
+    "/templates/preliminary-hazard-analysis-template",
+    "/learn/infrared-thermography-inspection",
+    "/tools/maintenance-sop-generator",
+    "/tools/root-cause-fishbone-generator",
   ])("publishes an evidence-backed lastmod for %s", (path) => {
     const entry = STATIC_SITEMAP_ENTRIES.find((candidate) => candidate.path === path);
 

@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-16T22:02:05.781Z",
+  "generated_at": "2026-08-17T14:53:26.302Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -220,6 +220,11 @@
       "markdown_url": "https://maintenease.com/learn/deferred-maintenance.md"
     },
     {
+      "path": "/learn/infrared-thermography-inspection",
+      "html_url": "https://maintenease.com/learn/infrared-thermography-inspection",
+      "markdown_url": "https://maintenease.com/learn/infrared-thermography-inspection.md"
+    },
+    {
       "path": "/learn/ai-maintenance-assistant",
       "html_url": "https://maintenease.com/learn/ai-maintenance-assistant",
       "markdown_url": "https://maintenease.com/learn/ai-maintenance-assistant.md"
@@ -275,6 +280,16 @@
       "markdown_url": "https://maintenease.com/cmms-cost-calculator.md"
     },
     {
+      "path": "/tools/maintenance-sop-generator",
+      "html_url": "https://maintenease.com/tools/maintenance-sop-generator",
+      "markdown_url": "https://maintenease.com/tools/maintenance-sop-generator.md"
+    },
+    {
+      "path": "/tools/root-cause-fishbone-generator",
+      "html_url": "https://maintenease.com/tools/root-cause-fishbone-generator",
+      "markdown_url": "https://maintenease.com/tools/root-cause-fishbone-generator.md"
+    },
+    {
       "path": "/compare/maintenease-vs-upkeep",
       "html_url": "https://maintenease.com/compare/maintenease-vs-upkeep",
       "markdown_url": "https://maintenease.com/compare/maintenease-vs-upkeep.md"
@@ -318,6 +333,11 @@
       "path": "/templates/work-order-template",
       "html_url": "https://maintenease.com/templates/work-order-template",
       "markdown_url": "https://maintenease.com/templates/work-order-template.md"
+    },
+    {
+      "path": "/templates/preliminary-hazard-analysis-template",
+      "html_url": "https://maintenease.com/templates/preliminary-hazard-analysis-template",
+      "markdown_url": "https://maintenease.com/templates/preliminary-hazard-analysis-template.md"
     }
   ],
   "mcp": {
@@ -629,6 +649,13 @@
       "markdown_url": "https://maintenease.com/learn/deferred-maintenance.md"
     },
     {
+      "slug": "infrared-thermography-inspection",
+      "term": "Infrared Thermography Camera Guide for Maintenance Inspections",
+      "short": "Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.",
+      "html_url": "https://maintenease.com/learn/infrared-thermography-inspection",
+      "markdown_url": "https://maintenease.com/learn/infrared-thermography-inspection.md"
+    },
+    {
       "slug": "ai-maintenance-assistant",
       "term": "AI Maintenance Assistant",
       "short": "An AI interface that helps maintenance teams find records, summarize work, prepare actions, and spend less time navigating CMMS screens.",
@@ -738,6 +765,18 @@
         {
           "format": "CSV",
           "download_url": "https://maintenease.com/templates/downloads/work-order-template.csv"
+        }
+      ]
+    },
+    {
+      "slug": "preliminary-hazard-analysis-template",
+      "name": "Preliminary Hazard Analysis Template",
+      "html_url": "https://maintenease.com/templates/preliminary-hazard-analysis-template",
+      "markdown_url": "https://maintenease.com/templates/preliminary-hazard-analysis-template.md",
+      "formats": [
+        {
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/preliminary-hazard-analysis-template.csv"
         }
       ]
     }

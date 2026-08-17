@@ -89,6 +89,7 @@ Canonical URL: https://maintenease.com/facility-management
 - **Inspections and preventive work** — Turn recurring building checks and required tests into scheduled tasks with acceptance criteria and follow-up work. [Build the PM program](https://maintenease.com/learn/preventive-maintenance)
 - **Asset management** — Create a location-based register for maintainable equipment, documents, warranty, criticality, condition, and service history. [Organize facility assets](https://maintenease.com/solutions/asset-management-software)
 - **Compliance and audit evidence** — Map each obligation to the asset, frequency, procedure, responsible role, result, exception, and retained record.
+- **Hazard analysis and maintenance procedures** — Screen maintenance hazards, define controls, issue approved SOPs, and turn unresolved risk into assigned corrective work. [Start a preliminary hazard analysis](https://maintenease.com/templates/preliminary-hazard-analysis-template)
 - **Space and occupant experience** — Connect room use, workplace changes, accessibility, comfort, cleaning, security, and service requests to location data.
 - **Vendors and service partners** — Control scope, access, certificates, dispatch, performance, cost, warranty, and completed-work documentation.
 - **Facility management software** — Evaluate CMMS, CAFM, IWMS, EAM, and point solutions against the workflows, integrations, and reporting you actually need. [Compare system types](https://maintenease.com/learn/cmms)
@@ -1710,6 +1711,11 @@ Not to start. Manual condition readings (temperature, vibration pens, oil sample
 
 They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models.
 
+## CMMS software and comparisons
+
+- [infrared thermography camera inspection guide](https://maintenease.com/learn/infrared-thermography-inspection)
+- [preventive maintenance software](https://maintenease.com/solutions/preventive-maintenance-software)
+
 ## Related
 
 - https://maintenease.com/learn/agentic-cmms
@@ -2045,6 +2051,11 @@ A CMMS surfaces the failure history that makes RCA possible (same asset, same fa
 
 RCFA (Root Cause Failure Analysis) is RCA applied specifically to equipment failures. In maintenance the terms are used interchangeably; RCA is the broader label used across quality, safety, and operations.
 
+## CMMS software and comparisons
+
+- [maintenance fishbone diagram generator](https://maintenease.com/tools/root-cause-fishbone-generator)
+- [work order template](https://maintenease.com/templates/work-order-template)
+
 ## Related
 
 - https://maintenease.com/learn/mtbf
@@ -2114,6 +2125,86 @@ It keeps every deferred item as a live, costed record instead of a line in an ol
 - https://maintenease.com/learn/reactive-maintenance
 - https://maintenease.com/learn/corrective-maintenance
 - https://maintenease.com/learn/cmms-roi
+
+---
+
+# Infrared Thermography Camera Guide for Maintenance Inspections
+
+> Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.
+
+Canonical URL: https://maintenease.com/learn/infrared-thermography-inspection
+
+## What an infrared thermography camera does
+
+An infrared thermography camera converts detected infrared radiation into a thermal image and estimated surface temperatures. Maintenance teams use the patterns to compare similar components, find unexpected hot or cold areas, and trend changes over time on electrical connections, motors, bearings, steam systems, insulation, roofs, process equipment, and building envelopes. A thermal pattern is an inspection finding, not a standalone diagnosis: load, emissivity, reflected temperature, distance, focus, weather, and operating state can all change the image.
+
+## How to choose a camera for maintenance work
+
+Match the camera to the smallest target, working distance, temperature range, and environment in the route. Compare detector resolution and field of view together, not resolution alone. Check thermal sensitivity for subtle building or mechanical differences, temperature accuracy for measurement work, focus options, measurement tools, voice or text annotations, visible-light pairing, route support, reporting software, battery life, environmental rating, calibration support, and whether the model can safely be used from the required distance. A low-cost camera can be useful for close comparative checks; small electrical targets at distance usually require more pixels on target and better optics.
+
+_Infrared camera specifications that affect maintenance inspections_
+
+| Specification | Why it matters | Question to test |
+| --- | --- | --- |
+| Detector resolution and optics | Determine how many pixels cover the target at the inspection distance | Can the camera resolve the smallest connection, bearing, or insulation defect from the safe position? |
+| Thermal sensitivity | Affects the ability to distinguish small temperature differences | Are subtle envelope, moisture, or mechanical patterns part of the route? |
+| Temperature range and accuracy | Set the measurable range and stated uncertainty | Does the range cover normal and abnormal equipment temperatures with margin? |
+| Focus and measurement controls | Poor focus and incorrect parameters weaken temperature data | Can the operator control focus, emissivity, reflected temperature, distance, and span? |
+| Route and reporting workflow | Keeps inspection points, settings, images, notes, and history together | Can results be tied to a stable asset ID and exported into the maintenance record? |
+
+## Build a repeatable thermography inspection route
+
+Give every inspection point a stable asset and component ID, safe viewing position, reference image, required operating state or load, camera and lens, measurement parameters, image framing, and comparison method. Capture thermal and visible images from the same position. Record load, ambient conditions, emissivity, reflected apparent temperature, distance, focus, maximum and reference temperatures, delta-T comparison, observed pattern, and operator. Repeatable routes matter more than isolated attractive images because trend quality depends on comparable conditions.
+
+## Use severity bands as a triage workflow
+
+Do not copy a universal temperature table into every program. A defensible severity decision considers the component type and rating, absolute temperature, temperature rise above a similar loaded component or ambient reference, load at inspection, failure consequence, rate of change, measurement uncertainty, and applicable manufacturer or site criteria. Use local bands such as monitor, plan, urgent, and immediate only after a qualified program owner defines the thresholds and actions. An immediate electrical hazard follows the site electrical-safety procedure; it is not handled as an ordinary work-order priority.
+
+## Turn a thermal finding into a work order
+
+Create a follow-up record with the asset and component ID, thermal and visible images, measurement settings, operating conditions, apparent and reference temperatures, delta-T, severity rationale, suspected failure modes, required safety controls, responsible trade, due date, and verification plan. After repair, capture a comparable image under similar load and close the work order only when the acceptance criterion is met. Keep both the original and verification images in the asset history.
+
+## Electrical thermography safety
+
+Opening or approaching energized electrical equipment can expose a worker to shock and arc-flash hazards even though the camera itself is non-contact. Only people qualified for the specific equipment and task should perform testing on or near exposed energized parts, using the organization’s electrical-safety program, approach boundaries, PPE, equipment condition controls, and approved procedure. When safe access cannot be established, change the method or operating condition rather than treating the camera as protection.
+
+## FAQ
+
+### What is the best infrared thermography camera for maintenance?
+
+The best camera is the one that resolves the smallest target from the required safe distance, covers the temperature range, and fits the route and reporting workflow. Detector resolution, optics, focus, thermal sensitivity, accuracy, annotations, calibration support, and software matter more than one headline specification.
+
+### Can an infrared camera see through walls or electrical panels?
+
+No. A thermal camera primarily shows infrared radiation from the visible surface. It does not see through ordinary walls or closed metal panels. Apparent patterns can still be influenced by surface finish, reflections, airflow, and internal heat transfer.
+
+### How often should thermography inspections be performed?
+
+Set frequency from asset criticality, failure history, operating cycle, electrical or mechanical risk, manufacturer guidance, and the rate at which conditions can change. High-consequence or deteriorating equipment may need shorter intervals than stable low-risk assets.
+
+### Does a hot spot always mean the component is failing?
+
+No. Load, emissivity, reflections, geometry, airflow, focus, and normal design can create apparent temperature differences. Confirm the image under known conditions and combine it with inspection, electrical, mechanical, or process evidence before diagnosing the failure mode.
+
+## Sources
+
+- [U.S. Department of Energy: Operations & Maintenance Best Practices Guide](https://www1.eere.energy.gov/femp/pdfs/om_6.pdf)
+- [OSHA: Training and PPE for testing on electrical equipment](https://www.osha.gov/laws-regs/standardinterpretations/1998-06-22-0)
+- [FLIR documentation: Inspection Route](https://docs.flir.com/T810587/en-US/latest/s18.html)
+- [FLIR: How emissivity affects thermal imaging](https://www.flir.com/discover/professional-tools/how-does-emissivity-affect-thermal-imaging/)
+
+## CMMS software and comparisons
+
+- [preliminary hazard analysis template](https://maintenease.com/templates/preliminary-hazard-analysis-template)
+- [preventive maintenance software](https://maintenease.com/solutions/preventive-maintenance-software)
+- [asset management software](https://maintenease.com/solutions/asset-management-software)
+
+## Related
+
+- https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/condition-based-maintenance
+- https://maintenease.com/learn/preventive-maintenance
+- https://maintenease.com/learn/root-cause-analysis
 
 ---
 
@@ -2799,3 +2890,130 @@ Yes. Upload the XLSX to Google Drive and open it with Google Sheets. The workboo
 - [Printable PDF (PDF)](https://maintenease.com/templates/downloads/work-order-template.pdf)
 - [Excel / Google Sheets (XLSX)](https://maintenease.com/templates/downloads/work-order-template.xlsx)
 - [Plain spreadsheet (CSV)](https://maintenease.com/templates/downloads/work-order-template.csv)
+
+---
+
+# Free preliminary hazard analysis template
+
+> Screen a maintenance task or change for credible hazards before detailed design or execution. The worksheet connects each scenario to causes, consequences, initial risk, controls, residual risk, an accountable owner, and a corrective work-order reference.
+
+Canonical URL: https://maintenease.com/templates/preliminary-hazard-analysis-template
+
+## Included fields
+
+- **System, asset, or task** — The equipment, change, activity, or boundary being screened.
+- **Hazard scenario** — A credible source, initiating event, and unwanted outcome written without assuming a control works.
+- **Causes and consequences** — What could initiate the scenario and what could happen to people, equipment, operations, or the environment.
+- **Initial risk** — Severity and likelihood before crediting new recommendations.
+- **Controls and recommendations** — Existing safeguards plus actions that eliminate, reduce, detect, or respond to the hazard.
+- **Residual risk and owner** — Risk remaining after controls, the accountable role, due date, and linked work order.
+
+## How to use it
+
+1. **Define the boundary** — Name the equipment, task, lifecycle phase, operating state, and interfaces included in the review so the team analyzes the same scope.
+2. **Describe credible scenarios** — Pair a hazard source with an initiating event and consequence. Consider normal work, startup, shutdown, maintenance, abnormal conditions, and foreseeable misuse.
+3. **Rate risk consistently** — Use your organization’s approved severity and likelihood matrix. Record the initial rating before recommendations and the residual rating only after a control owner accepts the action.
+4. **Turn recommendations into controlled work** — Give every action an owner, due date, status, and work-order or project reference. Escalate any risk that exceeds the organization’s acceptance criteria.
+
+## FAQ
+
+### What is a preliminary hazard analysis?
+
+A preliminary hazard analysis is an early, structured screen that identifies credible hazards, causes, consequences, risk levels, and recommended controls before more detailed design or task analysis.
+
+### When should a maintenance team use a PHA?
+
+Use a PHA for new equipment, process changes, unfamiliar maintenance tasks, major modifications, or early project decisions. It does not replace required job hazard analysis, LOTO, engineering review, or regulatory processes.
+
+### How should PHA recommendations be tracked?
+
+Assign an accountable owner, due date, status, and verification method. Link implementation work to a corrective work order or project action, then document the accepted residual risk.
+
+## Direct downloads
+
+- [Spreadsheet (CSV)](https://maintenease.com/templates/downloads/preliminary-hazard-analysis-template.csv)
+
+
+---
+
+# Maintenance tools
+
+---
+
+# Maintenance SOP generator
+
+> Turn maintenance know-how into a reviewable standard operating procedure. Enter the job context and controls once, preview the result, then export an editable Word document or a field-ready PDF.
+
+Canonical URL: https://maintenease.com/tools/maintenance-sop-generator
+
+## What a maintenance SOP should control
+
+A useful maintenance SOP defines the equipment and scope, who is qualified to do the work, hazards and energy-control requirements, required PPE and tools, ordered steps, acceptance criteria, escalation points, and the roles that review and approve changes.
+
+## Treat the generated file as a controlled draft
+
+The generator organizes information; it does not validate engineering, safety, regulatory, or manufacturer requirements. A qualified owner should verify the draft at the asset, resolve conflicts with OEM instructions and site programs, approve the revision, and control the issued copy.
+
+## Connect execution to maintenance records
+
+Attach the approved SOP to the asset or preventive-maintenance task. When a technician finds a failed acceptance criterion, create a corrective work order and preserve the inspection result, readings, photos, labor, parts, and close-out evidence in the asset history.
+
+## FAQ
+
+### What is a maintenance SOP?
+
+A maintenance standard operating procedure is an approved, repeatable instruction for completing a maintenance task with defined scope, hazards, controls, steps, acceptance criteria, records, and responsibilities.
+
+### Does this generator replace a safety review?
+
+No. It creates a structured draft from the information you enter. A qualified person must validate hazards, isolation requirements, PPE, technical steps, regulations, and manufacturer instructions before the SOP is issued or used.
+
+### Can I edit the generated SOP?
+
+Yes. Export DOCX for an editable Word document or PDF for a stable review and field-use copy. Add your document-control number, revision history, signatures, and site-specific requirements before approval.
+
+## Related resources
+
+- [Preliminary hazard analysis template](https://maintenease.com/templates/preliminary-hazard-analysis-template)
+- [Work order software](https://maintenease.com/solutions/work-order-software)
+- [Preventive maintenance guide](https://maintenease.com/learn/preventive-maintenance)
+
+---
+
+# Maintenance root-cause fishbone generator
+
+> Organize possible causes around a precise equipment problem before the investigation jumps to a favorite answer. Use maintenance-specific categories, refine the evidence with your team, and export a clean SVG for the work-order record or review meeting.
+
+Canonical URL: https://maintenease.com/tools/root-cause-fishbone-generator
+
+## Start with a bounded problem statement
+
+Describe one observable outcome with an asset, location, time window, and consequence—for example, ‘Pump P-07 tripped on high vibration three times during loaded operation this week.’ Avoid writing a presumed cause into the problem statement.
+
+## Use the diagram to generate hypotheses, not conclusions
+
+The six categories help a cross-functional team look beyond the failed component. Capture candidate causes, then test them against readings, inspection evidence, work history, operating conditions, materials, procedures, and interviews before assigning a root cause.
+
+## Close the loop with corrective work
+
+Convert confirmed causes into corrective actions with an owner, due date, verification method, and linked work order. Recheck the failure mode after implementation so the team can distinguish a completed action from an effective one.
+
+## FAQ
+
+### What is a fishbone diagram?
+
+A fishbone, Ishikawa, or cause-and-effect diagram groups possible causes around a defined problem so a team can investigate broadly before confirming root cause with evidence.
+
+### What are the six maintenance fishbone categories?
+
+This generator uses People, Machine, Method, Material, Measurement, and Environment. Rename or reinterpret a category when the equipment and operating context require a better structure.
+
+### Does a fishbone diagram prove root cause?
+
+No. It documents hypotheses. Confirm root cause with observations, tests, records, or other evidence, then verify that the corrective action prevents recurrence.
+
+## Related resources
+
+- [Root cause analysis guide](https://maintenease.com/learn/root-cause-analysis)
+- [Work order template](https://maintenease.com/templates/work-order-template)
+- [Asset management software](https://maintenease.com/solutions/asset-management-software)

@@ -46,6 +46,7 @@ import {
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { redirectForPath } from "../src/lib/seoRouting";
+import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
@@ -490,6 +491,40 @@ const staticRoutes: Route[] = [
       },
     ],
   },
+  ...SECOND_PASS_TOOL_PAGES.map((page): Route => ({
+    path: page.path,
+    title: page.metaTitle,
+    description: page.metaDescription,
+    h1: page.h1,
+    intro: page.intro,
+    sections: [
+      ...page.sections,
+      ...page.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
+    ],
+    links: page.related,
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: page.h1,
+        description: page.metaDescription,
+        url: `${ORIGIN}${page.path}`,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        isAccessibleForFree: true,
+        dateModified: page.updated,
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: page.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
+        })),
+      },
+    ],
+  })),
   {
     path: "/blog",
     title: "MaintenEase Blog — Maintenance & CMMS Insights",
@@ -782,7 +817,7 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
 const templateIndexRoute: Route = {
   path: "/templates",
   title: "Free Maintenance Templates & Checklists | MaintenEase",
-  description: "Download free maintenance log, preventive maintenance checklist, and work order templates for Excel and Google Sheets.",
+  description: "Download free maintenance logs, PM checklists, work orders, and preliminary hazard analysis templates for Excel and Google Sheets.",
   h1: "Free maintenance templates that stay useful",
   intro: "Clean, practical CSV templates for the maintenance work your team does every day.",
   sections: maintenanceTemplates.map((template) => ({ heading: template.title, body: template.intro })),

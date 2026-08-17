@@ -8,6 +8,10 @@ const TRACKED_SLUGS = new Set([
  "preventive-maintenance",
  "total-productive-maintenance",
  "work-order-template",
+ "preliminary-hazard-analysis-template",
+ "maintenance-sop-generator",
+ "root-cause-fishbone-generator",
+ "infrared-thermography-inspection",
 ]);
 
 export const isTrackedMarketingSlug = (slug: string) => TRACKED_SLUGS.has(slug);

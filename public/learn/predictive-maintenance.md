@@ -30,6 +30,11 @@ Not to start. Manual condition readings (temperature, vibration pens, oil sample
 
 They are closely related. Condition-based maintenance acts when a reading crosses a threshold; predictive maintenance goes further and forecasts the failure ahead of time, often with models.
 
+## CMMS software and comparisons
+
+- [infrared thermography camera inspection guide](https://maintenease.com/learn/infrared-thermography-inspection)
+- [preventive maintenance software](https://maintenease.com/solutions/preventive-maintenance-software)
+
 ## Related
 
 - https://maintenease.com/learn/agentic-cmms

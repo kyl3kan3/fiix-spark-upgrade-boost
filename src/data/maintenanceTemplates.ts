@@ -193,6 +193,54 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
     relatedLearn: { label: "Work order meaning and workflow", href: "/learn/work-order" },
     relatedSolution: { label: "Work order software", href: "/solutions/work-order-software" },
   },
+  {
+    slug: "preliminary-hazard-analysis-template",
+    title: "Preliminary Hazard Analysis Template",
+    metaTitle: "Preliminary Hazard Analysis Template (Free PHA Worksheet)",
+    metaDescription:
+      "Download a free preliminary hazard analysis template for tasks, hazards, causes, consequences, risk ratings, controls, owners, and corrective work orders.",
+    h1: "Free preliminary hazard analysis template",
+    eyebrow: "Free PHA worksheet",
+    intro:
+      "Screen a maintenance task or change for credible hazards before detailed design or execution. The worksheet connects each scenario to causes, consequences, initial risk, controls, residual risk, an accountable owner, and a corrective work-order reference.",
+    downloadPath: "/templates/downloads/preliminary-hazard-analysis-template.csv",
+    downloadFilename: "preliminary-hazard-analysis-template.csv",
+    published: "2026-08-17",
+    updated: "2026-08-17",
+    includes: [
+      "System, asset, task, operating phase, and hazard scenario",
+      "Potential causes, consequences, and people or assets exposed",
+      "Initial severity, likelihood, and risk level",
+      "Existing and recommended controls with an accountable owner",
+      "Residual risk, due date, status, and corrective work-order ID",
+    ],
+    columns: [
+      { name: "System, asset, or task", purpose: "The equipment, change, activity, or boundary being screened." },
+      { name: "Hazard scenario", purpose: "A credible source, initiating event, and unwanted outcome written without assuming a control works." },
+      { name: "Causes and consequences", purpose: "What could initiate the scenario and what could happen to people, equipment, operations, or the environment." },
+      { name: "Initial risk", purpose: "Severity and likelihood before crediting new recommendations." },
+      { name: "Controls and recommendations", purpose: "Existing safeguards plus actions that eliminate, reduce, detect, or respond to the hazard." },
+      { name: "Residual risk and owner", purpose: "Risk remaining after controls, the accountable role, due date, and linked work order." },
+    ],
+    previewHeaders: ["Asset / task", "Hazard", "Initial risk", "Recommended control", "Owner", "WO ID"],
+    previewRows: [
+      ["PUMP-007 seal replacement", "Unexpected energization", "High", "Verify LOTO and zero energy", "Maintenance supervisor", "WO-2417"],
+      ["AHU-014 belt inspection", "Contact with rotating parts", "Medium", "Interlocked guard inspection", "Facilities lead", "WO-2421"],
+    ],
+    steps: [
+      { title: "Define the boundary", body: "Name the equipment, task, lifecycle phase, operating state, and interfaces included in the review so the team analyzes the same scope." },
+      { title: "Describe credible scenarios", body: "Pair a hazard source with an initiating event and consequence. Consider normal work, startup, shutdown, maintenance, abnormal conditions, and foreseeable misuse." },
+      { title: "Rate risk consistently", body: "Use your organization’s approved severity and likelihood matrix. Record the initial rating before recommendations and the residual rating only after a control owner accepts the action." },
+      { title: "Turn recommendations into controlled work", body: "Give every action an owner, due date, status, and work-order or project reference. Escalate any risk that exceeds the organization’s acceptance criteria." },
+    ],
+    faqs: [
+      { q: "What is a preliminary hazard analysis?", a: "A preliminary hazard analysis is an early, structured screen that identifies credible hazards, causes, consequences, risk levels, and recommended controls before more detailed design or task analysis." },
+      { q: "When should a maintenance team use a PHA?", a: "Use a PHA for new equipment, process changes, unfamiliar maintenance tasks, major modifications, or early project decisions. It does not replace required job hazard analysis, LOTO, engineering review, or regulatory processes." },
+      { q: "How should PHA recommendations be tracked?", a: "Assign an accountable owner, due date, status, and verification method. Link implementation work to a corrective work order or project action, then document the accepted residual risk." },
+    ],
+    relatedLearn: { label: "Maintenance SOP generator", href: "/tools/maintenance-sop-generator" },
+    relatedSolution: { label: "Inspection workflows", href: "/solutions/facility-maintenance-software" },
+  },
 ];
 
 export const getMaintenanceTemplate = (slug: string) =>

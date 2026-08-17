@@ -43,7 +43,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/learn</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -222,6 +222,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://maintenease.com/learn/infrared-thermography-inspection</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://maintenease.com/learn/ai-maintenance-assistant</loc>
     <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -286,6 +292,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://maintenease.com/tools/maintenance-sop-generator</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/tools/root-cause-fishbone-generator</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://maintenease.com/compare/maintenease-vs-upkeep</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -312,7 +330,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/templates</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -331,6 +349,12 @@
   <url>
     <loc>https://maintenease.com/templates/work-order-template</loc>
     <lastmod>2026-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maintenease.com/templates/preliminary-hazard-analysis-template</loc>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
