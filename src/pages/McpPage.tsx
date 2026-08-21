@@ -37,11 +37,10 @@ const pageJsonLd = {
   url: CANONICAL,
   dateModified: MCP_PAGE.updated,
   about: {
-    "@type": "SoftwareApplication",
+    "@type": "Service",
     name: "MaintenEase MCP Server",
-    applicationCategory: "BusinessApplication",
-    applicationSubCategory: "Model Context Protocol server for CMMS software",
-    operatingSystem: "Remote service",
+    serviceType: "Model Context Protocol server for CMMS software",
+    provider: { "@id": "https://maintenease.com/#organization" },
     url: CANONICAL,
   },
 };

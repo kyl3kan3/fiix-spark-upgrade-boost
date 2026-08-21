@@ -15,7 +15,6 @@ import SiteIndexLinks from "@/components/SiteIndexLinks";
 import TrustBadges from "@/components/TrustBadges";
 import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
-import { SOFTWARE_APPLICATION_JSON_LD } from "@/data/productCatalog";
 
 const Index = () => (
   <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -41,7 +40,6 @@ const Index = () => (
         content="Track work orders, assets, and inspections, with predictive maintenance on eligible plans and account pricing from $49/month."
       />
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
-      <script type="application/ld+json">{JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>
     </Helmet>
     <MarketingJsonLd />
     <Navbar />

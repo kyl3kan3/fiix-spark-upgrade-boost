@@ -26,6 +26,8 @@ const INDEXABLE_ROUTES = new Set([
   "/tools/maintenance-sop-generator",
   "/tools/root-cause-fishbone-generator",
   "/support",
+  "/about",
+  "/editorial-policy",
 ]);
 
 const NOINDEX_ROUTES = new Set([
@@ -87,7 +89,7 @@ const REDIRECTS: Record<string, SeoRedirect> = {
   },
 };
 
-const PUBLIC_DETAIL_ROUTE = /^\/(?:solutions|learn|compare|templates|blog)\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const GENERATED_INDEXABLE_ROUTE_SET = new Set<string>(GENERATED_INDEXABLE_ROUTES);
 const PRIVATE_PUBLIC_ROUTE = /^\/(?:feature|r)\/[^/]+$/;
 
 export function normalizeSeoPath(pathname: string): string {
@@ -103,10 +105,11 @@ export function redirectForPath(pathname: string): SeoRedirect | null {
 export function classifySeoPath(pathname: string): SeoPathKind {
   const path = normalizeSeoPath(pathname);
 
-  if (INDEXABLE_ROUTES.has(path) || PUBLIC_DETAIL_ROUTE.test(path)) return "indexable";
+  if (INDEXABLE_ROUTES.has(path) || GENERATED_INDEXABLE_ROUTE_SET.has(path)) return "indexable";
   if (NOINDEX_ROUTES.has(path) || PRIVATE_PUBLIC_ROUTE.test(path)) return "noindex";
   if (NOINDEX_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))) {
     return "noindex";
   }
   return "not-found";
 }
+import { GENERATED_INDEXABLE_ROUTES } from "../data/generatedIndexableRoutes";

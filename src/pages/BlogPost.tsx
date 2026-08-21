@@ -230,13 +230,11 @@ const BlogPost = () => {
     "@type": "Article",
     headline: post.title,
     description,
-    // Google flags Article items with no "image" as invalid for rich results,
-    // so fall back to the brand OG asset when a post has no hero image.
-    image: [post.hero_image_url ?? `${SITE}/og-image.png?v=4`],
+    ...(post.hero_image_url ? { image: [post.hero_image_url] } : {}),
     datePublished: post.published_at ?? undefined,
     dateModified: post.updated_at ?? post.published_at ?? undefined,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: { "@type": "Organization", name: "MaintenEase", url: `${SITE}/` },
+    author: { "@type": "Organization", name: "MaintenEase editorial team", url: `${SITE}/editorial-policy` },
     publisher: {
       "@type": "Organization",
       name: "MaintenEase",
@@ -299,6 +297,8 @@ const BlogPost = () => {
         <h1 className="text-3xl md:text-4xl font-bold tracking-normal mb-4">{post.title}</h1>
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground mb-8">
+          <span>By the <Link to="/editorial-policy" className="font-medium text-primary underline underline-offset-4">MaintenEase editorial team</Link></span>
+          {(post.published_at || post.reading_time) && <span>·</span>}
           {post.published_at && <span>{formatDate(post.published_at)}</span>}
           {post.published_at && post.reading_time && <span>·</span>}
           {post.reading_time && <span>{post.reading_time} min read</span>}

@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, Linkedin, Twitter, Building2 } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -15,6 +15,8 @@ const Footer = () => {
  p.startsWith("/solutions") ||
  p.startsWith("/compare") ||
  p.startsWith("/templates") ||
+p === "/about" ||
+p === "/editorial-policy" ||
  p === "/mcp" ||
  p === "/support";
  
@@ -31,6 +33,7 @@ const Footer = () => {
       <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
       <span className="hidden sm:inline">·</span>
       <Link to="/support" className="hover:text-foreground transition-colors">Support</Link>
+      <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
     </div>
   </div>
   </footer>
@@ -44,9 +47,6 @@ const Footer = () => {
  { label: "Features", to: "/features" },
  { label: "Pricing", to: "/pricing" },
  { label: "Request Portal", to: "/solutions/maintenance-request-portal" },
- { label: "Integrations", to: "#" },
- { label: "Updates", to: "#" },
- { label: "Roadmap", to: "#" },
  ],
  },
  {
@@ -67,10 +67,9 @@ const Footer = () => {
  title: "Company",
  links: [
  { label: "Why MaintenEase", to: "/landing" },
- { label: "About", to: "#" },
+ { label: "About", to: "/about" },
  { label: "Blog", to: "/blog" },
- { label: "Careers", to: "#" },
- { label: "Customers", to: "#" },
+ { label: "Editorial Policy", to: "/editorial-policy" },
           { label: "Contact", to: "mailto:info@decent4.com" },
  ],
  },
@@ -87,7 +86,7 @@ const Footer = () => {
  return (
  <footer className="bg-foreground text-background border-t border-border/20">
  <div className="container mx-auto px-4 py-12 md:py-16">
- <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+ <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
  <div className="col-span-2">
            <Link to="/" aria-label="MaintenEase home" className="mb-4 inline-flex items-center gap-2">
              <Building2 className="h-6 w-6 text-background/80" strokeWidth={1.5} />
@@ -96,20 +95,7 @@ const Footer = () => {
  <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
- <div className="flex space-x-4">
- <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Twitter">
- <Twitter className="h-5 w-5" />
- </a>
- <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Facebook">
- <Facebook className="h-5 w-5" />
- </a>
- <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="Instagram">
- <Instagram className="h-5 w-5" />
- </a>
- <a href="#" className="text-background/80 hover:text-background transition-colors" aria-label="LinkedIn">
- <Linkedin className="h-5 w-5" />
- </a>
- </div>
+ <p className="text-background/70 text-sm">Operated by Decent4 · <a className="underline underline-offset-4 hover:text-background" href="mailto:info@decent4.com">info@decent4.com</a></p>
  </div>
 
  {footerLinks.map((column, idx) => (

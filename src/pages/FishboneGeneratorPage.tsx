@@ -91,15 +91,13 @@ const FishboneGeneratorPage = () => {
       acceptedAnswer: { "@type": "Answer", text: faq.a },
     })),
   };
-  const appLd = {
+  const pageLd = {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
+    "@type": "WebPage",
     name: PAGE.h1,
     url: CANONICAL_URL,
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    isAccessibleForFree: true,
     description: PAGE.metaDescription,
+    isPartOf: { "@id": "https://maintenease.com/#website" },
   };
 
   return (
@@ -117,7 +115,7 @@ const FishboneGeneratorPage = () => {
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
-        <script type="application/ld+json">{JSON.stringify(appLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(pageLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
       </Helmet>
       <MarketingJsonLd />

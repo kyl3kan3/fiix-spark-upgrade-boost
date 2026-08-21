@@ -96,16 +96,16 @@ const makeRows = (competitor: string, pricePerUser: number | null): CompareRow[]
     theirs: pricePerUser === null ? "Quote required" : `$${pricePerUser * TEAM_SIZE}/mo`,
     highlight: true,
   },
-  { feature: "Add more technicians", ours: "Business: $15/extra seat after 4", theirs: "Charged per seat", highlight: true },
-  { feature: "Billing commitment", ours: "Month-to-month", theirs: pricePerUser === null ? "Confirm in quote" : "Often annual" },
+  { feature: "Add more technicians", ours: "Business: $15/extra seat after 4", theirs: pricePerUser === null ? "Confirm in quote" : "Published per-seat price", highlight: true },
+  { feature: "Billing commitment", ours: "Month-to-month", theirs: "Check current vendor terms" },
   { feature: "Work order management", ours: true, theirs: true },
   { feature: "Asset management & history", ours: true, theirs: true },
   { feature: "Preventive maintenance scheduling", ours: true, theirs: true },
   { feature: "Mobile app", ours: true, theirs: true },
-  { feature: "AI predictive maintenance", ours: true, theirs: "Higher tier / add-on" },
-  { feature: "Energy / power usage tracking", ours: true, theirs: "Varies" },
-  { feature: "Public request portal (no login)", ours: true, theirs: "Varies" },
-  { feature: "Free onboarding & data import", ours: true, theirs: "Varies / paid" },
+  { feature: "AI predictive maintenance", ours: true, theirs: "Verify required tier" },
+  { feature: "Energy / power usage tracking", ours: true, theirs: "Verify with vendor" },
+  { feature: "Public request portal (no login)", ours: true, theirs: "Verify with vendor" },
+  { feature: "Free onboarding & data import", ours: true, theirs: "Verify scope and fees" },
 ];
 
 const pricingFaq = (competitor: string, pricePerUser: number) => ({
@@ -248,6 +248,7 @@ export const comparisons: Comparison[] = [
   },
   {
     slug: "maintenease-vs-fiix",
+    datePublished: "2026-07-25",
     dateModified: PRODUCT_LAST_MODIFIED,
     competitor: "Fiix",
     competitorPlan: "Basic",
@@ -258,14 +259,67 @@ export const comparisons: Comparison[] = [
     h1: "MaintenEase vs Fiix",
     tagline: "Account plans with included seats compared with per-user pricing.",
     intro:
-      "Fiix is an established CMMS with deep asset features, billed per user per month. MaintenEase delivers the core maintenance workflow — work orders, asset history, preventive schedules, predictive maintenance, and reporting — through account plans with included seats and published capacity limits.",
+      "Fiix publishes a free tier, Basic and Professional per-user plans, and custom Enterprise pricing. MaintenEase publishes account plans with included seats and capacity limits. This comparison uses Fiix's official pricing page for current plan facts and identifies the questions a buyer should verify before choosing or migrating.",
     rows: makeRows("Fiix", 45),
+    pricingTable: {
+      heading: "Fiix pricing verified in 2026",
+      summary: "Fiix lists Free at $0, Basic at $45 per user per month, Professional at $75 per user per month, and Enterprise by custom quote. The free plan is limited to 25 active preventive-maintenance schedules.",
+      sourceLabel: "Fiix's official pricing page",
+      sourceUrl: "https://fiixsoftware.com/cmms/pricing/",
+      verifiedOn: "2026-08-21",
+      rows: [
+        { plan: "Free", competitorPrice: "$0; 25 active PMs", mainteneasePrice: "7-day free trial" },
+        { plan: "Basic", competitorPrice: "$45/user/mo", mainteneasePrice: "Starter: $49/mo (2 seats)" },
+        { plan: "Professional", competitorPrice: "$75/user/mo", mainteneasePrice: "Pro: $129/mo (4 seats)" },
+        { plan: "Enterprise", competitorPrice: "Custom quote", mainteneasePrice: "Business: $299/mo (4 seats)" },
+      ],
+    },
+    sections: [
+      {
+        heading: "Start with the plan that contains the workflow",
+        paragraphs: [
+          "Do not compare Fiix Basic with MaintenEase Starter only because both are entry paid plans. List the workflows you need — preventive schedules, reports, purchasing, integrations, SSO, or multi-site controls — and confirm the first Fiix tier that includes each one on the official plan table.",
+          "Then price the number of people who require paid access. Fiix's published Basic and Professional prices are per user; MaintenEase Starter, Pro, and Business include two, four, and four seats respectively, with Business adding seats at $15 per month each.",
+        ],
+      },
+      {
+        heading: "Migration questions to answer before signing",
+        paragraphs: [
+          "Ask both vendors for a sample export containing asset identifiers, locations, open and closed work orders, PM definitions, meter readings, parts, attachments, and audit history. Confirm which fields and files are included, how relationships are represented, and whether an administrator can run the export without a paid service.",
+          "Pilot with a small asset set and several real work orders. Measure completion steps, mobile connectivity needs, supervisor review, notification noise, and the effort required to recreate recurring schedules. A buyer should treat those observed results as more useful than generic feature checkmarks.",
+        ],
+      },
+    ],
+    competitorTiers: [
+      { name: "Free", price: "$0", notes: "Official page lists a 25-active-PM limit." },
+      { name: "Basic", price: "$45/user/mo", notes: "Published entry paid tier." },
+      { name: "Professional", price: "$75/user/mo", notes: "Published higher paid tier." },
+      { name: "Enterprise", price: "Custom quote", notes: "Contact Fiix for pricing and terms." },
+    ],
+    bestFit: {
+      ours: [
+        "You prefer published account pricing with included seats and capacity limits.",
+        "Business's published $15 monthly additional-seat rate fits your growth model.",
+        "The MaintenEase trial covers the workflows and data relationships you validated in a pilot.",
+      ],
+      theirs: [
+        "Fiix's official plan table includes a required workflow that MaintenEase does not substantiate.",
+        "A Fiix pilot performs better for your technicians and supervisors.",
+        "Your procurement requirements favor the Fiix Enterprise proposal after total-cost review.",
+      ],
+    },
     differentiators: [
       { title: "Predictable published billing", body: "The pricing page shows included seats, capacity limits, and the Business extra-seat rate so a growing team can calculate its monthly cost." },
-      { title: "Fast to live", body: "MaintenEase is built to be running the same week, with free data import rather than a long implementation." },
-      { title: "Modern, mobile-first", body: "Technicians close work from their phone; managers see status in real time without a heavyweight rollout." },
+      { title: "Compare required workflows", body: "Map each required workflow to the first eligible plan and verify it in a pilot instead of relying on a generic feature checklist." },
+      { title: "Test migration evidence", body: "Use a representative export and pilot asset set to verify history, attachments, preventive schedules, and field relationships before committing." },
     ],
-    faqs: [pricingFaq("Fiix", 45), affiliationFaq("Fiix"), migrationFaq("Fiix")],
+    faqs: [
+      pricingFaq("Fiix", 45),
+      { q: "How much does Fiix cost?", a: "Fiix lists Free at $0, Basic at $45 per user per month, Professional at $75 per user per month, and Enterprise by custom quote. Pricing verified on August 21, 2026; check Fiix's official page for changes." },
+      affiliationFaq("Fiix"),
+      migrationFaq("Fiix"),
+    ],
+    sources: [{ label: "Fiix official CMMS pricing", url: "https://fiixsoftware.com/cmms/pricing/" }],
   },
   {
     slug: "maintenease-vs-maintainx",
@@ -351,7 +405,7 @@ export const comparisons: Comparison[] = [
     bestFit: {
       ours: [
         "You have roughly six or more people who need access, including supervisors and office staff.",
-        "You want a bill that never changes when you hire, and month-to-month billing with no annual commitment.",
+        "You want published account pricing and a known $15 monthly rate for each additional Business seat.",
         "You want predictive maintenance, energy tracking, and a public request portal included rather than gated.",
         "You'd rather have someone import your assets and PMs for you than DIY the setup.",
       ],
@@ -461,24 +515,74 @@ export const comparisons: Comparison[] = [
   },
   {
     slug: "maintenease-vs-emaint",
+    datePublished: "2026-07-25",
     dateModified: PRODUCT_LAST_MODIFIED,
     competitor: "eMaint",
-    competitorPlan: "Team",
-    competitorPricePerUser: 69,
+    competitorPlan: "Professional / Enterprise",
+    competitorPricePerUser: null,
     metaTitle: "MaintenEase vs eMaint — CMMS Pricing Alternative",
     metaDescription:
-      "MaintenEase vs eMaint: compare a modern mobile-first CMMS with published account plans against enterprise per-user pricing, features, and estimated cost.",
+      "MaintenEase vs eMaint: compare published MaintenEase plans with eMaint's configurable pricing, minimum users, selection criteria, and migration questions.",
     h1: "MaintenEase vs eMaint",
-    tagline: "A modern, mobile-first alternative to legacy enterprise CMMS.",
+    tagline: "Published account plans compared with configurable eMaint pricing.",
     intro:
-      "eMaint (a Fluke company) is a long-established enterprise CMMS billed per user per month, with a heavier interface aimed at large industrial deployments. MaintenEase delivers the core maintenance workflow — work orders, assets, preventive maintenance, inspections, and reporting — in a mobile-first UI through published account plans with included seats.",
-    rows: makeRows("eMaint", 69),
-    differentiators: [
-      { title: "Mobile-first, not desktop-first", body: "Technicians close work from their phone in a couple of taps — no training on a legacy enterprise console." },
-      { title: "Published account pricing vs per-seat pricing", body: "eMaint's per-user pricing scales with the crew. MaintenEase publishes included seats and a Business extra-seat rate so the team can estimate its actual cost." },
-      { title: "Live in days, not months", body: "Free data import and guided onboarding replace long enterprise implementations." },
+      "eMaint, a Fluke Reliability product, currently asks buyers to configure a package or request pricing. Its official pricing page does not substantiate the fixed per-user amount previously shown on this comparison. MaintenEase publishes Starter, Pro, and Business account prices, included seats, capacity limits, and the Business extra-seat rate.",
+    rows: makeRows("eMaint", null),
+    pricingTable: {
+      heading: "eMaint pricing: request a configured quote",
+      summary: "eMaint's official page describes flexible, configurable pricing rather than a current public dollar amount. Professional has a three-user minimum and Enterprise has a five-user minimum; buyers should confirm included modules, services, term, and total cost in the quote.",
+      sourceLabel: "eMaint's official pricing page",
+      sourceUrl: "https://www.emaint.com/pricing",
+      verifiedOn: "2026-08-21",
+      rows: [
+        { plan: "Professional", competitorPrice: "Custom; 3-user minimum", mainteneasePrice: "Pro: $129/mo (4 seats)" },
+        { plan: "Enterprise", competitorPrice: "Custom; 5-user minimum", mainteneasePrice: "Business: $299/mo (4 seats)" },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why there is no eMaint savings calculation",
+        paragraphs: [
+          "A valid team-cost comparison requires a current public price or a buyer's actual quote. eMaint does not publish a fixed dollar amount on its current pricing page, so this page does not multiply an old price by headcount or claim a savings figure.",
+          "Ask eMaint for the recurring subscription, user minimum, modules, implementation services, training, integrations, data migration, support, contract term, renewal terms, and taxes. Compare that proposal with the MaintenEase plan that satisfies both seat and record-volume requirements.",
+        ],
+      },
+      {
+        heading: "Evaluate fit with evidence from your workflow",
+        paragraphs: [
+          "Build a pilot script from real tasks: submit a request, plan a preventive work order, attach evidence, consume a part, review asset history, approve completion, and export the record. Run the same script in each product and record where required fields, permissions, or integrations differ.",
+          "For migration, inspect a representative export before signing. Verify stable asset IDs, locations, PM frequencies, meter values, work-order status history, labor and parts, attachments, and audit fields. Do not assume a marketing checklist proves that historical relationships will transfer cleanly.",
+        ],
+      },
     ],
-    faqs: [pricingFaq("eMaint", 69), affiliationFaq("eMaint"), migrationFaq("eMaint")],
+    competitorTiers: [
+      { name: "Professional", price: "Custom quote", notes: "Official page states a three-user minimum." },
+      { name: "Enterprise", price: "Custom quote", notes: "Official page states a five-user minimum." },
+    ],
+    bestFit: {
+      ours: [
+        "You need published monthly account prices and capacity limits before talking to sales.",
+        "Starter, Pro, or Business covers the validated workflow and required record volume.",
+        "You want each additional Business seat priced publicly at $15 per month.",
+      ],
+      theirs: [
+        "eMaint's configured proposal includes required services or workflows that you verify in a pilot.",
+        "Your organization accepts the quoted user minimum, term, services, and total cost.",
+        "Your migration test preserves the records and relationships required by policy.",
+      ],
+    },
+    differentiators: [
+      { title: "Published MaintenEase pricing", body: "Starter, Pro, and Business list monthly and annual prices, included seats, capacity limits, and support channels in one catalog." },
+      { title: "Quote-based eMaint comparison", body: "eMaint cost remains custom until the buyer has a current configured proposal; this page does not calculate savings from an unsupported historical price." },
+      { title: "Workflow and migration test", body: "Evaluate both products with the same real tasks and a representative export before choosing." },
+    ],
+    faqs: [
+      { q: "How much does eMaint cost?", a: "eMaint's official pricing page uses configurable pricing and does not publish a current fixed dollar amount. Professional has a three-user minimum and Enterprise has a five-user minimum. Verified August 21, 2026; request a current quote for total cost." },
+      { q: "Why does this page not show eMaint savings?", a: "Without a current public price or your actual quote, multiplying an old number by user count would be misleading. Compare the complete eMaint proposal with the MaintenEase plan that satisfies your seats and capacity." },
+      affiliationFaq("eMaint"),
+      migrationFaq("eMaint"),
+    ],
+    sources: [{ label: "eMaint official pricing", url: "https://www.emaint.com/pricing" }],
   },
 ];
 

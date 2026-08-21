@@ -40,7 +40,6 @@ import {
   PRODUCT_JSON_LD,
   PRODUCT_PLANS,
   COMMON_PLAN_FACTS,
-  SOFTWARE_APPLICATION_JSON_LD,
   WEBSITE_JSON_LD,
   buildItemListJsonLd,
 } from "../src/data/productCatalog";
@@ -77,6 +76,7 @@ type Route = {
   h1: string;
   intro: string;
   ogType?: "website" | "article";
+  image?: { src: string; alt: string };
   jsonLd?: Record<string, unknown>[];
   indexable?: boolean;
   /** Extra crawlable body copy (headings/paragraphs), already escaped-safe text. */
@@ -252,11 +252,10 @@ const staticRoutes: Route[] = [
         url: `${ORIGIN}/mcp`,
         dateModified: MCP_PAGE.updated,
         about: {
-          "@type": "SoftwareApplication",
+          "@type": "Service",
           name: "MaintenEase MCP Server",
-          applicationCategory: "BusinessApplication",
-          applicationSubCategory: "Model Context Protocol server for CMMS software",
-          operatingSystem: "Remote service",
+          serviceType: "Model Context Protocol server for CMMS software",
+          provider: { "@id": `${ORIGIN}/#organization` },
           url: `${ORIGIN}/mcp`,
         },
       },
@@ -505,13 +504,11 @@ const staticRoutes: Route[] = [
     jsonLd: [
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
+        "@type": "WebPage",
         name: page.h1,
         description: page.metaDescription,
         url: `${ORIGIN}${page.path}`,
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web",
-        isAccessibleForFree: true,
+        isPartOf: { "@id": `${ORIGIN}/#website` },
         dateModified: page.updated,
       },
       {
@@ -690,6 +687,46 @@ const staticRoutes: Route[] = [
     links: [
       { href: "/privacy", label: "Privacy notice" },
       { href: "/terms", label: "Terms of service" },
+      { href: "/support", label: "MaintenEase support" },
+      { href: "/about", label: "About MaintenEase" },
+    ],
+  },
+  {
+    path: "/about",
+    title: "About MaintenEase — Product, Operator, and Contact",
+    description: "Learn what MaintenEase does, who operates the service, how product information is maintained, and how to contact the team.",
+    h1: "About MaintenEase",
+    intro: "MaintenEase is cloud maintenance management software operated by Decent4 for work orders, assets, preventive maintenance, inspections, reporting, and equipment-risk workflows.",
+    sections: [
+      { heading: "What the product is for", body: "Maintenance and facility teams use MaintenEase to capture requests, plan and complete work, keep asset history, schedule recurring maintenance, run inspections, and review operational records." },
+      { heading: "Published product facts", body: "Current plan prices, included seats, record limits, trial terms, and support channels come from one maintained product catalog." },
+      { heading: "Contact and accountability", body: "Product and support questions can be sent to info@decent4.com. MaintenEase does not publish unverified customer counts, ratings, staff credentials, or social profiles." },
+    ],
+    links: [
+      { href: "/pricing", label: "Current MaintenEase plans" },
+      { href: "/support", label: "Get support" },
+      { href: "/editorial-policy", label: "Editorial policy" },
+      { href: "/terms", label: "Terms of service" },
+    ],
+  },
+  {
+    path: "/editorial-policy",
+    title: "MaintenEase Editorial Policy and Content Methodology",
+    description: "How MaintenEase prepares, sources, reviews, dates, and corrects maintenance guides, product facts, comparisons, and calculations.",
+    h1: "Editorial policy and methodology",
+    intro: "How MaintenEase publishes maintenance education without inventing experience, research, customer evidence, reviews, or credentials.",
+    sections: [
+      { heading: "How guides are prepared", body: "The MaintenEase editorial team defines the reader's maintenance decision, checks terminology against primary or authoritative sources where available, and separates product facts from general operating guidance." },
+      { heading: "Product and competitor claims", body: "MaintenEase facts come from the product catalog. Time-sensitive competitor facts link to official vendor pages and carry a verification date. Quote-only pricing is not converted into estimated savings." },
+      { heading: "Evidence and calculations", body: "Worked examples state their assumptions. MaintenEase does not describe internal customer data as research unless a real cohort, period, method, limitations, and auditable evidence can be published." },
+      { heading: "Safety and professional scope", body: "Guides are educational material, not a substitute for employer procedures, manufacturer instructions, qualified-person requirements, engineering judgment, or applicable law." },
+      { heading: "Corrections and reviewers", body: "The published reviewer is currently the MaintenEase editorial team as an organizational author. No individual biography or credential is published until the owner verifies those facts. Corrections can be sent to info@decent4.com." },
+    ],
+    links: [
+      { href: "/about", label: "About MaintenEase" },
+      { href: "/learn", label: "Maintenance learning library" },
+      { href: "/compare", label: "Sourced CMMS comparisons" },
+      { href: "/support", label: "Contact support" },
     ],
   },
 ];
@@ -725,6 +762,7 @@ const learnRoutes: Route[] = glossary.map((g) => {
     h1: g.term,
     intro: g.short,
     ogType: "article",
+    image: g.image,
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -733,8 +771,8 @@ const learnRoutes: Route[] = glossary.map((g) => {
         description: g.short,
         mainEntityOfPage: { "@type": "WebPage", "@id": url },
         inLanguage: "en",
-        image: OG_IMAGE,
-        author: { "@type": "Organization", name: "MaintenEase" },
+        ...(g.image ? { image: `${ORIGIN}${g.image.src}` } : {}),
+        author: { "@type": "Organization", name: "MaintenEase editorial team", url: `${ORIGIN}/editorial-policy` },
         publisher: {
           "@type": "Organization",
           name: "MaintenEase",
@@ -1019,6 +1057,7 @@ const LANDING_FAQS = [
 function headFor(route: Route): string {
   const canonicalPath = route.canonicalPath ?? route.path;
   const canonical = canonicalPath === "/" ? `${ORIGIN}/` : `${ORIGIN}${canonicalPath}`;
+  const socialImage = route.image ? `${ORIGIN}${route.image.src}` : OG_IMAGE;
   const title = esc(route.title);
   const description = esc(route.description);
   const tags = [
@@ -1033,19 +1072,17 @@ function headFor(route: Route): string {
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
     `<meta property="og:url" content="${canonical}" />`,
-    `<meta property="og:image" content="${OG_IMAGE}" />`,
+    `<meta property="og:image" content="${socialImage}" />`,
+    route.image ? `<meta property="og:image:alt" content="${esc(route.image.alt)}" />` : "",
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,
-    `<meta name="twitter:image" content="${OG_IMAGE}" />`,
+    `<meta name="twitter:image" content="${socialImage}" />`,
     ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map(
       (block) => `<script type="application/ld+json" data-ld-static="true">${JSON.stringify(block)}</script>`,
     ),
   ];
 
-  if (["/", "/landing", "/pricing"].includes(route.path)) {
-    tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>`);
-  }
   if (route.path === "/pricing") {
     tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(PRODUCT_JSON_LD)}</script>`);
   }
@@ -1081,6 +1118,7 @@ function bodyFor(route: Route): string {
   const parts = [
     `<h1>${esc(route.h1)}</h1>`,
     `<p>${esc(route.intro)}</p>`,
+    ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
     ...(route.sections ?? []).flatMap((s) => [
       `<h2>${esc(s.heading)}</h2>`,
       `<p>${esc(s.body)}</p>`,
@@ -1116,9 +1154,10 @@ function bodyFor(route: Route): string {
         "</ul></nav>",
     );
   }
-  // A semantic no-JS fallback avoids shipping crawler-only hidden content.
-  // JavaScript visitors never render <noscript>; React replaces #root normally.
-  return `<noscript data-prerender="static"><main style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${parts.join("\n      ")}</main></noscript>`;
+  // Ordinary HTML gives non-JavaScript clients the same page-specific body and
+  // link graph. React replaces this build-time shell when the app starts, so it
+  // is never duplicated in the visible document.
+  return `<main data-prerender="static" style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${parts.join("\n      ")}</main>`;
 }
 
 function markdownFor(route: Route): string {
@@ -1226,10 +1265,10 @@ for (const route of routes) {
     written++;
   }
 
-  // Published blog posts already have a dynamic, database-backed Markdown
-  // function. All other public pages get a build-time representation. Preserve
-  // richer data-generated Markdown files that were copied from public/.
-  if (route.indexable !== false && !route.path.startsWith("/blog/")) {
+  // Every public page gets a build-time Markdown representation. This keeps
+  // blog content available on hosts that do not execute Cloudflare Functions.
+  // Preserve richer data-generated Markdown files copied from public/.
+  if (route.indexable !== false) {
     const markdownPath = route.path === "/"
       ? join(DIST, "index.md")
       : join(DIST, `${route.path.replace(/^\//, "")}.md`);

@@ -97,7 +97,7 @@ Probably not. Once you cross roughly 20–30 assets, or once preventive work rou
 
 ### How much does a CMMS cost?
 
-Most cloud CMMS platforms bill per user per month, commonly between $20 and $75 per technician. MaintenEase instead publishes account plans with included seats, so the bill does not change every time someone joins. Run your own headcount through the CMMS cost calculator before committing.
+Pricing models vary by vendor, tier, users, modules, and services. MaintenEase publishes account plans with included seats; Business charges $15 per month for each additional seat after the four included seats. Run your actual headcount and capacity through the CMMS cost calculator before committing.
 
 ### Is there a free CMMS?
 

@@ -152,7 +152,7 @@ function jsonLdTypes(): string[] {
 // Organization/WebSite on "/" to avoid duplicates with these static nodes.
 const HOME_STATIC_JSON_LD = `
 <script type="application/ld+json" data-ld-home="organization">
-{"@context":"https://schema.org","@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/","logo":"https://maintenease.com/favicon.png","image":"https://maintenease.com/og-image.png","sameAs":["https://twitter.com/maintenease"]}
+ {"@context":"https://schema.org","@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/","logo":"https://maintenease.com/favicon.png","image":"https://maintenease.com/og-image.png","parentOrganization":{"@type":"Organization","name":"Decent4"},"contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"info@decent4.com","url":"https://maintenease.com/support"}}
 </script>
 <script type="application/ld+json" data-ld-home="website">
 {"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase","url":"https://maintenease.com/","publisher":{"@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://maintenease.com/learn?q={search_term_string}"},"query-input":"required name=search_term_string"}}

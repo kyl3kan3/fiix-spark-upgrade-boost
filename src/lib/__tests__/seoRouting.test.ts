@@ -17,7 +17,7 @@ describe("SEO route policy", () => {
     "/learn/infrared-thermography-inspection",
     "/tools/maintenance-sop-generator",
     "/tools/root-cause-fishbone-generator",
-    "/blog/reduce-unplanned-downtime",
+    "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026",
   ])("marks %s as indexable", (path) => {
     expect(classifySeoPath(path)).toBe("indexable");
   });
@@ -35,7 +35,15 @@ describe("SEO route policy", () => {
     expect(classifySeoPath(path)).toBe("noindex");
   });
 
-  it.each(["/does-not-exist", "/solutions/too/many-segments", "/tools/unknown-generator", "/api/private"]) (
+  it.each([
+    "/does-not-exist",
+    "/solutions/too/many-segments",
+    "/solutions/plausible-but-unknown",
+    "/learn/industrial-preventive-maintenance",
+    "/blog/industrial-maintenance-optimization",
+    "/tools/unknown-generator",
+    "/api/private",
+  ]) (
     "marks %s as not found",
     (path) => {
       expect(classifySeoPath(path)).toBe("not-found");

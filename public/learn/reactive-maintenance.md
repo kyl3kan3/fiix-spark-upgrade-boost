@@ -18,7 +18,7 @@ Not every asset deserves a preventive schedule. For cheap, non-critical, easily 
 
 ## How to reduce reactive maintenance
 
-Start by measuring it: a CMMS tags every work order as planned or reactive so you can see the ratio. Then attack the worst offenders — the handful of assets generating most of the emergency calls usually reveal a clear preventive fix. Move those onto schedules, track whether breakdowns drop, and repeat. Most teams start near 80% reactive and work toward the 20–30% that world-class operations sustain.
+Start by measuring it: tag every work order as planned or reactive using a documented rule, then review the assets generating repeated emergency calls. Move suitable failure modes onto approved preventive or condition-based tasks, track whether breakdowns change, and repeat. Set the target from your own baseline, asset risk, production needs, and staffing rather than copying an unsupported universal ratio.
 
 ## FAQ
 

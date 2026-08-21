@@ -64,7 +64,7 @@ const ComparePage = () => {
         description: c.metaDescription,
         url,
         inLanguage: "en-US",
-        about: { "@id": "https://maintenease.com/#software" },
+        about: { "@type": "Product", "@id": "https://maintenease.com/pricing#product", name: "MaintenEase CMMS" },
         ...(c.datePublished ? { datePublished: c.datePublished } : {}),
         ...(c.dateModified ? { dateModified: c.dateModified } : {}),
       }

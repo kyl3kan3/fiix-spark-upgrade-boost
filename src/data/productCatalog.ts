@@ -3,9 +3,18 @@ import { TRIAL_CANCEL_BY_DAY, TRIAL_DAYS } from "@/constants/trial";
 export const SITE_ORIGIN = "https://maintenease.com";
 export const PRICING_URL = `${SITE_ORIGIN}/pricing`;
 export const PRODUCT_NAME = "MaintenEase CMMS";
-export const PRODUCT_LAST_MODIFIED = "2026-08-07";
+export const PRODUCT_LAST_MODIFIED = "2026-08-21";
 export const PRICE_CURRENCY = "USD";
 export const EXTRA_BUSINESS_SEAT_MONTHLY = 15;
+export const PRODUCT_TRIAL_DAYS = TRIAL_DAYS;
+export const PRODUCT_TRIAL_CANCEL_BY_DAY = TRIAL_CANCEL_BY_DAY;
+export const PRODUCT_OPERATOR_NAME = "Decent4";
+export const PRODUCT_CONTACT_EMAIL = "info@decent4.com";
+export const PRODUCT_SUPPORT_SUMMARY =
+  "Starter includes email support, Pro includes priority email support, and Business includes email and chat support.";
+export const PRODUCT_TRIAL_SUMMARY = `${PRODUCT_TRIAL_DAYS}-day free trial; a card is required and cancellation is required before day ${PRODUCT_TRIAL_CANCEL_BY_DAY} to avoid a charge.`;
+export const PRODUCT_BILLING_SUMMARY =
+  "Published monthly and annual billing are available for Starter, Pro, and Business.";
 
 export type PlanTier = "starter" | "pro" | "business";
 
@@ -171,7 +180,6 @@ export function getMaintenEaseTeamPrice(rawTeamSize: number): MaintenEaseTeamPri
 
 const organizationId = `${SITE_ORIGIN}/#organization`;
 const brandId = `${SITE_ORIGIN}/#brand`;
-const softwareId = `${SITE_ORIGIN}/#software`;
 
 export const ORGANIZATION_JSON_LD = {
   "@context": "https://schema.org",
@@ -186,7 +194,16 @@ export const ORGANIZATION_JSON_LD = {
     caption: "MaintenEase logo",
   },
   brand: { "@id": brandId },
-  sameAs: ["https://twitter.com/maintenease"],
+  parentOrganization: {
+    "@type": "Organization",
+    name: PRODUCT_OPERATOR_NAME,
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    email: PRODUCT_CONTACT_EMAIL,
+    url: `${SITE_ORIGIN}/support`,
+  },
 };
 
 export const BRAND_JSON_LD = {
@@ -253,29 +270,6 @@ export const PLAN_OFFERS_JSON_LD = PRODUCT_PLANS.flatMap((plan) => [
   },
 ]);
 
-export const SOFTWARE_APPLICATION_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "@id": softwareId,
-  name: PRODUCT_NAME,
-  alternateName: "MaintenEase",
-  description: PRODUCT_DESCRIPTION,
-  url: `${SITE_ORIGIN}/`,
-  applicationCategory: "BusinessApplication",
-  applicationSubCategory: "Computerized maintenance management system",
-  operatingSystem: "Web browser",
-  inLanguage: "en-US",
-  dateModified: PRODUCT_LAST_MODIFIED,
-  image: {
-    "@type": "ImageObject",
-    contentUrl: `${SITE_ORIGIN}/og-image.png?v=4`,
-    caption: "MaintenEase CMMS — maintenance management software for facility and maintenance teams",
-  },
-  brand: { "@id": brandId },
-  provider: { "@id": organizationId },
-  offers: PLAN_OFFERS_JSON_LD,
-};
-
 export const PRODUCT_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "Product",
@@ -293,7 +287,6 @@ export const PRODUCT_JSON_LD = {
   },
   brand: { "@id": brandId },
   manufacturer: { "@id": organizationId },
-  isRelatedTo: { "@id": softwareId },
   offers: PLAN_OFFERS_JSON_LD,
 };
 

@@ -2,7 +2,7 @@
 
 > Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Account plans include seats and published capacity limits. Work orders, preventive maintenance, inspections, assets, and a public request portal live in one place.
 
-Starter is $49/month with 2 included seats; Pro is $129/month with 4 included seats; Business is $299/month with 4 included seats. Additional Business seats are $15/month. Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders. 7-day free trial. Month-to-month billing. Free data import and onboarding.
+Starter is $49/month with 2 included seats; Pro is $129/month with 4 included seats; Business is $299/month with 4 included seats. Additional Business seats are $15/month. Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders. 7-day free trial; a card is required and cancellation is required before day 8 to avoid a charge. Starter includes email support, Pro includes priority email support, and Business includes email and chat support. Free data import and onboarding.
 
 Every canonical public page below has an explicit Markdown URL. Do not guess or construct a URL: use the complete directory in this file or https://maintenease.com/api/ai.json. Clients may also request a canonical HTML URL with `Accept: text/markdown`; negotiated responses send `Vary: Accept`, `Content-Location`, and canonical/alternate `Link` headers. See https://maintenease.com/llms-full.txt for the combined corpus.
 
@@ -31,7 +31,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): Account plans with included seats compared with per-user pricing.
 - [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx.md): Account plans with included seats and published capacity limits.
 - [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): Account and per-user pricing for preventive maintenance teams.
-- [MaintenEase vs eMaint](https://maintenease.com/compare/maintenease-vs-emaint.md): A modern, mobile-first alternative to legacy enterprise CMMS.
+- [MaintenEase vs eMaint](https://maintenease.com/compare/maintenease-vs-emaint.md): Published account plans compared with configurable eMaint pricing.
 
 ## Learn (glossary)
 
@@ -51,8 +51,8 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 - [Condition-Based Maintenance](https://maintenease.com/learn/condition-based-maintenance.md): Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.
 - [MTBF (Mean Time Between Failures)](https://maintenease.com/learn/mtbf.md): The average operating time between one failure and the next for a repairable asset — a core reliability metric maintenance teams track to spot bad actors.
 - [MTTR (Mean Time To Repair)](https://maintenease.com/learn/mttr.md): The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.
-- [CMMS Benchmarks (2026)](https://maintenease.com/learn/cmms-benchmarks-2026.md): Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.
-- [CMMS ROI & Cost Savings](https://maintenease.com/learn/cmms-roi.md): How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.
+- [Maintenance KPI Reference: Build an Internal Baseline](https://maintenease.com/learn/cmms-benchmarks-2026.md): A practical reference for defining planned-work ratio, MTTR, PM compliance, and cost per work order without treating unrelated industry figures as universal targets.
+- [CMMS ROI Calculator Method: Use Your Own Baseline](https://maintenease.com/learn/cmms-roi.md): A transparent way to estimate CMMS return using your own downtime, labor, parts, implementation, and subscription inputs instead of vendor benchmark claims.
 - [Root Cause Analysis (RCA)](https://maintenease.com/learn/root-cause-analysis.md): A structured method for finding why a failure happened — not just what broke — so the same problem can be eliminated instead of repeatedly repaired.
 - [Deferred Maintenance](https://maintenease.com/learn/deferred-maintenance.md): Maintenance work that is known, needed, and postponed — usually for budget or staffing reasons — and that quietly accumulates into a backlog with a price tag.
 - [Infrared Thermography Camera Guide for Maintenance Inspections](https://maintenease.com/learn/infrared-thermography-inspection.md): Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.
@@ -108,6 +108,8 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Learn** — HTML: https://maintenease.com/learn — Markdown: https://maintenease.com/learn.md
 - **Blog** — HTML: https://maintenease.com/blog — Markdown: https://maintenease.com/blog.md
 - **Support** — HTML: https://maintenease.com/support — Markdown: https://maintenease.com/support.md
+- **About** — HTML: https://maintenease.com/about — Markdown: https://maintenease.com/about.md
+- **Editorial Policy** — HTML: https://maintenease.com/editorial-policy — Markdown: https://maintenease.com/editorial-policy.md
 - **Privacy** — HTML: https://maintenease.com/privacy — Markdown: https://maintenease.com/privacy.md
 - **Terms** — HTML: https://maintenease.com/terms — Markdown: https://maintenease.com/terms.md
 - **Refund Policy** — HTML: https://maintenease.com/refund-policy — Markdown: https://maintenease.com/refund-policy.md

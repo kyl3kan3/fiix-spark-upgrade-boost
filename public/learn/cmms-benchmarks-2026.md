@@ -1,50 +1,50 @@
-# CMMS Benchmarks (2026)
+# Maintenance KPI Reference: Build an Internal Baseline
 
-> Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.
+> A practical reference for defining planned-work ratio, MTTR, PM compliance, and cost per work order without treating unrelated industry figures as universal targets.
 
 Canonical URL: https://maintenease.com/learn/cmms-benchmarks-2026
 
-## Why publish maintenance benchmarks?
+## This page is a KPI reference, not a benchmark study
 
-Every maintenance leader eventually gets asked the same question: 'is that number good?' Vendors rarely publish benchmarks in one place, so teams end up guessing. This page consolidates the most commonly cited maintenance KPIs into a single reference you can link to, cite in a report, or paste into a board deck. Numbers are drawn from published industry surveys (Plant Engineering, ARC Advisory, Reliabilityweb, and the Association for Manufacturing Excellence) and cross-checked against anonymized MaintenEase customer data.
+MaintenEase does not currently publish a documented customer cohort, sample period, calculation method, or auditable dataset that would support an original industry benchmark. This page therefore explains how to define and compare maintenance KPIs using your own stable baseline. A number from another industry, asset class, or operating schedule should not become a target without checking whether the populations and formulas are comparable.
 
-## Planned vs reactive work ratio
+## Planned-work ratio
 
-World-class maintenance organizations run 80% planned work and 20% or less reactive. The industry average sits closer to 55/45, and teams still on spreadsheets typically report the opposite — around 30% planned and 70% reactive. Moving from 30% to 55% planned is the single biggest lever most teams have to cut overtime and unplanned downtime.
+Define which work-order types count as planned before calculating the ratio. A defensible formula is planned work orders completed divided by all maintenance work orders completed in the same period. Some teams use labor hours instead of order count; either method can work, but switching the denominator makes periods incomparable. Record whether inspections, projects, and emergency follow-up work are included.
 
 ## Mean Time To Repair (MTTR)
 
-Industry-average MTTR across manufacturing sits at roughly 4 to 6 hours for non-critical assets and 1 to 3 hours for critical production equipment. World-class benchmarks are below 2 hours for critical assets, driven mostly by faster notification, better spare-parts stocking, and clear procedures — not faster wrench time.
+MTTR is total repair-restoration time divided by the number of repair events in the period. State the start and stop events: failure detected, work order opened, technician assigned, repair started, or asset returned to service. Segment by asset class and criticality so a fleet of simple pumps is not compared with complex production lines. Track waiting and active repair separately when the data supports it.
 
 ## PM compliance
 
-PM compliance is the share of scheduled preventive tasks completed on time. The commonly cited world-class threshold is 90%. Industry surveys put the average around 65 to 75%; teams below 50% almost always have a data problem (no CMMS or no schedule) rather than a labor problem.
+PM compliance is preventive tasks completed within the defined completion window divided by preventive tasks due in the period. Publish the window with the result, such as due date through seven days late. Exclude canceled schedules only under a documented rule, and do not quietly move due dates after the work is late.
 
 ## Cost per work order
 
-Fully-loaded cost per work order (labor + parts + overhead) typically ranges from $150 to $400 for internal maintenance teams, with wide variance by industry. The bigger insight is composition: on average, roughly 30% is labor, 40% parts, and 30% overhead — which is why parts-inventory discipline moves the number more than headcount does.
+Choose whether cost includes technician labor, contractors, parts, freight, downtime, and allocated overhead. Divide the included total by completed work orders for the same period. Report preventive, corrective, and emergency work separately; blending them can hide a changing work mix even when the overall average looks stable.
 
-## Downtime cost
+## Build a comparable internal baseline
 
-Aberdeen's widely-cited study pegs the average cost of unplanned downtime at $260,000 per hour across industries, with automotive manufacturing reaching $1.3M per hour. Even for small operations the figure is rarely under $10,000 per hour of critical-asset downtime once lost revenue, overtime, and expedited freight are included.
+Select a period long enough to include normal operating variation, freeze each KPI definition, and note missing records or changes in staffing, production hours, or asset scope. Compare the next period using the same rules. If a definition changes, recalculate the earlier period or start a new series rather than joining unlike values.
 
-## Methodology
+## What a real external benchmark would need
 
-Figures are aggregated from published third-party industry surveys (Plant Engineering annual maintenance study, ARC Advisory downtime research, Reliabilityweb reliability index) and triangulated with anonymized aggregate metrics from MaintenEase customers. No individual customer data is included. All figures are directional — treat them as benchmarks to compare against, not targets to hit blindly.
+Before relying on an external percentile or average, look for the sample size, industries, geography, asset population, data period, inclusion rules, statistic used, missing-data treatment, and sponsor. MaintenEase will not label this page as original research unless those details and the underlying evidence can be published. No MaintenEase customer data is used for the statements on this page.
 
 ## FAQ
 
-### Can I cite these benchmarks?
+### Does MaintenEase publish customer benchmarks?
 
-Yes — this page is intentionally citable. Please link back to https://maintenease.com/learn/cmms-benchmarks-2026 as the source. Individual figures also cite their upstream studies where applicable.
+No. MaintenEase does not currently publish the cohort, sample period, method, or auditable dataset required to substantiate original customer benchmarks.
 
-### How often are the figures updated?
+### Can I compare my MTTR with another company?
 
-Annually, or whenever a major industry survey publishes new data. The year in the URL reflects the last major refresh.
+Only when asset scope, criticality, operating schedule, and start and stop definitions are comparable. Otherwise use the external number as a question prompt, not a target.
 
-### Are these targets I should hit?
+### How often should a KPI baseline be updated?
 
-No — they are benchmarks, not targets. Use them to see roughly where you sit vs peers, then pick one KPI (usually planned-vs-reactive ratio) to focus on.
+Keep the calculation rules stable and review on an operating cadence that produces enough events to be meaningful. Document scope changes and start a new series when the definition materially changes.
 
 ## Related
 

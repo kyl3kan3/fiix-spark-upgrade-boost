@@ -49,10 +49,21 @@ describe("comparisons data", () => {
     expect(getComparison("maintenease-vs-upkeep")?.pricingTable?.heading).toBe("UpKeep pricing in 2026");
     expect(getComparison("maintenease-vs-maintainx")?.pricingTable?.heading).toBe("MaintainX cost in 2026");
     expect(getComparison("maintenease-vs-limble")?.pricingTable?.heading).toBe("Limble pricing in 2026");
-    for (const slug of ["maintenease-vs-upkeep", "maintenease-vs-maintainx", "maintenease-vs-limble"]) {
+    for (const slug of ["maintenease-vs-upkeep", "maintenease-vs-maintainx", "maintenease-vs-limble", "maintenease-vs-fiix", "maintenease-vs-emaint"]) {
       expect(getComparison(slug)?.pricingTable?.sourceUrl).toMatch(/^https:\/\//);
-      expect(getComparison(slug)?.pricingTable?.rows.length).toBeGreaterThanOrEqual(3);
+      expect(getComparison(slug)?.pricingTable?.rows.length).toBeGreaterThanOrEqual(2);
     }
+  });
+
+  it("does not reuse unsupported eMaint pricing or immutable-seat claims", () => {
+    const emaint = getComparison("maintenease-vs-emaint");
+    expect(emaint?.competitorPricePerUser).toBeNull();
+    expect(emaint?.competitorPlan).toBe("Professional / Enterprise");
+    expect(JSON.stringify(emaint)).not.toMatch(/\$69|"competitorPlan":"Team"|legacy enterprise|heavier interface|days, not months/i);
+
+    const maintainx = getComparison("maintenease-vs-maintainx");
+    expect(JSON.stringify(maintainx)).not.toContain("bill that never changes when you hire");
+    expect(JSON.stringify(maintainx)).toContain("$15 monthly rate");
   });
 
   it("uses the six visible page-specific MaintainX FAQs verbatim in schema", () => {

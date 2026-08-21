@@ -9,7 +9,6 @@ import {
  PLAN_CAPACITY_SUMMARY,
  PLAN_SEAT_SUMMARY,
  PRICING_SUMMARY,
- SOFTWARE_APPLICATION_JSON_LD,
 } from "@/data/productCatalog";
 
 const META_DESCRIPTION =
@@ -117,9 +116,6 @@ const Landing = () => {
               acceptedAnswer: { "@type": "Answer", text: f.a },
             })),
           })}
-      </script>
-      <script type="application/ld+json">
-        {JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}
       </script>
       </Helmet>
       <MarketingJsonLd />

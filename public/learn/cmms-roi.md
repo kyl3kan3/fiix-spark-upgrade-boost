@@ -1,58 +1,58 @@
-# CMMS ROI & Cost Savings
+# CMMS ROI Calculator Method: Use Your Own Baseline
 
-> How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.
+> A transparent way to estimate CMMS return using your own downtime, labor, parts, implementation, and subscription inputs instead of vendor benchmark claims.
 
 Canonical URL: https://maintenease.com/learn/cmms-roi
 
-## The five levers of CMMS ROI
+## Start with a measured baseline
 
-A CMMS pays for itself through five measurable levers: (1) less unplanned downtime, (2) higher PM compliance, (3) technician labor efficiency, (4) lower parts inventory carrying cost, and (5) longer asset life. Most teams recover the cost of the software within the first year on the downtime lever alone — the other four are compounding gains that show up over 12 to 24 months.
+Record current annual software and administration cost, unplanned-downtime hours, the site-approved cost per downtime hour, technician time spent on selected administrative tasks, emergency freight, and inventory carrying cost. Do not assign a savings percentage before the baseline and measurement owner exist. Exclude benefits that cannot be measured or defend them as qualitative rather than financial.
 
-## Downtime avoided (usually the biggest number)
+## Downtime scenario
 
-Aberdeen pegs average unplanned downtime at $260,000 per hour across industries; even a small operation rarely comes in under $10,000 per hour of critical-asset downtime once lost revenue, overtime, and expedited freight are counted. Moving from 30% planned work to 55% planned typically cuts unplanned downtime hours by 20 to 40%. Multiply your hourly downtime cost by the hours saved to get the annualized figure.
+Calculate downtime benefit as baseline unplanned hours minus observed or conservatively forecast unplanned hours, multiplied by the site's approved cost per hour. Keep production loss, overtime, scrap, and expedited freight from being counted twice. Run low, expected, and high cases, and make the low case the approval threshold when uncertainty is large.
 
-## PM compliance and reactive-cost avoidance
+## Work and labor scenario
 
-Reactive maintenance costs 3 to 9x more per work order than planned maintenance once overtime, expedited parts, and collateral damage are included. If your team completes 200 reactive work orders per month at an average $280 each, and PM compliance improvements convert 30% of them to planned work at $95 each, the savings are roughly $11,000 per month or $132,000 per year.
+For a proposed workflow change, estimate the number of affected events and minutes saved per event, then multiply by a validated loaded labor rate. Count time only when it becomes usable capacity or avoided paid hours. For reactive work, compare actual labor, parts, freight, and collateral cost with a matched planned task instead of applying a universal multiplier.
 
-## Technician labor efficiency
+## Parts and inventory scenario
 
-Independent studies consistently find that technicians spend 25 to 40% of their day on non-wrench activities: chasing information, walking to storerooms, and re-entering data. A CMMS with mobile work orders, attached procedures, and parts lookup typically recovers 30 to 60 minutes per technician per day. For a 10-person team at a fully-loaded $65/hr, that is $85,000 to $170,000 per year.
+Use recorded emergency orders, freight, stockouts, write-offs, and average inventory value. A benefit is defensible when the proposed controls change a measurable event: fewer emergency shipments, fewer duplicate purchases, or lower approved stock while service levels remain acceptable. Do not treat the entire inventory reduction as annual savings; use the organization's finance-approved carrying-cost method.
 
-## Parts inventory savings
+## Include the full investment
 
-Teams without a CMMS carry 20 to 40% more spare-parts inventory than they need, because nobody trusts the stock count. Cycle counting, min/max reorder points, and consumption history typically shrink working capital tied up in parts by 15 to 25% within the first year, and cut emergency freight charges by 50% or more.
+Add subscription fees, implementation services, internal setup time, data cleanup, training, devices, integrations, ongoing administration, and change-management effort. If a cost already exists and will continue regardless of the project, label it as baseline rather than charging it to the CMMS case.
 
-## Extended asset life
+## ROI and payback formulas
 
-Assets on a disciplined PM program last 20 to 40% longer than run-to-failure assets. This lever is slow to show up — capital deferrals appear in year 3 and beyond — but for capital-intensive operations it can dwarf the other four levers combined.
+Annual ROI equals annual quantified benefit minus annualized total cost, divided by annualized total cost, multiplied by 100. Payback months equal initial and first-year cost divided by expected monthly quantified benefit. Show each input and assumption next to the result so finance and operations can revise the scenario without reverse-engineering it.
 
-## A worked example: mid-size facility
+## Illustrative example — not a benchmark
 
-A 15-technician facility with $180,000/year of unplanned downtime, 220 monthly work orders, and $95,000 in parts inventory typically sees: $54,000 downtime reduction (year 1), $85,000 reactive-to-planned savings, $120,000 labor efficiency, $18,000 parts-carry reduction — around $277,000 in annualized savings against a CMMS spend of $15,000 to $30,000. That is an 8-18x first-year ROI, which matches the median figures reported in Plant Engineering's annual survey.
+Assume a team documents $30,000 of annual benefit from four avoided downtime hours at its approved $7,500 hourly cost, plus $6,000 of avoided emergency freight. Assume $12,000 of first-year subscription, setup, training, and administration cost. The illustrative net benefit is $24,000 and ROI is 200%: ($36,000 minus $12,000) divided by $12,000. These numbers are teaching inputs, not MaintenEase customer results or expected performance.
 
-## How to justify the budget
+## Measure after launch
 
-Build a one-page business case with three numbers: baseline (current cost of the five levers), target (realistic year-1 improvement), and payback period (months to recover software cost). Pair it with a single before/after chart. Finance teams approve CMMS spend when the payback period is under 12 months — every mature CMMS deployment clears that bar.
+Assign an owner to every input, preserve the baseline definition, and compare at agreed checkpoints. Record adoption and data-quality limits beside the financial result. If downtime or labor changes cannot be attributed to the system, report the uncertainty rather than claiming the entire change as software ROI.
 
 ## FAQ
 
-### How fast do teams see ROI from a CMMS?
+### How fast should a CMMS pay back?
 
-Most teams see positive ROI within 3 to 6 months, driven by downtime avoided and reactive-to-planned conversion. Full ROI (all five levers) shows up over 12 to 18 months.
+There is no universal period. Use your approved baseline, complete implementation cost, conservative benefit scenario, and organization-specific investment threshold.
 
-### What is the biggest driver of CMMS ROI?
+### What belongs in CMMS ROI?
 
-For most teams it is unplanned downtime avoided, because the hourly cost of downtime is very high. For teams with already-low downtime, technician labor efficiency usually becomes the biggest lever.
+Include only quantified changes with a baseline and owner, such as documented downtime, paid labor, emergency freight, or finance-approved inventory carrying cost. Keep qualitative benefits separate.
 
-### How do I calculate CMMS ROI for my own facility?
+### Is the worked example a MaintenEase customer result?
 
-Use our interactive CMMS cost calculator at /cmms-cost-calculator — it walks through the five levers with your own numbers and outputs a payback period.
+No. It is an illustrative calculation with explicit teaching inputs, not a benchmark, forecast, study, or customer outcome.
 
-### Is CMMS ROI easier to justify for larger teams?
+### How do I calculate CMMS subscription cost for my team?
 
-Not necessarily. Small teams often see faster payback because a single avoided emergency covers the annual software cost. Larger teams see bigger absolute savings but longer approval cycles.
+Use the CMMS cost calculator to model published subscription prices by team size. Add your own setup, training, device, integration, and administration costs to build the full business case.
 
 ## Related
 

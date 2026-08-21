@@ -19,6 +19,16 @@ const warnings = [];
 const pass = (msg) => console.log(`\u2713 ${msg}`);
 const fail = (msg) => { errors.push(msg); console.log(`\u2717 ${msg}`); };
 const warn = (msg) => { warnings.push(msg); console.log(`! ${msg}`); };
+const withoutNoscript = (html) => html.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, "");
+const staticMain = (html) => withoutNoscript(html).match(/<main\b[^>]*data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? "";
+const visibleText = (html) => html
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+  .replace(/<[^>]+>/g, " ")
+  .replace(/&(?:amp|quot|#39|nbsp);/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+const countWords = (text) => text.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)?.length ?? 0;
 
 // 1. index.html title + description
 const indexHtml = readFileSync(join(ROOT, "index.html"), "utf8");
@@ -129,6 +139,72 @@ if (existsSync(distDir)) {
 
   const sitemap = readFileSync(join(ROOT, "public", "sitemap.xml"), "utf8");
   const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  let ordinaryHtmlRoutes = 0;
+  for (const sitemapUrl of sitemapUrls) {
+    const pathname = new URL(sitemapUrl).pathname;
+    const htmlPath = pathname === "/"
+      ? join(distDir, "index.html")
+      : join(distDir, pathname.replace(/^\//, ""), "index.html");
+    if (!existsSync(htmlPath)) {
+      fail(`ordinary HTML: ${pathname} has no built index.html`);
+      continue;
+    }
+    const html = readFileSync(htmlPath, "utf8");
+    if (/<noscript\b[^>]*data-prerender=["']static["']/i.test(html)) {
+      fail(`ordinary HTML: ${pathname} still puts meaningful page copy in noscript`);
+      continue;
+    }
+    const body = staticMain(html);
+    const wordCount = countWords(visibleText(body));
+    const h1Count = (body.match(/<h1[\s>]/g) ?? []).length;
+    if (!body) fail(`ordinary HTML: ${pathname} has no data-prerender static main outside noscript`);
+    else if (h1Count !== 1) fail(`ordinary HTML: ${pathname} has ${h1Count} build-time H1 elements`);
+    else if (wordCount < 40) fail(`ordinary HTML: ${pathname} has only ${wordCount} build-time words outside noscript`);
+    else ordinaryHtmlRoutes++;
+  }
+  if (ordinaryHtmlRoutes === sitemapUrls.length) {
+    pass(`${ordinaryHtmlRoutes} sitemap routes contain meaningful ordinary HTML outside noscript`);
+  }
+
+  for (const [pathname, minimumLinks] of [
+    ["/support", 3],
+    ["/sms-opt-in", 3],
+    ["/tools/maintenance-sop-generator", 3],
+    ["/tools/root-cause-fishbone-generator", 3],
+  ]) {
+    const htmlPath = join(distDir, pathname.replace(/^\//, ""), "index.html");
+    const body = staticMain(readFileSync(htmlPath, "utf8"));
+    const internalLinks = [...body.matchAll(/href=["'](\/[^"]*)["']/g)].map((match) => match[1]);
+    if (new Set(internalLinks).size < minimumLinks) {
+      fail(`non-JavaScript link graph: ${pathname} has ${new Set(internalLinks).size} internal links; expected at least ${minimumLinks}`);
+    } else {
+      pass(`Non-JavaScript link graph exposes ${new Set(internalLinks).size} links from ${pathname}`);
+    }
+  }
+
+  const builtHtmlFiles = [...walk(distDir)].filter((file) => file.endsWith(".html"));
+  let structuredDataBlocks = 0;
+  for (const file of builtHtmlFiles) {
+    const html = readFileSync(file, "utf8");
+    for (const match of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+      try {
+        const node = JSON.parse(match[1]);
+        structuredDataBlocks++;
+        const nodes = Array.isArray(node?.["@graph"]) ? node["@graph"] : [node];
+        for (const item of nodes) {
+          if (["SoftwareApplication", "WebApplication"].includes(item?.["@type"])) {
+            fail(`structured data: ${relative(ROOT, file)} contains Google-ineligible ${item["@type"]} markup`);
+          }
+          if (item?.aggregateRating || item?.review) {
+            fail(`structured data: ${relative(ROOT, file)} contains an unverified rating or review`);
+          }
+        }
+      } catch {
+        fail(`structured data: ${relative(ROOT, file)} contains invalid JSON-LD`);
+      }
+    }
+  }
+  if (structuredDataBlocks > 0) pass(`${structuredDataBlocks} built JSON-LD blocks contain no ineligible app or invented rating markup`);
   const llmsIndex = readFileSync(join(ROOT, "public", "llms.txt"), "utf8");
   let markdownAlternatives = 0;
   for (const sitemapUrl of sitemapUrls) {
@@ -223,13 +299,8 @@ if (existsSync(distDir)) {
     fail("prerender: dist/maintenance-simplified/index.html missing");
   } else {
     const html = readFileSync(simplifiedPath, "utf8");
-    const shellBody = html.match(/<noscript data-prerender="static"[^>]*>([\s\S]*?)<\/noscript>/)?.[1] ?? "";
-    const text = shellBody
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&(?:amp|quot|#39);/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const wordCount = text.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)?.length ?? 0;
+    const text = visibleText(staticMain(html));
+    const wordCount = countWords(text);
     if (wordCount < 350) {
       fail(`prerender: maintenance-simplified has only ${wordCount} words (expected at least 350)`);
     } else {

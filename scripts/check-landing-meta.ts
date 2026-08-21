@@ -10,7 +10,7 @@
  *   - twitter:card / twitter:title / twitter:description / twitter:image
  *   - og:image + twitter:image resolve (HTTP 200) and are image/*
  *   - FAQPage, Organization, and WebSite JSON-LD blocks parse
- *   - SoftwareApplication markup is present without fabricated rating/review data
+ *   - no Google-ineligible app markup or fabricated rating/review data is present
  *
  * Exits non-zero on any failure. Wire into CI before deploy.
  *
@@ -146,14 +146,15 @@ async function main() {
   if (!types.includes("Organization")) errs.push("Organization JSON-LD missing");
   if (!types.includes("WebSite")) errs.push("WebSite JSON-LD missing");
 
-  const softwareApplication = jsonld.find(
-    (b) => (b as { "@type"?: string })["@type"] === "SoftwareApplication",
-  ) as { offers?: unknown[]; aggregateRating?: unknown; review?: unknown } | undefined;
-  if (!softwareApplication) errs.push("SoftwareApplication JSON-LD missing");
-  if (softwareApplication && (!softwareApplication.offers || softwareApplication.offers.length === 0))
-    errs.push("SoftwareApplication has no offers");
-  if (softwareApplication?.aggregateRating || softwareApplication?.review)
-    errs.push("SoftwareApplication must not publish unverified rating/review data");
+  const ineligibleAppNodes = jsonld.filter((block) => {
+    const node = block as { "@type"?: string; offers?: { price?: unknown }[]; aggregateRating?: unknown; review?: unknown };
+    if (!["SoftwareApplication", "WebApplication"].includes(node["@type"] ?? "")) return false;
+    const hasPricedOffer = node.offers?.some((offer) => offer.price !== undefined) ?? false;
+    return !hasPricedOffer || (!node.aggregateRating && !node.review);
+  });
+  if (ineligibleAppNodes.length > 0) {
+    errs.push("Software app markup is ineligible for Google rich results (requires offers.price and a genuine aggregateRating or review)");
+  }
 
   const faq = jsonld.find(
     (b) => (b as { "@type"?: string })["@type"] === "FAQPage",

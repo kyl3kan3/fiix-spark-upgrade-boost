@@ -37,6 +37,10 @@ import {
 } from "@/services/billingService";
 import { trackPurchaseConversion } from "@/lib/gtag";
 import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import {
+  EXTRA_BUSINESS_SEAT_MONTHLY,
+  PLAN_BY_TIER,
+} from "@/data/productCatalog";
 
 export default function BillingPage() {
   const { data: sub, isLoading, refetch } = useSubscription();
@@ -263,7 +267,7 @@ export default function BillingPage() {
                     className="border-border text-primary hover:bg-primary/5"
                   >
                     <Users className="mr-2 h-4 w-4" />
-                    Add seats ($15/seat/mo)
+                    Add seats (${EXTRA_BUSINESS_SEAT_MONTHLY}/seat/mo)
                   </Button>
                   <Button
                     onClick={openPortal}
@@ -294,17 +298,17 @@ export default function BillingPage() {
                     <Rocket className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <h3 className="font-headline text-xl font-semibold mb-2">
-                    Scale with Enterprise
+                    Need more capacity? Choose Business
                   </h3>
                   <p className="text-sm text-primary-foreground/80 mb-5">
-                    Unlock unlimited assets, advanced API access, and dedicated
-                    24/7 support.
+                    Business includes unlimited assets and work orders, API
+                    access, SSO, and email plus chat support.
                   </p>
                   <ul className="space-y-3 mb-8">
                     {[
-                      "Unlimited Managed Assets",
-                      "Custom Reporting Dashboards",
-                      "SSO & Advanced Security",
+                      ...PLAN_BY_TIER.business.featureLabels.filter((label) =>
+                        ["Unlimited assets", "Unlimited work orders", "Automations + API", "SSO"].includes(label),
+                      ),
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm">
                         <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-primary-foreground/70" />
@@ -317,7 +321,7 @@ export default function BillingPage() {
                   asChild
                   className="relative z-10 w-full bg-white text-primary hover:bg-white/90 uppercase tracking-wide text-xs font-semibold"
                 >
-                  <Link to="/pricing">View Enterprise Plans</Link>
+                  <Link to="/pricing#plan-business">View the Business plan</Link>
                 </Button>
               </div>
             </div>
@@ -331,9 +335,8 @@ export default function BillingPage() {
             <DialogHeader>
               <DialogTitle>Add seats</DialogTitle>
               <DialogDescription>
-                Extra seats are $15/seat/
-                {sub.billing_interval === "year" ? "year" : "month"}. You'll
-                be charged a prorated amount immediately.
+                Extra Business seats are ${EXTRA_BUSINESS_SEAT_MONTHLY} per seat
+                per month. Charges are prorated and billed with the subscription.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 py-2">
@@ -364,8 +367,7 @@ export default function BillingPage() {
                 <span className="font-semibold">
                   {sub.total_seats + Math.max(0, seatDelta)} seats
                 </span>{" "}
-                · +${15 * Math.max(0, seatDelta)}/
-                {sub.billing_interval === "year" ? "yr" : "mo"} prorated
+                · +${EXTRA_BUSINESS_SEAT_MONTHLY * Math.max(0, seatDelta)}/mo prorated
               </div>
             </div>
             <DialogFooter>

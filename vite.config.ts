@@ -26,6 +26,9 @@ export default defineConfig(({ mode }) => {
       port: 8080,
     },
     build: {
+      // Keep bundled files away from the application's /assets route so edge
+      // rewrites can serve /assets/:id from the protected app shell.
+      assetsDir: "static",
       sourcemap: true,
       rollupOptions: {
         output: {

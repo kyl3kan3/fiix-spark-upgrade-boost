@@ -61,11 +61,11 @@ const Hero = () => {
               </li>
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                Predict failures before they cause costly downtime
+                Prioritize equipment risk from maintenance history
               </li>
               <li className="flex items-start gap-2 justify-center md:justify-start">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                Free onboarding &amp; data import — live in days, not months
+                Free onboarding and data import on every plan
               </li>
             </ul>
 

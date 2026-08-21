@@ -3,7 +3,13 @@
 // or writes customer data; authenticated data access goes through the MCP
 // server advertised in /.well-known/mcp/server-card.json.
 
-import { PLAN_CAPACITY_SUMMARY, PRODUCT_PLANS } from "@/data/productCatalog";
+import {
+  PLAN_CAPACITY_SUMMARY,
+  PRODUCT_BILLING_SUMMARY,
+  PRODUCT_PLANS,
+  PRODUCT_SUPPORT_SUMMARY,
+  PRODUCT_TRIAL_SUMMARY,
+} from "@/data/productCatalog";
 
 type WebMcpTool = {
   name: string;
@@ -28,8 +34,7 @@ const tools: WebMcpTool[] = [
             ? `; additional seats $${plan.extraSeatMonthlyPrice}/mo each`
             : "";
           return `${plan.name}: $${plan.monthlyPrice}/mo or $${plan.annualPrice}/yr (${plan.includedSeats} seats included${extraSeat})`;
-        }).join("\n")}\n${PLAN_CAPACITY_SUMMARY}\n` +
-          "Annual billing saves about 17%. Every plan includes a 7-day free trial (card required)."
+        }).join("\n")}\n${PLAN_CAPACITY_SUMMARY}\n${PRODUCT_TRIAL_SUMMARY}\n${PRODUCT_BILLING_SUMMARY}\n${PRODUCT_SUPPORT_SUMMARY}`
       ),
   },
   {

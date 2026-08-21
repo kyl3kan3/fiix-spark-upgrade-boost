@@ -6,7 +6,8 @@ import { resolve } from "node:path";
  * Wide regression guard: any marketing page that declares og:image MUST
  * also declare matching og:title, og:description, og:url, twitter:card,
  * twitter:title, twitter:description, twitter:image — and every og:image
- * / twitter:image must point at the canonical, cache-busted asset.
+ * / twitter:image must use the canonical brand asset or an explicit
+ * page-specific representative image with that asset as its fallback.
  *
  * Auto-discovers files under src/pages so newly added marketing routes
  * are covered without editing this test. Run alongside metaTags.test.ts
@@ -64,6 +65,13 @@ function extractImage(source: string, attr: "property" | "name", key: string): s
  return null;
 }
 
+function hasApprovedImage(source: string, attr: "property" | "name", key: string): boolean {
+ const literal = extractImage(source, attr, key);
+ if (literal === EXPECTED_IMAGE) return true;
+ const matcher = new RegExp(`<meta\\s+${attr}=["']${key}["'][^>]*content=\\{representativeImage\\s*\\?\\?\\s*["']${EXPECTED_IMAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["']\\}`);
+ return matcher.test(source);
+}
+
 describe("og/twitter metadata regression across all marketing pages", () => {
  const files = listPageFiles();
  // Only consider pages that actually opt-in to social previews (declare og:image).
@@ -91,11 +99,11 @@ describe("og/twitter metadata regression across all marketing pages", () => {
  });
  }
 
- it("og:image points at the canonical cache-busted asset", () => {
- expect(extractImage(source, "property", "og:image")).toBe(EXPECTED_IMAGE);
+ it("og:image uses the brand asset or a page-specific image with fallback", () => {
+ expect(hasApprovedImage(source, "property", "og:image")).toBe(true);
  });
- it("twitter:image points at the canonical cache-busted asset", () => {
- expect(extractImage(source, "name", "twitter:image")).toBe(EXPECTED_IMAGE);
+ it("twitter:image uses the brand asset or a page-specific image with fallback", () => {
+ expect(hasApprovedImage(source, "name", "twitter:image")).toBe(true);
  });
  });
  }

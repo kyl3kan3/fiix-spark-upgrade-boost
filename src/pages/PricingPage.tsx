@@ -20,7 +20,6 @@ import {
  PRODUCT_LAST_MODIFIED,
  PRODUCT_PLANS,
  PRODUCT_JSON_LD,
- SOFTWARE_APPLICATION_JSON_LD,
 } from "@/data/productCatalog";
 
 export default function PricingPage() {
@@ -69,7 +68,6 @@ export default function PricingPage() {
  <meta name="twitter:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
  <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
  <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
- <script type="application/ld+json">{JSON.stringify(SOFTWARE_APPLICATION_JSON_LD)}</script>
  <script type="application/ld+json">{JSON.stringify(PRODUCT_JSON_LD)}</script>
  </Helmet>
  <MarketingJsonLd />

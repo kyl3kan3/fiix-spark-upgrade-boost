@@ -14,6 +14,16 @@ const sectionId = (heading: string) =>
  .replace(/[^a-z0-9]+/g, "-")
  .replace(/^-|-$/g, "");
 
+const SAFETY_SCOPE_SLUGS = new Set([
+ "preventive-maintenance",
+ "total-productive-maintenance",
+ "predictive-maintenance",
+ "condition-based-maintenance",
+ "corrective-maintenance",
+ "root-cause-analysis",
+ "infrared-thermography-inspection",
+]);
+
 // Anchor text is intentionally varied per source article — keyword-rich but
 // contextual, avoiding repetition of the same phrase across the site.
 const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline: string }[]> = {
@@ -89,6 +99,7 @@ const LearnArticle = () => {
  if (!term) return <Navigate to="/learn" replace />;
 
  const url = `https://maintenease.com/learn/${term.slug}`;
+ const representativeImage = term.image ? `https://maintenease.com${term.image.src}` : null;
  const faqLd = {
  "@context": "https://schema.org",
  "@type": "FAQPage",
@@ -105,8 +116,8 @@ const LearnArticle = () => {
  description: term.short,
  mainEntityOfPage: { "@type": "WebPage", "@id": url },
  inLanguage: "en",
- image: "https://maintenease.com/og-image.png?v=4",
- author: { "@type": "Organization", name: "MaintenEase" },
+ author: { "@type": "Organization", name: "MaintenEase editorial team", url: "https://maintenease.com/editorial-policy" },
+ ...(representativeImage ? { image: representativeImage } : {}),
  publisher: {
  "@type": "Organization",
  name: "MaintenEase",
@@ -136,6 +147,7 @@ const LearnArticle = () => {
  const hasOnPageNavigation = term.sections.length >= 6;
  const isPreventiveGuide = term.slug === "preventive-maintenance";
  const isTpmGuide = term.slug === "total-productive-maintenance";
+ const needsSafetyScope = SAFETY_SCOPE_SLUGS.has(term.slug);
  const trackTpmDownload = (format: string, filename: string) => {
   void trackMarketingEvent({
    eventType: "template_download",
@@ -154,11 +166,12 @@ const LearnArticle = () => {
  <meta property="og:description" content={term.metaDescription} />
  <meta property="og:url" content={url} />
  <meta property="og:type" content="article" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta property="og:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
+ {term.image && <meta property="og:image:alt" content={term.image.alt} />}
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content={term.metaTitle} />
  <meta name="twitter:description" content={term.metaDescription} />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta name="twitter:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
  <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
  <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
@@ -171,7 +184,28 @@ const LearnArticle = () => {
  <span className="text-foreground">{term.term}</span>
  </nav>
  <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4 text-balance">{term.term}</h1>
- <p className="text-xl text-foreground mb-10 text-pretty">{term.short}</p>
+ <p className="text-xl text-foreground text-pretty">{term.short}</p>
+ <div className="mt-5 mb-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+  <span>By the <Link to="/editorial-policy" className="font-medium text-primary underline underline-offset-4">MaintenEase editorial team</Link></span>
+  {(term.updated ?? term.published) && <span aria-hidden="true">·</span>}
+  {(term.updated ?? term.published) && (
+   <span>Updated <time dateTime={term.updated ?? term.published}>{new Date(`${term.updated ?? term.published}T00:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time></span>
+  )}
+  <span aria-hidden="true">·</span>
+  <Link to="/editorial-policy" className="text-primary underline underline-offset-4">Methodology and corrections</Link>
+ </div>
+
+ {term.image && (
+  <figure className="mb-10 overflow-hidden rounded-2xl bg-card shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_8px_24px_rgba(15,37,68,0.10)]">
+   <img src={term.image.src} alt={term.image.alt} width={1200} height={630} className="aspect-[1200/630] w-full object-cover outline outline-1 -outline-offset-1 outline-black/5" />
+  </figure>
+ )}
+
+ {needsSafetyScope && (
+  <aside className="mb-10 rounded-2xl bg-amber-50 p-5 text-sm leading-relaxed text-amber-950 shadow-[0_0_0_1px_rgba(146,64,14,0.14)]">
+   <strong>Scope:</strong> This guide is general educational material. Use the employer&apos;s hazard assessment, energy-control program, manufacturer instructions, qualified-person rules, approved procedures, and applicable law. Stop work when authorization, safe conditions, or required technical information are missing.
+  </aside>
+ )}
 
  {hasOnPageNavigation && (
  <nav aria-label="On this page" className="mb-12 rounded-2xl bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
@@ -321,7 +355,7 @@ const LearnArticle = () => {
   </div>
   {term.slug !== "cmms-benchmarks-2026" && (
   <p className="text-sm text-muted-foreground mt-4">
-  Comparing your team to the industry? See the <Link to="/learn/cmms-benchmarks-2026" className="text-primary underline underline-offset-2">2026 CMMS benchmarks</Link> for MTTR, PM compliance, and cost per work order.
+  Standardizing your reporting? Use the <Link to="/learn/cmms-benchmarks-2026" className="text-primary underline underline-offset-2">maintenance KPI reference</Link> to define MTTR, PM compliance, and cost per work order before comparing periods.
   </p>
   )}
  </section>

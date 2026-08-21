@@ -46,6 +46,8 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/learn", lastmod: learnLastmod, changefreq: "weekly", priority: "0.8" },
   { path: "/blog", changefreq: "daily", priority: "0.8" },
   { path: "/support", lastmod: "2026-08-15", changefreq: "monthly", priority: "0.6" },
+  { path: "/about", lastmod: "2026-08-21", changefreq: "yearly", priority: "0.5" },
+  { path: "/editorial-policy", lastmod: "2026-08-21", changefreq: "yearly", priority: "0.4" },
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
   { path: "/refund-policy", changefreq: "yearly", priority: "0.3" },

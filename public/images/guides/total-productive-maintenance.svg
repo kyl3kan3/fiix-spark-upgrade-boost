@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Total productive maintenance pillars illustration</title><desc id="desc">Eight labeled pillars supporting equipment reliability and operating performance.</desc>
+  <rect width="1200" height="630" fill="#0f2544"/><circle cx="1090" cy="560" r="260" fill="#163a5f"/><text x="76" y="100" fill="#78e5c1" font-family="Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="3">MAINTENEASE GUIDE</text>
+  <text x="76" y="170" fill="#fff" font-family="Arial, sans-serif" font-size="56" font-weight="700">Total productive maintenance</text><text x="76" y="220" fill="#cbd9e7" font-family="Arial, sans-serif" font-size="27">Eight pillars connected to measurable equipment loss</text>
+  <rect x="76" y="498" width="1048" height="48" rx="12" fill="#1dbea2"/><text x="436" y="530" fill="#0f2544" font-family="Arial, sans-serif" font-size="22" font-weight="700">RELIABLE OPERATING SYSTEM</text><rect x="64" y="272" width="1072" height="30" rx="15" fill="#78e5c1"/>
+  <g font-family="Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#14243b">
+    <g><rect x="84" y="316" width="112" height="166" rx="14" fill="#fff"/><text x="140" y="378">FOCUSED</text><text x="140" y="402">IMPROVEMENT</text></g><g><rect x="214" y="316" width="112" height="166" rx="14" fill="#e9f7f3"/><text x="270" y="378">AUTONOMOUS</text><text x="270" y="402">CARE</text></g>
+    <g><rect x="344" y="316" width="112" height="166" rx="14" fill="#fff"/><text x="400" y="378">PLANNED</text><text x="400" y="402">MAINTENANCE</text></g><g><rect x="474" y="316" width="112" height="166" rx="14" fill="#e9f7f3"/><text x="530" y="378">QUALITY</text><text x="530" y="402">CARE</text></g>
+    <g><rect x="604" y="316" width="112" height="166" rx="14" fill="#fff"/><text x="660" y="378">EARLY</text><text x="660" y="402">EQUIPMENT</text></g><g><rect x="734" y="316" width="112" height="166" rx="14" fill="#e9f7f3"/><text x="790" y="378">TRAINING</text><text x="790" y="402">&amp; SKILLS</text></g>
+    <g><rect x="864" y="316" width="112" height="166" rx="14" fill="#fff"/><text x="920" y="378">SAFETY</text><text x="920" y="402">&amp; ENVIRONMENT</text></g><g><rect x="994" y="316" width="112" height="166" rx="14" fill="#e9f7f3"/><text x="1050" y="378">OFFICE</text><text x="1050" y="402">TPM</text></g>
+  </g>
+</svg>

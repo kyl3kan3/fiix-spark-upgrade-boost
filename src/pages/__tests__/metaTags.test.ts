@@ -9,8 +9,7 @@ import { resolve } from "node:path";
  * - twitter:card
  * - twitter:title
  * - twitter:description
- * - og:image (must point to https://maintenease.com/og-image.png?v=4)
- * - twitter:image (must point to https://maintenease.com/og-image.png?v=4)
+ * - og:image and twitter:image (brand fallback or page-specific guide image)
  */
 
 const KEY_PAGES = [
@@ -32,8 +31,8 @@ const REQUIRED_TAGS: { name: string; regex: RegExp; mustContain?: string }[] = [
  { name: "twitter:card", regex: /<meta\s+name=["']twitter:card["']\s+content=["']([^"']+)["']/ },
  { name: "twitter:title", regex: /<meta\s+name=["']twitter:title["']\s+content=\{?["']?[^>]*\/>/ },
  { name: "twitter:description", regex: /<meta\s+name=["']twitter:description["']\s+content=\{?["']?[^>]*\/>/ },
- { name: "og:image", regex: /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/, mustContain: OG_IMAGE_URL },
- { name: "twitter:image", regex: /<meta\s+name=["']twitter:image["']\s+content=["']([^"']+)["']/, mustContain: OG_IMAGE_URL },
+ { name: "og:image", regex: /<meta\s+property=["']og:image["']\s+content=(?:["']([^"']+)["']|\{[^}]+\})/, mustContain: OG_IMAGE_URL },
+ { name: "twitter:image", regex: /<meta\s+name=["']twitter:image["']\s+content=(?:["']([^"']+)["']|\{[^}]+\})/, mustContain: OG_IMAGE_URL },
 ];
 
 describe("marketing page meta tags", () => {
@@ -47,6 +46,10 @@ describe("marketing page meta tags", () => {
  expect(match, `${page} is missing <meta ${tag.name}>`).toBeTruthy();
  if (tag.mustContain && match && match[1]) {
  expect(match[1]).toBe(tag.mustContain);
+ }
+ if (tag.mustContain && page.endsWith("LearnArticle.tsx")) {
+ expect(source).toContain("representativeImage ??");
+ expect(source).toContain(OG_IMAGE_URL);
  }
  });
  }

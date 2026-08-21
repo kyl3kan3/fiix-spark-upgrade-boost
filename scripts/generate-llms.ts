@@ -30,6 +30,9 @@ import {
   PLAN_SEAT_SUMMARY,
   PRODUCT_LAST_MODIFIED,
   PRODUCT_PLANS,
+  PRODUCT_SUPPORT_SUMMARY,
+  PRODUCT_TRIAL_DAYS,
+  PRODUCT_TRIAL_SUMMARY,
 } from "../src/data/productCatalog";
 
 const SITE = "https://maintenease.com";
@@ -279,7 +282,7 @@ const llmsTxt = `# MaintenEase
 
 > Modern maintenance management software (CMMS) for teams that maintain assets, buildings, and fleets. Account plans include seats and published capacity limits. Work orders, preventive maintenance, inspections, assets, and a public request portal live in one place.
 
-${PRODUCT_PLANS.map((plan) => `${plan.name} is $${plan.monthlyPrice}/month with ${plan.includedSeats} included seats`).join("; ")}. Additional Business seats are $${EXTRA_BUSINESS_SEAT_MONTHLY}/month. ${PLAN_CAPACITY_SUMMARY} 7-day free trial. Month-to-month billing. Free data import and onboarding.
+${PRODUCT_PLANS.map((plan) => `${plan.name} is $${plan.monthlyPrice}/month with ${plan.includedSeats} included seats`).join("; ")}. Additional Business seats are $${EXTRA_BUSINESS_SEAT_MONTHLY}/month. ${PLAN_CAPACITY_SUMMARY} ${PRODUCT_TRIAL_SUMMARY} ${PRODUCT_SUPPORT_SUMMARY} Free data import and onboarding.
 
 Every canonical public page below has an explicit Markdown URL. Do not guess or construct a URL: use the complete directory in this file or ${SITE}/api/ai.json. Clients may also request a canonical HTML URL with \`Accept: text/markdown\`; negotiated responses send \`Vary: Accept\`, \`Content-Location\`, and canonical/alternate \`Link\` headers. See ${SITE}/llms-full.txt for the combined corpus.
 
@@ -399,8 +402,10 @@ const apiContent = {
     model: "account_plans_with_included_seats",
     currency: "USD",
     date_modified: PRODUCT_LAST_MODIFIED,
-    trial_days: 7,
-    billing: "month-to-month",
+    trial_days: PRODUCT_TRIAL_DAYS,
+    billing_intervals: ["month", "year"],
+    trial_summary: PRODUCT_TRIAL_SUMMARY,
+    support_summary: PRODUCT_SUPPORT_SUMMARY,
     seat_summary: PLAN_SEAT_SUMMARY,
     capacity_summary: PLAN_CAPACITY_SUMMARY,
     plans: PRODUCT_PLANS.map((plan) => ({

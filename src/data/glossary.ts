@@ -6,6 +6,7 @@ export type GlossaryTerm = {
  short: string;
  metaTitle: string;
  metaDescription: string;
+ image?: { src: string; alt: string };
  published?: string;
  updated?: string;
  sections: {
@@ -106,7 +107,7 @@ export const glossary: GlossaryTerm[] = [
  { q: "Is a CMMS the same as a maintenance management system?", a: "Usually, yes. Maintenance management system and maintenance management software are broad plain-English terms; CMMS is the established acronym for software that manages assets, work orders, preventive schedules, and maintenance reporting." },
  { q: "What is the difference between a CMMS and an ERP?", a: "An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in operational detail. Many teams integrate the two so parts purchases and asset costs flow into the ERP while day-to-day maintenance stays in the CMMS." },
  { q: "Do I need a CMMS if I only have a few assets?", a: "Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS." },
- { q: "How much does a CMMS cost?", a: "Most cloud CMMS platforms bill per user per month, commonly between $20 and $75 per technician. MaintenEase instead publishes account plans with included seats, so the bill does not change every time someone joins. Run your own headcount through the CMMS cost calculator before committing." },
+ { q: "How much does a CMMS cost?", a: "Pricing models vary by vendor, tier, users, modules, and services. MaintenEase publishes account plans with included seats; Business charges $15 per month for each additional seat after the four included seats. Run your actual headcount and capacity through the CMMS cost calculator before committing." },
  { q: "Is there a free CMMS?", a: "Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price." },
  ],
  related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro", "deferred-maintenance", "cmms-roi"],
@@ -205,6 +206,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Preventive maintenance is planned work performed before functional failure, triggered by time, usage, condition findings, or asset risk to reduce avoidable downtime and preserve equipment performance.",
  metaTitle: "Preventive Maintenance Guide: Schedule, Examples & Templates",
  metaDescription: "Build a preventive maintenance program with scheduling methods, industry examples, implementation steps, a labor calculator, checklist, and free templates.",
+ image: { src: "/images/guides/preventive-maintenance.png", alt: "Preventive maintenance calendar connected to work and asset history" },
  published: "2026-01-15",
  updated: "2026-08-16",
  sections: [
@@ -326,6 +328,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.",
  metaTitle: "Total Productive Maintenance: 8 Pillars, KPIs & Plan",
  metaDescription: "Learn the 8 pillars of total productive maintenance, calculate OEE and reliability KPIs, follow a 30/60/90-day plan, and use the TPM audit checklist.",
+ image: { src: "/images/guides/total-productive-maintenance.png", alt: "The eight total productive maintenance pillars supporting a reliable operating system" },
  published: "2026-08-16",
  updated: "2026-08-16",
  sections: [
@@ -657,7 +660,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How to reduce reactive maintenance",
- body: "Start by measuring it: a CMMS tags every work order as planned or reactive so you can see the ratio. Then attack the worst offenders — the handful of assets generating most of the emergency calls usually reveal a clear preventive fix. Move those onto schedules, track whether breakdowns drop, and repeat. Most teams start near 80% reactive and work toward the 20–30% that world-class operations sustain.",
+ body: "Start by measuring it: tag every work order as planned or reactive using a documented rule, then review the assets generating repeated emergency calls. Move suitable failure modes onto approved preventive or condition-based tasks, track whether breakdowns change, and repeat. Set the target from your own baseline, asset risk, production needs, and staffing rather than copying an unsupported universal ratio.",
  },
  ],
  faqs: [
@@ -822,92 +825,96 @@ export const glossary: GlossaryTerm[] = [
  },
  {
   slug: "cmms-benchmarks-2026",
-  term: "CMMS Benchmarks (2026)",
-  short: "Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.",
-  metaTitle: "CMMS Benchmarks 2026: MTTR, PM Compliance & Costs",
-  metaDescription: "Free-to-cite 2026 CMMS benchmarks: planned vs reactive ratios, MTTR, PM compliance, and cost per work order. Methodology and sources included.",
+  term: "Maintenance KPI Reference: Build an Internal Baseline",
+  short: "A practical reference for defining planned-work ratio, MTTR, PM compliance, and cost per work order without treating unrelated industry figures as universal targets.",
+  metaTitle: "Maintenance KPI Reference: Definitions and Baselines",
+  metaDescription: "Define maintenance KPIs, document calculation rules, build a comparable internal baseline, and avoid unsupported universal benchmark claims.",
+  published: "2026-08-11",
+  updated: "2026-08-21",
   sections: [
    {
-    heading: "Why publish maintenance benchmarks?",
-    body: "Every maintenance leader eventually gets asked the same question: 'is that number good?' Vendors rarely publish benchmarks in one place, so teams end up guessing. This page consolidates the most commonly cited maintenance KPIs into a single reference you can link to, cite in a report, or paste into a board deck. Numbers are drawn from published industry surveys (Plant Engineering, ARC Advisory, Reliabilityweb, and the Association for Manufacturing Excellence) and cross-checked against anonymized MaintenEase customer data.",
+     heading: "This page is a KPI reference, not a benchmark study",
+     body: "MaintenEase does not currently publish a documented customer cohort, sample period, calculation method, or auditable dataset that would support an original industry benchmark. This page therefore explains how to define and compare maintenance KPIs using your own stable baseline. A number from another industry, asset class, or operating schedule should not become a target without checking whether the populations and formulas are comparable.",
    },
    {
-    heading: "Planned vs reactive work ratio",
-    body: "World-class maintenance organizations run 80% planned work and 20% or less reactive. The industry average sits closer to 55/45, and teams still on spreadsheets typically report the opposite — around 30% planned and 70% reactive. Moving from 30% to 55% planned is the single biggest lever most teams have to cut overtime and unplanned downtime.",
+     heading: "Planned-work ratio",
+     body: "Define which work-order types count as planned before calculating the ratio. A defensible formula is planned work orders completed divided by all maintenance work orders completed in the same period. Some teams use labor hours instead of order count; either method can work, but switching the denominator makes periods incomparable. Record whether inspections, projects, and emergency follow-up work are included.",
    },
    {
-    heading: "Mean Time To Repair (MTTR)",
-    body: "Industry-average MTTR across manufacturing sits at roughly 4 to 6 hours for non-critical assets and 1 to 3 hours for critical production equipment. World-class benchmarks are below 2 hours for critical assets, driven mostly by faster notification, better spare-parts stocking, and clear procedures — not faster wrench time.",
+     heading: "Mean Time To Repair (MTTR)",
+     body: "MTTR is total repair-restoration time divided by the number of repair events in the period. State the start and stop events: failure detected, work order opened, technician assigned, repair started, or asset returned to service. Segment by asset class and criticality so a fleet of simple pumps is not compared with complex production lines. Track waiting and active repair separately when the data supports it.",
    },
    {
-    heading: "PM compliance",
-    body: "PM compliance is the share of scheduled preventive tasks completed on time. The commonly cited world-class threshold is 90%. Industry surveys put the average around 65 to 75%; teams below 50% almost always have a data problem (no CMMS or no schedule) rather than a labor problem.",
+     heading: "PM compliance",
+     body: "PM compliance is preventive tasks completed within the defined completion window divided by preventive tasks due in the period. Publish the window with the result, such as due date through seven days late. Exclude canceled schedules only under a documented rule, and do not quietly move due dates after the work is late.",
    },
    {
-    heading: "Cost per work order",
-    body: "Fully-loaded cost per work order (labor + parts + overhead) typically ranges from $150 to $400 for internal maintenance teams, with wide variance by industry. The bigger insight is composition: on average, roughly 30% is labor, 40% parts, and 30% overhead — which is why parts-inventory discipline moves the number more than headcount does.",
+     heading: "Cost per work order",
+     body: "Choose whether cost includes technician labor, contractors, parts, freight, downtime, and allocated overhead. Divide the included total by completed work orders for the same period. Report preventive, corrective, and emergency work separately; blending them can hide a changing work mix even when the overall average looks stable.",
    },
    {
-    heading: "Downtime cost",
-    body: "Aberdeen's widely-cited study pegs the average cost of unplanned downtime at $260,000 per hour across industries, with automotive manufacturing reaching $1.3M per hour. Even for small operations the figure is rarely under $10,000 per hour of critical-asset downtime once lost revenue, overtime, and expedited freight are included.",
+     heading: "Build a comparable internal baseline",
+     body: "Select a period long enough to include normal operating variation, freeze each KPI definition, and note missing records or changes in staffing, production hours, or asset scope. Compare the next period using the same rules. If a definition changes, recalculate the earlier period or start a new series rather than joining unlike values.",
    },
    {
-    heading: "Methodology",
-    body: "Figures are aggregated from published third-party industry surveys (Plant Engineering annual maintenance study, ARC Advisory downtime research, Reliabilityweb reliability index) and triangulated with anonymized aggregate metrics from MaintenEase customers. No individual customer data is included. All figures are directional — treat them as benchmarks to compare against, not targets to hit blindly.",
+     heading: "What a real external benchmark would need",
+     body: "Before relying on an external percentile or average, look for the sample size, industries, geography, asset population, data period, inclusion rules, statistic used, missing-data treatment, and sponsor. MaintenEase will not label this page as original research unless those details and the underlying evidence can be published. No MaintenEase customer data is used for the statements on this page.",
    },
   ],
   faqs: [
-   { q: "Can I cite these benchmarks?", a: "Yes — this page is intentionally citable. Please link back to https://maintenease.com/learn/cmms-benchmarks-2026 as the source. Individual figures also cite their upstream studies where applicable." },
-   { q: "How often are the figures updated?", a: "Annually, or whenever a major industry survey publishes new data. The year in the URL reflects the last major refresh." },
-   { q: "Are these targets I should hit?", a: "No — they are benchmarks, not targets. Use them to see roughly where you sit vs peers, then pick one KPI (usually planned-vs-reactive ratio) to focus on." },
+    { q: "Does MaintenEase publish customer benchmarks?", a: "No. MaintenEase does not currently publish the cohort, sample period, method, or auditable dataset required to substantiate original customer benchmarks." },
+    { q: "Can I compare my MTTR with another company?", a: "Only when asset scope, criticality, operating schedule, and start and stop definitions are comparable. Otherwise use the external number as a question prompt, not a target." },
+    { q: "How often should a KPI baseline be updated?", a: "Keep the calculation rules stable and review on an operating cadence that produces enough events to be meaningful. Document scope changes and start a new series when the definition materially changes." },
   ],
   related: ["mtbf", "mttr", "preventive-maintenance", "cmms"],
  },
  {
   slug: "cmms-roi",
-  term: "CMMS ROI & Cost Savings",
-  short: "How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.",
-  metaTitle: "CMMS ROI: How to Calculate Cost Savings & Justify the Budget",
-  metaDescription: "Calculate CMMS ROI with real numbers: downtime avoided, PM compliance, labor efficiency, and parts savings. Includes worked examples.",
+  term: "CMMS ROI Calculator Method: Use Your Own Baseline",
+  short: "A transparent way to estimate CMMS return using your own downtime, labor, parts, implementation, and subscription inputs instead of vendor benchmark claims.",
+  metaTitle: "CMMS ROI Calculation Method: Inputs, Formula, Example",
+  metaDescription: "Estimate CMMS ROI with documented baseline inputs, conservative scenarios, implementation costs, a transparent formula, and an illustrative example.",
+  published: "2026-08-11",
+  updated: "2026-08-21",
   sections: [
    {
-    heading: "The five levers of CMMS ROI",
-    body: "A CMMS pays for itself through five measurable levers: (1) less unplanned downtime, (2) higher PM compliance, (3) technician labor efficiency, (4) lower parts inventory carrying cost, and (5) longer asset life. Most teams recover the cost of the software within the first year on the downtime lever alone — the other four are compounding gains that show up over 12 to 24 months.",
+     heading: "Start with a measured baseline",
+     body: "Record current annual software and administration cost, unplanned-downtime hours, the site-approved cost per downtime hour, technician time spent on selected administrative tasks, emergency freight, and inventory carrying cost. Do not assign a savings percentage before the baseline and measurement owner exist. Exclude benefits that cannot be measured or defend them as qualitative rather than financial.",
    },
    {
-    heading: "Downtime avoided (usually the biggest number)",
-    body: "Aberdeen pegs average unplanned downtime at $260,000 per hour across industries; even a small operation rarely comes in under $10,000 per hour of critical-asset downtime once lost revenue, overtime, and expedited freight are counted. Moving from 30% planned work to 55% planned typically cuts unplanned downtime hours by 20 to 40%. Multiply your hourly downtime cost by the hours saved to get the annualized figure.",
+     heading: "Downtime scenario",
+     body: "Calculate downtime benefit as baseline unplanned hours minus observed or conservatively forecast unplanned hours, multiplied by the site's approved cost per hour. Keep production loss, overtime, scrap, and expedited freight from being counted twice. Run low, expected, and high cases, and make the low case the approval threshold when uncertainty is large.",
    },
    {
-    heading: "PM compliance and reactive-cost avoidance",
-    body: "Reactive maintenance costs 3 to 9x more per work order than planned maintenance once overtime, expedited parts, and collateral damage are included. If your team completes 200 reactive work orders per month at an average $280 each, and PM compliance improvements convert 30% of them to planned work at $95 each, the savings are roughly $11,000 per month or $132,000 per year.",
+     heading: "Work and labor scenario",
+     body: "For a proposed workflow change, estimate the number of affected events and minutes saved per event, then multiply by a validated loaded labor rate. Count time only when it becomes usable capacity or avoided paid hours. For reactive work, compare actual labor, parts, freight, and collateral cost with a matched planned task instead of applying a universal multiplier.",
    },
    {
-    heading: "Technician labor efficiency",
-    body: "Independent studies consistently find that technicians spend 25 to 40% of their day on non-wrench activities: chasing information, walking to storerooms, and re-entering data. A CMMS with mobile work orders, attached procedures, and parts lookup typically recovers 30 to 60 minutes per technician per day. For a 10-person team at a fully-loaded $65/hr, that is $85,000 to $170,000 per year.",
+     heading: "Parts and inventory scenario",
+     body: "Use recorded emergency orders, freight, stockouts, write-offs, and average inventory value. A benefit is defensible when the proposed controls change a measurable event: fewer emergency shipments, fewer duplicate purchases, or lower approved stock while service levels remain acceptable. Do not treat the entire inventory reduction as annual savings; use the organization's finance-approved carrying-cost method.",
    },
    {
-    heading: "Parts inventory savings",
-    body: "Teams without a CMMS carry 20 to 40% more spare-parts inventory than they need, because nobody trusts the stock count. Cycle counting, min/max reorder points, and consumption history typically shrink working capital tied up in parts by 15 to 25% within the first year, and cut emergency freight charges by 50% or more.",
+     heading: "Include the full investment",
+     body: "Add subscription fees, implementation services, internal setup time, data cleanup, training, devices, integrations, ongoing administration, and change-management effort. If a cost already exists and will continue regardless of the project, label it as baseline rather than charging it to the CMMS case.",
    },
    {
-    heading: "Extended asset life",
-    body: "Assets on a disciplined PM program last 20 to 40% longer than run-to-failure assets. This lever is slow to show up — capital deferrals appear in year 3 and beyond — but for capital-intensive operations it can dwarf the other four levers combined.",
+     heading: "ROI and payback formulas",
+     body: "Annual ROI equals annual quantified benefit minus annualized total cost, divided by annualized total cost, multiplied by 100. Payback months equal initial and first-year cost divided by expected monthly quantified benefit. Show each input and assumption next to the result so finance and operations can revise the scenario without reverse-engineering it.",
    },
    {
-    heading: "A worked example: mid-size facility",
-    body: "A 15-technician facility with $180,000/year of unplanned downtime, 220 monthly work orders, and $95,000 in parts inventory typically sees: $54,000 downtime reduction (year 1), $85,000 reactive-to-planned savings, $120,000 labor efficiency, $18,000 parts-carry reduction — around $277,000 in annualized savings against a CMMS spend of $15,000 to $30,000. That is an 8-18x first-year ROI, which matches the median figures reported in Plant Engineering's annual survey.",
+     heading: "Illustrative example — not a benchmark",
+     body: "Assume a team documents $30,000 of annual benefit from four avoided downtime hours at its approved $7,500 hourly cost, plus $6,000 of avoided emergency freight. Assume $12,000 of first-year subscription, setup, training, and administration cost. The illustrative net benefit is $24,000 and ROI is 200%: ($36,000 minus $12,000) divided by $12,000. These numbers are teaching inputs, not MaintenEase customer results or expected performance.",
    },
    {
-    heading: "How to justify the budget",
-    body: "Build a one-page business case with three numbers: baseline (current cost of the five levers), target (realistic year-1 improvement), and payback period (months to recover software cost). Pair it with a single before/after chart. Finance teams approve CMMS spend when the payback period is under 12 months — every mature CMMS deployment clears that bar.",
+     heading: "Measure after launch",
+     body: "Assign an owner to every input, preserve the baseline definition, and compare at agreed checkpoints. Record adoption and data-quality limits beside the financial result. If downtime or labor changes cannot be attributed to the system, report the uncertainty rather than claiming the entire change as software ROI.",
    },
   ],
   faqs: [
-   { q: "How fast do teams see ROI from a CMMS?", a: "Most teams see positive ROI within 3 to 6 months, driven by downtime avoided and reactive-to-planned conversion. Full ROI (all five levers) shows up over 12 to 18 months." },
-   { q: "What is the biggest driver of CMMS ROI?", a: "For most teams it is unplanned downtime avoided, because the hourly cost of downtime is very high. For teams with already-low downtime, technician labor efficiency usually becomes the biggest lever." },
-   { q: "How do I calculate CMMS ROI for my own facility?", a: "Use our interactive CMMS cost calculator at /cmms-cost-calculator — it walks through the five levers with your own numbers and outputs a payback period." },
-   { q: "Is CMMS ROI easier to justify for larger teams?", a: "Not necessarily. Small teams often see faster payback because a single avoided emergency covers the annual software cost. Larger teams see bigger absolute savings but longer approval cycles." },
+    { q: "How fast should a CMMS pay back?", a: "There is no universal period. Use your approved baseline, complete implementation cost, conservative benefit scenario, and organization-specific investment threshold." },
+    { q: "What belongs in CMMS ROI?", a: "Include only quantified changes with a baseline and owner, such as documented downtime, paid labor, emergency freight, or finance-approved inventory carrying cost. Keep qualitative benefits separate." },
+    { q: "Is the worked example a MaintenEase customer result?", a: "No. It is an illustrative calculation with explicit teaching inputs, not a benchmark, forecast, study, or customer outcome." },
+    { q: "How do I calculate CMMS subscription cost for my team?", a: "Use the CMMS cost calculator to model published subscription prices by team size. Add your own setup, training, device, integration, and administration costs to build the full business case." },
   ],
   related: ["cmms-benchmarks-2026", "preventive-maintenance", "mttr", "cmms"],
  },
@@ -1004,7 +1011,7 @@ export const glossary: GlossaryTerm[] = [
  term: "Infrared Thermography Camera Guide for Maintenance Inspections",
  short: "Infrared thermography cameras reveal surface-temperature patterns that can help trained maintenance teams find abnormal electrical, mechanical, insulation, and process conditions without contact.",
  metaTitle: "Infrared Thermography Camera Guide for Maintenance",
- metaDescription: "Choose and use an infrared thermography camera for maintenance routes. Learn specifications, inspection controls, severity triage, documentation, and work-order follow-up.",
+ metaDescription: "Choose an infrared camera for maintenance routes. Learn key specifications, inspection controls, severity triage, documentation, and work-order follow-up.",
  published: "2026-08-17",
  updated: "2026-08-17",
  sections: [

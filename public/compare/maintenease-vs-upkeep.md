@@ -25,16 +25,16 @@ Source: [UpKeep's official pricing page](https://upkeep.com/pricing/?selected_pl
 | --- | --- | --- |
 | Pricing model | Account plan with included seats | Per user / month |
 | Cost for a team of 8 | $359/mo (Business) | $440/mo |
-| Add more technicians | Business: $15/extra seat after 4 | Charged per seat |
-| Billing commitment | Month-to-month | Often annual |
+| Add more technicians | Business: $15/extra seat after 4 | Published per-seat price |
+| Billing commitment | Month-to-month | Check current vendor terms |
 | Work order management | Yes | Yes |
 | Asset management & history | Yes | Yes |
 | Preventive maintenance scheduling | Yes | Yes |
 | Mobile app | Yes | Yes |
-| AI predictive maintenance | Yes | Higher tier / add-on |
-| Energy / power usage tracking | Yes | Varies |
-| Public request portal (no login) | Yes | Varies |
-| Free onboarding & data import | Yes | Varies / paid |
+| AI predictive maintenance | Yes | Verify required tier |
+| Energy / power usage tracking | Yes | Verify with vendor |
+| Public request portal (no login) | Yes | Verify with vendor |
+| Free onboarding & data import | Yes | Verify scope and fees |
 
 For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo. UpKeep's listed Premium plan is $55/user/mo (publicly listed pricing as of 2026 — verify with the vendor). Asset and work-order capacity can require a higher MaintenEase plan.
 

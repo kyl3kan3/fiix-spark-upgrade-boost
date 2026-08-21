@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-17T14:53:26.302Z",
+  "generated_at": "2026-08-21T09:40:11.011Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -63,6 +63,16 @@
       "path": "/support",
       "html_url": "https://maintenease.com/support",
       "markdown_url": "https://maintenease.com/support.md"
+    },
+    {
+      "path": "/about",
+      "html_url": "https://maintenease.com/about",
+      "markdown_url": "https://maintenease.com/about.md"
+    },
+    {
+      "path": "/editorial-policy",
+      "html_url": "https://maintenease.com/editorial-policy",
+      "markdown_url": "https://maintenease.com/editorial-policy.md"
     },
     {
       "path": "/privacy",
@@ -379,9 +389,14 @@
   "pricing": {
     "model": "account_plans_with_included_seats",
     "currency": "USD",
-    "date_modified": "2026-08-07",
+    "date_modified": "2026-08-21",
     "trial_days": 7,
-    "billing": "month-to-month",
+    "billing_intervals": [
+      "month",
+      "year"
+    ],
+    "trial_summary": "7-day free trial; a card is required and cancellation is required before day 8 to avoid a charge.",
+    "support_summary": "Starter includes email support, Pro includes priority email support, and Business includes email and chat support.",
     "seat_summary": "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats with additional seats at $15 per month each.",
     "capacity_summary": "Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders.",
     "plans": [
@@ -501,8 +516,8 @@
     {
       "slug": "maintenease-vs-emaint",
       "competitor": "eMaint",
-      "competitor_plan": "Team",
-      "competitor_price_per_user_usd": 69,
+      "competitor_plan": "Professional / Enterprise",
+      "competitor_price_per_user_usd": null,
       "html_url": "https://maintenease.com/compare/maintenease-vs-emaint",
       "markdown_url": "https://maintenease.com/compare/maintenease-vs-emaint.md"
     }
@@ -622,15 +637,15 @@
     },
     {
       "slug": "cmms-benchmarks-2026",
-      "term": "CMMS Benchmarks (2026)",
-      "short": "Citable industry benchmarks for maintenance teams — planned-vs-reactive ratios, MTTR, PM compliance, and cost per work order — with sources and methodology.",
+      "term": "Maintenance KPI Reference: Build an Internal Baseline",
+      "short": "A practical reference for defining planned-work ratio, MTTR, PM compliance, and cost per work order without treating unrelated industry figures as universal targets.",
       "html_url": "https://maintenease.com/learn/cmms-benchmarks-2026",
       "markdown_url": "https://maintenease.com/learn/cmms-benchmarks-2026.md"
     },
     {
       "slug": "cmms-roi",
-      "term": "CMMS ROI & Cost Savings",
-      "short": "How to calculate the return on a CMMS investment — downtime avoided, PM compliance gains, labor efficiency, and parts inventory savings — with worked examples.",
+      "term": "CMMS ROI Calculator Method: Use Your Own Baseline",
+      "short": "A transparent way to estimate CMMS return using your own downtime, labor, parts, implementation, and subscription inputs instead of vendor benchmark claims.",
       "html_url": "https://maintenease.com/learn/cmms-roi",
       "markdown_url": "https://maintenease.com/learn/cmms-roi.md"
     },

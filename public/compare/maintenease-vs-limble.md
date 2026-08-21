@@ -24,16 +24,16 @@ Source: [Limble's official pricing page](https://limble.com/pricing), verified 2
 | --- | --- | --- |
 | Pricing model | Account plan with included seats | Custom estimate |
 | Cost for a team of 8 | $359/mo (Business) | Quote required |
-| Add more technicians | Business: $15/extra seat after 4 | Charged per seat |
-| Billing commitment | Month-to-month | Confirm in quote |
+| Add more technicians | Business: $15/extra seat after 4 | Confirm in quote |
+| Billing commitment | Month-to-month | Check current vendor terms |
 | Work order management | Yes | Yes |
 | Asset management & history | Yes | Yes |
 | Preventive maintenance scheduling | Yes | Yes |
 | Mobile app | Yes | Yes |
-| AI predictive maintenance | Yes | Higher tier / add-on |
-| Energy / power usage tracking | Yes | Varies |
-| Public request portal (no login) | Yes | Varies |
-| Free onboarding & data import | Yes | Varies / paid |
+| AI predictive maintenance | Yes | Verify required tier |
+| Energy / power usage tracking | Yes | Verify with vendor |
+| Public request portal (no login) | Yes | Verify with vendor |
+| Free onboarding & data import | Yes | Verify scope and fees |
 
 For the 8-person example, MaintenEase uses the Business plan plus additional seats for $359/mo. Limble requires a custom estimate and does not publish a fixed dollar price. Asset and work-order capacity can require a higher MaintenEase plan.
 

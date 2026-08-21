@@ -22,19 +22,19 @@ const differentiators = [
     icon: Brain,
     title: "Predictive maintenance built in",
     detail:
-      "Failure-risk scoring on Pro and Business plans — not an enterprise add-on with a sales call attached.",
+      "Failure-risk scoring is listed in the MaintenEase catalog for Pro and Business plans.",
   },
   {
     icon: Rocket,
-    title: "Live in days, not months",
+    title: "Onboarding and data import included",
     detail:
-      "Free onboarding and data import on every plan. Your asset list and open work orders come with you.",
+      "The published plan terms include onboarding and data import without a separate fee. Timing depends on the volume and condition of the source data.",
   },
   {
     icon: CalendarOff,
-    title: "Month-to-month, always",
+    title: "Monthly or annual billing",
     detail:
-      "No annual contract to sign and no penalty to leave. We keep your business by being useful, not by locking you in.",
+      "The pricing page publishes both monthly and annual prices so teams can choose the billing interval that fits their budget.",
   },
 ];
 

@@ -31,7 +31,7 @@ const TemplatePage = () => {
     isAccessibleForFree: true,
     datePublished: template.published,
     dateModified: template.updated,
-    author: { "@type": "Organization", name: "MaintenEase" },
+    author: { "@type": "Organization", name: "MaintenEase editorial team", url: "https://maintenease.com/editorial-policy" },
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",

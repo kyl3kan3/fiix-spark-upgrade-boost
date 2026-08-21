@@ -41,6 +41,8 @@ const FacilityManagementPage = lazy(() => import("@/pages/FacilityManagementPage
 const SupportPage = lazy(() => import("@/pages/SupportPage"));
 const SopGeneratorPage = lazy(() => import("@/pages/SopGeneratorPage"));
 const FishboneGeneratorPage = lazy(() => import("@/pages/FishboneGeneratorPage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const EditorialPolicyPage = lazy(() => import("@/pages/EditorialPolicyPage"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -87,6 +89,8 @@ export const AppRoutes = () => (
         <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
         <Route path="/facility-management" element={<FacilityManagementPage />} />
         <Route path="/support" element={<SupportPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/editorial-policy" element={<EditorialPolicyPage />} />
         <Route path="/tools/maintenance-sop-generator" element={<SopGeneratorPage />} />
         <Route path="/tools/root-cause-fishbone-generator" element={<FishboneGeneratorPage />} />
 

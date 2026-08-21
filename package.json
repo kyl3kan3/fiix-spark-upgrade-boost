@@ -26,6 +26,7 @@
     "check:social": "tsx scripts/check-social-cache.ts",
     "check:seo": "node scripts/seo-checklist.mjs",
     "check:seo:live": "node scripts/seo-checklist.mjs --live",
+    "check:seo:http": "node scripts/verify-live-seo-routing.mjs",
     "check:duplicates": "node scripts/audit-duplicate-content.mjs",
     "snapshot:meta": "tsx scripts/snapshot-meta-history.ts",
     "preview": "vite preview"

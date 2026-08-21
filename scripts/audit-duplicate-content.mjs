@@ -120,6 +120,7 @@ for (let offset = 0; offset < urls.length; offset += 8) {
         const document = await loadDocument(url);
         const { html, status, redirect, path } = document;
         const prerenderBody =
+          html.match(/<main[^>]+data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1] ??
           html.match(/<noscript[^>]+data-prerender=["']static["'][^>]*>([\s\S]*?)<\/noscript>/i)?.[1] ??
           html.match(/<div[^>]+data-prerender=["']static["'][^>]*>([\s\S]*?)<\/div>/i)?.[1] ??
           html.match(/<div id=["']root["']>([\s\S]*?)<\/div>/i)?.[1] ??
