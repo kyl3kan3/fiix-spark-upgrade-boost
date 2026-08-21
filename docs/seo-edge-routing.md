@@ -24,15 +24,19 @@ The regression command creates a new random path on every run, then verifies rea
 
 The Vercel project has ownership of and is attached to `maintenease.com`, but the apex DNS record still points to the previous host at `185.158.133.1`. As of the verification date, Vercel reports the domain as `invalid-configuration`.
 
-At the current third-party DNS provider, replace the apex record with:
+At the current third-party DNS provider, replace the apex record with Vercel's current preferred apex pair:
 
 ```text
 Type: A
 Name: @
-Value: 76.76.21.21
+Value: 216.150.1.1
+
+Type: A
+Name: @
+Value: 216.150.16.1
 ```
 
-Vercel also currently recommends the newer apex pair `216.150.1.1` and `216.150.16.1`; use the exact records shown in the project's Domains settings at cutover if those instructions differ. Do not leave the old `185.158.133.1` apex record in place alongside the Vercel target.
+The Vercel project inspector also accepts the legacy anycast target `76.76.21.21`. Use the exact preferred records shown in the project's Domains settings at cutover if those instructions change. Do not leave the old `185.158.133.1` apex record in place alongside the Vercel targets.
 
 After DNS propagation:
 
