@@ -73,12 +73,33 @@ The high-impression, zero/low-click pages are measurement priorities after the h
 - Manual actions: no issues detected.
 - Security issues: no issues detected.
 
-## Post-cutover Search Console actions
+## Post-cutover Search Console receipt — August 22, 2026
 
-Do these only after `maintenease.com` passes `npm run check:seo:http -- https://maintenease.com` and its live sitemap contains all 70 intended URLs:
+These actions were taken only after the custom domain passed the live HTTP regression and all 70 sitemap URLs returned HTTP 200 with self-canonicals, indexable headers, meaningful ordinary HTML, and valid structured data.
 
-1. Resubmit `https://maintenease.com/sitemap.xml`.
-2. Inspect and request indexing for `/about`, `/editorial-policy`, `/learn/preventive-maintenance`, `/learn/total-productive-maintenance`, and `/facility-management` in that order, subject to Search Console quota.
-3. Inspect the remaining legitimate public examples from the discovered-not-indexed report and request indexing only when the live test confirms the intended page, canonical, and indexability.
+### Sitemap
+
+- A first attempt using the relative value `sitemap.xml` returned Google's `Invalid sitemap address` response and did not submit anything.
+- Submitting the full URL `https://maintenease.com/sitemap.xml` returned `Sitemap submitted successfully`.
+- The Search Console table then showed `Submitted: Aug 22, 2026` and `Status: Success`.
+- `Last read: Aug 16, 2026` and `Discovered pages: 64` remained the prior processing result immediately after submission. The live file contained 70 URLs; Google had not yet reprocessed it, so 70 discovered pages must not be claimed yet.
+
+### Priority URL Inspection and recrawl requests
+
+| URL | Google index snapshot before request | Google's request response |
+|---|---|---|
+| `https://maintenease.com/about` | `URL is not on Google`; `Discovered - currently not indexed`; sitemap recognized; last crawl `N/A` | `Indexing requested`; URL added to a priority crawl queue. |
+| `https://maintenease.com/editorial-policy` | `URL is not on Google`; `Discovered - currently not indexed`; sitemap recognized; last crawl `N/A` | `Indexing requested`; URL added to a priority crawl queue. |
+| `https://maintenease.com/learn/preventive-maintenance` | `URL is on Google`; page indexed; HTTPS valid; one valid breadcrumb item | `Indexing requested`; URL added to a priority crawl queue. |
+| `https://maintenease.com/learn/total-productive-maintenance` | `URL is on Google`; page indexed; HTTPS valid; two valid breadcrumb items | `Indexing requested`; URL added to a priority crawl queue. |
+| `https://maintenease.com/facility-management` | `URL is on Google`; page indexed; HTTPS valid | `Indexing requested`; URL added to a priority crawl queue. |
+
+Google's confirmation also states that submitting a page multiple times does not change its queue position or priority. No duplicate requests were sent, and no unchanged URLs were submitted.
+
+### Follow-up
+
+1. Recheck sitemap last-read time and discovered-page count after Google processes the August 22 submission.
+2. Recheck `/about` and `/editorial-policy` after Google crawls them; a queue confirmation is not an indexing guarantee.
+3. Inspect remaining legitimate public examples from the discovered-not-indexed report only when a material page change or new live evidence justifies it.
 4. Do not start validation for intentional redirects, private `noindex` routes, or tracking-query canonical variants.
-5. Recheck sitemap discovery, page indexing, branded/non-branded performance, and query/page overlap after Google has recrawled the new deployment.
+5. Compare page indexing, branded/non-branded performance, and query/page overlap against this baseline after recrawl. Do not infer ranking gains from the submission itself.
