@@ -5,14 +5,6 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.maintenease.com" }],
-      "destination": "https://maintenease.com/:path*",
-      "permanent": true
-    }
-  ],
   "routes": [
     { "src": "^/index/?$", "headers": { "Location": "/" }, "status": 301 },
     { "src": "^/privacy-policy/?$", "headers": { "Location": "/privacy" }, "status": 301 },

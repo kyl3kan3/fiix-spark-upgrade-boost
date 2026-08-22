@@ -1,6 +1,6 @@
 # MaintenEase SEO edge routing
 
-Verified: August 21, 2026
+Verified: August 22, 2026
 
 ## Why this layer exists
 
@@ -14,17 +14,18 @@ The public-route allowlist is generated from `src/data/sitemapEntries.ts`. Publi
 
 - Vercel project: `maintenease-seo-edge`
 - Vercel scope: `kyl3kan3-6147s-projects`
-- Production candidate: <https://maintenease-seo-edge.vercel.app>
+- Production domain: <https://maintenease.com>
+- Vercel alias: <https://maintenease-seo-edge.vercel.app>
 - Deploy: `npx vercel deploy --prod --yes`
-- HTTP regression: `npm run check:seo:http -- https://maintenease-seo-edge.vercel.app`
+- HTTP regression: `npm run check:seo:http -- https://maintenease.com`
 
 The regression command creates a new random path on every run, then verifies real 404/noindex behavior, private-route noindex headers, representative public pages, ordinary raw HTML, canonicals, and legacy redirect status codes.
 
-## Custom-domain cutover
+## Custom-domain routing
 
-The Vercel project has ownership of and is attached to `maintenease.com`, but the apex DNS record still points to the previous host at `185.158.133.1`. As of the verification date, Vercel reports the domain as `invalid-configuration`.
+The production cutover completed on August 22, 2026. Lovable remains the authoring and preview environment, while Vercel serves the public custom domain and applies the HTTP routing in this repository.
 
-At the current third-party DNS provider, replace the apex record with Vercel's current preferred apex pair:
+The apex uses the project-recommended Vercel records:
 
 ```text
 Type: A
@@ -36,15 +37,18 @@ Name: @
 Value: 216.150.16.1
 ```
 
-The Vercel project inspector also accepts the legacy anycast target `76.76.21.21`. Use the exact preferred records shown in the project's Domains settings at cutover if those instructions change. Do not leave the old `185.158.133.1` apex record in place alongside the Vercel targets.
+`www.maintenease.com` uses the project-specific CNAME `a676d9c257b95208.vercel-dns-016.com`. Vercel's domain-level configuration returns a permanent 308 redirect to the apex while preserving the path and query string. The regression suite checks that redirect directly; it is intentionally not duplicated in `vercel.json`.
 
-After DNS propagation:
+All unrelated DNS records, including MX, SPF, DKIM, DMARC, verification records, service subdomains, and Lovable verification TXT records, remain at the DNS provider. Vercel reports both apex and `www` as valid configurations, and both hostnames have valid TLS.
+
+Post-deployment verification:
 
 1. Run `npx vercel domains verify maintenease.com` until it reports a valid configuration.
-2. Run `npm run check:seo:http -- https://maintenease.com`.
-3. Crawl every URL in `https://maintenease.com/sitemap.xml` and confirm HTTP 200, a self-canonical, and indexable metadata.
-4. Submit the sitemap and request validation/indexing in the verified Google Search Console property only after the live HTTP checks pass.
+2. Run `npx vercel domains verify www.maintenease.com` and confirm the project-specific CNAME.
+3. Run `npm run check:seo:http -- https://maintenease.com`.
+4. Crawl every URL in `https://maintenease.com/sitemap.xml` and confirm HTTP 200, a self-canonical, and indexable metadata.
+5. Submit the sitemap and request validation/indexing in the verified Google Search Console property only after the live HTTP checks pass.
 
 ## Rollback
 
-If the Vercel deployment fails its HTTP regression after cutover, restore the prior apex record `185.158.133.1` at the DNS provider while the defect is corrected. That rollback restores the old host and its known soft-404 behavior, so it is an availability rollback rather than an SEO-complete state.
+If a future Vercel deployment fails its HTTP regression, roll back the deployment in Vercel first. The prior hosting records were apex A `185.158.133.1` and `www` A `185.158.133.1`; restoring them would also restore the old host's known soft-404 behavior, so DNS rollback is an availability-only last resort rather than an SEO-complete state.
