@@ -54,6 +54,21 @@ for (const [path, status, destination] of redirects) {
   else pass(`${path} preserves ${status} → ${destination}`);
 }
 
+const baseUrl = new URL(base);
+if (baseUrl.hostname === "maintenease.com") {
+  const wwwUrl = new URL(`${baseUrl.protocol}//www.${baseUrl.hostname}${randomPath}`);
+  const response = await fetch(wwwUrl, {
+    method: "GET",
+    redirect: "manual",
+    headers: { "User-Agent": "MaintenEase-SEO-live-regression/1.0" },
+  });
+  const location = response.headers.get("location") ?? "";
+  const expected = new URL(randomPath, base);
+  if (![301, 308].includes(response.status)) fail(`www returned ${response.status}; expected a permanent redirect`);
+  else if (new URL(location, base).href !== expected.href) fail(`www redirects to ${location}; expected ${expected.href}`);
+  else pass(`www preserves the path and permanently redirects to ${baseUrl.hostname}`);
+}
+
 if (failures.length) {
   console.error(`\n${failures.length} live routing regression(s) failed against ${base}`);
   process.exit(1);
