@@ -368,6 +368,10 @@ const staticRoutes: Route[] = [
     intro: FACILITY_MANAGEMENT_PAGE.description,
     ogType: "article",
     sections: [
+      {
+        heading: "Editorial and safety scope",
+        body: "Prepared and reviewed by the MaintenEase editorial team and updated August 23, 2026. This guide is general educational material, not a site-specific compliance plan. Confirm applicable law, codes, permits, manufacturer instructions, contract requirements, qualified-person rules, and the employer's approved safety procedures before scheduling or performing work.",
+      },
       ...FACILITY_MANAGEMENT_PATHS.map((path) => ({
         heading: path.title,
         body: path.description,
@@ -379,6 +383,7 @@ const staticRoutes: Route[] = [
         href: path.href,
         label: path.cta,
       })),
+      { href: "/editorial-policy", label: "Editorial methodology and corrections" },
       { href: "/solutions/facility-maintenance-software", label: "Facility maintenance software" },
       { href: "/auth?signup=true", label: "Start a facility workspace" },
     ],

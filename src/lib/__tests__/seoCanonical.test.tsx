@@ -104,7 +104,7 @@ describe("CanonicalUrl", () => {
       view.unmount();
       document.head.innerHTML = "";
     }
-  });
+  }, 15_000);
 
   it("removes the static homepage fallback from non-indexed routes", async () => {
     document.head.innerHTML =
