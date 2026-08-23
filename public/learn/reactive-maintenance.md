@@ -10,7 +10,7 @@ Reactive maintenance — also called breakdown or run-to-failure maintenance —
 
 ## What reactive maintenance really costs
 
-The repair bill is only part of it. Reactive work also brings unplanned downtime, lost production, emergency overtime, rushed parts ordering at premium prices, and collateral damage when one failed component takes others with it. Industry studies consistently put reactive repairs at three to nine times the cost of the equivalent planned work. The hidden tax is unpredictability — reactive-heavy teams can never plan their week because the week plans them.
+The repair bill may be only part of the consequence. Depending on the asset and failure, reactive work can add unplanned downtime, lost output, overtime, expedited parts, secondary damage, safety exposure, and schedule disruption. Quantify those costs from the operation's own events rather than applying an unsupported universal multiplier to every repair.
 
 ## When reactive maintenance is the right call
 

@@ -1607,7 +1607,7 @@ MRO inventory can sprawl because items are often low-value individually but mate
 
 ## How a CMMS helps
 
-A CMMS with parts and inventory tracks on-hand quantity, reorder points, supplier and cost, and — critically — which assets each part fits. When a technician closes a work order and consumes a bearing, stock decrements automatically. Reorder alerts fire before stockouts trigger emergency overnight shipping. Vendor performance becomes measurable.
+A CMMS may connect on-hand quantity, reorder points, supplier, cost, and asset compatibility to work orders. Products vary: verify whether closing work changes stock automatically, how adjustments are approved, and which low-stock or vendor reports actually exist. The records are useful only when receipts, issues, returns, and counts are entered consistently.
 
 ## MRO best practices
 
@@ -1647,11 +1647,11 @@ Routine maintenance is recurring work: filter changes, gutter cleaning, lamp rep
 
 ## How modern teams run it
 
-Buildings get registered as locations, with each floor and each room as nested sub-locations. Assets (HVAC units, water heaters, fire panels) are placed within those locations. Tenants or occupants submit requests through a portal or QR code; the CMMS routes the request to the right trade, assigns it, and tracks completion. Preventive schedules cover the predictable work; reactive requests flow through the same system so reporting is honest.
+Teams can organize buildings as locations and place HVAC, plumbing, electrical, and life-safety assets in the appropriate area. A request portal can collect occupant issues for review; an authorized coordinator should confirm the location, priority, trade, access, and safety implications before assignment unless a verified routing rule governs the case. Recurring and reactive work can then share the same history and reporting definitions.
 
 ## Outsourced vs in-house
 
-Most building maintenance programs blend in-house staff for fast response and routine work with outsourced contractors for specialized work (elevator service, fire-system testing, roofing). A CMMS makes the contractor side visible: scheduled work, invoices, warranty claims, and certificates of insurance all tracked alongside in-house work.
+Many building programs combine in-house staff with qualified contractors for specialized work such as elevator service, fire-system testing, or roofing. Define which contractor records the organization must retain, who verifies them, and where they live. A CMMS may link vendors, scheduled work, attachments, and cost records, but buyers should validate invoice, warranty, insurance-certificate, and purchasing workflows rather than assume they are included.
 
 ## FAQ
 
@@ -1687,7 +1687,7 @@ In residential property management, the dominant workload is turnover: getting a
 
 ## Resident requests
 
-The second major workload is resident-submitted work orders. Best practice is a portal or QR code that captures the issue, location within the unit, photos, and access permission ('OK to enter when not home') in one step. From there a CMMS routes the request to the right technician, sends the resident automatic status updates, and closes the loop with a satisfaction prompt.
+Resident-submitted requests are another major workload. A portal can capture the issue, location, photos, contact details, and the access information the property is authorized to collect. Staff should triage the request before converting it into assigned work. Products vary in routing, resident updates, access controls, and satisfaction surveys, so validate those workflows against local policy and legal requirements.
 
 ## Compliance and risk
 
@@ -1723,7 +1723,7 @@ Reactive maintenance — also called breakdown or run-to-failure maintenance —
 
 ## What reactive maintenance really costs
 
-The repair bill is only part of it. Reactive work also brings unplanned downtime, lost production, emergency overtime, rushed parts ordering at premium prices, and collateral damage when one failed component takes others with it. Industry studies consistently put reactive repairs at three to nine times the cost of the equivalent planned work. The hidden tax is unpredictability — reactive-heavy teams can never plan their week because the week plans them.
+The repair bill may be only part of the consequence. Depending on the asset and failure, reactive work can add unplanned downtime, lost output, overtime, expedited parts, secondary damage, safety exposure, and schedule disruption. Quantify those costs from the operation's own events rather than applying an unsupported universal multiplier to every repair.
 
 ## When reactive maintenance is the right call
 

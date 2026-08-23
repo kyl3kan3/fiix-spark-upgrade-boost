@@ -29,7 +29,7 @@ export const glossary: GlossaryTerm[] = [
  metaTitle: "Maintenance Management Systems (CMMS): Buyer's Guide",
  metaDescription: "Compare maintenance management systems and CMMS software. Learn core modules, selection criteria, implementation steps, costs, and the KPIs to track.",
  published: "2026-01-15",
- updated: "2026-08-16",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "What does CMMS stand for?",
@@ -456,7 +456,7 @@ export const glossary: GlossaryTerm[] = [
  short: "A formal request that describes a maintenance task — what needs doing, on which asset, by whom, when — and tracks it from creation to completion.",
  metaTitle: "What is a Work Order? Anatomy, Lifecycle, and Examples",
  metaDescription: "A work order is the formal record of a maintenance task. Learn what fields it contains, how it flows through statuses, and best practices.",
- updated: "2026-08-14",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -492,6 +492,7 @@ export const glossary: GlossaryTerm[] = [
  short: "All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.",
  metaTitle: "What is Facility Maintenance? Scope & Examples",
  metaDescription: "Facility maintenance keeps buildings safe, comfortable, and compliant. Learn the scope, common tasks, and how teams organize the work.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -562,6 +563,7 @@ export const glossary: GlossaryTerm[] = [
  short: "The supplies, parts, and consumables a maintenance team uses to keep operations running — separate from raw materials that become finished products.",
  metaTitle: "What is MRO? Maintenance, Repair & Operations Explained",
  metaDescription: "MRO covers the parts, tools, and consumables maintenance teams use day to day. Learn what it includes and how to control MRO inventory.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -573,7 +575,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How a CMMS helps",
- body: "A CMMS with parts and inventory tracks on-hand quantity, reorder points, supplier and cost, and — critically — which assets each part fits. When a technician closes a work order and consumes a bearing, stock decrements automatically. Reorder alerts fire before stockouts trigger emergency overnight shipping. Vendor performance becomes measurable.",
+ body: "A CMMS may connect on-hand quantity, reorder points, supplier, cost, and asset compatibility to work orders. Products vary: verify whether closing work changes stock automatically, how adjustments are approved, and which low-stock or vendor reports actually exist. The records are useful only when receipts, issues, returns, and counts are entered consistently.",
  },
  {
  heading: "MRO best practices",
@@ -592,6 +594,7 @@ export const glossary: GlossaryTerm[] = [
  short: "The day-to-day and scheduled work needed to keep a building's structure, systems, and finishes in safe and serviceable condition.",
  metaTitle: "What is Building Maintenance? Tasks, Types & Schedules",
  metaDescription: "Building maintenance covers structural, mechanical, and cosmetic work to keep buildings safe and serviceable. Learn what it includes.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -603,11 +606,11 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How modern teams run it",
- body: "Buildings get registered as locations, with each floor and each room as nested sub-locations. Assets (HVAC units, water heaters, fire panels) are placed within those locations. Tenants or occupants submit requests through a portal or QR code; the CMMS routes the request to the right trade, assigns it, and tracks completion. Preventive schedules cover the predictable work; reactive requests flow through the same system so reporting is honest.",
+ body: "Teams can organize buildings as locations and place HVAC, plumbing, electrical, and life-safety assets in the appropriate area. A request portal can collect occupant issues for review; an authorized coordinator should confirm the location, priority, trade, access, and safety implications before assignment unless a verified routing rule governs the case. Recurring and reactive work can then share the same history and reporting definitions.",
  },
  {
  heading: "Outsourced vs in-house",
- body: "Most building maintenance programs blend in-house staff for fast response and routine work with outsourced contractors for specialized work (elevator service, fire-system testing, roofing). A CMMS makes the contractor side visible: scheduled work, invoices, warranty claims, and certificates of insurance all tracked alongside in-house work.",
+ body: "Many building programs combine in-house staff with qualified contractors for specialized work such as elevator service, fire-system testing, or roofing. Define which contractor records the organization must retain, who verifies them, and where they live. A CMMS may link vendors, scheduled work, attachments, and cost records, but buyers should validate invoice, warranty, insurance-certificate, and purchasing workflows rather than assume they are included.",
  },
  ],
  faqs: [
@@ -622,6 +625,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Ongoing upkeep of residential or commercial rental property — units, common areas, grounds, and life-safety systems — to protect the asset and keep tenants happy.",
  metaTitle: "What is Property Maintenance? Scope for Landlords & PMs",
  metaDescription: "Property maintenance keeps rental units, common areas, and grounds in good condition. Learn the scope and how PM teams stay organized.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -633,7 +637,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Resident requests",
- body: "The second major workload is resident-submitted work orders. Best practice is a portal or QR code that captures the issue, location within the unit, photos, and access permission ('OK to enter when not home') in one step. From there a CMMS routes the request to the right technician, sends the resident automatic status updates, and closes the loop with a satisfaction prompt.",
+ body: "Resident-submitted requests are another major workload. A portal can capture the issue, location, photos, contact details, and the access information the property is authorized to collect. Staff should triage the request before converting it into assigned work. Products vary in routing, resident updates, access controls, and satisfaction surveys, so validate those workflows against local policy and legal requirements.",
  },
  {
  heading: "Compliance and risk",
@@ -652,6 +656,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Fixing equipment after it has already broken down — the unplanned, run-to-failure work that a maintenance program tries to shrink.",
  metaTitle: "What is Reactive Maintenance? Definition, Cost & Examples",
  metaDescription: "Reactive maintenance is repairing equipment after it fails. Learn when it makes sense, what it really costs, and how to shift toward planned work.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -659,7 +664,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "What reactive maintenance really costs",
- body: "The repair bill is only part of it. Reactive work also brings unplanned downtime, lost production, emergency overtime, rushed parts ordering at premium prices, and collateral damage when one failed component takes others with it. Industry studies consistently put reactive repairs at three to nine times the cost of the equivalent planned work. The hidden tax is unpredictability — reactive-heavy teams can never plan their week because the week plans them.",
+ body: "The repair bill may be only part of the consequence. Depending on the asset and failure, reactive work can add unplanned downtime, lost output, overtime, expedited parts, secondary damage, safety exposure, and schedule disruption. Quantify those costs from the operation's own events rather than applying an unsupported universal multiplier to every repair.",
  },
  {
  heading: "When reactive maintenance is the right call",
@@ -806,6 +811,7 @@ export const glossary: GlossaryTerm[] = [
  short: "The average time it takes to restore a failed asset to working order — a key maintainability metric that captures how fast your team responds.",
  metaTitle: "What is MTTR? Mean Time To Repair Formula & Tips",
  metaDescription: "MTTR measures the average time to repair a failed asset. Learn the formula, what drives it, and practical ways to bring it down.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",

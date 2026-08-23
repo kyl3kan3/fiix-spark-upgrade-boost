@@ -14,7 +14,7 @@ MRO inventory can sprawl because items are often low-value individually but mate
 
 ## How a CMMS helps
 
-A CMMS with parts and inventory tracks on-hand quantity, reorder points, supplier and cost, and — critically — which assets each part fits. When a technician closes a work order and consumes a bearing, stock decrements automatically. Reorder alerts fire before stockouts trigger emergency overnight shipping. Vendor performance becomes measurable.
+A CMMS may connect on-hand quantity, reorder points, supplier, cost, and asset compatibility to work orders. Products vary: verify whether closing work changes stock automatically, how adjustments are approved, and which low-stock or vendor reports actually exist. The records are useful only when receipts, issues, returns, and counts are entered consistently.
 
 ## MRO best practices
 

@@ -14,7 +14,7 @@ In residential property management, the dominant workload is turnover: getting a
 
 ## Resident requests
 
-The second major workload is resident-submitted work orders. Best practice is a portal or QR code that captures the issue, location within the unit, photos, and access permission ('OK to enter when not home') in one step. From there a CMMS routes the request to the right technician, sends the resident automatic status updates, and closes the loop with a satisfaction prompt.
+Resident-submitted requests are another major workload. A portal can capture the issue, location, photos, contact details, and the access information the property is authorized to collect. Staff should triage the request before converting it into assigned work. Products vary in routing, resident updates, access controls, and satisfaction surveys, so validate those workflows against local policy and legal requirements.
 
 ## Compliance and risk
 

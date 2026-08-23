@@ -14,11 +14,11 @@ Routine maintenance is recurring work: filter changes, gutter cleaning, lamp rep
 
 ## How modern teams run it
 
-Buildings get registered as locations, with each floor and each room as nested sub-locations. Assets (HVAC units, water heaters, fire panels) are placed within those locations. Tenants or occupants submit requests through a portal or QR code; the CMMS routes the request to the right trade, assigns it, and tracks completion. Preventive schedules cover the predictable work; reactive requests flow through the same system so reporting is honest.
+Teams can organize buildings as locations and place HVAC, plumbing, electrical, and life-safety assets in the appropriate area. A request portal can collect occupant issues for review; an authorized coordinator should confirm the location, priority, trade, access, and safety implications before assignment unless a verified routing rule governs the case. Recurring and reactive work can then share the same history and reporting definitions.
 
 ## Outsourced vs in-house
 
-Most building maintenance programs blend in-house staff for fast response and routine work with outsourced contractors for specialized work (elevator service, fire-system testing, roofing). A CMMS makes the contractor side visible: scheduled work, invoices, warranty claims, and certificates of insurance all tracked alongside in-house work.
+Many building programs combine in-house staff with qualified contractors for specialized work such as elevator service, fire-system testing, or roofing. Define which contractor records the organization must retain, who verifies them, and where they live. A CMMS may link vendors, scheduled work, attachments, and cost records, but buyers should validate invoice, warranty, insurance-certificate, and purchasing workflows rather than assume they are included.
 
 ## FAQ
 
