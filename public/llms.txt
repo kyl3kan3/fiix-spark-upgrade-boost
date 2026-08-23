@@ -18,11 +18,11 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 ## Solutions
 
 - [Work Order Software](https://maintenease.com/solutions/work-order-software.md): Capture, assign, and close work orders without the spreadsheet sprawl.
-- [Preventive Maintenance Software](https://maintenease.com/solutions/preventive-maintenance-software.md): Schedule by date, runtime, or meter — and watch reactive work shrink.
+- [Preventive Maintenance Software](https://maintenease.com/solutions/preventive-maintenance-software.md): Turn recurring maintenance dates into visible, assigned work.
 - [Facility Maintenance Software](https://maintenease.com/solutions/facility-maintenance-software.md): One system for assets, work orders, PMs, and tenant requests across every building.
-- [Fleet Maintenance Software](https://maintenease.com/solutions/fleet-maintenance-software.md): Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.
-- [Maintenance Request Portal](https://maintenease.com/solutions/maintenance-request-portal.md): Standard requests and an urgent lane — submissions land straight in your inbox.
-- [Asset Tracking Software](https://maintenease.com/solutions/asset-tracking-software.md): QR codes, locations, custody, and full service history — for every asset you own.
+- [Fleet Maintenance Software](https://maintenease.com/solutions/fleet-maintenance-software.md): Vehicle records, recurring service, inspections, parts, and repair history in one queue.
+- [Maintenance Request Portal](https://maintenease.com/solutions/maintenance-request-portal.md): Standard requests and an urgent lane — submissions enter a structured review inbox.
+- [Asset Tracking Software](https://maintenease.com/solutions/asset-tracking-software.md): Searchable equipment records, locations, printable labels, and maintenance history.
 - [Asset Management Software](https://maintenease.com/solutions/asset-management-software.md): Register, schedule, maintain, and report on every asset — in one place.
 
 ## Comparisons

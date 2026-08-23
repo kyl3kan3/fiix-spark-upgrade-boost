@@ -118,7 +118,8 @@ A spreadsheet can support a small stable program. A CMMS becomes more practical 
 
 ## Sources
 
-- [OSHA process-equipment inspection and testing guidance](https://www.osha.gov/chemical-executive-order/psm-terminology)
+- [OSHA: Hazard prevention and control, including preventive maintenance](https://www.osha.gov/safety-management/hazard-prevention)
+- [OSHA Technical Manual: Documented process-equipment inspection and testing](https://www.osha.gov/otm/section-4-safety-hazards/chapter-5)
 
 ## CMMS software and comparisons
 

@@ -14,11 +14,11 @@ Facility maintenance teams handle three broad workload types: preventive tasks (
 
 ## How facility teams stay on top of it
 
-Most facility teams now run on a CMMS. Assets are registered with locations and warranties. Compliance-driven PMs (fire extinguishers, sprinklers, backflow preventers, generator tests) are scheduled and audit-trailed. Tenants or staff submit requests through a simple portal that drops directly into the work order queue. KPIs that matter: percentage of PMs completed on time, average response time on urgent requests, and reactive-to-planned work ratio.
+A CMMS can connect asset records, locations, recurring work, requests, and completion history. The facility program—not the software—must define which fire, life-safety, water, generator, or other tasks apply and who is qualified to perform them. Route occupant requests through review before converting accepted work into a work order. Useful operational measures can include PM completion, urgent-request response time, backlog age by risk, and the reactive-to-planned work ratio.
 
 ## Common pitfalls
 
-Three patterns sink most facility teams: an unmaintained asset list, so PMs are missed and audits are painful; an over-reliance on a single 'tribal knowledge' technician; and no reporting layer, so leadership has no objective view of workload or backlog. All three are solved by adopting purpose-built facility maintenance software.
+Three recurring risks are an unmaintained asset list, dependence on undocumented knowledge, and no consistent view of workload or backlog. Software can make the records and ownership visible, but it does not solve data quality, staffing, or operating discipline by itself. Assign owners, define required fields and review the records on a regular cadence.
 
 ## FAQ
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +12,7 @@ import {
  SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Wrench, Clock, CheckCircle2, AlertCircle, Signal, WifiOff, Smartphone } from "lucide-react";
+import { Wrench, Clock, CheckCircle2, AlertCircle, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 
 type Priority = "high" | "medium" | "low";
@@ -33,13 +33,6 @@ interface InventoryItem {
  name: string;
  qty: number;
  reorderPoint: number;
-}
-
-interface QueuedSyncAction {
- id: string;
- type: "CREATE" | "COMPLETE";
- workOrderId: string;
- createdAt: string;
 }
 
 const sampleOrders: WorkOrder[] = [
@@ -71,40 +64,13 @@ const statusMeta: Record<Status, { label: string; icon: React.ReactNode; classNa
 const WorkOrderContent: React.FC = () => {
  const [orders, setOrders] = useState<WorkOrder[]>(sampleOrders);
  const [inventory, setInventory] = useState<InventoryItem[]>(initialInventory);
- const [queuedActions, setQueuedActions] = useState<QueuedSyncAction[]>([]);
- const [isOffline, setIsOffline] = useState<boolean>(() => typeof navigator !== "undefined" && !navigator.onLine);
  const [title, setTitle] = useState("");
  const [priority, setPriority] = useState<Priority>("medium");
  const [description, setDescription] = useState("");
  const [assignee, setAssignee] = useState("");
  const [due, setDue] = useState("");
 
- useEffect(() => {
- const handleOnline = () => setIsOffline(false);
- const handleOffline = () => setIsOffline(true);
-
- window.addEventListener("online", handleOnline);
- window.addEventListener("offline", handleOffline);
- return () => {
- window.removeEventListener("online", handleOnline);
- window.removeEventListener("offline", handleOffline);
- };
- }, []);
-
  const lowStockItems = useMemo(() => inventory.filter((item) => item.qty <= item.reorderPoint), [inventory]);
-
- const registerSyncAction = (action: Omit<QueuedSyncAction, "id" | "createdAt">) => {
- if (!isOffline) return;
- setQueuedActions((prev) => [
- ...prev,
- {
- ...action,
- id: `${action.type}-${action.workOrderId}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
- createdAt: new Date().toISOString(),
- },
- ]);
- toast("Saved offline", { description: "Update has been queued and will sync automatically after reconnecting." });
- };
 
  const handleCreate = (e: React.FormEvent) => {
  e.preventDefault();
@@ -126,8 +92,7 @@ const WorkOrderContent: React.FC = () => {
  setTitle("");
  setDescription("");
  setDue("");
- registerSyncAction({ type: "CREATE", workOrderId: newOrder.id });
- if (!isOffline) toast.success("Work order created");
+ toast.success("Work order created in this demo");
  };
 
  const handleComplete = (id: string) => {
@@ -147,40 +112,21 @@ const WorkOrderContent: React.FC = () => {
  return next;
  });
 
- registerSyncAction({ type: "COMPLETE", workOrderId: id });
- if (!isOffline) toast.success(`Work order ${id} completed and inventory updated`);
- };
-
- const handleGoOnline = () => {
- setIsOffline(false);
- if (queuedActions.length > 0) {
- const queuedCount = queuedActions.length;
- setQueuedActions([]);
- toast.success(`Synced ${queuedCount} queued update${queuedCount > 1 ? "s" : ""}`);
- }
+ toast.success(`Work order ${id} completed in this demo and inventory updated`);
  };
 
  return (
  <div className="space-y-6">
  <Card className="border-primary/20">
  <CardContent className="pt-6">
- <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+ <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
  <div className="flex items-center gap-2 text-sm">
  <Smartphone className="h-4 w-4 text-primary" />
- <span className="font-medium">Mobile Technician Mode</span>
- <Badge variant="outline" className={isOffline ? "bg-warning/10 text-warning border-warning/30" : "bg-success/10 text-success border-success/30"}>
- {isOffline ? <WifiOff className="h-3.5 w-3.5 mr-1" /> : <Signal className="h-3.5 w-3.5 mr-1" />}
- {isOffline ? "Offline" : "Online"}
- </Badge>
+ <span className="font-medium">Responsive work-order demo</span>
+ <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">Sample data</Badge>
  </div>
- <div className="flex gap-2">
- <Button type="button" variant="outline" size="sm" onClick={() => setIsOffline(true)} disabled={isOffline}>Go Offline</Button>
- <Button type="button" size="sm" className="bg-primary hover:bg-primary/90" onClick={handleGoOnline} disabled={!isOffline}>Reconnect & Sync</Button>
+ <p className="text-xs text-muted-foreground">Changes remain in this browser demo and are not saved to an account.</p>
  </div>
- </div>
- {queuedActions.length > 0 && (
- <p className="text-xs text-muted-foreground mt-2">{queuedActions.length} change(s) queued and will sync automatically when you reconnect.</p>
- )}
  </CardContent>
  </Card>
 

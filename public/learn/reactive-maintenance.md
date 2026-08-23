@@ -28,7 +28,7 @@ No. For low-cost, non-critical assets it can be the cheapest strategy. It become
 
 ### How do I know if I have too much reactive maintenance?
 
-Track the planned-vs-reactive ratio in your CMMS. If more than ~30% of your work is unplanned breakdowns, there is room to shift work into preventive schedules.
+Track reactive labor and event counts with a documented rule, then segment by asset class and consequence. Set the target from the operation's own baseline, risk, staffing, and production needs rather than copying a universal 30% threshold.
 
 ## Related
 

@@ -28,7 +28,7 @@ A request is what an end user submits ('the printer is broken'). The maintenance
 
 ### How long should a work order stay open?
 
-Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign.
+Set the target from risk, priority, required response time, parts and access constraints, and the service promise. Review backlog age in meaningful bands, but do not apply one universal seven- or 30-day rule to every asset and work type.
 
 ## CMMS software and comparisons
 

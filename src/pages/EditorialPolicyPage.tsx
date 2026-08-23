@@ -27,7 +27,7 @@ export default function EditorialPolicyPage() {
         <meta property="og:url" content={CANONICAL} />
       </Helmet>
       <MarketingJsonLd />
-      <main className="container mx-auto max-w-3xl px-4 py-12 md:py-16">
+      <div className="container mx-auto max-w-3xl px-4 py-12 md:py-16">
         <p className="text-sm font-semibold uppercase tracking-wide text-primary">Last reviewed August 21, 2026</p>
         <h1 className="mt-3 font-headline text-4xl font-bold text-foreground text-balance md:text-5xl">Editorial policy and methodology</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground text-pretty">This policy explains how MaintenEase publishes useful maintenance education without inventing experience, research, customer evidence, reviews, or credentials.</p>
@@ -44,7 +44,7 @@ export default function EditorialPolicyPage() {
           <p className="mt-2 leading-relaxed text-muted-foreground text-pretty">The published reviewer is currently the MaintenEase editorial team as an organizational author. No individual reviewer, biography, or professional credential is published until the owner verifies those facts.</p>
           <Link to="/about" className="mt-4 inline-flex min-h-11 items-center font-semibold text-primary underline underline-offset-4">About the product and operator</Link>
         </aside>
-      </main>
+      </div>
     </MarketingLayout>
   );
 }

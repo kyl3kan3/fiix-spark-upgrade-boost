@@ -31,7 +31,7 @@ CMMS systems fall into a few recognizable shapes. Cloud-based (SaaS) CMMS softwa
 
 ## Who needs a CMMS?
 
-Any team responsible for physical assets benefits from a CMMS — manufacturing plants, facility managers, property managers, fleet operators, hospitals, schools, hotels, and municipal operations. The threshold is usually not company size but asset complexity. If you maintain more than a handful of assets, preventive work keeps slipping, or compliance audits require service history, a CMMS pays for itself quickly through avoided downtime alone.
+A CMMS can help teams responsible for physical assets in manufacturing, facilities, property, fleets, healthcare, education, hospitality, and municipal operations. The decision depends less on a universal asset count than on coordination cost: recurring work slipping, history split across files, unclear ownership, or records that cannot be retrieved when a decision or audit requires them. Estimate value from the team's own labor, downtime, risk, and reporting needs rather than assuming the software automatically pays for itself.
 
 ## CMMS vs EAM vs FSM
 
@@ -93,7 +93,7 @@ An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in
 
 ### Do I need a CMMS if I only have a few assets?
 
-Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS.
+Not necessarily. A small, stable operation may work well with a spreadsheet. Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort.
 
 ### How much does a CMMS cost?
 

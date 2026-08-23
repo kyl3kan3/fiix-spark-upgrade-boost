@@ -123,6 +123,7 @@ No, but a CMMS helps preserve work orders, asset history, operator findings, PM 
 ## Sources
 
 - [Japan Institute of Plant Maintenance: TPM definition and history](https://www.jipm.or.jp/business/tpm/)
+- [Japan Institute of Plant Maintenance: Equipment management and the eight TPM pillars](https://www.jipm.or.jp/business/facility/)
 - [NIST MEP: TPM downtime and capacity case study](https://www.nist.gov/mep/successstories/2022/total-productive-maintenance-reduces-equipment-downtime-and-lost-capacity)
 
 ## CMMS software and comparisons

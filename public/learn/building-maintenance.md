@@ -28,7 +28,7 @@ Janitorial (or custodial) work is daily cleaning. Building maintenance is the te
 
 ### How much should I budget for building maintenance?
 
-A common rule of thumb for commercial buildings is 2–4% of replacement value per year for ongoing maintenance, with larger reserves set aside for capital renewals.
+Build the budget from the facility condition assessment, asset ages and criticality, service contracts, labor and parts history, required inspections, backlog risk, and the capital-renewal plan. A universal percentage of replacement value can hide major differences between buildings.
 
 ## Related
 

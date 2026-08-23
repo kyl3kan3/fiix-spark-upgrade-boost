@@ -10,7 +10,7 @@ MRO stands for Maintenance, Repair, and Operations. It refers to the goods a bus
 
 ## Why MRO is hard to control
 
-MRO inventory tends to sprawl. Items are low-value individually but high-value in aggregate. Multiple people order from multiple suppliers, often without checking stock first. Critical spares hide in personal toolboxes, while obsolete parts gather dust. Most plants discover during their first real audit that MRO inventory is 20–40% larger than the system shows.
+MRO inventory can sprawl because items are often low-value individually but material in aggregate. Multiple people may order from different suppliers without checking stock first; critical spares can become hard to find while obsolete parts remain on the shelf. Establish a verified baseline through counts and transaction review instead of assuming a universal inventory-accuracy gap.
 
 ## How a CMMS helps
 

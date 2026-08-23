@@ -1,23 +1,23 @@
-# Fleet Maintenance Software that keeps vehicles safe, compliant, and on the road
+# Fleet Maintenance Software for service, inspections, and repair history
 
-> Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.
+> Vehicle records, recurring service, inspections, parts, and repair history in one queue.
 
 Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
 
-MaintenEase treats every vehicle as an asset with its own service history, parts, warranties, and PM schedule. Telematics-fed odometer readings trigger PMs the moment a threshold is crossed. Drivers complete DVIRs on their phone before and after every shift. Compliance reports export ready for any inspection.
+MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.
 
 ## Benefits
 
-- **Less downtime** — Meter-based scheduling and parts visibility mean vehicles come into the shop ready and leave faster.
-- **DOT-ready records** — Every inspection, every repair, every DVIR — timestamped, signed, and exportable per vehicle.
-- **Lower cost per mile** — Track cost per mile by vehicle and class to spot which units to keep, repair, or retire.
+- **One vehicle history** — Keep work orders, recurring service, inspection results, notes, parts, and cost against the relevant vehicle record.
+- **Repeatable inspections** — Use mobile-friendly checklists for the inspections your qualified fleet program defines, with follow-up work for defects.
+- **Repair-cost visibility** — Review recorded labor, parts, downtime, and repeat work before making repair-or-replace decisions.
 
 ## Features
 
-- **Meter-based PMs** — Schedule by mileage, engine hours, or fuel burn. Pulls readings from telematics so nothing has to be entered by hand.
-- **Mobile DVIRs** — Drivers complete inspections from their phone with photos and signatures; defects open work orders automatically.
-- **Parts, warranty, and recalls** — Track parts per vehicle, recover warranty claims, and flag affected units when a recall lands.
-- **Compliance exports** — DOT, FMCSA, and provincial reports built and exportable in one click.
+- **Vehicle asset records** — Store the vehicle name, serial or unit identifier, location, status, purchase date, attachments, and related maintenance history.
+- **Calendar-based service** — Create recurring day-, week-, month-, or year-based work and review runtime or condition readings separately when available.
+- **Mobile-friendly inspections** — Complete checklists from a phone, record notes or photos, and create corrective work when the result requires follow-up.
+- **Parts and cost records** — Record parts and labor against repairs so the vehicle history contains the inputs needed for internal cost analysis.
 
 ## Who it's for
 
@@ -30,15 +30,15 @@ MaintenEase treats every vehicle as an asset with its own service history, parts
 
 ### Do you integrate with telematics providers?
 
-Yes — common providers (Samsara, Geotab, and others) can feed odometer and engine-hour readings into MaintenEase via API.
+No prebuilt Samsara, Geotab, or other telematics connector is claimed here. Business includes API access, so a buyer can scope a custom integration only after validating the provider, fields, authentication, trigger logic, and implementation work.
 
 ### Can drivers use this without a full MaintenEase license?
 
-Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost.
+Public requesters do not need a login, but staff who sign in to use MaintenEase count toward the plan's included seats. Business supports additional seats at $15 per month each; no separate reduced-price driver role is published.
 
 ### What is fleet maintenance software?
 
-Fleet maintenance software manages service for vehicles and mobile equipment: meter-based PM schedules, driver inspections, repair history, parts and warranty, and the compliance records inspectors ask for.
+Fleet maintenance software organizes vehicle records, service schedules, inspections, repair history, parts, and cost. Products vary in telematics and regulatory-record support, so verify the exact workflow and jurisdiction before relying on a feature list.
 
 ### Can I run fleet and facility maintenance in the same system?
 

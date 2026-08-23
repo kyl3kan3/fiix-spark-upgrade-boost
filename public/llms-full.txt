@@ -129,6 +129,7 @@ Start with PM compliance, urgent response time, work-order cycle time, reactive-
 
 - [International Facility Management Association: What is facility management?](https://www.ifma.org/about/what-is-fm/)
 - [ISO 41011:2024 facility management vocabulary](https://www.iso.org/standard/82405.html)
+- [OSHA: Hazard prevention and control, including preventive maintenance](https://www.osha.gov/safety-management/hazard-prevention)
 
 
 ---
@@ -143,20 +144,20 @@ Start with PM compliance, urgent response time, work-order cycle time, reactive-
 
 Canonical URL: https://maintenease.com/solutions/work-order-software
 
-Most work order programs start as a spreadsheet and end as a mess. MaintenEase replaces clipboards, email chains, and shared spreadsheets with a single work order queue your whole team works from. Requests come in through a portal, QR code, or quick mobile form. Each work order carries the asset, location, priority, assignee, parts, photos, and a full audit trail. Technicians close work from their phone in the field; managers see status in real time.
+Most work order programs start as a spreadsheet and become difficult to coordinate. MaintenEase replaces clipboards, email chains, and shared spreadsheets with one work order queue. Requests can arrive through the public portal or an internal form. Each work order records its asset or location, priority, assignee, dates, notes, attachments, labor, and parts so technicians and supervisors work from the same current record.
 
 ## Benefits
 
-- **Faster response** — Work orders route to the right technician the moment they are submitted, with mobile push alerts so urgent issues never sit in an inbox.
-- **Honest reporting** — Every status change is timestamped. Backlog, mean time to repair, and technician throughput stop being a guess.
-- **Lower friction for requesters** — Staff or tenants submit issues through a simple QR-coded form — no app install, no training required.
+- **Clear ownership** — Set priority, assignee, due date, and status on each work order so the team can see who owns the next action.
+- **Traceable reporting** — Work-order dates, status, labor, parts, and asset history provide the inputs for backlog and repair reporting.
+- **Lower-friction requests** — Staff or tenants can submit an issue through a public form without installing an app or receiving access to internal records.
 
 ## Features
 
-- **Mobile-first work orders** — Create, update, and close work orders from a phone with photos, voice-to-text, and offline support.
-- **Smart routing and priority** — Auto-assign by asset, location, trade, or priority. Escalate when SLAs slip.
+- **Responsive work orders** — Create, update, and close work orders from a phone or desktop browser, with notes and photo attachments.
+- **Assignment and priority** — Supervisors can set the assignee, priority, status, and due date instead of relying on an unverified automatic-routing rule.
 - **Parts and labor on every work order** — Track time, parts consumed, and total cost per work order, asset, and location.
-- **Approvals and SLAs** — Optional approval steps for high-cost work; SLA timers that visibly count down on the work order card.
+- **Checklists and evidence** — Link recurring checklists and retain notes, attachments, and completion details alongside the maintenance record.
 
 ## Who it's for
 
@@ -169,7 +170,7 @@ Most work order programs start as a spreadsheet and end as a mess. MaintenEase r
 
 ### Can requesters submit work without a MaintenEase login?
 
-Yes. Public request links and QR codes let staff or tenants submit issues without creating an account; they get email or SMS updates as the work progresses.
+Yes. A public request link lets staff or tenants submit an issue without creating an account. The maintenance team reviews the request in a separate inbox before converting accepted work into a work order.
 
 ### Do you support recurring work orders?
 
@@ -181,29 +182,29 @@ Work order programs are the software teams use to capture a maintenance request,
 
 ### How do I choose maintenance work order software?
 
-Test it against the five things that go wrong today — requests arriving by text, jobs with no owner, no parts cost, no history, no proof of completion. Then check that technicians can actually use it one-handed on a phone, and that pricing does not jump every time you add a seasonal helper.
+Test it against the five things that go wrong today — requests arriving by text, jobs with no owner, no parts cost, no history, and no proof of completion. Then check the mobile workflow, exports, plan limits, and the actual seat cost for the people who need access.
 
 ---
 
 # Preventive Maintenance Software that stops failures before they cost you
 
-> Schedule by date, runtime, or meter — and watch reactive work shrink.
+> Turn recurring maintenance dates into visible, assigned work.
 
 Canonical URL: https://maintenease.com/solutions/preventive-maintenance-software
 
-MaintenEase turns preventive maintenance from a calendar reminder into an audited, automated process. Build schedules per asset by date, runtime hours, or meter reading. Work orders generate themselves, route to the right technician, and surface the procedure, parts, and safety steps inline. Compliance reports — fire systems, life safety, regulated inspections — export with a click.
+MaintenEase turns recurring maintenance from an isolated calendar reminder into assigned work with a completion record. Create calendar-based schedules against an asset, set the frequency and owner, and review the resulting work alongside notes, parts, attachments, and service history. Meter and condition readings can inform planning and predictive risk, but the current scheduler should not be described as a native meter-trigger engine.
 
 ## Benefits
 
 - **Fewer avoidable breakdowns** — Put recurring inspections and service on a visible schedule, then compare failures before and after each PM interval so the team can adjust the work based on its own history.
-- **Smoother technician days** — Planned work replaces firefighting. Workload is visible a week ahead, not discovered each morning.
-- **Audit-ready records** — Every PM closes with a timestamped record, photos, and signatures — exactly what regulators and insurance carriers want to see.
+- **More visible workload** — Upcoming and overdue work gives supervisors a clearer view of the schedule before the day begins.
+- **Reviewable records** — Completion dates, notes, attachments, checklists, labor, and parts can be retained with the work and asset history.
 
 ## Features
 
-- **Flexible schedules** — Time, runtime, meter, condition-based — or any combination. Holiday blackouts and grouping rules included.
-- **Procedures and checklists** — Step-by-step instructions, pass/fail items, photo evidence, and required signatures attached to every PM.
-- **Compliance pack** — Fire-system tests, sprinkler inspections, generator runs, electrical thermography — pre-built templates and audit exports.
+- **Calendar schedules** — Create recurring work by day, week, month, or year and associate it with the relevant asset and owner.
+- **Procedures and checklists** — Use work-order instructions and recurring checklists to capture steps, pass/fail items, notes, and attachments.
+- **Documented completion** — Keep the due date, status, assignee, completion record, and supporting evidence together for later review.
 - **Schedule health insights** — See which PMs are overdue, which assets keep failing between PMs, and where intervals should change.
 
 ## Who it's for
@@ -211,17 +212,17 @@ MaintenEase turns preventive maintenance from a calendar reminder into an audite
 - Compliance-heavy facilities (healthcare, education, public sector)
 - Manufacturing teams chasing a higher planned-to-reactive ratio
 - Property managers managing recurring life-safety tasks
-- Fleet operators running meter-based service schedules
+- Fleet operators coordinating recurring calendar inspections and service
 
 ## FAQ
 
-### Can we import our existing PM schedule from a spreadsheet?
+### Can we import our existing maintenance data from a spreadsheet?
 
-Yes — CSV import is supported, and our team will help map columns on the first import.
+Free onboarding and data-import help are included. Provide a representative file first so the team can confirm which asset, work-order, and schedule fields can be mapped without implying that every legacy format imports automatically.
 
 ### What happens if a PM is missed?
 
-Missed PMs stay visible in a dedicated overdue queue with an aging color code, and roll up into compliance reports so they cannot be quietly forgotten.
+The due work remains visible with its date and status so supervisors can review and reassign it. Teams should define their own overdue and compliance rules rather than assume the software supplies a regulatory conclusion.
 
 ### What is preventive maintenance software?
 
@@ -239,20 +240,20 @@ PM scheduling is one module inside a CMMS. MaintenEase ships both: the preventiv
 
 Canonical URL: https://maintenease.com/solutions/facility-maintenance-software
 
-MaintenEase gives facility teams a single system across every building, floor, and room they look after. Register assets with locations, warranties, and manuals. Schedule the predictable work. Collect occupant requests through a QR code on the wall. Report up to leadership with numbers that hold up to scrutiny.
+MaintenEase gives facility teams one system for locations, assets, work orders, recurring maintenance, checklists, vendors, and public requests. Register equipment against a building or room, attach relevant documents, schedule predictable work, and review activity by location without claiming a prebuilt compliance or building-automation package.
 
 ## Benefits
 
-- **Multi-site visibility** — See backlog, response time, and PM compliance per building and per portfolio in one dashboard.
-- **Happier occupants** — Tenants and staff get automatic status updates from the moment they submit a request to the moment work is complete.
-- **More visible operating cost** — Standardized vendor records, warranty tracking, and parts visibility make it easier to find duplicate spending, missed warranty work, and costly repeat repairs.
+- **Location-based visibility** — Organize sites, buildings, floors, and rooms so assets and work can be reviewed in their operating context.
+- **Structured occupant intake** — Tenants or staff can submit standard or urgent requests through a public portal, while internal records remain behind the signed-in application.
+- **More visible operating cost** — Work-order labor, parts, vendor records, and asset history provide a more consistent basis for reviewing repeat repairs and spend.
 
 ## Features
 
 - **Nested locations** — Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly.
-- **Vendor and contractor management** — COI tracking, scoped POs, vendor performance scoring, and one work-order queue across in-house and outsourced work.
-- **Occupant request portal** — Branded QR codes per location capture requests with photos, location, and access permission — no app install required.
-- **Compliance and audit** — Life-safety, ADA, environmental, and inspection programs pre-built and exportable for any audit.
+- **Vendor records** — Maintain vendor contacts and link service partners to the relevant assets or work instead of claiming purchasing or COI automation that has not been verified.
+- **Occupant request portal** — A public link captures standard or urgent requests with description, location, contact details, and optional photos — no account required.
+- **Inspections and evidence** — Build recurring checklists for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria.
 
 ## Who it's for
 
@@ -265,34 +266,34 @@ MaintenEase gives facility teams a single system across every building, floor, a
 
 ### Can we restrict what each building manager sees?
 
-Yes. Role and location-based permissions limit each user to the sites and data they are responsible for.
+MaintenEase applies company and role permissions. If site-by-site data partitioning is mandatory, validate that exact workflow before purchase; this page does not claim unverified location-level access controls.
 
 ### Do you integrate with our building management system?
 
-MaintenEase exposes a documented API and supports common BMS triggers via webhooks — talk to us about the specific system in play.
+Business includes API access, but MaintenEase does not publish a prebuilt BMS connector on this page. Validate the data source, authentication, trigger, field mapping, failure handling, and implementation scope for the specific system.
 
 ---
 
-# Fleet Maintenance Software that keeps vehicles safe, compliant, and on the road
+# Fleet Maintenance Software for service, inspections, and repair history
 
-> Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.
+> Vehicle records, recurring service, inspections, parts, and repair history in one queue.
 
 Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
 
-MaintenEase treats every vehicle as an asset with its own service history, parts, warranties, and PM schedule. Telematics-fed odometer readings trigger PMs the moment a threshold is crossed. Drivers complete DVIRs on their phone before and after every shift. Compliance reports export ready for any inspection.
+MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.
 
 ## Benefits
 
-- **Less downtime** — Meter-based scheduling and parts visibility mean vehicles come into the shop ready and leave faster.
-- **DOT-ready records** — Every inspection, every repair, every DVIR — timestamped, signed, and exportable per vehicle.
-- **Lower cost per mile** — Track cost per mile by vehicle and class to spot which units to keep, repair, or retire.
+- **One vehicle history** — Keep work orders, recurring service, inspection results, notes, parts, and cost against the relevant vehicle record.
+- **Repeatable inspections** — Use mobile-friendly checklists for the inspections your qualified fleet program defines, with follow-up work for defects.
+- **Repair-cost visibility** — Review recorded labor, parts, downtime, and repeat work before making repair-or-replace decisions.
 
 ## Features
 
-- **Meter-based PMs** — Schedule by mileage, engine hours, or fuel burn. Pulls readings from telematics so nothing has to be entered by hand.
-- **Mobile DVIRs** — Drivers complete inspections from their phone with photos and signatures; defects open work orders automatically.
-- **Parts, warranty, and recalls** — Track parts per vehicle, recover warranty claims, and flag affected units when a recall lands.
-- **Compliance exports** — DOT, FMCSA, and provincial reports built and exportable in one click.
+- **Vehicle asset records** — Store the vehicle name, serial or unit identifier, location, status, purchase date, attachments, and related maintenance history.
+- **Calendar-based service** — Create recurring day-, week-, month-, or year-based work and review runtime or condition readings separately when available.
+- **Mobile-friendly inspections** — Complete checklists from a phone, record notes or photos, and create corrective work when the result requires follow-up.
+- **Parts and cost records** — Record parts and labor against repairs so the vehicle history contains the inputs needed for internal cost analysis.
 
 ## Who it's for
 
@@ -305,15 +306,15 @@ MaintenEase treats every vehicle as an asset with its own service history, parts
 
 ### Do you integrate with telematics providers?
 
-Yes — common providers (Samsara, Geotab, and others) can feed odometer and engine-hour readings into MaintenEase via API.
+No prebuilt Samsara, Geotab, or other telematics connector is claimed here. Business includes API access, so a buyer can scope a custom integration only after validating the provider, fields, authentication, trigger logic, and implementation work.
 
 ### Can drivers use this without a full MaintenEase license?
 
-Yes. Drivers can complete DVIRs through a lightweight driver role at a reduced per-seat cost.
+Public requesters do not need a login, but staff who sign in to use MaintenEase count toward the plan's included seats. Business supports additional seats at $15 per month each; no separate reduced-price driver role is published.
 
 ### What is fleet maintenance software?
 
-Fleet maintenance software manages service for vehicles and mobile equipment: meter-based PM schedules, driver inspections, repair history, parts and warranty, and the compliance records inspectors ask for.
+Fleet maintenance software organizes vehicle records, service schedules, inspections, repair history, parts, and cost. Products vary in telematics and regulatory-record support, so verify the exact workflow and jurisdiction before relying on a feature list.
 
 ### Can I run fleet and facility maintenance in the same system?
 
@@ -323,25 +324,25 @@ Yes. Vehicles, buildings, and production equipment are all assets in MaintenEase
 
 # A free, branded portal for customers to report problems
 
-> Standard requests and an urgent lane — submissions land straight in your inbox.
+> Standard requests and an urgent lane — submissions enter a structured review inbox.
 
 Canonical URL: https://maintenease.com/solutions/maintenance-request-portal
 
-Every MaintenEase account ships with a branded public request portal at your-team.maintenease.com/r/your-name. Share the link on your website, print a QR code on the wall, or email it to tenants. Submitters pick a standard request or hit the red Urgent button, fill in a short form, and your team is notified — no app install, no login required.
+Every MaintenEase account includes a branded public request portal at maintenease.com/r/your-name. Share the link on a website, place it behind a printed code, or email it to tenants. Submitters choose a standard or urgent request, complete the protected form, and the request enters the team's review inbox — no app install or requester login required.
 
 ## Benefits
 
-- **Catch urgent issues in seconds** — Urgent submissions fire instant push and email alerts to your on-call admins and managers — even outside business hours.
+- **Separate urgent intake** — Urgent submissions are visually distinct and notification delivery can use the configured channels for administrators and managers. The portal is not an emergency-dispatch service.
 - **Stop drowning in email and texts** — Every request lands in one structured inbox with location, photos, and contact info. No more screenshots in group chats.
-- **Look professional** — The portal carries your logo and company name. Customers experience a real product, not a Google Form.
+- **Use your organization identity** — The portal displays the organization's name and uploaded logo above the request form.
 
 ## Features
 
 - **Standard + urgent lanes** — Two clear buttons up top. The urgent lane is visually distinct and routes differently.
 - **One-click convert to work order** — Triage in the inbox, then convert any request into a fully populated work order with location, contact info, and the right priority.
-- **Branded with your logo** — Your colors and logo appear at the top. Use a custom URL slug so the link reads naturally on your website.
-- **Public — no login required** — Submitters fill the form in 30 seconds. No account, no install, no friction.
-- **Spam-safe by design** — Length-capped fields and per-tenant rate limiting keep the inbox clean without captchas in front of real users.
+- **Organization name and logo** — The organization's name and uploaded logo appear at the top, with a configurable public URL slug.
+- **Public — no login required** — Submitters can complete the form without an account or app install.
+- **Protected public intake** — Length-capped fields, server-side validation, tenant-scoped authorization, and Turnstile help protect the public form.
 - **Free on every plan** — Included with every MaintenEase plan — no extra cost per submission.
 
 ## Who it's for
@@ -359,11 +360,11 @@ Yes. The public request portal is included on every MaintenEase plan, with no pe
 
 ### Can I customize the URL?
 
-Yes — each company picks a unique slug (e.g. /r/acme-facilities). You can change it any time from settings.
+Yes. Each company can use a unique slug such as /r/acme-facilities and manage it from settings.
 
 ### How do urgent alerts work?
 
-When someone selects the Urgent option, MaintenEase fires push notifications and emails to admins and managers immediately — using their existing notification preferences.
+The urgent option creates a visibly urgent request and invokes the configured notification workflow for administrators and managers. Delivery depends on valid recipients, channel configuration, and provider availability; it is not a substitute for emergency services.
 
 ### Do submitters need a MaintenEase account?
 
@@ -371,28 +372,28 @@ No. The portal is fully public. Anyone with the link can submit a request.
 
 ---
 
-# Asset Tracking Software that always knows where every asset lives
+# Asset Tracking Software for equipment records and locations
 
-> QR codes, locations, custody, and full service history — for every asset you own.
+> Searchable equipment records, locations, printable labels, and maintenance history.
 
 Canonical URL: https://maintenease.com/solutions/asset-tracking-software
 
-MaintenEase gives every asset a unique QR code, a permanent home in your location hierarchy, and a full service history that travels with it. Scan a QR code to see the asset's manual, warranty, open work orders, and PM schedule. Move an asset between rooms or buildings and the audit trail updates itself. No more spreadsheets, no more lost equipment.
+MaintenEase gives each asset a searchable record with a name, serial number, model, location, status, purchase date, attachments, work orders, and related maintenance history. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.
 
 ## Benefits
 
-- **Find any asset in seconds** — Scan the QR code or search by name, tag, or serial. Every asset has a clear home in your location tree.
-- **Stop losing equipment** — Custody changes, transfers, and disposals are all timestamped — you always know who had it last and where it went.
-- **Service history that follows the asset** — Every work order, PM, inspection, and part swap stays attached to the asset for its entire life — including across owners and locations.
+- **Find equipment quickly** — Search by name or serial number and browse the location hierarchy to reach the relevant asset record.
+- **Keep location current** — Assign each asset to a location and update that record when equipment moves, without implying a separate custody-ledger feature.
+- **Service history tied to the asset** — Related work orders, recurring work, inspections, and recorded parts remain available from the asset history as the location record changes.
 
 ## Features
 
-- **QR code generation** — Print branded QR labels for every asset. Scanning opens the asset directly in MaintenEase — no app install required for read-only access.
+- **Printable asset labels** — Generate a setup-sheet PDF with a Code 128 barcode based on the asset serial number or ID for use in the team's labeling workflow.
 - **Nested locations** — Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level.
-- **Custody and transfers** — Assign assets to people, teams, or locations. Every transfer is logged with who, when, and why.
-- **Warranty, manuals, and photos** — Attach manuals, photos, purchase records, and warranty dates. Get alerts before warranties expire.
-- **Bulk import and CSV export** — Import existing asset registers from a spreadsheet in minutes. Export filtered views for audits or insurance.
-- **Asset lifecycle reporting** — See total cost of ownership, downtime hours, and remaining useful life per asset and per asset class.
+- **Asset hierarchy** — Link parent and child assets and place equipment in nested locations so related records stay easier to navigate.
+- **Documents and photos** — Attach manuals, photos, purchase records, or warranty documents without claiming an unverified warranty-alert engine.
+- **Bulk import and CSV export** — Import a supported asset-register spreadsheet with mapping help. Export filtered records for authorized internal or external review.
+- **Maintenance and risk history** — Review related work, downtime, cost inputs, and — on eligible plans — the explainable risk score and remaining-useful-life estimate as planning aids rather than guarantees.
 
 ## Who it's for
 
@@ -403,17 +404,17 @@ MaintenEase gives every asset a unique QR code, a permanent home in your locatio
 
 ## FAQ
 
-### Do I need special hardware to scan QR codes?
+### Do I need special hardware for asset labels?
 
-No. Any modern smartphone camera scans MaintenEase QR codes — no scanner, no app install required for read-only access.
+MaintenEase can generate printable Code 128 labels in a setup-sheet PDF. Confirm the scanner or phone workflow you plan to use; this page does not claim a public no-login asset page.
 
 ### Can I import my existing asset list?
 
 Yes. CSV import is supported, and our team will help map columns and locations on the first import.
 
-### Does it support barcodes too?
+### Which barcode format is generated?
 
-Yes — both QR codes and 1D barcodes are supported for scanning and lookup.
+The current setup-sheet generator creates Code 128 barcode images from the asset serial number or ID. It does not claim a second QR-label workflow here.
 
 ---
 
@@ -423,22 +424,22 @@ Yes — both QR codes and 1D barcodes are supported for scanning and lookup.
 
 Canonical URL: https://maintenease.com/solutions/asset-management-software
 
-MaintenEase is asset management software built for the teams who actually maintain the assets. Register every asset with its location, warranty, parts, and manuals. Layer PM schedules and work orders directly on top. Report on cost, downtime, and lifecycle — per asset, per location, per category. Your asset register stops being a spreadsheet and starts being the system of record for everything that happens to your equipment.
+MaintenEase is asset management software for the teams who maintain physical equipment. Register each asset with core identifiers, location, status, purchase date, hierarchy, photos, and attachments. Connect recurring calendar work, corrective work orders, parts, labor, cost, and predictive-risk records so the asset register supports day-to-day maintenance decisions.
 
 ## Benefits
 
 - **One source of truth** — Every asset, every work order, every PM, every part — in one place. No more reconciling spreadsheets at month-end.
-- **Smarter capital decisions** — See total cost of ownership and downtime per asset to decide what to repair, replace, or retire.
-- **Audit-ready in one click** — Insurance, regulatory, and internal audits export from the asset register with full history attached.
+- **Better-supported capital decisions** — Use recorded work, cost, downtime, repeat failures, and risk factors as inputs to repair-or-replace review.
+- **Reviewable history** — Keep asset details, attachments, and maintenance activity together so an authorized reviewer can trace the available record.
 
 ## Features
 
-- **Full asset register** — Capture make, model, serial, warranty, purchase price, installation date, and custom fields per asset class.
-- **PM scheduling per asset** — Time-based, runtime-based, or meter-based PMs attached directly to the asset. Work orders generate automatically.
+- **Core asset register** — Capture name, model, serial number, purchase date, location, status, hierarchy, description, image, and attachments.
+- **Recurring work per asset** — Create calendar-based recurring work and checklists against the equipment record; do not assume native meter-trigger scheduling.
 - **Work orders and parts** — Every repair, inspection, and part swap is recorded against the asset — building a complete service history.
-- **Warranty and contract tracking** — Alerts before warranties and service contracts expire so you never miss a recoverable repair.
-- **Lifecycle and TCO reporting** — Cost per asset, downtime per asset, repair frequency, and depreciation curves — exportable for finance.
-- **Role and location permissions** — Restrict each user to the sites, asset classes, or actions they're responsible for.
+- **Documents and history** — Attach warranty or contract documents and review related work without claiming an automatic renewal-alert feature.
+- **Cost and reliability inputs** — Record labor, parts, downtime, repair frequency, and risk factors for internal reporting; finance owns depreciation policy.
+- **Company and role permissions** — Use the application's tenant and role controls, and validate any site-specific access requirement before rollout.
 
 ## Who it's for
 
@@ -455,11 +456,11 @@ Asset management is one of the core capabilities of a CMMS. MaintenEase is a ful
 
 ### Can I track depreciation?
 
-Yes. Purchase price, installation date, and useful life are captured per asset; straight-line depreciation reports are built in, and you can export raw data for your finance system.
+The current core asset record does not publish a built-in straight-line depreciation report. Use exported maintenance and asset data with the approved values and useful-life rules in your finance system.
 
 ### Does it work for non-physical assets?
 
-Yes — software licenses, certifications, and contracts can be tracked alongside physical assets with their own renewal alerts.
+MaintenEase is designed around maintainable physical equipment. Do not rely on this page as a claim for software-license, certification, contract-renewal, or non-physical-asset workflows without validating them first.
 
 
 ---
@@ -978,7 +979,7 @@ CMMS systems fall into a few recognizable shapes. Cloud-based (SaaS) CMMS softwa
 
 ## Who needs a CMMS?
 
-Any team responsible for physical assets benefits from a CMMS — manufacturing plants, facility managers, property managers, fleet operators, hospitals, schools, hotels, and municipal operations. The threshold is usually not company size but asset complexity. If you maintain more than a handful of assets, preventive work keeps slipping, or compliance audits require service history, a CMMS pays for itself quickly through avoided downtime alone.
+A CMMS can help teams responsible for physical assets in manufacturing, facilities, property, fleets, healthcare, education, hospitality, and municipal operations. The decision depends less on a universal asset count than on coordination cost: recurring work slipping, history split across files, unclear ownership, or records that cannot be retrieved when a decision or audit requires them. Estimate value from the team's own labor, downtime, risk, and reporting needs rather than assuming the software automatically pays for itself.
 
 ## CMMS vs EAM vs FSM
 
@@ -1040,7 +1041,7 @@ An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in
 
 ### Do I need a CMMS if I only have a few assets?
 
-Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS.
+Not necessarily. A small, stable operation may work well with a spreadsheet. Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort.
 
 ### How much does a CMMS cost?
 
@@ -1284,7 +1285,8 @@ A spreadsheet can support a small stable program. A CMMS becomes more practical 
 
 ## Sources
 
-- [OSHA process-equipment inspection and testing guidance](https://www.osha.gov/chemical-executive-order/psm-terminology)
+- [OSHA: Hazard prevention and control, including preventive maintenance](https://www.osha.gov/safety-management/hazard-prevention)
+- [OSHA Technical Manual: Documented process-equipment inspection and testing](https://www.osha.gov/otm/section-4-safety-hazards/chapter-5)
 
 ## CMMS software and comparisons
 
@@ -1431,6 +1433,7 @@ No, but a CMMS helps preserve work orders, asset history, operator findings, PM 
 ## Sources
 
 - [Japan Institute of Plant Maintenance: TPM definition and history](https://www.jipm.or.jp/business/tpm/)
+- [Japan Institute of Plant Maintenance: Equipment management and the eight TPM pillars](https://www.jipm.or.jp/business/facility/)
 - [NIST MEP: TPM downtime and capacity case study](https://www.nist.gov/mep/successstories/2022/total-productive-maintenance-reduces-equipment-downtime-and-lost-capacity)
 
 ## CMMS software and comparisons
@@ -1481,7 +1484,7 @@ A request is what an end user submits ('the printer is broken'). The maintenance
 
 ### How long should a work order stay open?
 
-Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign.
+Set the target from risk, priority, required response time, parts and access constraints, and the service promise. Review backlog age in meaningful bands, but do not apply one universal seven- or 30-day rule to every asset and work type.
 
 ## CMMS software and comparisons
 
@@ -1513,11 +1516,11 @@ Facility maintenance teams handle three broad workload types: preventive tasks (
 
 ## How facility teams stay on top of it
 
-Most facility teams now run on a CMMS. Assets are registered with locations and warranties. Compliance-driven PMs (fire extinguishers, sprinklers, backflow preventers, generator tests) are scheduled and audit-trailed. Tenants or staff submit requests through a simple portal that drops directly into the work order queue. KPIs that matter: percentage of PMs completed on time, average response time on urgent requests, and reactive-to-planned work ratio.
+A CMMS can connect asset records, locations, recurring work, requests, and completion history. The facility program—not the software—must define which fire, life-safety, water, generator, or other tasks apply and who is qualified to perform them. Route occupant requests through review before converting accepted work into a work order. Useful operational measures can include PM completion, urgent-request response time, backlog age by risk, and the reactive-to-planned work ratio.
 
 ## Common pitfalls
 
-Three patterns sink most facility teams: an unmaintained asset list, so PMs are missed and audits are painful; an over-reliance on a single 'tribal knowledge' technician; and no reporting layer, so leadership has no objective view of workload or backlog. All three are solved by adopting purpose-built facility maintenance software.
+Three recurring risks are an unmaintained asset list, dependence on undocumented knowledge, and no consistent view of workload or backlog. Software can make the records and ownership visible, but it does not solve data quality, staffing, or operating discipline by itself. Assign owners, define required fields and review the records on a regular cadence.
 
 ## FAQ
 
@@ -1555,11 +1558,11 @@ Fleet maintenance is the practice of keeping a group of vehicles operational, sa
 
 ## How fleet schedules are set
 
-Unlike most maintenance, fleet schedules are usually meter-based rather than calendar-based. Oil changes by mileage, brake inspections by mileage, DOT inspections by federal or local regulation. Modern fleet maintenance software pulls odometer readings directly from telematics so PMs trigger themselves the moment a vehicle crosses its threshold, eliminating the spreadsheet that used to live in dispatch.
+Fleet schedules commonly combine manufacturer guidance, calendar intervals, mileage or engine hours, duty cycle, environment, condition findings, and applicable inspection rules. A telematics integration can supply meter readings when the chosen software and provider support it, but teams should verify the connector, data latency, missing-reading behavior, and trigger logic rather than assume every fleet CMMS includes automatic feeds.
 
 ## Compliance is non-negotiable
 
-Commercial fleets in most jurisdictions must keep auditable records of inspections, repairs, and driver vehicle inspection reports (DVIRs). Penalties for missing records are steep, and insurance carriers increasingly require digital records to renew coverage. A fleet CMMS that stores DVIRs, inspection results, and service history per vehicle handles this automatically.
+Record duties depend on the vehicle, operation, and jurisdiction. In the United States, FMCSA rules for covered interstate motor carriers include vehicle identification, the nature and due date of inspection or maintenance operations, and dated inspection, repair, and maintenance records. DVIR duties also have important exceptions; for example, federal rules removed the no-defect DVIR requirement for many property-carrying CMV operations. Confirm the current rule and retention period for the fleet instead of treating a software template as compliance.
 
 ## KPIs that matter
 
@@ -1569,11 +1572,16 @@ Cost per mile by vehicle, downtime hours per month, percentage of PMs completed 
 
 ### Do I need separate software for fleet maintenance?
 
-Not always. A general CMMS can handle a small fleet. Above roughly 20–30 vehicles, or once telematics integration and DOT compliance become priorities, dedicated fleet maintenance software pays off.
+Not always. A general CMMS may fit when vehicle work resembles the rest of the asset program. Dedicated fleet software becomes more relevant when verified telematics connectors, fuel, tires, driver workflows, routing, or jurisdiction-specific records are central requirements.
 
 ### What is a DVIR?
 
-Driver Vehicle Inspection Report — a pre- and post-trip safety check the driver completes. In commercial transport it is legally required in most jurisdictions.
+A driver vehicle inspection report records covered vehicle defects or deficiencies under the rules that apply to the operation. Requirements vary by vehicle and jurisdiction; under U.S. federal rules, no-defect reporting is not required for many property-carrying CMV operations, so confirm the current rule rather than using a universal statement.
+
+## Sources
+
+- [FMCSA: Vehicle maintenance record requirements under 49 CFR 396.3](https://csa.fmcsa.dot.gov/SafetyPlanner/MyFiles/SubSections.aspx?ch=22&eta=25054&sec=65&sub=147)
+- [FMCSA: Driver-vehicle inspection report rule and no-defect exception](https://www.fmcsa.dot.gov/regulations/inspection-repair-and-maintenance-driver-vehicle-inspection-report-dvir)
 
 ## Related
 
@@ -1595,7 +1603,7 @@ MRO stands for Maintenance, Repair, and Operations. It refers to the goods a bus
 
 ## Why MRO is hard to control
 
-MRO inventory tends to sprawl. Items are low-value individually but high-value in aggregate. Multiple people order from multiple suppliers, often without checking stock first. Critical spares hide in personal toolboxes, while obsolete parts gather dust. Most plants discover during their first real audit that MRO inventory is 20–40% larger than the system shows.
+MRO inventory can sprawl because items are often low-value individually but material in aggregate. Multiple people may order from different suppliers without checking stock first; critical spares can become hard to find while obsolete parts remain on the shelf. Establish a verified baseline through counts and transaction review instead of assuming a universal inventory-accuracy gap.
 
 ## How a CMMS helps
 
@@ -1653,7 +1661,7 @@ Janitorial (or custodial) work is daily cleaning. Building maintenance is the te
 
 ### How much should I budget for building maintenance?
 
-A common rule of thumb for commercial buildings is 2–4% of replacement value per year for ongoing maintenance, with larger reserves set aside for capital renewals.
+Build the budget from the facility condition assessment, asset ages and criticality, service contracts, labor and parts history, required inspections, backlog risk, and the capital-renewal plan. A universal percentage of replacement value can hide major differences between buildings.
 
 ## Related
 
@@ -1693,7 +1701,7 @@ They overlap, but property maintenance is oriented around rental real estate (un
 
 ### Should small landlords use maintenance software?
 
-Once you cross roughly 10 units, yes. The cost is small and the time saved tracking resident requests by text and email pays for itself within a month.
+It depends on request volume, who performs the work, the need for entry and communication records, and the cost of missed follow-up. A small property may be manageable in a shared log; adopt software when the current process no longer produces reliable ownership and history.
 
 ## Related
 
@@ -1733,7 +1741,7 @@ No. For low-cost, non-critical assets it can be the cheapest strategy. It become
 
 ### How do I know if I have too much reactive maintenance?
 
-Track the planned-vs-reactive ratio in your CMMS. If more than ~30% of your work is unplanned breakdowns, there is room to shift work into preventive schedules.
+Track reactive labor and event counts with a documented rule, then segment by asset class and consequence. Set the target from the operation's own baseline, risk, staffing, and production needs rather than copying a universal 30% threshold.
 
 ## Related
 
@@ -1929,7 +1937,7 @@ The repair itself is often the smallest slice. The big drivers are usually waiti
 
 ## How to reduce MTTR
 
-Tighten notification so the right technician knows immediately. Stock critical spares so repairs don't stall waiting for parts. Attach manuals, photos, and procedures to each asset so diagnosis is fast. Capture failure history so recurring problems have a known fix. A CMMS supports all four — mobile alerts, parts tracking, asset documentation, and history — which is why MTTR usually falls once a team moves off spreadsheets.
+Tighten notification so the right technician knows quickly. Stock justified critical spares, attach approved manuals and procedures to assets, and capture failure history so repeat problems can be recognized. A CMMS can support those controls, but a lower MTTR must be demonstrated from consistent start and stop definitions and observed results rather than assumed from the software change alone.
 
 ## FAQ
 

@@ -29,12 +29,12 @@ const AssetEmptyState: React.FC<AssetEmptyStateProps> = ({ hasFilters }) => {
          : "Ask your manager to add equipment for your team."}
      </p>
      {!hasFilters && canAdd && (
-       <Link to="/assets/new">
-         <Button variant="accent" size="lg">
+       <Button asChild variant="accent" size="lg">
+         <Link to="/assets/new">
            <Plus className="mr-2 h-4 w-4" />
            Add Your First Item
-         </Button>
-       </Link>
+         </Link>
+       </Button>
      )}
    </div>
  );

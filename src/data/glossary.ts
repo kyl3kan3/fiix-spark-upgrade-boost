@@ -59,7 +59,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Who needs a CMMS?",
- body: "Any team responsible for physical assets benefits from a CMMS — manufacturing plants, facility managers, property managers, fleet operators, hospitals, schools, hotels, and municipal operations. The threshold is usually not company size but asset complexity. If you maintain more than a handful of assets, preventive work keeps slipping, or compliance audits require service history, a CMMS pays for itself quickly through avoided downtime alone.",
+ body: "A CMMS can help teams responsible for physical assets in manufacturing, facilities, property, fleets, healthcare, education, hospitality, and municipal operations. The decision depends less on a universal asset count than on coordination cost: recurring work slipping, history split across files, unclear ownership, or records that cannot be retrieved when a decision or audit requires them. Estimate value from the team's own labor, downtime, risk, and reporting needs rather than assuming the software automatically pays for itself.",
  },
  {
  heading: "CMMS vs EAM vs FSM",
@@ -106,7 +106,7 @@ export const glossary: GlossaryTerm[] = [
  { q: "What are CMMS systems used for?", a: "CMMS systems are used to register assets, capture and assign work orders, schedule preventive maintenance by date or meter reading, record parts and labor costs, and report on backlog, PM compliance, MTTR, and MTBF." },
  { q: "Is a CMMS the same as a maintenance management system?", a: "Usually, yes. Maintenance management system and maintenance management software are broad plain-English terms; CMMS is the established acronym for software that manages assets, work orders, preventive schedules, and maintenance reporting." },
  { q: "What is the difference between a CMMS and an ERP?", a: "An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in operational detail. Many teams integrate the two so parts purchases and asset costs flow into the ERP while day-to-day maintenance stays in the CMMS." },
- { q: "Do I need a CMMS if I only have a few assets?", a: "Probably not. Once you cross roughly 20–30 assets, or once preventive work routinely slips past its due date, the math usually flips in favor of a CMMS." },
+ { q: "Do I need a CMMS if I only have a few assets?", a: "Not necessarily. A small, stable operation may work well with a spreadsheet. Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort." },
  { q: "How much does a CMMS cost?", a: "Pricing models vary by vendor, tier, users, modules, and services. MaintenEase publishes account plans with included seats; Business charges $15 per month for each additional seat after the four included seats. Run your actual headcount and capacity through the CMMS cost calculator before committing." },
  { q: "Is there a free CMMS?", a: "Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price." },
  ],
@@ -208,7 +208,7 @@ export const glossary: GlossaryTerm[] = [
  metaDescription: "Build a preventive maintenance program with scheduling methods, industry examples, implementation steps, a labor calculator, checklist, and free templates.",
  image: { src: "/images/guides/preventive-maintenance.png", alt: "Preventive maintenance calendar connected to work and asset history" },
  published: "2026-01-15",
- updated: "2026-08-16",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Preventive maintenance definition",
@@ -319,7 +319,8 @@ export const glossary: GlossaryTerm[] = [
  { label: "facility management guide", href: "/facility-management" },
  ],
  sources: [
- { label: "OSHA process-equipment inspection and testing guidance", url: "https://www.osha.gov/chemical-executive-order/psm-terminology" },
+ { label: "OSHA: Hazard prevention and control, including preventive maintenance", url: "https://www.osha.gov/safety-management/hazard-prevention" },
+ { label: "OSHA Technical Manual: Documented process-equipment inspection and testing", url: "https://www.osha.gov/otm/section-4-safety-hazards/chapter-5" },
  ],
  },
  {
@@ -330,7 +331,7 @@ export const glossary: GlossaryTerm[] = [
  metaDescription: "Learn the 8 pillars of total productive maintenance, calculate OEE and reliability KPIs, follow a 30/60/90-day plan, and use the TPM audit checklist.",
  image: { src: "/images/guides/total-productive-maintenance.png", alt: "The eight total productive maintenance pillars supporting a reliable operating system" },
  published: "2026-08-16",
- updated: "2026-08-16",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "What is total productive maintenance?",
@@ -445,6 +446,7 @@ export const glossary: GlossaryTerm[] = [
  ],
  sources: [
  { label: "Japan Institute of Plant Maintenance: TPM definition and history", url: "https://www.jipm.or.jp/business/tpm/" },
+ { label: "Japan Institute of Plant Maintenance: Equipment management and the eight TPM pillars", url: "https://www.jipm.or.jp/business/facility/" },
  { label: "NIST MEP: TPM downtime and capacity case study", url: "https://www.nist.gov/mep/successstories/2022/total-productive-maintenance-reduces-equipment-downtime-and-lost-capacity" },
  ],
  },
@@ -475,7 +477,7 @@ export const glossary: GlossaryTerm[] = [
  ],
  faqs: [
  { q: "What is the difference between a work order and a work request?", a: "A request is what an end user submits ('the printer is broken'). The maintenance team triages it, and if it is valid, converts it into a work order with priority, assignee, and due date." },
- { q: "How long should a work order stay open?", a: "Routine preventive work typically closes within a week; reactive work depends on priority. A growing backlog of work orders older than 30 days is a common warning sign." },
+ { q: "How long should a work order stay open?", a: "Set the target from risk, priority, required response time, parts and access constraints, and the service promise. Review backlog age in meaningful bands, but do not apply one universal seven- or 30-day rule to every asset and work type." },
  ],
  related: ["cmms", "preventive-maintenance", "facility-maintenance"],
  internalLinks: [
@@ -501,11 +503,11 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How facility teams stay on top of it",
- body: "Most facility teams now run on a CMMS. Assets are registered with locations and warranties. Compliance-driven PMs (fire extinguishers, sprinklers, backflow preventers, generator tests) are scheduled and audit-trailed. Tenants or staff submit requests through a simple portal that drops directly into the work order queue. KPIs that matter: percentage of PMs completed on time, average response time on urgent requests, and reactive-to-planned work ratio.",
+ body: "A CMMS can connect asset records, locations, recurring work, requests, and completion history. The facility program—not the software—must define which fire, life-safety, water, generator, or other tasks apply and who is qualified to perform them. Route occupant requests through review before converting accepted work into a work order. Useful operational measures can include PM completion, urgent-request response time, backlog age by risk, and the reactive-to-planned work ratio.",
  },
  {
  heading: "Common pitfalls",
- body: "Three patterns sink most facility teams: an unmaintained asset list, so PMs are missed and audits are painful; an over-reliance on a single 'tribal knowledge' technician; and no reporting layer, so leadership has no objective view of workload or backlog. All three are solved by adopting purpose-built facility maintenance software.",
+ body: "Three recurring risks are an unmaintained asset list, dependence on undocumented knowledge, and no consistent view of workload or backlog. Software can make the records and ownership visible, but it does not solve data quality, staffing, or operating discipline by itself. Assign owners, define required fields and review the records on a regular cadence.",
  },
  ],
  faqs: [
@@ -525,6 +527,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
  metaTitle: "What is Fleet Maintenance? Scope, Schedules & Compliance",
  metaDescription: "Fleet maintenance keeps vehicles safe, compliant, and on the road. Learn what it covers, how schedules are set, and what teams track.",
+ updated: "2026-08-23",
  sections: [
  {
  heading: "Definition",
@@ -532,11 +535,11 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How fleet schedules are set",
- body: "Unlike most maintenance, fleet schedules are usually meter-based rather than calendar-based. Oil changes by mileage, brake inspections by mileage, DOT inspections by federal or local regulation. Modern fleet maintenance software pulls odometer readings directly from telematics so PMs trigger themselves the moment a vehicle crosses its threshold, eliminating the spreadsheet that used to live in dispatch.",
+ body: "Fleet schedules commonly combine manufacturer guidance, calendar intervals, mileage or engine hours, duty cycle, environment, condition findings, and applicable inspection rules. A telematics integration can supply meter readings when the chosen software and provider support it, but teams should verify the connector, data latency, missing-reading behavior, and trigger logic rather than assume every fleet CMMS includes automatic feeds.",
  },
  {
  heading: "Compliance is non-negotiable",
- body: "Commercial fleets in most jurisdictions must keep auditable records of inspections, repairs, and driver vehicle inspection reports (DVIRs). Penalties for missing records are steep, and insurance carriers increasingly require digital records to renew coverage. A fleet CMMS that stores DVIRs, inspection results, and service history per vehicle handles this automatically.",
+ body: "Record duties depend on the vehicle, operation, and jurisdiction. In the United States, FMCSA rules for covered interstate motor carriers include vehicle identification, the nature and due date of inspection or maintenance operations, and dated inspection, repair, and maintenance records. DVIR duties also have important exceptions; for example, federal rules removed the no-defect DVIR requirement for many property-carrying CMV operations. Confirm the current rule and retention period for the fleet instead of treating a software template as compliance.",
  },
  {
  heading: "KPIs that matter",
@@ -544,10 +547,14 @@ export const glossary: GlossaryTerm[] = [
  },
  ],
  faqs: [
- { q: "Do I need separate software for fleet maintenance?", a: "Not always. A general CMMS can handle a small fleet. Above roughly 20–30 vehicles, or once telematics integration and DOT compliance become priorities, dedicated fleet maintenance software pays off." },
- { q: "What is a DVIR?", a: "Driver Vehicle Inspection Report — a pre- and post-trip safety check the driver completes. In commercial transport it is legally required in most jurisdictions." },
+ { q: "Do I need separate software for fleet maintenance?", a: "Not always. A general CMMS may fit when vehicle work resembles the rest of the asset program. Dedicated fleet software becomes more relevant when verified telematics connectors, fuel, tires, driver workflows, routing, or jurisdiction-specific records are central requirements." },
+ { q: "What is a DVIR?", a: "A driver vehicle inspection report records covered vehicle defects or deficiencies under the rules that apply to the operation. Requirements vary by vehicle and jurisdiction; under U.S. federal rules, no-defect reporting is not required for many property-carrying CMV operations, so confirm the current rule rather than using a universal statement." },
  ],
  related: ["preventive-maintenance", "cmms", "work-order"],
+ sources: [
+ { label: "FMCSA: Vehicle maintenance record requirements under 49 CFR 396.3", url: "https://csa.fmcsa.dot.gov/SafetyPlanner/MyFiles/SubSections.aspx?ch=22&eta=25054&sec=65&sub=147" },
+ { label: "FMCSA: Driver-vehicle inspection report rule and no-defect exception", url: "https://www.fmcsa.dot.gov/regulations/inspection-repair-and-maintenance-driver-vehicle-inspection-report-dvir" },
+ ],
  },
  {
  slug: "mro",
@@ -562,7 +569,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Why MRO is hard to control",
- body: "MRO inventory tends to sprawl. Items are low-value individually but high-value in aggregate. Multiple people order from multiple suppliers, often without checking stock first. Critical spares hide in personal toolboxes, while obsolete parts gather dust. Most plants discover during their first real audit that MRO inventory is 20–40% larger than the system shows.",
+ body: "MRO inventory can sprawl because items are often low-value individually but material in aggregate. Multiple people may order from different suppliers without checking stock first; critical spares can become hard to find while obsolete parts remain on the shelf. Establish a verified baseline through counts and transaction review instead of assuming a universal inventory-accuracy gap.",
  },
  {
  heading: "How a CMMS helps",
@@ -605,7 +612,7 @@ export const glossary: GlossaryTerm[] = [
  ],
  faqs: [
  { q: "What is the difference between building maintenance and janitorial?", a: "Janitorial (or custodial) work is daily cleaning. Building maintenance is the technical work to keep systems and structure functional. They are usually separate teams or contracts." },
- { q: "How much should I budget for building maintenance?", a: "A common rule of thumb for commercial buildings is 2–4% of replacement value per year for ongoing maintenance, with larger reserves set aside for capital renewals." },
+ { q: "How much should I budget for building maintenance?", a: "Build the budget from the facility condition assessment, asset ages and criticality, service contracts, labor and parts history, required inspections, backlog risk, and the capital-renewal plan. A universal percentage of replacement value can hide major differences between buildings." },
  ],
  related: ["facility-maintenance", "property-maintenance", "work-order"],
  },
@@ -635,7 +642,7 @@ export const glossary: GlossaryTerm[] = [
  ],
  faqs: [
  { q: "Is property maintenance the same as facility maintenance?", a: "They overlap, but property maintenance is oriented around rental real estate (units, residents, turnover), while facility maintenance is oriented around owner-occupied buildings (offices, plants, hospitals)." },
- { q: "Should small landlords use maintenance software?", a: "Once you cross roughly 10 units, yes. The cost is small and the time saved tracking resident requests by text and email pays for itself within a month." },
+ { q: "Should small landlords use maintenance software?", a: "It depends on request volume, who performs the work, the need for entry and communication records, and the cost of missed follow-up. A small property may be manageable in a shared log; adopt software when the current process no longer produces reliable ownership and history." },
  ],
  related: ["facility-maintenance", "building-maintenance", "work-order"],
  },
@@ -665,7 +672,7 @@ export const glossary: GlossaryTerm[] = [
  ],
  faqs: [
  { q: "Is reactive maintenance always bad?", a: "No. For low-cost, non-critical assets it can be the cheapest strategy. It becomes a problem when critical equipment is run to failure by accident rather than by choice." },
- { q: "How do I know if I have too much reactive maintenance?", a: "Track the planned-vs-reactive ratio in your CMMS. If more than ~30% of your work is unplanned breakdowns, there is room to shift work into preventive schedules." },
+ { q: "How do I know if I have too much reactive maintenance?", a: "Track reactive labor and event counts with a documented rule, then segment by asset class and consequence. Set the target from the operation's own baseline, risk, staffing, and production needs rather than copying a universal 30% threshold." },
  ],
  related: ["preventive-maintenance", "predictive-maintenance", "cmms"],
  },
@@ -814,7 +821,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "How to reduce MTTR",
- body: "Tighten notification so the right technician knows immediately. Stock critical spares so repairs don't stall waiting for parts. Attach manuals, photos, and procedures to each asset so diagnosis is fast. Capture failure history so recurring problems have a known fix. A CMMS supports all four — mobile alerts, parts tracking, asset documentation, and history — which is why MTTR usually falls once a team moves off spreadsheets.",
+ body: "Tighten notification so the right technician knows quickly. Stock justified critical spares, attach approved manuals and procedures to assets, and capture failure history so repeat problems can be recognized. A CMMS can support those controls, but a lower MTTR must be demonstrated from consistent start and stop definitions and observed results rather than assumed from the software change alone.",
  },
  ],
  faqs: [

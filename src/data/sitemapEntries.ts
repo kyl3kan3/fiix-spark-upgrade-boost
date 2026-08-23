@@ -35,7 +35,7 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   },
   {
     path: "/facility-management",
-    lastmod: "2026-08-16",
+    lastmod: "2026-08-23",
     changefreq: "monthly",
     priority: "0.9",
   },
@@ -54,7 +54,7 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/sms-opt-in", changefreq: "yearly", priority: "0.2" },
   ...solutions.map((solution) => ({
     path: `/solutions/${solution.slug}`,
-    lastmod: solution.slug === "preventive-maintenance-software" ? "2026-08-14" : undefined,
+    lastmod: solution.updated,
     changefreq: "monthly" as const,
     priority: "0.8",
   })),

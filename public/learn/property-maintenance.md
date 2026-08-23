@@ -28,7 +28,7 @@ They overlap, but property maintenance is oriented around rental real estate (un
 
 ### Should small landlords use maintenance software?
 
-Once you cross roughly 10 units, yes. The cost is small and the time saved tracking resident requests by text and email pays for itself within a month.
+It depends on request volume, who performs the work, the need for entry and communication records, and the cost of missed follow-up. A small property may be manageable in a shared log; adopt software when the current process no longer produces reliable ownership and history.
 
 ## Related
 

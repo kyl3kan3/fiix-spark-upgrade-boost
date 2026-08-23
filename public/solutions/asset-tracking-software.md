@@ -1,25 +1,25 @@
-# Asset Tracking Software that always knows where every asset lives
+# Asset Tracking Software for equipment records and locations
 
-> QR codes, locations, custody, and full service history — for every asset you own.
+> Searchable equipment records, locations, printable labels, and maintenance history.
 
 Canonical URL: https://maintenease.com/solutions/asset-tracking-software
 
-MaintenEase gives every asset a unique QR code, a permanent home in your location hierarchy, and a full service history that travels with it. Scan a QR code to see the asset's manual, warranty, open work orders, and PM schedule. Move an asset between rooms or buildings and the audit trail updates itself. No more spreadsheets, no more lost equipment.
+MaintenEase gives each asset a searchable record with a name, serial number, model, location, status, purchase date, attachments, work orders, and related maintenance history. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.
 
 ## Benefits
 
-- **Find any asset in seconds** — Scan the QR code or search by name, tag, or serial. Every asset has a clear home in your location tree.
-- **Stop losing equipment** — Custody changes, transfers, and disposals are all timestamped — you always know who had it last and where it went.
-- **Service history that follows the asset** — Every work order, PM, inspection, and part swap stays attached to the asset for its entire life — including across owners and locations.
+- **Find equipment quickly** — Search by name or serial number and browse the location hierarchy to reach the relevant asset record.
+- **Keep location current** — Assign each asset to a location and update that record when equipment moves, without implying a separate custody-ledger feature.
+- **Service history tied to the asset** — Related work orders, recurring work, inspections, and recorded parts remain available from the asset history as the location record changes.
 
 ## Features
 
-- **QR code generation** — Print branded QR labels for every asset. Scanning opens the asset directly in MaintenEase — no app install required for read-only access.
+- **Printable asset labels** — Generate a setup-sheet PDF with a Code 128 barcode based on the asset serial number or ID for use in the team's labeling workflow.
 - **Nested locations** — Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level.
-- **Custody and transfers** — Assign assets to people, teams, or locations. Every transfer is logged with who, when, and why.
-- **Warranty, manuals, and photos** — Attach manuals, photos, purchase records, and warranty dates. Get alerts before warranties expire.
-- **Bulk import and CSV export** — Import existing asset registers from a spreadsheet in minutes. Export filtered views for audits or insurance.
-- **Asset lifecycle reporting** — See total cost of ownership, downtime hours, and remaining useful life per asset and per asset class.
+- **Asset hierarchy** — Link parent and child assets and place equipment in nested locations so related records stay easier to navigate.
+- **Documents and photos** — Attach manuals, photos, purchase records, or warranty documents without claiming an unverified warranty-alert engine.
+- **Bulk import and CSV export** — Import a supported asset-register spreadsheet with mapping help. Export filtered records for authorized internal or external review.
+- **Maintenance and risk history** — Review related work, downtime, cost inputs, and — on eligible plans — the explainable risk score and remaining-useful-life estimate as planning aids rather than guarantees.
 
 ## Who it's for
 
@@ -30,14 +30,14 @@ MaintenEase gives every asset a unique QR code, a permanent home in your locatio
 
 ## FAQ
 
-### Do I need special hardware to scan QR codes?
+### Do I need special hardware for asset labels?
 
-No. Any modern smartphone camera scans MaintenEase QR codes — no scanner, no app install required for read-only access.
+MaintenEase can generate printable Code 128 labels in a setup-sheet PDF. Confirm the scanner or phone workflow you plan to use; this page does not claim a public no-login asset page.
 
 ### Can I import my existing asset list?
 
 Yes. CSV import is supported, and our team will help map columns and locations on the first import.
 
-### Does it support barcodes too?
+### Which barcode format is generated?
 
-Yes — both QR codes and 1D barcodes are supported for scanning and lookup.
+The current setup-sheet generator creates Code 128 barcode images from the asset serial number or ID. It does not claim a second QR-label workflow here.

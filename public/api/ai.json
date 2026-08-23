@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-21T09:40:11.011Z",
+  "generated_at": "2026-08-23T10:23:36.073Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -440,7 +440,7 @@
     {
       "slug": "preventive-maintenance-software",
       "name": "Preventive Maintenance Software",
-      "tagline": "Schedule by date, runtime, or meter — and watch reactive work shrink.",
+      "tagline": "Turn recurring maintenance dates into visible, assigned work.",
       "html_url": "https://maintenease.com/solutions/preventive-maintenance-software",
       "markdown_url": "https://maintenease.com/solutions/preventive-maintenance-software.md"
     },
@@ -454,21 +454,21 @@
     {
       "slug": "fleet-maintenance-software",
       "name": "Fleet Maintenance Software",
-      "tagline": "Meter-based PMs, DVIRs, and compliance reports — without the spreadsheet.",
+      "tagline": "Vehicle records, recurring service, inspections, parts, and repair history in one queue.",
       "html_url": "https://maintenease.com/solutions/fleet-maintenance-software",
       "markdown_url": "https://maintenease.com/solutions/fleet-maintenance-software.md"
     },
     {
       "slug": "maintenance-request-portal",
       "name": "Maintenance Request Portal",
-      "tagline": "Standard requests and an urgent lane — submissions land straight in your inbox.",
+      "tagline": "Standard requests and an urgent lane — submissions enter a structured review inbox.",
       "html_url": "https://maintenease.com/solutions/maintenance-request-portal",
       "markdown_url": "https://maintenease.com/solutions/maintenance-request-portal.md"
     },
     {
       "slug": "asset-tracking-software",
       "name": "Asset Tracking Software",
-      "tagline": "QR codes, locations, custody, and full service history — for every asset you own.",
+      "tagline": "Searchable equipment records, locations, printable labels, and maintenance history.",
       "html_url": "https://maintenease.com/solutions/asset-tracking-software",
       "markdown_url": "https://maintenease.com/solutions/asset-tracking-software.md"
     },

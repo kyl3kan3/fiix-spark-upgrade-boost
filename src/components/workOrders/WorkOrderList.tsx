@@ -26,12 +26,12 @@ const WorkOrderList: React.FC = () => {
  <CardHeader>
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <CardTitle>Work Orders</CardTitle>
+ <Button asChild>
  <Link to="/work-orders/new">
- <Button>
  <Plus className="mr-2 h-4 w-4" />
  Create Work Order
- </Button>
  </Link>
+ </Button>
  </div>
  
  <WorkOrderFilters

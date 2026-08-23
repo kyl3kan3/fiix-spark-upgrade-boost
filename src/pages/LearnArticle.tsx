@@ -28,33 +28,33 @@ const SAFETY_SCOPE_SLUGS = new Set([
 // contextual, avoiding repetition of the same phrase across the site.
 const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline: string }[]> = {
  "preventive-maintenance": [
- { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie every PM to an asset with warranty, parts and history." },
- { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Time and meter-based PM schedules." },
+ { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie recurring work to the asset, parts and history." },
+ { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Calendar-based recurring maintenance and overdue work." },
  ],
  "work-order": [
  { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule and close work orders fast." },
- { slug: "asset-tracking-software", anchor: "Track the asset behind every work order", tagline: "Attach every WO to a QR-tagged asset and its service history." },
+ { slug: "asset-tracking-software", anchor: "Track the asset behind every work order", tagline: "Attach work to a located, searchable asset record." },
  ],
  "facility-maintenance": [
  { slug: "facility-maintenance-software", anchor: "Facility maintenance software", tagline: "Run buildings, rooms and equipment." },
- { slug: "asset-tracking-software", anchor: "Track facility assets with QR codes", tagline: "Every room, unit and piece of equipment, labelled and located." },
- { slug: "asset-management-software", anchor: "Manage your facility asset register", tagline: "Lifecycle, warranty and contract tracking across your portfolio." },
+ { slug: "asset-tracking-software", anchor: "Track facility assets by location", tagline: "Keep equipment labelled, searchable and located." },
+ { slug: "asset-management-software", anchor: "Manage your facility asset register", tagline: "Equipment records, attachments and maintenance history." },
  ],
  "fleet-maintenance": [
  { slug: "fleet-maintenance-software", anchor: "Fleet maintenance software", tagline: "Vehicle PMs and full service history." },
- { slug: "asset-management-software", anchor: "Manage every vehicle as a tracked asset", tagline: "Per-vehicle lifecycle, TCO and warranty reporting." },
+ { slug: "asset-management-software", anchor: "Manage every vehicle as a tracked asset", tagline: "Per-vehicle work, cost and maintenance history." },
  ],
  mro: [
- { slug: "asset-management-software", anchor: "Asset management software for MRO operations", tagline: "Asset register, parts and warranty in one place." },
- { slug: "asset-tracking-software", anchor: "Track spares, tools and shop-floor equipment", tagline: "QR-labelled tools and parts with custody history." },
+ { slug: "asset-management-software", anchor: "Asset management software for MRO operations", tagline: "Asset records, parts and maintenance history in one place." },
+ { slug: "asset-tracking-software", anchor: "Track tools and shop-floor equipment", tagline: "Searchable records, locations and printable Code 128 labels." },
  ],
  "building-maintenance": [
  { slug: "facility-maintenance-software", anchor: "Facility maintenance software", tagline: "Buildings, rooms and equipment in one place." },
- { slug: "asset-tracking-software", anchor: "QR-tagged asset tracking across every building", tagline: "Find any asset by scan, search, or location tree." },
+ { slug: "asset-tracking-software", anchor: "Asset tracking across every building", tagline: "Find equipment by search or location tree." },
  ],
  "property-maintenance": [
  { slug: "maintenance-request-portal", anchor: "Maintenance request portal", tagline: "Tenants and staff submit requests." },
- { slug: "asset-management-software", anchor: "Track every appliance, HVAC unit and fixture", tagline: "Per-unit asset register with warranty and service history." },
+ { slug: "asset-management-software", anchor: "Track every appliance, HVAC unit and fixture", tagline: "Per-unit asset record and service history." },
  ],
  "agentic-cmms": [
  { slug: "work-order-software", anchor: "Work order software for agent-assisted workflows", tagline: "Create, assign, and track the work an authorized agent helps prepare." },

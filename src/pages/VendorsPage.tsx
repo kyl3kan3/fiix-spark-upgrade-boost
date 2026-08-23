@@ -121,18 +121,18 @@ const VendorsPage = () => {
  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
  <VendorPageHeader />
  <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto lg:justify-end">
- <Link to="/vendors/import" className="w-full sm:w-auto">
- <Button variant="outline" className="w-full sm:w-auto border-border text-foreground hover:bg-accent">
+ <Button asChild variant="outline" className="w-full border-border text-foreground hover:bg-accent sm:w-auto">
+ <Link to="/vendors/import">
  <Upload className="h-4 w-4 mr-2" />
  <span className="text-sm sm:text-base">Import</span>
- </Button>
  </Link>
- <Link to="/vendors/new" className="w-full sm:w-auto">
- <Button className="bg-primary hover:bg-primary-variant text-primary-foreground w-full sm:w-auto shadow-sm">
+ </Button>
+ <Button asChild className="w-full bg-primary text-primary-foreground shadow-sm hover:bg-primary-variant sm:w-auto">
+ <Link to="/vendors/new">
  <Plus className="h-4 w-4 mr-2" />
  <span className="text-sm sm:text-base">Add Vendor</span>
- </Button>
  </Link>
+ </Button>
  </div>
  </div>
 

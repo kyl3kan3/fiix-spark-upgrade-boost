@@ -22,13 +22,13 @@ const FeaturesPage = () => {
         <title>CMMS Features — Work Orders, Assets & PM | MaintenEase</title>
         <meta
           name="description"
-          content="Mobile-first CMMS features: work orders, preventive maintenance, asset tracking, inspections, request portal, offline sync, and parts inventory."
+          content="Mobile-friendly CMMS features: work orders, preventive maintenance, asset tracking, inspections, a public request portal, and parts inventory."
         />
         <link rel="canonical" href="https://maintenease.com/features" />
         <meta property="og:title" content="Features — MaintenEase" />
         <meta
           property="og:description"
-          content="Mobile-first CMMS features: work orders, PMs, assets, inspections, request portal, offline sync, parts inventory."
+          content="Mobile-friendly CMMS features: work orders, PMs, assets, inspections, a public request portal, and parts inventory."
         />
         <meta property="og:url" content="https://maintenease.com/features" />
         <meta property="og:type" content="website" />
@@ -60,7 +60,7 @@ const FeaturesPage = () => {
           </h1>
           <p className="text-lg text-foreground/80 max-w-2xl mx-auto">
             Work orders, preventive maintenance, asset tracking, inspections, a
-            public request portal, offline sync, and parts inventory — built
+            public request portal, and parts inventory — built
             for technicians on the floor, not desk workflows.
           </p>
         </header>

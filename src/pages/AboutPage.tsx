@@ -23,7 +23,7 @@ export default function AboutPage() {
         <meta property="og:url" content={CANONICAL} />
       </Helmet>
       <MarketingJsonLd />
-      <main className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
+      <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
         <p className="text-sm font-semibold uppercase tracking-wide text-primary">Company information</p>
         <h1 className="mt-3 font-headline text-4xl font-bold text-foreground text-balance md:text-5xl">About MaintenEase</h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty">
@@ -51,7 +51,7 @@ export default function AboutPage() {
             <Link to="/terms" className="font-semibold text-primary underline underline-offset-4">Terms of service</Link>
           </div>
         </section>
-      </main>
+      </div>
     </MarketingLayout>
   );
 }

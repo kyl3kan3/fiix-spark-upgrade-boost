@@ -28,12 +28,12 @@ const VendorEmptyState: React.FC<VendorEmptyStateProps> = ({ hasFilters }) => {
  </p>
  {!hasFilters && canAdd && (
  <div className="mt-6">
+ <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground">
  <Link to="/vendors/new">
- <Button className="bg-primary hover:bg-primary-variant text-primary-foreground">
  <Plus className="mr-2 h-4 w-4" />
  New Vendor
- </Button>
  </Link>
+ </Button>
  </div>
  )}
  </div>

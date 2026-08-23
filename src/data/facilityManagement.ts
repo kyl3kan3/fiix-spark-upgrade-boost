@@ -6,7 +6,7 @@ export const FACILITY_MANAGEMENT_PAGE = {
   description:
     "Facility management connects people, buildings, services, and operating processes so the built environment stays safe, functional, efficient, and ready for the organization it supports.",
   published: "2026-08-16",
-  updated: "2026-08-17",
+  updated: "2026-08-23",
 } as const;
 
 export const FACILITY_MANAGEMENT_PATHS = [
@@ -113,5 +113,9 @@ export const FACILITY_MANAGEMENT_SOURCES = [
   {
     label: "ISO 41011:2024 facility management vocabulary",
     url: "https://www.iso.org/standard/82405.html",
+  },
+  {
+    label: "OSHA: Hazard prevention and control, including preventive maintenance",
+    url: "https://www.osha.gov/safety-management/hazard-prevention",
   },
 ] as const;

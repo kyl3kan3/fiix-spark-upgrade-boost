@@ -4,20 +4,20 @@
 
 Canonical URL: https://maintenease.com/solutions/facility-maintenance-software
 
-MaintenEase gives facility teams a single system across every building, floor, and room they look after. Register assets with locations, warranties, and manuals. Schedule the predictable work. Collect occupant requests through a QR code on the wall. Report up to leadership with numbers that hold up to scrutiny.
+MaintenEase gives facility teams one system for locations, assets, work orders, recurring maintenance, checklists, vendors, and public requests. Register equipment against a building or room, attach relevant documents, schedule predictable work, and review activity by location without claiming a prebuilt compliance or building-automation package.
 
 ## Benefits
 
-- **Multi-site visibility** — See backlog, response time, and PM compliance per building and per portfolio in one dashboard.
-- **Happier occupants** — Tenants and staff get automatic status updates from the moment they submit a request to the moment work is complete.
-- **More visible operating cost** — Standardized vendor records, warranty tracking, and parts visibility make it easier to find duplicate spending, missed warranty work, and costly repeat repairs.
+- **Location-based visibility** — Organize sites, buildings, floors, and rooms so assets and work can be reviewed in their operating context.
+- **Structured occupant intake** — Tenants or staff can submit standard or urgent requests through a public portal, while internal records remain behind the signed-in application.
+- **More visible operating cost** — Work-order labor, parts, vendor records, and asset history provide a more consistent basis for reviewing repeat repairs and spend.
 
 ## Features
 
 - **Nested locations** — Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly.
-- **Vendor and contractor management** — COI tracking, scoped POs, vendor performance scoring, and one work-order queue across in-house and outsourced work.
-- **Occupant request portal** — Branded QR codes per location capture requests with photos, location, and access permission — no app install required.
-- **Compliance and audit** — Life-safety, ADA, environmental, and inspection programs pre-built and exportable for any audit.
+- **Vendor records** — Maintain vendor contacts and link service partners to the relevant assets or work instead of claiming purchasing or COI automation that has not been verified.
+- **Occupant request portal** — A public link captures standard or urgent requests with description, location, contact details, and optional photos — no account required.
+- **Inspections and evidence** — Build recurring checklists for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria.
 
 ## Who it's for
 
@@ -30,8 +30,8 @@ MaintenEase gives facility teams a single system across every building, floor, a
 
 ### Can we restrict what each building manager sees?
 
-Yes. Role and location-based permissions limit each user to the sites and data they are responsible for.
+MaintenEase applies company and role permissions. If site-by-site data partitioning is mandatory, validate that exact workflow before purchase; this page does not claim unverified location-level access controls.
 
 ### Do you integrate with our building management system?
 
-MaintenEase exposes a documented API and supports common BMS triggers via webhooks — talk to us about the specific system in play.
+Business includes API access, but MaintenEase does not publish a prebuilt BMS connector on this page. Validate the data source, authentication, trigger, field mapping, failure handling, and implementation scope for the specific system.

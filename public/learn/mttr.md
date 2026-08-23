@@ -18,7 +18,7 @@ The repair itself is often the smallest slice. The big drivers are usually waiti
 
 ## How to reduce MTTR
 
-Tighten notification so the right technician knows immediately. Stock critical spares so repairs don't stall waiting for parts. Attach manuals, photos, and procedures to each asset so diagnosis is fast. Capture failure history so recurring problems have a known fix. A CMMS supports all four — mobile alerts, parts tracking, asset documentation, and history — which is why MTTR usually falls once a team moves off spreadsheets.
+Tighten notification so the right technician knows quickly. Stock justified critical spares, attach approved manuals and procedures to assets, and capture failure history so repeat problems can be recognized. A CMMS can support those controls, but a lower MTTR must be demonstrated from consistent start and stop definitions and observed results rather than assumed from the software change alone.
 
 ## FAQ
 

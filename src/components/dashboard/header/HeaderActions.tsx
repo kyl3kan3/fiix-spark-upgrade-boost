@@ -19,16 +19,17 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({
 }) => {
  return (
  <div className="flex items-center gap-2">
- <Link to="/chat">
  <Button
+ asChild
  variant="ghost"
  size="icon"
  aria-label="Chat"
  className="relative"
  >
+ <Link to="/chat">
  <MessageSquare className="h-5 w-5" />
- </Button>
  </Link>
+ </Button>
  
  <NotificationsButton 
  unreadCount={unreadNotificationsCount}
@@ -36,16 +37,17 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({
  notificationSoundRef={notificationSoundRef}
  />
  
- <Link to="/help">
  <Button
+ asChild
  variant="ghost"
  size="icon"
  aria-label="Help"
  className="hidden sm:flex"
  >
+ <Link to="/help">
  <HelpCircle className="h-5 w-5" />
- </Button>
  </Link>
+ </Button>
  </div>
  );
 };

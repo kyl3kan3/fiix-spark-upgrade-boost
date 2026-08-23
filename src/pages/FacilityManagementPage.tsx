@@ -80,7 +80,7 @@ const FacilityManagementPage = () => {
       </Helmet>
       <MarketingJsonLd />
 
-      <main>
+      <div>
         <section className="container mx-auto max-w-6xl px-4 py-12 md:py-20">
           <nav className="text-sm text-muted-foreground" aria-label="Breadcrumb">
             <Link to="/learn" className="transition-colors duration-150 hover:text-primary">Learn</Link>
@@ -97,6 +97,13 @@ const FacilityManagementPage = () => {
               <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">
                 {FACILITY_MANAGEMENT_PAGE.description}
               </p>
+              <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                <span>By the <Link to="/editorial-policy" className="font-medium text-primary underline underline-offset-4">MaintenEase editorial team</Link></span>
+                <span aria-hidden="true">·</span>
+                <span>Updated <time dateTime={FACILITY_MANAGEMENT_PAGE.updated}>August 23, 2026</time></span>
+                <span aria-hidden="true">·</span>
+                <Link to="/editorial-policy" className="text-primary underline underline-offset-4">Methodology and corrections</Link>
+              </div>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button asChild size="lg" className="min-h-11 transition-[transform,background-color,box-shadow] duration-150 active:scale-[0.96]">
                   <Link to="/auth?signup=true">Run facilities in MaintenEase</Link>
@@ -213,6 +220,9 @@ const FacilityManagementPage = () => {
         </section>
 
         <section className="container mx-auto max-w-4xl px-4 py-16">
+          <aside className="mb-10 rounded-2xl border border-border bg-muted/40 p-5 text-sm leading-relaxed text-foreground">
+            <strong>Scope:</strong> This guide is general educational material, not a site-specific compliance plan. Confirm applicable law, codes, permits, manufacturer instructions, contract requirements, qualified-person rules, and the employer&apos;s approved safety procedures before scheduling or performing work.
+          </aside>
           <h2 className="font-headline text-3xl font-bold text-foreground text-balance">Frequently asked questions</h2>
           <div className="mt-7 space-y-4">
             {FACILITY_MANAGEMENT_FAQS.map((faq) => (
@@ -248,7 +258,7 @@ const FacilityManagementPage = () => {
             </Button>
           </div>
         </section>
-      </main>
+      </div>
     </MarketingLayout>
   );
 };

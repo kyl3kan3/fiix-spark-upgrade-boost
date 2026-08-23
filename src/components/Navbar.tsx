@@ -77,16 +77,12 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/auth">
-                  <Button variant="ghost" className="text-primary font-semibold hover:bg-primary/5">
-                    Log In
-                  </Button>
-                </Link>
-                <Link to="/auth?signup=true">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide text-xs font-bold px-6">
-                    Start free trial
-                  </Button>
-                </Link>
+                <Button asChild variant="ghost" className="text-primary font-semibold hover:bg-primary/5">
+                  <Link to="/auth">Log In</Link>
+                </Button>
+                <Button asChild className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide text-xs font-bold px-6">
+                  <Link to="/auth?signup=true">Start free trial</Link>
+                </Button>
               </>
             )}
           </div>
@@ -133,16 +129,12 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link to="/auth" className="w-full">
-                    <Button variant="outline" className="border-primary text-primary w-full">
-                      Log In
-                    </Button>
-                  </Link>
-                  <Link to="/auth?signup=true" className="w-full">
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary-variant w-full uppercase tracking-wide text-xs font-bold">
-                      Start free trial
-                    </Button>
-                  </Link>
+                  <Button asChild variant="outline" className="w-full border-primary text-primary">
+                    <Link to="/auth">Log In</Link>
+                  </Button>
+                  <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide text-xs font-bold">
+                    <Link to="/auth?signup=true">Start free trial</Link>
+                  </Button>
                 </>
               )}
             </div>
