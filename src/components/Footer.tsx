@@ -66,7 +66,7 @@ p === "/editorial-policy" ||
  {
  title: "Company",
  links: [
- { label: "Why MaintenEase", to: "/landing" },
+ { label: "Why MaintenEase", to: "/" },
  { label: "About", to: "/about" },
  { label: "Blog", to: "/blog" },
  { label: "Editorial Policy", to: "/editorial-policy" },

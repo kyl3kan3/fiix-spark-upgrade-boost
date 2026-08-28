@@ -28,6 +28,10 @@ Most work order programs start as a spreadsheet and become difficult to coordina
 
 ## FAQ
 
+### Does MaintenEase automatically route every work order?
+
+No automatic assignment rule is claimed here. A supervisor sets the assignee, priority, status, and due date, which keeps ownership explicit and reviewable.
+
 ### Can requesters submit work without a MaintenEase login?
 
 Yes. A public request link lets staff or tenants submit an issue without creating an account. The maintenance team reviews the request in a separate inbox before converting accepted work into a work order.

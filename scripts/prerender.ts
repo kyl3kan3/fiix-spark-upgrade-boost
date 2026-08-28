@@ -1248,7 +1248,7 @@ function renderAppShell(): string {
   return html.replace("</head>", `  ${head}\n  </head>`);
 }
 
-const appShellPath = join(DIST, "app-shell");
+const appShellPath = join(DIST, "app-shell.html");
 writeFileSync(appShellPath, renderAppShell());
 
 let written = 0;

@@ -69,6 +69,10 @@ _Questions to answer before selecting a maintenance management system_
 
 In week one, clean the asset list and agree on locations, priorities, statuses, and required close-out fields. In week two, import one site or asset class and build the highest-risk preventive schedules. In week three, train technicians on a small number of mobile workflows and run real work in the system. In week four, reconcile the backlog, correct data issues, publish a basic KPI baseline, and decide what to expand next. A focused rollout creates usable history faster than attempting to configure every possible field before launch.
 
+## What MaintenEase supports today
+
+MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.
+
 ## FAQ
 
 ### What is a CMMS in simple terms?
@@ -102,6 +106,15 @@ Pricing models vary by vendor, tier, users, modules, and services. MaintenEase p
 ### Is there a free CMMS?
 
 Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price.
+
+## Downloads
+
+- [CMMS selection worksheet (CSV)](https://maintenease.com/templates/downloads/cmms-selection-worksheet.csv) — Score the same real workflow, evidence, implementation scope, limits, and price for every shortlisted system.
+
+## Sources
+
+- [U.S. Department of Energy: Operations and Maintenance Best Practices Guide](https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency)
+- [U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)](https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf)
 
 ## CMMS software and comparisons
 

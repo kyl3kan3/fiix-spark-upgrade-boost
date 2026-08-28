@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-08-23T10:23:36.073Z",
+  "generated_at": "2026-08-28T22:03:10.199Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -528,7 +528,14 @@
       "term": "Maintenance Management Systems (CMMS): Complete Buyer's Guide",
       "short": "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
       "html_url": "https://maintenease.com/learn/cmms",
-      "markdown_url": "https://maintenease.com/learn/cmms.md"
+      "markdown_url": "https://maintenease.com/learn/cmms.md",
+      "downloads": [
+        {
+          "name": "CMMS selection worksheet",
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/cmms-selection-worksheet.csv"
+        }
+      ]
     },
     {
       "slug": "agentic-cmms",
@@ -570,7 +577,14 @@
       "term": "Fleet Maintenance",
       "short": "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
       "html_url": "https://maintenease.com/learn/fleet-maintenance",
-      "markdown_url": "https://maintenease.com/learn/fleet-maintenance.md"
+      "markdown_url": "https://maintenease.com/learn/fleet-maintenance.md",
+      "downloads": [
+        {
+          "name": "Fleet service-history template",
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/fleet-maintenance-service-history-template.csv"
+        }
+      ]
     },
     {
       "slug": "mro",
@@ -619,7 +633,14 @@
       "term": "Condition-Based Maintenance",
       "short": "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
       "html_url": "https://maintenease.com/learn/condition-based-maintenance",
-      "markdown_url": "https://maintenease.com/learn/condition-based-maintenance.md"
+      "markdown_url": "https://maintenease.com/learn/condition-based-maintenance.md",
+      "downloads": [
+        {
+          "name": "Condition-based inspection worksheet",
+          "format": "CSV",
+          "download_url": "https://maintenease.com/templates/downloads/condition-based-maintenance-inspection-template.csv"
+        }
+      ]
     },
     {
       "slug": "mtbf",
@@ -800,6 +821,6 @@
     "index_html_url": "https://maintenease.com/blog",
     "index_json_url": "https://maintenease.com/api/blog.json",
     "markdown_url_pattern": "https://maintenease.com/blog/{slug}.md",
-    "note": "Posts are dynamic — fetch /api/blog.json for the current list."
+    "note": "The JSON index is refreshed from published posts during every deployment build."
   }
 }

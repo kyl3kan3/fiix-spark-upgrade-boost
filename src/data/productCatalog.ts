@@ -223,14 +223,6 @@ export const WEBSITE_JSON_LD = {
   url: `${SITE_ORIGIN}/`,
   publisher: { "@id": organizationId },
   inLanguage: "en-US",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${SITE_ORIGIN}/learn?q={search_term_string}`,
-    },
-    "query-input": "required name=search_term_string",
-  },
 };
 
 export const PLAN_OFFERS_JSON_LD = PRODUCT_PLANS.flatMap((plan) => [

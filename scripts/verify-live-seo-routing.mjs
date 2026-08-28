@@ -26,9 +26,36 @@ for (const path of [randomPath, "/blog/industrial-maintenance-optimization", "/l
 for (const path of ["/dashboard", "/assets/seo-regression-asset"]) {
   const { response, body } = await request(path);
   if (response.status !== 200) fail(`${path} returned ${response.status}; expected the app shell with 200`);
+  else if (!/text\/html/i.test(response.headers.get("content-type") ?? "")) fail(`${path} has ${response.headers.get("content-type") ?? "no Content-Type"}; expected text/html`);
   else if (!/noindex\s*,?\s*nofollow/i.test(response.headers.get("x-robots-tag") ?? "")) fail(`${path} is missing X-Robots-Tag: noindex, nofollow`);
   else if (!/<meta name="robots" content="noindex,nofollow"/i.test(body)) fail(`${path} app shell is missing noindex,nofollow HTML metadata`);
   else pass(`${path} returns the protected noindex app shell`);
+}
+
+const negotiated = await fetch(`${base}/learn/cmms`, {
+  method: "GET",
+  redirect: "manual",
+  headers: {
+    Accept: "text/markdown",
+    "User-Agent": "MaintenEase-SEO-live-regression/1.0",
+  },
+});
+const negotiatedBody = await negotiated.text();
+if (negotiated.status !== 200) fail(`/learn/cmms Markdown negotiation returned ${negotiated.status}`);
+else if (!/text\/markdown/i.test(negotiated.headers.get("content-type") ?? "")) fail(`/learn/cmms Markdown negotiation has the wrong Content-Type`);
+else if (!/^#\s+Maintenance Management Systems/m.test(negotiatedBody)) fail(`/learn/cmms Markdown negotiation returned the wrong representation`);
+else if (!/accept/i.test(negotiated.headers.get("vary") ?? "")) fail(`/learn/cmms Markdown negotiation is missing Vary: Accept`);
+else pass(`/learn/cmms serves its Markdown representation when explicitly requested`);
+
+for (const [path, expectedType] of [
+  ["/.well-known/api-catalog", "application/linkset+json"],
+  ["/.well-known/oauth-authorization-server", "application/json"],
+  ["/api/blog.json", "application/json"],
+]) {
+  const { response } = await request(path);
+  if (response.status !== 200) fail(`${path} returned ${response.status}; expected 200`);
+  else if (!(response.headers.get("content-type") ?? "").includes(expectedType)) fail(`${path} has the wrong Content-Type`);
+  else pass(`${path} exposes the expected machine-readable media type`);
 }
 
 for (const path of ["/", "/pricing", "/learn/preventive-maintenance", "/tools/maintenance-sop-generator"]) {

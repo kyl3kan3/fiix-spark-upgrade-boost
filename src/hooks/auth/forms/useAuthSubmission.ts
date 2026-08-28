@@ -6,6 +6,11 @@ import { useAuthValidation } from "../validation/useAuthValidation";
 import { useAuthNavigation } from "../useAuthNavigation";
 import { setSupabaseRememberMe } from "@/integrations/supabase/authStorage";
 import { setRememberMe as persistRememberMePref } from "@/utils/storageUtils";
+import {
+ clearSignupAttribution,
+ readSignupAttribution,
+ trackMarketingEvent,
+} from "@/lib/analytics/marketingEvents";
 
 interface UseAuthSubmissionProps {
  onError: (message: string) => void;
@@ -76,6 +81,18 @@ export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
  const result = await signUp(email, password, userData, turnstileToken);
  
  if (result.success) {
+ const attribution = readSignupAttribution();
+ void trackMarketingEvent({
+ eventType: "signup_complete",
+ pageSlug: attribution?.sourcePageSlug ?? "direct",
+ metadata: attribution ? {
+ source_path: attribution.sourcePath,
+ cta_location: attribution.ctaLocation,
+ captured_at: attribution.capturedAt,
+ ...attribution.campaign,
+ } : { source_path: "direct" },
+ });
+ clearSignupAttribution();
  if (localStorage.getItem("pending_invite_token")) {
  navigate("/onboarding", { replace: true });
  } else {

@@ -1,20 +1,74 @@
 import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
 
-const TRACKED_SLUGS = new Set([
- "asset-tracking-software",
- "asset-management-software",
- "maintenance-log-template",
- "preventive-maintenance-checklist",
- "preventive-maintenance",
- "total-productive-maintenance",
- "work-order-template",
- "preliminary-hazard-analysis-template",
- "maintenance-sop-generator",
- "root-cause-fishbone-generator",
- "infrared-thermography-inspection",
-]);
+const SAFE_MARKETING_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export const isTrackedMarketingSlug = (slug: string) => TRACKED_SLUGS.has(slug);
+/** Accept every normalized public-page slug instead of silently dropping new SEO pages. */
+export const isTrackedMarketingSlug = (slug: string) =>
+ SAFE_MARKETING_SLUG.test(slug) && slug.length <= 120;
+
+export const marketingPageSlugFromPath = (pathname: string): string => {
+ const normalized = pathname.split("?")[0].replace(/\/+$/, "");
+ if (!normalized) return "home";
+ const lastSegment = normalized.split("/").filter(Boolean).at(-1) ?? "home";
+ return lastSegment.toLowerCase().replace(/\.(?:html|md)$/i, "").replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "home";
+};
+
+export type SignupAttribution = {
+ sourcePageSlug: string;
+ sourcePath: string;
+ ctaLocation: string;
+ capturedAt: string;
+ campaign: Record<string, string | null>;
+};
+
+const SIGNUP_ATTRIBUTION_KEY = "maintenease_signup_attribution";
+
+export const storeSignupAttribution = (attribution: Omit<SignupAttribution, "capturedAt" | "campaign">) => {
+ if (typeof window === "undefined") return;
+ try {
+  const value: SignupAttribution = {
+   ...attribution,
+   capturedAt: new Date().toISOString(),
+   campaign: getAttributionMetadata(),
+  };
+  window.sessionStorage.setItem(SIGNUP_ATTRIBUTION_KEY, JSON.stringify(value));
+ } catch {
+  // Storage restrictions must never block navigation to sign-up.
+ }
+};
+
+export const readSignupAttribution = (): SignupAttribution | null => {
+ if (typeof window === "undefined") return null;
+ try {
+  const raw = window.sessionStorage.getItem(SIGNUP_ATTRIBUTION_KEY);
+  if (!raw) return null;
+  const value = JSON.parse(raw) as Partial<SignupAttribution>;
+  if (
+   !value.sourcePageSlug ||
+   !isTrackedMarketingSlug(value.sourcePageSlug) ||
+   typeof value.sourcePath !== "string" ||
+   typeof value.ctaLocation !== "string"
+  ) return null;
+  return {
+   sourcePageSlug: value.sourcePageSlug,
+   sourcePath: value.sourcePath.slice(0, 500),
+   ctaLocation: value.ctaLocation.slice(0, 120),
+   capturedAt: typeof value.capturedAt === "string" ? value.capturedAt : "",
+   campaign: value.campaign && typeof value.campaign === "object" ? value.campaign : {},
+  };
+ } catch {
+  return null;
+ }
+};
+
+export const clearSignupAttribution = () => {
+ if (typeof window === "undefined") return;
+ try {
+  window.sessionStorage.removeItem(SIGNUP_ATTRIBUTION_KEY);
+ } catch {
+  // Ignore unavailable storage.
+ }
+};
 
 const seenDedupeKeys = new Set<string>();
 
@@ -75,7 +129,7 @@ export async function trackMarketingEvent({
  dedupeKey,
 }: TrackOptions): Promise<void> {
  if (typeof window === "undefined") return;
- if (!isTrackedMarketingSlug(pageSlug)) return;
+ if (!isTrackedMarketingSlug(pageSlug) || eventType.length < 1 || eventType.length > 60) return;
 
  if (dedupeKey) {
  if (shouldSkipForDedupe(dedupeKey)) return;

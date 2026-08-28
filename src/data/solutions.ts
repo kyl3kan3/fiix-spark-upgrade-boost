@@ -16,7 +16,7 @@ export type Solution = {
 export const solutions: Solution[] = [
  {
  slug: "work-order-software",
- updated: "2026-08-23",
+ updated: "2026-08-28",
  name: "Work Order Software",
  h1: "Work Order Software that turns requests into completed work",
  tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
@@ -42,6 +42,7 @@ export const solutions: Solution[] = [
  "Hospitality and retail chains coordinating across locations",
  ],
  faqs: [
+ { q: "Does MaintenEase automatically route every work order?", a: "No automatic assignment rule is claimed here. A supervisor sets the assignee, priority, status, and due date, which keeps ownership explicit and reviewable." },
  { q: "Can requesters submit work without a MaintenEase login?", a: "Yes. A public request link lets staff or tenants submit an issue without creating an account. The maintenance team reviews the request in a separate inbox before converting accepted work into a work order." },
  { q: "Do you support recurring work orders?", a: "Yes. Any recurring task lives as a preventive maintenance schedule and generates work orders automatically." },
  { q: "What are work order programs?", a: "Work order programs are the software teams use to capture a maintenance request, assign it, track the work, and record what was done. Simple ones are little more than a shared list; a full maintenance work order software platform like MaintenEase also connects each job to an asset, its parts, its cost, and its service history." },

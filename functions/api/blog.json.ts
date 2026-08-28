@@ -1,5 +1,7 @@
 // Cloudflare Pages Function — structured index of published blog posts
 // for AI agents. Mirrors the shape of /api/ai.json.
+import { redirectForPath } from "../../src/lib/seoRouting";
+
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
@@ -9,7 +11,7 @@ interface Row {
   slug: string;
   title: string;
   meta_description: string | null;
-  tags: string[] | null;
+  tags: string[] | string | null;
   reading_time: number | null;
   hero_image_url: string | null;
   published_at: string | null;
@@ -23,16 +25,21 @@ export const onRequestGet = async (_context: any) => {
     headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
   });
   const rows: Row[] = res.ok ? await res.json() : [];
+  const canonicalRows = rows.filter((row) => !redirectForPath(`/blog/${row.slug}`));
 
   const body = {
     site: SITE,
     generated_at: new Date().toISOString(),
-    count: rows.length,
-    posts: rows.map((r) => ({
+    count: canonicalRows.length,
+    posts: canonicalRows.map((r) => ({
       slug: r.slug,
       title: r.title,
       description: r.meta_description,
-      tags: r.tags ?? [],
+      tags: Array.isArray(r.tags)
+        ? r.tags
+        : typeof r.tags === "string"
+          ? r.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+          : [],
       reading_time_min: r.reading_time,
       hero_image_url: r.hero_image_url,
       published_at: r.published_at,

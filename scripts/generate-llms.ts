@@ -24,6 +24,7 @@ import {
 import { MCP_PAGE } from "../src/data/mcpPage";
 import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
+import { redirectForPath } from "../src/lib/seoRouting";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_CAPACITY_SUMMARY,
@@ -37,6 +38,20 @@ import {
 
 const SITE = "https://maintenease.com";
 const PUBLIC = resolve(dirname(fileURLToPath(import.meta.url)), "../public");
+const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
+const SUPABASE_ANON =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
+
+type BlogPostRow = {
+  slug: string;
+  title: string;
+  meta_description: string | null;
+  tags: string[] | string | null;
+  reading_time: number | null;
+  hero_image_url: string | null;
+  published_at: string | null;
+  updated_at: string | null;
+};
 
 function write(path: string, body: string) {
   const full = resolve(PUBLIC, path);
@@ -148,7 +163,7 @@ ${g.sections.map((s) => `## ${s.heading}\n\n${s.body}${s.table ? mdTable(s.table
 
 ${g.faqs.map((f) => `### ${f.q}\n\n${f.a}`).join("\n\n")}
 
-${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.url})`).join("\n")}\n\n` : ""}${g.internalLinks?.length ? `## CMMS software and comparisons\n\n${g.internalLinks.map((link) => `- [${link.label}](${SITE}${link.href})`).join("\n")}\n\n` : ""}${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
+${g.downloads?.length ? `## Downloads\n\n${g.downloads.map((download) => `- [${download.label} (${download.format})](${SITE}${download.path}) — ${download.description}`).join("\n")}\n\n` : ""}${g.sources?.length ? `## Sources\n\n${g.sources.map((s) => `- [${s.label}](${s.url})`).join("\n")}\n\n` : ""}${g.internalLinks?.length ? `## CMMS software and comparisons\n\n${g.internalLinks.map((link) => `- [${link.label}](${SITE}${link.href})`).join("\n")}\n\n` : ""}${g.related?.length ? `## Related\n\n${g.related.map((r) => `- ${SITE}/learn/${r}`).join("\n")}\n` : ""}`;
 }
 
 function templateMd(template: (typeof maintenanceTemplates)[number]) {
@@ -365,6 +380,67 @@ const parts = [
 ];
 write("llms-full.txt", parts.join(""));
 
+// ---- api/blog.json (static agent index for Vercel) -----------------------
+
+async function fetchBlogPosts(): Promise<BlogPostRow[] | null> {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,tags,reading_time,hero_image_url,published_at,updated_at&order=published_at.desc.nullslast&limit=5000`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
+    );
+    if (!response.ok) {
+      console.warn(`[llms] blog index fetch failed: ${response.status}`);
+      return null;
+    }
+    return await response.json() as BlogPostRow[];
+  } catch (error) {
+    console.warn(`[llms] blog index fetch error: ${(error as Error).message}`);
+    return null;
+  }
+}
+
+const fetchedBlogPosts = await fetchBlogPosts();
+const blogPosts = fetchedBlogPosts?.filter((post) => !redirectForPath(`/blog/${post.slug}`)) ?? null;
+if (blogPosts) {
+  const blogContent = {
+    site: SITE,
+    count: blogPosts.length,
+    posts: blogPosts.map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      description: post.meta_description,
+      tags: Array.isArray(post.tags)
+        ? post.tags
+        : typeof post.tags === "string"
+          ? post.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+          : [],
+      reading_time_min: post.reading_time,
+      hero_image_url: post.hero_image_url,
+      published_at: post.published_at,
+      updated_at: post.updated_at,
+      html_url: `${SITE}/blog/${post.slug}`,
+      markdown_url: `${SITE}/blog/${post.slug}.md`,
+    })),
+  };
+  let blogGeneratedAt = new Date().toISOString();
+  try {
+    const existing = JSON.parse(readFileSync(resolve(PUBLIC, "api/blog.json"), "utf8")) as Record<string, unknown>;
+    const { generated_at: existingGeneratedAt, ...existingContent } = existing;
+    if (
+      typeof existingGeneratedAt === "string" &&
+      JSON.stringify(existingContent) === JSON.stringify(blogContent)
+    ) {
+      blogGeneratedAt = existingGeneratedAt;
+    }
+  } catch {
+    // A missing or invalid file is replaced below.
+  }
+  write("api/blog.json", JSON.stringify({
+    ...blogContent,
+    generated_at: blogGeneratedAt,
+  }, null, 2));
+}
+
 // ---- api/ai.json (structured index for agents) ----------------------------
 
 const apiContent = {
@@ -439,6 +515,13 @@ const apiContent = {
     short: g.short,
     html_url: `${SITE}/learn/${g.slug}`,
     markdown_url: `${SITE}/learn/${g.slug}.md`,
+    ...(g.downloads?.length ? {
+      downloads: g.downloads.map((download) => ({
+        name: download.label,
+        format: download.format,
+        download_url: `${SITE}${download.path}`,
+      })),
+    } : {}),
   })),
   templates: maintenanceTemplates.map((template) => ({
     slug: template.slug,
@@ -454,7 +537,7 @@ const apiContent = {
     index_html_url: `${SITE}/blog`,
     index_json_url: `${SITE}/api/blog.json`,
     markdown_url_pattern: `${SITE}/blog/{slug}.md`,
-    note: "Posts are dynamic — fetch /api/blog.json for the current list.",
+    note: "The JSON index is refreshed from published posts during every deployment build.",
   },
 };
 
@@ -485,5 +568,5 @@ const apiJson = {
 write("api/ai.json", JSON.stringify(apiJson, null, 2));
 
 console.log(
-  `Wrote llms.txt, llms-full.txt, the MCP page, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, ${maintenanceTemplates.length} templates, and ${SECOND_PASS_TOOL_PAGES.length} maintenance tools.`,
+  `Wrote llms.txt, llms-full.txt, the MCP page, ${solutions.length} solutions, ${comparisons.length} comparisons, ${glossary.length} glossary pages, ${maintenanceTemplates.length} templates, ${SECOND_PASS_TOOL_PAGES.length} maintenance tools${blogPosts ? `, and ${blogPosts.length} blog index entries` : ""}.`,
 );

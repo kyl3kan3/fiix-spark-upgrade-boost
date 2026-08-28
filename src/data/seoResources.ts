@@ -47,7 +47,7 @@ export const SOLUTION_RESOURCES: Record<string, SeoResource[]> = {
         "Separate routine backlog from work whose delay increases safety, downtime, compliance, or replacement risk.",
     },
     {
-      href: "/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026",
+      href: "/learn/preventive-maintenance",
       title: "Build an industrial PM plan",
       description:
         "Move from an asset audit to criticality ranking, scheduling, team rollout, and a repeatable review cycle.",

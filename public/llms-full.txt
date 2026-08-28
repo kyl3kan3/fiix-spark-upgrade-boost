@@ -168,6 +168,10 @@ Most work order programs start as a spreadsheet and become difficult to coordina
 
 ## FAQ
 
+### Does MaintenEase automatically route every work order?
+
+No automatic assignment rule is claimed here. A supervisor sets the assignee, priority, status, and due date, which keeps ownership explicit and reviewable.
+
 ### Can requesters submit work without a MaintenEase login?
 
 Yes. A public request link lets staff or tenants submit an issue without creating an account. The maintenance team reviews the request in a separate inbox before converting accepted work into a work order.
@@ -1017,6 +1021,10 @@ _Questions to answer before selecting a maintenance management system_
 
 In week one, clean the asset list and agree on locations, priorities, statuses, and required close-out fields. In week two, import one site or asset class and build the highest-risk preventive schedules. In week three, train technicians on a small number of mobile workflows and run real work in the system. In week four, reconcile the backlog, correct data issues, publish a basic KPI baseline, and decide what to expand next. A focused rollout creates usable history faster than attempting to configure every possible field before launch.
 
+## What MaintenEase supports today
+
+MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.
+
 ## FAQ
 
 ### What is a CMMS in simple terms?
@@ -1050,6 +1058,15 @@ Pricing models vary by vendor, tier, users, modules, and services. MaintenEase p
 ### Is there a free CMMS?
 
 Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price.
+
+## Downloads
+
+- [CMMS selection worksheet (CSV)](https://maintenease.com/templates/downloads/cmms-selection-worksheet.csv) — Score the same real workflow, evidence, implementation scope, limits, and price for every shortlisted system.
+
+## Sources
+
+- [U.S. Department of Energy: Operations and Maintenance Best Practices Guide](https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency)
+- [U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)](https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf)
 
 ## CMMS software and comparisons
 
@@ -1150,6 +1167,12 @@ No. AI can organize information and prepare records, but qualified people should
 - [Rockwell Automation and Augury agentic AI announcement (July 23, 2026)](https://www.rockwellautomation.com/en-us/company/news/press-releases/rockwell-automation-and-augury-partner-to-improve-industrial-performance-with-agentic-ai.html)
 - [Fiix Maintenance Assistant Experience (MAX) announcement (July 14, 2026)](https://fiixsoftware.com/blog/fiix-max/)
 - [Facilio AI-native CMMS announcement (July 1, 2026)](https://www.prnewswire.com/news-releases/facilio-ushers-in-the-ai-native-era-of-cmms-302815869.html)
+
+## CMMS software and comparisons
+
+- [MaintenEase MCP product and setup](https://maintenease.com/mcp)
+- [CMMS buyer's guide](https://maintenease.com/learn/cmms)
+- [MaintenEase product features](https://maintenease.com/features)
 
 ## Related
 
@@ -1568,6 +1591,10 @@ Record duties depend on the vehicle, operation, and jurisdiction. In the United 
 
 Cost per mile by vehicle, downtime hours per month, percentage of PMs completed on time, average repair turnaround, and warranty recovery rate. The last one is widely under-tracked; warranty claims that slip through unfiled are pure margin lost.
 
+## Build the service-history baseline first
+
+Before evaluating automation, create one consistent row for each inspection, service, defect, repair, and next-due decision. Tie the record to a stable vehicle identifier, mileage or hours, evidence, parts, labor, and the underlying work order. The downloadable service-history template provides that starting structure. It is an operational worksheet, not a substitute for the records, inspections, retention periods, or qualified decisions required by the rules that apply to a particular fleet.
+
 ## FAQ
 
 ### Do I need separate software for fleet maintenance?
@@ -1578,8 +1605,14 @@ Not always. A general CMMS may fit when vehicle work resembles the rest of the a
 
 A driver vehicle inspection report records covered vehicle defects or deficiencies under the rules that apply to the operation. Requirements vary by vehicle and jurisdiction; under U.S. federal rules, no-defect reporting is not required for many property-carrying CMV operations, so confirm the current rule rather than using a universal statement.
 
+## Downloads
+
+- [Fleet service-history template (CSV)](https://maintenease.com/templates/downloads/fleet-maintenance-service-history-template.csv) — Start a consistent vehicle-level history for inspections, service, defects, repairs, evidence, cost, and next-due decisions.
+
 ## Sources
 
+- [FMCSA: What systematic inspection, repair, and maintenance means](https://www.fmcsa.dot.gov/safety/question-1-what-meant-systematic-inspection-repair-and-maintenance)
+- [Electronic Code of Federal Regulations: 49 CFR Part 396](https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III/subchapter-B/part-396)
 - [FMCSA: Vehicle maintenance record requirements under 49 CFR 396.3](https://csa.fmcsa.dot.gov/SafetyPlanner/MyFiles/SubSections.aspx?ch=22&eta=25054&sec=65&sub=147)
 - [FMCSA: Driver-vehicle inspection report rule and no-defect exception](https://www.fmcsa.dot.gov/regulations/inspection-repair-and-maintenance-driver-vehicle-inspection-report-dvir)
 
@@ -1857,7 +1890,11 @@ Preventive maintenance acts on time. Condition-based maintenance acts on a prese
 
 ## Getting started with CBM
 
-Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Decide the threshold, log readings on a regular route, and let your CMMS raise the work order when the limit is hit. As confidence grows, add parameters and assets. Manual CBM with a clipboard and a CMMS is a legitimate, low-cost place to begin.
+Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Document the measurement method, unit, baseline, warning limit, action limit, reading context, evidence, and the person authorized to decide what happens next. Log readings on a regular route and create follow-up work when the defined decision rule is met. As confidence grows, add parameters and assets. Manual CBM with a portable instrument and consistent history is a legitimate, low-cost place to begin.
+
+## Where MaintenEase fits in a condition route
+
+MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.
 
 ## FAQ
 
@@ -1869,9 +1906,19 @@ Not necessarily. Permanent sensors enable continuous monitoring, but periodic ma
 
 CBM reacts when a reading crosses a threshold now. Predictive maintenance forecasts when that threshold will be crossed in the future, usually with trend analysis or models.
 
+## Downloads
+
+- [Condition-based inspection worksheet (CSV)](https://maintenease.com/templates/downloads/condition-based-maintenance-inspection-template.csv) — Document the parameter, method, baseline, limits, reading context, evidence, decision, and resulting work order.
+
+## Sources
+
+- [U.S. Department of Energy: Operations and Maintenance Best Practices Guide](https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency)
+- [U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)](https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf)
+
 ## Related
 
 - https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/predictive-maintenance-without-sensors
 - https://maintenease.com/learn/preventive-maintenance
 - https://maintenease.com/learn/mtbf
 

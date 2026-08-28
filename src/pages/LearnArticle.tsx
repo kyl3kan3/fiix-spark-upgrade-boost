@@ -155,6 +155,13 @@ const LearnArticle = () => {
    metadata: { resource: "TPM implementation toolkit", format, filename },
   });
  };
+ const trackGlossaryDownload = (label: string, format: string, path: string) => {
+  void trackMarketingEvent({
+   eventType: "template_download",
+   pageSlug: term.slug,
+   metadata: { resource: label, format, filename: path.split("/").at(-1) ?? path },
+  });
+ };
 
  return (
  <MarketingLayout>
@@ -299,6 +306,33 @@ const LearnArticle = () => {
  </div>
  </section>
  )}
+
+ {term.downloads?.length ? (
+ <section className="mt-12 rounded-3xl bg-primary/5 p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] sm:p-8">
+ <div className="flex items-start gap-3">
+ <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-background text-primary shadow-sm">
+ <FileCheck2 className="h-5 w-5" aria-hidden="true" />
+ </span>
+ <div>
+ <h2 className="text-2xl font-semibold text-foreground text-balance">Free practical download</h2>
+ <p className="mt-2 leading-relaxed text-muted-foreground text-pretty">Use the guide with a citable, editable worksheet built around the evidence and decisions described above.</p>
+ </div>
+ </div>
+ <div className="mt-5 grid gap-3">
+ {term.downloads.map((download) => (
+ <div key={download.path} className="rounded-2xl bg-background p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] sm:flex sm:items-center sm:justify-between sm:gap-6">
+ <div>
+ <h3 className="font-semibold text-foreground">{download.label}</h3>
+ <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{download.description}</p>
+ </div>
+ <a href={download.path} download onClick={() => trackGlossaryDownload(download.label, download.format, download.path)} className="mt-4 inline-flex min-h-11 shrink-0 items-center rounded-xl bg-primary pl-5 pr-[18px] py-2.5 font-semibold text-primary-foreground transition-[background-color,box-shadow,transform] duration-150 hover:bg-primary-variant hover:shadow-md active:scale-[0.96] sm:mt-0">
+ Download {download.format} <Download className="ml-2 h-4 w-4" aria-hidden="true" />
+ </a>
+ </div>
+ ))}
+ </div>
+ </section>
+ ) : null}
 
  <section className="mt-12">
  <h2 className="text-2xl font-semibold mb-4 text-foreground">Frequently asked questions</h2>

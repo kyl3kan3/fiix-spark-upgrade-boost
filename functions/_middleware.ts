@@ -27,6 +27,7 @@ const AGENT_LINKS = [
   '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
   '</llms.txt>; rel="service-doc"; type="text/plain"',
   '</api/ai.json>; rel="service-desc"; type="application/json"',
+  '</api/blog.json>; rel="item"; type="application/json"',
   '</.well-known/mcp/server-card.json>; rel="mcp-server-card"; type="application/json"',
   '</.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"',
   '</.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json"',
@@ -63,7 +64,7 @@ export async function onRequest(context: any) {
   const routeKind = classifySeoPath(requestUrl.pathname);
   const useAppShell = routeKind === "noindex" && requestUrl.pathname !== "/auth" && isDocumentRequest;
   const appShellRequest = useAppShell
-    ? rewriteDocumentRequest(new URL("/app-shell", requestUrl.origin), context.request)
+    ? rewriteDocumentRequest(new URL("/app-shell.html", requestUrl.origin), context.request)
     : undefined;
   const negotiatedMarkdownPath =
     routeKind === "indexable" &&

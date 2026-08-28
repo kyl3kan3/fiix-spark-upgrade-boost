@@ -3,7 +3,8 @@
     {
       "anchor": "https://maintenease.com/api/ai.json",
       "service-desc": [
-        { "href": "https://maintenease.com/api/ai.json", "type": "application/json", "title": "MaintenEase AI/agent data index" }
+        { "href": "https://maintenease.com/api/ai.json", "type": "application/json", "title": "MaintenEase AI/agent data index" },
+        { "href": "https://maintenease.com/api/blog.json", "type": "application/json", "title": "MaintenEase published blog index" }
       ],
       "service-doc": [
         { "href": "https://maintenease.com/llms.txt", "type": "text/plain", "title": "MaintenEase LLM index" },

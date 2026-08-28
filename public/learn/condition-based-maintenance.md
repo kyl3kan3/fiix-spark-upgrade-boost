@@ -18,7 +18,11 @@ Preventive maintenance acts on time. Condition-based maintenance acts on a prese
 
 ## Getting started with CBM
 
-Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Decide the threshold, log readings on a regular route, and let your CMMS raise the work order when the limit is hit. As confidence grows, add parameters and assets. Manual CBM with a clipboard and a CMMS is a legitimate, low-cost place to begin.
+Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Document the measurement method, unit, baseline, warning limit, action limit, reading context, evidence, and the person authorized to decide what happens next. Log readings on a regular route and create follow-up work when the defined decision rule is met. As confidence grows, add parameters and assets. Manual CBM with a portable instrument and consistent history is a legitimate, low-cost place to begin.
+
+## Where MaintenEase fits in a condition route
+
+MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.
 
 ## FAQ
 
@@ -30,8 +34,18 @@ Not necessarily. Permanent sensors enable continuous monitoring, but periodic ma
 
 CBM reacts when a reading crosses a threshold now. Predictive maintenance forecasts when that threshold will be crossed in the future, usually with trend analysis or models.
 
+## Downloads
+
+- [Condition-based inspection worksheet (CSV)](https://maintenease.com/templates/downloads/condition-based-maintenance-inspection-template.csv) — Document the parameter, method, baseline, limits, reading context, evidence, decision, and resulting work order.
+
+## Sources
+
+- [U.S. Department of Energy: Operations and Maintenance Best Practices Guide](https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency)
+- [U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)](https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf)
+
 ## Related
 
 - https://maintenease.com/learn/predictive-maintenance
+- https://maintenease.com/learn/predictive-maintenance-without-sensors
 - https://maintenease.com/learn/preventive-maintenance
 - https://maintenease.com/learn/mtbf

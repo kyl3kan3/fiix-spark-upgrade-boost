@@ -19,6 +19,7 @@ export type GlossaryTerm = {
  related: string[];
  internalLinks?: { label: string; href: string }[];
  sources?: { label: string; url: string }[];
+ downloads?: { label: string; path: string; format: string; description: string }[];
 };
 
 export const glossary: GlossaryTerm[] = [
@@ -29,7 +30,7 @@ export const glossary: GlossaryTerm[] = [
  metaTitle: "Maintenance Management Systems (CMMS): Buyer's Guide",
  metaDescription: "Compare maintenance management systems and CMMS software. Learn core modules, selection criteria, implementation steps, costs, and the KPIs to track.",
  published: "2026-01-15",
- updated: "2026-08-23",
+ updated: "2026-08-28",
  sections: [
  {
  heading: "What does CMMS stand for?",
@@ -99,6 +100,10 @@ export const glossary: GlossaryTerm[] = [
  heading: "A practical 30-day CMMS rollout",
  body: "In week one, clean the asset list and agree on locations, priorities, statuses, and required close-out fields. In week two, import one site or asset class and build the highest-risk preventive schedules. In week three, train technicians on a small number of mobile workflows and run real work in the system. In week four, reconcile the backlog, correct data issues, publish a basic KPI baseline, and decide what to expand next. A focused rollout creates usable history faster than attempting to configure every possible field before launch.",
  },
+ {
+ heading: "What MaintenEase supports today",
+ body: "MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.",
+ },
  ],
  faqs: [
  { q: "What is a CMMS in simple terms?", a: "A CMMS is software that keeps a list of your equipment and manages the work done on it — repairs, inspections, and recurring preventive tasks — so nothing depends on someone's memory or a spreadsheet." },
@@ -120,6 +125,13 @@ export const glossary: GlossaryTerm[] = [
  { label: "MaintenEase vs MaintainX", href: "/compare/maintenease-vs-maintainx" },
  { label: "MaintenEase vs Limble", href: "/compare/maintenease-vs-limble" },
  { label: "asset tracking software", href: "/solutions/asset-tracking-software" },
+ ],
+ sources: [
+ { label: "U.S. Department of Energy: Operations and Maintenance Best Practices Guide", url: "https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency" },
+ { label: "U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)", url: "https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf" },
+ ],
+ downloads: [
+ { label: "CMMS selection worksheet", path: "/templates/downloads/cmms-selection-worksheet.csv", format: "CSV", description: "Score the same real workflow, evidence, implementation scope, limits, and price for every shortlisted system." },
  ],
  },
  {
@@ -198,6 +210,11 @@ export const glossary: GlossaryTerm[] = [
  { label: "Rockwell Automation and Augury agentic AI announcement (July 23, 2026)", url: "https://www.rockwellautomation.com/en-us/company/news/press-releases/rockwell-automation-and-augury-partner-to-improve-industrial-performance-with-agentic-ai.html" },
  { label: "Fiix Maintenance Assistant Experience (MAX) announcement (July 14, 2026)", url: "https://fiixsoftware.com/blog/fiix-max/" },
  { label: "Facilio AI-native CMMS announcement (July 1, 2026)", url: "https://www.prnewswire.com/news-releases/facilio-ushers-in-the-ai-native-era-of-cmms-302815869.html" },
+ ],
+ internalLinks: [
+ { label: "MaintenEase MCP product and setup", href: "/mcp" },
+ { label: "CMMS buyer's guide", href: "/learn/cmms" },
+ { label: "MaintenEase product features", href: "/features" },
  ],
  },
  {
@@ -528,7 +545,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
  metaTitle: "What is Fleet Maintenance? Scope, Schedules & Compliance",
  metaDescription: "Fleet maintenance keeps vehicles safe, compliant, and on the road. Learn what it covers, how schedules are set, and what teams track.",
- updated: "2026-08-23",
+ updated: "2026-08-28",
  sections: [
  {
  heading: "Definition",
@@ -546,6 +563,10 @@ export const glossary: GlossaryTerm[] = [
  heading: "KPIs that matter",
  body: "Cost per mile by vehicle, downtime hours per month, percentage of PMs completed on time, average repair turnaround, and warranty recovery rate. The last one is widely under-tracked; warranty claims that slip through unfiled are pure margin lost.",
  },
+ {
+ heading: "Build the service-history baseline first",
+ body: "Before evaluating automation, create one consistent row for each inspection, service, defect, repair, and next-due decision. Tie the record to a stable vehicle identifier, mileage or hours, evidence, parts, labor, and the underlying work order. The downloadable service-history template provides that starting structure. It is an operational worksheet, not a substitute for the records, inspections, retention periods, or qualified decisions required by the rules that apply to a particular fleet.",
+ },
  ],
  faqs: [
  { q: "Do I need separate software for fleet maintenance?", a: "Not always. A general CMMS may fit when vehicle work resembles the rest of the asset program. Dedicated fleet software becomes more relevant when verified telematics connectors, fuel, tires, driver workflows, routing, or jurisdiction-specific records are central requirements." },
@@ -553,8 +574,13 @@ export const glossary: GlossaryTerm[] = [
  ],
  related: ["preventive-maintenance", "cmms", "work-order"],
  sources: [
+ { label: "FMCSA: What systematic inspection, repair, and maintenance means", url: "https://www.fmcsa.dot.gov/safety/question-1-what-meant-systematic-inspection-repair-and-maintenance" },
+ { label: "Electronic Code of Federal Regulations: 49 CFR Part 396", url: "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III/subchapter-B/part-396" },
  { label: "FMCSA: Vehicle maintenance record requirements under 49 CFR 396.3", url: "https://csa.fmcsa.dot.gov/SafetyPlanner/MyFiles/SubSections.aspx?ch=22&eta=25054&sec=65&sub=147" },
  { label: "FMCSA: Driver-vehicle inspection report rule and no-defect exception", url: "https://www.fmcsa.dot.gov/regulations/inspection-repair-and-maintenance-driver-vehicle-inspection-report-dvir" },
+ ],
+ downloads: [
+ { label: "Fleet service-history template", path: "/templates/downloads/fleet-maintenance-service-history-template.csv", format: "CSV", description: "Start a consistent vehicle-level history for inspections, service, defects, repairs, evidence, cost, and next-due decisions." },
  ],
  },
  {
@@ -751,6 +777,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
  metaTitle: "What is Condition-Based Maintenance (CBM)? A Plain Guide",
  metaDescription: "Condition-based maintenance triggers work when a measured condition crosses a threshold. See how CBM compares to preventive and predictive.",
+ updated: "2026-08-28",
  sections: [
  {
  heading: "Definition",
@@ -766,14 +793,25 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Getting started with CBM",
- body: "Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Decide the threshold, log readings on a regular route, and let your CMMS raise the work order when the limit is hit. As confidence grows, add parameters and assets. Manual CBM with a clipboard and a CMMS is a legitimate, low-cost place to begin.",
+ body: "Pick one critical asset and one telling parameter — vibration on a pump, temperature on a motor, pressure drop on a filter. Document the measurement method, unit, baseline, warning limit, action limit, reading context, evidence, and the person authorized to decide what happens next. Log readings on a regular route and create follow-up work when the defined decision rule is met. As confidence grows, add parameters and assets. Manual CBM with a portable instrument and consistent history is a legitimate, low-cost place to begin.",
+ },
+ {
+ heading: "Where MaintenEase fits in a condition route",
+ body: "MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.",
  },
  ],
  faqs: [
  { q: "Does condition-based maintenance require sensors?", a: "Not necessarily. Permanent sensors enable continuous monitoring, but periodic manual readings (temperature, vibration, pressure) logged in a CMMS are a valid, low-cost form of CBM." },
  { q: "How is CBM different from predictive maintenance?", a: "CBM reacts when a reading crosses a threshold now. Predictive maintenance forecasts when that threshold will be crossed in the future, usually with trend analysis or models." },
  ],
- related: ["predictive-maintenance", "preventive-maintenance", "mtbf"],
+ related: ["predictive-maintenance", "predictive-maintenance-without-sensors", "preventive-maintenance", "mtbf"],
+ sources: [
+ { label: "U.S. Department of Energy: Operations and Maintenance Best Practices Guide", url: "https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency" },
+ { label: "U.S. Department of Energy: Complete O&M Best Practices Guide (PDF)", url: "https://www.energy.gov/sites/default/files/2020/04/f74/omguide_complete_w-eo-disclaimer.pdf" },
+ ],
+ downloads: [
+ { label: "Condition-based inspection worksheet", path: "/templates/downloads/condition-based-maintenance-inspection-template.csv", format: "CSV", description: "Document the parameter, method, baseline, limits, reading context, evidence, decision, and resulting work order." },
+ ],
  },
  {
  slug: "mtbf",

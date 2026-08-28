@@ -43,7 +43,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/learn</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -93,7 +93,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/solutions/work-order-software</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -135,7 +135,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/learn/cmms</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -171,7 +171,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/learn/fleet-maintenance</loc>
-    <lastmod>2026-08-23</lastmod>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -211,6 +211,7 @@
   </url>
   <url>
     <loc>https://maintenease.com/learn/condition-based-maintenance</loc>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

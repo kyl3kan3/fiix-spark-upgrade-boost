@@ -20,6 +20,10 @@ Record duties depend on the vehicle, operation, and jurisdiction. In the United 
 
 Cost per mile by vehicle, downtime hours per month, percentage of PMs completed on time, average repair turnaround, and warranty recovery rate. The last one is widely under-tracked; warranty claims that slip through unfiled are pure margin lost.
 
+## Build the service-history baseline first
+
+Before evaluating automation, create one consistent row for each inspection, service, defect, repair, and next-due decision. Tie the record to a stable vehicle identifier, mileage or hours, evidence, parts, labor, and the underlying work order. The downloadable service-history template provides that starting structure. It is an operational worksheet, not a substitute for the records, inspections, retention periods, or qualified decisions required by the rules that apply to a particular fleet.
+
 ## FAQ
 
 ### Do I need separate software for fleet maintenance?
@@ -30,8 +34,14 @@ Not always. A general CMMS may fit when vehicle work resembles the rest of the a
 
 A driver vehicle inspection report records covered vehicle defects or deficiencies under the rules that apply to the operation. Requirements vary by vehicle and jurisdiction; under U.S. federal rules, no-defect reporting is not required for many property-carrying CMV operations, so confirm the current rule rather than using a universal statement.
 
+## Downloads
+
+- [Fleet service-history template (CSV)](https://maintenease.com/templates/downloads/fleet-maintenance-service-history-template.csv) — Start a consistent vehicle-level history for inspections, service, defects, repairs, evidence, cost, and next-due decisions.
+
 ## Sources
 
+- [FMCSA: What systematic inspection, repair, and maintenance means](https://www.fmcsa.dot.gov/safety/question-1-what-meant-systematic-inspection-repair-and-maintenance)
+- [Electronic Code of Federal Regulations: 49 CFR Part 396](https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III/subchapter-B/part-396)
 - [FMCSA: Vehicle maintenance record requirements under 49 CFR 396.3](https://csa.fmcsa.dot.gov/SafetyPlanner/MyFiles/SubSections.aspx?ch=22&eta=25054&sec=65&sub=147)
 - [FMCSA: Driver-vehicle inspection report rule and no-defect exception](https://www.fmcsa.dot.gov/regulations/inspection-repair-and-maintenance-driver-vehicle-inspection-report-dvir)
 

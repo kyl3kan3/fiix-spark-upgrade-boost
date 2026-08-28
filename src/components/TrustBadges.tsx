@@ -99,7 +99,7 @@ const TrustBadges = () => (
             key={badge.href}
             href={badge.href}
             target="_blank"
-            rel={"rel" in badge ? badge.rel : "noopener noreferrer"}
+            rel={"rel" in badge ? badge.rel : "nofollow noopener noreferrer"}
             className="flex min-h-24 items-center justify-center rounded-xl border border-border bg-card px-5 py-4 shadow-sm outline-none transition-[border-color,box-shadow,transform] duration-200 hover:border-primary/30 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96]"
           >
             <img
@@ -131,7 +131,7 @@ const TrustBadges = () => (
           <a
             href="https://freealternatives.net/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             className="inline-flex min-h-10 shrink-0 items-center gap-2 self-start font-medium text-primary outline-none transition-[color,transform] duration-200 hover:text-primary/80 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96] sm:self-auto"
           >
             Browse FreeAlternatives.net

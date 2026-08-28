@@ -263,9 +263,9 @@ if (existsSync(distDir)) {
     }
   }
 
-  const appShellPath = join(distDir, "app-shell");
+  const appShellPath = join(distDir, "app-shell.html");
   if (!existsSync(appShellPath)) {
-    fail("routing: dist/app-shell missing");
+    fail("routing: dist/app-shell.html missing");
   } else {
     const appShell = readFileSync(appShellPath, "utf8");
     if (!/<meta name="robots" content="noindex,nofollow"/.test(appShell)) {
@@ -274,6 +274,18 @@ if (existsSync(distDir)) {
       fail("routing: app shell must not inherit the homepage canonical");
     } else {
       pass("Protected-route app shell is noindex and has no canonical");
+    }
+  }
+
+  const blogApiPath = join(distDir, "api", "blog.json");
+  if (!existsSync(blogApiPath)) {
+    fail("AI discovery: dist/api/blog.json missing");
+  } else {
+    const blogApi = JSON.parse(readFileSync(blogApiPath, "utf8"));
+    if (!Array.isArray(blogApi.posts) || blogApi.count !== blogApi.posts.length) {
+      fail("AI discovery: api/blog.json has an invalid post index");
+    } else {
+      pass(`Agent-readable blog index exposes ${blogApi.count} published posts`);
     }
   }
 

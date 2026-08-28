@@ -76,6 +76,12 @@ No. AI can organize information and prepare records, but qualified people should
 - [Fiix Maintenance Assistant Experience (MAX) announcement (July 14, 2026)](https://fiixsoftware.com/blog/fiix-max/)
 - [Facilio AI-native CMMS announcement (July 1, 2026)](https://www.prnewswire.com/news-releases/facilio-ushers-in-the-ai-native-era-of-cmms-302815869.html)
 
+## CMMS software and comparisons
+
+- [MaintenEase MCP product and setup](https://maintenease.com/mcp)
+- [CMMS buyer's guide](https://maintenease.com/learn/cmms)
+- [MaintenEase product features](https://maintenease.com/features)
+
 ## Related
 
 - https://maintenease.com/learn/ai-maintenance-assistant

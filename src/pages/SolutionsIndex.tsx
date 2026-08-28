@@ -11,7 +11,7 @@ const SolutionsIndex = () => {
  <MarketingLayout>
  <Helmet>
  <title>Solutions — Work Orders, PMs & Fleet | MaintenEase</title>
- <meta name="description" content="See how MaintenEase fits your team — work order software, preventive maintenance, facility maintenance, and fleet maintenance, all in one platform." />
+ <meta name="description" content="Explore seven MaintenEase workflows for work orders, preventive maintenance, facilities, fleets, assets, inspections, and maintenance requests." />
  <link rel="canonical" href="https://maintenease.com/solutions" />
  <meta property="og:title" content="Solutions | MaintenEase" />
  <meta property="og:description" content="Work orders, preventive maintenance, facilities, and fleet — one platform." />
@@ -35,9 +35,9 @@ const SolutionsIndex = () => {
  <MarketingJsonLd />
  <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
  <p className="text-sm font-medium text-primary mb-3">Solutions</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">One platform, four ways to use it</h1>
+ <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">One platform, seven connected workflows</h1>
  <p className="text-lg text-foreground max-w-3xl mb-12">
- Whether you are chasing work orders, scheduling preventive tasks, looking after buildings, or keeping vehicles on the road — MaintenEase is built for the job.
+ From request intake and asset records to work orders, inspections, preventive schedules, facilities, and fleets, MaintenEase keeps the work connected to one history.
  </p>
  <div className="grid sm:grid-cols-2 gap-6">
  {solutions.map((s) => (
@@ -56,7 +56,7 @@ const SolutionsIndex = () => {
  <ShareButtons
  url="https://maintenease.com/solutions"
  title="MaintenEase Solutions — Work Orders, PMs & Fleet"
- description="One platform for work orders, preventive maintenance, facilities, and fleet."
+ description="Seven connected workflows for work orders, preventive maintenance, facilities, fleet, assets, inspections, and request intake."
  />
  </div>
  </section>

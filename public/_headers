@@ -5,6 +5,7 @@
   Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
   Link: </llms.txt>; rel="service-doc"; type="text/plain"
   Link: </api/ai.json>; rel="service-desc"; type="application/json"
+  Link: </api/blog.json>; rel="item"; type="application/json"
   Link: </.well-known/mcp/server-card.json>; rel="mcp-server-card"; type="application/json"
   Link: </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"
   Link: </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json"
@@ -83,9 +84,13 @@
   Content-Type: application/json; charset=utf-8
   Content-Disposition: inline
 
+/api/blog.json
+  Content-Type: application/json; charset=utf-8
+  Content-Disposition: inline
+
 # Protected and account routes are rewritten to this shell. The response
 # header remains effective even for crawlers that ignore HTML meta tags.
-/app-shell
+/app-shell.html
   Content-Type: text/html; charset=utf-8
   X-Robots-Tag: noindex, nofollow
 
