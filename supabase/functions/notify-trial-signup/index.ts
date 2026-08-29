@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { sendTemplateEmailWithLog } from "../_shared/transactional-email-templates/send-with-log.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -91,35 +93,28 @@ Deno.serve(async (req) => {
       </ul>
     `;
 
-    const sendEmail = (payload: Record<string, unknown>) =>
-      fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${serviceKey}`,
-          apikey: serviceKey,
-        },
-        body: JSON.stringify(payload),
-      });
-
     // 1) Internal ops notification.
-    const forwardRes = await sendEmail({
-      templateName: "generic",
-      recipientEmail: INTERNAL_RECIPIENT,
-      idempotencyKey: `trial-signup-${companyId || user.id}`,
-      templateData: {
-        subject: `New trial signup: ${company}`,
-        preheader: `${company} just started a trial`,
-        html,
-      },
-    });
+    try {
+      await sendTemplateEmailWithLog("generic", INTERNAL_RECIPIENT, {
+        idempotencyKey: `trial-signup-${companyId || user.id}`,
+        templateData: {
+          subject: `New trial signup: ${company}`,
+          preheader: `${company} just started a trial`,
+          html,
+        },
+      });
+    } catch (err) {
+      console.error("notify-trial-signup internal notification failed", err);
+      return new Response(JSON.stringify({ success: false }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 2) Confirmation email to the new trial user. Fire-and-forget — never
     //    block the response on the welcome email.
     if (userEmail) {
-      sendEmail({
-        templateName: "trial-start",
-        recipientEmail: userEmail,
+      sendTemplateEmailWithLog("trial-start", userEmail, {
         idempotencyKey: `trial-start-${companyId || user.id}`,
         templateData: {
           firstName: profile?.first_name ?? undefined,
@@ -131,14 +126,6 @@ Deno.serve(async (req) => {
       }).catch((err) => console.error("trial-start email failed", err));
     }
 
-    if (!forwardRes.ok) {
-      const text = await forwardRes.text().catch(() => "");
-      console.error("notify-trial-signup forward failed", forwardRes.status, text);
-      return new Response(JSON.stringify({ success: false }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
 
     return new Response(JSON.stringify({ success: true, trialDays: TRIAL_DAYS, trialEndsAt }), {
       status: 200,

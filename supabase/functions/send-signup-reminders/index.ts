@@ -1,5 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { sendTemplateEmailWithLog } from '../_shared/transactional-email-templates/send-with-log.ts'
+
 
 // Scheduled (hourly) job — invoked by pg_cron with the anon key.
 // No user input is accepted; verify_jwt is disabled in config.toml.
@@ -162,15 +164,27 @@ Deno.serve(async (req) => {
   for (const c of todo) {
     const stage = STAGES[c.stage]
     try {
-      const { error: invokeError } = await admin.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: stage.template,
-          recipientEmail: c.email,
+      const send = () =>
+        sendTemplateEmailWithLog(stage.template, c.email, {
           idempotencyKey: `signup-reminder-${c.userId}-${c.stage}`,
           templateData: stage.templateData({ firstName: c.firstName }),
-        },
-      })
-      if (invokeError) throw invokeError
+        })
+      try {
+        await send()
+      } catch (err) {
+        // Rate limited: wait the requested cooldown, then retry once.
+        const status = (err as { status?: number })?.status
+        if (status === 429) {
+          const retryAfter = (err as { retryAfterSeconds?: number | null })?.retryAfterSeconds ?? 60
+          await new Promise((r) => setTimeout(r, retryAfter * 1000))
+          await send()
+        } else {
+          throw err
+        }
+      }
+
+
+
 
       const { error: logErr } = await admin
         .from('signup_reminders_sent')
