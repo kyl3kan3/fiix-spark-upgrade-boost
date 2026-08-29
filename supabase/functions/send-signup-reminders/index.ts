@@ -1,5 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { sendTemplateEmailWithLog } from '../_shared/transactional-email-templates/send-with-log.ts'
+
 
 // Scheduled (hourly) job — invoked by pg_cron with the anon key.
 // No user input is accepted; verify_jwt is disabled in config.toml.
