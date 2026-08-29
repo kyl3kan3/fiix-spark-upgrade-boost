@@ -164,10 +164,26 @@ Deno.serve(async (req) => {
   for (const c of todo) {
     const stage = STAGES[c.stage]
     try {
-      await sendTemplateEmailWithLog(stage.template, c.email, {
-        idempotencyKey: `signup-reminder-${c.userId}-${c.stage}`,
-        templateData: stage.templateData({ firstName: c.firstName }),
-      })
+      const send = () =>
+        sendTemplateEmailWithLog(stage.template, c.email, {
+          idempotencyKey: `signup-reminder-${c.userId}-${c.stage}`,
+          templateData: stage.templateData({ firstName: c.firstName }),
+        })
+      try {
+        await send()
+      } catch (err) {
+        // Rate limited: wait the requested cooldown, then retry once.
+        const status = (err as { status?: number })?.status
+        if (status === 429) {
+          const retryAfter = (err as { retryAfterSeconds?: number | null })?.retryAfterSeconds ?? 60
+          await new Promise((r) => setTimeout(r, retryAfter * 1000))
+          await send()
+        } else {
+          throw err
+        }
+      }
+
+
 
 
       const { error: logErr } = await admin
