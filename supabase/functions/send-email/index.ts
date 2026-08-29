@@ -138,32 +138,17 @@ const handler = async (req: Request): Promise<Response> => {
       }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
-    // Forward to the managed transactional email pipeline
+    // Send through Lovable's managed email delivery
     const safeSubject = String(subject).replace(/[\r\n]+/g, " ").slice(0, 300);
     const safeBody = sanitizeHtml(body);
-    const forwardRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
-      },
-      body: JSON.stringify({
-        templateName: "generic",
-        recipientEmail: to,
-        templateData: { subject: safeSubject, html: safeBody },
-      }),
+    const result = await sendTemplateEmailWithLog("generic", to, {
+      templateData: { subject: safeSubject, html: safeBody },
+      idempotencyKey: referenceId
+        ? `${notificationType || "notification"}-${referenceId}`
+        : undefined,
     });
-    const forwardJson = await forwardRes.json().catch(() => ({}));
-    if (!forwardRes.ok) {
-      console.error("send-email pipeline error", forwardRes.status, forwardJson);
-      return new Response(JSON.stringify({
-        success: false,
-        error: "Email sending failed.",
-      }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
-    }
 
-    return new Response(JSON.stringify({ success: true, data: forwardJson }), {
+    return new Response(JSON.stringify({ success: true, data: result }), {
       status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
