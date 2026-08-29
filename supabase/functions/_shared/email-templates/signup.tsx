@@ -1,7 +1,18 @@
 /// <reference types="npm:@types/react@18.3.1" />
+
 import * as React from 'npm:react@18.3.1'
-import { Button, Heading, Link, Text } from 'npm:@react-email/components@0.0.22'
-import { EmailLayout, styles } from './layout.tsx'
+
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Link,
+  Preview,
+  Text,
+} from 'npm:@react-email/components@0.0.22'
 
 interface SignupEmailProps {
   siteName: string
@@ -12,29 +23,75 @@ interface SignupEmailProps {
 
 export const SignupEmail = ({
   siteName,
+  siteUrl,
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <EmailLayout preview={`Confirm your email for ${siteName}`}>
-    <Heading style={styles.h1}>Welcome aboard 👋</Heading>
-    <Text style={styles.text}>
-      Thanks for signing up for <strong>{siteName}</strong>. Tap the button below
-      to confirm <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link> and
-      start managing your maintenance work.
-    </Text>
-    <div style={styles.buttonWrap}>
-      <Button style={styles.button} href={confirmationUrl}>
-        Confirm my email
-      </Button>
-    </div>
-    <Text style={styles.hint}>
-      Button not working? Paste this link into your browser:
-    </Text>
-    <Text style={styles.altLink}>{confirmationUrl}</Text>
-    <Text style={styles.hint}>
-      If you didn't create an account, you can safely ignore this email.
-    </Text>
-  </EmailLayout>
+  <Html lang="en" dir="ltr">
+    <Head>
+      <style>{darkModeCss}</style>
+    </Head>
+    <Preview>Confirm your email for {siteName}</Preview>
+    <Body style={main}>
+      <Container style={container}>
+        <Heading style={h1}>Confirm your email</Heading>
+        <Text style={text}>
+          Thanks for signing up for{' '}
+          <Link href={siteUrl} style={link}>
+            <strong>{siteName}</strong>
+          </Link>
+          !
+        </Text>
+        <Text style={text}>
+          Please confirm your email address (
+          <Link href={`mailto:${recipient}`} style={link}>
+            {recipient}
+          </Link>
+          ) by clicking the button below:
+        </Text>
+        <Button className="dm-btn" style={button} href={confirmationUrl}>
+          Verify Email
+        </Button>
+        <Text style={footer}>
+          If you didn't create an account, you can safely ignore this email.
+        </Text>
+      </Container>
+    </Body>
+  </Html>
 )
 
 export default SignupEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  border: '1px solid #000000',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+// Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
+const darkModeCss = `
+  @media (prefers-color-scheme: dark) {
+    .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  }
+  [data-ogsc] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  [data-ogsb] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+`
