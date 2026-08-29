@@ -164,15 +164,11 @@ Deno.serve(async (req) => {
   for (const c of todo) {
     const stage = STAGES[c.stage]
     try {
-      const { error: invokeError } = await admin.functions.invoke('send-transactional-email', {
-        body: {
-          templateName: stage.template,
-          recipientEmail: c.email,
-          idempotencyKey: `signup-reminder-${c.userId}-${c.stage}`,
-          templateData: stage.templateData({ firstName: c.firstName }),
-        },
+      await sendTemplateEmailWithLog(stage.template, c.email, {
+        idempotencyKey: `signup-reminder-${c.userId}-${c.stage}`,
+        templateData: stage.templateData({ firstName: c.firstName }),
       })
-      if (invokeError) throw invokeError
+
 
       const { error: logErr } = await admin
         .from('signup_reminders_sent')
