@@ -66,6 +66,20 @@ describe("crawler edge middleware", () => {
     );
   });
 
+  it("rewrites protected auth routes to the noindex app shell", async () => {
+    const context = contextFor(
+      "/auth",
+      new Response("<html><body>App shell</body></html>", {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      }),
+    );
+
+    await onRequest(context);
+    const downstream = context.next.mock.calls[0]?.[0] as Request;
+
+    expect(new URL(downstream.url).pathname).toBe("/app-shell");
+  });
+
   it("does not disguise an unknown app-shell route as Markdown", async () => {
     const context = contextFor(
       "/not-a-page.md",

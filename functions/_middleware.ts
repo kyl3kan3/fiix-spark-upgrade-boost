@@ -62,9 +62,9 @@ export async function onRequest(context: any) {
   }
 
   const routeKind = classifySeoPath(requestUrl.pathname);
-  const useAppShell = routeKind === "noindex" && requestUrl.pathname !== "/auth" && isDocumentRequest;
+  const useAppShell = routeKind === "noindex" && isDocumentRequest;
   const appShellRequest = useAppShell
-    ? rewriteDocumentRequest(new URL("/app-shell.html", requestUrl.origin), context.request)
+    ? rewriteDocumentRequest(new URL("/app-shell", requestUrl.origin), context.request)
     : undefined;
   const negotiatedMarkdownPath =
     routeKind === "indexable" &&

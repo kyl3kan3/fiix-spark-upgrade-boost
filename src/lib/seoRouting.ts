@@ -81,6 +81,7 @@ const REDIRECTS: Record<string, SeoRedirect> = {
   "/terms-of-service": { location: "/terms", status: 301 },
   "/refunds": { location: "/refund-policy", status: 301 },
   "/sms": { location: "/sms-opt-in", status: 301 },
+  "/sitemap.html": { location: "/sitemap.xml", status: 301 },
   "/login": { location: "/auth", status: 302 },
   "/signup": { location: "/auth?signup=true", status: 302 },
   "/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026": {

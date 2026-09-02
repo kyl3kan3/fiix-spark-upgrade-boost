@@ -90,9 +90,25 @@
 
 # Protected and account routes are rewritten to this shell. The response
 # header remains effective even for crawlers that ignore HTML meta tags.
+/app-shell
+  Content-Type: text/html; charset=utf-8
+  X-Robots-Tag: noindex, nofollow
+
 /app-shell.html
   Content-Type: text/html; charset=utf-8
   X-Robots-Tag: noindex, nofollow
+
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.ico
+  Cache-Control: public, max-age=31536000, immutable
+
+/og-image.png
+  Cache-Control: public, max-age=31536000, immutable
 
 /auth
   X-Robots-Tag: noindex, nofollow

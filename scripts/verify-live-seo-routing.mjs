@@ -23,7 +23,7 @@ for (const path of [randomPath, "/blog/industrial-maintenance-optimization", "/l
   else pass(`${path} is a true 404 with an HTTP noindex header`);
 }
 
-for (const path of ["/dashboard", "/assets/seo-regression-asset"]) {
+for (const path of ["/auth", "/auth?signup=true", "/forgot-password", "/help", "/dashboard", "/assets/seo-regression-asset"]) {
   const { response, body } = await request(path);
   if (response.status !== 200) fail(`${path} returned ${response.status}; expected the app shell with 200`);
   else if (!/text\/html/i.test(response.headers.get("content-type") ?? "")) fail(`${path} has ${response.headers.get("content-type") ?? "no Content-Type"}; expected text/html`);
