@@ -5,18 +5,49 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/favicon.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/og-image.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
   "routes": [
     { "src": "^/index/?$", "headers": { "Location": "/" }, "status": 301 },
     { "src": "^/privacy-policy/?$", "headers": { "Location": "/privacy" }, "status": 301 },
     { "src": "^/terms-of-service/?$", "headers": { "Location": "/terms" }, "status": 301 },
     { "src": "^/refunds/?$", "headers": { "Location": "/refund-policy" }, "status": 301 },
     { "src": "^/sms/?$", "headers": { "Location": "/sms-opt-in" }, "status": 301 },
+    { "src": "^/sitemap\\.html/?$", "headers": { "Location": "/sitemap.xml" }, "status": 301 },
     { "src": "^/login/?$", "headers": { "Location": "/auth" }, "status": 302 },
     { "src": "^/signup/?$", "headers": { "Location": "/auth?signup=true" }, "status": 302 },
     { "src": "^/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026/?$", "headers": { "Location": "/learn/preventive-maintenance" }, "status": 301 },
+    { "src": "^/favicon\\.ico$", "dest": "/favicon.png" },
     {
       "src": "^/(auth|forgot-password|reset-password|unsubscribe|requests|dashboard|vendors|assets|work-orders|inspections|checklists|admin|notifications|settings|calendar|maintenance|predictive-maintenance|self-healing|cost-tracking|onboarding|power-usage|assistant|guided-setup|building-viewer|import|team|locations|profile|help|chat|reports|billing|automations|api-keys|sso|setup|team-setup|company-setup|feature|r)(/.*)?$",
-      "dest": "/app-shell.html",
+      "dest": "/app-shell",
       "headers": { "X-Robots-Tag": "noindex, nofollow" }
     },
     { "handle": "filesystem" },

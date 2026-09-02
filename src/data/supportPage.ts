@@ -6,9 +6,9 @@ export const SUPPORT_PAGE = {
   intro:
     "Find the right guide, open the signed-in Help Center, or email our team with the details we need to investigate quickly.",
   canonicalUrl: "https://maintenease.com/support",
-  email: "info@decent4.com",
+  email: "support@maintenease.com",
   emailHref:
-    "mailto:info@decent4.com?subject=MaintenEase%20support%20request",
+    "mailto:support@maintenease.com?subject=MaintenEase%20support%20request",
   updated: "2026-08-15",
 } as const;
 

@@ -88,6 +88,9 @@ const Hero = () => {
                 See pricing — plans from $49/mo
               </button>
             </div>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto md:mx-0">
+              7-day free trial on every plan. A card is required — cancel before day 8 to avoid charges.
+            </p>
           </div>
 
           {/* Hero visual — simulated dashboard preview, floating in 3D and

@@ -39,7 +39,7 @@ const CTA = () => {
  className="bg-background text-primary hover:bg-background/90 group font-semibold uppercase tracking-wide shadow-md"
  onClick={() => navigate("/auth?signup=true")}
  >
- Start Free Trial
+ Start free trial
  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
  </Button>
  </Magnetic>

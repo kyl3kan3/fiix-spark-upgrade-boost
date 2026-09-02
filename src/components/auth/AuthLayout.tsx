@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
     <main className="w-full h-screen flex flex-col md:flex-row">
-      {/* Left side: Brand imagery & quote — hidden on mobile */}
+      {/* Left side: Brand imagery & value proposition — hidden on mobile */}
       <div className="hidden md:flex flex-1 relative overflow-hidden bg-primary">
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/70 to-primary/40 z-10" />
@@ -25,25 +25,20 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             <span className="font-headline text-xl font-bold tracking-normal">MaintenEase</span>
           </Link>
 
-          {/* Quote / value proposition */}
           <div className="mb-12 max-w-lg">
             <p className="font-headline text-4xl xl:text-5xl font-bold text-primary-foreground mb-6 leading-tight">
               Precision Facility Management.
             </p>
             <p className="text-base text-primary-foreground/85 leading-relaxed">
-              "MaintenEase transformed our operations. We moved from reactive fixes to
-              proactive maintenance, saving thousands in downtime and extending asset life
-              significantly."
+              Move from reactive fixes to proactive maintenance. Track assets, work orders,
+              inspections, and team workflows in one workspace built for facility and
+              industrial maintenance teams.
             </p>
-            <div className="mt-8 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground font-semibold text-sm">
-                SJ
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-primary-foreground">Sarah Jenkins</p>
-                <p className="text-xs text-primary-foreground/70">Director of Operations, Nexus Industrial</p>
-              </div>
-            </div>
+            <ul className="mt-8 space-y-3 text-sm text-primary-foreground/80">
+              <li>Flat account pricing with published seat and capacity limits</li>
+              <li>7-day free trial on every plan — card required, cancel before day 8</li>
+              <li>Free onboarding and data import included</li>
+            </ul>
           </div>
         </div>
       </div>

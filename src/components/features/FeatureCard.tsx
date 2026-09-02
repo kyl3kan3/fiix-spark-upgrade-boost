@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FeatureItem } from "./FeaturesData";
@@ -18,6 +19,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
  viewType, 
  onSelectFeature 
 }) => {
+ const demoPath = `/feature/${encodeURIComponent(item.title)}`;
+
  return (
  <Card 
  className={`border border-border hover:shadow-lg transition-ui duration-300 hover:border-primary/20 group ${ selectedFeature === item.title ? "ring-2 ring-primary" : "" } ${viewType === "list" ? "overflow-hidden" : ""}`}
@@ -43,12 +46,22 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
  ))}
  </div>
  
+ {item.demoEnabled ? (
+ <Button
+ asChild
+ className="mt-6 bg-primary hover:bg-primary/90 text-white"
+ onClick={() => onSelectFeature(item.title, true)}
+ >
+ <Link to={demoPath}>Try Demo</Link>
+ </Button>
+ ) : (
  <Button 
  className="mt-6 bg-primary hover:bg-primary/90 text-white"
- onClick={() => onSelectFeature(item.title, item.demoEnabled)}
+ onClick={() => onSelectFeature(item.title, false)}
  >
- {item.demoEnabled ? "Try Demo" : "Coming Soon"}
+ Coming Soon
  </Button>
+ )}
  </div>
  </CardContent>
  </Card>

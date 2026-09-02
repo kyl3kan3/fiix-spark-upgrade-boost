@@ -12,7 +12,7 @@
  * children, so the shell is discarded the moment JS runs. Nothing about the
  * interactive app changes.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
@@ -589,20 +589,6 @@ const staticRoutes: Route[] = [
   // no-JS HTML — otherwise they inherit the homepage canonical from the shell
   // and get flagged as non-canonical pages in the sitemap.
   {
-    path: "/auth",
-    title: "Sign in or create your account | MaintenEase",
-    description:
-      "Sign in to MaintenEase or create an account to manage assets, work orders, inspections, and your maintenance team in one place.",
-    h1: "Sign in or create your MaintenEase account",
-    intro:
-      "Access your MaintenEase workspace to manage assets, work orders, inspections, and your maintenance team.",
-    indexable: false,
-    links: [
-      { href: "/pricing", label: "Pricing" },
-      { href: "/features", label: "Features" },
-    ],
-  },
-  {
     path: "/privacy",
     title: "Privacy Notice | MaintenEase",
     description:
@@ -960,13 +946,40 @@ const stripHtml = (html: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-function chunk(text: string, size: number, count: number): string[] {
-  const words = text.split(" ");
-  const out: string[] = [];
-  for (let i = 0; i < words.length && out.length < count; i += size) {
-    out.push(words.slice(i, i + size).join(" "));
+function sectionsFromBlogHtml(html: string): { heading: string; body: string }[] {
+  const sections: { heading: string; body: string }[] = [];
+  const h2Pattern = /<h2[^>]*>([\s\S]*?)<\/h2>/gi;
+  const matches: { index: number; heading: string; end: number }[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = h2Pattern.exec(html)) !== null) {
+    matches.push({
+      index: match.index,
+      heading: stripHtml(match[1]),
+      end: match.index + match[0].length,
+    });
   }
-  return out;
+
+  if (matches.length === 0) {
+    const body = stripHtml(html);
+    return body ? [{ heading: "Overview", body }] : [];
+  }
+
+  const preamble = stripHtml(html.slice(0, matches[0].index));
+  if (preamble) {
+    sections.push({ heading: "Overview", body: preamble });
+  }
+
+  for (let i = 0; i < matches.length; i++) {
+    const start = matches[i].end;
+    const end = i + 1 < matches.length ? matches[i + 1].index : html.length;
+    const body = stripHtml(html.slice(start, end));
+    const heading = matches[i].heading.trim();
+    if (body && heading) {
+      sections.push({ heading, body });
+    }
+  }
+
+  return sections;
 }
 
 async function fetchBlogPosts(): Promise<BlogRow[]> {
@@ -1017,10 +1030,7 @@ if (blogPosts.length) {
       description,
       h1: post.title,
       intro: description,
-      sections: chunk(body, 120, 10).map((paragraph, i) => ({
-        heading: i === 0 ? "Overview" : "Continued",
-        body: paragraph,
-      })),
+      sections: sectionsFromBlogHtml(post.content_html ?? ""),
       links: [
         { href: "/blog", label: "All articles" },
         { href: "/learn", label: "Maintenance glossary" },
@@ -1250,6 +1260,12 @@ function renderAppShell(): string {
 
 const appShellPath = join(DIST, "app-shell.html");
 writeFileSync(appShellPath, renderAppShell());
+
+const faviconPngPath = join(DIST, "favicon.png");
+const faviconIcoPath = join(DIST, "favicon.ico");
+if (existsSync(faviconPngPath)) {
+  copyFileSync(faviconPngPath, faviconIcoPath);
+}
 
 let written = 0;
 let markdownWritten = 0;
