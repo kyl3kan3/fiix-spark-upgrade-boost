@@ -982,15 +982,6 @@ function sectionsFromBlogHtml(html: string): { heading: string; body: string }[]
   return sections;
 }
 
-function chunk(text: string, size: number, count: number): string[] {
-  const words = text.split(" ");
-  const out: string[] = [];
-  for (let i = 0; i < words.length && out.length < count; i += size) {
-    out.push(words.slice(i, i + size).join(" "));
-  }
-  return out;
-}
-
 async function fetchBlogPosts(): Promise<BlogRow[]> {
   try {
     const res = await fetch(
