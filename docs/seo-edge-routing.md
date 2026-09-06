@@ -8,6 +8,8 @@ The previous host served the homepage shell with HTTP 200 for unknown paths and 
 
 `vercel.json` is therefore the deployment authority for document routing on Vercel. It preserves the known legacy redirects, serves private application deep links through the HTML-suffixed app shell with `X-Robots-Tag: noindex, nofollow`, lets real generated files pass through, and returns the built `404.html` with HTTP 404 and the same noindex header for every other document path. The `.html` suffix is deliberate: it gives Vercel an unambiguous HTML artifact and prevents protected routes such as `/auth` from being served as `application/octet-stream`.
 
+Fingerprinted build assets live under `/static/*` (see `vite.config.ts` `build.assetsDir`). Long-lived `Cache-Control` for `/static/*`, `/favicon.png`, `/favicon.ico`, and `/og-image.png` is set in **both** the top-level `headers` array and matching `routes` entries with `"continue": true` before `{ "handle": "filesystem" }`. Vercel does not reliably apply top-level `headers` to files served through legacy `routes` + filesystem, so the route-level rules are required for production.
+
 The root `middleware.ts` is the Vercel Routing Middleware authority for representation discovery. It advertises the public AI surfaces through response `Link` headers, negotiates `text/markdown` only when explicitly requested, assigns correct media types to extensionless `.well-known` documents, and records coarse crawler labels without logging raw user agents or IP addresses. `functions/_middleware.ts` retains equivalent behavior for Cloudflare preview/fallback deployments.
 
 The public-route allowlist is generated from `src/data/sitemapEntries.ts`. Public build-time HTML is emitted as real content in the ordinary document body, not only in `noscript`.
@@ -40,6 +42,8 @@ Value: 216.150.16.1
 ```
 
 `www.maintenease.com` uses the project-specific CNAME `a676d9c257b95208.vercel-dns-016.com`. Vercel's domain-level configuration returns a permanent 308 redirect to the apex while preserving the path and query string. The regression suite checks that redirect directly; it is intentionally not duplicated in `vercel.json`.
+
+`http://www.maintenease.com` currently takes two hops (`http://www` → `https://www` → `https://apex`) because Vercel upgrades HTTP to HTTPS on the requested host before applying the www→apex redirect. Collapsing that to a single hop requires Vercel **Domains** settings (or DNS/edge configuration), not a repo rewrite — there is no safe `vercel.json` rule that can skip the automatic HTTPS upgrade on `www`.
 
 All unrelated DNS records, including MX, SPF, DKIM, DMARC, verification records, service subdomains, and Lovable verification TXT records, remain at the DNS provider. Vercel reports both apex and `www` as valid configurations, and both hostnames have valid TLS.
 

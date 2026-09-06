@@ -147,7 +147,7 @@ export default function TermsOfService() {
  any message; you will receive a single confirmation message and
  no further messages will be sent. Reply <strong>HELP</strong> for
  assistance, or contact us at{" "}
- <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>. For details on how we
+ <a className="underline" href="mailto:support@maintenease.com">support@maintenease.com</a>. For details on how we
  handle your phone number and consent records, see our{" "}
  <Link className="underline" to="/privacy">Privacy Notice</Link>.
  </p>

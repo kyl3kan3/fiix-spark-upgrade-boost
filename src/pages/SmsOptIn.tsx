@@ -131,7 +131,7 @@ export default function SmsOptIn() {
  </p>
  <p>
  Reply <strong>HELP</strong> for help, or email{" "}
- <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a>.
+ <a className="underline" href="mailto:support@maintenease.com">support@maintenease.com</a>.
  Reply <strong>STOP</strong> at any time to cancel.
  You can also unsubscribe from your{" "}
  <Link to="/settings/notifications" className="underline">

@@ -70,7 +70,7 @@ p === "/editorial-policy" ||
  { label: "About", to: "/about" },
  { label: "Blog", to: "/blog" },
  { label: "Editorial Policy", to: "/editorial-policy" },
-          { label: "Contact", to: "mailto:info@decent4.com" },
+          { label: "Contact", to: "mailto:support@maintenease.com" },
  ],
  },
  {
@@ -95,7 +95,7 @@ p === "/editorial-policy" ||
  <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
- <p className="text-background/70 text-sm">Operated by Decent4 · <a className="underline underline-offset-4 hover:text-background" href="mailto:info@decent4.com">info@decent4.com</a></p>
+ <p className="text-background/70 text-sm">Operated by Decent4 · <a className="underline underline-offset-4 hover:text-background" href="mailto:support@maintenease.com">support@maintenease.com</a></p>
  </div>
 
  {footerLinks.map((column, idx) => (
