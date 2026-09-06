@@ -44,7 +44,7 @@ export default function RefundPolicy() {
  <a className="underline" href="https://paddle.net" target="_blank" rel="noreferrer">paddle.net</a>
  {" "}
  and look up your order using the email address you used at checkout, or email us at{" "}
- <a className="underline" href="mailto:info@decent4.com">info@decent4.com</a> and we will help you.
+ <a className="underline" href="mailto:support@maintenease.com">support@maintenease.com</a> and we will help you.
  </p>
  </section>
 

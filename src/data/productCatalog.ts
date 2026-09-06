@@ -9,7 +9,7 @@ export const EXTRA_BUSINESS_SEAT_MONTHLY = 15;
 export const PRODUCT_TRIAL_DAYS = TRIAL_DAYS;
 export const PRODUCT_TRIAL_CANCEL_BY_DAY = TRIAL_CANCEL_BY_DAY;
 export const PRODUCT_OPERATOR_NAME = "Decent4";
-export const PRODUCT_CONTACT_EMAIL = "info@decent4.com";
+export const PRODUCT_CONTACT_EMAIL = "support@maintenease.com";
 export const PRODUCT_SUPPORT_SUMMARY =
   "Starter includes email support, Pro includes priority email support, and Business includes email and chat support.";
 export const PRODUCT_TRIAL_SUMMARY = `${PRODUCT_TRIAL_DAYS}-day free trial; a card is required and cancellation is required before day ${PRODUCT_TRIAL_CANCEL_BY_DAY} to avoid a charge.`;

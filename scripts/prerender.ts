@@ -635,7 +635,7 @@ const staticRoutes: Route[] = [
       { heading: "10. Liability", body: "To the fullest extent allowed by law, aggregate liability is limited to fees paid in the preceding 12 months, and indirect or consequential damages are excluded. Legally non-excludable liability remains unaffected." },
       { heading: "11. Governing law", body: "The laws applicable at Decent4's place of establishment govern these Terms, and disputes go to the competent courts of that jurisdiction." },
       { heading: "12. Changes to these Terms", body: "Terms may be updated. Continued use after an update takes effect constitutes acceptance of the revised Terms." },
-      { heading: "13. SMS messaging terms", body: "Opted-in users agree to recurring operational SMS messages. Consent is not a condition of purchase; message and data rates may apply. Reply STOP to cancel or HELP for assistance, or contact info@decent4.com." },
+      { heading: "13. SMS messaging terms", body: "Opted-in users agree to recurring operational SMS messages. Consent is not a condition of purchase; message and data rates may apply. Reply STOP to cancel or HELP for assistance, or contact support@maintenease.com." },
     ],
     links: [
       { href: "/privacy", label: "Privacy notice" },
@@ -652,7 +652,7 @@ const staticRoutes: Route[] = [
       "How the 7-day free trial works, how cancellations are handled, and when MaintenEase issues refunds.",
     sections: [
       { heading: "30-day money-back guarantee", body: "Decent4, trading as MaintenEase, offers a 30-day money-back guarantee. A customer who is not satisfied may request a full refund within 30 days of the order date." },
-      { heading: "How to request a refund", body: "Refunds are processed by Paddle, the Merchant of Record. Visit paddle.net and look up the order with the checkout email, or email info@decent4.com for help." },
+      { heading: "How to request a refund", body: "Refunds are processed by Paddle, the Merchant of Record. Visit paddle.net and look up the order with the checkout email, or email support@maintenease.com for help." },
       { heading: "Free trials", body: "Paid plans begin with a 7-day free trial. Cancel before the trial ends to avoid a charge; no refund is needed when no charge was made." },
       { heading: "Subscription renewals", body: "Subscriptions renew automatically. Cancellation stops future charges but does not automatically refund the current billing period. Current-period refund requests must be made within the 30-day window." },
     ],
@@ -672,8 +672,8 @@ const staticRoutes: Route[] = [
     sections: [
       { heading: "What you will receive", body: "Opted-in users may receive work-order assignments and status updates, inspection and checklist reminders, account and security alerts, and occasional service announcements from MaintenEase." },
       { heading: "Message frequency and charges", body: "Messages recur based on account activity, typically up to about 10 per week. Message and data rates may apply, and carriers are not liable for delayed or undelivered messages." },
-      { heading: "Consent and opt-out", body: "Consent is not a condition of purchase. Reply STOP at any time to cancel or HELP for assistance. For support, email info@decent4.com." },
-      { heading: "Submitting the opt-in form", body: "The secure form validates an E.164 mobile number, such as +15558675310, and requires explicit consent. If JavaScript is unavailable, contact info@decent4.com for an accessible enrollment option." },
+      { heading: "Consent and opt-out", body: "Consent is not a condition of purchase. Reply STOP at any time to cancel or HELP for assistance. For support, email support@maintenease.com." },
+      { heading: "Submitting the opt-in form", body: "The secure form validates an E.164 mobile number, such as +15558675310, and requires explicit consent. If JavaScript is unavailable, contact support@maintenease.com for an accessible enrollment option." },
     ],
     links: [
       { href: "/privacy", label: "Privacy notice" },
@@ -691,7 +691,7 @@ const staticRoutes: Route[] = [
     sections: [
       { heading: "What the product is for", body: "Maintenance and facility teams use MaintenEase to capture requests, plan and complete work, keep asset history, schedule recurring maintenance, run inspections, and review operational records." },
       { heading: "Published product facts", body: "Current plan prices, included seats, record limits, trial terms, and support channels come from one maintained product catalog." },
-      { heading: "Contact and accountability", body: "Product and support questions can be sent to info@decent4.com. MaintenEase does not publish unverified customer counts, ratings, staff credentials, or social profiles." },
+      { heading: "Contact and accountability", body: "Product and support questions can be sent to support@maintenease.com. MaintenEase does not publish unverified customer counts, ratings, staff credentials, or social profiles." },
     ],
     links: [
       { href: "/pricing", label: "Current MaintenEase plans" },
@@ -711,7 +711,7 @@ const staticRoutes: Route[] = [
       { heading: "Product and competitor claims", body: "MaintenEase facts come from the product catalog. Time-sensitive competitor facts link to official vendor pages and carry a verification date. Quote-only pricing is not converted into estimated savings." },
       { heading: "Evidence and calculations", body: "Worked examples state their assumptions. MaintenEase does not describe internal customer data as research unless a real cohort, period, method, limitations, and auditable evidence can be published." },
       { heading: "Safety and professional scope", body: "Guides are educational material, not a substitute for employer procedures, manufacturer instructions, qualified-person requirements, engineering judgment, or applicable law." },
-      { heading: "Corrections and reviewers", body: "The published reviewer is currently the MaintenEase editorial team as an organizational author. No individual biography or credential is published until the owner verifies those facts. Corrections can be sent to info@decent4.com." },
+      { heading: "Corrections and reviewers", body: "The published reviewer is currently the MaintenEase editorial team as an organizational author. No individual biography or credential is published until the owner verifies those facts. Corrections can be sent to support@maintenease.com." },
     ],
     links: [
       { href: "/about", label: "About MaintenEase" },

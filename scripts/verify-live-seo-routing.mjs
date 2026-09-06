@@ -71,6 +71,8 @@ for (const path of ["/", "/pricing", "/learn/preventive-maintenance", "/tools/ma
 const redirects = [
   ["/privacy-policy", 301, "/privacy"],
   ["/login", 302, "/auth"],
+  ["/contact", 301, "/support"],
+  ["/demo", 302, "/auth"],
   ["/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026", 301, "/learn/preventive-maintenance"],
 ];
 for (const [path, status, destination] of redirects) {
@@ -94,6 +96,25 @@ if (baseUrl.hostname === "maintenease.com") {
   if (![301, 308].includes(response.status)) fail(`www returned ${response.status}; expected a permanent redirect`);
   else if (new URL(location, base).href !== expected.href) fail(`www redirects to ${location}; expected ${expected.href}`);
   else pass(`www preserves the path and permanently redirects to ${baseUrl.hostname}`);
+
+  const { body: homeBody } = await request("/");
+  const staticAsset = homeBody.match(/\/static\/[^"']+\.js/)?.[0];
+  if (!staticAsset) fail("Homepage HTML did not reference a /static/*.js asset");
+  else {
+    const { response } = await request(staticAsset);
+    const cacheControl = response.headers.get("cache-control") ?? "";
+    if (!/max-age=31536000/i.test(cacheControl) || !/immutable/i.test(cacheControl)) {
+      fail(`${staticAsset} has Cache-Control: ${cacheControl || "(missing)"}; expected public, max-age=31536000, immutable`);
+    } else pass(`${staticAsset} is long-cache immutable`);
+  }
+
+  for (const assetPath of ["/favicon.png", "/og-image.png"]) {
+    const { response } = await request(assetPath);
+    const cacheControl = response.headers.get("cache-control") ?? "";
+    if (!/max-age=31536000/i.test(cacheControl) || !/immutable/i.test(cacheControl)) {
+      fail(`${assetPath} has Cache-Control: ${cacheControl || "(missing)"}; expected public, max-age=31536000, immutable`);
+    } else pass(`${assetPath} is long-cache immutable`);
+  }
 }
 
 if (failures.length) {
