@@ -4,6 +4,7 @@ vi.mock("@datafast/ai-crawl", () => ({
   trackAICrawlerRequest: vi.fn(),
 }));
 
+import { HTML_SECURITY_HEADERS } from "../../src/lib/htmlSecurityHeaders";
 import { onRequest } from "../_middleware";
 
 type MockContext = {
@@ -64,6 +65,10 @@ describe("crawler edge middleware", () => {
     expect(response.headers.get("Link")).toContain(
       '</features.md>; rel="alternate"; type="text/markdown"',
     );
+    expect(response.headers.get("Content-Security-Policy")).toBe(
+      HTML_SECURITY_HEADERS["Content-Security-Policy"],
+    );
+    expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
   });
 
   it("rewrites protected auth routes to the noindex app shell", async () => {

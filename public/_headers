@@ -2,6 +2,10 @@
 # so agents can find the API catalog, MCP server card, skills index, auth docs,
 # and OAuth metadata without scraping the page.
 /*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://datafa.st https://cdn.paddle.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://wwgljhpuulhljumrhscg.supabase.co wss://wwgljhpuulhljumrhscg.supabase.co https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://datafa.st https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://cdn.paddle.com https://checkout.paddle.com https://buy.paddle.com https://api.paddle.com https://sandbox-api.paddle.com; frame-src 'self' https://cdn.paddle.com https://checkout.paddle.com https://buy.paddle.com
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
   Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"
   Link: </llms.txt>; rel="service-doc"; type="text/plain"
   Link: </api/ai.json>; rel="service-desc"; type="application/json"

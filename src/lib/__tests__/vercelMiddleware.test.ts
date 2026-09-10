@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { HTML_SECURITY_HEADERS } from "../htmlSecurityHeaders";
 import middleware from "../../../middleware";
 
 describe("Vercel SEO middleware", () => {
@@ -9,6 +10,10 @@ describe("Vercel SEO middleware", () => {
     expect(response.headers.get("link")).toContain("</api/ai.json>");
     expect(response.headers.get("link")).toContain("</learn/cmms.md>");
     expect(response.headers.get("vary")).toContain("Accept");
+    expect(response.headers.get("content-security-policy")).toBe(
+      HTML_SECURITY_HEADERS["Content-Security-Policy"],
+    );
+    expect(response.headers.get("x-content-type-options")).toBe("nosniff");
   });
 
   it("rewrites an explicit Markdown request to the generated representation", () => {

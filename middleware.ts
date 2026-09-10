@@ -7,6 +7,7 @@ import {
   MARKDOWN_MEDIA_TYPE,
   markdownPathForPage,
 } from "./src/lib/contentNegotiation";
+import { applyHtmlSecurityHeaders } from "./src/lib/htmlSecurityHeaders";
 import { classifySeoPath } from "./src/lib/seoRouting";
 
 const AGENT_LINKS = [
@@ -102,6 +103,7 @@ export default function middleware(request: Request): Response {
     headers.append("Link", `<${markdownPath}>; rel="alternate"; type="${MARKDOWN_MEDIA_TYPE}"`);
     appendVary(headers, "Accept");
   }
+  applyHtmlSecurityHeaders(headers);
   crawlerLog(request, "html");
   return next({ headers });
 }

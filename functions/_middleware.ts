@@ -17,6 +17,7 @@ import {
   MARKDOWN_MEDIA_TYPE,
   markdownPathForPage,
 } from "../src/lib/contentNegotiation";
+import { applyHtmlSecurityHeaders } from "../src/lib/htmlSecurityHeaders";
 import { classifySeoPath, redirectForPath } from "../src/lib/seoRouting";
 
 // Same websiteId as the browser script in index.html.
@@ -104,6 +105,7 @@ export async function onRequest(context: any) {
 
     // Advertise agent-discovery resources on HTML documents.
     if ((headers.get("content-type") ?? "").includes("text/html")) {
+      applyHtmlSecurityHeaders(headers);
       headers.append("Link", AGENT_LINKS);
       if (routeKind === "indexable") {
         const alternatePath = markdownPathForPage(requestUrl.pathname);
