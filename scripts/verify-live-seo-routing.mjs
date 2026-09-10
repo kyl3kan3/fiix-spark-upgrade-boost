@@ -115,6 +115,32 @@ if (baseUrl.hostname === "maintenease.com") {
       fail(`${assetPath} has Cache-Control: ${cacheControl || "(missing)"}; expected public, max-age=31536000, immutable`);
     } else pass(`${assetPath} is long-cache immutable`);
   }
+
+  for (const path of ["/", "/pricing", "/auth"]) {
+    const { response } = await request(path);
+    const csp = response.headers.get("content-security-policy") ?? "";
+    const nosniff = response.headers.get("x-content-type-options") ?? "";
+    const referrer = response.headers.get("referrer-policy") ?? "";
+    if (!/^default-src 'self'/i.test(csp)) fail(`${path} is missing a Content-Security-Policy with default-src 'self'`);
+    else if (nosniff.toLowerCase() !== "nosniff") fail(`${path} is missing X-Content-Type-Options: nosniff`);
+    else if (!/strict-origin-when-cross-origin/i.test(referrer)) {
+      fail(`${path} is missing Referrer-Policy: strict-origin-when-cross-origin`);
+    } else pass(`${path} ships HTML security headers`);
+  }
+
+  const httpWww = await fetch("http://www.maintenease.com/", {
+    method: "GET",
+    redirect: "manual",
+    headers: { "User-Agent": "MaintenEase-SEO-live-regression/1.0" },
+  });
+  const httpWwwLocation = httpWww.headers.get("location") ?? "";
+  if (httpWww.status === 308 && /^https:\/\/www\.maintenease\.com/i.test(httpWwwLocation)) {
+    pass("http://www upgrades to https://www before apex redirect (expected two-hop chain)");
+  } else if ([301, 308].includes(httpWww.status) && /^https:\/\/maintenease\.com/i.test(httpWwwLocation)) {
+    pass("http://www redirects directly to https://maintenease.com (single hop)");
+  } else {
+    fail(`http://www returned ${httpWww.status} → ${httpWwwLocation || "(no Location)"}; expected 308 to www or apex`);
+  }
 }
 
 if (failures.length) {
