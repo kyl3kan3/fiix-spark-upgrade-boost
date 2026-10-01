@@ -272,8 +272,10 @@ if (existsSync(distDir)) {
       fail("routing: app shell is missing noindex,nofollow");
     } else if (/rel="canonical"/.test(appShell)) {
       fail("routing: app shell must not inherit the homepage canonical");
+    } else if (!/<main[^>]+data-prerender="static"[\s\S]*?<h1[\s>]/i.test(appShell)) {
+      fail("routing: app shell #root must include a static H1 for no-JS crawlers");
     } else {
-      pass("Protected-route app shell is noindex and has no canonical");
+      pass("Protected-route app shell is noindex, has no canonical, and includes static body copy");
     }
   }
 

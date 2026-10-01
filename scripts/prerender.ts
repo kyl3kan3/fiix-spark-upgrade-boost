@@ -1240,6 +1240,12 @@ function renderRoute(route: Route): string {
   return html;
 }
 
+const APP_SHELL_STATIC_BODY = `<main data-prerender="static" style="max-width:42rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">
+      <h1>Sign in or create your MaintenEase account</h1>
+      <p>Log in or start a free trial to manage work orders, assets, inspections, and your maintenance team in one place. This page is part of the secure MaintenEase application; enable JavaScript to use the sign-in form.</p>
+      <p><a href="/">Return to the MaintenEase website</a> · <a href="/pricing">View pricing</a> · <a href="/support">Contact support</a></p>
+    </main>`;
+
 function renderAppShell(): string {
   let html = shell;
   html = html.replace(/<title>[\s\S]*?<\/title>\s*/, "");
@@ -1251,11 +1257,13 @@ function renderAppShell(): string {
     "",
   );
   const head = [
-    "<title>MaintenEase workspace</title>",
-    '<meta name="description" content="Secure MaintenEase application workspace." />',
+    "<title>Sign in or create your account | MaintenEase</title>",
+    '<meta name="description" content="Sign in to MaintenEase or create a new account to manage your assets, work orders, inspections, and maintenance team in one place." />',
     '<meta name="robots" content="noindex,nofollow" />',
   ].join("\n    ");
-  return html.replace("</head>", `  ${head}\n  </head>`);
+  html = html.replace("</head>", `  ${head}\n  </head>`);
+  html = html.replace('<div id="root"></div>', `<div id="root">${APP_SHELL_STATIC_BODY}</div>`);
+  return html;
 }
 
 const appShellPath = join(DIST, "app-shell.html");
