@@ -29,7 +29,9 @@ for (const path of ["/auth", "/auth?signup=true", "/forgot-password", "/help", "
   else if (!/text\/html/i.test(response.headers.get("content-type") ?? "")) fail(`${path} has ${response.headers.get("content-type") ?? "no Content-Type"}; expected text/html`);
   else if (!/noindex\s*,?\s*nofollow/i.test(response.headers.get("x-robots-tag") ?? "")) fail(`${path} is missing X-Robots-Tag: noindex, nofollow`);
   else if (!/<meta name="robots" content="noindex,nofollow"/i.test(body)) fail(`${path} app shell is missing noindex,nofollow HTML metadata`);
-  else pass(`${path} returns the protected noindex app shell`);
+  else if (path.startsWith("/auth") && !/<main[^>]+data-prerender="static"[\s\S]*?<h1[\s>]/i.test(body)) {
+    fail(`${path} app shell is missing static sign-in HTML in #root`);
+  } else pass(`${path} returns the protected noindex app shell`);
 }
 
 const negotiated = await fetch(`${base}/learn/cmms`, {
