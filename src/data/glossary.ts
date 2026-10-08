@@ -842,6 +842,7 @@ export const glossary: GlossaryTerm[] = [
  { q: "What's the difference between MTBF and MTTR?", a: "MTBF measures how long an asset runs between failures (reliability); MTTR measures how long it takes to repair after a failure (maintainability). Together they drive availability." },
  ],
  related: ["mttr", "preventive-maintenance", "cmms"],
+ internalLinks: [{ label: "Calculate MTBF, MTTR, and availability", href: "/tools/mtbf-calculator" }],
  },
  {
  slug: "mttr",
@@ -873,6 +874,7 @@ export const glossary: GlossaryTerm[] = [
  { q: "How can I lower MTTR?", a: "Speed up notification, stock critical spare parts, attach procedures and history to each asset, and track recurring failures — all of which a CMMS makes easier." },
  ],
  related: ["mtbf", "work-order", "cmms"],
+ internalLinks: [{ label: "Calculate MTTR and availability from your downtime", href: "/tools/mtbf-calculator" }],
  },
  {
   slug: "cmms-benchmarks-2026",

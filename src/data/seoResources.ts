@@ -26,6 +26,11 @@ export const FEATURED_DISCOVERY_RESOURCES: SeoResource[] = [
     description: "How to measure, prioritize, and reduce a maintenance backlog.",
   },
   {
+    href: "/tools/mtbf-calculator",
+    title: "MTBF calculator",
+    description: "Turn operating hours, failures, and repair downtime into MTBF, MTTR, and availability.",
+  },
+  {
     href: "/templates",
     title: "Free maintenance templates",
     description: "Download practical logs, checklists, and work-order spreadsheets.",

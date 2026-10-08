@@ -1,6 +1,8 @@
 export type SecondPassToolPage = {
-  slug: "maintenance-sop-generator" | "root-cause-fishbone-generator";
+  slug: "maintenance-sop-generator" | "root-cause-fishbone-generator" | "mtbf-calculator";
   path: string;
+  /** Ancestor pages for the visible breadcrumb and BreadcrumbList JSON-LD. */
+  breadcrumbs?: { label: string; href: string }[];
   eyebrow: string;
   metaTitle: string;
   metaDescription: string;
@@ -104,6 +106,69 @@ export const SECOND_PASS_TOOL_PAGES: SecondPassToolPage[] = [
       { label: "Root cause analysis guide", href: "/learn/root-cause-analysis" },
       { label: "Work order template", href: "/templates/work-order-template" },
       { label: "Asset management software", href: "/solutions/asset-management-software" },
+    ],
+  },
+  {
+    slug: "mtbf-calculator",
+    path: "/tools/mtbf-calculator",
+    breadcrumbs: [
+      { label: "Learn", href: "/learn" },
+      { label: "MTBF", href: "/learn/mtbf" },
+    ],
+    eyebrow: "Free reliability calculator",
+    metaTitle: "MTBF Calculator: MTBF, MTTR & Availability (Free)",
+    metaDescription:
+      "Free MTBF calculator. Enter operating hours, failures, and repair downtime to get MTBF, MTTR, failure rate, and availability instantly. No signup.",
+    h1: "MTBF calculator",
+    intro:
+      "Work out mean time between failures from operating hours and a failure count, or from a run schedule across several identical machines. Add repair downtime to get MTTR and availability. Results update as you type, and your numbers stay in your browser.",
+    published: "2026-10-08",
+    updated: "2026-10-08",
+    sections: [
+      {
+        heading: "MTBF formula with a worked example",
+        body: "MTBF = total operating time ÷ number of failures. A conveyor gearbox that ran 2,000 hours and failed 4 times has an MTBF of 500 hours. Count only time the asset was running or ready to run, and count only failures that stopped it and needed corrective work. Planned PM stops are not failures, so leave them out of the count.",
+      },
+      {
+        heading: "Operating time versus calendar time",
+        body: "Textbook MTBF uses operating hours. Calendar MTBF, the average number of days between failures, is easier to track and works well for trending a single asset, but the two are not interchangeable. A machine on one 8-hour weekday shift logs about 2,080 run hours a year, not 8,760, so the same failure history can produce numbers four times apart. Pick one basis per asset and compare like with like.",
+      },
+      {
+        heading: "Turn the number into a maintenance decision",
+        body: "MTBF says how often an asset fails; MTTR says how long each failure costs you. Together they give availability: MTBF ÷ (MTBF + MTTR). Track the trend per asset rather than chasing a target. A falling MTBF on one machine in a group of identical units flags a bad actor that deserves a root-cause review, a shorter PM interval, or a repair-versus-replace decision.",
+      },
+    ],
+    faqs: [
+      {
+        q: "How do you calculate MTBF?",
+        a: "Divide total operating time by the number of failures in the same period. For example, 2,000 operating hours with 4 failures gives an MTBF of 500 hours. Use the same window for both numbers and keep planned maintenance stops out of the failure count.",
+      },
+      {
+        q: "How do you calculate MTBF for multiple machines?",
+        a: "For identical machines in similar service, add their operating hours together, add their failures together, then divide. Three presses that each ran 1,000 hours with 6 failures between them have a pooled MTBF of 3,000 ÷ 6 = 500 hours. Pooling can hide one bad machine, so check each unit on its own as well.",
+      },
+      {
+        q: "How do you calculate availability from MTBF and MTTR?",
+        a: "Availability = MTBF ÷ (MTBF + MTTR). With an MTBF of 500 hours and an MTTR of 4.5 hours, availability is 500 ÷ 504.5 = 99.11%. This figure covers failure downtime only; planned maintenance, changeovers, and waiting on parts pull real-world availability lower.",
+      },
+      {
+        q: "How do you convert MTBF to a failure rate?",
+        a: "Failure rate is the inverse of MTBF: λ = 1 ÷ MTBF. An MTBF of 500 hours equals 0.002 failures per hour, or 2 failures per 1,000 operating hours. The conversion assumes a roughly constant failure rate, which fits random failures better than parts that wear out.",
+      },
+      {
+        q: "What does the failure-free chance mean?",
+        a: "It estimates the probability that the asset runs a chosen number of operating hours without a failure, using R(t) = e^(-t ÷ MTBF). At an MTBF of 500 hours, the chance of getting through the next 168 operating hours is about 71%. Treat it as a planning estimate for assets with random failures, not a guarantee for wear-out components.",
+      },
+      {
+        q: "What is the difference between MTBF and MTTF?",
+        a: "MTBF applies to repairable assets that go back into service after a fix, such as pumps, conveyors, and compressors. MTTF, mean time to failure, applies to items you replace rather than repair, such as belts, bulbs, and bearings, and describes their average life.",
+      },
+    ],
+    related: [
+      { label: "What MTBF measures and how to use it", href: "/learn/mtbf" },
+      { label: "MTTR: what drives repair time", href: "/learn/mttr" },
+      { label: "Maintenance KPI reference", href: "/learn/cmms-benchmarks-2026" },
+      { label: "Root-cause fishbone generator", href: "/tools/root-cause-fishbone-generator" },
     ],
   },
 ];
