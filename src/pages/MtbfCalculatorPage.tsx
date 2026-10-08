@@ -109,14 +109,14 @@ const MtbfCalculatorPage = () => {
     [mode, raw, missionHours],
   );
 
-  const markUsed = () => {
+  const markUsed = (usedMode: MtbfMode = mode) => {
     if (trackedUse.current) return;
     trackedUse.current = true;
     // Records that the tool was used and in which mode. Input values are never sent.
     void trackMarketingEvent({
       eventType: "tool_use",
       pageSlug: PAGE.slug,
-      metadata: { mode },
+      metadata: { mode: usedMode },
       dedupeKey: `tool_use:${PAGE.slug}:session`,
     });
   };
@@ -194,7 +194,7 @@ const MtbfCalculatorPage = () => {
                 onValueChange={(value) => {
                   if (value === "hours" || value === "schedule") {
                     setMode(value);
-                    markUsed();
+                    markUsed(value);
                   }
                 }}
                 className="mt-2 flex gap-1 rounded-xl bg-muted p-1"
