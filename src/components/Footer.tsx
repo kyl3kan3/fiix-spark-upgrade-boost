@@ -59,6 +59,7 @@ p === "/editorial-policy" ||
  { label: "Maintenance Simplified", to: "/maintenance-simplified" },
  { label: "Compare CMMS", to: "/compare" },
  { label: "Cost Calculator", to: "/cmms-cost-calculator" },
+ { label: "MTBF Calculator", to: "/tools/mtbf-calculator" },
  { label: "MCP server card", to: "https://maintenease.com/.well-known/mcp/server-card.json" },
  { label: "Support", to: "/support" },
  ],
