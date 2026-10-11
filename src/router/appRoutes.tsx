@@ -41,6 +41,7 @@ const FacilityManagementPage = lazy(() => import("@/pages/FacilityManagementPage
 const SupportPage = lazy(() => import("@/pages/SupportPage"));
 const SopGeneratorPage = lazy(() => import("@/pages/SopGeneratorPage"));
 const FishboneGeneratorPage = lazy(() => import("@/pages/FishboneGeneratorPage"));
+const MtbfCalculatorPage = lazy(() => import("@/pages/MtbfCalculatorPage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const EditorialPolicyPage = lazy(() => import("@/pages/EditorialPolicyPage"));
 
@@ -93,6 +94,7 @@ export const AppRoutes = () => (
         <Route path="/editorial-policy" element={<EditorialPolicyPage />} />
         <Route path="/tools/maintenance-sop-generator" element={<SopGeneratorPage />} />
         <Route path="/tools/root-cause-fishbone-generator" element={<FishboneGeneratorPage />} />
+        <Route path="/tools/mtbf-calculator" element={<MtbfCalculatorPage />} />
 
         <Route path="/blog" element={<BlogIndex />} />
         <Route

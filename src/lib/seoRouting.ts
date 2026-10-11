@@ -25,6 +25,7 @@ const INDEXABLE_ROUTES = new Set([
   "/cmms-cost-calculator",
   "/tools/maintenance-sop-generator",
   "/tools/root-cause-fishbone-generator",
+  "/tools/mtbf-calculator",
   "/support",
   "/about",
   "/editorial-policy",

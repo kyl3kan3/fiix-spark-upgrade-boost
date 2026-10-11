@@ -30,6 +30,10 @@ Everything from failure to restored service: detection, diagnosis, waiting for p
 
 Speed up notification, stock critical spare parts, attach procedures and history to each asset, and track recurring failures — all of which a CMMS makes easier.
 
+## CMMS software and comparisons
+
+- [Calculate MTTR and availability from your downtime](https://maintenease.com/tools/mtbf-calculator)
+
 ## Related
 
 - https://maintenease.com/learn/mtbf

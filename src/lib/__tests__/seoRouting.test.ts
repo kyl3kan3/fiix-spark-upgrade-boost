@@ -17,6 +17,7 @@ describe("SEO route policy", () => {
     "/learn/infrared-thermography-inspection",
     "/tools/maintenance-sop-generator",
     "/tools/root-cause-fishbone-generator",
+    "/tools/mtbf-calculator",
     "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026",
   ])("marks %s as indexable", (path) => {
     expect(classifySeoPath(path)).toBe("indexable");

@@ -77,6 +77,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 
 - [Maintenance SOP generator](https://maintenease.com/tools/maintenance-sop-generator.md): Turn maintenance know-how into a reviewable standard operating procedure. Enter the job context and controls once, preview the result, then export an editable Word document or a field-ready PDF.
 - [Maintenance root-cause fishbone generator](https://maintenease.com/tools/root-cause-fishbone-generator.md): Organize possible causes around a precise equipment problem before the investigation jumps to a favorite answer. Use maintenance-specific categories, refine the evidence with your team, and export a clean SVG for the work-order record or review meeting.
+- [MTBF calculator](https://maintenease.com/tools/mtbf-calculator.md): Work out mean time between failures from operating hours and a failure count, or from a run schedule across several identical machines. Add repair downtime to get MTTR and availability. Results update as you type, and your numbers stay in your browser.
 
 ## Policies
 
@@ -155,6 +156,7 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Cmms Cost Calculator** — HTML: https://maintenease.com/cmms-cost-calculator — Markdown: https://maintenease.com/cmms-cost-calculator.md
 - **Maintenance Sop Generator** — HTML: https://maintenease.com/tools/maintenance-sop-generator — Markdown: https://maintenease.com/tools/maintenance-sop-generator.md
 - **Root Cause Fishbone Generator** — HTML: https://maintenease.com/tools/root-cause-fishbone-generator — Markdown: https://maintenease.com/tools/root-cause-fishbone-generator.md
+- **Mtbf Calculator** — HTML: https://maintenease.com/tools/mtbf-calculator — Markdown: https://maintenease.com/tools/mtbf-calculator.md
 - **Maintenease Vs Upkeep** — HTML: https://maintenease.com/compare/maintenease-vs-upkeep — Markdown: https://maintenease.com/compare/maintenease-vs-upkeep.md
 - **Maintenease Vs Fiix** — HTML: https://maintenease.com/compare/maintenease-vs-fiix — Markdown: https://maintenease.com/compare/maintenease-vs-fiix.md
 - **Maintenease Vs Maintainx** — HTML: https://maintenease.com/compare/maintenease-vs-maintainx — Markdown: https://maintenease.com/compare/maintenease-vs-maintainx.md

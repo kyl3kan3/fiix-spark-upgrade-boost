@@ -70,5 +70,6 @@ export const GENERATED_INDEXABLE_ROUTES = [
   "/templates/work-order-template",
   "/terms",
   "/tools/maintenance-sop-generator",
+  "/tools/mtbf-calculator",
   "/tools/root-cause-fishbone-generator",
 ] as const;

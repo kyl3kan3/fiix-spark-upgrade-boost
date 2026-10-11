@@ -30,6 +30,10 @@ There is no universal target — it depends entirely on the asset and industry. 
 
 MTBF measures how long an asset runs between failures (reliability); MTTR measures how long it takes to repair after a failure (maintainability). Together they drive availability.
 
+## CMMS software and comparisons
+
+- [Calculate MTBF, MTTR, and availability](https://maintenease.com/tools/mtbf-calculator)
+
 ## Related
 
 - https://maintenease.com/learn/mttr

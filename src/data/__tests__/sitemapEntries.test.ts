@@ -27,6 +27,7 @@ describe("static sitemap entries", () => {
     "/learn/infrared-thermography-inspection",
     "/tools/maintenance-sop-generator",
     "/tools/root-cause-fishbone-generator",
+    "/tools/mtbf-calculator",
   ])("publishes an evidence-backed lastmod for %s", (path) => {
     const entry = STATIC_SITEMAP_ENTRIES.find((candidate) => candidate.path === path);
 

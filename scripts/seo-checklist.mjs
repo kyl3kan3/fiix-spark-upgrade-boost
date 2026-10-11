@@ -171,6 +171,7 @@ if (existsSync(distDir)) {
     ["/sms-opt-in", 3],
     ["/tools/maintenance-sop-generator", 3],
     ["/tools/root-cause-fishbone-generator", 3],
+    ["/tools/mtbf-calculator", 3],
   ]) {
     const htmlPath = join(distDir, pathname.replace(/^\//, ""), "index.html");
     const body = staticMain(readFileSync(htmlPath, "utf8"));

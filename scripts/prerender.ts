@@ -514,6 +514,7 @@ const staticRoutes: Route[] = [
         description: page.metaDescription,
         url: `${ORIGIN}${page.path}`,
         isPartOf: { "@id": `${ORIGIN}/#website` },
+        datePublished: page.published,
         dateModified: page.updated,
       },
       {
@@ -525,6 +526,20 @@ const staticRoutes: Route[] = [
           acceptedAnswer: { "@type": "Answer", text: faq.a },
         })),
       },
+      ...(page.breadcrumbs?.length
+        ? [
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [...page.breadcrumbs, { label: page.h1, href: page.path }].map((crumb, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                name: crumb.label,
+                item: `${ORIGIN}${crumb.href}`,
+              })),
+            },
+          ]
+        : []),
     ],
   })),
   {
