@@ -55,6 +55,8 @@
     { "src": "^/contact/?$", "headers": { "Location": "/support" }, "status": 301 },
     { "src": "^/demo/?$", "headers": { "Location": "/auth?signup=true" }, "status": 302 },
     { "src": "^/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026/?$", "headers": { "Location": "/learn/preventive-maintenance" }, "status": 301 },
+    { "src": "^/learn/asset-management/?$", "headers": { "Location": "/solutions/asset-management-software" }, "status": 301 },
+    { "src": "^/feature/[^/]+/?$", "headers": { "Location": "/features" }, "status": 301 },
     {
       "src": "^/static/(.*)",
       "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
@@ -87,7 +89,7 @@
     },
     { "src": "^/favicon\\.ico$", "dest": "/favicon.png" },
     {
-      "src": "^/(auth|forgot-password|reset-password|unsubscribe|requests|dashboard|vendors|assets|work-orders|inspections|checklists|admin|notifications|settings|calendar|maintenance|predictive-maintenance|self-healing|cost-tracking|onboarding|power-usage|assistant|guided-setup|building-viewer|import|team|locations|profile|help|chat|reports|billing|automations|api-keys|sso|setup|team-setup|company-setup|feature|r)(/.*)?$",
+      "src": "^/(auth|forgot-password|reset-password|unsubscribe|requests|dashboard|vendors|assets|work-orders|inspections|checklists|admin|notifications|settings|calendar|maintenance|predictive-maintenance|self-healing|cost-tracking|onboarding|power-usage|assistant|guided-setup|building-viewer|import|team|locations|profile|help|chat|reports|billing|automations|api-keys|sso|setup|team-setup|company-setup)(/.*)?$",
       "dest": "/app-shell",
       "headers": {
         "X-Robots-Tag": "noindex, nofollow",
@@ -98,6 +100,7 @@
       }
     },
     { "handle": "filesystem" },
+    { "src": "^/r/[^/]+/?$", "dest": "/index.html" },
     {
       "src": "^/.*$",
       "dest": "/404.html",

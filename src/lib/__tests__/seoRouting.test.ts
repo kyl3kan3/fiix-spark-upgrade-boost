@@ -62,6 +62,10 @@ describe("SEO route policy", () => {
       location: "/learn/preventive-maintenance",
       status: 301,
     });
+    expect(redirectForPath("/learn/asset-management")).toEqual({
+      location: "/solutions/asset-management-software",
+      status: 301,
+    });
     expect(redirectForPath("/pricing")).toBeNull();
   });
 });

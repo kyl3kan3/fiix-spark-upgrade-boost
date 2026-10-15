@@ -123,7 +123,7 @@ export const SECOND_PASS_TOOL_PAGES: SecondPassToolPage[] = [
     intro:
       "Work out mean time between failures from operating hours and a failure count, or from a run schedule across several identical machines. Add repair downtime to get MTTR and availability. Results update as you type, and your numbers stay in your browser.",
     published: "2026-10-08",
-    updated: "2026-10-08",
+    updated: "2026-10-15",
     sections: [
       {
         heading: "MTBF formula with a worked example",

@@ -76,6 +76,8 @@ const redirects = [
   ["/contact", 301, "/support"],
   ["/demo", 302, "/auth"],
   ["/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026", 301, "/learn/preventive-maintenance"],
+  ["/learn/asset-management", 301, "/solutions/asset-management-software"],
+  ["/feature/Work%20Order%20Management", 301, "/features"],
 ];
 for (const [path, status, destination] of redirects) {
   const { response } = await request(path);

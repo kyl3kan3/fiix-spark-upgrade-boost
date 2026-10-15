@@ -12,11 +12,8 @@ jobs:
   submit-sitemap:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Submit sitemap URLs to IndexNow
-        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
-        with:
-          host: maintenease.com
-          api_key: f8a6105d40eb4c5b8a6fdb94cfec9f35
-          api_key_location: https://maintenease.com/f8a6105d40eb4c5b8a6fdb94cfec9f35.txt
-          endpoint: bing
-          sitemap_locations: https://maintenease.com/sitemap.xml
+        run: node scripts/ping-indexnow.mjs

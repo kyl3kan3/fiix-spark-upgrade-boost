@@ -89,6 +89,10 @@ const REDIRECTS: Record<string, SeoRedirect> = {
     location: "/learn/preventive-maintenance",
     status: 301,
   },
+  "/learn/asset-management": {
+    location: "/solutions/asset-management-software",
+    status: 301,
+  },
 };
 
 const GENERATED_INDEXABLE_ROUTE_SET = new Set<string>(GENERATED_INDEXABLE_ROUTES);
