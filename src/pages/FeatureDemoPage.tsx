@@ -19,7 +19,8 @@ const FeatureDemoPage = () => {
  <Helmet>
  <title>{`${pretty} — MaintenEase Feature`}</title>
  <meta name="description" content={`See how the ${pretty} feature in MaintenEase helps maintenance teams streamline operations, track assets, and complete work faster.`} />
- <link rel="canonical" href={`https://maintenease.com/feature/${title ?? ""}`} />
+ <meta name="robots" content="noindex,follow" />
+ <link rel="canonical" href="https://maintenease.com/features" />
  <meta property="og:title" content={`${pretty} — MaintenEase Feature`} />
  <meta property="og:description" content={`How the ${pretty} feature in MaintenEase helps maintenance teams.`} />
  <meta property="og:url" content={`https://maintenease.com/feature/${title ?? ""}`} />

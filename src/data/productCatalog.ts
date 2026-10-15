@@ -194,10 +194,6 @@ export const ORGANIZATION_JSON_LD = {
     caption: "MaintenEase logo",
   },
   brand: { "@id": brandId },
-  parentOrganization: {
-    "@type": "Organization",
-    name: PRODUCT_OPERATOR_NAME,
-  },
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",

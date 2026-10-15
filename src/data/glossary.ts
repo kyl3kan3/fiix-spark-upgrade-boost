@@ -27,10 +27,10 @@ export const glossary: GlossaryTerm[] = [
  slug: "cmms",
  term: "Maintenance Management Systems (CMMS): Complete Buyer's Guide",
  short: "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
- metaTitle: "Maintenance Management Systems (CMMS): Buyer's Guide",
- metaDescription: "Compare maintenance management systems and CMMS software. Learn core modules, selection criteria, implementation steps, costs, and the KPIs to track.",
+ metaTitle: "CMMS: What It Is, Features & Software Buyer's Guide",
+ metaDescription: "What is a CMMS? Compare modules, rollout steps, and real costs—plus a free selection worksheet to shortlist vendors without spreadsheet chaos.",
  published: "2026-01-15",
- updated: "2026-08-28",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "What does CMMS stand for?",
@@ -344,11 +344,11 @@ export const glossary: GlossaryTerm[] = [
  slug: "total-productive-maintenance",
  term: "Total Productive Maintenance: The 8 Pillars, KPIs, and Implementation Plan",
  short: "Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.",
- metaTitle: "Total Productive Maintenance: 8 Pillars, KPIs & Plan",
- metaDescription: "Learn the 8 pillars of total productive maintenance, calculate OEE and reliability KPIs, follow a 30/60/90-day plan, and use the TPM audit checklist.",
+ metaTitle: "Total Productive Maintenance (TPM): 8 Pillars & OEE Plan",
+ metaDescription: "Total productive maintenance explained: the 8 pillars, OEE formulas, a 30/60/90-day pilot plan, and an audit checklist to cut downtime on one line first.",
  image: { src: "/images/guides/total-productive-maintenance.png", alt: "The eight total productive maintenance pillars supporting a reliable operating system" },
  published: "2026-08-16",
- updated: "2026-08-23",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "What is total productive maintenance?",
@@ -507,9 +507,9 @@ export const glossary: GlossaryTerm[] = [
  slug: "facility-maintenance",
  term: "Facility Maintenance",
  short: "All the work required to keep a building and its systems safe, comfortable, and operational — HVAC, plumbing, electrical, lighting, life safety, and the building envelope.",
- metaTitle: "What is Facility Maintenance? Scope & Examples",
- metaDescription: "Facility maintenance keeps buildings safe, comfortable, and compliant. Learn the scope, common tasks, and how teams organize the work.",
- updated: "2026-08-23",
+ metaTitle: "Facility Maintenance: HVAC, PM Plans & Team Playbook",
+ metaDescription: "Facility maintenance scope for HVAC, life safety, and repairs—how to split landlord vs tenant work, track PM compliance, and shrink reactive backlog.",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "Definition",
@@ -543,9 +543,9 @@ export const glossary: GlossaryTerm[] = [
  slug: "fleet-maintenance",
  term: "Fleet Maintenance",
  short: "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
- metaTitle: "What is Fleet Maintenance? Scope, Schedules & Compliance",
- metaDescription: "Fleet maintenance keeps vehicles safe, compliant, and on the road. Learn what it covers, how schedules are set, and what teams track.",
- updated: "2026-08-28",
+ metaTitle: "Fleet Maintenance: PM Schedules, DVIR & DOT Records",
+ metaDescription: "Fleet maintenance programs that keep trucks roadworthy: PM intervals, DVIR rules, service history templates, and KPIs like cost per mile and PM on-time %.",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "Definition",
@@ -745,8 +745,9 @@ export const glossary: GlossaryTerm[] = [
  slug: "corrective-maintenance",
  term: "Corrective Maintenance",
  short: "Planned repair work that fixes a known defect found during an inspection or PM — before it becomes a breakdown.",
- metaTitle: "What is Corrective Maintenance? Definition & Examples",
- metaDescription: "Corrective maintenance repairs a fault that has been identified but hasn't caused failure yet. Learn how it differs from reactive and preventive maintenance.",
+ metaTitle: "Corrective Maintenance: Planned Fixes Before Breakdowns",
+ metaDescription: "Corrective maintenance fixes defects found on inspections before they fail—how it differs from reactive work, what triggers it, and how to tag it in your CMMS.",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "Definition",
@@ -775,9 +776,9 @@ export const glossary: GlossaryTerm[] = [
  slug: "condition-based-maintenance",
  term: "Condition-Based Maintenance",
  short: "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
- metaTitle: "What is Condition-Based Maintenance (CBM)? A Plain Guide",
- metaDescription: "Condition-based maintenance triggers work when a measured condition crosses a threshold. See how CBM compares to preventive and predictive.",
- updated: "2026-08-28",
+ metaTitle: "Condition-Based Maintenance (CBM): Thresholds & Setup",
+ metaDescription: "Condition-based maintenance triggers work when vibration, temperature, or pressure crosses a limit—see CBM vs PM, threshold tips, and a free inspection sheet.",
+ updated: "2026-10-15",
  sections: [
  {
  heading: "Definition",

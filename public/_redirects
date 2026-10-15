@@ -10,6 +10,8 @@
 /demo /auth?signup=true 302
 /sitemap.html /sitemap.xml 301
 /blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026 /learn/preventive-maintenance 301
+/learn/asset-management /solutions/asset-management-software 301
+/feature/* /features 301
 
 # Client-rendered, non-indexable routes use a dedicated noindex app shell.
 # These rules cover static hosts; the Pages middleware performs the equivalent
@@ -54,9 +56,10 @@
 /team-setup /app-shell 200
 /company-setup /app-shell 200
 
+# Public request portals hydrate from the marketing SPA shell.
+/r/* /index.html 200
+
 # Dynamic account/application paths follow their exact route rules.
-/feature/* /app-shell 200
-/r/* /app-shell 200
 /requests/* /app-shell 200
 /dashboard/* /app-shell 200
 /vendors/* /app-shell 200
