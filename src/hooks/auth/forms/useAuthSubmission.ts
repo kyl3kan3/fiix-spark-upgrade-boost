@@ -2,7 +2,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "../useAuthActions";
-import { useAuthValidation } from "../validation/useAuthValidation";
+import { useUnifiedAuthValidation } from "../validation/useUnifiedAuthValidation";
 import { useAuthNavigation } from "../useAuthNavigation";
 import { setSupabaseRememberMe } from "@/integrations/supabase/authStorage";
 import { setRememberMe as persistRememberMePref } from "@/utils/storageUtils";
@@ -18,7 +18,7 @@ interface UseAuthSubmissionProps {
 
 export function useAuthSubmission({ onError }: UseAuthSubmissionProps) {
  const { signIn, signUp, isSigningIn, isSigningUp } = useAuthActions();
- const { validateSignInForm, validateSignUpForm } = useAuthValidation();
+ const { validateSignInForm, validateSignUpForm } = useUnifiedAuthValidation();
  const { handleAuthSuccess } = useAuthNavigation();
  const navigate = useNavigate();
 
