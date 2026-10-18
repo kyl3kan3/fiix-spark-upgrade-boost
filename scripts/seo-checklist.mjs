@@ -130,6 +130,23 @@ if (existsSync(distDir)) {
     pass(`Prerendered crawler HTML valid for ${prerenderOk} sampled routes`);
   }
 
+  const decent4Backlink =
+    /<footer[^>]+data-prerender=["']static-footer["'][^>]*>[\s\S]*?<a href="https:\/\/decent4\.com\/">Built by Decent4<\/a>[\s\S]*?<\/footer>/i;
+  let decent4Ok = 0;
+  for (const rel of prerenderSamples) {
+    const html = readFileSync(join(distDir, rel), "utf8");
+    if (!decent4Backlink.test(html)) {
+      fail(`prerender: dist/${rel} missing static Decent4 backlink footer`);
+    } else if (/Built by Decent4<\/a>[\s\S]*rel=["'][^"']*nofollow/i.test(html)) {
+      fail(`prerender: dist/${rel} marks Decent4 backlink as nofollow`);
+    } else {
+      decent4Ok++;
+    }
+  }
+  if (decent4Ok === prerenderSamples.length) {
+    pass(`Static Decent4 backlink present on ${decent4Ok} sampled prerender routes`);
+  }
+
   for (const rel of prerenderSamples) {
     const html = readFileSync(join(distDir, rel), "utf8");
     if (!/<link rel="alternate" type="text\/markdown" href="https:\/\/maintenease\.com\//.test(html)) {
