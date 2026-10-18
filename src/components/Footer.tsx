@@ -34,6 +34,8 @@ p === "/editorial-policy" ||
       <span className="hidden sm:inline">·</span>
       <Link to="/support" className="hover:text-foreground transition-colors">Support</Link>
       <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
+      <span className="hidden sm:inline">·</span>
+      <a href="https://decent4.com/" className="hover:text-foreground transition-colors">Built by Decent4</a>
     </div>
   </div>
   </footer>
@@ -96,7 +98,7 @@ p === "/editorial-policy" ||
  <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
- <p className="text-background/70 text-sm">Operated by Decent4 · <a className="underline underline-offset-4 hover:text-background" href="mailto:support@maintenease.com">support@maintenease.com</a></p>
+ <p className="text-background/70 text-sm"><a className="underline underline-offset-4 hover:text-background" href="https://decent4.com/">Built by Decent4</a> · <a className="underline underline-offset-4 hover:text-background" href="mailto:support@maintenease.com">support@maintenease.com</a></p>
  </div>
 
  {footerLinks.map((column, idx) => (
