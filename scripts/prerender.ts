@@ -44,6 +44,7 @@ import {
   buildItemListJsonLd,
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
+import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
 import { redirectForPath } from "../src/lib/seoRouting";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 
@@ -1252,7 +1253,7 @@ function renderRoute(route: Route): string {
   html = html.replace("</head>", `  ${headFor(route)}\n  </head>`);
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
-  return html;
+  return injectStaticSeoFooter(html);
 }
 
 const APP_SHELL_STATIC_BODY = `<main data-prerender="static" style="max-width:42rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">
@@ -1278,7 +1279,7 @@ function renderAppShell(): string {
   ].join("\n    ");
   html = html.replace("</head>", `  ${head}\n  </head>`);
   html = html.replace('<div id="root"></div>', `<div id="root">${APP_SHELL_STATIC_BODY}</div>`);
-  return html;
+  return injectStaticSeoFooter(html);
 }
 
 const appShellPath = join(DIST, "app-shell.html");

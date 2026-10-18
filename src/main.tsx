@@ -4,8 +4,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
+import { STATIC_SEO_FOOTER_ID } from "./lib/staticSeoFooter";
 
 initSentry();
+document.getElementById(STATIC_SEO_FOOTER_ID)?.remove();
 if (typeof navigator !== "undefined" && "modelContext" in navigator) {
   void import("./lib/webmcp").then(({ initWebMcp }) => initWebMcp());
 }
