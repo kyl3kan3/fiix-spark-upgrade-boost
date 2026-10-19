@@ -3,4 +3,3 @@
 export * from "./types";
 export * from "./assetQueries";
 export * from "./assetMutations";
-export * from "./assetHierarchy";
