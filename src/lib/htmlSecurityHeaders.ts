@@ -19,7 +19,7 @@ export const CONTENT_SECURITY_POLICY = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://datafa.st https://cdn.paddle.com",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://datafa.st https://cdn.paddle.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
@@ -43,7 +43,7 @@ export const CONTENT_SECURITY_POLICY = [
     "https://api.paddle.com",
     "https://sandbox-api.paddle.com",
   ].join(" "),
-  "frame-src 'self' https://cdn.paddle.com https://checkout.paddle.com https://buy.paddle.com",
+  "frame-src 'self' https://challenges.cloudflare.com https://cdn.paddle.com https://checkout.paddle.com https://buy.paddle.com",
 ].join("; ");
 
 export const HTML_SECURITY_HEADERS: Readonly<Record<string, string>> = {
