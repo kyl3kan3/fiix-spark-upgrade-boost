@@ -4,7 +4,8 @@
 - [x] Prepare existing-account call guide, manager invitation variants and response tracker.
 - [ ] Send outreach and conduct calls — waits for approved sender, recipients, messages and customer participation.
 - [x] Find 10 suitable US manager prospects — report saved with public contact routes; no manufacturers qualified, buying interest unknown.
-- [ ] Restore live signup verification — waits for narrow repair approval and publication; CAPTCHA must remain enabled.
+- [x] Stage and test signup verification CSP repair — real script/frame load verified, 16 targeted tests pass; CAPTCHA retained.
+- [ ] Publish signup repair and verify full activation — waits for Kyle’s publication approval and a safe account/card test.
 - [ ] Resume Google Ads — waits for working signup, campaign-format decision, account access, consent route and budget approvals.
 - [x] Verify existing software-directory profiles and draft corrections instead of duplicates.
 - [ ] Submit directory corrections — waits for ownership, sender and free-plan confirmation.
