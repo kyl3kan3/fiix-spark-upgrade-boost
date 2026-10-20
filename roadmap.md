@@ -1,0 +1,13 @@
+# Growth tasks
+- [x] Prepare safe existing-domain connection checklist.
+- [ ] Connect staging and cut over domain — waits for approved hostname, DNS access and safe end-to-end tests.
+- [x] Prepare existing-account call guide, manager invitation variants and response tracker.
+- [ ] Send outreach and conduct calls — waits for approved sender, recipients, messages and customer participation.
+- [x] Find 10 suitable US manager prospects — report saved with public contact routes; no manufacturers qualified, buying interest unknown.
+- [ ] Restore live signup verification — waits for narrow repair approval and publication; CAPTCHA must remain enabled.
+- [ ] Resume Google Ads — waits for working signup, campaign-format decision, account access, consent route and budget approvals.
+- [x] Verify existing software-directory profiles and draft corrections instead of duplicates.
+- [ ] Submit directory corrections — waits for ownership, sender and free-plan confirmation.
+- [x] Check fresh SEO foundations and live robots settings; prepare existing-page sharing copy.
+- [ ] Post sharing copy — waits for approved account, destination and message.
+- [x] Save preparation materials, update growth-plan statuses and group Files.
