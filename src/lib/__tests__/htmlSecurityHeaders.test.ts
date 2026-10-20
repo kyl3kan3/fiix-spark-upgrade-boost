@@ -37,16 +37,30 @@ describe("htmlSecurityHeaders", () => {
     expect(CONTENT_SECURITY_POLICY).toContain("frame-ancestors 'none'");
   });
 
+  it("allows only the Turnstile origin for verification scripts and frames", () => {
+    const directives = new Map(CONTENT_SECURITY_POLICY.split("; ").map(part => {
+      const [name, ...sources] = part.split(" ");
+      return [name, sources];
+    }));
+    for (const name of ["script-src", "frame-src"]) {
+      expect(directives.get(name)).toContain("https://challenges.cloudflare.com");
+      expect(directives.get(name)).not.toContain("https:");
+      expect(directives.get(name)).not.toContain("*");
+    }
+  });
+
   it("keeps vercel.json route headers aligned with the shared module", () => {
     const vercel = JSON.parse(readFileSync(join(ROOT, "vercel.json"), "utf8")) as {
       routes: Array<{ src?: string; headers?: Record<string, string>; continue?: boolean }>;
     };
-    const securityRoute = vercel.routes.find(
-      (route) => route.continue && route.headers?.["Content-Security-Policy"],
+    const securityRoutes = vercel.routes.filter(
+      route => route.headers?.["Content-Security-Policy"],
     );
-    expect(securityRoute).toBeTruthy();
-    for (const [key, value] of Object.entries(HTML_SECURITY_HEADERS)) {
-      expect(securityRoute?.headers?.[key]).toBe(value);
+    expect(securityRoutes).toHaveLength(3);
+    for (const route of securityRoutes) {
+      for (const [key, value] of Object.entries(HTML_SECURITY_HEADERS)) {
+        expect(route.headers?.[key]).toBe(value);
+      }
     }
   });
 
