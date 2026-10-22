@@ -4,9 +4,21 @@
 
 Canonical URL: https://maintenease.com/learn/mro
 
+## MRO stands for maintenance, repair, and operations
+
+MRO stands for Maintenance, Repair, and Operations — the parts, tools, and consumables used to keep facilities and equipment running, distinct from raw materials that become finished goods. MRO inventory is usually expensed when purchased rather than capitalized like production stock.
+
 ## Definition
 
-MRO stands for Maintenance, Repair, and Operations. It refers to the goods a business consumes to keep itself running, as opposed to the raw materials that get turned into finished products. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. In accounting terms MRO is usually expensed rather than capitalized.
+MRO refers to the goods a business consumes to keep itself running. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. Storerooms often mix critical spares with everyday consumables, which is why disciplined naming, bin locations, and issue records matter as much as the catalog itself.
+
+## Common MRO supplies and items
+
+Typical MRO supplies include fasteners and hardware, bearings and seals, lubricants and greases, filters, belts and hoses, electrical components, cleaning chemicals, PPE, lighting, batteries, and small power tools. The exact list depends on your assets; tie each stocked item to compatible equipment in the CMMS so technicians pick the right part the first time.
+
+## MRO in the supply chain
+
+In supply chain terms, MRO sits between production materials and finished goods: it does not flow into what you sell, but it keeps plants, fleets, and buildings productive. Procurement, receiving, and accounts payable still need PO numbers, lead times, and vendor performance data. Connecting MRO issues to work orders closes the loop — you see which assets consume the most cash and which suppliers miss delivery dates.
 
 ## Why MRO is hard to control
 

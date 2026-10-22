@@ -51,7 +51,7 @@ describe("SEO fix rendering", () => {
   });
 
   it.each([
-    ["maintenease-vs-upkeep", "UpKeep pricing in 2026", "$55/user/mo"],
+    ["maintenease-vs-upkeep", "UpKeep pricing at a glance", "$55/user/mo"],
     ["maintenease-vs-maintainx", "MaintainX cost in 2026", "$20/user/mo annual; $25 monthly"],
     ["maintenease-vs-limble", "Limble pricing in 2026", "Custom estimate"],
   ])("renders the current %s pricing table", (slug, heading, price) => {

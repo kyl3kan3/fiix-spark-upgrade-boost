@@ -8,9 +8,26 @@ Canonical URL: https://maintenease.com/learn/fleet-maintenance
 
 Fleet maintenance is the practice of keeping a group of vehicles operational, safe, and compliant. It covers everything from daily driver inspections to scheduled service, emergency roadside repairs, tire programs, accident damage, and end-of-life disposal. The scope spans light vehicles (cars, vans), medium and heavy trucks, trailers, and off-road equipment.
 
+## What are fleet services?
+
+Fleet services are the contracted or in-house capabilities that keep vehicles available: scheduled preventive service, inspections, tire and fluid programs, roadside repair, warranty administration, and disposal. In operations language, fleet services often means the vendor or internal shop that performs that work, while fleet maintenance is the discipline and record-keeping that proves each vehicle was serviced on time.
+
+## Dedicated fleet maintenance
+
+Dedicated fleet maintenance means a team or partner focused only on your vehicles rather than sharing a general shop queue. That model fits when downtime is expensive, inspection rules are strict, or telematics and meter readings drive service intervals. A CMMS or fleet module should still tie every inspection, defect, and repair to a stable vehicle ID so supervisors can see overdue PMs and repeat failures without opening separate spreadsheets.
+
 ## How fleet schedules are set
 
 Fleet schedules commonly combine manufacturer guidance, calendar intervals, mileage or engine hours, duty cycle, environment, condition findings, and applicable inspection rules. A telematics integration can supply meter readings when the chosen software and provider support it, but teams should verify the connector, data latency, missing-reading behavior, and trigger logic rather than assume every fleet CMMS includes automatic feeds.
+
+_Sample fleet maintenance schedule (adjust to manufacturer and duty cycle)_
+
+| Interval | Typical tasks | Record to keep |
+| --- | --- | --- |
+| Daily / pre-trip | Lights, tires, leaks, safety equipment | Driver inspection or DVIR when required |
+| Monthly | Fluid levels, belts, filters visual check | Work order or checklist with mileage |
+| Every 5,000–7,500 mi | Oil and filter, tire rotation, brake inspection | Service date, meter reading, parts used |
+| Annual | DOT or state inspection, emissions where applicable | Inspection certificate and corrective work |
 
 ## Compliance is non-negotiable
 

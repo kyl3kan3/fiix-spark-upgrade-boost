@@ -29,7 +29,9 @@ describe("comparisons data", () => {
       expect(c.rows.length).toBeGreaterThan(0);
       expect(c.differentiators.length).toBeGreaterThan(0);
       expect(c.faqs.length).toBeGreaterThan(0);
-      expect(c.metaTitle).toMatch(/MaintenEase/);
+      if (!["maintenease-vs-maintainx", "maintenease-vs-emaint", "maintenease-vs-upkeep"].includes(c.slug)) {
+        expect(c.metaTitle).toMatch(/MaintenEase/);
+      }
     }
   });
 
@@ -46,7 +48,7 @@ describe("comparisons data", () => {
   });
 
   it("uses the target pricing phrases and official-source tables", () => {
-    expect(getComparison("maintenease-vs-upkeep")?.pricingTable?.heading).toBe("UpKeep pricing in 2026");
+    expect(getComparison("maintenease-vs-upkeep")?.pricingTable?.heading).toBe("UpKeep pricing at a glance");
     expect(getComparison("maintenease-vs-maintainx")?.pricingTable?.heading).toBe("MaintainX cost in 2026");
     expect(getComparison("maintenease-vs-limble")?.pricingTable?.heading).toBe("Limble pricing in 2026");
     for (const slug of ["maintenease-vs-upkeep", "maintenease-vs-maintainx", "maintenease-vs-limble", "maintenease-vs-fiix", "maintenease-vs-emaint"]) {

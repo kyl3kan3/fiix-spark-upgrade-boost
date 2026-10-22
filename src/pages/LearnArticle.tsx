@@ -112,7 +112,7 @@ const LearnArticle = () => {
  const articleLd = {
  "@context": "https://schema.org",
  "@type": "Article",
- headline: term.term,
+ headline: term.metaTitle,
  description: term.short,
  mainEntityOfPage: { "@type": "WebPage", "@id": url },
  inLanguage: "en",
@@ -192,6 +192,18 @@ const LearnArticle = () => {
  </nav>
  <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4 text-balance">{term.term}</h1>
  <p className="text-xl text-foreground text-pretty">{term.short}</p>
+ {term.slug === "cmms" ? (
+  <aside className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-foreground leading-relaxed text-pretty shadow-[0_0_0_1px_rgba(0,0,0,0.04)]">
+   <strong className="font-semibold text-primary">Quick answer:</strong> CMMS stands for computerized maintenance management system — software that tracks assets, work orders, and preventive maintenance in one searchable record.
+  </aside>
+ ) : null}
+ {(term.slug === "preventive-maintenance" || term.slug === "work-order" || term.slug === "ai-native-cmms") && (
+  <p className="mt-6 text-foreground leading-relaxed text-pretty">
+   If you are mapping acronyms first, read{" "}
+   <Link to="/learn/cmms" className="text-primary underline underline-offset-2">what does CMMS stand for</Link>{" "}
+   before you build schedules and workflows.
+  </p>
+ )}
  <div className="mt-5 mb-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
   <span>By the <Link to="/editorial-policy" className="font-medium text-primary underline underline-offset-4">MaintenEase editorial team</Link></span>
   {(term.updated ?? term.published) && <span aria-hidden="true">·</span>}
@@ -400,7 +412,7 @@ const LearnArticle = () => {
  <div className="grid gap-3 sm:grid-cols-2">
  {term.internalLinks.map((item) => (
  <Link
- key={item.href}
+ key={`${item.href}-${item.label}`}
  to={item.href}
  className="flex min-h-12 items-center rounded-xl border border-border bg-card px-5 py-3 font-medium text-primary transition-[border-color,box-shadow,transform] duration-150 hover:border-primary/40 hover:shadow-sm active:scale-[0.96]"
  >

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,6 +82,13 @@ export default function PricingPage() {
      </h1>
      <p className="text-lg text-muted-foreground mb-8">
         Choose the plan that fits your facility's needs. 7-day free trial on every plan.
+     </p>
+     <p className="text-sm text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed text-pretty">
+       Evaluating per-seat CMMS bills? See{" "}
+       <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep pricing</Link>,{" "}
+       <Link to="/compare/maintenease-vs-emaint" className="text-primary underline underline-offset-4">eMaint pricing</Link>, and{" "}
+       <Link to="/compare/maintenease-vs-maintainx" className="text-primary underline underline-offset-4">MaintainX pricing</Link>{" "}
+       compared with these account plans.
      </p>
      <p className="text-sm text-muted-foreground mb-6">
        Pricing reviewed <time dateTime={PRODUCT_LAST_MODIFIED}>August 7, 2026</time>.

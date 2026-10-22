@@ -313,7 +313,7 @@ export const emergingAiGlossary: GlossaryTerm[] = [
     slug: "ai-native-cmms",
     term: "AI-Native CMMS",
     short: "Maintenance software designed around AI-assisted retrieval, reasoning, and controlled actions rather than adding a generic chatbot to a legacy workflow.",
-    metaTitle: "AI-Native CMMS: Definition, Architecture & Buyer Guide",
+    metaTitle: "AI-Native CMMS Tools: Definition & Buyer Guide",
     metaDescription: "Understand what AI-native CMMS should mean, how it differs from an AI add-on, and which architecture, safety, and workflow questions buyers should ask.",
     published,
     updated: published,
@@ -329,6 +329,10 @@ export const emergingAiGlossary: GlossaryTerm[] = [
       {
         heading: "The four layers buyers should inspect",
         body: "Inspect data quality, retrieval, action, and governance. Data quality covers consistent assets, locations, work history, and failure codes. Retrieval determines whether answers cite the correct current records. Action covers narrow tools with validated schemas. Governance includes authentication, role permissions, tenant isolation, audit history, confirmation, and revocation. Weakness in any layer limits the others. AI cannot compensate for an asset register full of duplicates or a write tool that bypasses company access rules.",
+      },
+      {
+        heading: "AI-native tools for CMMS",
+        body: "Practical AI-native tools for CMMS today include work-order drafting from plain-language requests, MCP or agent APIs that list assets and open work under user permissions, anomaly or risk scoring on asset history, and shift summaries that cite record IDs. The through-line is structured access: each capability should map to a narrow tool with validation, not a chatbot guessing field values. Pilot read-only retrieval first, then add confirmation-gated writes once asset naming and roles are clean.",
       },
       {
         heading: "Capabilities that matter today",

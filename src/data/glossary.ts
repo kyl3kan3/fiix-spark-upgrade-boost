@@ -25,13 +25,18 @@ export type GlossaryTerm = {
 export const glossary: GlossaryTerm[] = [
  {
  slug: "cmms",
- term: "Maintenance Management Systems (CMMS): Complete Buyer's Guide",
+ term: "What Is a CMMS? Meaning, Systems & Buyer's Guide",
  short: "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
- metaTitle: "CMMS: What It Is, Features & Software Buyer's Guide",
- metaDescription: "What is a CMMS? Compare modules, rollout steps, and real costs—plus a free selection worksheet to shortlist vendors without spreadsheet chaos.",
+ metaTitle: "What Does CMMS Stand For? CMMS Meaning & Systems Guide",
+ metaDescription:
+   "CMMS stands for computerized maintenance management system. See what CMMS systems do, key features, real costs, and a free vendor worksheet.",
  published: "2026-01-15",
- updated: "2026-10-15",
+ updated: "2026-10-22",
  sections: [
+ {
+ heading: "CMMS in brief",
+ body: "CMMS stands for computerized maintenance management system: software that registers assets, schedules preventive work, assigns work orders, and stores service history in one place. Teams use a CMMS to replace spreadsheets and whiteboards with searchable records, mobile completion, and reporting on backlog, PM compliance, and cost per asset.",
+ },
  {
  heading: "What does CMMS stand for?",
  body: "CMMS stands for Computerized Maintenance Management System. The CMMS meaning in plain English: software that acts as the system of record for everything a maintenance team does — every asset they look after, every work order they raise, every inspection they complete, and every preventive task that comes due. Before CMMS software existed, this information lived in clipboards, whiteboards, and a tangle of spreadsheets. A modern CMMS replaces all of that with one searchable place that the whole team works from. When people say \"a CMMS\", \"CMMS software\", or \"a CMMS system\", they mean the same thing.",
@@ -55,7 +60,7 @@ export const glossary: GlossaryTerm[] = [
  },
  },
  {
- heading: "Types of CMMS systems",
+ heading: "CMMS systems: types",
  body: "CMMS systems fall into a few recognizable shapes. Cloud-based (SaaS) CMMS software is hosted by the vendor, updated continuously, and reached from a browser or mobile app — this is what most teams buy today. On-premise CMMS runs on servers you own, which some regulated or air-gapped sites still require. Mobile-first CMMS platforms are built around the technician's phone rather than a desk. Open-source and free CMMS tools remove the license cost but shift hosting, security, and support onto you. Finally, AI-native or agentic CMMS platforms add predictive scoring and let authorized AI assistants retrieve records or draft work orders under the same permissions a person has.",
  },
  {
@@ -114,9 +119,12 @@ export const glossary: GlossaryTerm[] = [
  { q: "Do I need a CMMS if I only have a few assets?", a: "Not necessarily. A small, stable operation may work well with a spreadsheet. Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort." },
  { q: "How much does a CMMS cost?", a: "Pricing models vary by vendor, tier, users, modules, and services. MaintenEase publishes account plans with included seats; Business charges $15 per month for each additional seat after the four included seats. Run your actual headcount and capacity through the CMMS cost calculator before committing." },
  { q: "Is there a free CMMS?", a: "Yes — some vendors offer limited free tiers, and open-source CMMS software exists. Free tiers usually cap users, assets, or reporting, and open-source shifts hosting, updates, and security onto your team, so weigh the total cost rather than the license price." },
+ { q: "How does a CMMS support preventive maintenance?", a: "A CMMS stores recurring schedules by date or meter reading, generates work orders before due dates, records completion evidence, and reports PM compliance. That turns preventive maintenance from a calendar reminder into auditable work tied to each asset." },
  ],
  related: ["agentic-cmms", "preventive-maintenance", "work-order", "mro", "deferred-maintenance", "cmms-roi"],
  internalLinks: [
+ { label: "MaintainX pricing", href: "/compare/maintenease-vs-maintainx" },
+ { label: "MRO supplies", href: "/learn/mro" },
  { label: "preventive maintenance guide", href: "/learn/preventive-maintenance" },
  { label: "facility management guide", href: "/facility-management" },
  { label: "work order template for Word and Sheets", href: "/templates/work-order-template" },
@@ -543,17 +551,35 @@ export const glossary: GlossaryTerm[] = [
  slug: "fleet-maintenance",
  term: "Fleet Maintenance",
  short: "Keeping a group of vehicles — trucks, vans, cars, heavy equipment — safe, compliant, and on the road through scheduled service and quick reactive repairs.",
- metaTitle: "Fleet Maintenance: PM Schedules, DVIR & DOT Records",
+ metaTitle: "Fleet Maintenance & Fleet Services: Schedules, DVIR, DOT",
  metaDescription: "Fleet maintenance programs that keep trucks roadworthy: PM intervals, DVIR rules, service history templates, and KPIs like cost per mile and PM on-time %.",
- updated: "2026-10-15",
+ updated: "2026-10-22",
  sections: [
  {
  heading: "Definition",
  body: "Fleet maintenance is the practice of keeping a group of vehicles operational, safe, and compliant. It covers everything from daily driver inspections to scheduled service, emergency roadside repairs, tire programs, accident damage, and end-of-life disposal. The scope spans light vehicles (cars, vans), medium and heavy trucks, trailers, and off-road equipment.",
  },
  {
+ heading: "What are fleet services?",
+ body: "Fleet services are the contracted or in-house capabilities that keep vehicles available: scheduled preventive service, inspections, tire and fluid programs, roadside repair, warranty administration, and disposal. In operations language, fleet services often means the vendor or internal shop that performs that work, while fleet maintenance is the discipline and record-keeping that proves each vehicle was serviced on time.",
+ },
+ {
+ heading: "Dedicated fleet maintenance",
+ body: "Dedicated fleet maintenance means a team or partner focused only on your vehicles rather than sharing a general shop queue. That model fits when downtime is expensive, inspection rules are strict, or telematics and meter readings drive service intervals. A CMMS or fleet module should still tie every inspection, defect, and repair to a stable vehicle ID so supervisors can see overdue PMs and repeat failures without opening separate spreadsheets.",
+ },
+ {
  heading: "How fleet schedules are set",
  body: "Fleet schedules commonly combine manufacturer guidance, calendar intervals, mileage or engine hours, duty cycle, environment, condition findings, and applicable inspection rules. A telematics integration can supply meter readings when the chosen software and provider support it, but teams should verify the connector, data latency, missing-reading behavior, and trigger logic rather than assume every fleet CMMS includes automatic feeds.",
+ table: {
+ caption: "Sample fleet maintenance schedule (adjust to manufacturer and duty cycle)",
+ headers: ["Interval", "Typical tasks", "Record to keep"],
+ rows: [
+ ["Daily / pre-trip", "Lights, tires, leaks, safety equipment", "Driver inspection or DVIR when required"],
+ ["Monthly", "Fluid levels, belts, filters visual check", "Work order or checklist with mileage"],
+ ["Every 5,000–7,500 mi", "Oil and filter, tire rotation, brake inspection", "Service date, meter reading, parts used"],
+ ["Annual", "DOT or state inspection, emissions where applicable", "Inspection certificate and corrective work"],
+ ],
+ },
  },
  {
  heading: "Compliance is non-negotiable",
@@ -587,13 +613,26 @@ export const glossary: GlossaryTerm[] = [
  slug: "mro",
  term: "MRO (Maintenance, Repair & Operations)",
  short: "The supplies, parts, and consumables a maintenance team uses to keep operations running — separate from raw materials that become finished products.",
- metaTitle: "What is MRO? Maintenance, Repair & Operations Explained",
- metaDescription: "MRO covers the parts, tools, and consumables maintenance teams use day to day. Learn what it includes and how to control MRO inventory.",
- updated: "2026-08-23",
+ metaTitle: "What Is MRO? Meaning, Supplies & MRO in Supply Chain",
+ metaDescription:
+   "MRO stands for maintenance, repair, and operations supplies. See common MRO items, how MRO fits the supply chain, and how to control storeroom inventory.",
+ updated: "2026-10-22",
  sections: [
  {
+ heading: "MRO stands for maintenance, repair, and operations",
+ body: "MRO stands for Maintenance, Repair, and Operations — the parts, tools, and consumables used to keep facilities and equipment running, distinct from raw materials that become finished goods. MRO inventory is usually expensed when purchased rather than capitalized like production stock.",
+ },
+ {
  heading: "Definition",
- body: "MRO stands for Maintenance, Repair, and Operations. It refers to the goods a business consumes to keep itself running, as opposed to the raw materials that get turned into finished products. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. In accounting terms MRO is usually expensed rather than capitalized.",
+ body: "MRO refers to the goods a business consumes to keep itself running. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. Storerooms often mix critical spares with everyday consumables, which is why disciplined naming, bin locations, and issue records matter as much as the catalog itself.",
+ },
+ {
+ heading: "Common MRO supplies and items",
+ body: "Typical MRO supplies include fasteners and hardware, bearings and seals, lubricants and greases, filters, belts and hoses, electrical components, cleaning chemicals, PPE, lighting, batteries, and small power tools. The exact list depends on your assets; tie each stocked item to compatible equipment in the CMMS so technicians pick the right part the first time.",
+ },
+ {
+ heading: "MRO in the supply chain",
+ body: "In supply chain terms, MRO sits between production materials and finished goods: it does not flow into what you sell, but it keeps plants, fleets, and buildings productive. Procurement, receiving, and accounts payable still need PO numbers, lead times, and vendor performance data. Connecting MRO issues to work orders closes the loop — you see which assets consume the most cash and which suppliers miss delivery dates.",
  },
  {
  heading: "Why MRO is hard to control",
