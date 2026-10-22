@@ -32,6 +32,9 @@ describe("htmlSecurityHeaders", () => {
   it("includes a conservative CSP with required third parties", () => {
     expect(CONTENT_SECURITY_POLICY).toContain("default-src 'self'");
     expect(CONTENT_SECURITY_POLICY).toContain("https://www.googletagmanager.com");
+    expect(CONTENT_SECURITY_POLICY).toContain("https://googleads.g.doubleclick.net");
+    expect(CONTENT_SECURITY_POLICY).toContain("https://www.google.com");
+    expect(CONTENT_SECURITY_POLICY).toContain("worker-src 'self' blob:");
     expect(CONTENT_SECURITY_POLICY).toContain("https://datafa.st");
     expect(CONTENT_SECURITY_POLICY).toContain("https://wwgljhpuulhljumrhscg.supabase.co");
     expect(CONTENT_SECURITY_POLICY).toContain("frame-ancestors 'none'");

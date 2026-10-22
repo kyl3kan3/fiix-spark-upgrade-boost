@@ -16,6 +16,10 @@ An add-on assistant may search documentation or summarize a screen while the und
 
 Inspect data quality, retrieval, action, and governance. Data quality covers consistent assets, locations, work history, and failure codes. Retrieval determines whether answers cite the correct current records. Action covers narrow tools with validated schemas. Governance includes authentication, role permissions, tenant isolation, audit history, confirmation, and revocation. Weakness in any layer limits the others. AI cannot compensate for an asset register full of duplicates or a write tool that bypasses company access rules.
 
+## AI-native tools for CMMS
+
+Practical AI-native tools for CMMS today include work-order drafting from plain-language requests, MCP or agent APIs that list assets and open work under user permissions, anomaly or risk scoring on asset history, and shift summaries that cite record IDs. The through-line is structured access: each capability should map to a narrow tool with validation, not a chatbot guessing field values. Pilot read-only retrieval first, then add confirmation-gated writes once asset naming and roles are clean.
+
 ## Capabilities that matter today
 
 Useful current capabilities include natural-language work-order and asset lookup, shift summaries, request triage, document-to-asset extraction, risk explanations, and confirmation-aware work-order creation. These jobs are frequent, measurable, and grounded in CMMS records. Be skeptical of demonstrations that jump straight to autonomous planning without showing data preparation, permissions, exception handling, and what happens when the model cannot identify an asset. Reliability on ordinary work beats an ambitious but opaque demo.

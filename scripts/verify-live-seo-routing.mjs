@@ -45,7 +45,7 @@ const negotiated = await fetch(`${base}/learn/cmms`, {
 const negotiatedBody = await negotiated.text();
 if (negotiated.status !== 200) fail(`/learn/cmms Markdown negotiation returned ${negotiated.status}`);
 else if (!/text\/markdown/i.test(negotiated.headers.get("content-type") ?? "")) fail(`/learn/cmms Markdown negotiation has the wrong Content-Type`);
-else if (!/^#\s+Maintenance Management Systems/m.test(negotiatedBody)) fail(`/learn/cmms Markdown negotiation returned the wrong representation`);
+else if (!/^#\s+What Is a CMMS\?/m.test(negotiatedBody)) fail(`/learn/cmms Markdown negotiation returned the wrong representation`);
 else if (!/accept/i.test(negotiated.headers.get("vary") ?? "")) fail(`/learn/cmms Markdown negotiation is missing Vary: Accept`);
 else pass(`/learn/cmms serves its Markdown representation when explicitly requested`);
 

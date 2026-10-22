@@ -1,4 +1,4 @@
-# MaintenEase vs MaintainX
+# MaintainX Pricing vs MaintenEase
 
 > Account plans with included seats and published capacity limits.
 

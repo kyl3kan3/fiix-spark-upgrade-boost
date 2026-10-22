@@ -1,4 +1,4 @@
-# MaintenEase vs eMaint
+# eMaint Pricing vs MaintenEase
 
 > Published account plans compared with configurable eMaint pricing.
 
@@ -42,6 +42,22 @@ A valid team-cost comparison requires a current public price or a buyer's actual
 
 Ask eMaint for the recurring subscription, user minimum, modules, implementation services, training, integrations, data migration, support, contract term, renewal terms, and taxes. Compare that proposal with the MaintenEase plan that satisfies both seat and record-volume requirements.
 
+## How eMaint quotes are built
+
+eMaint sells configurable packages rather than a single public per-user rate. Professional and Enterprise tiers differ by module depth, user minimums, services, and contract term. The official pricing page describes Professional with a three-user minimum and Enterprise with a five-user minimum; everything else — modules, integrations, implementation hours, training, and renewal uplift — arrives in a written quote.
+
+Treat the quote as several line items: recurring subscription (often annual), one-time implementation, data migration, optional IoT or mobile add-ons, and premium support. Ask whether named users, concurrent users, or requester-only roles are priced differently, because that changes the true cost of supervisors and part-time technicians.
+
+MaintenEase publishes Starter, Pro, and Business monthly prices with included seats and a published Business extra-seat rate, so you can model headcount before talking to sales. eMaint can still win on depth for complex reliability programs; the comparison is whether that depth is in your quote or assumed from marketing copy.
+
+## Worked example: eight maintenance users (illustrative)
+
+Imagine a team of eight people who need full access: four technicians, two planners, one supervisor, and one operations manager. On MaintenEase, Business includes four seats with additional seats billed at the published monthly rate, so you can calculate a monthly software line before import work begins.
+
+For eMaint, the same eight people might sit above the Professional minimum but still require Enterprise modules for multi-site reporting, mobile offline, or integrations. Because list prices are not public, the defensible workflow is to send eMaint your user list, required modules, and sites, then compare the all-in first-year total — subscription plus services — with the MaintenEase plan that covers your seat and asset counts.
+
+Do not compare eMaint's subscription subtotal to MaintenEase while leaving implementation or training out of one side. Buyers who skip that step often discover a six-figure services line after the pilot.
+
 ## Evaluate fit with evidence from your workflow
 
 Build a pilot script from real tasks: submit a request, plan a preventive work order, attach evidence, consume a part, review asset history, approve completion, and export the record. Run the same script in each product and record where required fields, permissions, or integrations differ.
@@ -63,6 +79,14 @@ eMaint's official pricing page uses configurable pricing and does not publish a 
 ### Why does this page not show eMaint savings?
 
 Without a current public price or your actual quote, multiplying an old number by user count would be misleading. Compare the complete eMaint proposal with the MaintenEase plan that satisfies your seats and capacity.
+
+### What should I ask on an eMaint pricing call?
+
+Request itemized recurring cost, user minimums, included modules, mobile and API access, implementation and training fees, data migration scope, support tier, contract length, renewal uplift, and what happens if you add users mid-year.
+
+### Is eMaint CMMS pricing per user?
+
+eMaint quotes configured packages; the public site does not show a simple universal per-user list price. Confirm in your proposal how each role is counted and whether requesters or view-only users require licenses.
 
 ### Is MaintenEase affiliated with eMaint?
 

@@ -60,7 +60,7 @@ const ComparePage = () => {
     ? {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        name: c.h1,
+        name: c.metaTitle,
         description: c.metaDescription,
         url,
         inLanguage: "en-US",
@@ -118,6 +118,15 @@ const ComparePage = () => {
           </Button>
         </div>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{c.intro}</p>
+        {c.slug === "maintenease-vs-maintainx" ? (
+          <p className="mt-6 max-w-3xl text-muted-foreground leading-relaxed text-pretty">
+            Compare per-seat math with{" "}
+            <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep pricing</Link>{" "}
+            and quote-based{" "}
+            <Link to="/compare/maintenease-vs-emaint" className="text-primary underline underline-offset-4">eMaint pricing</Link>{" "}
+            before you shortlist vendors.
+          </p>
+        ) : null}
       </section>
 
       {c.pricingTable ? (

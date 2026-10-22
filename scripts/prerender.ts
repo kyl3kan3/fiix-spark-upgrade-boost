@@ -774,7 +774,7 @@ const learnRoutes: Route[] = glossary.map((g) => {
       {
         "@context": "https://schema.org",
         "@type": "Article",
-        headline: g.term,
+        headline: g.metaTitle,
         description: g.short,
         mainEntityOfPage: { "@type": "WebPage", "@id": url },
         inLanguage: "en",

@@ -27,15 +27,15 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 
 ## Comparisons
 
-- [MaintenEase vs UpKeep](https://maintenease.com/compare/maintenease-vs-upkeep.md): The same core CMMS — without paying by the technician.
+- [UpKeep Pricing 2026 vs MaintenEase: Real Team Cost](https://maintenease.com/compare/maintenease-vs-upkeep.md): The same core CMMS — without paying by the technician.
 - [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): Account plans with included seats compared with per-user pricing.
-- [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx.md): Account plans with included seats and published capacity limits.
+- [MaintainX Pricing vs MaintenEase](https://maintenease.com/compare/maintenease-vs-maintainx.md): Account plans with included seats and published capacity limits.
 - [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): Account and per-user pricing for preventive maintenance teams.
-- [MaintenEase vs eMaint](https://maintenease.com/compare/maintenease-vs-emaint.md): Published account plans compared with configurable eMaint pricing.
+- [eMaint Pricing vs MaintenEase](https://maintenease.com/compare/maintenease-vs-emaint.md): Published account plans compared with configurable eMaint pricing.
 
 ## Learn (glossary)
 
-- [Maintenance Management Systems (CMMS): Complete Buyer's Guide](https://maintenease.com/learn/cmms.md): Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
+- [What Is a CMMS? Meaning, Systems & Buyer's Guide](https://maintenease.com/learn/cmms.md): Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
 - [Agentic CMMS: AI Agents for Maintenance Workflows](https://maintenease.com/learn/agentic-cmms.md): A CMMS that lets authorized AI agents retrieve maintenance data and complete workflow steps, such as reviewing requests or creating work orders, while preserving permissions and human oversight.
 - [Preventive Maintenance: Complete Guide, Schedule, Examples, and Templates](https://maintenease.com/learn/preventive-maintenance.md): Preventive maintenance is planned work performed before functional failure, triggered by time, usage, condition findings, or asset risk to reduce avoidable downtime and preserve equipment performance.
 - [Total Productive Maintenance: The 8 Pillars, KPIs, and Implementation Plan](https://maintenease.com/learn/total-productive-maintenance.md): Total productive maintenance (TPM) is a company-wide operating system that engages production, maintenance, quality, engineering, safety, and support teams in preventing equipment losses.
