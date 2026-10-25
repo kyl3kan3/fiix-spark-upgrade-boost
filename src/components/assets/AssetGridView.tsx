@@ -16,7 +16,7 @@ import {
  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import AssetEmptyState from "./AssetEmptyState";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 import { logger } from "@/lib/logger";
 
 interface Asset {

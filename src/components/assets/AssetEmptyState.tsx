@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Cog, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 
 interface AssetEmptyStateProps {
  hasFilters: boolean;

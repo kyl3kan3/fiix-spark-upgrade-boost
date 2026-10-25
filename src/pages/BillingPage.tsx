@@ -36,7 +36,7 @@ import {
   updateSubscriptionSeats,
 } from "@/services/billingService";
 import { trackPurchaseConversion } from "@/lib/gtag";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import { useAdminStatus } from "@/hooks/team/useTeamProfile";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
   PLAN_BY_TIER,

@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 
 const AssetPageHeader: React.FC = () => {
  const { currentUserRole } = useUserRolePermissions();
