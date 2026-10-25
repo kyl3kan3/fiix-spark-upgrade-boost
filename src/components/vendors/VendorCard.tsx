@@ -17,7 +17,7 @@ import {
  AlertDialogTitle,
  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 import { Vendor } from "@/services/vendorService";
 
 interface VendorCardProps {

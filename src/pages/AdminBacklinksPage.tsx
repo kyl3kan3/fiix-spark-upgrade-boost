@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Loader2, Plus, Trash2, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import { useAdminStatus } from "@/hooks/team/useTeamProfile";
 import { toast } from "sonner";
 
 type Prospect = {

@@ -12,7 +12,7 @@ import {
   getAdminEmailLog,
   getEmailEventsByMessageIds,
 } from "@/services/notifications";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import { useAdminStatus } from "@/hooks/team/useTeamProfile";
 import { format } from "date-fns";
 
 function statusVariant(t: string): "default" | "secondary" | "destructive" | "outline" {

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 
 interface VendorSelectAllHeaderProps {
  vendorsCount: number;

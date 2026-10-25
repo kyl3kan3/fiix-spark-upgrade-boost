@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 import TeamMembersLoading from "./TeamMembersLoading";
 import TeamMembersEmpty from "./TeamMembersEmpty";
 import TeamMembersGrid from "./TeamMembersGrid";

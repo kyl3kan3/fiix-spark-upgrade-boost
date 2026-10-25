@@ -1,11 +1,11 @@
 
 import { useState, useEffect, useCallback } from "react";
-import { useUserProfile } from "./useUserProfile";
+import { useTeamProfile } from "./useTeamProfile";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
 
 export const useCurrentUserRole = () => {
- const { profileData, isLoading: isProfileLoading, error: profileError, refreshProfile } = useUserProfile(['role']);
+ const { profileData, isLoading: isProfileLoading, error: profileError, refreshProfile } = useTeamProfile(['role']);
  const [isLoading, setIsLoading] = useState(true);
  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
  const [error, setError] = useState<Error | null>(null);

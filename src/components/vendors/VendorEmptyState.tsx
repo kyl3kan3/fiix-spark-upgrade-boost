@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Building2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUserRolePermissions } from "@/hooks/team/useUserRolePermissions";
+import { useUserRolePermissions } from "@/hooks/team/useTeamProfile";
 
 interface VendorEmptyStateProps {
  hasFilters: boolean;

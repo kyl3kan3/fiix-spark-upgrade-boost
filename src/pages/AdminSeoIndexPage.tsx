@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, ExternalLink, Loader2, RefreshCw, Search } from "lucide-react";
 import { fetchSeoIndexStatus, type SeoIndexInspectResult } from "@/services/seoService";
-import { useAdminStatus } from "@/hooks/team/useAdminStatus";
+import { useAdminStatus } from "@/hooks/team/useTeamProfile";
 import { solutions } from "@/data/solutions";
 import { glossary } from "@/data/glossary";
 
