@@ -1664,6 +1664,147 @@ export type Database = {
         }
         Relationships: []
       }
+      part_assets: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          part_id: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          part_id: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          part_id?: string
+        }
+        Relationships: []
+      }
+      part_stock_adjustments: {
+        Row: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          part_id: string
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Insert: {
+          adjustment_type: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          part_id: string
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Update: {
+          adjustment_type?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          part_id?: string
+          quantity_after?: number
+          quantity_before?: number
+          quantity_delta?: number
+        }
+        Relationships: []
+      }
+      part_usage_logs: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          id: string
+          notes: string | null
+          part_id: string
+          quantity: number
+          used_at: string
+          used_by: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          id?: string
+          notes?: string | null
+          part_id: string
+          quantity: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          id?: string
+          notes?: string | null
+          part_id?: string
+          quantity?: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: []
+      }
+      parts: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          manufacturer: string | null
+          min_quantity: number
+          name: string
+          notes: string | null
+          part_number: string | null
+          quantity_on_hand: number
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_quantity?: number
+          name: string
+          notes?: string | null
+          part_number?: string | null
+          quantity_on_hand?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_quantity?: number
+          name?: string
+          notes?: string | null
+          part_number?: string | null
+          quantity_on_hand?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lubricants: {
         Row: {
           company_id: string
@@ -3263,6 +3404,24 @@ export type Database = {
       submit_checklist_atomic: {
         Args: { _checklist_id: string; _items: Json; _notes?: string }
         Returns: Json
+      }
+      adjust_part_stock: {
+        Args: {
+          _part_id: string
+          _adjustment_type: string
+          _quantity_delta: number
+          _notes?: string | null
+        }
+        Returns: Json
+      }
+      record_part_usage: {
+        Args: {
+          _lines: Json
+          _work_order_id?: string | null
+          _asset_id?: string | null
+          _notes?: string | null
+        }
+        Returns: number
       }
       adjust_lubricant_stock: {
         Args: {

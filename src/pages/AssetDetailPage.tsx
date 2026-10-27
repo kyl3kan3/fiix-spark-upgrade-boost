@@ -10,6 +10,7 @@ import AssetNotFound from "@/components/assets/AssetNotFound";
 import ImageGallery from "@/components/common/ImageGallery";
 import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
 import { AssetLubricantsCard } from "@/components/lubricants/AssetLubricantsCard";
+import { AssetPartsCard } from "@/components/parts/AssetPartsCard";
 
 function getStatusConfig(status: string) {
   switch (status?.toLowerCase()) {
@@ -189,6 +190,7 @@ const AssetDetailPage = () => {
             </div>
 
             <AssetLubricantsCard assetId={asset.id} />
+            <AssetPartsCard assetId={asset.id} />
 
             {/* Field ID / QR */}
             <div className="surface-card rounded-lg p-6">

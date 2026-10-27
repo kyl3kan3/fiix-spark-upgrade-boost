@@ -36,6 +36,7 @@ export type ProductPlan = {
     sso: boolean;
     predictiveMaintenance: boolean;
     lubricantTracking: boolean;
+    partsInventory: boolean;
   };
   featureLabels: string[];
 };
@@ -58,6 +59,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       sso: false,
       predictiveMaintenance: false,
       lubricantTracking: false,
+      partsInventory: false,
     },
     featureLabels: [
       "2 included seats",
@@ -85,12 +87,14 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       sso: false,
       predictiveMaintenance: true,
       lubricantTracking: true,
+      partsInventory: true,
     },
     featureLabels: [
       "4 included seats",
       "Up to 500 assets",
       "2,000 work orders/mo",
       "Lubricant catalog & inventory",
+      "Parts inventory & low-stock alerts",
       "Predictive maintenance",
       "Full analytics & reports",
       "Automations",
@@ -114,6 +118,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       sso: true,
       predictiveMaintenance: true,
       lubricantTracking: true,
+      partsInventory: true,
     },
     featureLabels: [
       "4 included seats",

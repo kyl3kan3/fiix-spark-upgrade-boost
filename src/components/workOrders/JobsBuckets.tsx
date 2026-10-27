@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import {
  WorkOrderStatus, WorkOrderPriority, WorkOrderWithRelations,
 } from "@/types/workOrders";
+import { WorkOrderCompletePartsDialog } from "@/components/parts/WorkOrderCompletePartsDialog";
+import { useHasFeature } from "@/hooks/useSubscription";
 
 type BucketKey = "urgent" | "todo" | "in_progress" | "done";
 
@@ -224,9 +226,25 @@ interface JobsBucketsProps {
 
 const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const queryClient = useQueryClient();
+ const hasParts = useHasFeature("parts_inventory");
  const [search, setSearch] = useState("");
  const [activeBucket, setActiveBucket] = useState<BucketKey | "all">("all");
  const [updatingId, setUpdatingId] = useState<string | null>(null);
+ const [completePartsJob, setCompletePartsJob] = useState<WorkOrderWithRelations | null>(null);
+
+ const markJobStatus = async (jobId: string, status: WorkOrderStatus) => {
+ setUpdatingId(jobId);
+ const { error } = await supabase.from("work_orders").update({ status }).eq("id", jobId);
+ setUpdatingId(null);
+ if (error) {
+ toast.error("Couldn't update job", { description: error.message });
+ return false;
+ }
+ toast.success(status === "in_progress" ? "Started — good luck!" : "Marked done. Nice work.");
+ queryClient.invalidateQueries({ queryKey: ["workOrders"] });
+ if (hasParts) queryClient.invalidateQueries({ queryKey: ["parts"] });
+ return true;
+ };
 
  const filtered = useMemo(() => {
  const q = search.trim().toLowerCase();
@@ -249,18 +267,11 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const handleAdvance = async (job: WorkOrderWithRelations) => {
  const next = nextStatus(job.status);
  if (!next) return;
- setUpdatingId(job.id);
- const { error } = await supabase
- .from("work_orders")
- .update({ status: next })
- .eq("id", job.id);
- setUpdatingId(null);
- if (error) {
- toast.error("Couldn't update job", { description: error.message });
+ if (next === "completed" && hasParts) {
+ setCompletePartsJob(job);
  return;
  }
- toast.success(next === "in_progress" ? "Started — good luck!" : "Marked done. Nice work.");
- queryClient.invalidateQueries({ queryKey: ["workOrders"] });
+ await markJobStatus(job.id, next);
  };
 
  const visibleBuckets = activeBucket === "all" ? BUCKETS : BUCKETS.filter(b => b.key === activeBucket);
@@ -362,6 +373,17 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  );
  })}
  </div>
+
+ <WorkOrderCompletePartsDialog
+ open={!!completePartsJob}
+ onOpenChange={(open) => !open && setCompletePartsJob(null)}
+ workOrderId={completePartsJob?.id ?? ""}
+ assetId={completePartsJob?.asset_id}
+ onCompleted={() => {
+ if (completePartsJob) markJobStatus(completePartsJob.id, "completed");
+ setCompletePartsJob(null);
+ }}
+ />
  </div>
  );
 };

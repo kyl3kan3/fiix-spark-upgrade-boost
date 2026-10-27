@@ -4,7 +4,18 @@ import { PLAN_BY_TIER } from "@/data/productCatalog";
 
 export type { SubscriptionTier, SubscriptionStatus, Subscription } from "@/services/subscriptionService";
 
-export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; automations: boolean; api: boolean; sso: boolean; predictive_maintenance: boolean; lubricant_tracking: boolean }> = {
+export const TIER_FEATURES: Record<
+  SubscriptionTier,
+  {
+    analytics: boolean;
+    automations: boolean;
+    api: boolean;
+    sso: boolean;
+    predictive_maintenance: boolean;
+    lubricant_tracking: boolean;
+    parts_inventory: boolean;
+  }
+> = {
   starter: {
     analytics: PLAN_BY_TIER.starter.capabilities.analytics,
     automations: PLAN_BY_TIER.starter.capabilities.automations,
@@ -12,6 +23,7 @@ export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; autom
     sso: PLAN_BY_TIER.starter.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.starter.capabilities.predictiveMaintenance,
     lubricant_tracking: PLAN_BY_TIER.starter.capabilities.lubricantTracking,
+    parts_inventory: PLAN_BY_TIER.starter.capabilities.partsInventory,
   },
   pro: {
     analytics: PLAN_BY_TIER.pro.capabilities.analytics,
@@ -20,6 +32,7 @@ export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; autom
     sso: PLAN_BY_TIER.pro.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.pro.capabilities.predictiveMaintenance,
     lubricant_tracking: PLAN_BY_TIER.pro.capabilities.lubricantTracking,
+    parts_inventory: PLAN_BY_TIER.pro.capabilities.partsInventory,
   },
   business: {
     analytics: PLAN_BY_TIER.business.capabilities.analytics,
@@ -28,6 +41,7 @@ export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; autom
     sso: PLAN_BY_TIER.business.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.business.capabilities.predictiveMaintenance,
     lubricant_tracking: PLAN_BY_TIER.business.capabilities.lubricantTracking,
+    parts_inventory: PLAN_BY_TIER.business.capabilities.partsInventory,
   },
 };
 
