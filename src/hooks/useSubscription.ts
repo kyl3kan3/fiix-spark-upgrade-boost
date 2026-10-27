@@ -15,6 +15,7 @@ export const TIER_FEATURES: Record<
     lubricant_tracking: boolean;
     parts_inventory: boolean;
     meter_based_pm: boolean;
+    bulk_pm_generation: boolean;
   }
 > = {
   starter: {
@@ -26,6 +27,7 @@ export const TIER_FEATURES: Record<
     lubricant_tracking: PLAN_BY_TIER.starter.capabilities.lubricantTracking,
     parts_inventory: PLAN_BY_TIER.starter.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.starter.capabilities.meterBasedPm,
+    bulk_pm_generation: PLAN_BY_TIER.starter.capabilities.bulkPmGeneration,
   },
   pro: {
     analytics: PLAN_BY_TIER.pro.capabilities.analytics,
@@ -36,6 +38,7 @@ export const TIER_FEATURES: Record<
     lubricant_tracking: PLAN_BY_TIER.pro.capabilities.lubricantTracking,
     parts_inventory: PLAN_BY_TIER.pro.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.pro.capabilities.meterBasedPm,
+    bulk_pm_generation: PLAN_BY_TIER.pro.capabilities.bulkPmGeneration,
   },
   business: {
     analytics: PLAN_BY_TIER.business.capabilities.analytics,
@@ -46,6 +49,7 @@ export const TIER_FEATURES: Record<
     lubricant_tracking: PLAN_BY_TIER.business.capabilities.lubricantTracking,
     parts_inventory: PLAN_BY_TIER.business.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.business.capabilities.meterBasedPm,
+    bulk_pm_generation: PLAN_BY_TIER.business.capabilities.bulkPmGeneration,
   },
 };
 

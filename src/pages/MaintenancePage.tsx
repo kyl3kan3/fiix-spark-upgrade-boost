@@ -5,6 +5,7 @@ import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PreventiveMaintenanceContent from "@/components/features/PreventiveMaintenanceContent";
+import { PmBulkGeneratePanel } from "@/components/maintenance/PmBulkGeneratePanel";
 import UnplannedMaintenanceContent from "@/components/features/UnplannedMaintenanceContent";
 import { Plus } from "lucide-react";
 
@@ -26,7 +27,7 @@ const MaintenancePage = () => {
  <div className="px-4 md:px-6 lg:px-8 py-6">
  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
  <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 gap-0">
- {[["preventive", "Preventive"], ["unplanned", "Unplanned"]].map(([v, l]) => (
+ {[["preventive", "Preventive"], ["bulk", "Bulk generate"], ["unplanned", "Unplanned"]].map(([v, l]) => (
  <TabsTrigger
  key={v}
  value={v}
@@ -38,6 +39,9 @@ const MaintenancePage = () => {
  </TabsList>
  <TabsContent value="preventive" className="mt-0">
  <PreventiveMaintenanceContent />
+ </TabsContent>
+ <TabsContent value="bulk" className="mt-0">
+ <PmBulkGeneratePanel />
  </TabsContent>
  <TabsContent value="unplanned" className="mt-0">
  <UnplannedMaintenanceContent />

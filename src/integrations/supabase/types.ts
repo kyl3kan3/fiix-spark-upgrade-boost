@@ -3498,6 +3498,14 @@ export type Database = {
         Args: { _checklist_id: string; _items: Json; _notes?: string }
         Returns: Json
       }
+      preview_pm_work_orders: {
+        Args: { _days_ahead?: number }
+        Returns: Json
+      }
+      create_pm_work_orders_from_preview: {
+        Args: { _items: Json }
+        Returns: number
+      }
       record_asset_meter_reading: {
         Args: {
           _meter_id: string
