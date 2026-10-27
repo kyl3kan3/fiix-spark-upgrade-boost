@@ -27,6 +27,7 @@ export interface PurchaseOrder {
   id: string;
   company_id: string;
   request_id: string | null;
+  vendor_id: string | null;
   vendor_name: string;
   status: PurchaseOrderStatus;
   tax_rate_percent: number;
@@ -40,6 +41,7 @@ export interface PurchaseOrder {
 
 export interface CreatePurchaseOrderInput {
   vendor_name: string;
+  vendor_id?: string | null;
   tax_rate_percent?: number;
   request_id?: string | null;
   lines: {

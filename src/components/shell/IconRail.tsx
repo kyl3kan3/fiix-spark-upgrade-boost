@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useAuth } from "@/providers/AuthContext";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS } from "./navConfig";
-import { useSubscription, TIER_FEATURES } from "@/hooks/useSubscription";
+import { filterNavItems, type NavRole } from "./navConfig";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface IconRailProps {
  onOpenPalette: () => void;
@@ -31,19 +31,11 @@ const IconRail: React.FC<IconRailProps> = () => {
  };
 
  // Filter items by tier feature
- const userRole = (profile?.role ?? "viewer") as import("./navConfig").NavRole;
-
- const visibleItems = NAV_ITEMS.filter((item) => {
- if (item.hideForRoles?.includes(userRole)) return false;
- if (!item.feature) return true;
- if (!sub) return false;
- if (!sub.is_active) return false;
- // Unknown tier from the backend degrades to hiding gated items, not a crash.
- return TIER_FEATURES[sub.tier]?.[item.feature] ?? false;
- });
+ const userRole = (profile?.role ?? "viewer") as NavRole;
+ const visibleItems = filterNavItems(userRole, sub);
 
  // Group items
- const grouped: Array<{ name: string; items: typeof NAV_ITEMS }> = [];
+ const grouped: Array<{ name: string; items: typeof visibleItems }> = [];
  visibleItems.forEach((item) => {
  const last = grouped[grouped.length - 1];
  if (!last || last.name !== item.group) {

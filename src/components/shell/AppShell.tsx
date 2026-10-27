@@ -7,6 +7,7 @@ import DashboardNotifications from "@/components/dashboard/DashboardNotification
 import { getUserNotifications } from "@/services/notifications";
 import DailyDuePrompt from "@/components/checklists/DailyDuePrompt";
 import { TrialBanner } from "@/components/billing/TrialBanner";
+import { ProfileSetupHint } from "@/components/profile/ProfileSetupHint";
 import { AppDocumentTitle } from "@/components/shell/AppDocumentTitle";
 
 interface AppShellProps {
@@ -61,6 +62,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
  <main className="flex-1 w-full pt-16 pb-24 lg:pb-0">
  <TrialBanner />
+ <ProfileSetupHint />
  {children}
  </main>
 

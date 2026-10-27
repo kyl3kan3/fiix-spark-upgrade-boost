@@ -74,6 +74,7 @@ export async function createPurchaseOrder(input: CreatePurchaseOrderInput): Prom
       {
         company_id: companyId,
         vendor_name: header.vendor_name,
+        vendor_id: header.vendor_id ?? null,
         tax_rate_percent: header.tax_rate_percent ?? 0,
         request_id: header.request_id ?? null,
         status: "open",

@@ -15,7 +15,7 @@ const corsHeaders = {
 }
 
 // Configuration
-const SITE_NAME = "maintenease"
+const SITE_NAME = "MaintenEase"
 const SENDER_DOMAIN = "notify.maintenease.com"
 const ROOT_DOMAIN = "maintenease.com"
 const FROM_DOMAIN = "maintenease.com"
@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 // The sample email uses a fixed placeholder (RFC 6761 .test TLD) so the Go backend
 // can always find-and-replace it with the actual recipient when sending test emails,
 // even if the project's domain has changed since the template was scaffolded.
-const SAMPLE_PROJECT_URL = "https://maintenease.lovable.app"
+const SAMPLE_PROJECT_URL = "https://maintenease.com"
 const SAMPLE_EMAIL = "user@example.test"
 const SAMPLE_DATA: Record<string, object> = {
   signup: {

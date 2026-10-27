@@ -71,6 +71,20 @@ describe("crawler edge middleware", () => {
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
   });
 
+  it("serves public request portals from the marketing shell with noindex", async () => {
+    const context = contextFor(
+      "/r/maintenease-qa-test",
+      new Response("<html><body>Portal</body></html>", {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      }),
+    );
+
+    const response = await onRequest(context);
+
+    expect(context.next).toHaveBeenCalledWith(undefined);
+    expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
+  });
+
   it("rewrites protected auth routes to the noindex app shell", async () => {
     const context = contextFor(
       "/auth",

@@ -15,7 +15,7 @@ const MaintenancePage = () => {
  return (
  <DashboardLayout>
  <PageHeader
- title="PM Scheduler"
+ title="Maintenance"
  description="Manage and forecast preventive maintenance tasks."
  actions={
  <Button size="lg" onClick={() => navigate("/work-orders/new")}>

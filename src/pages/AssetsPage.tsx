@@ -13,7 +13,7 @@ import AssetGridView from "@/components/assets/AssetGridView";
 import AssetEmptyState from "@/components/assets/AssetEmptyState";
 import { getAllAssets } from "@/services/assets/assetQueries";
 import BulkAddAssetsDialog from "@/components/assets/BulkAddAssetsDialog";
-import QuickFreezerSetupDialog from "@/components/assets/QuickFreezerSetupDialog";
+import { AssetBulkQrLabels } from "@/components/assets/AssetBulkQrLabels";
 import { checklistService } from "@/services/checklistService";
 import { generateSetupSheetPdf } from "@/utils/setupSheetPdf";
 
@@ -108,7 +108,7 @@ const AssetsPage = () => {
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
      </Helmet>
      <PageHeader
-       title="Asset Registry"
+       title="Assets"
        description="Monitor maintenance schedules and operational efficiency across your facility's infrastructure."
        actions={
          <div className="flex gap-2 flex-wrap">
@@ -121,7 +121,12 @@ const AssetsPage = () => {
              <Printer className="h-5 w-5" />
              Setup Sheet
            </Button>
-           <QuickFreezerSetupDialog />
+           <AssetBulkQrLabels
+             assets={filteredAssets.map((a: { id: string; name: string }) => ({
+               id: a.id,
+               name: a.name,
+             }))}
+           />
            <BulkAddAssetsDialog />
            <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
              <Plus className="h-5 w-5" />Add Equipment

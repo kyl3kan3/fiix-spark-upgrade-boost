@@ -15,8 +15,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import QueryErrorState from "@/components/common/QueryErrorState";
+import { useQuery } from "@tanstack/react-query";
 import { usePurchasing } from "@/hooks/usePurchasing";
 import { useParts } from "@/hooks/useParts";
+import { getAllVendors } from "@/services/vendorService";
 import type { PurchaseOrder, PurchaseOrderLine } from "@/types/purchasing";
 
 type DraftLine = {
@@ -35,6 +37,8 @@ export function PurchasingDashboard() {
   const [reqTitle, setReqTitle] = useState("");
   const [poOpen, setPoOpen] = useState(false);
   const [vendor, setVendor] = useState("");
+  const [vendorId, setVendorId] = useState("");
+  const { data: vendors = [] } = useQuery({ queryKey: ["vendors"], queryFn: getAllVendors });
   const [taxRate, setTaxRateLocal] = useState("0");
   const [draftLines, setDraftLines] = useState<DraftLine[]>([
     { part_id: "", description: "", quantity: "1", unit_cost: "0" },
@@ -71,11 +75,13 @@ export function PurchasingDashboard() {
     if (!lines.length) return;
     await createOrder.mutateAsync({
       vendor_name: vendor.trim(),
+      vendor_id: vendorId || null,
       tax_rate_percent: Number(taxRate) || 0,
       lines,
     });
     setPoOpen(false);
     setVendor("");
+    setVendorId("");
     setTaxRateLocal("0");
     setDraftLines([{ part_id: "", description: "", quantity: "1", unit_cost: "0" }]);
   };
@@ -231,7 +237,26 @@ export function PurchasingDashboard() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Vendor</Label>
-              <Input value={vendor} onChange={(e) => setVendor(e.target.value)} />
+              <select
+                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                value={vendorId}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setVendorId(id);
+                  const v = vendors.find((row) => row.id === id);
+                  if (v?.name) setVendor(v.name);
+                }}
+              >
+                <option value="">Choose from vendors list (optional)</option>
+                {vendors.map((v) => (
+                  <option key={v.id} value={v.id}>{v.name}</option>
+                ))}
+              </select>
+              <Input
+                value={vendor}
+                onChange={(e) => setVendor(e.target.value)}
+                placeholder="Vendor name on PO"
+              />
             </div>
             <div className="space-y-2">
               <Label>Tax rate (%)</Label>

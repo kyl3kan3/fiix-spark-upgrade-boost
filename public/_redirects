@@ -62,7 +62,7 @@
 /company-setup /app-shell 200
 
 # Public request portals hydrate from the marketing SPA shell.
-/r/* /index.html 200
+/r/* / 200
 
 # Dynamic account/application paths follow their exact route rules.
 /requests/* /app-shell 200
