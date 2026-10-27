@@ -16,6 +16,7 @@ export const TIER_FEATURES: Record<
     parts_inventory: boolean;
     meter_based_pm: boolean;
     bulk_pm_generation: boolean;
+    purchasing: boolean;
   }
 > = {
   starter: {
@@ -28,6 +29,7 @@ export const TIER_FEATURES: Record<
     parts_inventory: PLAN_BY_TIER.starter.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.starter.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.starter.capabilities.bulkPmGeneration,
+    purchasing: PLAN_BY_TIER.starter.capabilities.purchasing,
   },
   pro: {
     analytics: PLAN_BY_TIER.pro.capabilities.analytics,
@@ -39,6 +41,7 @@ export const TIER_FEATURES: Record<
     parts_inventory: PLAN_BY_TIER.pro.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.pro.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.pro.capabilities.bulkPmGeneration,
+    purchasing: PLAN_BY_TIER.pro.capabilities.purchasing,
   },
   business: {
     analytics: PLAN_BY_TIER.business.capabilities.analytics,
@@ -50,6 +53,7 @@ export const TIER_FEATURES: Record<
     parts_inventory: PLAN_BY_TIER.business.capabilities.partsInventory,
     meter_based_pm: PLAN_BY_TIER.business.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.business.capabilities.bulkPmGeneration,
+    purchasing: PLAN_BY_TIER.business.capabilities.purchasing,
   },
 };
 

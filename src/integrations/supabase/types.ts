@@ -1898,6 +1898,111 @@ export type Database = {
         }
         Relationships: []
       }
+      purchase_order_lines: {
+        Row: {
+          company_id: string
+          description: string
+          id: string
+          part_id: string | null
+          purchase_order_id: string
+          qty_received: number
+          quantity: number
+          unit_cost: number
+        }
+        Insert: {
+          company_id: string
+          description: string
+          id?: string
+          part_id?: string | null
+          purchase_order_id: string
+          qty_received?: number
+          quantity: number
+          unit_cost?: number
+        }
+        Update: {
+          company_id?: string
+          description?: string
+          id?: string
+          part_id?: string | null
+          purchase_order_id?: string
+          qty_received?: number
+          quantity?: number
+          unit_cost?: number
+        }
+        Relationships: []
+      }
+      purchase_orders: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          request_id: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate_percent: number
+          total: number
+          vendor_name: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate_percent?: number
+          total?: number
+          vendor_name: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate_percent?: number
+          total?: number
+          vendor_name?: string
+        }
+        Relationships: []
+      }
+      purchase_requests: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          requested_by: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requested_by?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requested_by?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       lubricants: {
         Row: {
           company_id: string
@@ -3531,6 +3636,14 @@ export type Database = {
           _notes?: string | null
         }
         Returns: number
+      }
+      recalculate_purchase_order_totals: {
+        Args: { _po_id: string }
+        Returns: undefined
+      }
+      receive_purchase_order_line: {
+        Args: { _line_id: string; _qty: number }
+        Returns: undefined
       }
       adjust_lubricant_stock: {
         Args: {
