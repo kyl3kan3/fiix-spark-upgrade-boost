@@ -1,7 +1,7 @@
 import {
  LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
- Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, type LucideIcon,
+ Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, ShoppingCart, type LucideIcon,
 } from "lucide-react";
 import type { TIER_FEATURES } from "@/hooks/useSubscription";
 
@@ -32,6 +32,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Costs", href: "/cost-tracking", icon: Wallet, code: "COST", group: "More" },
  { label: "Lubricants", href: "/lubricants", icon: Droplets, code: "LUB", group: "More", feature: "lubricant_tracking" },
  { label: "Parts", href: "/parts", icon: Boxes, code: "PRT", group: "More", feature: "parts_inventory" },
+ { label: "Purchasing", href: "/purchasing", icon: ShoppingCart, code: "PO", group: "More", feature: "purchasing" },
  { label: "Documents", href: "/onboarding/documents", icon: FileStack, code: "DOC", group: "More" },
  { label: "Power Usage", href: "/power-usage", icon: Gauge, code: "PWR", group: "More" },
  { label: "Assistant", href: "/assistant", icon: Bot, code: "AI", group: "More" },

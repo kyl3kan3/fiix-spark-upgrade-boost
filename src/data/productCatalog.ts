@@ -39,6 +39,7 @@ export type ProductPlan = {
     partsInventory: boolean;
     meterBasedPm: boolean;
     bulkPmGeneration: boolean;
+    purchasing: boolean;
   };
   featureLabels: string[];
 };
@@ -64,6 +65,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       partsInventory: false,
       meterBasedPm: false,
       bulkPmGeneration: false,
+      purchasing: false,
     },
     featureLabels: [
       "2 included seats",
@@ -94,6 +96,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       partsInventory: true,
       meterBasedPm: true,
       bulkPmGeneration: true,
+      purchasing: true,
     },
     featureLabels: [
       "4 included seats",
@@ -102,6 +105,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       "Lubricant catalog & inventory",
       "Parts inventory & low-stock alerts",
       "Meter readings & meter-based PM",
+      "Purchasing & PO receiving",
       "Predictive maintenance",
       "Full analytics & reports",
       "Automations",
@@ -128,6 +132,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       partsInventory: true,
       meterBasedPm: true,
       bulkPmGeneration: true,
+      purchasing: true,
     },
     featureLabels: [
       "4 included seats",
