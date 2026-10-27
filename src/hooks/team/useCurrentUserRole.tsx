@@ -62,15 +62,19 @@ export const useCurrentUserRole = () => {
  if (isLoading) {
  setIsLoading(false);
  setTimeoutOccurred(true);
- toast.error("Profile data loading timed out. Using default access level.");
- 
- // Set a default role to prevent blocking the UI completely
- setCurrentUserRole('user');
+ toast.error("Profile data loading timed out. Role permissions are unavailable until refresh.");
  }
  }, 5000); // 5 seconds timeout (reduced from 7)
  
  return () => clearTimeout(timeoutId);
  }, [isLoading]);
+
+ const refreshRole = useCallback(async () => {
+ setTimeoutOccurred(false);
+ setError(null);
+ setIsLoading(true);
+ await refreshProfile();
+ }, [refreshProfile]);
 
  return {
  currentUserRole,
@@ -78,6 +82,6 @@ export const useCurrentUserRole = () => {
  canEditRoles,
  error,
  timeoutOccurred,
- refreshRole: refreshProfile
+ refreshRole,
  };
 };
