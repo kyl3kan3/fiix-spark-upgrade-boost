@@ -53,7 +53,7 @@ export async function fetchLubricantsForChecklist(checklistId: string): Promise<
     .eq("checklist_id", checklistId);
   if (error) throw error;
   return (data ?? [])
-    .map((row) => (row as { lubricant: LubricantWithLinks | null }).lubricant)
+    .map((row) => (row as unknown as { lubricant: LubricantWithLinks | null }).lubricant)
     .filter(Boolean)
     .map((l) => ({
       ...l!,
@@ -69,7 +69,7 @@ export async function fetchLubricantsForAsset(assetId: string): Promise<Lubrican
     .eq("asset_id", assetId);
   if (error) throw error;
   return (data ?? [])
-    .map((row) => (row as { lubricant: LubricantWithLinks | null }).lubricant)
+    .map((row) => (row as unknown as { lubricant: LubricantWithLinks | null }).lubricant)
     .filter(Boolean)
     .map((l) => ({
       ...l!,
