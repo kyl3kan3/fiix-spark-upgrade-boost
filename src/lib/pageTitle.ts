@@ -4,9 +4,13 @@ import { PROTECTED_ROUTES } from "@/router/routeManifest";
 const EXTRA_TITLES: Record<string, string> = {
   "/maintenance": "Maintenance",
   "/checklists": "PM Checklists",
+  "/checklists/new": "New Checklist",
+  "/checklists/submissions": "Submissions",
   "/notifications": "Notifications",
   "/admin": "Admin",
   "/onboarding": "Onboarding",
+  "/reports/mttr": "MTTR Report",
+  "/assets/new": "Add Equipment",
 };
 
 const NAV_BY_LONGEST_HREF = [...NAV_ITEMS].sort((a, b) => b.href.length - a.href.length);

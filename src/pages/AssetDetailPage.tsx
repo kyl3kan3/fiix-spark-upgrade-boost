@@ -1,7 +1,8 @@
 import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Pencil, ArrowLeft, Cog, MapPin, QrCode, Wrench } from "lucide-react";
+import { Pencil, ArrowLeft, Cog, MapPin, Wrench } from "lucide-react";
+import { AssetQrPanel } from "@/components/assets/AssetQrPanel";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -194,19 +195,7 @@ const AssetDetailPage = () => {
             <AssetPartsCard assetId={asset.id} />
             <AssetMetersCard assetId={asset.id} />
 
-            {/* Field ID / QR */}
-            <div className="surface-card rounded-lg p-6">
-              <h3 className="label-eyebrow mb-4">Field Identification</h3>
-              <div className="bg-muted rounded-lg p-4 flex items-center gap-4">
-                <div className="w-12 h-12 bg-card rounded-lg flex items-center justify-center border border-border shrink-0">
-                  <QrCode className="h-7 w-7 text-primary/60" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">QR Code</p>
-                  <p className="text-xs text-muted-foreground">Scan for quick mobile access</p>
-                </div>
-              </div>
-            </div>
+            <AssetQrPanel assetId={asset.id} assetName={asset.name} />
           </div>
         </div>
       </div>

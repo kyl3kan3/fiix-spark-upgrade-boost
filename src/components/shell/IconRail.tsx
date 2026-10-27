@@ -31,7 +31,10 @@ const IconRail: React.FC<IconRailProps> = () => {
  };
 
  // Filter items by tier feature
+ const userRole = (profile?.role ?? "viewer") as import("./navConfig").NavRole;
+
  const visibleItems = NAV_ITEMS.filter((item) => {
+ if (item.hideForRoles?.includes(userRole)) return false;
  if (!item.feature) return true;
  if (!sub) return false;
  if (!sub.is_active) return false;

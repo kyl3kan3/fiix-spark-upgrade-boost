@@ -22,6 +22,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   workOrderId: string;
+  workOrderTitle?: string;
   assetId?: string | null;
   onCompleted: () => void;
 }
@@ -30,6 +31,7 @@ export function WorkOrderCompletePartsDialog({
   open,
   onOpenChange,
   workOrderId,
+  workOrderTitle,
   assetId,
   onCompleted,
 }: Props) {
@@ -132,7 +134,9 @@ export function WorkOrderCompletePartsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Complete work order</DialogTitle>
+          <DialogTitle>
+            {workOrderTitle ? `Complete: ${workOrderTitle}` : "Complete work order"}
+          </DialogTitle>
         </DialogHeader>
         {partsEnabled && (
           <>

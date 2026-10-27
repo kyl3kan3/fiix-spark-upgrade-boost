@@ -425,6 +425,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  open={!!completePartsJob}
  onOpenChange={(open) => !open && setCompletePartsJob(null)}
  workOrderId={completePartsJob?.id ?? ""}
+ workOrderTitle={completePartsJob?.title}
  assetId={completePartsJob?.asset_id}
  onCompleted={() => {
  if (completePartsJob) markJobStatus(completePartsJob.id, "completed");
