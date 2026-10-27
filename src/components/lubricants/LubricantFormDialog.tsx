@@ -111,7 +111,7 @@ export function LubricantFormDialog({ open, onOpenChange, initial, isPending, on
             <Label htmlFor="lub-name">Name</Label>
             <Input id="lub-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. ISO VG 68 hydraulic oil" />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>Type / grade</Label>
               <Input value={lubricantType} onChange={(e) => setLubricantType(e.target.value)} placeholder="ISO VG 68" />
@@ -121,7 +121,7 @@ export function LubricantFormDialog({ open, onOpenChange, initial, isPending, on
               <Input value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>Unit</Label>
               <Select value={unit} onValueChange={setUnit}>
