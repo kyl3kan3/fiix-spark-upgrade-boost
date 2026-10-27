@@ -106,5 +106,7 @@ $$;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.purchase_requests TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.purchase_orders TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.purchase_order_lines TO authenticated;
+REVOKE ALL ON FUNCTION public.recalculate_purchase_order_totals(uuid) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.recalculate_purchase_order_totals(uuid) TO authenticated;
+REVOKE ALL ON FUNCTION public.receive_purchase_order_line(uuid, numeric) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.receive_purchase_order_line(uuid, numeric) TO authenticated;
