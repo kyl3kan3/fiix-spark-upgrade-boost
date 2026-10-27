@@ -111,8 +111,8 @@ export function PartsDashboard() {
                       <td className="p-3 text-xs text-muted-foreground max-w-[200px] truncate">
                         {assets.map((a) => a.asset?.name).filter(Boolean).join(", ") || "—"}
                       </td>
-                      <td className="p-3" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex gap-1">
+                      <td className="p-3 sticky right-0 bg-card shadow-[-8px_0_12px_-8px_rgba(0,0,0,0.15)]" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-1 justify-end min-w-[108px]">
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setEditing(part); setFormOpen(true); }}>
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>

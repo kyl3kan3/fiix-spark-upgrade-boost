@@ -1943,6 +1943,7 @@ export type Database = {
           tax_amount: number
           tax_rate_percent: number
           total: number
+          vendor_id: string | null
           vendor_name: string
         }
         Insert: {
@@ -1956,6 +1957,7 @@ export type Database = {
           tax_amount?: number
           tax_rate_percent?: number
           total?: number
+          vendor_id?: string | null
           vendor_name: string
         }
         Update: {
@@ -1969,6 +1971,7 @@ export type Database = {
           tax_amount?: number
           tax_rate_percent?: number
           total?: number
+          vendor_id?: string | null
           vendor_name?: string
         }
         Relationships: []

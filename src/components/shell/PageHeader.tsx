@@ -31,7 +31,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
  )}
  </div>
  {actions && (
- <div className="flex items-center gap-2 shrink-0">{actions}</div>
+ <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">{actions}</div>
  )}
  </div>
  {meta && <div className="mt-4">{meta}</div>}

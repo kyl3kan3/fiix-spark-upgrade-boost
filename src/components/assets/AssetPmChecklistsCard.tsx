@@ -3,17 +3,29 @@ import { useQuery } from "@tanstack/react-query";
 import { ClipboardCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-async function fetchLinkedPmChecklists(assetId: string) {
-  const { data, error } = await supabase
+type LinkedPmChecklist = {
+  id: string;
+  name: string;
+  frequency: string | null;
+  is_active: boolean;
+};
+
+async function fetchLinkedPmChecklists(assetId: string): Promise<LinkedPmChecklist[]> {
+  const { data: links, error: linkErr } = await supabase
     .from("checklist_assets")
-    .select("checklist:checklists(id, name, frequency, is_active)")
+    .select("checklist_id")
     .eq("asset_id", assetId);
+  if (linkErr) throw linkErr;
+  const checklistIds = (links ?? []).map((row) => row.checklist_id).filter(Boolean);
+  if (checklistIds.length === 0) return [];
+
+  const { data: checklists, error } = await supabase
+    .from("checklists")
+    .select("id, name, frequency, is_active")
+    .in("id", checklistIds)
+    .eq("is_active", true);
   if (error) throw error;
-  return (data ?? [])
-    .map((row) => row.checklist)
-    .filter((c): c is { id: string; name: string; frequency: string | null; is_active: boolean } =>
-      Boolean(c && c.is_active),
-    );
+  return (checklists ?? []) as LinkedPmChecklist[];
 }
 
 export function AssetPmChecklistsCard({ assetId }: { assetId: string }) {

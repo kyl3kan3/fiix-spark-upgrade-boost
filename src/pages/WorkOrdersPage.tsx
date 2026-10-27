@@ -12,7 +12,7 @@ const WorkOrdersPage = () => {
  return (
  <DashboardLayout>
  <PageHeader
- title="Work Order Management"
+ title="Work Orders"
  description="Oversee asset health and maintenance workflows with precision."
  actions={
  <Button variant="default" size="default" onClick={goNew} className="hidden sm:inline-flex gap-2 uppercase tracking-wide font-semibold">

@@ -67,7 +67,7 @@ const AssetDetailPage = () => {
       {/* Back + breadcrumb */}
       <div className="px-4 md:px-6 lg:px-8 pt-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/assets")} className="text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back to Equipment
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back to Assets
         </Button>
       </div>
 
@@ -90,8 +90,8 @@ const AssetDetailPage = () => {
         }
       />
 
-      <div className="px-4 md:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl">
+      <div className="px-4 md:px-6 lg:px-8 py-6 min-w-0 overflow-x-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl min-w-0">
           {/* ── Col 1-2: hero + specs ── */}
           <div className="lg:col-span-2 space-y-6">
             {/* Hero / Specs card */}
