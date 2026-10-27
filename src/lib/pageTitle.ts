@@ -9,14 +9,20 @@ const EXTRA_TITLES: Record<string, string> = {
   "/onboarding": "Onboarding",
 };
 
+const NAV_BY_LONGEST_HREF = [...NAV_ITEMS].sort((a, b) => b.href.length - a.href.length);
+
+const EXTRA_BY_LONGEST_PREFIX = Object.entries(EXTRA_TITLES).sort(
+  (a, b) => b[0].length - a[0].length,
+);
+
 /** Resolve a human page title for the authenticated shell header. */
 export function resolvePageTitle(pathname: string): string {
-  const nav = NAV_ITEMS.find(
+  const nav = NAV_BY_LONGEST_HREF.find(
     (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
   );
   if (nav) return nav.label;
 
-  for (const [prefix, title] of Object.entries(EXTRA_TITLES)) {
+  for (const [prefix, title] of EXTRA_BY_LONGEST_PREFIX) {
     if (pathname === prefix || pathname.startsWith(`${prefix}/`)) return title;
   }
 
