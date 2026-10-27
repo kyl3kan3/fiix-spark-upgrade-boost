@@ -91,7 +91,11 @@ export function WorkOrderCompletePartsDialog({
     .filter((l) => l.quantity > 0);
 
   const lubLines: LubricantUsageLine[] = lubricants
-    .map((l) => ({ lubricant_id: l.id, quantity: Number(lubQty[l.id]) || 0 }))
+    .map((l) => ({
+      lubricant_id: l.id,
+      asset_id: assetId ?? null,
+      quantity: Number(lubQty[l.id]) || 0,
+    }))
     .filter((l) => l.quantity > 0);
 
   const handleConfirm = async (skipUsage: boolean) => {

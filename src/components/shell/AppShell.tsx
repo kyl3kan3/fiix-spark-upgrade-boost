@@ -7,6 +7,7 @@ import DashboardNotifications from "@/components/dashboard/DashboardNotification
 import { getUserNotifications } from "@/services/notifications";
 import DailyDuePrompt from "@/components/checklists/DailyDuePrompt";
 import { TrialBanner } from "@/components/billing/TrialBanner";
+import { AppDocumentTitle } from "@/components/shell/AppDocumentTitle";
 
 interface AppShellProps {
  children: React.ReactNode;
@@ -42,6 +43,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
  return (
  <div className="flex min-h-screen w-full bg-background text-foreground">
+ <AppDocumentTitle />
  <IconRail onOpenPalette={() => setPaletteOpen(true)} />
 
  <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[240px]">

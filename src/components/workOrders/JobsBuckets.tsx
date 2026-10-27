@@ -1,7 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { format, isPast, isToday } from "date-fns";
+import { useCompanyTimezone } from "@/hooks/useCompanyTimezone";
+import {
+  formatWorkOrderDueLabel,
+  isWorkOrderDueToday,
+  isWorkOrderOverdue,
+} from "@/lib/workOrderDueDate";
 import { toast } from "sonner";
 import {
  AlertOctagon, Clock, Wrench, CheckCircle2, ChevronRight,
@@ -68,12 +73,15 @@ const BUCKETS: BucketDef[] = [
 ];
 
 /** Decide which bucket a job belongs in. "Urgent" wins over "todo". */
-const bucketFor = (wo: WorkOrderWithRelations): BucketKey => {
+const bucketFor = (wo: WorkOrderWithRelations, timeZone: string): BucketKey => {
  if (wo.status === "completed") return "done";
  if (wo.status === "in_progress") return "in_progress";
  // pending / on_hold / cancelled all fall here
  const isUrgentPriority = wo.priority === "high" || wo.priority === "urgent";
- const isOverdue = wo.due_date ? isPast(new Date(wo.due_date)) && !isToday(new Date(wo.due_date)) : false;
+ const isOverdue =
+   wo.due_date
+     ? isWorkOrderOverdue(wo.due_date, timeZone) && !isWorkOrderDueToday(wo.due_date, timeZone)
+     : false;
  if (isUrgentPriority || isOverdue) return "urgent";
  return "todo";
 };
@@ -111,6 +119,7 @@ interface JobCardProps {
  job: WorkOrderWithRelations;
  onAdvance: (job: WorkOrderWithRelations) => void;
  isUpdating: boolean;
+ companyTimeZone: string;
 }
 
 const priorityPillClasses = (p: WorkOrderPriority): string => {
@@ -128,10 +137,13 @@ const priorityPillClasses = (p: WorkOrderPriority): string => {
  }
 };
 
-const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating, companyTimeZone }) => {
  const navigate = useNavigate();
- const due = job.due_date ? new Date(job.due_date) : null;
- const overdue = due ? isPast(due) && !isToday(due) && job.status !== "completed" : false;
+ const dueIso = job.due_date ?? null;
+ const overdue =
+   dueIso && job.status !== "completed"
+     ? isWorkOrderOverdue(dueIso, companyTimeZone) && !isWorkOrderDueToday(dueIso, companyTimeZone)
+     : false;
  const next = nextStatus(job.status);
  const assignee = job.assignee
  ? `${job.assignee.first_name || ""} ${job.assignee.last_name || ""}`.trim() || "Unassigned"
@@ -173,13 +185,13 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating }) => {
  </div>
  <div>
  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Due</p>
- {due ? (
+ {dueIso ? (
  <p className={cn(
  "text-sm font-semibold flex items-center gap-1.5",
  overdue ? "text-destructive" : "text-foreground",
  )}>
  <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
- {overdue ? "Overdue · " : ""}{format(due, "MMM d")}
+ {overdue ? "Overdue · " : ""}{formatWorkOrderDueLabel(dueIso, companyTimeZone)}
  </p>
  ) : (
  <p className="text-sm text-muted-foreground">—</p>
@@ -228,6 +240,7 @@ interface JobsBucketsProps {
 
 const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const queryClient = useQueryClient();
+ const { data: companyTimeZone = "UTC" } = useCompanyTimezone();
  const hasParts = useHasFeature("parts_inventory");
  const hasLubricants = useHasFeature("lubricant_tracking");
  const offlineEnabled = useHasFeature("mobile_pwa_offline");
@@ -288,9 +301,9 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const map: Record<BucketKey, WorkOrderWithRelations[]> = {
  urgent: [], todo: [], in_progress: [], done: [],
  };
- for (const j of filtered) map[bucketFor(j)].push(j);
+ for (const j of filtered) map[bucketFor(j, companyTimeZone)].push(j);
  return map;
- }, [filtered]);
+ }, [filtered, companyTimeZone]);
 
  const handleAdvance = async (job: WorkOrderWithRelations) => {
  const next = nextStatus(job.status);
@@ -398,6 +411,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  job={job}
  onAdvance={handleAdvance}
  isUpdating={updatingId === job.id}
+ companyTimeZone={companyTimeZone}
  />
  ))}
  </div>
