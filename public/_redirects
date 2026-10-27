@@ -36,6 +36,11 @@
 /predictive-maintenance /app-shell 200
 /self-healing /app-shell 200
 /cost-tracking /app-shell 200
+/lubricants /app-shell 200
+/parts /app-shell 200
+/purchasing /app-shell 200
+/maintenance-codes /app-shell 200
+/scan /app-shell 200
 /onboarding /app-shell 200
 /power-usage /app-shell 200
 /assistant /app-shell 200
@@ -72,3 +77,8 @@
 /settings/* /app-shell 200
 /onboarding/* /app-shell 200
 /locations/* /app-shell 200
+/lubricants/* /app-shell 200
+/parts/* /app-shell 200
+/purchasing/* /app-shell 200
+/maintenance-codes/* /app-shell 200
+/reports/* /app-shell 200
