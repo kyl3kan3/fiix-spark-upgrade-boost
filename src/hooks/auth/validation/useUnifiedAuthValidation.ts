@@ -57,8 +57,12 @@ export function useUnifiedAuthValidation() {
  const nameValidation = validateName(name);
  if (!nameValidation.isValid) return nameValidation;
 
- const companyValidation = validateCompanyName(companyName);
- if (!companyValidation.isValid) return companyValidation;
+ const hasPendingInvite =
+   typeof localStorage !== "undefined" && !!localStorage.getItem("pending_invite_token");
+ if (!hasPendingInvite) {
+   const companyValidation = validateCompanyName(companyName);
+   if (!companyValidation.isValid) return companyValidation;
+ }
  
  return { isValid: true };
  }, [validateEmailField, validatePassword, validateName, validateCompanyName]);

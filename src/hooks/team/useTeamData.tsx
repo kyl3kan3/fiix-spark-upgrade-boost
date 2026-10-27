@@ -4,137 +4,137 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatUser } from "@/types/chat";
 import { logger } from "@/lib/logger";
+import { resolveCompanyIdForUser } from "@/services/supabaseHelpers";
 
-export const useTeamData = (onlineUsers: Record<string, boolean>) => {
- const [teamMembers, setTeamMembers] = useState<ChatUser[]>([]);
- const [loading, setLoading] = useState(true);
+type UseTeamDataOptions = {
+  /** When true, omit the signed-in user (team chat recipient list). */
+  excludeCurrentUser?: boolean;
+};
 
- const fetchTeamMembers = useCallback(async () => {
- try {
- setLoading(true);
- logger.log("Fetching team members...", new Date().toISOString());
- 
- // Get current user
- const { data: currentUserData, error: userError } = await supabase.auth.getUser();
- 
- if (userError || !currentUserData?.user) {
- console.error("Error getting current user or not logged in:", userError);
- toast("Please sign in to view team members");
- setTeamMembers([]);
- setLoading(false);
- return;
- }
- 
- const currentUserId = currentUserData.user.id;
+export const useTeamData = (
+  onlineUsers: Record<string, boolean>,
+  options: UseTeamDataOptions = {},
+) => {
+  const { excludeCurrentUser = false } = options;
+  const [teamMembers, setTeamMembers] = useState<ChatUser[]>([]);
+  const [loading, setLoading] = useState(true);
 
- if (!currentUserId) {
- console.error("No current user found");
- toast("Please sign in to view team members");
- setTeamMembers([]);
- setLoading(false);
- return;
- }
+  const fetchTeamMembers = useCallback(async () => {
+    try {
+      setLoading(true);
+      logger.log("Fetching team members...", new Date().toISOString());
 
- // First, get the current user's company_id
- const { data: currentUserProfile, error: profileError } = await supabase
- .from("profiles")
- .select("company_id")
- .eq("id", currentUserId)
- .maybeSingle();
- 
- if (profileError || !currentUserProfile?.company_id) {
- console.error("Error getting current user's company or user has no company:", profileError);
- setTeamMembers([]);
- setLoading(false);
- return;
- }
- 
- const companyId = currentUserProfile.company_id;
+      const { data: currentUserData, error: userError } = await supabase.auth.getUser();
 
- // Fetch directory entries via security-definer RPC (no phone_number for non-admins)
- const { data: directory, error } = await (supabase as any).rpc("get_company_directory");
- const profiles = (directory || []).filter(
- (p: any) => p.id !== currentUserId && p.company_id === companyId,
- );
+      if (userError || !currentUserData?.user) {
+        console.error("Error getting current user or not logged in:", userError);
+        toast("Please sign in to view team members");
+        setTeamMembers([]);
+        setLoading(false);
+        return;
+      }
 
- if (error) {
- console.error("Error fetching profiles:", error);
- throw error;
- }
- 
- logger.log(`Fetched ${profiles ? profiles.length : 0} profiles:`, profiles);
- 
- if (!profiles || profiles.length === 0) {
- logger.log("No team members found in database");
- setTeamMembers([]);
- setLoading(false);
- return;
- }
- 
- // Get company information for the profiles
- const { data: company, error: companyError } = await supabase
- .from("companies")
- .select("name")
- .eq("id", companyId)
- .maybeSingle();
- 
- if (companyError) {
- console.error("Error fetching company:", companyError);
- }
- 
- const companyName = company ? company.name : '';
- 
- // Count unread messages for each user
- const users = await Promise.all(profiles.map(async (profile: {
- id: string;
- email: string;
- first_name: string | null;
- last_name: string | null;
- role: string | null;
- avatar_url: string | null;
- phone_number: string | null;
- }) => {
- const { count, error: countError } = await supabase
- .from("messages")
- .select("*", { count: "exact", head: true })
- .eq("sender_id", profile.id)
- .eq("recipient_id", currentUserId)
- .eq("read", false);
+      const currentUserId = currentUserData.user.id;
 
- if (countError) {
- console.error("Error counting unread messages:", countError);
- return null;
- }
+      const companyId = await resolveCompanyIdForUser(currentUserId);
+      if (!companyId) {
+        console.error("Error getting current user's company or user has no company");
+        setTeamMembers([]);
+        setLoading(false);
+        return;
+      }
 
- const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
- const displayName = fullName || profile.email;
+      const { data: directory, error } = await supabase.rpc("get_company_directory");
+      if (error) {
+        console.error("Error fetching company directory:", error);
+        throw error;
+      }
 
- return {
- id: profile.id,
- name: displayName,
- email: profile.email,
- role: profile.role || "viewer",
- avatar: profile.avatar_url ? profile.avatar_url : (profile.first_name && profile.last_name ? `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase() : displayName.substring(0, 2).toUpperCase()),
- online: onlineUsers[profile.id] || false,
- unread: count || 0,
- firstName: profile.first_name || '',
- lastName: profile.last_name || '',
- phone: profile.phone_number || '',
- companyName: companyName
- };
- }));
+      const profiles = (directory || []).filter((p: { id: string; company_id: string }) => {
+        if (p.company_id !== companyId) return false;
+        if (excludeCurrentUser && p.id === currentUserId) return false;
+        return true;
+      });
 
- const filteredUsers = users.filter(Boolean) as ChatUser[];
- logger.log("Processed team members:", filteredUsers);
- setTeamMembers(filteredUsers);
- } catch (error) {
- console.error("Error fetching team members:", error);
- toast("Failed to load team members");
- setTeamMembers([]); // Make sure no members are shown on error
- } finally {
- setLoading(false);
- }
- }, [onlineUsers]);
+      logger.log(`Fetched ${profiles.length} profiles:`, profiles);
 
- return { teamMembers, setTeamMembers, loading, fetchTeamMembers };
+      if (profiles.length === 0) {
+        logger.log("No team members found in database");
+        setTeamMembers([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data: company, error: companyError } = await supabase
+        .from("companies")
+        .select("name")
+        .eq("id", companyId)
+        .maybeSingle();
+
+      if (companyError) {
+        console.error("Error fetching company:", companyError);
+      }
+
+      const companyName = company ? company.name : "";
+
+      const users = await Promise.all(
+        profiles.map(
+          async (profile: {
+            id: string;
+            email: string;
+            first_name: string | null;
+            last_name: string | null;
+            role: string | null;
+            avatar_url: string | null;
+            phone_number?: string | null;
+          }) => {
+            const { count, error: countError } = await supabase
+              .from("messages")
+              .select("*", { count: "exact", head: true })
+              .eq("sender_id", profile.id)
+              .eq("recipient_id", currentUserId)
+              .eq("read", false);
+
+            if (countError) {
+              console.error("Error counting unread messages:", countError);
+              return null;
+            }
+
+            const fullName = `${profile.first_name || ""} ${profile.last_name || ""}`.trim();
+            const displayName = fullName || profile.email;
+
+            return {
+              id: profile.id,
+              name: displayName,
+              email: profile.email,
+              role: profile.role || "viewer",
+              avatar: profile.avatar_url
+                ? profile.avatar_url
+                : profile.first_name && profile.last_name
+                  ? `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase()
+                  : displayName.substring(0, 2).toUpperCase(),
+              online: onlineUsers[profile.id] || false,
+              unread: count || 0,
+              firstName: profile.first_name || "",
+              lastName: profile.last_name || "",
+              phone: profile.phone_number || "",
+              companyName,
+            };
+          },
+        ),
+      );
+
+      const filteredUsers = users.filter(Boolean) as ChatUser[];
+      logger.log("Processed team members:", filteredUsers);
+      setTeamMembers(filteredUsers);
+    } catch (error) {
+      console.error("Error fetching team members:", error);
+      toast("Failed to load team members");
+      setTeamMembers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [onlineUsers, excludeCurrentUser]);
+
+  return { teamMembers, setTeamMembers, loading, fetchTeamMembers };
 };

@@ -1,9 +1,25 @@
 
 import { add, addMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
-import { requireUser } from "@/services/supabaseHelpers";
+import { requireUser, requireUserCompany } from "@/services/supabaseHelpers";
+import {
+  workOrderDueDateInputValue,
+  workOrderDueInstantFromDateInput,
+} from "@/lib/workOrderDueDate";
 import { WorkOrderFormValues } from "@/components/workOrders/WorkOrderFormSchema";
 import { WorkOrderStatus } from "@/types/workOrders";
+
+async function resolveDueDateIso(dateOnly: string | undefined | null): Promise<string | null> {
+  if (!dateOnly?.trim()) return null;
+  const { companyId } = await requireUserCompany();
+  const { data: company } = await supabase
+    .from("companies")
+    .select("timezone")
+    .eq("id", companyId)
+    .maybeSingle();
+  const tz = company?.timezone?.trim() || "UTC";
+  return workOrderDueInstantFromDateInput(dateOnly.trim(), tz);
+}
 
 export async function createWorkOrder(userId: string, values: WorkOrderFormValues) {
  const workOrderData = {
@@ -11,7 +27,7 @@ export async function createWorkOrder(userId: string, values: WorkOrderFormValue
  description: values.description,
  priority: values.priority,
  status: values.status,
- due_date: values.due_date ? new Date(values.due_date).toISOString() : null,
+ due_date: await resolveDueDateIso(values.due_date),
  asset_id: values.asset_id || null,
  assigned_to: values.assigned_to || null,
  created_by: userId
@@ -31,7 +47,7 @@ export async function updateWorkOrder(workOrderId: string, values: WorkOrderForm
  description: values.description,
  priority: values.priority,
  status: values.status,
- due_date: values.due_date ? new Date(values.due_date).toISOString() : null,
+ due_date: await resolveDueDateIso(values.due_date),
  asset_id: values.asset_id || null,
  assigned_to: values.assigned_to || null
  };

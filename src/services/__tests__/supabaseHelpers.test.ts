@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const getUserMock = vi.fn();
 const maybeSingleMock = vi.fn();
+const rpcMock = vi.fn();
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -11,6 +12,7 @@ vi.mock("@/integrations/supabase/client", () => ({
         eq: () => ({ maybeSingle: () => maybeSingleMock() }),
       }),
     }),
+    rpc: (...args: unknown[]) => rpcMock(...args),
   },
 }));
 
@@ -26,6 +28,7 @@ describe("supabaseHelpers", () => {
   beforeEach(() => {
     getUserMock.mockReset();
     maybeSingleMock.mockReset();
+    rpcMock.mockReset();
   });
 
   describe("getCurrentUser", () => {
@@ -73,6 +76,7 @@ describe("supabaseHelpers", () => {
     it("throws when the user has no company", async () => {
       getUserMock.mockResolvedValue({ data: { user: { id: "u1" } } });
       maybeSingleMock.mockResolvedValue({ data: { company_id: null }, error: null });
+      rpcMock.mockResolvedValue({ data: null, error: null });
       await expect(requireUserCompany()).rejects.toThrow(/not linked to a company/i);
     });
   });

@@ -1,5 +1,6 @@
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { getStorageItem } from "@/utils/storageUtils";
 import { Button } from "@/components/ui/button";
 import { EmailField, PasswordField, NameField, CompanyNameField } from "./AuthFormFields";
 import { useAuthForm } from "../../../hooks/auth/forms/useAuthForm";
@@ -22,8 +23,23 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  handleSubmit
  } = useAuthForm({ isSignUp: true, onError });
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [pendingInvite, setPendingInvite] = useState(
+    () => !!getStorageItem("pending_invite_token"),
+  );
   const onVerify = useCallback((t: string) => setTurnstileToken(t), []);
   const onExpire = useCallback(() => setTurnstileToken(null), []);
+
+  useEffect(() => {
+    const invitedCompany = getStorageItem("pending_invite_company");
+    if (invitedCompany) setCompanyName(invitedCompany);
+    const onCompany = () => {
+      setPendingInvite(!!getStorageItem("pending_invite_token"));
+      const name = getStorageItem("pending_invite_company");
+      if (name) setCompanyName(name);
+    };
+    window.addEventListener("pending-invite-company-resolved", onCompany);
+    return () => window.removeEventListener("pending-invite-company-resolved", onCompany);
+  }, [setCompanyName]);
 
   const onSubmit = (e: React.FormEvent) => handleSubmit(e, turnstileToken || undefined);
 
@@ -41,11 +57,13 @@ export const SignUpForm: React.FC<FormSubmissionProps> = ({ onError }) => {
  disabled={isLoading}
  />
  
+ {!pendingInvite && (
  <CompanyNameField
  value={companyName}
  onChange={setCompanyName}
  disabled={isLoading}
  />
+ )}
  
  <PasswordField
  value={password}
