@@ -8,6 +8,7 @@ import { ChecklistFrequencies } from "@/types/checklists";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { format } from "date-fns";
+import { ChecklistMeterRuleCard } from "@/components/meters/ChecklistMeterRuleCard";
 
 function getTypeConfig(type: string) {
   switch (type) {
@@ -66,6 +67,7 @@ const ChecklistDetailPage = () => {
 
   const typeConfig = getTypeConfig(checklist.type);
   const freqConfig = getFrequencyConfig(checklist.frequency);
+  const linkedAssetIds = checklist.asset_ids ?? [];
 
   return (
     <DashboardLayout>
@@ -140,6 +142,8 @@ const ChecklistDetailPage = () => {
                 </div>
               </div>
             </div>
+
+            <ChecklistMeterRuleCard checklistId={checklist.id} assetIds={linkedAssetIds} />
 
             {/* Items card */}
             <div className="surface-card rounded-lg p-6">

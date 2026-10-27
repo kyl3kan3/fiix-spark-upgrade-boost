@@ -72,6 +72,16 @@ export async function upsertChecklistMeterRule(
   if (error) throw error;
 }
 
+export async function fetchMeterRulesForMeters(meterIds: string[]) {
+  if (meterIds.length === 0) return [];
+  const { data, error } = await supabase
+    .from("checklist_meter_rules")
+    .select("interval_units, meter_id, checklist:checklists(id, name)")
+    .in("meter_id", meterIds);
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function fetchChecklistMeterRule(checklistId: string): Promise<ChecklistMeterRule | null> {
   const { data, error } = await supabase
     .from("checklist_meter_rules")

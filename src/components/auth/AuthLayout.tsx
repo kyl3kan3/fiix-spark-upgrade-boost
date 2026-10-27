@@ -36,7 +36,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             </p>
             <ul className="mt-8 space-y-3 text-sm text-primary-foreground/80">
               <li>Flat account pricing with published seat and capacity limits</li>
-              <li>7-day free trial on every plan — card required, cancel before day 8</li>
+              <li>7-day free trial on every plan — cancel before day 8 if you do not want to continue</li>
               <li>Free onboarding and data import included</li>
             </ul>
           </div>

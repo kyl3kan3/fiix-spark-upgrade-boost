@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { fetchParts, fetchPartsForAsset, recordPartUsage } from "@/services/partsService";
 import type { PartUsageLine } from "@/types/parts";
+import { fetchLubricants, fetchLubricantsForAsset, recordLubricantUsage } from "@/services/lubricantService";
+import type { LubricantUsageLine } from "@/types/lubricants";
 import { useHasFeature } from "@/hooks/useSubscription";
 import { useMaintenanceCodes } from "@/hooks/useMaintenanceCodes";
 import { saveWorkOrderCompletionCodes } from "@/services/maintenanceCodesService";
@@ -32,9 +34,11 @@ export function WorkOrderCompletePartsDialog({
   onCompleted,
 }: Props) {
   const partsEnabled = useHasFeature("parts_inventory");
+  const lubricantsEnabled = useHasFeature("lubricant_tracking");
   const codesEnabled = useHasFeature("failure_downtime_codes");
-  const enabled = partsEnabled || codesEnabled;
+  const enabled = partsEnabled || lubricantsEnabled || codesEnabled;
   const [qty, setQty] = useState<Record<string, string>>({});
+  const [lubQty, setLubQty] = useState<Record<string, string>>({});
   const [failureCodeId, setFailureCodeId] = useState("");
   const [downtimeCodeId, setDowntimeCodeId] = useState("");
   const [downtimeMinutes, setDowntimeMinutes] = useState("");
@@ -57,9 +61,25 @@ export function WorkOrderCompletePartsDialog({
 
   const parts = assetId && assetParts.length > 0 ? assetParts : allParts;
 
+  const { data: allLubricants = [] } = useQuery({
+    queryKey: ["lubricants"],
+    queryFn: fetchLubricants,
+    enabled: open && lubricantsEnabled,
+  });
+
+  const { data: assetLubricants = [] } = useQuery({
+    queryKey: ["lubricants", "asset", assetId],
+    queryFn: () => fetchLubricantsForAsset(assetId!),
+    enabled: open && lubricantsEnabled && !!assetId,
+  });
+
+  const lubricants =
+    assetId && assetLubricants.length > 0 ? assetLubricants : allLubricants;
+
   useEffect(() => {
     if (!open) {
       setQty({});
+      setLubQty({});
       setFailureCodeId("");
       setDowntimeCodeId("");
       setDowntimeMinutes("");
@@ -70,13 +90,22 @@ export function WorkOrderCompletePartsDialog({
     .map((p) => ({ part_id: p.id, quantity: Number(qty[p.id]) || 0 }))
     .filter((l) => l.quantity > 0);
 
-  const handleConfirm = async (skipParts: boolean) => {
+  const lubLines: LubricantUsageLine[] = lubricants
+    .map((l) => ({ lubricant_id: l.id, quantity: Number(lubQty[l.id]) || 0 }))
+    .filter((l) => l.quantity > 0);
+
+  const handleConfirm = async (skipUsage: boolean) => {
     setSaving(true);
     try {
-      if (partsEnabled && !skipParts && lines.length > 0) {
+      if (partsEnabled && !skipUsage && lines.length > 0) {
         await recordPartUsage(lines, {
           work_order_id: workOrderId,
           asset_id: assetId ?? null,
+        });
+      }
+      if (lubricantsEnabled && !skipUsage && lubLines.length > 0) {
+        await recordLubricantUsage(lubLines, {
+          work_order_id: workOrderId,
         });
       }
       if (codesEnabled) {
@@ -128,6 +157,31 @@ export function WorkOrderCompletePartsDialog({
             </div>
           </>
         )}
+        {lubricantsEnabled && (
+          <div className="space-y-3 max-h-48 overflow-y-auto py-2 border-t">
+            <p className="text-sm text-muted-foreground pt-2">
+              Optional — lubricant quantities used on this job.
+            </p>
+            {lubricants.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No lubricants in catalog yet.</p>
+            ) : (
+              lubricants.map((l) => (
+                <div key={l.id} className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium truncate">{l.name}</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="any"
+                    className="h-8 w-24"
+                    placeholder="0"
+                    value={lubQty[l.id] ?? ""}
+                    onChange={(e) => setLubQty((prev) => ({ ...prev, [l.id]: e.target.value }))}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        )}
         {codesEnabled && (
           <div className="space-y-3 border-t pt-3">
             <div>
@@ -169,12 +223,15 @@ export function WorkOrderCompletePartsDialog({
           </div>
         )}
         <DialogFooter className="gap-2 sm:gap-0">
-          {partsEnabled && (
+          {(partsEnabled || lubricantsEnabled) && (
             <Button variant="outline" disabled={saving} onClick={() => handleConfirm(true)}>
-              Skip parts
+              Skip usage
             </Button>
           )}
-          <Button disabled={saving} onClick={() => handleConfirm(!partsEnabled)}>
+          <Button
+            disabled={saving}
+            onClick={() => handleConfirm(!(partsEnabled || lubricantsEnabled))}
+          >
             {saving ? "Saving…" : "Complete job"}
           </Button>
         </DialogFooter>

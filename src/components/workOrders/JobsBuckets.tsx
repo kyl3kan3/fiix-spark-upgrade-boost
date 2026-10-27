@@ -229,6 +229,7 @@ interface JobsBucketsProps {
 const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const queryClient = useQueryClient();
  const hasParts = useHasFeature("parts_inventory");
+ const hasLubricants = useHasFeature("lubricant_tracking");
  const offlineEnabled = useHasFeature("mobile_pwa_offline");
  const hasFailureCodes = useHasFeature("failure_downtime_codes");
  const [search, setSearch] = useState("");
@@ -294,7 +295,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const handleAdvance = async (job: WorkOrderWithRelations) => {
  const next = nextStatus(job.status);
  if (!next) return;
- if (next === "completed" && (hasParts || hasFailureCodes)) {
+ if (next === "completed" && (hasParts || hasLubricants || hasFailureCodes)) {
  setCompletePartsJob(job);
  return;
  }

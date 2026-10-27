@@ -12,7 +12,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useHasFeature } from "@/hooks/useSubscription";
-import { createMeter, fetchMetersForAsset, recordMeterReading } from "@/services/meterService";
+import {
+  createMeter,
+  fetchMeterRulesForMeters,
+  fetchMetersForAsset,
+  recordMeterReading,
+} from "@/services/meterService";
 
 interface Props {
   assetId: string;
@@ -31,6 +36,13 @@ export function AssetMetersCard({ assetId }: Props) {
     queryKey: ["meters", assetId],
     queryFn: () => fetchMetersForAsset(assetId),
     enabled,
+  });
+
+  const meterIds = meters.map((m) => m.id);
+  const { data: meterRules = [] } = useQuery({
+    queryKey: ["meter-rules", assetId, meterIds],
+    queryFn: () => fetchMeterRulesForMeters(meterIds),
+    enabled: enabled && meterIds.length > 0,
   });
 
   if (!enabled) return null;
@@ -70,6 +82,22 @@ export function AssetMetersCard({ assetId }: Props) {
             </li>
           ))}
         </ul>
+      )}
+
+      {meterRules.length > 0 && (
+        <div className="mt-4 border-t border-border/40 pt-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+            Meter-based PM rules
+          </p>
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            {meterRules.map((rule, i) => (
+              <li key={i}>
+                {(rule.checklist as { name?: string } | null)?.name ?? "PM checklist"} — every{" "}
+                {rule.interval_units} units
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
