@@ -45,11 +45,11 @@ export function TodaySnapshot({
   isLoading,
 }: TodaySnapshotProps) {
   return (
-    <section>
+    <section className="min-w-0 max-w-full">
       <h3 className="font-headline text-xl text-foreground mb-4">
         Today's Snapshot
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0">
         <CompletionCard rate={completionRate} isLoading={isLoading} />
         <PendingJobsCard
           count={pendingJobs}
@@ -190,6 +190,11 @@ function PendingJobsCard({
   );
 }
 
+function isAvatarImageUrl(value: string | null | undefined): boolean {
+  if (!value) return false;
+  return /^https?:\/\//i.test(value) || value.startsWith("data:") || value.startsWith("/");
+}
+
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -233,15 +238,15 @@ function ActiveTechsCard({
           <div className="flex -space-x-2">
             {shown.map((member) => (
               <span key={member.id} className="relative inline-block" title={member.name}>
-                {member.avatar ? (
+                {isAvatarImageUrl(member.avatar) ? (
                   <img
-                    src={member.avatar}
+                    src={member.avatar!}
                     alt={member.name}
                     className="h-8 w-8 rounded-full border-2 border-card object-cover"
                   />
                 ) : (
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 border-2 border-card text-[10px] font-bold text-primary">
-                    {initials(member.name) || "?"}
+                    {initials(member.name) || member.avatar || "?"}
                   </span>
                 )}
                 {member.online && (

@@ -173,7 +173,7 @@ const PublicRequestPortal = () => {
  <Helmet>
  <title>{`Submit a maintenance request — ${company.name}`}</title>
  <meta name="description" content={`Report a maintenance issue to ${company.name}. Flag urgent problems for immediate attention.`} />
- <meta name="robots" content="noindex" />
+ <meta name="robots" content="noindex,nofollow" />
  <link rel="canonical" href={portalUrl} />
  </Helmet>
 

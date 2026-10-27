@@ -10,7 +10,7 @@ interface Props {
 
 const coreItems = [
  { label: "Home", href: "/dashboard", icon: LayoutDashboard },
- { label: "My Jobs", href: "/work-orders", icon: ClipboardList },
+ { label: "Work Orders", href: "/work-orders", icon: ClipboardList },
  { label: "Check-Ups", href: "/inspections", icon: ClipboardCheck },
  { label: "Calendar", href: "/calendar", icon: Calendar },
 ];
@@ -24,7 +24,7 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  ...coreItems,
  hasAnalytics
  ? { label: "Analytics", href: "/reports", icon: BarChart3 }
- : { label: "Equipment", href: "/assets", icon: Package },
+ : { label: "Assets", href: "/assets", icon: Package },
  ];
 
  return (

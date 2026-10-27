@@ -101,11 +101,11 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        <section className="mt-8">
+        <section className="mt-8 min-w-0 max-w-full overflow-hidden">
           <h3 className="font-headline text-xl text-foreground mb-4">
             Quick actions
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
             <QuickAction
               href="/work-orders"
               icon={ClipboardList}

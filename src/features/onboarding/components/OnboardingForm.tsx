@@ -41,6 +41,10 @@ const OnboardingForm: React.FC = () => {
  <p className="text-destructive text-sm">Please enter your full name</p>
  )}
 
+      {!state.role.trim() && (
+        <p className="text-destructive text-sm">Role or title is required so we can personalize your workspace</p>
+      )}
+
       {requiresCompany && !state.company && (
  <p className="text-destructive text-sm">A company name is required</p>
  )}
