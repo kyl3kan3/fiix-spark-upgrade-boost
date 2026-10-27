@@ -21,15 +21,20 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  subscription?.is_active && TIER_FEATURES[subscription.tier].analytics,
  );
  const items = [
- ...coreItems,
- hasAnalytics
- ? { label: "Analytics", href: "/reports", icon: BarChart3 }
- : { label: "Assets", href: "/assets", icon: Package },
+   ...coreItems,
+   { label: "Assets", href: "/assets", icon: Package },
+   ...(hasAnalytics
+     ? [{ label: "Analytics", href: "/reports", icon: BarChart3 }]
+     : []),
  ];
+ const navColumns = items.length + 1;
 
  return (
  <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border pb-safe">
- <div className="grid grid-cols-6 px-1 pt-1.5">
+ <div
+   className="grid px-1 pt-1.5"
+   style={{ gridTemplateColumns: `repeat(${navColumns}, minmax(0, 1fr))` }}
+ >
  {items.map((it) => {
  const Icon = it.icon;
  return (

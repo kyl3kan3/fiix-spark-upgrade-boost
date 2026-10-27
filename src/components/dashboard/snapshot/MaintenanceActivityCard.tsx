@@ -73,7 +73,7 @@ export function MaintenanceActivityCard() {
               No work-order activity yet — the chart fills in as jobs are opened and completed.
             </div>
           ) : (
-            <>
+            <div className="relative min-w-0 max-w-full overflow-hidden">
               <div className="h-56 w-full min-w-0 max-w-full">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <BarChart data={weeks} barGap={2} barCategoryGap="28%">
@@ -118,27 +118,32 @@ export function MaintenanceActivityCard() {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              {/* Screen-reader table view of the plotted values */}
-              <table className="sr-only">
-                <caption>Work orders opened and completed per week, last 6 weeks</caption>
-                <thead>
-                  <tr>
-                    <th>Week of</th>
-                    <th>Opened</th>
-                    <th>Completed</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {weeks.map((w) => (
-                    <tr key={w.label}>
-                      <td>{w.label}</td>
-                      <td>{w.opened}</td>
-                      <td>{w.completed}</td>
+              {/* Screen-reader table — clipped so wide table layout cannot expand the page */}
+              <div
+                data-testid="activity-chart-a11y"
+                className="pointer-events-none absolute left-0 top-0 m-0 h-px w-px max-h-px max-w-px overflow-hidden border-0 p-0 [clip-path:inset(50%)] whitespace-nowrap"
+              >
+                <table>
+                  <caption>Work orders opened and completed per week, last 6 weeks</caption>
+                  <thead>
+                    <tr>
+                      <th>Week of</th>
+                      <th>Opened</th>
+                      <th>Completed</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
+                  </thead>
+                  <tbody>
+                    {weeks.map((w) => (
+                      <tr key={w.label}>
+                        <td>{w.label}</td>
+                        <td>{w.opened}</td>
+                        <td>{w.completed}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           )}
         </div>
 
