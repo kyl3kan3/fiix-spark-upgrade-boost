@@ -50,9 +50,12 @@ export const useTeamData = (
         throw error;
       }
 
+      const seenIds = new Set<string>();
       const profiles = (directory || []).filter((p: { id: string; company_id: string }) => {
         if (p.company_id !== companyId) return false;
         if (excludeCurrentUser && p.id === currentUserId) return false;
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
         return true;
       });
 

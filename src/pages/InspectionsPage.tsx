@@ -58,7 +58,7 @@ const InspectionsPage = () => {
  return (
  <DashboardLayout>
  <PageHeader
- title="Compliance Dashboard"
+ title="Check-Ups"
  description="Manage scheduled, ongoing, and historical equipment audits."
  actions={
  <Button size="lg" onClick={() => navigate("/inspections/new")}>

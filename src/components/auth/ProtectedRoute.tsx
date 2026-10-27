@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { SubscriptionStatusBanner } from "@/components/billing/SubscriptionStatusBanner";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useProfile } from "@/hooks/profile/useProfile";
+import { isTechnicianBlockedPath, toNavRole } from "@/lib/navRole";
 
 interface ProtectedRouteProps {
  children: React.ReactNode;
@@ -51,6 +52,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  if (!subLoading && sub && !sub.is_active && !isAllowed) {
  return <Navigate to="/billing?inactive=1" replace />;
  }
+
+  if (
+    !profileLoading &&
+    profile?.company_id &&
+    toNavRole(profile.role) === "technician" &&
+    isTechnicianBlockedPath(location.pathname)
+  ) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
  // Render the protected content if authenticated
  return (

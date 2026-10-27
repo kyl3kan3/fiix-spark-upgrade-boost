@@ -71,7 +71,7 @@ const ChecklistsPage = () => {
   return (
     <DashboardLayout>
       <PageHeader
-        title="Preventive Templates"
+        title="PM Checklists"
         description="Manage and create standard checklists for recurring maintenance."
         actions={
           <div className="flex gap-2">

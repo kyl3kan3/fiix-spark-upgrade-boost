@@ -48,6 +48,11 @@ export const InviteEmail = ({
           If you weren't expecting this invitation, you can safely ignore this
           email.
         </Text>
+        <Text style={siteFooter}>
+          <Link href="https://maintenease.com" style={link}>
+            maintenease.com
+          </Link>
+        </Text>
       </Container>
     </Body>
   </Html>
@@ -80,6 +85,7 @@ const button = {
   textDecoration: 'none',
 }
 const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const siteFooter = { fontSize: '12px', color: '#999999', margin: '12px 0 0', textAlign: 'center' as const }
 // Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
 const darkModeCss = `
   @media (prefers-color-scheme: dark) {

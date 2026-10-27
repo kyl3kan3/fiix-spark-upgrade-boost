@@ -2,7 +2,7 @@
 import React from "react";
 import { Calendar, Package, User } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
-import { formatDate } from "../utils/dateUtils";
+import { formatDateOnly } from "../utils/dateUtils";
 
 interface WorkOrderDetailsCardProps {
  workOrder: WorkOrderWithRelations;
@@ -34,7 +34,7 @@ export const WorkOrderDetailsCard: React.FC<WorkOrderDetailsCardProps> = ({ work
  <div className="min-w-0">
  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Due Date</p>
  <p className="text-sm font-semibold text-foreground">
- {workOrder.due_date ? formatDate(workOrder.due_date) : "No due date"}
+ {workOrder.due_date ? formatDateOnly(workOrder.due_date) : "No due date"}
  </p>
  </div>
  </div>

@@ -60,7 +60,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
  onOpenPalette={() => setPaletteOpen(true)}
  />
 
- <main className="flex-1 w-full pt-16 pb-24 lg:pb-0">
+ <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-16 pb-24 lg:pb-0">
  <TrialBanner />
  <ProfileSetupHint />
  {children}

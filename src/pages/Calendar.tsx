@@ -62,7 +62,7 @@ const CalendarPage = () => {
  return (
  <DashboardLayout>
  <PageHeader
- title="PM Scheduler"
+ title="Calendar"
  description="Manage and forecast preventive maintenance tasks."
  actions={
  <Button size="lg" onClick={handleScheduleEvent}>
