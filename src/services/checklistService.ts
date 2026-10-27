@@ -292,10 +292,10 @@ type RecurringChecklistRow = {
 export async function listRecurringChecklists(): Promise<RecurringChecklistSummary[]> {
   const { data, error } = await supabase
     .from("checklists")
-    .select("id, name, frequency, checklist_schedules(next_due_at, last_submitted_at)")
+    .select("id, name, frequency, checklist_schedules!inner(next_due_at, last_submitted_at)")
     .eq("is_active", true)
     .neq("frequency", "one-time")
-    .order("name");
+    .order("next_due_at", { referencedTable: "checklist_schedules", ascending: true });
   if (error) throw error;
   return ((data ?? []) as unknown as RecurringChecklistRow[]).map((c) => ({
     id: c.id,

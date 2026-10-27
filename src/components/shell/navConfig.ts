@@ -41,7 +41,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Purchasing", href: "/purchasing", icon: ShoppingCart, code: "PO", group: "More", feature: "purchasing" },
  { label: "Failure codes", href: "/maintenance-codes", icon: Tags, code: "COD", group: "More", feature: "failure_downtime_codes" },
  { label: "Scan", href: "/scan", icon: ScanLine, code: "SCN", group: "Main", feature: "mobile_pwa_offline" },
- { label: "Documents", href: "/onboarding/documents", icon: FileStack, code: "DOC", group: "More" },
+ { label: "Documents", href: "/onboarding/documents", icon: FileStack, code: "DOC", group: "More", hideForRoles: ["technician"] },
  { label: "Power Usage", href: "/power-usage", icon: Gauge, code: "PWR", group: "More" },
  { label: "Assistant", href: "/assistant", icon: Bot, code: "AI", group: "More" },
  { label: "Guided Setup", href: "/guided-setup", icon: Compass, code: "SETUP", group: "More", hideForRoles: ["technician"] },
@@ -56,3 +56,23 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const NAV_GROUPS = Array.from(new Set(NAV_ITEMS.map(i => i.group)));
+
+type SubscriptionSnapshot = {
+  is_active: boolean;
+  tier: keyof typeof TIER_FEATURES;
+} | null | undefined;
+
+export function isNavItemVisible(
+  item: NavItem,
+  role: NavRole,
+  subscription: SubscriptionSnapshot,
+): boolean {
+  if (item.hideForRoles?.includes(role)) return false;
+  if (!item.feature) return true;
+  if (!subscription?.is_active) return false;
+  return TIER_FEATURES[subscription.tier]?.[item.feature] ?? false;
+}
+
+export function filterNavItems(role: NavRole, subscription: SubscriptionSnapshot): NavItem[] {
+  return NAV_ITEMS.filter((item) => isNavItemVisible(item, role, subscription));
+}

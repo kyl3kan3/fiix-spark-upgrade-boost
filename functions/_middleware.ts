@@ -18,7 +18,7 @@ import {
   markdownPathForPage,
 } from "../src/lib/contentNegotiation";
 import { applyHtmlSecurityHeaders } from "../src/lib/htmlSecurityHeaders";
-import { classifySeoPath, redirectForPath } from "../src/lib/seoRouting";
+import { classifySeoPath, isPublicRequestPortalPath, redirectForPath } from "../src/lib/seoRouting";
 
 // Same websiteId as the browser script in index.html.
 const WEBSITE_ID = "dfid_4BRVKzjIQLv5Psqg0AK9u";
@@ -63,7 +63,8 @@ export async function onRequest(context: any) {
   }
 
   const routeKind = classifySeoPath(requestUrl.pathname);
-  const useAppShell = routeKind === "noindex" && isDocumentRequest;
+  const publicPortal = isPublicRequestPortalPath(requestUrl.pathname);
+  const useAppShell = routeKind === "noindex" && !publicPortal && isDocumentRequest;
   const appShellRequest = useAppShell
     ? rewriteDocumentRequest(new URL("/app-shell", requestUrl.origin), context.request)
     : undefined;

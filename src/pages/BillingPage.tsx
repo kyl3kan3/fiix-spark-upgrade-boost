@@ -222,10 +222,16 @@ export default function BillingPage() {
 
                   {sub.trial_ends_at && sub.status === "trialing" && (
                     <p className="text-sm text-muted-foreground mb-4">
-                      Trial ends{" "}
-                      <span className="font-semibold text-foreground">
-                        {format(new Date(sub.trial_ends_at), "MMM d, yyyy")}
-                      </span>
+                      {(() => {
+                        const msLeft = new Date(sub.trial_ends_at).getTime() - Date.now();
+                        const daysLeft = Math.max(0, Math.ceil(msLeft / 86_400_000));
+                        return (
+                          <>
+                            <span className="font-semibold text-foreground">{daysLeft} days left</span> in your
+                            trial · ends {format(new Date(sub.trial_ends_at), "MMM d, yyyy")}
+                          </>
+                        );
+                      })()}
                     </p>
                   )}
 

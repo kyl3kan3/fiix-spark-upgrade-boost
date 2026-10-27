@@ -36,9 +36,9 @@ describe("SEO route policy", () => {
   });
 
   it.each(["/r/acme-facilities", "/r/maintenease-qa-test"])(
-    "marks public request portal %s as indexable (marketing SPA shell)",
+    "marks public request portal %s as noindex (marketing SPA shell)",
     (path) => {
-      expect(classifySeoPath(path)).toBe("indexable");
+      expect(classifySeoPath(path)).toBe("noindex");
     },
   );
 

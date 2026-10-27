@@ -4,8 +4,10 @@ import {
  CommandDialog, CommandEmpty, CommandGroup, CommandInput,
  CommandItem, CommandList, CommandSeparator,
 } from "@/components/ui/command";
-import { NAV_ITEMS, NAV_GROUPS } from "./navConfig";
+import { NAV_GROUPS, filterNavItems, type NavRole } from "./navConfig";
 import { Plus } from "lucide-react";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface CommandPaletteProps {
  open: boolean;
@@ -22,6 +24,10 @@ const CREATE_ACTIONS = [
 
 const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onOpenChange }) => {
  const navigate = useNavigate();
+ const { profile } = useUserProfile();
+ const { data: sub } = useSubscription();
+ const role = (profile?.role ?? "viewer") as NavRole;
+ const navItems = filterNavItems(role, sub);
 
  const go = (href: string) => {
  onOpenChange(false);
@@ -48,7 +54,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onOpenChange }) =
 
  {NAV_GROUPS.map((groupName) => (
  <CommandGroup key={groupName} heading={groupName}>
- {NAV_ITEMS.filter((i) => i.group === groupName).map((item) => {
+ {navItems.filter((i) => i.group === groupName).map((item) => {
  const Icon = item.icon;
  return (
  <CommandItem key={item.href} onSelect={() => go(item.href)} className="font-sans">

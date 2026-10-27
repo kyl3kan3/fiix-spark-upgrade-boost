@@ -103,7 +103,11 @@ const REDIRECTS: Record<string, SeoRedirect> = {
 
 const GENERATED_INDEXABLE_ROUTE_SET = new Set<string>(GENERATED_INDEXABLE_ROUTES);
 const FEATURE_DEMO_ROUTE = /^\/feature\/[^/]+$/;
-const PUBLIC_REQUEST_PORTAL_ROUTE = /^\/r\/[^/]+$/;
+export const PUBLIC_REQUEST_PORTAL_ROUTE = /^\/r\/[^/]+$/;
+
+export function isPublicRequestPortalPath(pathname: string): boolean {
+  return PUBLIC_REQUEST_PORTAL_ROUTE.test(normalizeSeoPath(pathname));
+}
 
 export function normalizeSeoPath(pathname: string): string {
   const withLeadingSlash = pathname.startsWith("/") ? pathname : `/${pathname}`;
@@ -119,8 +123,8 @@ export function classifySeoPath(pathname: string): SeoPathKind {
   const path = normalizeSeoPath(pathname);
 
   if (INDEXABLE_ROUTES.has(path) || GENERATED_INDEXABLE_ROUTE_SET.has(path)) return "indexable";
-  // Public request portals hydrate from index.html (not the authenticated app-shell).
-  if (PUBLIC_REQUEST_PORTAL_ROUTE.test(path)) return "indexable";
+  // Public request portals use the marketing SPA shell but must not be indexed.
+  if (isPublicRequestPortalPath(path)) return "noindex";
   if (NOINDEX_ROUTES.has(path) || FEATURE_DEMO_ROUTE.test(path)) return "noindex";
   if (NOINDEX_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))) {
     return "noindex";

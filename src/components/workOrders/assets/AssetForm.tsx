@@ -110,7 +110,9 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
       toast.success(assetId ? "Asset updated successfully!" : "Asset created successfully!");
       queryClient.invalidateQueries({ queryKey: ["assets"] });
       queryClient.invalidateQueries({ queryKey: ["assetHierarchy"] });
-      navigate("/assets");
+      const savedId =
+        assetId ?? (Array.isArray(result.data) ? result.data[0]?.id : undefined);
+      navigate(savedId ? `/assets/${savedId}` : "/assets");
     } catch (error) {
       console.error("Error submitting asset:", error);
       toast.error(error instanceof Error ? error.message : "Failed to save asset");

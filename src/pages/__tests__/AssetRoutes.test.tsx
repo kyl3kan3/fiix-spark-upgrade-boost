@@ -18,10 +18,16 @@ vi.mock("@/components/workOrders/assets/AssetForm", () => ({
  <div data-testid="asset-form">Form for {assetId ?? "new"}</div>
  ),
 }));
+vi.mock("@/components/assets/AssetWorkOrdersCard", () => ({
+ AssetWorkOrdersCard: () => <div data-testid="asset-work-orders" />,
+}));
+vi.mock("@/components/assets/AssetPmChecklistsCard", () => ({
+ AssetPmChecklistsCard: () => <div data-testid="asset-pm-checklists" />,
+}));
 vi.mock("@/services/assets/assetQueries", () => ({
- getAssetById: vi.fn(async (id: string) => {
+ getAssetWithLocationById: vi.fn(async (id: string) => {
  if (id === "missing") throw new Error("not found");
- return { id, name: "Test Pump", status: "operational", description: "desc" };
+ return { id, name: "Test Pump", status: "operational", description: "desc", locations: null };
  }),
  getAllAssets: vi.fn(async () => []),
 }));

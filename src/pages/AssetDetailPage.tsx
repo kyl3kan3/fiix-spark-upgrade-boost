@@ -6,7 +6,9 @@ import { AssetQrPanel } from "@/components/assets/AssetQrPanel";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PageHeader from "@/components/shell/PageHeader";
 import { Button } from "@/components/ui/button";
-import { getAssetById } from "@/services/assets/assetQueries";
+import { getAssetWithLocationById } from "@/services/assets/assetQueries";
+import { AssetWorkOrdersCard } from "@/components/assets/AssetWorkOrdersCard";
+import { AssetPmChecklistsCard } from "@/components/assets/AssetPmChecklistsCard";
 import AssetNotFound from "@/components/assets/AssetNotFound";
 import ImageGallery from "@/components/common/ImageGallery";
 import { useSignedAssetImageUrl } from "@/lib/storage/signedAssetImage";
@@ -36,7 +38,7 @@ const AssetDetailPage = () => {
 
   const { data: asset, isLoading, error } = useQuery({
     queryKey: ["asset", assetId],
-    queryFn: () => getAssetById(assetId as string),
+    queryFn: () => getAssetWithLocationById(assetId as string),
     enabled: !!assetId,
     retry: false,
   });
@@ -56,6 +58,9 @@ const AssetDetailPage = () => {
   }
 
   const statusConfig = getStatusConfig(asset.status);
+  const locationRecord = (asset as { locations?: { name: string } | null }).locations;
+  const locationLabel =
+    locationRecord?.name || (asset as { location?: string }).location || null;
 
   return (
     <DashboardLayout>
@@ -137,12 +142,12 @@ const AssetDetailPage = () => {
                       <dd className="text-sm font-medium text-foreground">{asset.purchase_date}</dd>
                     </div>
                   )}
-                  {asset.location && (
+                  {locationLabel && (
                     <div className="col-span-2">
                       <dt className="label-eyebrow mb-0.5">Location</dt>
                       <dd className="text-sm font-medium text-foreground flex items-center gap-1">
                         <MapPin className="h-3.5 w-3.5 text-secondary shrink-0" />
-                        {asset.location}
+                        {locationLabel}
                       </dd>
                     </div>
                   )}
@@ -154,6 +159,9 @@ const AssetDetailPage = () => {
             <div className="surface-card rounded-lg p-6">
               <ImageGallery entityType="asset" entityId={asset.id} title="Photos" />
             </div>
+
+            <AssetWorkOrdersCard assetId={asset.id} />
+            <AssetPmChecklistsCard assetId={asset.id} />
           </div>
 
           {/* ── Col 3: side panel ── */}
@@ -169,10 +177,10 @@ const AssetDetailPage = () => {
                 <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
                   {statusConfig.label}
                 </span>
-                {asset.location && (
+                {locationLabel && (
                   <div className="flex items-center gap-1.5 mt-3 text-sm text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5 text-secondary shrink-0" />
-                    <span>{asset.location}</span>
+                    <span>{locationLabel}</span>
                   </div>
                 )}
               </div>

@@ -2,15 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Button } from "@/components/ui/button";
 import { Download, Printer } from "lucide-react";
+import { assetScanUrl } from "@/lib/assetScanUrl";
 
 interface Props {
   assetId: string;
   assetName: string;
-}
-
-function assetScanUrl(assetId: string): string {
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://maintenease.com";
-  return `${origin}/assets/${assetId}`;
 }
 
 export function AssetQrPanel({ assetId, assetName }: Props) {
