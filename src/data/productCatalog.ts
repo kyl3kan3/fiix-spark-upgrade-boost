@@ -41,6 +41,7 @@ export type ProductPlan = {
     bulkPmGeneration: boolean;
     purchasing: boolean;
     failureDowntimeCodes: boolean;
+    mobilePwaOffline: boolean;
   };
   featureLabels: string[];
 };
@@ -68,6 +69,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       bulkPmGeneration: false,
       purchasing: false,
       failureDowntimeCodes: false,
+      mobilePwaOffline: false,
     },
     featureLabels: [
       "2 included seats",
@@ -100,6 +102,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       bulkPmGeneration: true,
       purchasing: true,
       failureDowntimeCodes: true,
+      mobilePwaOffline: true,
     },
     featureLabels: [
       "4 included seats",
@@ -110,6 +113,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       "Meter readings & meter-based PM",
       "Purchasing & PO receiving",
       "Failure/downtime codes & MTTR",
+      "Mobile PWA, offline jobs & scan",
       "Predictive maintenance",
       "Full analytics & reports",
       "Automations",
@@ -138,6 +142,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       bulkPmGeneration: true,
       purchasing: true,
       failureDowntimeCodes: true,
+      mobilePwaOffline: true,
     },
     featureLabels: [
       "4 included seats",

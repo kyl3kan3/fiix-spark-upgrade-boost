@@ -60,6 +60,7 @@ const NOINDEX_PREFIXES = [
   "/purchasing",
   "/maintenance-codes",
   "/reports/mttr",
+  "/scan",
   "/onboarding",
   "/power-usage",
   "/assistant",
