@@ -27,7 +27,6 @@ describe("SEO route policy", () => {
     "/auth",
     "/forgot-password",
     "/feature/work-orders",
-    "/r/acme-facilities",
     "/dashboard",
     "/assets/asset-123",
     "/admin/seo-index",
@@ -35,6 +34,13 @@ describe("SEO route policy", () => {
   ])("marks %s as noindex", (path) => {
     expect(classifySeoPath(path)).toBe("noindex");
   });
+
+  it.each(["/r/acme-facilities", "/r/maintenease-qa-test"])(
+    "marks public request portal %s as indexable (marketing SPA shell)",
+    (path) => {
+      expect(classifySeoPath(path)).toBe("indexable");
+    },
+  );
 
   it.each([
     "/does-not-exist",

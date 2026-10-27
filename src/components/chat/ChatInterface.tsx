@@ -10,7 +10,9 @@ import { RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 
 const ChatInterface = () => {
-  const { teamMembers, loading: loadingTeam, refreshTeamMembers } = useTeamMembers();
+  const { teamMembers, loading: loadingTeam, refreshTeamMembers } = useTeamMembers({
+    excludeCurrentUser: true,
+  });
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
   const { messages, sendMessage, markAsRead, loading: loadingMessages } = useMessages(selectedUser?.id);
 

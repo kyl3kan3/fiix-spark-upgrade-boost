@@ -1,7 +1,9 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { useCompanyTimezone } from "@/hooks/useCompanyTimezone";
+import { workOrderDueDateInputValue } from "@/lib/workOrderDueDate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info } from "lucide-react";
 import { WorkOrderFormData } from "@/types/workOrders";
@@ -17,6 +19,7 @@ type WorkOrderFormProps = {
 };
 
 const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormProps) => {
+ const { data: companyTz = "UTC" } = useCompanyTimezone();
  const { handleSubmit, isSubmitting, isEditing } = useWorkOrderSubmit({
  workOrderId,
  onSuccess
@@ -29,11 +32,19 @@ const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormPro
  description: initialData?.description || "",
  priority: initialData?.priority || "medium",
  status: initialData?.status || "pending",
- due_date: initialData?.due_date ? new Date(initialData.due_date).toISOString().split("T")[0] : "",
+ due_date: "",
  asset_id: initialData?.asset_id || undefined,
  assigned_to: initialData?.assigned_to || undefined
  },
  });
+
+ useEffect(() => {
+ if (!initialData?.due_date) return;
+ form.setValue(
+   "due_date",
+   workOrderDueDateInputValue(initialData.due_date, companyTz),
+ );
+ }, [initialData?.due_date, companyTz, form]);
 
  const onSubmit = (values: WorkOrderFormValues) => {
  handleSubmit(values);

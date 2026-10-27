@@ -23,16 +23,28 @@ export async function requireUser(): Promise<User> {
  * Resolves the current authenticated user and their company_id.
  * Throws if the user is not signed in or has no company association.
  */
-export async function requireUserCompany(): Promise<UserContext> {
-  const user = await requireUser();
-  const { data: profile, error } = await supabase
+export async function resolveCompanyIdForUser(userId: string): Promise<string | null> {
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("company_id")
-    .eq("id", user.id)
+    .eq("id", userId)
     .maybeSingle();
-  if (error) throw error;
-  if (!profile?.company_id) throw new Error("Your account is not linked to a company");
-  return { userId: user.id, companyId: profile.company_id };
+  if (profileError) throw profileError;
+  if (profile?.company_id) return profile.company_id;
+
+  const { data: rpcCompany, error: rpcError } = await supabase.rpc("get_user_company", {
+    _user_id: userId,
+  });
+  if (rpcError) throw rpcError;
+  const companyId = typeof rpcCompany === "string" ? rpcCompany : null;
+  return companyId;
+}
+
+export async function requireUserCompany(): Promise<UserContext> {
+  const user = await requireUser();
+  const companyId = await resolveCompanyIdForUser(user.id);
+  if (!companyId) throw new Error("Your account is not linked to a company");
+  return { userId: user.id, companyId };
 }
 
 /**
@@ -43,10 +55,10 @@ export async function requireUserCompany(): Promise<UserContext> {
 export async function tryGetUserCompany(): Promise<Partial<UserContext>> {
   const user = await getCurrentUser();
   if (!user) return {};
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("company_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  return { userId: user.id, companyId: profile?.company_id ?? undefined };
+  try {
+    const companyId = await resolveCompanyIdForUser(user.id);
+    return { userId: user.id, companyId: companyId ?? undefined };
+  } catch {
+    return { userId: user.id };
+  }
 }

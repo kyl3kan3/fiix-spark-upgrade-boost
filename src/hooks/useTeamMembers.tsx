@@ -11,12 +11,20 @@ import { logger } from "@/lib/logger";
  * Combined hook for team members functionality
  * This hook integrates all the separate team-related hooks into one easy-to-use interface
  */
-export const useTeamMembers = () => {
+type UseTeamMembersOptions = {
+  /** Omit signed-in user (for team chat). Team directory should leave this false. */
+  excludeCurrentUser?: boolean;
+};
+
+export const useTeamMembers = (options: UseTeamMembersOptions = {}) => {
  // Get online users status from presence hook
  const { onlineUsers } = useTeamPresence();
  
  // Get team members data
- const { teamMembers, setTeamMembers, loading, fetchTeamMembers } = useTeamData(onlineUsers);
+ const { teamMembers, setTeamMembers, loading, fetchTeamMembers } = useTeamData(
+   onlineUsers,
+   { excludeCurrentUser: options.excludeCurrentUser },
+ );
  
  // Get team update functionality
  const { updateTeamMember } = useTeamUpdates(setTeamMembers);

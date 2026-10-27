@@ -4,6 +4,7 @@ import {
   formatWorkOrderDueLabel,
   isWorkOrderDueToday,
   isWorkOrderOverdue,
+  workOrderDueInstantFromDateInput,
 } from "../workOrderDueDate";
 
 describe("workOrderDueDate", () => {
@@ -30,5 +31,10 @@ describe("workOrderDueDate", () => {
 
   it("formats due label in company timezone", () => {
     expect(formatWorkOrderDueLabel("2026-10-27T17:00:00.000Z", chicago)).toMatch(/Oct 27/);
+  });
+
+  it("stores manual date input as noon in company timezone", () => {
+    const iso = workOrderDueInstantFromDateInput("2026-10-28", chicago);
+    expect(calendarDayInTimezone(iso, chicago)).toBe("2026-10-28");
   });
 });
