@@ -40,6 +40,7 @@ export type ProductPlan = {
     meterBasedPm: boolean;
     bulkPmGeneration: boolean;
     purchasing: boolean;
+    mobilePwaOffline: boolean;
   };
   featureLabels: string[];
 };
@@ -66,6 +67,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       meterBasedPm: false,
       bulkPmGeneration: false,
       purchasing: false,
+      mobilePwaOffline: false,
     },
     featureLabels: [
       "2 included seats",
@@ -97,6 +99,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       meterBasedPm: true,
       bulkPmGeneration: true,
       purchasing: true,
+      mobilePwaOffline: true,
     },
     featureLabels: [
       "4 included seats",
@@ -106,6 +109,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       "Parts inventory & low-stock alerts",
       "Meter readings & meter-based PM",
       "Purchasing & PO receiving",
+      "Mobile PWA, offline jobs & scan",
       "Predictive maintenance",
       "Full analytics & reports",
       "Automations",
@@ -133,6 +137,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       meterBasedPm: true,
       bulkPmGeneration: true,
       purchasing: true,
+      mobilePwaOffline: true,
     },
     featureLabels: [
       "4 included seats",

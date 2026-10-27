@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -68,6 +69,31 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       mcpPlugin(),
+      VitePWA({
+        registerType: "autoUpdate",
+        includeAssets: ["favicon.png"],
+        manifest: {
+          name: "MaintenEase",
+          short_name: "MaintenEase",
+          description: "Maintenance work orders and assets",
+          theme_color: "#0f172a",
+          background_color: "#0f172a",
+          display: "standalone",
+          start_url: "/dashboard",
+          icons: [{ src: "/favicon.png", sizes: "192x192", type: "image/png" }],
+        },
+        workbox: {
+          navigateFallback: "/app-shell",
+          globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/wwgljhpuulhljumrhscg\.supabase\.co\/rest\/.*/i,
+              handler: "NetworkFirst",
+              options: { cacheName: "supabase-api", networkTimeoutSeconds: 8 },
+            },
+          ],
+        },
+      }),
       mode === "development" && componentTagger(),
     ].filter(Boolean),
     resolve: {

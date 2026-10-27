@@ -67,6 +67,7 @@ export const PROTECTED_ROUTES: AppRoute[] = [
   { path: "/lubricants", component: lazy(() => import("@/pages/LubricantsPage")) },
   { path: "/parts", component: lazy(() => import("@/pages/PartsPage")) },
   { path: "/purchasing", component: lazy(() => import("@/pages/PurchasingPage")) },
+  { path: "/scan", component: lazy(() => import("@/pages/ScanPage")) },
   { path: "/onboarding/documents", component: lazy(() => import("@/pages/OnboardingDocumentsPage")) },
   { path: "/power-usage", component: lazy(() => import("@/pages/PowerUsagePage")) },
   { path: "/assistant", component: lazy(() => import("@/pages/AssistantPage")) },

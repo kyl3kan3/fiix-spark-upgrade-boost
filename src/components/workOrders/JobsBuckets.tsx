@@ -16,6 +16,8 @@ import {
 } from "@/types/workOrders";
 import { WorkOrderCompletePartsDialog } from "@/components/parts/WorkOrderCompletePartsDialog";
 import { useHasFeature } from "@/hooks/useSubscription";
+import { enqueueWorkOrderStatus } from "@/lib/offline/workOrderSync";
+import { useOfflineWorkOrderSync } from "@/hooks/useOfflineWorkOrderSync";
 
 type BucketKey = "urgent" | "todo" | "in_progress" | "done";
 
@@ -227,19 +229,43 @@ interface JobsBucketsProps {
 const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const queryClient = useQueryClient();
  const hasParts = useHasFeature("parts_inventory");
+ const offlineEnabled = useHasFeature("mobile_pwa_offline");
  const [search, setSearch] = useState("");
  const [activeBucket, setActiveBucket] = useState<BucketKey | "all">("all");
  const [updatingId, setUpdatingId] = useState<string | null>(null);
  const [completePartsJob, setCompletePartsJob] = useState<WorkOrderWithRelations | null>(null);
 
+ const applyJobStatus = async (jobId: string, status: WorkOrderStatus) => {
+ const { error } = await supabase.from("work_orders").update({ status }).eq("id", jobId);
+ if (error) throw error;
+ };
+
+ const { pendingCount } = useOfflineWorkOrderSync(
+ async (id, status) => applyJobStatus(id, status as WorkOrderStatus),
+ offlineEnabled,
+ );
+
  const markJobStatus = async (jobId: string, status: WorkOrderStatus) => {
  setUpdatingId(jobId);
- const { error } = await supabase.from("work_orders").update({ status }).eq("id", jobId);
+ try {
+ if (!navigator.onLine && offlineEnabled) {
+ enqueueWorkOrderStatus(jobId, status);
+ toast.message("Saved offline — will sync when you're back online.");
+ } else {
+ await applyJobStatus(jobId, status);
+ }
+ } catch (error) {
+ const message = error instanceof Error ? error.message : "Update failed";
+ if (offlineEnabled) {
+ enqueueWorkOrderStatus(jobId, status);
+ toast.message("Saved offline — will sync when you're back online.");
+ } else {
+ toast.error("Couldn't update job", { description: message });
  setUpdatingId(null);
- if (error) {
- toast.error("Couldn't update job", { description: error.message });
  return false;
  }
+ }
+ setUpdatingId(null);
  toast.success(status === "in_progress" ? "Started — good luck!" : "Marked done. Nice work.");
  queryClient.invalidateQueries({ queryKey: ["workOrders"] });
  if (hasParts) queryClient.invalidateQueries({ queryKey: ["parts"] });
@@ -278,6 +304,11 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
 
  return (
  <div className="space-y-8">
+ {offlineEnabled && pendingCount > 0 && (
+ <p className="text-xs text-muted-foreground px-1">
+ {pendingCount} work-order update{pendingCount > 1 ? "s" : ""} waiting to sync.
+ </p>
+ )}
  {/* Search + bucket filter chips */}
  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
  <div className="relative flex-1 max-w-md">
