@@ -4,6 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { PWA_APP_SHELL_NAVIGATE_ALLOWLIST } from "./src/lib/pwaAppShellRoutes";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -71,7 +72,12 @@ export default defineConfig(({ mode }) => {
       mcpPlugin(),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ["favicon.png"],
+        includeAssets: [
+          "favicon.png",
+          "pwa-icon-192.png",
+          "pwa-icon-512.png",
+          "pwa-icon-maskable-512.png",
+        ],
         manifest: {
           name: "MaintenEase",
           short_name: "MaintenEase",
@@ -80,10 +86,32 @@ export default defineConfig(({ mode }) => {
           background_color: "#0f172a",
           display: "standalone",
           start_url: "/dashboard",
-          icons: [{ src: "/favicon.png", sizes: "192x192", type: "image/png" }],
+          icons: [
+            {
+              src: "/pwa-icon-192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "/pwa-icon-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any",
+            },
+            {
+              src: "/pwa-icon-maskable-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable",
+            },
+          ],
         },
         workbox: {
-          navigateFallback: "/app-shell",
+          // index.html is emitted and precached during `vite build`; app-shell.html
+          // is written in postbuild prerender and is not in the precache manifest.
+          navigateFallback: "/index.html",
+          navigateFallbackAllowlist: PWA_APP_SHELL_NAVIGATE_ALLOWLIST,
           globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
           runtimeCaching: [
             {
