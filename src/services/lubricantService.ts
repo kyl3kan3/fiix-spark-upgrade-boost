@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { requireUserCompany } from "@/services/supabaseHelpers";
 import { toast } from "sonner";
 import type {
@@ -27,7 +28,7 @@ export async function fetchLubricants(): Promise<LubricantWithLinks[]> {
     ...row,
     quantity_on_hand: Number(row.quantity_on_hand),
     reorder_level: Number(row.reorder_level),
-  })) as LubricantWithLinks[];
+  })) as unknown as LubricantWithLinks[];
 }
 
 export async function fetchLubricantById(id: string): Promise<LubricantWithLinks | null> {
@@ -42,7 +43,7 @@ export async function fetchLubricantById(id: string): Promise<LubricantWithLinks
     ...data,
     quantity_on_hand: Number(data.quantity_on_hand),
     reorder_level: Number(data.reorder_level),
-  } as LubricantWithLinks;
+  } as unknown as LubricantWithLinks;
 }
 
 export async function fetchLubricantsForChecklist(checklistId: string): Promise<LubricantWithLinks[]> {
@@ -52,7 +53,7 @@ export async function fetchLubricantsForChecklist(checklistId: string): Promise<
     .eq("checklist_id", checklistId);
   if (error) throw error;
   return (data ?? [])
-    .map((row: { lubricant: LubricantWithLinks | null }) => row.lubricant)
+    .map((row) => (row as { lubricant: LubricantWithLinks | null }).lubricant)
     .filter(Boolean)
     .map((l) => ({
       ...l!,
@@ -68,7 +69,7 @@ export async function fetchLubricantsForAsset(assetId: string): Promise<Lubrican
     .eq("asset_id", assetId);
   if (error) throw error;
   return (data ?? [])
-    .map((row: { lubricant: LubricantWithLinks | null }) => row.lubricant)
+    .map((row) => (row as { lubricant: LubricantWithLinks | null }).lubricant)
     .filter(Boolean)
     .map((l) => ({
       ...l!,
@@ -170,7 +171,7 @@ export async function adjustLubricantStock(
     _notes: notes ?? null,
   });
   if (error) throw error;
-  const row = data as LubricantStockAdjustment;
+  const row = data as unknown as LubricantStockAdjustment;
   toast.success(adjustmentType === "receive" ? "Stock received" : "Stock adjusted");
   return {
     ...row,
@@ -213,7 +214,7 @@ export async function fetchUsageLogs(sinceDays = 180): Promise<LubricantUsageLog
   return (data ?? []).map((r) => ({
     ...r,
     quantity: Number(r.quantity),
-  })) as LubricantUsageLog[];
+  })) as unknown as LubricantUsageLog[];
 }
 
 export async function fetchUsageLogsForLubricant(lubricantId: string): Promise<LubricantUsageLog[]> {
@@ -232,7 +233,7 @@ export async function fetchUsageLogsForLubricant(lubricantId: string): Promise<L
   return (data ?? []).map((r) => ({
     ...r,
     quantity: Number(r.quantity),
-  })) as LubricantUsageLog[];
+  })) as unknown as LubricantUsageLog[];
 }
 
 export async function recordLubricantUsage(
@@ -247,7 +248,7 @@ export async function recordLubricantUsage(
   const filtered = lines.filter((l) => l.quantity > 0);
   if (filtered.length === 0) return 0;
   const { data, error } = await supabase.rpc("record_lubricant_usage", {
-    _lines: filtered,
+    _lines: filtered as unknown as Json,
     _checklist_id: options?.checklist_id ?? null,
     _checklist_submission_id: options?.checklist_submission_id ?? null,
     _work_order_id: options?.work_order_id ?? null,
