@@ -3,7 +3,7 @@ import {
  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
  Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, ShoppingCart, Tags, ScanLine, Wrench, type LucideIcon,
 } from "lucide-react";
-import type { TIER_FEATURES } from "@/hooks/useSubscription";
+import { TIER_FEATURES } from "@/hooks/useSubscription";
 
 export type FeatureKey = keyof typeof TIER_FEATURES["starter"];
 
