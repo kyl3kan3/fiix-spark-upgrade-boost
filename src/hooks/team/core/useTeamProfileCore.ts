@@ -25,15 +25,10 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  setIsLoading(true);
  setError(null);
  
- logger.log("Starting profile fetch...");
- 
- // Get current user with better error handling
  const { data: { user }, error: userError } = await supabase.auth.getUser();
  
  if (userError) {
- // Handle specific auth errors more gracefully
  if (userError.message.includes("Auth session missing")) {
- logger.log("No active session found - user needs to log in");
  setError("Please log in to access this feature");
  setProfileData(null);
  setUserId(null);
@@ -49,19 +44,14 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  }
  
  if (!user) {
- logger.log("No authenticated user found");
  setProfileData(null);
  setUserId(null);
  setIsLoading(false);
  return null;
  }
  
- logger.log("User authenticated:", user.id);
  setUserId(user.id);
  
- logger.log("Fetching profile with fields:", selectFields);
- 
- // Get profile data
  const { data, error: fetchError } = await supabase
  .from('profiles')
  .select(selectFields)
@@ -77,14 +67,12 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  }
 
  if (!data) {
- logger.log("No profile data found for user");
  setError("No profile found for user");
  setProfileData(null);
  setIsLoading(false);
  return null;
  }
 
- // Fetch role from user_roles table
  const { data: roleData, error: roleError } = await supabase
  .from('user_roles')
  .select('role')
@@ -95,12 +83,8 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  console.error("Error fetching user role:", roleError);
  }
 
- // Use role from user_roles if available, fallback to profiles.role
  const userRole = roleData?.role || (data as any).role || null;
  
- logger.log("Profile data fetched successfully:", data, "Role:", userRole);
- 
- // Process and validate the profile data
  if (typeof data === 'object' && data !== null) {
  const typedData = data as Record<string, any>;
  
@@ -115,7 +99,6 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  };
  setProfileData(profileData);
  setError(null);
- logger.log("Profile processed successfully");
  } else {
  logger.warn("Invalid profile data: missing company_id", data);
  setError("Profile missing required company information");
@@ -142,7 +125,6 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  return await fetchUserProfile();
  }, [fetchUserProfile]);
 
- // Initial fetch - only run once on mount
  useEffect(() => {
  let mounted = true;
  
@@ -159,7 +141,6 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  };
  }, [fetchUserProfile]);
 
- // Computed values
  const role = profileData?.role || null;
  const isAdmin = role === 'administrator';
  const companyName = profileData?.company_name;
