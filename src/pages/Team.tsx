@@ -100,7 +100,12 @@ const Team = () => {
  <span className="text-sm sm:text-base">Add Member</span>
  </Button>
  </DialogTrigger>
- <AddTeamMemberDialog />
+ <AddTeamMemberDialog
+ onInvited={() => {
+ setShowAddDialog(false);
+ refreshPendingInvitations();
+ }}
+ />
  </Dialog>
  </div>
 

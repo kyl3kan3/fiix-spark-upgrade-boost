@@ -12,7 +12,11 @@ import TeamMemberForm from "./form/TeamMemberForm";
 import { TeamMemberFormValues } from "./types";
 import { logger } from "@/lib/logger";
 
-const AddTeamMemberDialog = () => {
+interface AddTeamMemberDialogProps {
+  onInvited?: () => void;
+}
+
+const AddTeamMemberDialog = ({ onInvited }: AddTeamMemberDialogProps) => {
  const { user } = useAuth();
  const { sendInvitation, isSubmitting, error } = useTeamInvitation();
  const [companyName] = useState(user?.user_metadata?.company_name || "Your Company");
@@ -26,6 +30,7 @@ const AddTeamMemberDialog = () => {
  try {
  const success = await sendInvitation(data.email);
  logger.log("Dialog submission result:", success);
+ if (success) onInvited?.();
  return success;
  } catch (error) {
  console.error("Error in dialog handleSubmit:", error);

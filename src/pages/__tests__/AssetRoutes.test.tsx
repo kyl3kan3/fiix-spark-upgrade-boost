@@ -7,6 +7,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 vi.mock("@/components/dashboard/DashboardLayout", () => ({
  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
+vi.mock("@/components/assets/AssetQrPanel", () => ({
+ AssetQrPanel: () => <div data-testid="asset-qr-panel" />,
+}));
 vi.mock("@/hooks/team/useUserRolePermissions", () => ({
  useUserRolePermissions: () => ({ currentUserRole: "administrator" }),
 }));

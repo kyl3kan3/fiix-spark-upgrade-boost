@@ -11,6 +11,8 @@ import { WorkOrderStatusBadges } from "./components/WorkOrderStatusBadges";
 import { WorkOrderDetailsCard } from "./components/WorkOrderDetailsCard";
 import { WorkOrderComments } from "./components/WorkOrderComments";
 import { DeleteWorkOrderDialog } from "./components/DeleteWorkOrderDialog";
+import { WorkOrderWorkflowBar } from "./components/WorkOrderWorkflowBar";
+import { WorkOrderCompletionSection } from "./components/WorkOrderCompletionSection";
 
 // Define props interface for the component
 interface WorkOrderDetailProps {
@@ -54,9 +56,13 @@ const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
  
  {/* Status badges */}
  <WorkOrderStatusBadges workOrder={workOrder} />
+
+ <WorkOrderWorkflowBar workOrder={workOrder} />
  
  {/* Work Order Details */}
  <WorkOrderDetailsCard workOrder={workOrder} />
+
+ <WorkOrderCompletionSection workOrder={workOrder} />
  
  {/* Comments Section */}
  <WorkOrderComments workOrder={workOrder} />
