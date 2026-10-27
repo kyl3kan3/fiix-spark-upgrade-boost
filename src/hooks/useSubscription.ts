@@ -4,13 +4,14 @@ import { PLAN_BY_TIER } from "@/data/productCatalog";
 
 export type { SubscriptionTier, SubscriptionStatus, Subscription } from "@/services/subscriptionService";
 
-export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; automations: boolean; api: boolean; sso: boolean; predictive_maintenance: boolean }> = {
+export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; automations: boolean; api: boolean; sso: boolean; predictive_maintenance: boolean; lubricant_tracking: boolean }> = {
   starter: {
     analytics: PLAN_BY_TIER.starter.capabilities.analytics,
     automations: PLAN_BY_TIER.starter.capabilities.automations,
     api: PLAN_BY_TIER.starter.capabilities.api,
     sso: PLAN_BY_TIER.starter.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.starter.capabilities.predictiveMaintenance,
+    lubricant_tracking: PLAN_BY_TIER.starter.capabilities.lubricantTracking,
   },
   pro: {
     analytics: PLAN_BY_TIER.pro.capabilities.analytics,
@@ -18,6 +19,7 @@ export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; autom
     api: PLAN_BY_TIER.pro.capabilities.api,
     sso: PLAN_BY_TIER.pro.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.pro.capabilities.predictiveMaintenance,
+    lubricant_tracking: PLAN_BY_TIER.pro.capabilities.lubricantTracking,
   },
   business: {
     analytics: PLAN_BY_TIER.business.capabilities.analytics,
@@ -25,6 +27,7 @@ export const TIER_FEATURES: Record<SubscriptionTier, { analytics: boolean; autom
     api: PLAN_BY_TIER.business.capabilities.api,
     sso: PLAN_BY_TIER.business.capabilities.sso,
     predictive_maintenance: PLAN_BY_TIER.business.capabilities.predictiveMaintenance,
+    lubricant_tracking: PLAN_BY_TIER.business.capabilities.lubricantTracking,
   },
 };
 

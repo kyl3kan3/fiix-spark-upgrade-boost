@@ -1541,6 +1541,174 @@ export type Database = {
           },
         ]
       }
+      lubricant_assets: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          lubricant_id: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          lubricant_id: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          lubricant_id?: string
+        }
+        Relationships: []
+      }
+      lubricant_checklists: {
+        Row: {
+          checklist_id: string
+          company_id: string
+          created_at: string
+          lubricant_id: string
+        }
+        Insert: {
+          checklist_id: string
+          company_id: string
+          created_at?: string
+          lubricant_id: string
+        }
+        Update: {
+          checklist_id?: string
+          company_id?: string
+          created_at?: string
+          lubricant_id?: string
+        }
+        Relationships: []
+      }
+      lubricant_stock_adjustments: {
+        Row: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lubricant_id: string
+          notes: string | null
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Insert: {
+          adjustment_type: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_id: string
+          notes?: string | null
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Update: {
+          adjustment_type?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_id?: string
+          notes?: string | null
+          quantity_after?: number
+          quantity_before?: number
+          quantity_delta?: number
+        }
+        Relationships: []
+      }
+      lubricant_usage_logs: {
+        Row: {
+          asset_id: string | null
+          checklist_id: string | null
+          checklist_submission_id: string | null
+          company_id: string
+          id: string
+          lubricant_id: string
+          notes: string | null
+          quantity: number
+          used_at: string
+          used_by: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          checklist_id?: string | null
+          checklist_submission_id?: string | null
+          company_id: string
+          id?: string
+          lubricant_id: string
+          notes?: string | null
+          quantity: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          checklist_id?: string | null
+          checklist_submission_id?: string | null
+          company_id?: string
+          id?: string
+          lubricant_id?: string
+          notes?: string | null
+          quantity?: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: []
+      }
+      lubricants: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lubricant_type: string | null
+          manufacturer: string | null
+          name: string
+          notes: string | null
+          quantity_on_hand: number
+          reorder_level: number
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_type?: string | null
+          manufacturer?: string | null
+          name: string
+          notes?: string | null
+          quantity_on_hand?: number
+          reorder_level?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_type?: string | null
+          manufacturer?: string | null
+          name?: string
+          notes?: string | null
+          quantity_on_hand?: number
+          reorder_level?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       marketing_leads: {
         Row: {
           company: string | null
@@ -3095,6 +3263,25 @@ export type Database = {
       submit_checklist_atomic: {
         Args: { _checklist_id: string; _items: Json; _notes?: string }
         Returns: Json
+      }
+      adjust_lubricant_stock: {
+        Args: {
+          _lubricant_id: string
+          _adjustment_type: string
+          _quantity_delta: number
+          _notes?: string | null
+        }
+        Returns: Json
+      }
+      record_lubricant_usage: {
+        Args: {
+          _lines: Json
+          _checklist_id?: string | null
+          _checklist_submission_id?: string | null
+          _work_order_id?: string | null
+          _notes?: string | null
+        }
+        Returns: number
       }
     }
     Enums: {

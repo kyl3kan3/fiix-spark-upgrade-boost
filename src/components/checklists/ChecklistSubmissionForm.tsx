@@ -14,6 +14,9 @@ import { CalendarIcon, CheckCircle2 } from "lucide-react";
 import { checklistService } from "@/services/checklistService";
 import { Checklist, ChecklistItem } from "@/types/checklists";
 import { toast } from "sonner";
+import { LubricantConsumptionSection } from "@/components/lubricants/LubricantConsumptionSection";
+import { recordLubricantUsage } from "@/services/lubricantService";
+import type { LubricantUsageLine } from "@/types/lubricants";
 import { format } from "date-fns";
 
 interface ChecklistSubmissionFormProps {
@@ -34,6 +37,7 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
 }) => {
  const [responses, setResponses] = useState<Record<string, FormResponse>>({});
  const [submissionNotes, setSubmissionNotes] = useState("");
+ const [lubricantUsage, setLubricantUsage] = useState<LubricantUsageLine[]>([]);
  const queryClient = useQueryClient();
 
  // Initialize responses for all items
@@ -53,10 +57,19 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
  }, [checklist.items]);
 
  const submitMutation = useMutation({
- mutationFn: (data: { items: FormResponse[]; notes?: string }) =>
- checklistService.submitChecklist(checklist.id, data.items, data.notes),
+ mutationFn: async (data: { items: FormResponse[]; notes?: string }) => {
+ const submission = await checklistService.submitChecklist(checklist.id, data.items, data.notes);
+ if (lubricantUsage.length > 0) {
+ await recordLubricantUsage(lubricantUsage, {
+ checklist_id: checklist.id,
+ checklist_submission_id: submission.id,
+ });
+ }
+ return submission;
+ },
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ["checklist-submissions"] });
+ queryClient.invalidateQueries({ queryKey: ["lubricants"] });
  toast.success("Checklist submitted successfully");
  onSubmitSuccess();
  },
@@ -251,6 +264,12 @@ const ChecklistSubmissionForm: React.FC<ChecklistSubmissionFormProps> = ({
  ))}
  </div>
  </Card>
+
+ <LubricantConsumptionSection
+ checklistId={checklist.id}
+ value={lubricantUsage}
+ onChange={setLubricantUsage}
+ />
 
  {/* Submission Notes */}
  <Card className="p-6">
