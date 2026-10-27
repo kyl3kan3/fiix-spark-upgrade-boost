@@ -12,7 +12,7 @@ export const PRODUCT_OPERATOR_NAME = "Decent4";
 export const PRODUCT_CONTACT_EMAIL = "support@maintenease.com";
 export const PRODUCT_SUPPORT_SUMMARY =
   "Starter includes email support, Pro includes priority email support, and Business includes email and chat support.";
-export const PRODUCT_TRIAL_SUMMARY = `${PRODUCT_TRIAL_DAYS}-day free trial; a card is required and cancellation is required before day ${PRODUCT_TRIAL_CANCEL_BY_DAY} to avoid a charge.`;
+export const PRODUCT_TRIAL_SUMMARY = `${PRODUCT_TRIAL_DAYS}-day free trial; cancel before day ${PRODUCT_TRIAL_CANCEL_BY_DAY} if you do not want to continue on a paid plan.`;
 export const PRODUCT_BILLING_SUMMARY =
   "Published monthly and annual billing are available for Starter, Pro, and Business.";
 

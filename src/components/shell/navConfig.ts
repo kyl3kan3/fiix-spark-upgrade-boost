@@ -1,7 +1,7 @@
 import {
  LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
  Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
- Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, ShoppingCart, Tags, ScanLine, type LucideIcon,
+ Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, ShoppingCart, Tags, ScanLine, Wrench, type LucideIcon,
 } from "lucide-react";
 import type { TIER_FEATURES } from "@/hooks/useSubscription";
 
@@ -23,6 +23,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "My Jobs", href: "/work-orders", icon: ClipboardList, code: "WO", group: "Main" },
  { label: "Check-Ups", href: "/inspections", icon: ClipboardCheck, code: "INS", group: "Main" },
  { label: "Calendar", href: "/calendar", icon: Calendar, code: "CAL", group: "Main" },
+ { label: "Maintenance", href: "/maintenance", icon: Wrench, code: "MNT", group: "Main" },
  { label: "Equipment", href: "/assets", icon: Package, code: "AST", group: "Things" },
  { label: "Places", href: "/locations", icon: Building, code: "LOC", group: "Things" },
  { label: "Team", href: "/team", icon: Users, code: "TM", group: "People" },

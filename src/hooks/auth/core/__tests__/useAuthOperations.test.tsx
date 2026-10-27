@@ -50,7 +50,7 @@ describe("useAuthOperations", () => {
       options: {
         captchaToken: "turnstile-token",
         data: { company_name: "Example Facilities" },
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/auth`,
       },
     });
   });

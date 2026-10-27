@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { AlertTriangle, Boxes, Pencil, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Boxes, Pencil, Plus } from "lucide-react";
+import { DeleteConfirmButton } from "@/components/common/DeleteConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -118,14 +119,10 @@ export function PartsDashboard() {
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setStockPart(part)}>
                             <Boxes className="h-3.5 w-3.5" />
                           </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8 text-destructive"
-                            onClick={() => remove.mutate(part.id)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <DeleteConfirmButton
+                            itemLabel={part.name}
+                            onConfirm={() => remove.mutate(part.id)}
+                          />
                         </div>
                       </td>
                     </tr>

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, HelpCircle, Menu, Search, Settings } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NAV_ITEMS } from "./navConfig";
+import { resolvePageTitle } from "@/lib/pageTitle";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
@@ -22,8 +23,7 @@ const TopBar: React.FC<TopBarProps> = ({
   const { pathname } = useLocation();
   const { profile } = useUserProfile();
 
-  const current = NAV_ITEMS.find((i) => pathname.startsWith(i.href));
-  const pageTitle = current?.label || "Welcome";
+  const pageTitle = resolvePageTitle(pathname);
 
   // Simple greeting
   const hour = new Date().getHours();

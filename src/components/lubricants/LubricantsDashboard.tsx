@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, Droplets, Pencil, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Droplets, Pencil, Plus } from "lucide-react";
+import { DeleteConfirmButton } from "@/components/common/DeleteConfirmButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -122,14 +123,10 @@ export function LubricantsDashboard() {
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setStockLub(lub)}>
                             <Droplets className="h-3.5 w-3.5" />
                           </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-8 w-8 text-destructive"
-                            onClick={() => remove.mutate(lub.id)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <DeleteConfirmButton
+                            itemLabel={lub.name}
+                            onConfirm={() => remove.mutate(lub.id)}
+                          />
                         </div>
                       </td>
                     </tr>

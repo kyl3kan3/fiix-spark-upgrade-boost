@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-10-22T15:48:00.253Z",
+  "generated_at": "2026-10-27T15:38:44.636Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -400,7 +400,7 @@
       "month",
       "year"
     ],
-    "trial_summary": "7-day free trial; a card is required and cancellation is required before day 8 to avoid a charge.",
+    "trial_summary": "7-day free trial; cancel before day 8 if you do not want to continue on a paid plan.",
     "support_summary": "Starter includes email support, Pro includes priority email support, and Business includes email and chat support.",
     "seat_summary": "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats with additional seats at $15 per month each.",
     "capacity_summary": "Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders.",

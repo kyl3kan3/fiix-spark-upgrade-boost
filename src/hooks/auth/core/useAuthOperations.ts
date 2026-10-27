@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { setStorageItem } from "@/utils/storageUtils";
 
 interface SignUpData {
  first_name?: string;
@@ -46,7 +47,7 @@ export function useAuthOperations() {
        const hasPendingInvite =
         typeof window !== "undefined" &&
         !!localStorage.getItem("pending_invite_token");
-      const redirectPath = hasPendingInvite ? "/onboarding" : "/";
+      const redirectPath = hasPendingInvite ? "/onboarding" : "/auth";
   const { data, error } = await supabase.auth.signUp({
  email,
  password,
@@ -73,6 +74,10 @@ export function useAuthOperations() {
             : "An account with this email already exists. Please sign in instead.";
           toast.error("Account already exists", { description: msg });
           return { success: false, error: msg };
+        }
+
+        if (userData?.company_name?.trim()) {
+          setStorageItem("pending_company_name", userData.company_name.trim());
         }
 
  toast.success("Account created successfully!");

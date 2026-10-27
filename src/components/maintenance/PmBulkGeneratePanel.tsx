@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { PaywallGate } from "@/components/billing/PaywallGate";
 import { createPmWorkOrdersFromPreview, previewPmWorkOrders, type PmWorkOrderPreviewRow } from "@/services/pmBulkService";
-import { format } from "date-fns";
+import { formatInCompanyTimezone, useCompanyTimezone } from "@/hooks/useCompanyTimezone";
 
 export function PmBulkGeneratePanel() {
+  const { data: companyTz = "UTC" } = useCompanyTimezone();
   const [days, setDays] = useState("30");
   const [rows, setRows] = useState<PmWorkOrderPreviewRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,7 +60,7 @@ export function PmBulkGeneratePanel() {
                 {rows.slice(0, 200).map((r, i) => (
                   <tr key={`${r.checklist_id}-${r.due_at}-${i}`} className="border-b border-border/40">
                     <td className="p-2">{r.checklist_name}</td>
-                    <td className="p-2">{format(new Date(r.due_at), "MMM d, yyyy HH:mm")}</td>
+                    <td className="p-2">{formatInCompanyTimezone(r.due_at, companyTz)}</td>
                   </tr>
                 ))}
               </tbody>
