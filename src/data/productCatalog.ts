@@ -38,6 +38,7 @@ export type ProductPlan = {
     lubricantTracking: boolean;
     partsInventory: boolean;
     meterBasedPm: boolean;
+    bulkPmGeneration: boolean;
   };
   featureLabels: string[];
 };
@@ -62,6 +63,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       lubricantTracking: false,
       partsInventory: false,
       meterBasedPm: false,
+      bulkPmGeneration: false,
     },
     featureLabels: [
       "2 included seats",
@@ -91,6 +93,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       lubricantTracking: true,
       partsInventory: true,
       meterBasedPm: true,
+      bulkPmGeneration: true,
     },
     featureLabels: [
       "4 included seats",
@@ -124,6 +127,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       lubricantTracking: true,
       partsInventory: true,
       meterBasedPm: true,
+      bulkPmGeneration: true,
     },
     featureLabels: [
       "4 included seats",
