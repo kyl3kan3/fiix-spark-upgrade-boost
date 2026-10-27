@@ -11,6 +11,9 @@ import { toast } from "sonner";
 import { checklistService } from "@/services/checklistService";
 import { Checklist, ChecklistItem } from "@/types/checklists";
 import { getAllAssets } from "@/services/assets/assetQueries";
+import { LubricantConsumptionSection } from "@/components/lubricants/LubricantConsumptionSection";
+import { recordLubricantUsage } from "@/services/lubricantService";
+import type { LubricantUsageLine } from "@/types/lubricants";
 
 interface Props {
  checklist: Checklist;
@@ -39,6 +42,7 @@ const MultiAssetSubmissionForm: React.FC<Props> = ({ checklist, onSubmitSuccess 
  const [values, setValues] = useState<Record<string, Record<string, CellValue>>>({});
  const [rowNotes, setRowNotes] = useState<Record<string, string>>({});
  const [submissionNotes, setSubmissionNotes] = useState("");
+ const [lubricantUsage, setLubricantUsage] = useState<LubricantUsageLine[]>([]);
 
  useEffect(() => {
  const init: Record<string, Record<string, CellValue>> = {};
@@ -82,11 +86,23 @@ const MultiAssetSubmissionForm: React.FC<Props> = ({ checklist, onSubmitSuccess 
  }
  }
 
- return checklistService.submitChecklist(checklist.id, payload, submissionNotes || undefined);
+ const submission = await checklistService.submitChecklist(
+ checklist.id,
+ payload,
+ submissionNotes || undefined,
+ );
+ if (lubricantUsage.length > 0) {
+ await recordLubricantUsage(lubricantUsage, {
+ checklist_id: checklist.id,
+ checklist_submission_id: submission.id,
+ });
+ }
+ return submission;
  },
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ["checklist-submissions"] });
  queryClient.invalidateQueries({ queryKey: ["due-checklists"] });
+ queryClient.invalidateQueries({ queryKey: ["lubricants"] });
  toast.success("Inspection submitted");
  onSubmitSuccess();
  },
@@ -199,6 +215,13 @@ const MultiAssetSubmissionForm: React.FC<Props> = ({ checklist, onSubmitSuccess 
  </table>
  </div>
  </Card>
+
+ <LubricantConsumptionSection
+ checklistId={checklist.id}
+ assetIds={linkedAssets.map((a: { id: string }) => a.id)}
+ value={lubricantUsage}
+ onChange={setLubricantUsage}
+ />
 
  <Card className="p-6">
  <Label htmlFor="general-notes">General notes (optional)</Label>

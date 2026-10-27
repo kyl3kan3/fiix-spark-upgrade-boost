@@ -55,6 +55,7 @@ const NOINDEX_PREFIXES = [
   "/predictive-maintenance",
   "/self-healing",
   "/cost-tracking",
+  "/lubricants",
   "/onboarding",
   "/power-usage",
   "/assistant",
