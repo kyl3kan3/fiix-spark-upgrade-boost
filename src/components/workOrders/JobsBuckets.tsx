@@ -230,6 +230,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const queryClient = useQueryClient();
  const hasParts = useHasFeature("parts_inventory");
  const offlineEnabled = useHasFeature("mobile_pwa_offline");
+ const hasFailureCodes = useHasFeature("failure_downtime_codes");
  const [search, setSearch] = useState("");
  const [activeBucket, setActiveBucket] = useState<BucketKey | "all">("all");
  const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -293,7 +294,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const handleAdvance = async (job: WorkOrderWithRelations) => {
  const next = nextStatus(job.status);
  if (!next) return;
- if (next === "completed" && hasParts) {
+ if (next === "completed" && (hasParts || hasFailureCodes)) {
  setCompletePartsJob(job);
  return;
  }
