@@ -12,6 +12,7 @@ import {
   listRecurringChecklists,
   type RecurringChecklistSummary,
 } from "@/services/checklistService";
+import { formatChecklistNextDue } from "@/lib/checklistSchedule";
 
 const AutomationsPage: React.FC = () => {
   const [items, setItems] = useState<RecurringChecklistSummary[]>([]);
@@ -108,9 +109,12 @@ const AutomationsPage: React.FC = () => {
                             </Link>
                             <p className="text-xs text-muted-foreground mt-0.5">
                               Next due:{" "}
-                              {it.schedule?.next_due_at
-                                ? new Date(it.schedule.next_due_at).toLocaleString()
-                                : "—"}
+                              {(() => {
+                                const nextDue = formatChecklistNextDue(it.schedule);
+                                return nextDue
+                                  ? new Date(nextDue).toLocaleString()
+                                  : "—";
+                              })()}
                             </p>
                           </div>
                         </div>

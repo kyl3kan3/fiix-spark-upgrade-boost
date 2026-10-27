@@ -129,6 +129,25 @@ describe("CanonicalUrl", () => {
     });
   });
 
+  it("marks public request portals as noindex", async () => {
+    render(
+      <HelmetProvider>
+        <MemoryRouter
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          initialEntries={["/r/acme-facilities"]}
+        >
+          <CanonicalUrl />
+        </MemoryRouter>
+      </HelmetProvider>,
+    );
+
+    await waitFor(() => {
+      expect(document.head.querySelector('meta[name="robots"]')?.getAttribute("content")).toBe(
+        "noindex,nofollow",
+      );
+    });
+  });
+
   it("replaces the fallback noindex directive on public routes", async () => {
     document.head.innerHTML =
       '<meta data-rh="true" name="robots" content="noindex,nofollow" />';

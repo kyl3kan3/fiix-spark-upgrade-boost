@@ -94,16 +94,16 @@ const AssetsPage = () => {
  return (
    <DashboardLayout>
      <Helmet>
-       <title>Equipment & Assets | MaintenEase</title>
+       <title>Assets | MaintenEase</title>
        <meta name="description" content="Track every tool, vehicle, and machine in one place. View status, history, and maintenance records for all your assets." />
        <link rel="canonical" href="https://maintenease.com/assets" />
-       <meta property="og:title" content="Equipment & Assets | MaintenEase" />
+       <meta property="og:title" content="Assets | MaintenEase" />
        <meta property="og:description" content="Track every tool, vehicle, and machine in one place." />
        <meta property="og:url" content="https://maintenease.com/assets" />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="Equipment & Assets | MaintenEase" />
+      <meta name="twitter:title" content="Assets | MaintenEase" />
       <meta name="twitter:description" content="Track every tool, vehicle, and machine in one place." />
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
      </Helmet>

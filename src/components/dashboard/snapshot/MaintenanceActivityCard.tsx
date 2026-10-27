@@ -43,12 +43,12 @@ export function MaintenanceActivityCard() {
     useMaintenanceActivity();
 
   return (
-    <section className="mt-8">
+    <section className="mt-8 min-w-0 max-w-full overflow-hidden">
       <h3 className="font-headline text-xl text-foreground mb-4">
         Maintenance activity
       </h3>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="surface-card p-5 lg:col-span-2 flex flex-col">
+        <div className="surface-card p-5 lg:col-span-2 flex flex-col min-w-0 max-w-full overflow-hidden">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm text-muted-foreground">
               Work orders opened vs completed · last 6 weeks
@@ -74,8 +74,8 @@ export function MaintenanceActivityCard() {
             </div>
           ) : (
             <>
-              <div className="h-56">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="h-56 w-full min-w-0 max-w-full">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <BarChart data={weeks} barGap={2} barCategoryGap="28%">
                     <CartesianGrid
                       vertical={false}

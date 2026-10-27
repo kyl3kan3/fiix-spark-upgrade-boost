@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Checklist, ChecklistItem, ChecklistSubmission, ChecklistSchedule } from "@/types/checklists";
 import { requireUserCompany } from "@/services/supabaseHelpers";
+import { normalizeChecklistSchedule, type ChecklistScheduleSlice } from "@/lib/checklistSchedule";
 
 type ChecklistAssetLink = { asset_id: string; start_offset_minutes?: number | null };
 type ChecklistRow = Checklist & {
@@ -281,7 +282,8 @@ type RecurringChecklistRow = {
   name: string;
   frequency: string | null;
   checklist_schedules:
-    | { next_due_at: string | null; last_submitted_at: string | null }[]
+    | ChecklistScheduleSlice
+    | ChecklistScheduleSlice[]
     | null;
 };
 
@@ -301,6 +303,6 @@ export async function listRecurringChecklists(): Promise<RecurringChecklistSumma
     id: c.id,
     name: c.name,
     frequency: c.frequency,
-    schedule: c.checklist_schedules?.[0] || null,
+    schedule: normalizeChecklistSchedule(c.checklist_schedules),
   }));
 }

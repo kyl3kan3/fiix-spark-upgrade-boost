@@ -74,7 +74,7 @@ export function PartsDashboard() {
                 <th className="p-3 font-semibold">Part #</th>
                 <th className="p-3 font-semibold">On hand</th>
                 <th className="p-3 font-semibold">Equipment</th>
-                <th className="p-3 font-semibold w-[120px]">Actions</th>
+                <th className="p-3 font-semibold w-[120px] sticky right-0 bg-muted/40 z-10">Actions</th>
               </tr>
             </thead>
             <tbody>
