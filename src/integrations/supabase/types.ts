@@ -1664,6 +1664,99 @@ export type Database = {
         }
         Relationships: []
       }
+      asset_meters: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          current_reading: number
+          id: string
+          name: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          current_reading?: number
+          id?: string
+          name: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          current_reading?: number
+          id?: string
+          name?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      checklist_meter_rules: {
+        Row: {
+          checklist_id: string
+          company_id: string
+          created_at: string
+          interval_units: number
+          last_service_reading: number
+          meter_id: string
+          updated_at: string
+        }
+        Insert: {
+          checklist_id: string
+          company_id: string
+          created_at?: string
+          interval_units: number
+          last_service_reading?: number
+          meter_id: string
+          updated_at?: string
+        }
+        Update: {
+          checklist_id?: string
+          company_id?: string
+          created_at?: string
+          interval_units?: number
+          last_service_reading?: number
+          meter_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      meter_readings: {
+        Row: {
+          company_id: string
+          id: string
+          meter_id: string
+          notes: string | null
+          reading_value: number
+          recorded_at: string
+          recorded_by: string | null
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          meter_id: string
+          notes?: string | null
+          reading_value: number
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          meter_id?: string
+          notes?: string | null
+          reading_value?: number
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Relationships: []
+      }
       part_assets: {
         Row: {
           asset_id: string
@@ -3403,6 +3496,14 @@ export type Database = {
       }
       submit_checklist_atomic: {
         Args: { _checklist_id: string; _items: Json; _notes?: string }
+        Returns: Json
+      }
+      record_asset_meter_reading: {
+        Args: {
+          _meter_id: string
+          _reading_value: number
+          _notes?: string | null
+        }
         Returns: Json
       }
       adjust_part_stock: {
