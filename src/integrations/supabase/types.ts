@@ -1973,6 +1973,36 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_codes: {
+        Row: {
+          code: string
+          code_type: string
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+        }
+        Insert: {
+          code: string
+          code_type: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label: string
+        }
+        Update: {
+          code?: string
+          code_type?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
       purchase_requests: {
         Row: {
           company_id: string
@@ -3346,7 +3376,10 @@ export type Database = {
           created_at: string
           created_by: string
           description: string
+          downtime_code_id: string | null
+          downtime_minutes: number | null
           due_date: string | null
+          failure_code_id: string | null
           id: string
           priority: Database["public"]["Enums"]["work_order_priority"]
           status: Database["public"]["Enums"]["work_order_status"]
@@ -3361,7 +3394,10 @@ export type Database = {
           created_at?: string
           created_by: string
           description: string
+          downtime_code_id?: string | null
+          downtime_minutes?: number | null
           due_date?: string | null
+          failure_code_id?: string | null
           id?: string
           priority?: Database["public"]["Enums"]["work_order_priority"]
           status?: Database["public"]["Enums"]["work_order_status"]
@@ -3376,7 +3412,10 @@ export type Database = {
           created_at?: string
           created_by?: string
           description?: string
+          downtime_code_id?: string | null
+          downtime_minutes?: number | null
           due_date?: string | null
+          failure_code_id?: string | null
           id?: string
           priority?: Database["public"]["Enums"]["work_order_priority"]
           status?: Database["public"]["Enums"]["work_order_status"]
@@ -3644,6 +3683,10 @@ export type Database = {
       receive_purchase_order_line: {
         Args: { _line_id: string; _qty: number }
         Returns: undefined
+      }
+      get_mttr_summary: {
+        Args: { _days?: number }
+        Returns: Json
       }
       adjust_lubricant_stock: {
         Args: {

@@ -58,6 +58,8 @@ const NOINDEX_PREFIXES = [
   "/lubricants",
   "/parts",
   "/purchasing",
+  "/maintenance-codes",
+  "/reports/mttr",
   "/onboarding",
   "/power-usage",
   "/assistant",

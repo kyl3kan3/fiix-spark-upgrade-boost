@@ -17,6 +17,7 @@ export const TIER_FEATURES: Record<
     meter_based_pm: boolean;
     bulk_pm_generation: boolean;
     purchasing: boolean;
+    failure_downtime_codes: boolean;
   }
 > = {
   starter: {
@@ -30,6 +31,7 @@ export const TIER_FEATURES: Record<
     meter_based_pm: PLAN_BY_TIER.starter.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.starter.capabilities.bulkPmGeneration,
     purchasing: PLAN_BY_TIER.starter.capabilities.purchasing,
+    failure_downtime_codes: PLAN_BY_TIER.starter.capabilities.failureDowntimeCodes,
   },
   pro: {
     analytics: PLAN_BY_TIER.pro.capabilities.analytics,
@@ -42,6 +44,7 @@ export const TIER_FEATURES: Record<
     meter_based_pm: PLAN_BY_TIER.pro.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.pro.capabilities.bulkPmGeneration,
     purchasing: PLAN_BY_TIER.pro.capabilities.purchasing,
+    failure_downtime_codes: PLAN_BY_TIER.pro.capabilities.failureDowntimeCodes,
   },
   business: {
     analytics: PLAN_BY_TIER.business.capabilities.analytics,
@@ -54,6 +57,7 @@ export const TIER_FEATURES: Record<
     meter_based_pm: PLAN_BY_TIER.business.capabilities.meterBasedPm,
     bulk_pm_generation: PLAN_BY_TIER.business.capabilities.bulkPmGeneration,
     purchasing: PLAN_BY_TIER.business.capabilities.purchasing,
+    failure_downtime_codes: PLAN_BY_TIER.business.capabilities.failureDowntimeCodes,
   },
 };
 

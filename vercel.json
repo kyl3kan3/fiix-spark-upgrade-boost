@@ -89,7 +89,7 @@
     },
     { "src": "^/favicon\\.ico$", "dest": "/favicon.png" },
     {
-      "src": "^/(auth|forgot-password|reset-password|unsubscribe|requests|dashboard|vendors|assets|work-orders|inspections|checklists|admin|notifications|settings|calendar|maintenance|predictive-maintenance|self-healing|cost-tracking|lubricants|parts|purchasing|onboarding|power-usage|assistant|guided-setup|building-viewer|import|team|locations|profile|help|chat|reports|billing|automations|api-keys|sso|setup|team-setup|company-setup)(/.*)?$",
+      "src": "^/(auth|forgot-password|reset-password|unsubscribe|requests|dashboard|vendors|assets|work-orders|inspections|checklists|admin|notifications|settings|calendar|maintenance|predictive-maintenance|self-healing|cost-tracking|lubricants|parts|purchasing|maintenance-codes|onboarding|power-usage|assistant|guided-setup|building-viewer|import|team|locations|profile|help|chat|reports|billing|automations|api-keys|sso|setup|team-setup|company-setup)(/.*)?$",
       "dest": "/app-shell",
       "headers": {
         "X-Robots-Tag": "noindex, nofollow",
