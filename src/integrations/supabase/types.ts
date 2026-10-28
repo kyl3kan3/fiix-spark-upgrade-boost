@@ -174,6 +174,54 @@ export type Database = {
           },
         ]
       }
+      asset_meters: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          current_reading: number
+          id: string
+          name: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          current_reading?: number
+          id?: string
+          name: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          current_reading?: number
+          id?: string
+          name?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_meters_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_meters_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_risk_score_runs: {
         Row: {
           actor_id: string | null
@@ -618,7 +666,22 @@ export type Database = {
           id?: string
           start_offset_minutes?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "checklist_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_assets_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checklist_items: {
         Row: {
@@ -657,6 +720,58 @@ export type Database = {
             columns: ["checklist_id"]
             isOneToOne: false
             referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_meter_rules: {
+        Row: {
+          checklist_id: string
+          company_id: string
+          created_at: string
+          interval_units: number
+          last_service_reading: number
+          meter_id: string
+          updated_at: string
+        }
+        Insert: {
+          checklist_id: string
+          company_id: string
+          created_at?: string
+          interval_units: number
+          last_service_reading?: number
+          meter_id: string
+          updated_at?: string
+        }
+        Update: {
+          checklist_id?: string
+          company_id?: string
+          created_at?: string
+          interval_units?: number
+          last_service_reading?: number
+          meter_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_meter_rules_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: true
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_meter_rules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_meter_rules_meter_id_fkey"
+            columns: ["meter_id"]
+            isOneToOne: false
+            referencedRelation: "asset_meters"
             referencedColumns: ["id"]
           },
         ]
@@ -1471,6 +1586,322 @@ export type Database = {
           },
         ]
       }
+      lubricant_assets: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          lubricant_id: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          lubricant_id: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          lubricant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lubricant_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_assets_lubricant_id_fkey"
+            columns: ["lubricant_id"]
+            isOneToOne: false
+            referencedRelation: "lubricants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lubricant_checklists: {
+        Row: {
+          checklist_id: string
+          company_id: string
+          created_at: string
+          lubricant_id: string
+        }
+        Insert: {
+          checklist_id: string
+          company_id: string
+          created_at?: string
+          lubricant_id: string
+        }
+        Update: {
+          checklist_id?: string
+          company_id?: string
+          created_at?: string
+          lubricant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lubricant_checklists_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_checklists_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_checklists_lubricant_id_fkey"
+            columns: ["lubricant_id"]
+            isOneToOne: false
+            referencedRelation: "lubricants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lubricant_stock_adjustments: {
+        Row: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lubricant_id: string
+          notes: string | null
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Insert: {
+          adjustment_type: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_id: string
+          notes?: string | null
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Update: {
+          adjustment_type?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_id?: string
+          notes?: string | null
+          quantity_after?: number
+          quantity_before?: number
+          quantity_delta?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lubricant_stock_adjustments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_stock_adjustments_lubricant_id_fkey"
+            columns: ["lubricant_id"]
+            isOneToOne: false
+            referencedRelation: "lubricants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lubricant_usage_logs: {
+        Row: {
+          asset_id: string | null
+          checklist_id: string | null
+          checklist_submission_id: string | null
+          company_id: string
+          id: string
+          lubricant_id: string
+          notes: string | null
+          quantity: number
+          used_at: string
+          used_by: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          checklist_id?: string | null
+          checklist_submission_id?: string | null
+          company_id: string
+          id?: string
+          lubricant_id: string
+          notes?: string | null
+          quantity: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          checklist_id?: string | null
+          checklist_submission_id?: string | null
+          company_id?: string
+          id?: string
+          lubricant_id?: string
+          notes?: string | null
+          quantity?: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lubricant_usage_logs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_usage_logs_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_usage_logs_checklist_submission_id_fkey"
+            columns: ["checklist_submission_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_usage_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_usage_logs_lubricant_id_fkey"
+            columns: ["lubricant_id"]
+            isOneToOne: false
+            referencedRelation: "lubricants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lubricant_usage_logs_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lubricants: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lubricant_type: string | null
+          manufacturer: string | null
+          name: string
+          notes: string | null
+          quantity_on_hand: number
+          reorder_level: number
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_type?: string | null
+          manufacturer?: string | null
+          name: string
+          notes?: string | null
+          quantity_on_hand?: number
+          reorder_level?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lubricant_type?: string | null
+          manufacturer?: string | null
+          name?: string
+          notes?: string | null
+          quantity_on_hand?: number
+          reorder_level?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lubricants_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_codes: {
+        Row: {
+          code: string
+          code_type: string
+          company_id: string
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+        }
+        Insert: {
+          code: string
+          code_type: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label: string
+        }
+        Update: {
+          code?: string
+          code_type?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_codes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       maintenance_costs: {
         Row: {
           amount: number
@@ -1540,546 +1971,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      lubricant_assets: {
-        Row: {
-          asset_id: string
-          company_id: string
-          created_at: string
-          lubricant_id: string
-        }
-        Insert: {
-          asset_id: string
-          company_id: string
-          created_at?: string
-          lubricant_id: string
-        }
-        Update: {
-          asset_id?: string
-          company_id?: string
-          created_at?: string
-          lubricant_id?: string
-        }
-        Relationships: []
-      }
-      lubricant_checklists: {
-        Row: {
-          checklist_id: string
-          company_id: string
-          created_at: string
-          lubricant_id: string
-        }
-        Insert: {
-          checklist_id: string
-          company_id: string
-          created_at?: string
-          lubricant_id: string
-        }
-        Update: {
-          checklist_id?: string
-          company_id?: string
-          created_at?: string
-          lubricant_id?: string
-        }
-        Relationships: []
-      }
-      lubricant_stock_adjustments: {
-        Row: {
-          adjustment_type: string
-          company_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          lubricant_id: string
-          notes: string | null
-          quantity_after: number
-          quantity_before: number
-          quantity_delta: number
-        }
-        Insert: {
-          adjustment_type: string
-          company_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          lubricant_id: string
-          notes?: string | null
-          quantity_after: number
-          quantity_before: number
-          quantity_delta: number
-        }
-        Update: {
-          adjustment_type?: string
-          company_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          lubricant_id?: string
-          notes?: string | null
-          quantity_after?: number
-          quantity_before?: number
-          quantity_delta?: number
-        }
-        Relationships: []
-      }
-      lubricant_usage_logs: {
-        Row: {
-          asset_id: string | null
-          checklist_id: string | null
-          checklist_submission_id: string | null
-          company_id: string
-          id: string
-          lubricant_id: string
-          notes: string | null
-          quantity: number
-          used_at: string
-          used_by: string | null
-          work_order_id: string | null
-        }
-        Insert: {
-          asset_id?: string | null
-          checklist_id?: string | null
-          checklist_submission_id?: string | null
-          company_id: string
-          id?: string
-          lubricant_id: string
-          notes?: string | null
-          quantity: number
-          used_at?: string
-          used_by?: string | null
-          work_order_id?: string | null
-        }
-        Update: {
-          asset_id?: string | null
-          checklist_id?: string | null
-          checklist_submission_id?: string | null
-          company_id?: string
-          id?: string
-          lubricant_id?: string
-          notes?: string | null
-          quantity?: number
-          used_at?: string
-          used_by?: string | null
-          work_order_id?: string | null
-        }
-        Relationships: []
-      }
-      asset_meters: {
-        Row: {
-          asset_id: string
-          company_id: string
-          created_at: string
-          current_reading: number
-          id: string
-          name: string
-          unit: string
-          updated_at: string
-        }
-        Insert: {
-          asset_id: string
-          company_id: string
-          created_at?: string
-          current_reading?: number
-          id?: string
-          name: string
-          unit?: string
-          updated_at?: string
-        }
-        Update: {
-          asset_id?: string
-          company_id?: string
-          created_at?: string
-          current_reading?: number
-          id?: string
-          name?: string
-          unit?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      checklist_meter_rules: {
-        Row: {
-          checklist_id: string
-          company_id: string
-          created_at: string
-          interval_units: number
-          last_service_reading: number
-          meter_id: string
-          updated_at: string
-        }
-        Insert: {
-          checklist_id: string
-          company_id: string
-          created_at?: string
-          interval_units: number
-          last_service_reading?: number
-          meter_id: string
-          updated_at?: string
-        }
-        Update: {
-          checklist_id?: string
-          company_id?: string
-          created_at?: string
-          interval_units?: number
-          last_service_reading?: number
-          meter_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      meter_readings: {
-        Row: {
-          company_id: string
-          id: string
-          meter_id: string
-          notes: string | null
-          reading_value: number
-          recorded_at: string
-          recorded_by: string | null
-        }
-        Insert: {
-          company_id: string
-          id?: string
-          meter_id: string
-          notes?: string | null
-          reading_value: number
-          recorded_at?: string
-          recorded_by?: string | null
-        }
-        Update: {
-          company_id?: string
-          id?: string
-          meter_id?: string
-          notes?: string | null
-          reading_value?: number
-          recorded_at?: string
-          recorded_by?: string | null
-        }
-        Relationships: []
-      }
-      part_assets: {
-        Row: {
-          asset_id: string
-          company_id: string
-          created_at: string
-          part_id: string
-        }
-        Insert: {
-          asset_id: string
-          company_id: string
-          created_at?: string
-          part_id: string
-        }
-        Update: {
-          asset_id?: string
-          company_id?: string
-          created_at?: string
-          part_id?: string
-        }
-        Relationships: []
-      }
-      part_stock_adjustments: {
-        Row: {
-          adjustment_type: string
-          company_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          notes: string | null
-          part_id: string
-          quantity_after: number
-          quantity_before: number
-          quantity_delta: number
-        }
-        Insert: {
-          adjustment_type: string
-          company_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          notes?: string | null
-          part_id: string
-          quantity_after: number
-          quantity_before: number
-          quantity_delta: number
-        }
-        Update: {
-          adjustment_type?: string
-          company_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          notes?: string | null
-          part_id?: string
-          quantity_after?: number
-          quantity_before?: number
-          quantity_delta?: number
-        }
-        Relationships: []
-      }
-      part_usage_logs: {
-        Row: {
-          asset_id: string | null
-          company_id: string
-          id: string
-          notes: string | null
-          part_id: string
-          quantity: number
-          used_at: string
-          used_by: string | null
-          work_order_id: string | null
-        }
-        Insert: {
-          asset_id?: string | null
-          company_id: string
-          id?: string
-          notes?: string | null
-          part_id: string
-          quantity: number
-          used_at?: string
-          used_by?: string | null
-          work_order_id?: string | null
-        }
-        Update: {
-          asset_id?: string | null
-          company_id?: string
-          id?: string
-          notes?: string | null
-          part_id?: string
-          quantity?: number
-          used_at?: string
-          used_by?: string | null
-          work_order_id?: string | null
-        }
-        Relationships: []
-      }
-      parts: {
-        Row: {
-          company_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          manufacturer: string | null
-          min_quantity: number
-          name: string
-          notes: string | null
-          part_number: string | null
-          quantity_on_hand: number
-          unit_of_measure: string
-          updated_at: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          manufacturer?: string | null
-          min_quantity?: number
-          name: string
-          notes?: string | null
-          part_number?: string | null
-          quantity_on_hand?: number
-          unit_of_measure?: string
-          updated_at?: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          manufacturer?: string | null
-          min_quantity?: number
-          name?: string
-          notes?: string | null
-          part_number?: string | null
-          quantity_on_hand?: number
-          unit_of_measure?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      purchase_order_lines: {
-        Row: {
-          company_id: string
-          description: string
-          id: string
-          part_id: string | null
-          purchase_order_id: string
-          qty_received: number
-          quantity: number
-          unit_cost: number
-        }
-        Insert: {
-          company_id: string
-          description: string
-          id?: string
-          part_id?: string | null
-          purchase_order_id: string
-          qty_received?: number
-          quantity: number
-          unit_cost?: number
-        }
-        Update: {
-          company_id?: string
-          description?: string
-          id?: string
-          part_id?: string | null
-          purchase_order_id?: string
-          qty_received?: number
-          quantity?: number
-          unit_cost?: number
-        }
-        Relationships: []
-      }
-      purchase_orders: {
-        Row: {
-          company_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          request_id: string | null
-          status: string
-          subtotal: number
-          tax_amount: number
-          tax_rate_percent: number
-          total: number
-          vendor_id: string | null
-          vendor_name: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          request_id?: string | null
-          status?: string
-          subtotal?: number
-          tax_amount?: number
-          tax_rate_percent?: number
-          total?: number
-          vendor_id?: string | null
-          vendor_name: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          request_id?: string | null
-          status?: string
-          subtotal?: number
-          tax_amount?: number
-          tax_rate_percent?: number
-          total?: number
-          vendor_id?: string | null
-          vendor_name?: string
-        }
-        Relationships: []
-      }
-      maintenance_codes: {
-        Row: {
-          code: string
-          code_type: string
-          company_id: string
-          created_at: string
-          description: string | null
-          id: string
-          label: string
-        }
-        Insert: {
-          code: string
-          code_type: string
-          company_id: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          label: string
-        }
-        Update: {
-          code?: string
-          code_type?: string
-          company_id?: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          label?: string
-        }
-        Relationships: []
-      }
-      purchase_requests: {
-        Row: {
-          company_id: string
-          created_at: string
-          id: string
-          notes: string | null
-          requested_by: string | null
-          status: string
-          title: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          requested_by?: string | null
-          status?: string
-          title: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          requested_by?: string | null
-          status?: string
-          title?: string
-        }
-        Relationships: []
-      }
-      lubricants: {
-        Row: {
-          company_id: string
-          created_at: string
-          created_by: string | null
-          id: string
-          lubricant_type: string | null
-          manufacturer: string | null
-          name: string
-          notes: string | null
-          quantity_on_hand: number
-          reorder_level: number
-          unit_of_measure: string
-          updated_at: string
-        }
-        Insert: {
-          company_id: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          lubricant_type?: string | null
-          manufacturer?: string | null
-          name: string
-          notes?: string | null
-          quantity_on_hand?: number
-          reorder_level?: number
-          unit_of_measure?: string
-          updated_at?: string
-        }
-        Update: {
-          company_id?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          lubricant_type?: string | null
-          manufacturer?: string | null
-          name?: string
-          notes?: string | null
-          quantity_on_hand?: number
-          reorder_level?: number
-          unit_of_measure?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       marketing_leads: {
         Row: {
@@ -2176,6 +2067,51 @@ export type Database = {
           sender_id?: string
         }
         Relationships: []
+      }
+      meter_readings: {
+        Row: {
+          company_id: string
+          id: string
+          meter_id: string
+          notes: string | null
+          reading_value: number
+          recorded_at: string
+          recorded_by: string | null
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          meter_id: string
+          notes?: string | null
+          reading_value: number
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          meter_id?: string
+          notes?: string | null
+          reading_value?: number
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meter_readings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meter_readings_meter_id_fkey"
+            columns: ["meter_id"]
+            isOneToOne: false
+            referencedRelation: "asset_meters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_dispatch_log: {
         Row: {
@@ -2490,6 +2426,221 @@ export type Database = {
         }
         Relationships: []
       }
+      part_assets: {
+        Row: {
+          asset_id: string
+          company_id: string
+          created_at: string
+          part_id: string
+        }
+        Insert: {
+          asset_id: string
+          company_id: string
+          created_at?: string
+          part_id: string
+        }
+        Update: {
+          asset_id?: string
+          company_id?: string
+          created_at?: string
+          part_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "part_assets_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_assets_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      part_stock_adjustments: {
+        Row: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          part_id: string
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Insert: {
+          adjustment_type: string
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          part_id: string
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        Update: {
+          adjustment_type?: string
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          part_id?: string
+          quantity_after?: number
+          quantity_before?: number
+          quantity_delta?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "part_stock_adjustments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_stock_adjustments_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      part_usage_logs: {
+        Row: {
+          asset_id: string | null
+          company_id: string
+          id: string
+          notes: string | null
+          part_id: string
+          quantity: number
+          used_at: string
+          used_by: string | null
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          company_id: string
+          id?: string
+          notes?: string | null
+          part_id: string
+          quantity: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          company_id?: string
+          id?: string
+          notes?: string | null
+          part_id?: string
+          quantity?: number
+          used_at?: string
+          used_by?: string | null
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "part_usage_logs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_usage_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_usage_logs_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "part_usage_logs_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parts: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          manufacturer: string | null
+          min_quantity: number
+          name: string
+          notes: string | null
+          part_number: string | null
+          quantity_on_hand: number
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_quantity?: number
+          name: string
+          notes?: string | null
+          part_number?: string | null
+          quantity_on_hand?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          min_quantity?: number
+          name?: string
+          notes?: string | null
+          part_number?: string | null
+          quantity_on_hand?: number
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           account_type: string
@@ -2696,6 +2847,166 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      purchase_order_lines: {
+        Row: {
+          company_id: string
+          description: string
+          id: string
+          part_id: string | null
+          purchase_order_id: string
+          qty_received: number
+          quantity: number
+          unit_cost: number
+        }
+        Insert: {
+          company_id: string
+          description: string
+          id?: string
+          part_id?: string | null
+          purchase_order_id: string
+          qty_received?: number
+          quantity: number
+          unit_cost?: number
+        }
+        Update: {
+          company_id?: string
+          description?: string
+          id?: string
+          part_id?: string | null
+          purchase_order_id?: string
+          qty_received?: number
+          quantity?: number
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_lines_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          request_id: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate_percent: number
+          total: number
+          vendor_id: string | null
+          vendor_name: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate_percent?: number
+          total?: number
+          vendor_id?: string | null
+          vendor_name: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate_percent?: number
+          total?: number
+          vendor_id?: string | null
+          vendor_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_requests: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          requested_by: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requested_by?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          requested_by?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       self_healing_actions: {
         Row: {
@@ -3456,6 +3767,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "work_orders_downtime_code_id_fkey"
+            columns: ["downtime_code_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_failure_code_id_fkey"
+            columns: ["failure_code_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_codes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "work_orders_vendor_id_fkey"
             columns: ["vendor_id"]
             isOneToOne: false
@@ -3477,6 +3802,58 @@ export type Database = {
           _token: string
         }
         Returns: Json
+      }
+      adjust_lubricant_stock: {
+        Args: {
+          _adjustment_type: string
+          _lubricant_id: string
+          _notes?: string
+          _quantity_delta: number
+        }
+        Returns: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lubricant_id: string
+          notes: string | null
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "lubricant_stock_adjustments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      adjust_part_stock: {
+        Args: {
+          _adjustment_type: string
+          _notes?: string
+          _part_id: string
+          _quantity_delta: number
+        }
+        Returns: {
+          adjustment_type: string
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          part_id: string
+          quantity_after: number
+          quantity_before: number
+          quantity_delta: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "part_stock_adjustments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       company_within_limit: { Args: { _resource: string }; Returns: boolean }
       company_within_limit_for: {
@@ -3516,6 +3893,10 @@ export type Database = {
           allowed: boolean
           company_id: string
         }[]
+      }
+      create_pm_work_orders_from_preview: {
+        Args: { _items: Json }
+        Returns: number
       }
       create_public_request_from_authorization: {
         Args: {
@@ -3596,6 +3977,7 @@ export type Database = {
           status: string
         }[]
       }
+      get_mttr_summary: { Args: { _days?: number }; Returns: Json }
       get_or_create_energy_ingest_token: { Args: never; Returns: string }
       get_public_company_by_slug: {
         Args: { _slug: string }
@@ -3636,6 +4018,52 @@ export type Database = {
         Args: { _frequency: string; _from: string; _timezone: string }
         Returns: string
       }
+      preview_pm_work_orders: { Args: { _days_ahead?: number }; Returns: Json }
+      recalculate_purchase_order_totals: {
+        Args: { _po_id: string }
+        Returns: undefined
+      }
+      receive_purchase_order_line: {
+        Args: { _line_id: string; _qty: number }
+        Returns: undefined
+      }
+      record_asset_meter_reading: {
+        Args: { _meter_id: string; _notes?: string; _reading_value: number }
+        Returns: {
+          company_id: string
+          id: string
+          meter_id: string
+          notes: string | null
+          reading_value: number
+          recorded_at: string
+          recorded_by: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "meter_readings"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      record_lubricant_usage: {
+        Args: {
+          _checklist_id?: string
+          _checklist_submission_id?: string
+          _lines: Json
+          _notes?: string
+          _work_order_id?: string
+        }
+        Returns: number
+      }
+      record_part_usage: {
+        Args: {
+          _asset_id?: string
+          _lines: Json
+          _notes?: string
+          _work_order_id?: string
+        }
+        Returns: number
+      }
       regenerate_energy_ingest_token: { Args: never; Returns: string }
       set_checklist_schedule: {
         Args: { _checklist_id: string }
@@ -3645,70 +4073,9 @@ export type Database = {
         Args: { _checklist_id: string; _items: Json; _notes?: string }
         Returns: Json
       }
-      preview_pm_work_orders: {
-        Args: { _days_ahead?: number }
-        Returns: Json
-      }
-      create_pm_work_orders_from_preview: {
-        Args: { _items: Json }
-        Returns: number
-      }
-      record_asset_meter_reading: {
-        Args: {
-          _meter_id: string
-          _reading_value: number
-          _notes?: string | null
-        }
-        Returns: Json
-      }
-      adjust_part_stock: {
-        Args: {
-          _part_id: string
-          _adjustment_type: string
-          _quantity_delta: number
-          _notes?: string | null
-        }
-        Returns: Json
-      }
-      record_part_usage: {
-        Args: {
-          _lines: Json
-          _work_order_id?: string | null
-          _asset_id?: string | null
-          _notes?: string | null
-        }
-        Returns: number
-      }
-      recalculate_purchase_order_totals: {
+      sync_purchase_order_status: {
         Args: { _po_id: string }
         Returns: undefined
-      }
-      receive_purchase_order_line: {
-        Args: { _line_id: string; _qty: number }
-        Returns: undefined
-      }
-      get_mttr_summary: {
-        Args: { _days?: number }
-        Returns: Json
-      }
-      adjust_lubricant_stock: {
-        Args: {
-          _lubricant_id: string
-          _adjustment_type: string
-          _quantity_delta: number
-          _notes?: string | null
-        }
-        Returns: Json
-      }
-      record_lubricant_usage: {
-        Args: {
-          _lines: Json
-          _checklist_id?: string | null
-          _checklist_submission_id?: string | null
-          _work_order_id?: string | null
-          _notes?: string | null
-        }
-        Returns: number
       }
     }
     Enums: {

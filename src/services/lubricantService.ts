@@ -168,7 +168,7 @@ export async function adjustLubricantStock(
     _lubricant_id: lubricantId,
     _adjustment_type: adjustmentType,
     _quantity_delta: quantityDelta,
-    _notes: notes ?? null,
+    _notes: notes ?? undefined,
   });
   if (error) throw error;
   const row = data as unknown as LubricantStockAdjustment;
@@ -249,10 +249,10 @@ export async function recordLubricantUsage(
   if (filtered.length === 0) return 0;
   const { data, error } = await supabase.rpc("record_lubricant_usage", {
     _lines: filtered as unknown as Json,
-    _checklist_id: options?.checklist_id ?? null,
-    _checklist_submission_id: options?.checklist_submission_id ?? null,
-    _work_order_id: options?.work_order_id ?? null,
-    _notes: options?.notes ?? null,
+    _checklist_id: options?.checklist_id ?? undefined,
+    _checklist_submission_id: options?.checklist_submission_id ?? undefined,
+    _work_order_id: options?.work_order_id ?? undefined,
+    _notes: options?.notes ?? undefined,
   });
   if (error) throw error;
   return Number(data ?? 0);

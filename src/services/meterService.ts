@@ -39,7 +39,7 @@ export async function recordMeterReading(
   const { data, error } = await supabase.rpc("record_asset_meter_reading", {
     _meter_id: meterId,
     _reading_value: readingValue,
-    _notes: notes ?? null,
+    _notes: notes ?? undefined,
   });
   if (error) throw error;
   toast.success("Reading recorded");
