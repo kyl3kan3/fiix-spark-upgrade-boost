@@ -1,7 +1,7 @@
 
 import React, { useEffect } from "react";
 import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { useCompanyTimezone } from "@/hooks/useCompanyTimezone";
 import { workOrderDueDateInputValue } from "@/lib/workOrderDueDate";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,8 @@ const WorkOrderForm = ({ initialData, workOrderId, onSuccess }: WorkOrderFormPro
  });
 
  const form = useForm<WorkOrderFormValues>({
- resolver: zodResolver(workOrderFormSchema),
+ // @hookform/resolvers v5 understands zod v4 errors (v3 rethrew them as unhandled rejections)
+ resolver: zodResolver(workOrderFormSchema) as Resolver<WorkOrderFormValues>,
  defaultValues: {
  title: initialData?.title || "",
  description: initialData?.description || "",

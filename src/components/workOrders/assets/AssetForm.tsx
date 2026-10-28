@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,8 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
   });
 
   const form = useForm<AssetFormValues>({
-    resolver: zodResolver(assetFormSchema),
+    // @hookform/resolvers v5 understands zod v4 errors (v3 rethrew them as unhandled rejections)
+ resolver: zodResolver(assetFormSchema) as Resolver<AssetFormValues>,
     defaultValues: {
       name: "",
       description: "",
