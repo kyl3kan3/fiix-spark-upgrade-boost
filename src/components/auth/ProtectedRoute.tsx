@@ -49,8 +49,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  "/onboarding", "/company-setup", "/setup", "/team-setup",
  ];
  const isAllowed = ALLOWED_WHEN_INACTIVE.some((p) => location.pathname.startsWith(p));
+ const isInactive = !subLoading && sub && !sub.is_active;
+ const isTechnician = !profileLoading && profile?.company_id && toNavRole(profile.role) === "technician";
+ // Technicians cannot access Billing; Profile remains available during a lapse.
+ const recoveryPath = isTechnician ? "/profile?inactive=1" : "/billing?inactive=1";
  if (!subLoading && sub && !sub.is_active && !isAllowed) {
- return <Navigate to="/billing?inactive=1" replace />;
+ return <Navigate to={recoveryPath} replace />;
  }
 
   if (
@@ -59,7 +63,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     toNavRole(profile.role) === "technician" &&
     isTechnicianBlockedPath(location.pathname)
   ) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={isInactive ? recoveryPath : "/dashboard"} replace />;
   }
 
  // Render the protected content if authenticated
