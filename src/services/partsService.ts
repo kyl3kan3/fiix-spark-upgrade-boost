@@ -106,7 +106,7 @@ export async function adjustPartStock(
     _part_id: partId,
     _adjustment_type: adjustmentType,
     _quantity_delta: quantityDelta,
-    _notes: notes ?? null,
+    _notes: notes ?? undefined,
   });
   if (error) throw error;
   const row = data as unknown as PartStockAdjustment;
@@ -155,9 +155,9 @@ export async function recordPartUsage(
   if (filtered.length === 0) return 0;
   const { data, error } = await supabase.rpc("record_part_usage", {
     _lines: filtered as unknown as Json,
-    _work_order_id: options?.work_order_id ?? null,
-    _asset_id: options?.asset_id ?? null,
-    _notes: options?.notes ?? null,
+    _work_order_id: options?.work_order_id ?? undefined,
+    _asset_id: options?.asset_id ?? undefined,
+    _notes: options?.notes ?? undefined,
   });
   if (error) throw error;
   return Number(data ?? 0);
