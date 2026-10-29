@@ -1,7 +1,6 @@
 
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import NotificationPreferences from "./settings/NotificationPreferences";
 import DisplaySettings from "./settings/DisplaySettings";
 import SystemSettings from "./settings/SystemSettings";
@@ -12,11 +11,9 @@ const SettingsTab: React.FC = () => {
  notificationPreferences,
  displaySettings,
  dashboardLayout,
- hasPendingChanges,
  handleNotificationToggle,
  handleDisplaySettingToggle,
  handleLayoutChange,
- handleSaveSettings,
  handleResetSetup
  } = useSettingsState();
 
@@ -43,15 +40,6 @@ const SettingsTab: React.FC = () => {
  
  <SystemSettings onResetSetup={handleResetSetup} />
  </CardContent>
- <CardFooter>
- <Button 
- className={`ml-auto ${hasPendingChanges ? 'bg-primary hover:bg-primary/90' : 'bg-muted-foreground hover:bg-muted-foreground'}`}
- onClick={handleSaveSettings}
- disabled={!hasPendingChanges}
- >
- {hasPendingChanges ? "Save Settings" : "No Changes"}
- </Button>
- </CardFooter>
  </Card>
  );
 };
