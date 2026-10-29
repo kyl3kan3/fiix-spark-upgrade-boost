@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Settings2 } from 'lucide-react';
-import { logger } from "@/lib/logger";
 
 const VendorImport: React.FC = () => {
   const [expectedCount, setExpectedCount] = useState<number | undefined>();
@@ -18,15 +17,11 @@ const VendorImport: React.FC = () => {
   const { vendors, loading, error, handleFile, saveToSupabase, clearResults } = useVendorImport();
 
   const handleFileWithContext = (e: React.ChangeEvent<HTMLInputElement>) => {
-    logger.log('NEW FILE SELECTED - Clearing previous results');
     clearResults();
-    const timestamp = Date.now();
-    logger.log('Processing timestamp:', timestamp);
-    handleFile(e, expectedCount, importInstructions, timestamp);
+    handleFile(e, expectedCount, importInstructions);
   };
 
   const handleClearFile = () => {
-    logger.log('CLEARING FILE INPUT AND RESULTS');
     clearResults();
     setFileKey(Date.now());
   };
