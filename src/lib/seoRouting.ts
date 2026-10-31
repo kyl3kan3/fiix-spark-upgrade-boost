@@ -29,6 +29,7 @@ const INDEXABLE_ROUTES = new Set([
   "/support",
   "/about",
   "/editorial-policy",
+  "/sitemap",
 ]);
 
 const NOINDEX_ROUTES = new Set([

@@ -9,6 +9,11 @@ describe("staticSeoFooter", () => {
   it("exposes a followed Decent4 backlink without rel=nofollow", () => {
     expect(STATIC_SEO_FOOTER_HTML).toContain('href="https://decent4.com/"');
     expect(STATIC_SEO_FOOTER_HTML).toContain("Built by Decent4");
+    expect(STATIC_SEO_FOOTER_HTML).toContain('href="/privacy"');
+    expect(STATIC_SEO_FOOTER_HTML).toContain('href="/terms"');
+    expect(STATIC_SEO_FOOTER_HTML).toContain('href="/refund-policy"');
+    expect(STATIC_SEO_FOOTER_HTML).toContain('href="/sms-opt-in"');
+    expect(STATIC_SEO_FOOTER_HTML).toContain('href="/sitemap"');
     expect(STATIC_SEO_FOOTER_HTML).not.toMatch(/rel=["'][^"']*nofollow/i);
   });
 

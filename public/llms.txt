@@ -109,6 +109,7 @@ tags, and Markdown URL. Each post is available as clean Markdown at
 - **Learn** — HTML: https://maintenease.com/learn — Markdown: https://maintenease.com/learn.md
 - **Blog** — HTML: https://maintenease.com/blog — Markdown: https://maintenease.com/blog.md
 - **Support** — HTML: https://maintenease.com/support — Markdown: https://maintenease.com/support.md
+- **Sitemap** — HTML: https://maintenease.com/sitemap — Markdown: https://maintenease.com/sitemap.md
 - **About** — HTML: https://maintenease.com/about — Markdown: https://maintenease.com/about.md
 - **Editorial Policy** — HTML: https://maintenease.com/editorial-policy — Markdown: https://maintenease.com/editorial-policy.md
 - **Privacy** — HTML: https://maintenease.com/privacy — Markdown: https://maintenease.com/privacy.md

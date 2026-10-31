@@ -47,10 +47,14 @@ import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
 import { redirectForPath } from "../src/lib/seoRouting";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
+import { BLOG_INDEX_INTRO_SECTIONS, BLOG_INDEX_META_DESCRIPTION } from "../src/data/blogIndexContent";
+import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
+import { SIGNUP_PATH } from "../src/data/signupRoute";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
 const OG_IMAGE = `${ORIGIN}/og-image.png?v=4`;
+const SIGNUP_CTA_ROUTES = new Set(["/", "/pricing", "/features"]);
 const FEATURE_ITEMS = [
   ["Work Order Management", "Create, assign, and track work orders from one shared queue."],
   ["Preventive Maintenance", "Schedule recurring maintenance and generate planned work orders."],
@@ -546,10 +550,24 @@ const staticRoutes: Route[] = [
   {
     path: "/blog",
     title: "MaintenEase Blog — Maintenance & CMMS Insights",
-    description:
-      "Articles on maintenance management, CMMS adoption, preventive maintenance strategy, and reducing unplanned downtime.",
+    description: BLOG_INDEX_META_DESCRIPTION,
     h1: "MaintenEase blog",
-    intro: "Practical writing on maintenance management, CMMS adoption, and reducing unplanned downtime.",
+    intro:
+      "Practical writing on maintenance management, CMMS adoption, preventive maintenance, work orders, and reducing unplanned downtime.",
+    sections: BLOG_INDEX_INTRO_SECTIONS.map((section) => ({
+      heading: section.heading,
+      body: section.body,
+    })),
+  },
+  {
+    path: "/sitemap",
+    title: "Sitemap | MaintenEase",
+    description:
+      "HTML sitemap listing every public MaintenEase page, including product, solutions, learn guides, templates, tools, blog posts, and legal policies.",
+    h1: "Sitemap",
+    intro:
+      "Browse every indexable page on MaintenEase. Search engines can also use the XML sitemap at /sitemap.xml.",
+    links: [],
   },
   {
     path: "/support",
@@ -1056,6 +1074,20 @@ if (blogPosts.length) {
   }
 }
 
+const sitemapRoute = routes.find((r) => r.path === "/sitemap");
+if (sitemapRoute) {
+  const paths = [
+    ...STATIC_SITEMAP_ENTRIES.map((entry) => entry.path),
+    ...blogPosts.map((post) => `/blog/${post.slug}`),
+  ];
+  sitemapRoute.links = [...new Set(paths)]
+    .sort((a, b) => a.localeCompare(b))
+    .map((href) => ({
+      href,
+      label: href === "/" ? "Home" : href,
+    }));
+}
+
 const shell = readFileSync(join(DIST, "index.html"), "utf8");
 
 const LANDING_FAQS = [
@@ -1149,12 +1181,17 @@ function bodyFor(route: Route): string {
   const parts = [
     `<h1>${esc(route.h1)}</h1>`,
     `<p>${esc(route.intro)}</p>`,
+  ];
+  if (SIGNUP_CTA_ROUTES.has(route.path)) {
+    parts.push(`<p><a href="${SIGNUP_PATH}">Start your free trial</a></p>`);
+  }
+  parts.push(
     ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
     ...(route.sections ?? []).flatMap((s) => [
       `<h2>${esc(s.heading)}</h2>`,
       `<p>${esc(s.body)}</p>`,
     ]),
-  ];
+  );
   if (route.path === "/landing") {
     parts.push("<h2>Frequently asked questions</h2>");
     for (const f of LANDING_FAQS) {
@@ -1177,6 +1214,9 @@ function bodyFor(route: Route): string {
     }
   }
   if (route.links?.length) {
+    if (route.path === "/blog") {
+      parts.push("<h2>Latest articles</h2>");
+    }
     parts.push(
       "<nav><ul>" +
         route.links
