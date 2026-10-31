@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
+  ORGANIZATION_JSON_LD,
   PLAN_OFFERS_JSON_LD,
   PRODUCT_JSON_LD,
   PRODUCT_PLANS,
@@ -42,6 +43,21 @@ describe("product catalog", () => {
     expect(PRODUCT_JSON_LD).not.toHaveProperty("aggregateRating");
     expect(PRODUCT_JSON_LD).not.toHaveProperty("review");
     expect(PRODUCT_JSON_LD.offers).toHaveLength(PRODUCT_PLANS.length * 2);
+  });
+
+  it("declares organization knowsAbout topics on the homepage schema", () => {
+    expect(ORGANIZATION_JSON_LD.knowsAbout).toEqual([
+      "CMMS",
+      "preventive maintenance",
+      "work order management",
+      "predictive maintenance",
+      "asset management",
+    ]);
+    expect(ORGANIZATION_JSON_LD.parentOrganization).toEqual({
+      "@type": "Organization",
+      name: "Decent4",
+      url: "https://decent4.com/",
+    });
   });
 
   it("keeps trial and support policy tied to the published catalog", () => {

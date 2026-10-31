@@ -31,7 +31,9 @@ p === "/editorial-policy" ||
       <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
       <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
       <Link to="/refund-policy" className="hover:text-foreground transition-colors">Refunds</Link>
+      <Link to="/sms-opt-in" className="hover:text-foreground transition-colors">SMS opt-in</Link>
       <span className="hidden sm:inline">·</span>
+      <Link to="/sitemap" className="hover:text-foreground transition-colors">Sitemap</Link>
       <Link to="/support" className="hover:text-foreground transition-colors">Support</Link>
       <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
       <span className="hidden sm:inline">·</span>
@@ -82,6 +84,8 @@ p === "/editorial-policy" ||
  { label: "Privacy", to: "/privacy" },
  { label: "Terms", to: "/terms" },
  { label: "Refund Policy", to: "/refund-policy" },
+ { label: "SMS opt-in", to: "/sms-opt-in" },
+ { label: "Sitemap", to: "/sitemap" },
  ],
  },
  ];
@@ -137,6 +141,12 @@ p === "/editorial-policy" ||
   </Link>
   <Link to="/refund-policy" className="text-background/80 hover:text-background text-sm transition-colors">
   Refund Policy
+  </Link>
+  <Link to="/sms-opt-in" className="text-background/80 hover:text-background text-sm transition-colors">
+  SMS opt-in
+  </Link>
+  <Link to="/sitemap" className="text-background/80 hover:text-background text-sm transition-colors">
+  Sitemap
   </Link>
   </div>
   </div>

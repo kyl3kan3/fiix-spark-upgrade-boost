@@ -24,6 +24,7 @@ const INDEXED_STATIC_PATHS = new Set([
   "/tools/root-cause-fishbone-generator",
   "/tools/mtbf-calculator",
   "/support",
+  "/sitemap",
 ]);
 
 const INDEXED_DETAIL_PATH =

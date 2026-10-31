@@ -44,6 +44,7 @@ const FishboneGeneratorPage = lazy(() => import("@/pages/FishboneGeneratorPage")
 const MtbfCalculatorPage = lazy(() => import("@/pages/MtbfCalculatorPage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const EditorialPolicyPage = lazy(() => import("@/pages/EditorialPolicyPage"));
+const SitemapPage = lazy(() => import("@/pages/SitemapPage"));
 
 const RouteLoadingFallback = () => (
   <div className="flex min-h-[40vh] items-center justify-center" role="status">
@@ -92,6 +93,7 @@ export const AppRoutes = () => (
         <Route path="/support" element={<SupportPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/editorial-policy" element={<EditorialPolicyPage />} />
+        <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="/tools/maintenance-sop-generator" element={<SopGeneratorPage />} />
         <Route path="/tools/root-cause-fishbone-generator" element={<FishboneGeneratorPage />} />
         <Route path="/tools/mtbf-calculator" element={<MtbfCalculatorPage />} />

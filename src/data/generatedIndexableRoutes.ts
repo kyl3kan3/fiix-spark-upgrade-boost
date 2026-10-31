@@ -53,6 +53,7 @@ export const GENERATED_INDEXABLE_ROUTES = [
   "/pricing",
   "/privacy",
   "/refund-policy",
+  "/sitemap",
   "/sms-opt-in",
   "/solutions",
   "/solutions/asset-management-software",

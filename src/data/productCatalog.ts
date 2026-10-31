@@ -228,6 +228,13 @@ export const ORGANIZATION_JSON_LD = {
     caption: "MaintenEase logo",
   },
   brand: { "@id": brandId },
+  knowsAbout: [
+    "CMMS",
+    "preventive maintenance",
+    "work order management",
+    "predictive maintenance",
+    "asset management",
+  ],
   parentOrganization: {
     "@type": "Organization",
     name: "Decent4",

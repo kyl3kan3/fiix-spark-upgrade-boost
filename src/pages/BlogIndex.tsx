@@ -7,9 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { Newspaper } from "lucide-react";
 
+import {
+  BLOG_INDEX_INTRO_SECTIONS,
+  BLOG_INDEX_META_DESCRIPTION,
+} from "@/data/blogIndexContent";
+import { SIGNUP_PATH } from "@/data/signupRoute";
+
 const PAGE_SIZE = 12;
-const META_DESCRIPTION =
-  "Explore practical CMMS guides, preventive maintenance strategies, reliability benchmarks, and facility operations insights from the MaintenEase team.";
 
 interface BlogPostCard {
   id: number;
@@ -86,25 +90,38 @@ const BlogIndex = () => {
     <MarketingLayout>
       <Helmet>
         <title>MaintenEase Blog — Maintenance & CMMS Insights</title>
-        <meta name="description" content={META_DESCRIPTION} />
+        <meta name="description" content={BLOG_INDEX_META_DESCRIPTION} />
         <link rel="canonical" href="https://maintenease.com/blog" />
         <meta property="og:title" content="Blog | MaintenEase" />
-        <meta property="og:description" content={META_DESCRIPTION} />
+        <meta property="og:description" content={BLOG_INDEX_META_DESCRIPTION} />
         <meta property="og:url" content="https://maintenease.com/blog" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Blog | MaintenEase" />
-        <meta name="twitter:description" content={META_DESCRIPTION} />
+        <meta name="twitter:description" content={BLOG_INDEX_META_DESCRIPTION} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       </Helmet>
 
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
         <p className="text-sm font-medium text-primary mb-3">Blog</p>
         <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">Insights & articles</h1>
-        <p className="text-lg text-foreground max-w-3xl mb-12">
+        <p className="text-lg text-foreground max-w-3xl mb-8">
           Guides, best practices, and product updates from the MaintenEase team.
         </p>
+
+        <section aria-labelledby="blog-guide-heading" className="max-w-3xl mb-12 space-y-6">
+          {BLOG_INDEX_INTRO_SECTIONS.map((section) => (
+            <div key={section.heading}>
+              <h2 id={section.heading === BLOG_INDEX_INTRO_SECTIONS[0].heading ? "blog-guide-heading" : undefined} className="text-2xl font-semibold mb-2">
+                {section.heading}
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">{section.body}</p>
+            </div>
+          ))}
+        </section>
+
+        <h2 className="text-2xl font-semibold mb-6">Latest articles</h2>
 
         {loading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -150,50 +167,12 @@ const BlogIndex = () => {
           </>
         )}
 
-        <section
-          aria-labelledby="blog-guide-heading"
-          className="mt-16 border-t border-border pt-12"
-        >
-          <div className="max-w-3xl">
-            <h2 id="blog-guide-heading" className="text-2xl md:text-3xl font-semibold mb-4">
-              Practical guidance for maintenance teams
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              MaintenEase articles turn maintenance concepts into steps your team can use on the
-              floor. Learn how to plan preventive work, organize incoming requests, build useful
-              asset histories, and choose metrics that reveal whether reliability is improving.
-              Each guide is written for the people who schedule, perform, and approve maintenance
-              work—not just software specialists.
-            </p>
-            <p className="text-muted-foreground leading-relaxed mb-8">
-              You will also find clear explanations of CMMS terminology, equipment reliability
-              benchmarks, and practical ways to reduce reactive work. Whether you manage one
-              facility or a growing portfolio, the goal is the same: make priorities visible,
-              capture what technicians know, and prevent avoidable downtime without adding
-              unnecessary administrative work.
-            </p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            <div className="rounded-lg bg-muted/50 p-5">
-              <h3 className="font-semibold mb-2">Plan the right work</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Build preventive schedules and work-order processes that match real equipment risk.
-              </p>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-5">
-              <h3 className="font-semibold mb-2">Measure reliability</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Use MTBF, MTTR, cost, and backlog data to spot recurring failures and bottlenecks.
-              </p>
-            </div>
-            <div className="rounded-lg bg-muted/50 p-5">
-              <h3 className="font-semibold mb-2">Improve adoption</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Give technicians a simpler system for recording work and sharing field knowledge.
-              </p>
-            </div>
-          </div>
-        </section>
+        <p className="mt-12 text-center">
+          <a href={SIGNUP_PATH} className="text-primary font-medium underline underline-offset-2">
+            Start a free trial
+          </a>{" "}
+          to put these workflows in MaintenEase.
+        </p>
       </section>
     </MarketingLayout>
   );
