@@ -11,7 +11,7 @@ import tseslint from "typescript-eslint";
 const SUPABASE_CLIENT_MESSAGE =
   "Import the Supabase client only inside src/services/** or src/integrations/**. " +
   "Components, hooks, and pages should go through a domain service " +
-  "(see src/services/assetService.ts) consumed via a react-query hook.";
+  "(see src/services/assets/assetQueries.ts) consumed via a react-query hook.";
 
 const AUTH_OWNER_MESSAGE =
   "Resolve the current user/company through src/services/supabaseHelpers.ts " +
