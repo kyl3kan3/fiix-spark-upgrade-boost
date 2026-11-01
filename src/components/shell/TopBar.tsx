@@ -2,10 +2,10 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bell, HelpCircle, Menu, Search, Settings } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { filterNavItems, type NavRole } from "./navConfig";
+import { filterNavItems } from "./navConfig";
 import { useSubscription } from "@/hooks/useSubscription";
 import { resolvePageTitle } from "@/lib/pageTitle";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useNavRole } from "@/hooks/useNavRole";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
@@ -22,10 +22,9 @@ const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { profile } = useUserProfile();
+  const { profile, navRole } = useNavRole();
   const { data: sub } = useSubscription();
-  const role = (profile?.role ?? "viewer") as NavRole;
-  const navItems = filterNavItems(role, sub);
+  const navItems = filterNavItems(navRole, sub);
 
   const pageTitle = resolvePageTitle(pathname);
 
