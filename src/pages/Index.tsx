@@ -13,7 +13,6 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import SiteIndexLinks from "@/components/SiteIndexLinks";
 import TrustBadges from "@/components/TrustBadges";
-import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 
 const Index = () => (
@@ -44,18 +43,9 @@ const Index = () => (
     <MarketingJsonLd />
     <Navbar />
     <main className="flex-1">
-      <div className="container mx-auto max-w-5xl px-4 pb-2 pt-28 text-center md:pt-32">
-        <h1 className="text-balance font-display text-3xl font-extrabold text-foreground sm:text-4xl">
-          CMMS Software for Facility &amp; Maintenance Teams
-        </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-pretty text-base text-muted-foreground sm:text-lg">
-          Track work orders, assets, and inspections in one place, with predictive maintenance on eligible plans and
-          account pricing starting at $49/month.
-        </p>
-      </div>
       <Hero />
       <ProblemSolved />
-      <Features />
+      <Features variant="home" />
       <LocalBusinesses />
       <TrustBadges />
       <RequestPortalSection />
@@ -64,19 +54,6 @@ const Index = () => (
       <FlatFeeAdvantage />
       <Pricing />
       <CTA />
-      <section className="container mx-auto max-w-5xl px-4 py-10">
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card px-6 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
-          <div>
-            <h2 className="text-lg font-semibold text-foreground">Found this useful?</h2>
-            <p className="text-sm text-foreground">Share MaintenEase with your team or network.</p>
-          </div>
-          <ShareButtons
-            url="https://maintenease.com/"
-            title="MaintenEase — Maintenance Management Software"
-            description="Organize assets, schedule work orders, and run inspections from one modern platform."
-          />
-        </div>
-      </section>
       <SiteIndexLinks />
     </main>
     <Footer />

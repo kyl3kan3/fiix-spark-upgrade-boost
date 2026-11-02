@@ -126,7 +126,6 @@ const FishboneGeneratorPage = () => {
           <span className="mx-2" aria-hidden="true">/</span>
           <span className="text-foreground">Fishbone generator</span>
         </nav>
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">{PAGE.eyebrow}</p>
         <h1 className="mt-3 max-w-4xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">{PAGE.h1}</h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">{PAGE.intro}</p>
       </section>

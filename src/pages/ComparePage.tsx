@@ -98,35 +98,10 @@ const ComparePage = () => {
           <span className="mx-2">/</span>
           <span className="text-foreground">{c.h1}</span>
         </nav>
-        <p className="text-sm font-semibold text-secondary mb-3 uppercase tracking-wide">CMMS comparison</p>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-4 max-w-3xl text-foreground">{c.h1}</h1>
-        {updatedIso ? (
-          <p className="text-sm text-muted-foreground mb-4">
-            Last updated on{" "}
-            <time dateTime={updatedIso} className="font-medium text-foreground">
-              {formatDate(updatedIso)}
-            </time>
-          </p>
-        ) : null}
-        <p className="text-xl text-muted-foreground max-w-3xl mb-8 leading-relaxed">{c.tagline}</p>
-        <div className="flex flex-wrap gap-3 mb-12">
-          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui">
-            <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
-            <Link to="/pricing">See pricing</Link>
-          </Button>
-        </div>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{c.intro}</p>
-        {c.slug === "maintenease-vs-maintainx" ? (
-          <p className="mt-6 max-w-3xl text-muted-foreground leading-relaxed text-pretty">
-            Compare per-seat math with{" "}
-            <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep pricing</Link>{" "}
-            and quote-based{" "}
-            <Link to="/compare/maintenease-vs-emaint" className="text-primary underline underline-offset-4">eMaint pricing</Link>{" "}
-            before you shortlist vendors.
-          </p>
-        ) : null}
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{c.h1}</h1>
+        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
+          <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
+        </Button>
       </section>
 
       {c.pricingTable ? (

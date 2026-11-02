@@ -24,11 +24,7 @@ export default function AboutPage() {
       </Helmet>
       <MarketingJsonLd />
       <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Company information</p>
-        <h1 className="mt-3 font-headline text-4xl font-bold text-foreground text-balance md:text-5xl">About MaintenEase</h1>
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty">
-          MaintenEase is cloud maintenance management software for work orders, assets, preventive maintenance, inspections, reporting, and equipment-risk workflows. The service and this website are operated by {PRODUCT_OPERATOR_NAME}.
-        </p>
+        <h1 className="font-headline text-4xl font-bold text-foreground text-balance md:text-5xl">About MaintenEase</h1>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           <section className="rounded-2xl bg-card p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">

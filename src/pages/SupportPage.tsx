@@ -7,7 +7,6 @@ import {
   CreditCard,
   Database,
   KeyRound,
-  LifeBuoy,
   Mail,
   MessageSquareText,
   ShieldAlert,
@@ -87,16 +86,9 @@ const SupportPage = () => (
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.14),transparent_68%)]" />
       <div className="container relative mx-auto grid max-w-6xl gap-10 px-4 py-14 md:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
         <div>
-          <div className="enter-item enter-d1 inline-flex min-h-10 items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary ring-1 ring-primary/15">
-            <LifeBuoy className="h-4 w-4" aria-hidden="true" />
-            MaintenEase support
-          </div>
           <h1 className="enter-item enter-d2 mt-6 max-w-3xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">
             {SUPPORT_PAGE.h1}
           </h1>
-          <p className="enter-item enter-d3 mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">
-            {SUPPORT_PAGE.intro}
-          </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
               href={SUPPORT_PAGE.emailHref}

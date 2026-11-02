@@ -6,7 +6,6 @@ import { getSolution, solutions } from "@/data/solutions";
 import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
-import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 import { SOLUTION_RESOURCES } from "@/data/seoResources";
@@ -95,45 +94,12 @@ const SolutionPage = () => {
  <span className="mx-2">/</span>
  <span className="text-foreground">{solution.name}</span>
  </nav>
- <p className="text-sm font-semibold text-secondary mb-3 uppercase tracking-wide">{solution.name}</p>
- <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-4 max-w-3xl text-foreground">{solution.h1}</h1>
- <p className="text-xl text-muted-foreground max-w-3xl mb-8 leading-relaxed">{solution.tagline}</p>
- {solution.slug === "facility-maintenance-software" ? (
-  <p className="max-w-3xl mb-8 text-muted-foreground leading-relaxed text-pretty">
-   Start with the acronym:{" "}
-   <Link to="/learn/cmms" className="text-primary underline underline-offset-4">what does CMMS stand for</Link>{" "}
-   and how facility teams use CMMS systems day to day.
-  </p>
- ) : null}
- {solution.slug === "fleet-maintenance-software" ? (
-  <p className="max-w-3xl mb-8 text-muted-foreground leading-relaxed text-pretty">
-   Build intervals from our{" "}
-   <Link to="/learn/fleet-maintenance" className="text-primary underline underline-offset-4">fleet maintenance schedule</Link>{" "}
-   guide, then track completion in MaintenEase.
-  </p>
- ) : null}
- {(solution.slug === "asset-management-software" || solution.slug === "asset-tracking-software") ? (
-  <p className="max-w-3xl mb-8 text-muted-foreground leading-relaxed text-pretty">
-   Parts and consumables tie back to{" "}
-   <Link to="/learn/mro" className="text-primary underline underline-offset-4">MRO supplies</Link>{" "}
-   and the storeroom practices in our MRO guide.
-  </p>
- ) : null}
- <div className="flex flex-wrap gap-3 mb-12">
- <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui">
-   <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
+ <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{solution.h1}</h1>
+ <div className="mb-12">
+ <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
+   <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
  </Button>
- {LEAD_FORM_SLUGS.has(solution.slug) ? (
- <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
-   <a href="#talk-to-us">Talk to a specialist</a>
- </Button>
- ) : (
- <Button asChild size="lg" variant="outline" className="border-primary/20 text-primary hover:bg-primary/5">
-   <Link to="/pricing">See pricing</Link>
- </Button>
- )}
  </div>
- <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">{solution.intro}</p>
  </section>
 
  {/* Benefits section */}
@@ -269,7 +235,6 @@ const SolutionPage = () => {
  </div>
  <div className="mt-10 flex flex-col items-start gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
  <p className="text-sm text-muted-foreground">Share this page</p>
- <ShareButtons url={url} title={solution.metaTitle} description={solution.tagline} />
  </div>
  </section>
  </MarketingLayout>

@@ -1,13 +1,13 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
+import MarketingPageHeader from "@/components/marketing/MarketingPageHeader";
+import MarketingPrimaryCta from "@/components/marketing/MarketingPrimaryCta";
 import { solutions } from "@/data/solutions";
-import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildItemListJsonLd } from "@/data/productCatalog";
 
-const SolutionsIndex = () => {
- return (
+const SolutionsIndex = () => (
  <MarketingLayout>
  <Helmet>
  <title>Solutions — Work Orders, PMs & Fleet | MaintenEase</title>
@@ -33,12 +33,8 @@ const SolutionsIndex = () => {
  ))}</script>
  </Helmet>
  <MarketingJsonLd />
- <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
- <p className="text-sm font-medium text-primary mb-3">Solutions</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">One platform, seven connected workflows</h1>
- <p className="text-lg text-foreground max-w-3xl mb-12">
- From request intake and asset records to work orders, inspections, preventive schedules, facilities, and fleets, MaintenEase keeps the work connected to one history.
- </p>
+ <MarketingPageHeader title="Solutions" />
+ <section className="container mx-auto px-4 pb-16 max-w-5xl">
  <div className="grid sm:grid-cols-2 gap-6">
  {solutions.map((s) => (
  <Link
@@ -46,22 +42,15 @@ const SolutionsIndex = () => {
  to={`/solutions/${s.slug}`}
  className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
- <h2 className="text-xl font-semibold mb-2 text-foreground">{s.name}</h2>
- <p className="text-foreground">{s.tagline}</p>
+ <h2 className="text-xl font-semibold text-foreground">{s.name}</h2>
  </Link>
  ))}
  </div>
- <div className="mt-12 flex flex-col items-start gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
- <p className="text-sm text-foreground">Share these solutions with your team</p>
- <ShareButtons
- url="https://maintenease.com/solutions"
- title="MaintenEase Solutions — Work Orders, PMs & Fleet"
- description="Seven connected workflows for work orders, preventive maintenance, facilities, fleet, assets, inspections, and request intake."
- />
+ <div className="mt-12 flex justify-center">
+ <MarketingPrimaryCta />
  </div>
  </section>
  </MarketingLayout>
- );
-};
+);
 
 export default SolutionsIndex;

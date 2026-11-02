@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,13 +10,15 @@ interface FeatureCardProps {
  selectedFeature: string | null;
  viewType: string;
  onSelectFeature: (title: string, demoEnabled: boolean) => void;
+ compact?: boolean;
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ 
  item, 
  selectedFeature, 
  viewType, 
- onSelectFeature 
+ onSelectFeature,
+ compact = false,
 }) => {
  const demoPath = `/feature/${encodeURIComponent(item.title)}`;
 
@@ -35,31 +36,22 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
  
  <div className={viewType === "list" ? "flex-1" : ""}>
  <h3 className="text-xl font-semibold mb-3 text-foreground">{item.title}</h3>
- <p className="text-foreground mb-4">{item.description}</p>
- 
- <div className="mt-4 space-y-2">
- {item.benefits.map((benefit, idx) => (
- <div key={idx} className="flex items-center text-sm text-foreground">
- <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
- <span>{benefit}</span>
- </div>
- ))}
- </div>
+ {!compact && <p className="text-foreground mb-4">{item.description}</p>}
  
  {item.demoEnabled ? (
  <Button
  asChild
- className="mt-6 bg-primary hover:bg-primary/90 text-white"
+ className="mt-4 bg-primary hover:bg-primary/90 text-white"
  onClick={() => onSelectFeature(item.title, true)}
  >
- <Link to={demoPath}>Try Demo</Link>
+ <Link to={demoPath}>Try demo</Link>
  </Button>
  ) : (
  <Button 
- className="mt-6 bg-primary hover:bg-primary/90 text-white"
+ className="mt-4 bg-primary hover:bg-primary/90 text-white"
  onClick={() => onSelectFeature(item.title, false)}
  >
- Coming Soon
+ Start free trial
  </Button>
  )}
  </div>

@@ -1,12 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
+import MarketingPageHeader from "@/components/marketing/MarketingPageHeader";
 import { glossary } from "@/data/glossary";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildItemListJsonLd } from "@/data/productCatalog";
 
-const LearnIndex = () => {
- return (
+const LearnIndex = () => (
  <MarketingLayout>
  <Helmet>
  <title>Maintenance Glossary | MaintenEase</title>
@@ -32,21 +32,13 @@ const LearnIndex = () => {
  ))}</script>
  </Helmet>
  <MarketingJsonLd />
- <section className="container mx-auto px-4 py-12 md:py-16 max-w-5xl">
- <p className="text-sm font-medium text-primary mb-3">Learn</p>
- <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">Maintenance Glossary</h1>
- <p className="text-lg text-foreground max-w-3xl mb-12">
- Plain-English definitions of the terms maintenance, facilities, and fleet teams use every day. Skim, search, or send a link to a colleague.
- </p>
+ <MarketingPageHeader title="Maintenance glossary" />
+ <section className="container mx-auto px-4 pb-16 max-w-5xl">
  <Link
  to="/facility-management"
- className="mb-8 block rounded-2xl bg-primary/5 p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] transition-[box-shadow,transform] duration-150 hover:shadow-md active:scale-[0.96]"
+ className="mb-8 block rounded-2xl border border-border bg-card p-6 hover:border-primary/30"
  >
- <p className="text-sm font-semibold uppercase tracking-wide text-primary">Featured hub</p>
- <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">Facility management guide</h2>
- <p className="mt-2 max-w-3xl leading-relaxed text-muted-foreground text-pretty">
- Navigate facility operations, maintenance, work orders, inspections, assets, compliance, space, vendors, software selection, and KPIs.
- </p>
+ <h2 className="text-xl font-semibold text-foreground">Facility management guide</h2>
  </Link>
  <div className="grid sm:grid-cols-2 gap-4">
  {glossary.map((g) => (
@@ -55,14 +47,12 @@ const LearnIndex = () => {
  to={`/learn/${g.slug}`}
  className="block p-6 rounded-lg border border-border bg-card hover:border-primary hover:shadow-md transition-ui"
  >
- <h2 className="text-xl font-semibold mb-2 text-foreground">{g.term}</h2>
- <p className="text-foreground">{g.short}</p>
+ <h2 className="text-xl font-semibold text-foreground">{g.term}</h2>
  </Link>
  ))}
  </div>
  </section>
  </MarketingLayout>
- );
-};
+);
 
 export default LearnIndex;
