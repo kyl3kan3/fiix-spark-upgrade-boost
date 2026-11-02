@@ -48,14 +48,11 @@ export default function SitemapPage() {
       </Helmet>
 
       <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
-        <h1 className="text-4xl font-bold tracking-normal mb-4">Sitemap</h1>
-        <p className="text-lg text-muted-foreground mb-10 max-w-2xl">
-          Every public page on MaintenEase, including marketing content, tools, blog posts, and legal
-          policies. For search engines, see{" "}
-          <a className="underline underline-offset-2" href="/sitemap.xml">
+        <h1 className="text-4xl font-bold tracking-normal mb-8">Sitemap</h1>
+        <p className="mb-10">
+          <a className="font-medium text-primary underline underline-offset-2" href="/sitemap.xml">
             sitemap.xml
           </a>
-          .
         </p>
 
         <div className="space-y-10">

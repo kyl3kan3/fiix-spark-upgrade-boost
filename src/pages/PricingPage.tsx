@@ -5,19 +5,17 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { createCheckoutContext } from "@/services/billingService";
 import { toast } from "sonner";
-import ShareButtons from "@/components/marketing/ShareButtons";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/billing/PaymentTestModeBanner";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
+import MarketingPageHeader from "@/components/marketing/MarketingPageHeader";
 import { TRIAL_DAYS } from "@/constants/trial";
 import { trackTrialEvent } from "@/lib/analytics/trialEvents";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import {
- PRODUCT_LAST_MODIFIED,
  PRODUCT_PLANS,
  PRODUCT_JSON_LD,
 } from "@/data/productCatalog";
@@ -73,60 +71,39 @@ export default function PricingPage() {
  <MarketingJsonLd />
  <PaymentTestModeBanner />
 
- {/* Hero section — MarketingLayout already clears the fixed navbar (pt-24),
-     so keep this shallow or mobile shows half a screen of dead space. */}
- <section className="pt-4 md:pt-10 pb-10 md:pb-12 px-4 text-center bg-background border-b border-border">
-   <div className="max-w-2xl mx-auto">
-     <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary mb-4 tracking-normal">
-       Simple, transparent pricing
-     </h1>
-     <p className="text-lg text-muted-foreground mb-8">
-        Choose the plan that fits your facility's needs. 7-day free trial on every plan.
-     </p>
-     <p className="text-sm text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed text-pretty">
-       Evaluating per-seat CMMS bills? See{" "}
-       <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep pricing</Link>,{" "}
-       <Link to="/compare/maintenease-vs-emaint" className="text-primary underline underline-offset-4">eMaint pricing</Link>, and{" "}
-       <Link to="/compare/maintenease-vs-maintainx" className="text-primary underline underline-offset-4">MaintainX pricing</Link>{" "}
-       compared with these account plans.
-     </p>
-     <p className="text-sm text-muted-foreground mb-6">
-       Pricing reviewed <time dateTime={PRODUCT_LAST_MODIFIED}>August 7, 2026</time>.
-     </p>
-     <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
-       <button
-         type="button"
-         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
-           interval === "month" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
-         }`}
-         onClick={() => setInterval("month")}
-       >
-         Monthly
-       </button>
-       <Switch
-         checked={interval === "year"}
-         onCheckedChange={(c) => setInterval(c ? "year" : "month")}
-         className="mx-1"
-         aria-label="Toggle annual billing"
-       />
-       <button
-         type="button"
-         className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
-           interval === "year" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
-         }`}
-         onClick={() => setInterval("year")}
-       >
-         Annual <span className="text-success text-xs ml-1">-17%</span>
-       </button>
-     </div>
+ <MarketingPageHeader title="Pricing" />
+
+ <section className="px-4 pb-8 text-center">
+   <div className="inline-flex items-center bg-muted rounded-full p-1 border border-border shadow-sm">
+     <button
+       type="button"
+       className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
+         interval === "month" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
+       }`}
+       onClick={() => setInterval("month")}
+     >
+       Monthly
+     </button>
+     <Switch
+       checked={interval === "year"}
+       onCheckedChange={(c) => setInterval(c ? "year" : "month")}
+       className="mx-1"
+       aria-label="Toggle annual billing"
+     />
+     <button
+       type="button"
+       className={`px-4 md:px-5 py-2 rounded-full text-sm font-semibold transition-ui ${
+         interval === "year" ? "bg-background shadow text-primary" : "text-muted-foreground hover:text-primary"
+       }`}
+       onClick={() => setInterval("year")}
+     >
+       Annual
+     </button>
    </div>
  </section>
 
- <div className="container mx-auto max-w-6xl px-4 py-12">
- <h2 className="font-headline text-2xl md:text-3xl font-bold text-primary text-center mb-8">
-   Compare plans
- </h2>
- <div className="grid gap-6 md:grid-cols-3 items-center mb-10">
+ <div className="container mx-auto max-w-6xl px-4 py-8 pb-16">
+ <div className="grid gap-6 md:grid-cols-3 items-center">
  {PRODUCT_PLANS.map((plan) => {
  const price = interval === "month" ? plan.monthlyPrice : Math.round(plan.annualPrice / 12);
  return (
@@ -139,25 +116,16 @@ export default function PricingPage() {
        : "border-border shadow-sm hover:border-primary/20 hover:shadow-md"
    }`}
  >
-   {plan.popular && (
-     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wide shadow-md">
-       Most popular
-     </div>
-   )}
  <CardHeader>
- <div className="flex items-center justify-between">
-   <CardTitle className={`font-headline text-xl ${plan.popular ? "text-primary-foreground" : "text-primary"}`}>
-     {plan.name}
-   </CardTitle>
-   {plan.popular && <Badge className="bg-secondary text-secondary-foreground">Best Value</Badge>}
- </div>
- <p className={`text-sm ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{plan.description}</p>
+ <CardTitle className={`font-headline text-xl ${plan.popular ? "text-primary-foreground" : "text-primary"}`}>
+   {plan.name}
+ </CardTitle>
  <div className="mt-4 pb-4 border-b border-current/10">
    <span className={`text-4xl font-bold ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>${price}</span>
    <span className={plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}>/mo</span>
    {interval === "year" && (
      <div className={`text-xs mt-1 ${plan.popular ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
-       billed ${plan.annualPrice}/year
+       ${plan.annualPrice}/year
      </div>
    )}
  </div>
@@ -188,18 +156,12 @@ export default function PricingPage() {
  })}
  </div>
 
- <p className="mt-4 text-center text-sm text-muted-foreground">
- All plans include unlimited locations, asset images, and mobile access. Card required to start trial; cancel before day 8 to avoid charges.
- </p>
- <div className="mt-10 flex flex-col items-center gap-3 border-t border-border pt-8 sm:flex-row sm:justify-between">
- <p className="text-sm text-muted-foreground">Share these plans</p>
- <ShareButtons
- className="justify-center sm:justify-end"
- url="https://maintenease.com/pricing"
- title="MaintenEase Pricing — Plans for Maintenance Teams"
- description="Compare Starter, Pro, and Business plans. 7-day free trial."
- />
- </div>
+ <nav className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+   <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep</Link>
+   <Link to="/compare/maintenease-vs-emaint" className="text-primary underline underline-offset-4">eMaint</Link>
+   <Link to="/compare/maintenease-vs-maintainx" className="text-primary underline underline-offset-4">MaintainX</Link>
+   <Link to="/cmms-cost-calculator" className="text-primary underline underline-offset-4">Cost calculator</Link>
+ </nav>
  </div>
  </MarketingLayout>
  );

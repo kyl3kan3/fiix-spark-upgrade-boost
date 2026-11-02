@@ -8,10 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Newspaper } from "lucide-react";
 
 import {
-  BLOG_INDEX_INTRO_SECTIONS,
   BLOG_INDEX_META_DESCRIPTION,
 } from "@/data/blogIndexContent";
-import { SIGNUP_PATH } from "@/data/signupRoute";
+import MarketingPageHeader from "@/components/marketing/MarketingPageHeader";
+import MarketingPrimaryCta from "@/components/marketing/MarketingPrimaryCta";
 
 const PAGE_SIZE = 12;
 
@@ -103,24 +103,9 @@ const BlogIndex = () => {
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
       </Helmet>
 
-      <section className="container mx-auto px-4 py-12 md:py-16 max-w-6xl">
-        <p className="text-sm font-medium text-primary mb-3">Blog</p>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4">Insights & articles</h1>
-        <p className="text-lg text-foreground max-w-3xl mb-8">
-          Guides, best practices, and product updates from the MaintenEase team.
-        </p>
+      <MarketingPageHeader title="Blog" />
 
-        <section aria-labelledby="blog-guide-heading" className="max-w-3xl mb-12 space-y-6">
-          {BLOG_INDEX_INTRO_SECTIONS.map((section) => (
-            <div key={section.heading}>
-              <h2 id={section.heading === BLOG_INDEX_INTRO_SECTIONS[0].heading ? "blog-guide-heading" : undefined} className="text-2xl font-semibold mb-2">
-                {section.heading}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">{section.body}</p>
-            </div>
-          ))}
-        </section>
-
+      <section className="container mx-auto px-4 pb-16 max-w-6xl">
         <h2 className="text-2xl font-semibold mb-6">Latest articles</h2>
 
         {loading ? (
@@ -167,12 +152,9 @@ const BlogIndex = () => {
           </>
         )}
 
-        <p className="mt-12 text-center">
-          <a href={SIGNUP_PATH} className="text-primary font-medium underline underline-offset-2">
-            Start a free trial
-          </a>{" "}
-          to put these workflows in MaintenEase.
-        </p>
+        <div className="mt-12 flex justify-center">
+          <MarketingPrimaryCta />
+        </div>
       </section>
     </MarketingLayout>
   );

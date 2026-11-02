@@ -11,11 +11,11 @@ describe("TrustBadges", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("heading", { name: /featured, verified, and launched/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /directories & comparisons/i })).toBeInTheDocument();
     expect(screen.getAllByRole("img")).toHaveLength(9);
     expect(screen.getByAltText("Featured on Orynth")).toBeInTheDocument();
     expect(screen.getByAltText("Featured on DanielLaunches")).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: /free cmms alternative guides/i })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: /cmms alternative guides/i })).toBeInTheDocument();
     const alternativeLinks = [
       ["Fiix alternative", "/compare/maintenease-vs-fiix"],
       ["UpKeep alternative", "/compare/maintenease-vs-upkeep"],
@@ -26,7 +26,7 @@ describe("TrustBadges", () => {
     for (const [name, href] of alternativeLinks) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
     }
-    expect(screen.getByRole("link", { name: /browse freealternatives\.net/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /freealternatives\.net/i })).toHaveAttribute(
       "href",
       "https://freealternatives.net/",
     );

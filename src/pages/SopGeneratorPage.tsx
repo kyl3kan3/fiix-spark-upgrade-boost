@@ -261,7 +261,6 @@ const SopGeneratorPage = () => {
           <span className="mx-2" aria-hidden="true">/</span>
           <span className="text-foreground">Maintenance SOP generator</span>
         </nav>
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">{PAGE.eyebrow}</p>
         <h1 className="mt-3 max-w-4xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">{PAGE.h1}</h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">{PAGE.intro}</p>
         <div className="mt-7 flex max-w-3xl items-start gap-3 rounded-2xl bg-amber-50 p-4 text-amber-950 shadow-[0_0_0_1px_rgba(120,53,15,0.12),0_2px_8px_rgba(120,53,15,0.06)] dark:bg-amber-950/30 dark:text-amber-100">

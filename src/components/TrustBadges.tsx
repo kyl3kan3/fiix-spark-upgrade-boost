@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const badges = [
@@ -83,15 +83,9 @@ const TrustBadges = () => (
     data-testid="trust-badges"
   >
     <div className="container mx-auto max-w-6xl px-4">
-      <div className="mx-auto mb-8 max-w-2xl text-center">
-        <p className="label-eyebrow mb-2">Independent directories</p>
-        <h2 id="trust-badges-heading" className="font-display text-2xl font-bold text-foreground sm:text-3xl">
-          Featured, verified, and launched
-        </h2>
-        <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Find MaintenEase across software directories, launch communities, and independent website reports.
-        </p>
-      </div>
+      <h2 id="trust-badges-heading" className="font-display text-2xl font-bold text-foreground sm:text-3xl text-center mb-8">
+        Directories &amp; comparisons
+      </h2>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {badges.map((badge) => (
@@ -119,42 +113,32 @@ const TrustBadges = () => (
         aria-labelledby="alternative-guides-heading"
         className="mt-8 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6"
       >
-        <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-2xl">
-            <h3 id="alternative-guides-heading" className="font-display text-lg font-semibold text-foreground">
-              Free CMMS alternative guides
-            </h3>
-            <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground">
-              Compare pricing and features side by side, or browse more free software options from an independent directory.
-            </p>
-          </div>
-          <a
-            href="https://freealternatives.net/"
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            className="inline-flex min-h-10 shrink-0 items-center gap-2 self-start font-medium text-primary outline-none transition-[color,transform] duration-200 hover:text-primary/80 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96] sm:self-auto"
-          >
-            Browse FreeAlternatives.net
-            <ExternalLink className="h-4 w-4" aria-hidden="true" />
-          </a>
-        </div>
+        <h3 id="alternative-guides-heading" className="font-display text-lg font-semibold text-foreground mb-4">
+          CMMS alternative guides
+        </h3>
 
-        <ul className="mt-3 grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-5">
           {alternativeGuides.map((guide) => (
             <li key={guide.to}>
               <Link
                 to={guide.to}
-                className="group flex min-h-10 items-center justify-between gap-2 py-2 text-sm font-medium text-foreground outline-none transition-[color,transform] duration-200 hover:text-primary focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96]"
+                className="flex min-h-10 items-center py-2 text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {guide.label}
-                <ArrowRight
-                  className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
               </Link>
             </li>
           ))}
         </ul>
+
+        <a
+          href="https://freealternatives.net/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          className="mt-4 inline-flex min-h-10 items-center gap-2 font-medium text-primary outline-none hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          FreeAlternatives.net
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        </a>
       </nav>
     </div>
   </section>

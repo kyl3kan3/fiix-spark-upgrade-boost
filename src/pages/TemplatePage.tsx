@@ -74,16 +74,9 @@ const TemplatePage = () => {
 
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
             <div>
-              <div className="inline-flex min-h-10 items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary">
-                <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
-                {template.eyebrow}
-              </div>
-              <h1 className="mt-5 max-w-3xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">
+              <h1 className="max-w-3xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">
                 {template.h1}
               </h1>
-              <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">
-                {template.intro}
-              </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 {template.includes.map((item) => (
