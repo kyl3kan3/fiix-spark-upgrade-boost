@@ -6,6 +6,7 @@ Canonical URL: https://maintenease.com/solutions/asset-management-software
 
 MaintenEase is asset management software for the teams who maintain physical equipment. Register each asset with core identifiers, location, status, purchase date, hierarchy, photos, and attachments. Connect recurring calendar work, corrective work orders, parts, labor, cost, and predictive-risk records so the asset register supports day-to-day maintenance decisions.
 
+
 ## Benefits
 
 - **One source of truth** — Every asset, every work order, every PM, every part — in one place. No more reconciling spreadsheets at month-end.

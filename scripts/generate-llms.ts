@@ -83,6 +83,15 @@ Canonical URL: ${SITE}/solutions/${s.slug}
 
 ${s.intro}
 
+${s.registryFields?.length ? `## Equipment fields to track
+
+| Field | Purpose |
+| --- | --- |
+${s.registryFields.map((row) => `| ${row.field} | ${row.purpose} |`).join("\n")}
+` : ""}${s.closeWorkOrderSteps?.length ? `## How to close work orders faster
+
+${s.closeWorkOrderSteps.map((step, index) => `${index + 1}. **${step.title}** — ${step.detail}`).join("\n")}
+` : ""}
 ## Benefits
 
 ${s.benefits.map((b) => `- **${b.title}** — ${b.body}`).join("\n")}

@@ -1,10 +1,18 @@
-# Work Order Software that turns requests into completed work
+# Close Work Orders Faster
 
 > Capture, assign, and close work orders without the spreadsheet sprawl.
 
 Canonical URL: https://maintenease.com/solutions/work-order-software
 
 Most work order programs start as a spreadsheet and become difficult to coordinate. MaintenEase replaces clipboards, email chains, and shared spreadsheets with one work order queue. Requests can arrive through the public portal or an internal form. Each work order records its asset or location, priority, assignee, dates, notes, attachments, labor, and parts so technicians and supervisors work from the same current record.
+
+## How to close work orders faster
+
+1. **One request form** — Staff or tenants submit issues through one portal or internal form so nothing hides in email.
+2. **Assign instantly** — Set owner, priority, and due date on each job so the next action is always clear.
+3. **Close from mobile** — Technicians update status, notes, photos, parts, and labor from a phone browser.
+4. **Required fields only** — Capture what you need to close the job without a long form on every update.
+5. **Recurring work auto-generated** — Preventive schedules create the next work order when PMs come due.
 
 ## Benefits
 

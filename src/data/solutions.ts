@@ -11,19 +11,31 @@ export type Solution = {
  features: { title: string; body: string }[];
  useCases: string[];
  faqs: { q: string; a: string }[];
+ /** Optional CMMS registry field table for SEO content blocks. */
+ registryFields?: { field: string; purpose: string }[];
+ /** Optional numbered close-work-order workflow for SEO content blocks. */
+ closeWorkOrderSteps?: { title: string; detail: string }[];
 };
 
 export const solutions: Solution[] = [
  {
  slug: "work-order-software",
- updated: "2026-08-28",
+ updated: "2026-11-03",
  name: "Work Order Software",
- h1: "Work Order Software that turns requests into completed work",
+ h1: "Close Work Orders Faster",
  tagline: "Capture, assign, and close work orders without the spreadsheet sprawl.",
- metaTitle: "Work Order Software & Work Order Programs | MaintenEase",
- metaDescription: "Maintenance work order software for teams that outgrew spreadsheets: submit, assign, prioritize and close jobs from any device with photos, parts and costs.",
+ metaTitle: "Close Work Orders Faster with Work Order Software",
+ metaDescription:
+ "Close work orders faster: assign instantly, complete from your phone with photos and parts, and close in one tap.",
  intro:
  "Most work order programs start as a spreadsheet and become difficult to coordinate. MaintenEase replaces clipboards, email chains, and shared spreadsheets with one work order queue. Requests can arrive through the public portal or an internal form. Each work order records its asset or location, priority, assignee, dates, notes, attachments, labor, and parts so technicians and supervisors work from the same current record.",
+ closeWorkOrderSteps: [
+ { title: "One request form", detail: "Staff or tenants submit issues through one portal or internal form so nothing hides in email." },
+ { title: "Assign instantly", detail: "Set owner, priority, and due date on each job so the next action is always clear." },
+ { title: "Close from mobile", detail: "Technicians update status, notes, photos, parts, and labor from a phone browser." },
+ { title: "Required fields only", detail: "Capture what you need to close the job without a long form on every update." },
+ { title: "Recurring work auto-generated", detail: "Preventive schedules create the next work order when PMs come due." },
+ ],
  benefits: [
  { title: "Clear ownership", body: "Set priority, assignee, due date, and status on each work order so the team can see who owns the next action." },
  { title: "Traceable reporting", body: "Work-order dates, status, labor, parts, and asset history provide the inputs for backlog and repair reporting." },
@@ -187,14 +199,26 @@ export const solutions: Solution[] = [
  },
  {
  slug: "asset-tracking-software",
- updated: "2026-08-23",
+ updated: "2026-11-03",
  name: "Asset Tracking Software",
- h1: "Asset Tracking Software for equipment records and locations",
+ h1: "CMMS Asset Registry Fields",
  tagline: "Searchable equipment records, locations, printable labels, and maintenance history.",
- metaTitle: "Asset Tracking Software — Records, Labels & Locations",
- metaDescription: "Asset tracking software with searchable equipment records, nested locations, printable Code 128 labels, attachments, and maintenance history.",
+ metaTitle: "CMMS Asset Registry: Equipment Fields to Track",
+ metaDescription:
+ "The equipment fields a CMMS asset registry needs: serial number, location, operating hours, warranty, and maintenance history.",
  intro:
- "MaintenEase gives each asset a searchable record with a name, serial number, model, location, status, purchase date, attachments, work orders, and related maintenance history. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.",
+ "MaintenEase gives each asset a searchable CMMS registry record with the fields teams need to find equipment and tie work to it. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.",
+ registryFields: [
+ { field: "Name", purpose: "Identify the asset in search and on work orders." },
+ { field: "Serial number", purpose: "Match labels, imports, and field lookups to one record." },
+ { field: "Model", purpose: "Group like equipment and spare-part planning." },
+ { field: "Location", purpose: "Place the asset in your site and room hierarchy." },
+ { field: "Operating hours", purpose: "Record runtime or meter readings for service planning." },
+ { field: "Warranty expiry", purpose: "See coverage dates next to the asset record." },
+ { field: "Install date", purpose: "Track age and lifecycle decisions." },
+ { field: "Attachments", purpose: "Store manuals, photos, and warranty documents." },
+ { field: "History", purpose: "Review past work orders, PMs, parts, and costs on the asset." },
+ ],
  benefits: [
  { title: "Find equipment quickly", body: "Search by name or serial number and browse the location hierarchy to reach the relevant asset record." },
  { title: "Keep location current", body: "Assign each asset to a location and update that record when equipment moves, without implying a separate custody-ledger feature." },

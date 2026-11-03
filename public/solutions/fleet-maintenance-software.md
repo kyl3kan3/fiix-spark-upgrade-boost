@@ -6,6 +6,7 @@ Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
 
 MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.
 
+
 ## Benefits
 
 - **One vehicle history** — Keep work orders, recurring service, inspection results, notes, parts, and cost against the relevant vehicle record.

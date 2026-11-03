@@ -5,6 +5,8 @@ import { HelmetProvider } from "react-helmet-async";
 import LearnArticle from "@/pages/LearnArticle";
 import ComparePage from "@/pages/ComparePage";
 import TemplatePage from "@/pages/TemplatePage";
+import SolutionPage from "@/pages/SolutionPage";
+import { getSolution } from "@/data/solutions";
 
 vi.mock("@/components/marketing/MarketingLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -15,6 +17,8 @@ vi.mock("@/components/marketing/ShareButtons", () => ({ default: () => null }));
 vi.mock("@/lib/analytics/marketingEvents", () => ({
   getAttributionMetadata: () => ({}),
   trackMarketingEvent: vi.fn(),
+  isTrackedMarketingSlug: () => false,
+  buildPageViewDedupeKey: () => undefined,
 }));
 
 const renderRoute = (path: string, routePattern: string, element: React.ReactNode) => render(
@@ -74,5 +78,27 @@ describe("SEO fix rendering", () => {
     expect(screen.getByRole("table", { name: "Example rows from the Maintenance Log Template" })).toBeInTheDocument();
     expect(screen.getByLabelText("Work email")).toBeRequired();
     expect(screen.getByRole("button", { name: "Download free CSV" })).toBeInTheDocument();
+  });
+
+  it.each([
+    [
+      "asset-tracking-software",
+      "CMMS Asset Registry Fields",
+      "Equipment fields to track",
+      "Operating hours",
+    ],
+    [
+      "work-order-software",
+      "Close Work Orders Faster",
+      "How to close work orders faster",
+      "One request form",
+    ],
+  ] as const)("renders GSC SEO blocks on /solutions/%s", (slug, h1, sectionHeading, snippet) => {
+    renderRoute(`/solutions/${slug}`, "/solutions/:slug", <SolutionPage />);
+
+    expect(screen.getByRole("heading", { level: 1, name: h1 })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: sectionHeading })).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(snippet, "i"))).toBeInTheDocument();
+    expect(getSolution(slug)?.metaTitle).toBeTruthy();
   });
 });

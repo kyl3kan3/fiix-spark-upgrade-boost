@@ -86,6 +86,8 @@ type Route = {
   indexable?: boolean;
   /** Extra crawlable body copy (headings/paragraphs), already escaped-safe text. */
   sections?: { heading: string; body: string }[];
+  registryFieldTable?: { field: string; purpose: string }[];
+  closeWorkOrderSteps?: { title: string; detail: string }[];
   links?: { href: string; label: string }[];
 };
 
@@ -764,6 +766,8 @@ const solutionRoutes: Route[] = solutions.map((s) => {
     description: s.metaDescription,
     h1: s.h1,
     intro: s.intro,
+    registryFieldTable: s.registryFields,
+    closeWorkOrderSteps: s.closeWorkOrderSteps,
     sections: [
       ...s.benefits.map((b) => ({ heading: b.title, body: b.body })),
       ...s.features.map((f) => ({ heading: f.title, body: f.body })),
@@ -1184,6 +1188,29 @@ function bodyFor(route: Route): string {
   ];
   if (SIGNUP_CTA_ROUTES.has(route.path)) {
     parts.push(`<p><a href="${SIGNUP_PATH}">Start your free trial</a></p>`);
+  }
+  if (route.registryFieldTable?.length) {
+    parts.push("<h2>Equipment fields to track</h2>");
+    parts.push(
+      "<table><thead><tr><th scope=\"col\">Field</th><th scope=\"col\">Purpose</th></tr></thead><tbody>" +
+        route.registryFieldTable
+          .map(
+            (row) =>
+              `<tr><td>${esc(row.field)}</td><td>${esc(row.purpose)}</td></tr>`,
+          )
+          .join("") +
+        "</tbody></table>",
+    );
+  }
+  if (route.closeWorkOrderSteps?.length) {
+    parts.push("<h2>How to close work orders faster</h2>");
+    parts.push(
+      "<ol>" +
+        route.closeWorkOrderSteps
+          .map((step) => `<li><strong>${esc(step.title)}.</strong> ${esc(step.detail)}</li>`)
+          .join("") +
+        "</ol>",
+    );
   }
   parts.push(
     ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
