@@ -6,6 +6,7 @@ Canonical URL: https://maintenease.com/solutions/maintenance-request-portal
 
 Every MaintenEase account includes a branded public request portal at maintenease.com/r/your-name. Share the link on a website, place it behind a printed code, or email it to tenants. Submitters choose a standard or urgent request, complete the protected form, and the request enters the team's review inbox — no app install or requester login required.
 
+
 ## Benefits
 
 - **Separate urgent intake** — Urgent submissions are visually distinct and notification delivery can use the configured channels for administrators and managers. The portal is not an emergency-dispatch service.

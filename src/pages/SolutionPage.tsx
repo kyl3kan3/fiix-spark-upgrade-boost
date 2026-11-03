@@ -9,6 +9,14 @@ import LeadCaptureForm from "@/components/marketing/LeadCaptureForm";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { buildPageViewDedupeKey, isTrackedMarketingSlug, trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 import { SOLUTION_RESOURCES } from "@/data/seoResources";
+import {
+ Table,
+ TableBody,
+ TableCell,
+ TableHead,
+ TableHeader,
+ TableRow,
+} from "@/components/ui/table";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -95,12 +103,54 @@ const SolutionPage = () => {
  <span className="text-foreground">{solution.name}</span>
  </nav>
  <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{solution.h1}</h1>
+ <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mb-8">{solution.intro}</p>
  <div className="mb-12">
  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
    <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
  </Button>
  </div>
  </section>
+
+ {solution.registryFields && solution.registryFields.length > 0 && (
+ <section className="container mx-auto px-4 pb-16 max-w-5xl">
+ <h2 className="font-headline text-3xl font-bold mb-4 text-foreground">Equipment fields to track</h2>
+ <p className="text-muted-foreground text-sm mb-6 max-w-3xl">
+ A CMMS asset registry should capture these fields so technicians can find equipment and see its service context.
+ </p>
+ <div className="rounded-xl border border-border overflow-hidden bg-card">
+ <Table>
+ <TableHeader>
+ <TableRow>
+ <TableHead className="w-[40%]">Field</TableHead>
+ <TableHead>Purpose</TableHead>
+ </TableRow>
+ </TableHeader>
+ <TableBody>
+ {solution.registryFields.map((row) => (
+ <TableRow key={row.field}>
+ <TableCell className="font-medium text-foreground">{row.field}</TableCell>
+ <TableCell className="text-muted-foreground text-sm">{row.purpose}</TableCell>
+ </TableRow>
+ ))}
+ </TableBody>
+ </Table>
+ </div>
+ </section>
+ )}
+
+ {solution.closeWorkOrderSteps && solution.closeWorkOrderSteps.length > 0 && (
+ <section className="container mx-auto px-4 pb-16 max-w-5xl">
+ <h2 className="font-headline text-3xl font-bold mb-6 text-foreground">How to close work orders faster</h2>
+ <ol className="space-y-4 max-w-3xl list-decimal pl-5 marker:font-semibold marker:text-primary">
+ {solution.closeWorkOrderSteps.map((step) => (
+ <li key={step.title} className="pl-2 text-foreground">
+ <span className="font-semibold">{step.title}.</span>{" "}
+ <span className="text-muted-foreground text-sm leading-relaxed">{step.detail}</span>
+ </li>
+ ))}
+ </ol>
+ </section>
+ )}
 
  {/* Benefits section */}
  <section className="bg-muted/40 border-y border-border py-16">

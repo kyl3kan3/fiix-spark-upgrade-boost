@@ -6,6 +6,7 @@ Canonical URL: https://maintenease.com/solutions/facility-maintenance-software
 
 MaintenEase gives facility teams one system for locations, assets, work orders, recurring maintenance, checklists, vendors, and public requests. Register equipment against a building or room, attach relevant documents, schedule predictable work, and review activity by location without claiming a prebuilt compliance or building-automation package.
 
+
 ## Benefits
 
 - **Location-based visibility** — Organize sites, buildings, floors, and rooms so assets and work can be reviewed in their operating context.

@@ -1,10 +1,24 @@
-# Asset Tracking Software for equipment records and locations
+# CMMS Asset Registry Fields
 
 > Searchable equipment records, locations, printable labels, and maintenance history.
 
 Canonical URL: https://maintenease.com/solutions/asset-tracking-software
 
-MaintenEase gives each asset a searchable record with a name, serial number, model, location, status, purchase date, attachments, work orders, and related maintenance history. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.
+MaintenEase gives each asset a searchable CMMS registry record with the fields teams need to find equipment and tie work to it. Teams can generate printable Code 128 setup-sheet labels from an asset identifier. This page does not claim public QR access, custody-transfer logs, or automatic disposal tracking that the product does not currently verify.
+
+## Equipment fields to track
+
+| Field | Purpose |
+| --- | --- |
+| Name | Identify the asset in search and on work orders. |
+| Serial number | Match labels, imports, and field lookups to one record. |
+| Model | Group like equipment and spare-part planning. |
+| Location | Place the asset in your site and room hierarchy. |
+| Operating hours | Record runtime or meter readings for service planning. |
+| Warranty expiry | See coverage dates next to the asset record. |
+| Install date | Track age and lifecycle decisions. |
+| Attachments | Store manuals, photos, and warranty documents. |
+| History | Review past work orders, PMs, parts, and costs on the asset. |
 
 ## Benefits
 
