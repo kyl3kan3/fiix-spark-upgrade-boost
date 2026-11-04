@@ -23,7 +23,8 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
  const [isChanged, setIsChanged] = useState<boolean>(false);
  const [isEditing, setIsEditing] = useState<boolean>(false);
  
- const { currentUserRole, isLoading, canEditRoles } = useCurrentUserRole();
+ const { isLoading, canEditRoles, timeoutOccurred, error, refreshRole } = useCurrentUserRole();
+ const roleUnavailable = timeoutOccurred || Boolean(error);
  
  // This will ensure that if the currentRole prop changes externally, our component updates
  useEffect(() => {
@@ -84,6 +85,23 @@ const UserRoleSelector: React.FC<UserRoleSelectorProps> = ({
  <div className="flex items-center gap-2">
  <span className="w-full sm:w-[140px] text-sm">Loading permissions...</span>
  <Loader2 className="h-4 w-4 animate-spin" />
+ </div>
+ );
+ }
+
+ if (roleUnavailable) {
+ return (
+ <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+ <span className="text-sm text-muted-foreground">
+ Could not verify your permissions. Role editing is disabled until your role loads.
+ </span>
+ <button
+ type="button"
+ className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+ onClick={() => refreshRole()}
+ >
+ Retry
+ </button>
  </div>
  );
  }

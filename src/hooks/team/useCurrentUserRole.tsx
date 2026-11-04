@@ -20,6 +20,7 @@ export const useCurrentUserRole = () => {
  if (!isProfileLoading) {
  if (profileError) {
  console.error("Error from useUserProfile:", profileError);
+ setCurrentUserRole(null);
  setError(new Error(profileError));
  setIsLoading(false);
  return;
@@ -30,24 +31,25 @@ export const useCurrentUserRole = () => {
  
  if (role) {
  logger.log(`User role loaded: ${role}`);
- } else {
+ setError(null);
+ } else if (profileData) {
+ // New profiles are created with profiles.role = 'user'; a loaded profile with no
+ // role in either user_roles or profiles is missing data, not a safe default.
  logger.log("No role data found for user");
- // Set a default role to prevent blocking UI completely
- setCurrentUserRole('user');
+ setCurrentUserRole(null);
+ setError(new Error("No role assigned for this account"));
+ } else {
+ setCurrentUserRole(null);
  }
  
  setIsLoading(false);
  }
  } catch (err) {
  console.error("Error processing user role:", err);
+ setCurrentUserRole(null);
  setError(err instanceof Error ? err : new Error("Unknown error processing role data"));
  setIsLoading(false);
- 
- // Show toast for error
- toast.error("Error loading user role data. Using default role.");
- 
- // Set a default role to prevent blocking the UI completely
- setCurrentUserRole('user');
+ toast.error("Error loading user role data. Please try again.");
  }
  }, [profileData, isProfileLoading, profileError]);
 
@@ -62,15 +64,19 @@ export const useCurrentUserRole = () => {
  if (isLoading) {
  setIsLoading(false);
  setTimeoutOccurred(true);
- toast.error("Profile data loading timed out. Using default access level.");
- 
- // Set a default role to prevent blocking the UI completely
- setCurrentUserRole('user');
+ toast.error("Profile data loading timed out. Role permissions are unavailable until refresh.");
  }
  }, 5000); // 5 seconds timeout (reduced from 7)
  
  return () => clearTimeout(timeoutId);
  }, [isLoading]);
+
+ const refreshRole = useCallback(async () => {
+ setTimeoutOccurred(false);
+ setError(null);
+ setIsLoading(true);
+ await refreshProfile();
+ }, [refreshProfile]);
 
  return {
  currentUserRole,
@@ -78,6 +84,6 @@ export const useCurrentUserRole = () => {
  canEditRoles,
  error,
  timeoutOccurred,
- refreshRole: refreshProfile
+ refreshRole,
  };
 };
