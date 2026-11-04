@@ -20,7 +20,6 @@ interface DisplaySetting {
 export const useSettingsState = () => {
  const { 
  settings, 
- isSaving, 
  updateNotificationPreferences, 
  updateDisplaySettings, 
  updateDashboardLayout 
@@ -129,11 +128,6 @@ export const useSettingsState = () => {
  }
  };
 
- const handleSaveSettings = () => {
- // Settings are now saved automatically when changed
- toast.success("Settings are automatically saved");
- };
-
  const handleResetSetup = () => {
  // Confirm before resetting
  if (window.confirm('Are you sure you want to reset the setup wizard? This will clear all setup data.')) {
@@ -146,11 +140,9 @@ export const useSettingsState = () => {
  notificationPreferences,
  displaySettings,
  dashboardLayout,
- hasPendingChanges: isSaving,
  handleNotificationToggle,
  handleDisplaySettingToggle,
  handleLayoutChange,
- handleSaveSettings,
  handleResetSetup
  };
 };
