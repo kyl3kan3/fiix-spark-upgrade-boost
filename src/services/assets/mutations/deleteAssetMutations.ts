@@ -1,11 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/lib/logger";
 
 // Delete an asset with comprehensive constraint checking
 export async function deleteAsset(assetId: string) {
- logger.log('🗑️ deleteAsset service - Starting deletion for asset ID:', assetId);
- 
  // First check if asset exists
  const { data: assetDetails, error: assetError } = await supabase
  .from("assets")
@@ -15,14 +12,11 @@ export async function deleteAsset(assetId: string) {
  
  if (assetError) {
  if (assetError.code === 'PGRST116') {
- logger.log('🗑️ deleteAsset service - Asset not found (already deleted)');
  throw new Error("Asset not found - it may have already been deleted");
  }
  console.error('❌ deleteAsset service - Error fetching asset details:', assetError);
  throw assetError;
  }
- 
- logger.log('🗑️ deleteAsset service - Asset details:', assetDetails);
 
  // Check for child assets
  const { data: childAssets, error: childError } = await supabase
@@ -68,7 +62,6 @@ export async function deleteAsset(assetId: string) {
  }
  
  if (vendorAssets && vendorAssets.length > 0) {
- logger.log('🗑️ deleteAsset service - Auto-deleting vendor asset relationships...');
  const { error: vendorDeleteError } = await supabase
  .from("vendor_assets")
  .delete()
@@ -78,12 +71,8 @@ export async function deleteAsset(assetId: string) {
  console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
  throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
  }
- logger.log('✅ deleteAsset service - Vendor relationships deleted successfully');
  }
 
- // Attempt deletion
- logger.log('🗑️ deleteAsset service - Attempting deletion...');
- 
  const { error: deleteError } = await supabase
  .from("assets")
  .delete()
@@ -105,6 +94,4 @@ export async function deleteAsset(assetId: string) {
  console.error('❌ deleteAsset service - Asset still exists after deletion attempt');
  throw new Error(`Asset deletion failed - "${assetDetails.name}" could not be deleted. This may be due to database constraints or permissions.`);
  }
- 
- logger.log('✅ deleteAsset service - Deletion completed successfully');
 }
