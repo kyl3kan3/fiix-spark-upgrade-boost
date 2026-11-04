@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_PROFILE_ROLE } from "@/lib/appRole";
 
 /**
  * Check if a profile exists for the user
@@ -79,7 +80,7 @@ export const createUserProfile = async (userId: string, email: string, companyId
  .insert({
  id: userId,
  email: email,
- role: 'technician',
+ role: DEFAULT_PROFILE_ROLE,
  company_id: companyId
  });
  
@@ -93,7 +94,7 @@ export const createUserProfile = async (userId: string, email: string, companyId
  .from('user_roles')
  .insert([{
  user_id: userId,
- role: 'technician' as any,
+ role: DEFAULT_PROFILE_ROLE as any,
  company_id: companyId
  }] as any);
 
