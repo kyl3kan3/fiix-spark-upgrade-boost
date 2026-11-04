@@ -3,10 +3,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { LogOut, Moon, Plus, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useNavRole } from "@/hooks/useNavRole";
 import { useAuth } from "@/providers/AuthContext";
 import { cn } from "@/lib/utils";
-import { filterNavItems, type NavRole } from "./navConfig";
+import { filterNavItems } from "./navConfig";
 import { useSubscription } from "@/hooks/useSubscription";
 
 interface IconRailProps {
@@ -15,7 +15,7 @@ interface IconRailProps {
 
 const IconRail: React.FC<IconRailProps> = () => {
  const navigate = useNavigate();
- const { profile } = useUserProfile();
+ const { profile, navRole } = useNavRole();
  const { logout } = useAuth();
  const { theme, setTheme } = useTheme();
  const { data: sub } = useSubscription();
@@ -31,8 +31,7 @@ const IconRail: React.FC<IconRailProps> = () => {
  };
 
  // Filter items by tier feature
- const userRole = (profile?.role ?? "viewer") as NavRole;
- const visibleItems = filterNavItems(userRole, sub);
+ const visibleItems = filterNavItems(navRole, sub);
 
  // Group items
  const grouped: Array<{ name: string; items: typeof visibleItems }> = [];

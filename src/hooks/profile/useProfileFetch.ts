@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
 import { logger } from "@/lib/logger";
 import { normalizeError } from "@/lib/errors";
+import { fetchAuthoritativeUserRole } from "@/lib/authoritativeUserRole";
 
 interface UseProfileFetchProps {
  setLoadingState: (loading: boolean) => void;
@@ -57,7 +58,8 @@ export function useProfileFetch({
  return newProfile;
  } else {
  logger.log("Profile found:", data);
- return data;
+ const role = await fetchAuthoritativeUserRole(userId, data.role);
+ return { ...data, role: role ?? data.role };
  }
  } catch (error: unknown) {
  const normalized = normalizeError(error, "Failed to load profile");
