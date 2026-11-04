@@ -2,6 +2,7 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileData } from "@/components/profile/types";
+import { buildNewProfileInsert } from "@/lib/appRole";
 import { toast } from "sonner";
 
 export function useProfileActions() {
@@ -77,17 +78,7 @@ export function useProfileActions() {
  try {
  const { data, error } = await supabase
  .from('profiles')
- .insert([{
- id: userId,
- email: email || '',
- first_name: '',
- last_name: '',
- phone_number: '',
- company_id: '',
- company_name: '',
- role: 'user',
- avatar_url: null
- }])
+ .insert([buildNewProfileInsert(userId, email)])
  .select()
  .single();
 

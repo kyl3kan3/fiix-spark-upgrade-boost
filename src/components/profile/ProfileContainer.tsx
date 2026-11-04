@@ -9,6 +9,7 @@ import { ProfileContent } from "./ProfileContent";
 import { useProfile } from "@/hooks/profile/useProfile";
 import { useProfileForm } from "@/hooks/profile/useProfileForm";
 import { useAvatarUpload } from "@/hooks/profile/useAvatarUpload";
+import { DEFAULT_PROFILE_ROLE } from "@/lib/appRole";
 
 const ProfileContainer: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
@@ -22,7 +23,7 @@ const ProfileContainer: React.FC = () => {
       first_name: "",
       last_name: "",
       phone_number: "",
-      role: "user",
+      role: DEFAULT_PROFILE_ROLE,
       company_id: "",
       company_name: "",
       created_at: "",
