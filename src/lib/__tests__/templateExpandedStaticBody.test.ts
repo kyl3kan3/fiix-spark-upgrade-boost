@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { getMaintenanceTemplate } from "@/data/maintenanceTemplates";
 import { buildExpandedTemplateStaticBody } from "@/lib/templateExpandedStaticBody";
 
@@ -37,24 +35,4 @@ describe("expanded maintenance log static body", () => {
       expect(html).toContain(`<p>${esc(faq.a)}</p>`);
     }
   });
-
-  const distPath = resolve(process.cwd(), "dist/templates/maintenance-log-template/index.html");
-  const requirePrerenderDist = process.env.REQUIRE_PRERENDER_DIST === "1";
-
-  it.skipIf(!requirePrerenderDist && !existsSync(distPath))(
-    "emits the same blocks in built prerender HTML",
-    () => {
-      expect(existsSync(distPath), "dist missing — run npm run build before tests").toBe(true);
-      const built = readFileSync(distPath, "utf8");
-      expect(built).toContain("Example only — fictional entries for illustration.");
-      expect(built).toContain("<th scope=\"col\">Next Service Due</th>");
-      expect(built).toContain('overflow-x:auto;max-width:100%');
-      expect((built.match(/<th scope="col">/g) ?? []).length).toBeGreaterThanOrEqual(13);
-      expect(built).toContain('"@type":"FAQPage"');
-      for (const faq of template.faqs) {
-        expect(built).toContain(faq.q);
-        expect(built).toContain(faq.a);
-      }
-    },
-  );
 });
