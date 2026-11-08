@@ -25,6 +25,15 @@ describe("maintenance templates", () => {
     }
   });
 
+  it("uses the approved maintenance-log title and 13 CSV columns", () => {
+    const log = getMaintenanceTemplate("maintenance-log-template");
+    expect(log?.metaTitle).toBe("Free Maintenance Log Template (CSV Download) | MaintenEase");
+    expect(log?.metaTitle.length).toBeLessThanOrEqual(60);
+    expect(log?.columns).toHaveLength(13);
+    expect(log?.previewHeaders).toHaveLength(13);
+    expect(log?.previewRows).toHaveLength(3);
+  });
+
   it("carries complete SEO, instructions, FAQs, and internal links", () => {
     for (const template of maintenanceTemplates) {
       expect(template.metaTitle.length).toBeGreaterThan(20);

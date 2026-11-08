@@ -24,51 +24,155 @@ export type MaintenanceTemplate = {
   faqs: { q: string; a: string }[];
   relatedLearn: { label: string; href: string };
   relatedSolution: { label: string; href: string };
+  contentLayout?: "expanded";
+  fieldsSectionTitle?: string;
+  fieldsSectionFooter?: string;
+  previewSectionTitle?: string;
+  previewSectionLead?: string;
+  previewDisclaimer?: string;
+  previewTableMinWidthClass?: string;
+  comparisonSection?: { title: string; body: string };
+  tipsSectionTitle?: string;
 };
 
 export const maintenanceTemplates: MaintenanceTemplate[] = [
   {
     slug: "maintenance-log-template",
     title: "Maintenance Log Template",
-    metaTitle: "Free Maintenance Log Template (Excel & Google Sheets)",
+    metaTitle: "Free Maintenance Log Template (CSV Download) | MaintenEase",
     metaDescription:
-      "Download a free maintenance log template for equipment service, labor, parts, status, and next-service dates. CSV format works in Excel and Google Sheets.",
-    h1: "Free maintenance log template",
+      "Free maintenance log template (CSV). Record date, work order, asset, type, technician, labor hours, parts cost, status and next service due.",
+    h1: "Free maintenance log template (CSV)",
     eyebrow: "Free CSV template",
     intro:
-      "Record every repair, inspection, and preventive task in one consistent maintenance log. The template gives each entry an asset, owner, cost, status, and next-service date so the spreadsheet stays useful as the history grows.",
+      "Download a free maintenance log template as a CSV file with 13 columns for recording completed maintenance work. Each row captures the date, work order ID, asset, location, maintenance type, description, technician, labor hours, parts cost, status, next service due date and notes.",
     downloadPath: "/templates/downloads/maintenance-log-template.csv",
     downloadFilename: "maintenance-log-template.csv",
     published: "2026-08-13",
-    updated: "2026-08-13",
-    includes: [
-      "Asset and location identifiers",
-      "Maintenance type, work description, and technician",
-      "Labor hours and parts cost",
-      "Status, next-service date, and close-out notes",
-    ],
+    updated: "2026-11-08",
+    contentLayout: "expanded",
+    fieldsSectionTitle: "What's in the template",
+    fieldsSectionFooter:
+      "The download includes one sample row followed by blank rows ready for your entries.",
+    previewSectionTitle: "Example entries",
+    previewSectionLead:
+      "These fictional rows show how each column looks with real maintenance data.",
+    previewDisclaimer: "Example only — fictional entries for illustration.",
+    previewTableMinWidthClass: "min-w-[1120px]",
+    comparisonSection: {
+      title: "Log vs. work order vs. asset register",
+      body:
+        "A [work order](/learn/work-order) requests and assigns a specific job before it is done. A maintenance log records what was actually done after the work is completed, one entry per event. An [asset register](/solutions/asset-tracking-software) lists the equipment you own and its details, while the log builds up the service history for each asset over time.",
+    },
+    tipsSectionTitle: "Tips for keeping a useful maintenance log",
+    includes: [],
     columns: [
-      { name: "Date", purpose: "When the work occurred." },
-      { name: "Work Order ID", purpose: "A unique reference that connects the log to the original request." },
-      { name: "Asset ID and name", purpose: "The equipment that received the work." },
-      { name: "Maintenance type", purpose: "Preventive, corrective, inspection, or emergency." },
-      { name: "Labor and parts", purpose: "The time and direct material cost of the job." },
-      { name: "Next service due", purpose: "The follow-up date that keeps repeat work visible." },
+      { name: "Date", purpose: "The date the maintenance work was performed." },
+      { name: "Work Order ID", purpose: "The reference number of the related work order." },
+      { name: "Asset ID", purpose: "The unique identifier for the equipment or asset." },
+      { name: "Asset Name", purpose: "A plain-language name for the asset." },
+      { name: "Location", purpose: "Where the asset is installed, such as a building, floor or room." },
+      { name: "Maintenance Type", purpose: "The category of work, such as Preventive or Corrective." },
+      { name: "Description", purpose: "A short summary of the work performed." },
+      { name: "Technician", purpose: "The person who completed the work." },
+      { name: "Labor Hours", purpose: "Time spent on the work, in hours." },
+      { name: "Parts Cost", purpose: "The cost of parts used, entered as a number." },
+      { name: "Status", purpose: "The current state of the work, such as Complete or Open." },
+      { name: "Next Service Due", purpose: "The date the asset is next due for service." },
+      { name: "Notes", purpose: "Readings, observations or follow-up details." },
     ],
-    previewHeaders: ["Date", "Asset", "Type", "Technician", "Status", "Next due"],
+    previewHeaders: [
+      "Date",
+      "Work Order ID",
+      "Asset ID",
+      "Asset Name",
+      "Location",
+      "Maintenance Type",
+      "Description",
+      "Technician",
+      "Labor Hours",
+      "Parts Cost",
+      "Status",
+      "Next Service Due",
+      "Notes",
+    ],
     previewRows: [
-      ["2026-08-01", "AHU-014", "Preventive", "J. Rivera", "Complete", "2026-11-01"],
-      ["2026-08-04", "PUMP-007", "Corrective", "S. Lee", "Complete", "2026-09-04"],
+      [
+        "2026-09-03",
+        "WO-2041",
+        "PMP-007",
+        "Chilled Water Pump 2",
+        "Plant Room B1",
+        "Preventive",
+        "Grease motor bearings and check seals for leaks",
+        "A.C.",
+        "0.75",
+        "12.00",
+        "Complete",
+        "2026-12-03",
+        "No leaks found",
+      ],
+      [
+        "2026-09-10",
+        "WO-2047",
+        "CMP-112",
+        "Air Compressor 1",
+        "Workshop Bay 3",
+        "Corrective",
+        "Replace failed pressure switch",
+        "M.O.",
+        "2.0",
+        "64.00",
+        "Complete",
+        "2026-12-10",
+        "Cut-out pressure set to specification",
+      ],
+      [
+        "2026-09-15",
+        "WO-2052",
+        "DR-031",
+        "Loading Dock Door 4",
+        "Warehouse North",
+        "Corrective",
+        "Realign door track; spring replacement pending",
+        "T.K.",
+        "1.25",
+        "0.00",
+        "Open",
+        "2026-09-22",
+        "Awaiting spring delivery",
+      ],
     ],
     steps: [
-      { title: "Give every asset a stable ID", body: "Use the same identifier on the equipment label, maintenance log, and any work order so history does not split across spelling variations." },
-      { title: "Enter one row per completed event", body: "Log inspections and preventive work as well as repairs. A complete history is more useful than a breakdown-only list." },
-      { title: "Review it once a month", body: "Sort by asset, repeat problem, cost, and next-service date. Move to a CMMS when the spreadsheet becomes hard to assign, schedule, or audit." },
+      {
+        title: "Use a stable asset ID",
+        body:
+          "Give every asset one ID and use it consistently in every row, even if the asset's name or location changes. That keeps its full history together when you sort or filter the log.",
+      },
+      {
+        title: "Add one row per completed event",
+        body:
+          "Record each job as its own row, whether it was planned or a [corrective repair](/learn/corrective-maintenance). Avoid combining several visits into one line, so labor hours and parts costs stay accurate.",
+      },
+      {
+        title: "Review the log monthly",
+        body:
+          "Look for assets with repeated corrective work, rising parts costs or overdue next-service dates. Repeat failures can be fed into an [MTBF calculator](/tools/mtbf-calculator) to see how often an asset breaks down. Move to a [CMMS](/learn/cmms) when the spreadsheet becomes hard to keep accurate and current across your team or sites.",
+      },
     ],
     faqs: [
-      { q: "What is a maintenance log template?", a: "A maintenance log template is a structured record of work performed on equipment, including the date, asset, task, technician, cost, status, and follow-up date." },
-      { q: "Can I open this template in Excel or Google Sheets?", a: "Yes. The download is a CSV file, so it opens in Microsoft Excel, Google Sheets, Apple Numbers, and most spreadsheet applications." },
-      { q: "How often should I update a maintenance log?", a: "Update it when work is completed, not at the end of the week. Same-day entries preserve accurate labor, parts, failure details, and follow-up dates." },
+      {
+        q: "What is a maintenance log template?",
+        a: "A maintenance log template is a ready-made structure for recording completed maintenance work. This one has 13 columns: date, work order ID, asset ID, asset name, location, maintenance type, description, technician, labor hours, parts cost, status, next service due and notes.",
+      },
+      {
+        q: "Can I open the template in Excel or Google Sheets?",
+        a: "Yes. The template is a CSV file, so you can open it in Excel, import it into Google Sheets, or use any spreadsheet app that reads CSV. If you add formatting or formulas, save a copy in your spreadsheet app's own format, because CSV stores plain values only.",
+      },
+      {
+        q: "How often should I update a maintenance log?",
+        a: "Add an entry as soon as each job is completed, ideally the same day, while details such as labor hours and parts used are accurate. Review the full log at least monthly to spot recurring issues and upcoming service dates.",
+      },
     ],
     relatedLearn: { label: "What is a work order?", href: "/learn/work-order" },
     relatedSolution: { label: "Asset tracking software", href: "/solutions/asset-tracking-software" },

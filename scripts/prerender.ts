@@ -902,6 +902,16 @@ const templateIndexRoute: Route = {
 
 const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
   const url = `${ORIGIN}/templates/${template.slug}`;
+  const expanded = template.contentLayout === "expanded";
+  const contextualLinks =
+    template.slug === "maintenance-log-template"
+      ? [
+          { href: "/learn/corrective-maintenance", label: "Corrective maintenance" },
+          { href: "/tools/mtbf-calculator", label: "MTBF calculator" },
+          { href: "/learn/cmms", label: "CMMS meaning" },
+        ]
+      : [];
+
   return {
     path: `/templates/${template.slug}`,
     title: template.metaTitle,
@@ -910,8 +920,14 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
     intro: template.intro,
     ogType: "article",
     sections: [
+      ...(expanded && template.fieldsSectionTitle
+        ? [{ heading: template.fieldsSectionTitle, body: template.fieldsSectionFooter ?? template.intro }]
+        : []),
       ...template.columns.map((column) => ({ heading: column.name, body: column.purpose })),
-      ...template.steps.map((step) => ({ heading: step.title, body: step.body })),
+      ...(template.comparisonSection
+        ? [{ heading: template.comparisonSection.title, body: template.comparisonSection.body.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") }]
+        : []),
+      ...template.steps.map((step) => ({ heading: step.title, body: step.body.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") })),
       ...template.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
     ],
     links: [
@@ -922,6 +938,7 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
       })),
       template.relatedLearn,
       template.relatedSolution,
+      ...contextualLinks,
     ],
     jsonLd: [
       {

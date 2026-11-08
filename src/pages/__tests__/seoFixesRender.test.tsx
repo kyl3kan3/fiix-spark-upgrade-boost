@@ -74,8 +74,11 @@ describe("SEO fix rendering", () => {
       <TemplatePage />,
     );
 
-    expect(screen.getByRole("heading", { name: "Free maintenance log template" })).toBeInTheDocument();
-    expect(screen.getByRole("table", { name: "Example rows from the Maintenance Log Template" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Free maintenance log template (CSV)" })).toBeInTheDocument();
+    expect(screen.getByRole("table", { name: "Example only — fictional entries for illustration." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Log vs. work order vs. asset register" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "work order" })).toHaveAttribute("href", "/learn/work-order");
+    expect(screen.getByRole("link", { name: "CMMS" })).toHaveAttribute("href", "/learn/cmms");
     expect(screen.getByLabelText("Work email")).toBeRequired();
     expect(screen.getByRole("button", { name: "Download free CSV" })).toBeInTheDocument();
   });
