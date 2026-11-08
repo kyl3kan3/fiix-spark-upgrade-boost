@@ -38,9 +38,9 @@ describe("expanded maintenance log static body", () => {
     }
   });
 
-  it("emits the same blocks in built prerender HTML when dist exists", () => {
+  it("emits the same blocks in built prerender HTML", () => {
     const distPath = resolve(process.cwd(), "dist/templates/maintenance-log-template/index.html");
-    if (!existsSync(distPath)) return;
+    expect(existsSync(distPath), "dist missing — run npm run build before tests").toBe(true);
     const built = readFileSync(distPath, "utf8");
     expect(built).toContain("Example only — fictional entries for illustration.");
     expect(built).toContain("<th scope=\"col\">Next Service Due</th>");

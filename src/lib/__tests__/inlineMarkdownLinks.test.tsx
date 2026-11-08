@@ -18,6 +18,36 @@ describe("inlineMarkdownLinks", () => {
     expect(isSafeInlineLinkHref("javascript:alert(1)")).toBe(false);
     expect(isSafeInlineLinkHref("data:text/html,test")).toBe(false);
     expect(isSafeInlineLinkHref("http://example.com")).toBe(false);
+    expect(isSafeInlineLinkHref("/\\evil.example")).toBe(false);
+    expect(isSafeInlineLinkHref("/learn\\foo")).toBe(false);
+    expect(isSafeInlineLinkHref("/learn\t/foo")).toBe(false);
+    expect(isSafeInlineLinkHref("/learn\n/evil")).toBe(false);
+    expect(isSafeInlineLinkHref("https://maintenease.com/\\evil")).toBe(false);
+  });
+
+  it("rejects authority-smuggling paths in React and static HTML", () => {
+    const malicious = String.raw`[trap](/\evil.example) and [tab](/learn` + "\t/evil)";
+    const html = inlineMarkdownLinksToHtml(malicious, esc);
+    expect(html).not.toMatch(/<a\s+href=/);
+    expect(html).toContain(String.raw`[trap](/\evil.example)`);
+    expect(html).toContain("[tab](/learn");
+
+    const { queryByRole, container } = render(
+      <MemoryRouter>{renderInlineMarkdownLinks(malicious)}</MemoryRouter>,
+    );
+    expect(queryByRole("link")).toBeNull();
+    expect(container.textContent).toContain(String.raw`[trap](/\evil.example)`);
+  });
+
+  it("still linkifies known-safe paths in React and static HTML", () => {
+    const safe = "See [work order](/learn/work-order) and [docs](https://maintenease.com/support).";
+    const html = inlineMarkdownLinksToHtml(safe, esc);
+    expect(html).toContain('<a href="/learn/work-order">work order</a>');
+    expect(html).toContain('<a href="https://maintenease.com/support"');
+    const { getAllByRole } = render(
+      <MemoryRouter>{renderInlineMarkdownLinks(safe)}</MemoryRouter>,
+    );
+    expect(getAllByRole("link")).toHaveLength(2);
   });
 
   it("renders unsafe link targets as plain text", () => {

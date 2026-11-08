@@ -1,7 +1,18 @@
 const INLINE_LINK_PATTERN = /\[([^\]]+)\]\(([^)]+)\)/g;
 
+function containsAsciiControlChar(value: string): boolean {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code <= 0x1f || code === 0x7f) return true;
+  }
+  return false;
+}
+
 /** Root-relative single-segment paths only (`/path`, not `//host`). */
 export function isSafeInlineLinkHref(href: string): boolean {
+  if (!href) return false;
+  if (containsAsciiControlChar(href)) return false;
+  if (href.includes("\\")) return false;
   const trimmed = href.trim();
   if (!trimmed) return false;
   if (trimmed.startsWith("//")) return false;
