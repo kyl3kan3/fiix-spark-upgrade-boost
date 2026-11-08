@@ -12,6 +12,7 @@ export default defineConfig({
       "src/**/*.{test,spec}.{ts,tsx}",
       "functions/**/*.{test,spec}.{ts,tsx}",
     ],
+    exclude: ["**/*.postbuild.test.{ts,tsx}"],
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },

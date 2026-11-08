@@ -1,15 +1,75 @@
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, CheckCircle2, FileSpreadsheet } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import MarketingLayout from "@/components/marketing/MarketingLayout";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import TemplateDownloadForm from "@/components/marketing/TemplateDownloadForm";
-import { getMaintenanceTemplate, maintenanceTemplates } from "@/data/maintenanceTemplates";
+import { getMaintenanceTemplate, maintenanceTemplates, type MaintenanceTemplate } from "@/data/maintenanceTemplates";
+import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
+
+const DEFAULT_PREVIEW_LEAD =
+  "The download includes all fields described below. These example rows show the intended level of detail.";
+
+function TemplatePreviewTable({
+  template,
+  compact,
+  captionClassName,
+}: {
+  template: MaintenanceTemplate;
+  compact?: boolean;
+  captionClassName?: string;
+}) {
+  const minWidth = compact
+    ? (template.previewTableMinWidthClass ?? "min-w-[1120px]")
+    : "min-w-[760px]";
+  const headerCellClass = compact
+    ? "whitespace-nowrap px-3 py-3 font-semibold text-foreground"
+    : "px-4 py-3 font-semibold text-foreground";
+  const bodyCellClass = compact
+    ? "whitespace-nowrap px-3 py-3 text-foreground tabular-nums"
+    : "px-4 py-4 text-foreground tabular-nums";
+
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-border bg-background shadow-sm">
+      <table className={`w-full ${minWidth} text-left text-sm`}>
+        <caption className={captionClassName ?? "sr-only"}>
+          {template.previewDisclaimer ?? `Example rows from the ${template.title}`}
+        </caption>
+        <thead className="bg-muted/60">
+          <tr>
+            {template.previewHeaders.map((header) => (
+              <th key={header} scope="col" className={headerCellClass}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {template.previewRows.map((row) => (
+            <tr key={row.join("|")} className="border-t border-border">
+              {row.map((cell, index) => (
+                <td key={`${cell}-${index}`} className={bodyCellClass}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 const TemplatePage = () => {
   const { slug = "" } = useParams();
   const template = getMaintenanceTemplate(slug);
   if (!template) return <Navigate to="/templates" replace />;
+
+  const expanded = template.contentLayout === "expanded";
+  const fieldsHeading = template.fieldsSectionTitle ?? "Fields included";
+  const tipsHeading = template.tipsSectionTitle ?? "How to use it";
+  const previewHeading = template.previewSectionTitle ?? "Template preview";
+  const previewLead = template.previewSectionLead ?? DEFAULT_PREVIEW_LEAD;
 
   const url = `https://maintenease.com/templates/${template.slug}`;
   const faqLd = {
@@ -78,14 +138,20 @@ const TemplatePage = () => {
                 {template.h1}
               </h1>
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {template.includes.map((item) => (
-                  <div key={item} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-                    <span className="text-sm leading-relaxed text-foreground">{item}</span>
-                  </div>
-                ))}
-              </div>
+              {expanded ? (
+                <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty">{template.intro}</p>
+              ) : null}
+
+              {template.includes.length > 0 ? (
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  {template.includes.map((item) => (
+                    <div key={item} className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                      <span className="text-sm leading-relaxed text-foreground">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <TemplateDownloadForm
@@ -111,66 +177,106 @@ const TemplatePage = () => {
           </section>
         ) : null}
 
-        <section className="border-y border-border bg-muted/30 py-14">
-          <div className="container mx-auto max-w-6xl px-4">
-            <h2 className="font-headline text-3xl font-bold text-foreground text-balance">Template preview</h2>
-            <p className="mt-3 max-w-2xl text-muted-foreground leading-relaxed text-pretty">
-              The download includes all fields described below. These example rows show the intended level of detail.
-            </p>
-            <div className="mt-7 overflow-x-auto rounded-2xl border border-border bg-background shadow-sm">
-              <table className="w-full min-w-[760px] text-left text-sm">
-                <caption className="sr-only">Example rows from the {template.title}</caption>
-                <thead className="bg-muted/60">
-                  <tr>
-                    {template.previewHeaders.map((header) => (
-                      <th key={header} scope="col" className="px-4 py-3 font-semibold text-foreground">{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {template.previewRows.map((row) => (
-                    <tr key={row.join("|")} className="border-t border-border">
-                      {row.map((cell, index) => (
-                        <td key={`${cell}-${index}`} className="px-4 py-4 text-foreground tabular-nums">{cell}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
+        {expanded ? (
+          <>
+            <section className="container mx-auto max-w-4xl px-4 pb-10">
+              <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{fieldsHeading}</h2>
+              <ol className="mt-7 list-decimal space-y-4 pl-6 marker:font-semibold marker:text-foreground">
+                {template.columns.map((column) => (
+                  <li key={column.name} className="pl-2 leading-relaxed text-muted-foreground">
+                    <span className="font-semibold text-foreground">{column.name}</span>
+                    {": "}
+                    {column.purpose}
+                  </li>
+                ))}
+              </ol>
+              {template.fieldsSectionFooter ? (
+                <p className="mt-6 leading-relaxed text-muted-foreground text-pretty">{template.fieldsSectionFooter}</p>
+              ) : null}
+            </section>
 
-        <section className="container mx-auto grid max-w-6xl gap-12 px-4 py-16 lg:grid-cols-2">
-          <div>
-            <h2 className="font-headline text-3xl font-bold text-foreground text-balance">Fields included</h2>
-            <dl className="mt-7 divide-y divide-border rounded-2xl border border-border bg-card px-5">
-              {template.columns.map((column) => (
-                <div key={column.name} className="py-4 sm:grid sm:grid-cols-[160px_1fr] sm:gap-4">
-                  <dt className="font-semibold text-foreground">{column.name}</dt>
-                  <dd className="mt-1 text-sm leading-relaxed text-muted-foreground sm:mt-0">{column.purpose}</dd>
+            <section className="border-y border-border bg-muted/30 py-14">
+              <div className="container mx-auto max-w-6xl px-4">
+                <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{previewHeading}</h2>
+                {template.previewDisclaimer ? (
+                  <p className="mt-3 text-sm font-medium text-muted-foreground">{template.previewDisclaimer}</p>
+                ) : null}
+                {previewLead ? (
+                  <p className="mt-3 max-w-2xl text-muted-foreground leading-relaxed text-pretty">{previewLead}</p>
+                ) : null}
+                <div className="mt-7">
+                  <TemplatePreviewTable template={template} compact />
                 </div>
-              ))}
-            </dl>
-          </div>
+              </div>
+            </section>
 
-          <div>
-            <h2 className="font-headline text-3xl font-bold text-foreground text-balance">How to use it</h2>
-            <ol className="mt-7 space-y-5">
-              {template.steps.map((step, index) => (
-                <li key={step.title} className="grid grid-cols-[40px_1fr] gap-4">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                    {index + 1}
-                  </span>
-                  <div>
+            {template.comparisonSection ? (
+              <section className="container mx-auto max-w-4xl px-4 py-14">
+                <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{template.comparisonSection.title}</h2>
+                <p className="mt-5 leading-relaxed text-muted-foreground text-pretty">
+                  {renderInlineMarkdownLinks(template.comparisonSection.body)}
+                </p>
+              </section>
+            ) : null}
+
+            <section className="container mx-auto max-w-4xl px-4 pb-16">
+              <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{tipsHeading}</h2>
+              <ol className="mt-7 space-y-6">
+                {template.steps.map((step) => (
+                  <li key={step.title}>
                     <h3 className="font-semibold text-foreground">{step.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {renderInlineMarkdownLinks(step.body)}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </>
+        ) : (
+          <>
+            <section className="border-y border-border bg-muted/30 py-14">
+              <div className="container mx-auto max-w-6xl px-4">
+                <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{previewHeading}</h2>
+                <p className="mt-3 max-w-2xl text-muted-foreground leading-relaxed text-pretty">{previewLead}</p>
+                <div className="mt-7">
+                  <TemplatePreviewTable template={template} />
+                </div>
+              </div>
+            </section>
+
+            <section className="container mx-auto grid max-w-6xl gap-12 px-4 py-16 lg:grid-cols-2">
+              <div>
+                <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{fieldsHeading}</h2>
+                <dl className="mt-7 divide-y divide-border rounded-2xl border border-border bg-card px-5">
+                  {template.columns.map((column) => (
+                    <div key={column.name} className="py-4 sm:grid sm:grid-cols-[160px_1fr] sm:gap-4">
+                      <dt className="font-semibold text-foreground">{column.name}</dt>
+                      <dd className="mt-1 text-sm leading-relaxed text-muted-foreground sm:mt-0">{column.purpose}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+
+              <div>
+                <h2 className="font-headline text-3xl font-bold text-foreground text-balance">{tipsHeading}</h2>
+                <ol className="mt-7 space-y-5">
+                  {template.steps.map((step, index) => (
+                    <li key={step.title} className="grid grid-cols-[40px_1fr] gap-4">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <h3 className="font-semibold text-foreground">{step.title}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </section>
+          </>
+        )}
 
         <section className="container mx-auto max-w-4xl px-4 pb-16">
           <h2 className="font-headline text-3xl font-bold text-foreground text-balance">Frequently asked questions</h2>

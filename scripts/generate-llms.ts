@@ -181,17 +181,37 @@ function templateMd(template: (typeof maintenanceTemplates)[number]) {
     format: "CSV",
     path: template.downloadPath,
   }];
+  const expanded = template.contentLayout === "expanded";
+  const fieldsHeading = template.fieldsSectionTitle ?? "Included fields";
+  const tipsHeading = template.tipsSectionTitle ?? "How to use it";
+  const fieldsBlock = expanded
+    ? template.columns.map((column, index) => `${index + 1}. **${column.name}**: ${column.purpose}`).join("\n")
+    : template.columns.map((column) => `- **${column.name}** — ${column.purpose}`).join("\n");
+  const previewBlock =
+    expanded && template.previewRows.length > 0
+      ? `## ${template.previewSectionTitle ?? "Example entries"}\n\n${
+        template.previewDisclaimer ? `_${template.previewDisclaimer}_\n\n` : ""
+      }${
+        template.previewSectionLead ? `${template.previewSectionLead}\n\n` : ""
+      }| ${template.previewHeaders.join(" | ")} |\n| ${template.previewHeaders.map(() => "---").join(" | ")} |\n${template.previewRows
+        .map((row) => `| ${row.join(" | ")} |`)
+        .join("\n")}\n\n`
+      : "";
+  const comparisonBlock = template.comparisonSection
+    ? `## ${template.comparisonSection.title}\n\n${template.comparisonSection.body}\n\n`
+    : "";
+
   return `# ${template.h1}
 
 > ${template.intro}
 
 Canonical URL: ${SITE}/templates/${template.slug}
 
-## Included fields
+## ${fieldsHeading}
 
-${template.columns.map((column) => `- **${column.name}** — ${column.purpose}`).join("\n")}
-
-## How to use it
+${fieldsBlock}
+${template.fieldsSectionFooter ? `\n${template.fieldsSectionFooter}\n` : ""}
+${previewBlock}${comparisonBlock}## ${tipsHeading}
 
 ${template.steps.map((step, index) => `${index + 1}. **${step.title}** — ${step.body}`).join("\n")}
 
