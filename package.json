@@ -21,6 +21,7 @@
     "check:edge": "node scripts/check-edge-functions.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
     "test": "vitest run",
+    "test:postbuild": "REQUIRE_PRERENDER_DIST=1 vitest run src/lib/__tests__/templateExpandedStaticBody.test.ts -t \"built prerender HTML\"",
     "check:og": "tsx scripts/check-og-images.ts",
     "check:landing": "tsx scripts/check-landing-meta.ts",
     "check:social": "tsx scripts/check-social-cache.ts",

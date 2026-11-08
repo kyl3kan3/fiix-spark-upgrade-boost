@@ -62,3 +62,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Post-build prerender HTML check
+        run: npm run test:postbuild
