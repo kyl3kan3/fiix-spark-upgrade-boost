@@ -152,12 +152,12 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
       {
         title: "Add one row per completed event",
         body:
-          "Record each job as its own row, whether it was planned or a [corrective repair](/learn/corrective-maintenance). Avoid combining several visits into one line, so labor hours and parts costs stay accurate.",
+          "Record each job as its own row, whether it was [planned maintenance](/learn/preventive-maintenance) or a [corrective repair](/learn/corrective-maintenance). Avoid combining several visits into one line, so labor hours and parts costs stay accurate.",
       },
       {
         title: "Review the log monthly",
         body:
-          "Look for assets with repeated corrective work, rising parts costs or overdue next-service dates. Repeat failures can be fed into an [MTBF calculator](/tools/mtbf-calculator) to see how often an asset breaks down. Move to a [CMMS](/learn/cmms) when the spreadsheet becomes hard to keep accurate and current across your team or sites.",
+          "Look for assets with repeated corrective work, rising parts costs or overdue next-service dates. Repeat failures can be fed into an [MTBF calculator](/tools/mtbf-calculator) to see how often an asset breaks down. Record repair duration separately if you want to calculate [MTTR](/learn/mttr); labor hours alone do not measure elapsed repair time. Move to a [CMMS](/learn/cmms) when the spreadsheet becomes hard to keep accurate and current across your team or sites. If recurring service dates are the main difficulty, review [preventive maintenance software](/solutions/preventive-maintenance-software).",
       },
     ],
     faqs: [

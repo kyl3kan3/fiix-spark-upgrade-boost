@@ -41,8 +41,8 @@ A [work order](/learn/work-order) requests and assigns a specific job before it 
 ## Tips for keeping a useful maintenance log
 
 1. **Use a stable asset ID** — Give every asset one ID and use it consistently in every row, even if the asset's name or location changes. That keeps its full history together when you sort or filter the log.
-2. **Add one row per completed event** — Record each job as its own row, whether it was planned or a [corrective repair](/learn/corrective-maintenance). Avoid combining several visits into one line, so labor hours and parts costs stay accurate.
-3. **Review the log monthly** — Look for assets with repeated corrective work, rising parts costs or overdue next-service dates. Repeat failures can be fed into an [MTBF calculator](/tools/mtbf-calculator) to see how often an asset breaks down. Move to a [CMMS](/learn/cmms) when the spreadsheet becomes hard to keep accurate and current across your team or sites.
+2. **Add one row per completed event** — Record each job as its own row, whether it was [planned maintenance](/learn/preventive-maintenance) or a [corrective repair](/learn/corrective-maintenance). Avoid combining several visits into one line, so labor hours and parts costs stay accurate.
+3. **Review the log monthly** — Look for assets with repeated corrective work, rising parts costs or overdue next-service dates. Repeat failures can be fed into an [MTBF calculator](/tools/mtbf-calculator) to see how often an asset breaks down. Record repair duration separately if you want to calculate [MTTR](/learn/mttr); labor hours alone do not measure elapsed repair time. Move to a [CMMS](/learn/cmms) when the spreadsheet becomes hard to keep accurate and current across your team or sites. If recurring service dates are the main difficulty, review [preventive maintenance software](/solutions/preventive-maintenance-software).
 
 ## FAQ
 
