@@ -191,6 +191,8 @@ function templateMd(template: (typeof maintenanceTemplates)[number]) {
     expanded && template.previewRows.length > 0
       ? `## ${template.previewSectionTitle ?? "Example entries"}\n\n${
         template.previewDisclaimer ? `_${template.previewDisclaimer}_\n\n` : ""
+      }${
+        template.previewSectionLead ? `${template.previewSectionLead}\n\n` : ""
       }| ${template.previewHeaders.join(" | ")} |\n| ${template.previewHeaders.map(() => "---").join(" | ")} |\n${template.previewRows
         .map((row) => `| ${row.join(" | ")} |`)
         .join("\n")}\n\n`

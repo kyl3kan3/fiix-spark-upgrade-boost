@@ -26,6 +26,8 @@ The download includes one sample row followed by blank rows ready for your entri
 
 _Example only — fictional entries for illustration._
 
+These fictional rows show how each column looks with real maintenance data.
+
 | Date | Work Order ID | Asset ID | Asset Name | Location | Maintenance Type | Description | Technician | Labor Hours | Parts Cost | Status | Next Service Due | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-03 | WO-2041 | PMP-007 | Chilled Water Pump 2 | Plant Room B1 | Preventive | Grease motor bearings and check seals for leaks | A.C. | 0.75 | 12.00 | Complete | 2026-12-03 | No leaks found |

@@ -45,6 +45,7 @@ import {
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
+import { buildExpandedTemplateStaticBody } from "../src/lib/templateExpandedStaticBody";
 import { redirectForPath } from "../src/lib/seoRouting";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 import { BLOG_INDEX_INTRO_SECTIONS, BLOG_INDEX_META_DESCRIPTION } from "../src/data/blogIndexContent";
@@ -89,6 +90,7 @@ type Route = {
   registryFieldTable?: { field: string; purpose: string }[];
   closeWorkOrderSteps?: { title: string; detail: string }[];
   links?: { href: string; label: string }[];
+  expandedTemplateSlug?: string;
 };
 
 const esc = (s: string) =>
@@ -919,17 +921,14 @@ const templateRoutes: Route[] = maintenanceTemplates.map((template) => {
     h1: template.h1,
     intro: template.intro,
     ogType: "article",
-    sections: [
-      ...(expanded && template.fieldsSectionTitle
-        ? [{ heading: template.fieldsSectionTitle, body: template.fieldsSectionFooter ?? template.intro }]
-        : []),
-      ...template.columns.map((column) => ({ heading: column.name, body: column.purpose })),
-      ...(template.comparisonSection
-        ? [{ heading: template.comparisonSection.title, body: template.comparisonSection.body.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") }]
-        : []),
-      ...template.steps.map((step) => ({ heading: step.title, body: step.body.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") })),
-      ...template.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
-    ],
+    expandedTemplateSlug: expanded ? template.slug : undefined,
+    sections: expanded
+      ? []
+      : [
+          ...template.columns.map((column) => ({ heading: column.name, body: column.purpose })),
+          ...template.steps.map((step) => ({ heading: step.title, body: step.body })),
+          ...template.faqs.map((faq) => ({ heading: faq.q, body: faq.a })),
+        ],
     links: [
       { href: "/templates", label: "All maintenance templates" },
       ...(template.downloads ?? [{ label: "Spreadsheet", format: "CSV", path: template.downloadPath }]).map((download) => ({
@@ -1229,13 +1228,20 @@ function bodyFor(route: Route): string {
         "</ol>",
     );
   }
-  parts.push(
-    ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
-    ...(route.sections ?? []).flatMap((s) => [
-      `<h2>${esc(s.heading)}</h2>`,
-      `<p>${esc(s.body)}</p>`,
-    ]),
-  );
+  if (route.expandedTemplateSlug) {
+    const expandedTemplate = maintenanceTemplates.find((template) => template.slug === route.expandedTemplateSlug);
+    if (expandedTemplate) {
+      parts.push(...buildExpandedTemplateStaticBody(expandedTemplate, esc));
+    }
+  } else {
+    parts.push(
+      ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
+      ...(route.sections ?? []).flatMap((s) => [
+        `<h2>${esc(s.heading)}</h2>`,
+        `<p>${esc(s.body)}</p>`,
+      ]),
+    );
+  }
   if (route.path === "/landing") {
     parts.push("<h2>Frequently asked questions</h2>");
     for (const f of LANDING_FAQS) {

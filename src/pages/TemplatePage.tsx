@@ -12,12 +12,22 @@ const DEFAULT_PREVIEW_LEAD =
 
 function TemplatePreviewTable({
   template,
+  compact,
   captionClassName,
 }: {
   template: MaintenanceTemplate;
+  compact?: boolean;
   captionClassName?: string;
 }) {
-  const minWidth = template.previewTableMinWidthClass ?? "min-w-[760px]";
+  const minWidth = compact
+    ? (template.previewTableMinWidthClass ?? "min-w-[1120px]")
+    : "min-w-[760px]";
+  const headerCellClass = compact
+    ? "whitespace-nowrap px-3 py-3 font-semibold text-foreground"
+    : "px-4 py-3 font-semibold text-foreground";
+  const bodyCellClass = compact
+    ? "whitespace-nowrap px-3 py-3 text-foreground tabular-nums"
+    : "px-4 py-4 text-foreground tabular-nums";
 
   return (
     <div className="overflow-x-auto rounded-2xl border border-border bg-background shadow-sm">
@@ -28,7 +38,7 @@ function TemplatePreviewTable({
         <thead className="bg-muted/60">
           <tr>
             {template.previewHeaders.map((header) => (
-              <th key={header} scope="col" className="whitespace-nowrap px-3 py-3 font-semibold text-foreground">
+              <th key={header} scope="col" className={headerCellClass}>
                 {header}
               </th>
             ))}
@@ -38,7 +48,7 @@ function TemplatePreviewTable({
           {template.previewRows.map((row) => (
             <tr key={row.join("|")} className="border-t border-border">
               {row.map((cell, index) => (
-                <td key={`${cell}-${index}`} className="whitespace-nowrap px-3 py-3 text-foreground tabular-nums">
+                <td key={`${cell}-${index}`} className={bodyCellClass}>
                   {cell}
                 </td>
               ))}
@@ -195,7 +205,7 @@ const TemplatePage = () => {
                   <p className="mt-3 max-w-2xl text-muted-foreground leading-relaxed text-pretty">{previewLead}</p>
                 ) : null}
                 <div className="mt-7">
-                  <TemplatePreviewTable template={template} />
+                  <TemplatePreviewTable template={template} compact />
                 </div>
               </div>
             </section>
