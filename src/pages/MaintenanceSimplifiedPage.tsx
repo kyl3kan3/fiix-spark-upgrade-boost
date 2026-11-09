@@ -365,17 +365,18 @@ const MaintenanceSimplifiedPage = () => (
               <p className="font-semibold text-foreground mb-1">Deferred maintenance</p>
               <p className="text-muted-foreground">Prioritize backlog by risk, cost, and consequence.</p>
             </Link>
-            <Link
-              to="/templates"
-              className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui"
-            >
-              <p className="font-semibold text-foreground mb-1">Free maintenance templates</p>
+            <article className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui">
+              <p className="font-semibold text-foreground mb-1">
+                <Link to="/templates" className="hover:text-primary">
+                  Free maintenance templates
+                </Link>
+              </p>
               <p className="text-muted-foreground">
                 {renderInlineMarkdownLinks(
                   "Start with a log, [PM checklist](/templates/preventive-maintenance-checklist), or work-order sheet.",
                 )}
               </p>
-            </Link>
+            </article>
           </div>
         </div>
       </section>
