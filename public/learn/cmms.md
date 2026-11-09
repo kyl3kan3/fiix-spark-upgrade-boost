@@ -101,7 +101,7 @@ An ERP runs the business — finance, purchasing, HR. A CMMS runs maintenance in
 
 ### Do I need a CMMS if I only have a few assets?
 
-Not necessarily. A small, stable operation may work well with a spreadsheet. Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort.
+Not necessarily. A small, stable operation may [work well with a spreadsheet](/templates/maintenance-log-template). Consider a CMMS when recurring work slips, several people update the same records, asset history matters, or the cost of coordination exceeds the subscription and setup effort.
 
 ### How much does a CMMS cost?
 

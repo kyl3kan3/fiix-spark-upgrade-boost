@@ -46,6 +46,7 @@ import {
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
 import { buildExpandedTemplateStaticBody } from "../src/lib/templateExpandedStaticBody";
+import { inlineMarkdownLinksToHtml } from "../src/lib/inlineMarkdownLinks";
 import { redirectForPath } from "../src/lib/seoRouting";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 import { BLOG_INDEX_INTRO_SECTIONS, BLOG_INDEX_META_DESCRIPTION } from "../src/data/blogIndexContent";
@@ -1238,7 +1239,7 @@ function bodyFor(route: Route): string {
       ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
       ...(route.sections ?? []).flatMap((s) => [
         `<h2>${esc(s.heading)}</h2>`,
-        `<p>${esc(s.body)}</p>`,
+        `<p>${inlineMarkdownLinksToHtml(s.body, esc)}</p>`,
       ]),
     );
   }

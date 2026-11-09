@@ -114,7 +114,7 @@ export const solutions: Solution[] = [
  { title: "Nested locations", body: "Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly." },
  { title: "Vendor records", body: "Maintain vendor contacts and link service partners to the relevant assets or work instead of claiming purchasing or COI automation that has not been verified." },
  { title: "Occupant request portal", body: "A public link captures standard or urgent requests with description, location, contact details, and optional photos — no account required." },
- { title: "Inspections and evidence", body: "Build recurring checklists for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria." },
+ { title: "Inspections and evidence", body: "Build [recurring checklists](/templates/preventive-maintenance-checklist) for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria." },
  ],
  useCases: [
  "Corporate real estate and workplace teams",

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import PreventiveMaintenanceCapacityCalculator from "@/components/marketing/PreventiveMaintenanceCapacityCalculator";
 import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
+import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
 
 const sectionId = (heading: string) =>
  heading
@@ -246,7 +247,7 @@ const LearnArticle = () => {
  {term.sections.map((s) => (
  <section key={s.heading} id={sectionId(s.heading)} className="scroll-mt-24">
  <h2 className="text-2xl font-semibold mb-3 text-foreground text-balance">{s.heading}</h2>
- <p className="text-foreground leading-relaxed text-pretty">{s.body}</p>
+ <p className="text-foreground leading-relaxed text-pretty">{renderInlineMarkdownLinks(s.body)}</p>
  {s.table && (
  <div className="mt-5 overflow-x-auto rounded-lg border border-border">
  <table className="w-full text-sm">
@@ -352,7 +353,7 @@ const LearnArticle = () => {
  {term.faqs.map((f) => (
  <div key={f.q} className="p-5 rounded-lg border border-border bg-card">
  <h3 className="font-semibold text-foreground mb-2">{f.q}</h3>
- <p className="text-foreground">{f.a}</p>
+ <p className="text-foreground">{renderInlineMarkdownLinks(f.a)}</p>
  </div>
  ))}
  </div>

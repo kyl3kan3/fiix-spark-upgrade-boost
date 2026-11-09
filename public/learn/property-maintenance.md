@@ -28,7 +28,7 @@ They overlap, but property maintenance is oriented around rental real estate (un
 
 ### Should small landlords use maintenance software?
 
-It depends on request volume, who performs the work, the need for entry and communication records, and the cost of missed follow-up. A small property may be manageable in a shared log; adopt software when the current process no longer produces reliable ownership and history.
+It depends on request volume, who performs the work, the need for entry and communication records, and the cost of missed follow-up. A small property may be manageable in a [shared log](/templates/maintenance-log-template); adopt software when the current process no longer produces reliable ownership and history.
 
 ## Related
 

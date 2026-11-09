@@ -16,6 +16,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
 
 const URL = "https://maintenease.com/maintenance-simplified";
 const TITLE = "Maintenance Simplified: A Playbook for Small Teams";
@@ -369,7 +370,11 @@ const MaintenanceSimplifiedPage = () => (
               className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-ui"
             >
               <p className="font-semibold text-foreground mb-1">Free maintenance templates</p>
-              <p className="text-muted-foreground">Start with a log, PM checklist, or work-order sheet.</p>
+              <p className="text-muted-foreground">
+                {renderInlineMarkdownLinks(
+                  "Start with a log, [PM checklist](/templates/preventive-maintenance-checklist), or work-order sheet.",
+                )}
+              </p>
             </Link>
           </div>
         </div>
