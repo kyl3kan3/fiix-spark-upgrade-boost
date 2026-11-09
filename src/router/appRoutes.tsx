@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { lazyWithRetry as lazy } from "@/lib/lazyWithRetry";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -7,7 +7,7 @@ import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import { PROTECTED_ROUTES } from "./routeManifest";
-import { LoaderCircle } from "lucide-react";
+import { RouteSuspense } from "./RouteSuspense";
 
 // Public / marketing pages. Every authenticated page is registered in
 // routeManifest.ts and rendered from the map below.
@@ -46,16 +46,9 @@ const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const EditorialPolicyPage = lazy(() => import("@/pages/EditorialPolicyPage"));
 const SitemapPage = lazy(() => import("@/pages/SitemapPage"));
 
-const RouteLoadingFallback = () => (
-  <div className="flex min-h-[40vh] items-center justify-center" role="status">
-    <LoaderCircle className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
-    <span className="sr-only">Loading page</span>
-  </div>
-);
-
 export const AppRoutes = () => (
   <ErrorBoundary>
-    <Suspense fallback={<RouteLoadingFallback />}>
+    <RouteSuspense>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/landing" element={<Landing />} />
@@ -119,6 +112,6 @@ export const AppRoutes = () => (
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Suspense>
+    </RouteSuspense>
   </ErrorBoundary>
 );
