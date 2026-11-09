@@ -18,7 +18,7 @@ MaintenEase gives facility teams one system for locations, assets, work orders, 
 - **Nested locations** — Portfolio → site → building → floor → room — assets and work orders inherit the hierarchy and roll up cleanly.
 - **Vendor records** — Maintain vendor contacts and link service partners to the relevant assets or work instead of claiming purchasing or COI automation that has not been verified.
 - **Occupant request portal** — A public link captures standard or urgent requests with description, location, contact details, and optional photos — no account required.
-- **Inspections and evidence** — Build recurring checklists for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria.
+- **Inspections and evidence** — Build [recurring checklists](/templates/preventive-maintenance-checklist) for the facility program and retain completion records. Qualified owners must still define the applicable code, interval, and acceptance criteria.
 
 ## Who it's for
 

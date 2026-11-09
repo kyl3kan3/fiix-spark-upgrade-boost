@@ -31,4 +31,16 @@ describe("page semantics", () => {
 
     expect(offenders).toEqual([]);
   });
+
+  it("keeps the templates card title link separate from inline template links", () => {
+    const page = read("src/pages/MaintenanceSimplifiedPage.tsx");
+    const card = page.match(
+      /<article className="rounded-xl border border-border bg-card p-5 hover:border-primary\/30 transition-ui">[\s\S]*?Free maintenance templates[\s\S]*?<\/article>/,
+    )?.[0];
+    expect(card).toBeTruthy();
+    const titleLink = card!.match(/<Link to="\/templates"[^>]*>[\s\S]*?<\/Link>/)?.[0];
+    expect(titleLink).toBeTruthy();
+    expect(titleLink).not.toContain("renderInlineMarkdownLinks");
+    expect((card!.match(/<Link\b/g) ?? []).length).toBe(1);
+  });
 });

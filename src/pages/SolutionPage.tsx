@@ -17,6 +17,7 @@ import {
  TableHeader,
  TableRow,
 } from "@/components/ui/table";
+import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -174,7 +175,7 @@ const SolutionPage = () => {
  {solution.features.map((f) => (
  <div key={f.title} className="p-6 rounded-xl border border-border bg-card shadow-sm hover:shadow-md hover:border-primary/20 transition-ui">
  <h3 className="text-lg font-semibold mb-2 text-foreground">{f.title}</h3>
- <p className="text-muted-foreground text-sm leading-relaxed">{f.body}</p>
+ <p className="text-muted-foreground text-sm leading-relaxed">{renderInlineMarkdownLinks(f.body)}</p>
  </div>
  ))}
  </div>

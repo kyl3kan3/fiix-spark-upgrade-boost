@@ -244,7 +244,7 @@ export const emergingAiGlossary: GlossaryTerm[] = [
       },
       {
         heading: "Manual condition readings count",
-        body: "A technician can collect temperature, vibration, pressure, amperage, oil condition, runtime, or visual inspection results during normal rounds. The difference between a clipboard and a predictive program is consistent, time-stamped history attached to the asset. Plot readings, establish a normal range, and investigate sustained drift rather than one isolated value. Portable instruments cost less than a permanent sensor rollout and help the team learn which measurements provide an early warning for each asset class.",
+        body: "A technician can collect temperature, vibration, pressure, amperage, oil condition, runtime, or visual inspection results during normal rounds. The difference between a clipboard and a predictive program is consistent, [time-stamped history](/templates/maintenance-log-template) attached to the asset. Plot readings, establish a normal range, and investigate sustained drift rather than one isolated value. Portable instruments cost less than a permanent sensor rollout and help the team learn which measurements provide an early warning for each asset class.",
       },
       {
         heading: "Build a simple risk model",
