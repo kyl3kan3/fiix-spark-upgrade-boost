@@ -89,10 +89,10 @@ const DowntimeTrackingContent: React.FC = () => {
  ];
 
  const downtimeByCategory = [
- { name: "Mechanical", value: 35, color: "#3B82F6" },
- { name: "Electrical", value: 28, color: "#10B981" },
- { name: "Software", value: 20, color: "#F59E0B" },
- { name: "Other", value: 17, color: "#EF4444" },
+ { name: "Mechanical", value: 35, color: "var(--chart-1)" },
+ { name: "Electrical", value: 28, color: "var(--chart-2)" },
+ { name: "Software", value: 20, color: "var(--chart-3)" },
+ { name: "Other", value: 17, color: "var(--chart-4)" },
  ];
 
  const topAssetsDowntime = [
@@ -227,8 +227,8 @@ const DowntimeTrackingContent: React.FC = () => {
  <YAxis />
  <Tooltip />
  <Legend />
- <Line type="monotone" dataKey="planned" stroke="#3B82F6" name="Planned (hours)" />
- <Line type="monotone" dataKey="unplanned" stroke="#EF4444" name="Unplanned (hours)" />
+ <Line type="monotone" dataKey="planned" stroke="var(--chart-1)" name="Planned (hours)" />
+ <Line type="monotone" dataKey="unplanned" stroke="var(--chart-2)" name="Unplanned (hours)" />
  </LineChart>
  </ResponsiveContainer>
  </CardContent>
@@ -246,7 +246,7 @@ const DowntimeTrackingContent: React.FC = () => {
  cx="50%"
  cy="50%"
  outerRadius={100}
- fill="#8884d8"
+ fill="var(--chart-1)"
  dataKey="value"
  label={({ name, value }) => `${name}: ${value}%`}
  >
@@ -343,7 +343,7 @@ const DowntimeTrackingContent: React.FC = () => {
  <XAxis dataKey="month" />
  <YAxis />
  <Tooltip formatter={(value) => [`$${value}`, 'Cost']} />
- <Bar dataKey="cost" fill="#EF4444" />
+ <Bar dataKey="cost" fill="var(--chart-1)" />
  </BarChart>
  </ResponsiveContainer>
  </CardContent>

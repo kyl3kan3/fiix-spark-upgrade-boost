@@ -53,7 +53,7 @@ const FeatureDemo = () => {
  </div>
 
  <div className="mt-10">
- <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+ <h3 className="text-sm font-semibold text-muted-foreground mb-3">
  Explore other features
  </h3>
  <div className="flex flex-wrap gap-2">

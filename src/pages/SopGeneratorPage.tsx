@@ -245,11 +245,11 @@ const SopGeneratorPage = () => {
         <meta property="og:description" content={PAGE.metaDescription} />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(pageLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
       </Helmet>
@@ -263,7 +263,7 @@ const SopGeneratorPage = () => {
         </nav>
         <h1 className="mt-3 max-w-4xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">{PAGE.h1}</h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-muted-foreground text-pretty md:text-xl">{PAGE.intro}</p>
-        <div className="mt-7 flex max-w-3xl items-start gap-3 rounded-2xl bg-amber-50 p-4 text-amber-950 shadow-[0_0_0_1px_rgba(120,53,15,0.12),0_2px_8px_rgba(120,53,15,0.06)] dark:bg-amber-950/30 dark:text-amber-100">
+        <div className="mt-7 flex max-w-3xl items-start gap-3 rounded-2xl border border-warning/30 bg-warning/10 p-4 text-foreground">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
           <p className="text-sm leading-relaxed text-pretty"><strong>Controlled draft:</strong> a qualified owner must validate safety, technical, manufacturer, and regulatory requirements before anyone uses the generated procedure.</p>
         </div>
@@ -294,28 +294,28 @@ const SopGeneratorPage = () => {
         </div>
 
         <aside className="lg:sticky lg:top-28">
-          <div className="rounded-[28px] bg-slate-950 p-5 text-slate-100 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_18px_55px_rgba(15,23,42,0.22)] md:p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-300">Live SOP preview</p>
+          <div className="rounded-[28px] bg-sidebar p-5 text-white shadow-lg md:p-7">
+            <p className="text-xs font-semibold text-highlight">Live SOP preview</p>
             <h2 className="mt-3 font-headline text-2xl font-semibold text-white text-balance">{draft.title || "Untitled maintenance procedure"}</h2>
             <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
-              <div><dt className="text-slate-400">Asset / system</dt><dd className="mt-1 text-pretty">{draft.asset || "Not specified"}</dd></div>
-              <div><dt className="text-slate-400">Qualified role</dt><dd className="mt-1 text-pretty">{draft.qualifiedRole || "Not specified"}</dd></div>
+              <div><dt className="text-white/60">Asset / system</dt><dd className="mt-1 text-pretty">{draft.asset || "Not specified"}</dd></div>
+              <div><dt className="text-white/60">Qualified role</dt><dd className="mt-1 text-pretty">{draft.qualifiedRole || "Not specified"}</dd></div>
             </dl>
             <div className="mt-6 space-y-6 text-sm leading-relaxed">
-              <div><h3 className="font-semibold text-teal-300">Purpose and scope</h3><p className="mt-2 whitespace-pre-line text-slate-200 text-pretty">{draft.purpose || "Not specified"}</p></div>
+              <div><h3 className="font-semibold text-highlight">Purpose and scope</h3><p className="mt-2 whitespace-pre-line text-white/85 text-pretty">{draft.purpose || "Not specified"}</p></div>
               {[["Hazards", draft.hazards], ["Required PPE", draft.ppe], ["Tools and references", draft.tools]].map(([heading, value]) => (
                 <div key={heading}>
-                  <h3 className="font-semibold text-teal-300">{heading}</h3>
-                  <ul className="mt-2 space-y-1 text-slate-200">{lines(value).map((item) => <li key={item}>• {item}</li>)}</ul>
+                  <h3 className="font-semibold text-highlight">{heading}</h3>
+                  <ul className="mt-2 space-y-1 text-white/85">{lines(value).map((item) => <li key={item}>• {item}</li>)}</ul>
                 </div>
               ))}
               <div>
-                <h3 className="font-semibold text-teal-300">Procedure</h3>
-                <ol className="mt-2 space-y-2 text-slate-200">{numberedSteps.map((step, index) => <li key={`${index}-${step}`} className="flex gap-3"><span className="tabular-nums text-slate-500">{index + 1}.</span><span className="text-pretty">{step}</span></li>)}</ol>
+                <h3 className="font-semibold text-highlight">Procedure</h3>
+                <ol className="mt-2 space-y-2 text-white/85">{numberedSteps.map((step, index) => <li key={`${index}-${step}`} className="flex gap-3"><span className="tabular-nums text-white/50">{index + 1}.</span><span className="text-pretty">{step}</span></li>)}</ol>
               </div>
-              <div><h3 className="font-semibold text-teal-300">Acceptance criteria</h3><p className="mt-2 text-slate-200 text-pretty">{draft.acceptance || "Not specified"}</p></div>
-              <div><h3 className="font-semibold text-teal-300">Stop-work and escalation</h3><p className="mt-2 text-slate-200 text-pretty">{draft.escalation || "Not specified"}</p></div>
-              <div><h3 className="font-semibold text-teal-300">Review and approval</h3><p className="mt-2 text-slate-200 text-pretty">{draft.approver || "Not specified"}</p></div>
+              <div><h3 className="font-semibold text-highlight">Acceptance criteria</h3><p className="mt-2 text-white/85 text-pretty">{draft.acceptance || "Not specified"}</p></div>
+              <div><h3 className="font-semibold text-highlight">Stop-work and escalation</h3><p className="mt-2 text-white/85 text-pretty">{draft.escalation || "Not specified"}</p></div>
+              <div><h3 className="font-semibold text-highlight">Review and approval</h3><p className="mt-2 text-white/85 text-pretty">{draft.approver || "Not specified"}</p></div>
             </div>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">

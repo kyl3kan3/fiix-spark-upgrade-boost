@@ -78,7 +78,7 @@ export const InspectionsCalendarView: React.FC<InspectionsCalendarViewProps> = (
  </button>
  ))}
  {dayInspections.length > 3 && (
- <div className="text-[10px] text-muted-foreground px-1">
+ <div className="text-xs text-muted-foreground px-1">
  +{dayInspections.length - 3} more
  </div>
  )}

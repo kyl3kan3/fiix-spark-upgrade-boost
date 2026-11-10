@@ -17,7 +17,7 @@ export const ProfileError: React.FC<ProfileErrorProps> = ({ error, onRefresh }) 
  return (
  <DashboardLayout>
  <div className="container mx-auto px-4 py-8">
- <h1 className="text-2xl font-bold mb-6">Profile & Settings</h1>
+ <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground mb-6">Profile & Settings</h1>
  <Alert className="mb-6 bg-destructive/10 border-destructive/30">
  <AlertTriangle className="h-4 w-4 text-destructive mr-2" />
  <AlertDescription className="text-destructive">

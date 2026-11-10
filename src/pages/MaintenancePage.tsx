@@ -18,7 +18,7 @@ const MaintenancePage = () => {
  title="Maintenance"
  description="Manage and forecast preventive maintenance tasks."
  actions={
- <Button size="lg" onClick={() => navigate("/work-orders/new")}>
+ <Button onClick={() => navigate("/work-orders/new")}>
  <Plus className="h-4 w-4 mr-1.5" />
  Create New Schedule
  </Button>

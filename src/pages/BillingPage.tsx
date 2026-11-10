@@ -149,11 +149,9 @@ export default function BillingPage() {
         </Button>
 
         <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <CreditCard className="h-8 w-8" />
-            Billing &amp; Subscription
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Billing &amp; Subscription
           </h1>
-          <p className="text-base text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Manage your MaintenEase workspace plan, payment methods, and usage.
           </p>
         </div>
@@ -166,7 +164,7 @@ export default function BillingPage() {
             {!isAdminLoading && isAdminUser ? (
               <Button
                 asChild
-                className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
               >
                 <Link to="/pricing">Choose a plan</Link>
               </Button>
@@ -183,7 +181,7 @@ export default function BillingPage() {
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      <span className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-2">
+                      <span className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-xs font-semibold mb-2">
                         Current Plan
                       </span>
                       <h2 className="font-headline text-2xl font-semibold text-foreground flex items-center gap-2 capitalize">
@@ -278,7 +276,7 @@ export default function BillingPage() {
                   <Button
                     onClick={openPortal}
                     disabled={opening}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
                   >
                     {opening ? (
                       "Opening…"
@@ -325,7 +323,7 @@ export default function BillingPage() {
                 </div>
                 <Button
                   asChild
-                  className="relative z-10 w-full bg-white text-primary hover:bg-white/90 uppercase tracking-wide text-xs font-semibold"
+                  className="relative z-10 w-full bg-white text-primary hover:bg-white/90 text-xs font-semibold"
                 >
                   <Link to="/pricing#plan-business">View the Business plan</Link>
                 </Button>

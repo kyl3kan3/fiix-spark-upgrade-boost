@@ -32,7 +32,7 @@ export function PaywallGate({ feature, children, title, description }: Props) {
       </div>
       <Button
         asChild
-        className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+        className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
       >
         <Link to="/pricing">View plans</Link>
       </Button>

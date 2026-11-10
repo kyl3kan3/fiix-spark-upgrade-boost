@@ -60,7 +60,7 @@ const QuickFreezerSetupDialog: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="lg">
+        <Button variant="outline">
           <Snowflake className="h-5 w-5" />
           Quick Freezer Setup
         </Button>

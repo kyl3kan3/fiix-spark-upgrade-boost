@@ -48,19 +48,13 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
  <IconRail onOpenPalette={() => setPaletteOpen(true)} />
 
  <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[240px]">
- {/* Subtle blueprint backdrop */}
- <div
- aria-hidden
- className="pointer-events-none fixed inset-0 -z-10 bg-blueprint-grid opacity-[0.35] dark:opacity-[0.5]"
- />
-
  <TopBar
  unreadCount={unreadCount}
  onToggleNotifications={() => setNotificationsOpen((o) => !o)}
  onOpenPalette={() => setPaletteOpen(true)}
  />
 
- <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-16 pb-24 lg:pb-0">
+ <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-14 pb-24 lg:pb-0">
  <TrialBanner />
  <ProfileSetupHint />
  {children}

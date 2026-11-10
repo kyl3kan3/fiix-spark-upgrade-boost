@@ -10,8 +10,8 @@ export const LocationAnalyticsLoading: React.FC = () => {
  <Card key={i}>
  <CardContent className="p-6">
  <div className="animate-pulse">
- <div className="h-4 bg-secondary rounded w-1/2 mb-2"></div>
- <div className="h-8 bg-secondary rounded w-1/3"></div>
+ <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
+ <div className="h-8 bg-muted rounded w-1/3"></div>
  </div>
  </CardContent>
  </Card>

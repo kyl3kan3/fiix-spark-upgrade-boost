@@ -95,11 +95,9 @@ const ApiKeysPage: React.FC = () => {
 
         {/* Page Header */}
         <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <KeyRound className="h-8 w-8" />
-            API &amp; Integrations
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">API &amp; Integrations
           </h1>
-          <p className="text-base text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Manage API keys for programmatic access to your MaintenEase data.
           </p>
         </div>
@@ -126,7 +124,7 @@ const ApiKeysPage: React.FC = () => {
                   <Button
                     onClick={handleCreate}
                     disabled={creating || !name.trim()}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold shadow-sm"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold shadow-sm"
                   >
                     {creating ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -156,7 +154,7 @@ const ApiKeysPage: React.FC = () => {
                   <Button
                     onClick={handleCreate}
                     disabled={creating}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
                   >
                     {creating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                     Create key
@@ -208,7 +206,7 @@ const ApiKeysPage: React.FC = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleRevoke(k.id)}
-                              className="border-border text-primary hover:bg-primary/5 text-xs uppercase tracking-wide font-semibold"
+                              className="border-border text-primary hover:bg-primary/5 text-xs font-semibold"
                             >
                               Revoke
                             </Button>
@@ -264,7 +262,7 @@ const ApiKeysPage: React.FC = () => {
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 uppercase tracking-wide text-xs font-semibold"
+                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 text-xs font-semibold"
                 >
                   <a href="#" target="_blank" rel="noreferrer">
                     View API Portal

@@ -107,11 +107,9 @@ const Settings = () => {
 
         {/* Page Header */}
         <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <SettingsIcon className="h-8 w-8" />
-            Settings
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Settings
           </h1>
-          <p className="text-base text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Manage your workspace preferences and organizational profile.
           </p>
         </div>
@@ -201,7 +199,7 @@ const Settings = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4 border-t border-border mt-2">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Save Preferences
                   </Button>
                   <Button
@@ -254,7 +252,7 @@ const Settings = () => {
                     <p className="text-sm font-semibold text-foreground">Password</p>
                     <p className="text-sm text-muted-foreground">Update your account password</p>
                   </div>
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Update Password
                   </Button>
                 </div>
@@ -288,7 +286,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className="flex justify-end pt-2 border-t border-border">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Save Appearance
                   </Button>
                 </div>

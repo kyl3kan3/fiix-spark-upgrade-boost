@@ -113,11 +113,11 @@ const TemplatePage = () => {
         <meta property="og:description" content={template.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={template.metaTitle} />
         <meta name="twitter:description" content={template.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(creativeWorkLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
@@ -169,7 +169,7 @@ const TemplatePage = () => {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {template.downloads.map((download) => (
                 <div key={download.path} className="rounded-2xl bg-card p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{download.format}</p>
+                  <p className="text-xs font-semibold text-primary">{download.format}</p>
                   <p className="mt-1 font-semibold text-foreground">{download.label}</p>
                 </div>
               ))}

@@ -61,7 +61,7 @@ const InspectionsPage = () => {
  title="Check-Ups"
  description="Manage scheduled, ongoing, and historical equipment audits."
  actions={
- <Button size="lg" onClick={() => navigate("/inspections/new")}>
+ <Button onClick={() => navigate("/inspections/new")}>
  <Plus className="h-5 w-5 mr-1.5" />
  Start New Inspection
  </Button>
@@ -78,7 +78,7 @@ const InspectionsPage = () => {
  </div>
  <span className="text-xs font-bold text-success">Active today</span>
  </div>
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Scheduled Today</p>
+ <p className="text-xs font-bold text-muted-foreground mb-1">Scheduled Today</p>
  <h4 className="font-headline text-4xl font-bold text-foreground">
  {String(scheduledCount).padStart(2, "0")}
  </h4>
@@ -90,7 +90,7 @@ const InspectionsPage = () => {
  </div>
  <span className="text-xs font-bold text-destructive">Action Required</span>
  </div>
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Overdue Tasks</p>
+ <p className="text-xs font-bold text-muted-foreground mb-1">Overdue Tasks</p>
  <h4 className="font-headline text-4xl font-bold text-foreground">
  {String(overdueCount).padStart(2, "0")}
  </h4>
@@ -102,7 +102,7 @@ const InspectionsPage = () => {
  </div>
  <span className="text-xs font-bold text-muted-foreground">{passRate !== null ? `Pass rate: ${passRate}%` : "This month"}</span>
  </div>
- <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Completed (MTD)</p>
+ <p className="text-xs font-bold text-muted-foreground mb-1">Completed (MTD)</p>
  <h4 className="font-headline text-4xl font-bold text-foreground">
  {String(completedCount).padStart(3, "0")}
  </h4>

@@ -8,6 +8,7 @@ import { useAuth } from "@/providers/AuthContext";
 import { cn } from "@/lib/utils";
 import { filterNavItems, type NavRole } from "./navConfig";
 import { useSubscription } from "@/hooks/useSubscription";
+import BrandMark from "./BrandMark";
 
 interface IconRailProps {
  onOpenPalette: () => void;
@@ -47,30 +48,27 @@ const IconRail: React.FC<IconRailProps> = () => {
 
  return (
  <aside className="hidden lg:flex flex-col w-[240px] shrink-0 bg-sidebar text-sidebar-foreground border-r border-sidebar-border h-screen fixed left-0 top-0 z-40">
- {/* Brand — Clean Tech: serif headline, no gradient block */}
- <div className="px-6 pt-6 pb-4">
- <NavLink to="/dashboard" className="block">
- <h1 className="font-headline text-2xl font-bold text-primary tracking-normal">MaintenEase</h1>
- <p className="text-xs text-muted-foreground font-medium mt-0.5">Facility Management</p>
+ <div className="px-4 pt-5 pb-4">
+ <NavLink to="/dashboard" className="block rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+ <BrandMark tone="onInk" tagline="Facility management" />
  </NavLink>
  </div>
 
- {/* Primary CTA — Clean Tech */}
- <div className="px-6 mb-4">
+ {/* The one signal-yellow control in the app: start a work order. */}
+ <div className="px-4 mb-4">
  <button
  onClick={() => navigate("/work-orders/new")}
- className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-lg text-sm font-semibold shadow-sm hover:bg-primary-variant transition-colors"
+ className="w-full inline-flex items-center justify-center gap-2 h-10 rounded-md bg-highlight text-highlight-foreground text-sm font-semibold transition-[filter,transform] duration-150 hover:brightness-95 active:scale-[0.96] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
  >
- <Plus className="h-4 w-4" />
- New Work Order
+ <Plus className="h-4 w-4" strokeWidth={2.5} />
+ New work order
  </button>
  </div>
 
- {/* Nav */}
- <nav className="flex-1 min-h-0 overflow-y-auto px-3 pb-4">
+ <nav className="flex-1 min-h-0 overflow-y-auto px-2 pb-4">
  {grouped.map((group) => (
  <div key={group.name} className="mb-4 last:mb-0">
- <div className="label-eyebrow px-3 mb-1.5">{group.name}</div>
+ <div className="px-3 mb-1 text-xs font-semibold text-sidebar-foreground/55">{group.name}</div>
  {group.items.map((item) => {
  const Icon = item.icon;
  return (
@@ -80,9 +78,11 @@ const IconRail: React.FC<IconRailProps> = () => {
  data-tour={`nav-${item.href.replace(/^\//, "").replace(/\//g, "-")}`}
  className={({ isActive }) =>
  cn(
- "flex items-center gap-3 h-10 pl-3 pr-3 my-0.5 rounded-r-lg transition-colors duration-200 text-sm font-medium border-l-4 border-transparent",
- "text-sidebar-foreground hover:bg-sidebar-accent",
- isActive && "border-primary bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
+ "relative flex items-center gap-3 h-9 px-3 my-px rounded-md text-sm font-medium transition-colors duration-150",
+ "text-sidebar-foreground hover:bg-sidebar-accent hover:text-white",
+ "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sidebar-ring",
+ isActive &&
+ "bg-sidebar-accent text-white font-semibold before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-[3px] before:rounded-full before:bg-highlight"
  )
  }
  >
@@ -95,37 +95,36 @@ const IconRail: React.FC<IconRailProps> = () => {
  ))}
  </nav>
 
- {/* Footer — Clean Tech: profile + Support/Logout slots */}
- <div className="border-t border-sidebar-border p-3 space-y-1">
+ <div className="border-t border-sidebar-border p-2 space-y-1">
  <button
  onClick={() => navigate("/profile")}
- className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent transition-colors"
+ className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sidebar-ring"
  >
- <Avatar className="h-9 w-9">
+ <Avatar className="h-8 w-8">
  <AvatarImage src={profile?.avatar_url || ""} alt={profile?.first_name || "User"} />
- <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">
+ <AvatarFallback className="bg-sidebar-accent text-white border border-sidebar-border font-semibold text-sm">
  {initial}
  </AvatarFallback>
  </Avatar>
  <div className="flex flex-col items-start leading-tight min-w-0 flex-1">
- <span className="text-sm font-semibold text-foreground truncate w-full text-left">
+ <span className="text-sm font-semibold text-white truncate w-full text-left">
  {profile?.first_name || profile?.email?.split("@")[0] || "Welcome"}
  </span>
- <span className="text-xs text-muted-foreground truncate w-full text-left">View profile</span>
+ <span className="text-xs text-sidebar-foreground/70 truncate w-full text-left">View profile</span>
  </div>
  </button>
 
  <div className="flex gap-1">
  <button
  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
- className="flex-1 h-9 flex items-center justify-center gap-2 rounded-lg text-xs font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+ className="flex-1 h-9 flex items-center justify-center gap-2 rounded-md text-xs font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sidebar-ring"
  >
  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
  <span>{theme === "dark" ? "Light" : "Dark"}</span>
  </button>
  <button
  onClick={handleLogout}
- className="flex-1 h-9 flex items-center justify-center gap-2 rounded-lg text-xs font-medium text-sidebar-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
+ className="flex-1 h-9 flex items-center justify-center gap-2 rounded-md text-xs font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-white transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sidebar-ring"
  >
  <LogOut className="h-4 w-4" />
  <span>Sign out</span>

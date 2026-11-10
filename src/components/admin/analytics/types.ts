@@ -52,9 +52,9 @@ export interface AnalyticsResponse {
 export const RANGE_OPTIONS = [1, 7, 14, 30, 60, 90] as const;
 
 export const TIER_COLORS: Record<string, string> = {
-  starter: "#3B82F6",
-  pro: "#8B5CF6",
-  business: "#10B981",
+  starter: "var(--chart-1)",
+  pro: "var(--chart-2)",
+  business: "var(--chart-3)",
 };
 
 export const fmtDate = (s: string) => s.slice(5);

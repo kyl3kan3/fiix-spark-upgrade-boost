@@ -157,7 +157,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
                  )}
 
                  <div className="pt-3 border-t border-border flex items-center justify-between">
-                   <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                   <span className="text-xs text-muted-foreground font-medium">
                      View details
                    </span>
                    <svg className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -32,7 +32,7 @@ export const WorkOrderHeader: React.FC<WorkOrderHeaderProps> = ({
  <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
  <div className="flex-1 min-w-0">
- <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+ <p className="text-xs font-semibold text-muted-foreground mb-2">
  Work Orders / <span className="text-primary">#{workOrder.id.split('-')[0].toUpperCase()}</span>
  </p>
  <h1 className="font-headline text-2xl md:text-3xl font-bold text-foreground leading-snug mb-3 truncate">

@@ -86,11 +86,11 @@ const SolutionPage = () => {
  <meta property="og:description" content={solution.metaDescription} />
  <meta property="og:url" content={url} />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content={solution.metaTitle} />
  <meta name="twitter:description" content={solution.metaDescription} />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
  <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
  </Helmet>
@@ -106,7 +106,7 @@ const SolutionPage = () => {
  <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{solution.h1}</h1>
  <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mb-8">{solution.intro}</p>
  <div className="mb-12">
- <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
+ <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
    <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
  </Button>
  </div>
@@ -244,7 +244,7 @@ const SolutionPage = () => {
  <h2 className="font-headline text-3xl md:text-4xl font-bold mb-3">{headline}</h2>
  <p className="text-lg text-primary-foreground/85 mb-8 max-w-2xl mx-auto">{body}</p>
  <div className="flex flex-wrap gap-3 justify-center">
- <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
+ <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md">
  <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
  </Button>
  {LEAD_FORM_SLUGS.has(solution.slug) && (

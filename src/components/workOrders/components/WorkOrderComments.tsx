@@ -124,7 +124,7 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
 
  return (
  <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
- <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
+ <h3 className="text-xs font-bold text-muted-foreground mb-6 flex items-center gap-2">
  <MessageSquare className="h-4 w-4" />
  Comments {commentsData?.totalCount ? `(${commentsData.totalCount})` : ""}
  </h3>

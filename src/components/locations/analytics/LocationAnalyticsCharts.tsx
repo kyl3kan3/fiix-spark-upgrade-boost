@@ -18,7 +18,7 @@ interface LocationAnalyticsChartsProps {
  hierarchyData: HierarchyData[];
 }
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1'];
+const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
 
 export const LocationAnalyticsCharts: React.FC<LocationAnalyticsChartsProps> = ({
  assetDistribution,
@@ -38,7 +38,7 @@ export const LocationAnalyticsCharts: React.FC<LocationAnalyticsChartsProps> = (
  <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
  <YAxis />
  <Tooltip />
- <Bar dataKey="assets" fill="#8884d8" />
+ <Bar dataKey="assets" fill="var(--chart-1)" />
  </BarChart>
  </ResponsiveContainer>
  </CardContent>
@@ -59,7 +59,7 @@ export const LocationAnalyticsCharts: React.FC<LocationAnalyticsChartsProps> = (
  labelLine={false}
  label={({ name, value }) => `${name}: ${value}`}
  outerRadius={80}
- fill="#8884d8"
+ fill="var(--chart-1)"
  dataKey="count"
  >
  {hierarchyData.map((entry, index) => (

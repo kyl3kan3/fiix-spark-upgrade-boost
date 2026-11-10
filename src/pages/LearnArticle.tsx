@@ -174,12 +174,12 @@ const LearnArticle = () => {
  <meta property="og:description" content={term.metaDescription} />
  <meta property="og:url" content={url} />
  <meta property="og:type" content="article" />
- <meta property="og:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
+ <meta property="og:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=5"} />
  {term.image && <meta property="og:image:alt" content={term.image.alt} />}
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content={term.metaTitle} />
  <meta name="twitter:description" content={term.metaDescription} />
- <meta name="twitter:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
+ <meta name="twitter:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=5"} />
  <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
  <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
@@ -222,14 +222,14 @@ const LearnArticle = () => {
  )}
 
  {needsSafetyScope && (
-  <aside className="mb-10 rounded-2xl bg-amber-50 p-5 text-sm leading-relaxed text-amber-950 shadow-[0_0_0_1px_rgba(146,64,14,0.14)]">
+  <aside className="mb-10 rounded-2xl border border-warning/30 bg-warning/10 p-5 text-sm leading-relaxed text-foreground">
    <strong>Scope:</strong> This guide is general educational material. Use the employer&apos;s hazard assessment, energy-control program, manufacturer instructions, qualified-person rules, approved procedures, and applicable law. Stop work when authorization, safe conditions, or required technical information are missing.
   </aside>
  )}
 
  {hasOnPageNavigation && (
  <nav aria-label="On this page" className="mb-12 rounded-2xl bg-card p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
- <p className="text-sm font-semibold uppercase tracking-wide text-primary">On this page</p>
+ <p className="text-sm font-semibold text-primary">On this page</p>
  <ol className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
  {term.sections.map((section, index) => (
  <li key={section.heading}>

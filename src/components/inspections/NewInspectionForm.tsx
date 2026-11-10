@@ -31,7 +31,7 @@ const NewInspectionForm: React.FC = () => {
  if (checklists.length === 0) {
  return (
  <Card className="p-8 text-center space-y-4 border-2 border-dashed">
- <div className="mx-auto h-14 w-14 rounded-2xl bg-secondary flex items-center justify-center">
+ <div className="mx-auto h-14 w-14 rounded-2xl bg-muted flex items-center justify-center">
  <ListChecks className="h-7 w-7 text-muted-foreground" />
  </div>
  <div>
@@ -40,7 +40,7 @@ const NewInspectionForm: React.FC = () => {
  A check-up is a list of things to walk through and tick off — like a safety check or a daily equipment look-over.
  </p>
  </div>
- <Button variant="accent" size="lg" onClick={() => navigate("/checklists/new")}>
+ <Button variant="accent" onClick={() => navigate("/checklists/new")}>
  Create the first check-up
  <ArrowRight className="h-4 w-4" />
  </Button>
@@ -60,7 +60,7 @@ const NewInspectionForm: React.FC = () => {
  onClick={() => navigate(`/checklists/${c.id}/submit`)}
  className="group text-left p-5 rounded-3xl border-2 border-border bg-card hover:border-primary/40 transition-ui flex items-start gap-4 shadow-soft"
  >
- <div className="h-12 w-12 rounded-2xl bg-accent/15 text-accent flex items-center justify-center shrink-0">
+ <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
  <ClipboardCheck className="h-6 w-6" strokeWidth={2.4} />
  </div>
  <div className="min-w-0 flex-1">

@@ -77,14 +77,14 @@ export function WorkOrderCompletionSection({ workOrder }: Props) {
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         <div>
-          <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Completed</p>
+          <p className="text-muted-foreground text-xs mb-1">Completed</p>
           <p className="font-medium">{format(new Date(completedAt), "MMM d, yyyy h:mm a")}</p>
         </div>
         {(failureCode || downtimeCode || workOrder.downtime_minutes != null) && (
           <div className="grid sm:grid-cols-2 gap-4">
             {failureCode && (
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Failure code</p>
+                <p className="text-muted-foreground text-xs mb-1">Failure code</p>
                 <p className="font-medium">{failureCode.code}</p>
                 {failureCode.description && (
                   <p className="text-muted-foreground">{failureCode.description}</p>
@@ -93,13 +93,13 @@ export function WorkOrderCompletionSection({ workOrder }: Props) {
             )}
             {downtimeCode && (
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Downtime code</p>
+                <p className="text-muted-foreground text-xs mb-1">Downtime code</p>
                 <p className="font-medium">{downtimeCode.code}</p>
               </div>
             )}
             {workOrder.downtime_minutes != null && (
               <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Downtime</p>
+                <p className="text-muted-foreground text-xs mb-1">Downtime</p>
                 <p className="font-medium">{workOrder.downtime_minutes} minutes</p>
               </div>
             )}
@@ -107,7 +107,7 @@ export function WorkOrderCompletionSection({ workOrder }: Props) {
         )}
         {partUsage.length > 0 && (
           <div>
-            <p className="text-muted-foreground text-xs uppercase tracking-wide mb-2">Parts used</p>
+            <p className="text-muted-foreground text-xs mb-2">Parts used</p>
             <ul className="list-disc pl-5 space-y-1">
               {partUsage.map((row, i) => (
                 <li key={i}>
@@ -120,7 +120,7 @@ export function WorkOrderCompletionSection({ workOrder }: Props) {
         )}
         {lubeUsage.length > 0 && (
           <div>
-            <p className="text-muted-foreground text-xs uppercase tracking-wide mb-2">Lubricants used</p>
+            <p className="text-muted-foreground text-xs mb-2">Lubricants used</p>
             <ul className="list-disc pl-5 space-y-1">
               {lubeUsage.map((row, i) => (
                 <li key={i}>

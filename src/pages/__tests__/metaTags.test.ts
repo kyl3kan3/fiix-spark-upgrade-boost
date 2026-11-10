@@ -25,7 +25,7 @@ const KEY_PAGES = [
  "src/pages/SupportPage.tsx",
 ];
 
-const OG_IMAGE_URL = "https://maintenease.com/og-image.png?v=4";
+const OG_IMAGE_URL = "https://maintenease.com/og-image.png?v=5";
 
 const REQUIRED_TAGS: { name: string; regex: RegExp; mustContain?: string }[] = [
  { name: "twitter:card", regex: /<meta\s+name=["']twitter:card["']\s+content=["']([^"']+)["']/ },

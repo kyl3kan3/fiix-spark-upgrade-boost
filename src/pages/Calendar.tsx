@@ -65,7 +65,7 @@ const CalendarPage = () => {
  title="Calendar"
  description="Manage and forecast preventive maintenance tasks."
  actions={
- <Button size="lg" onClick={handleScheduleEvent}>
+ <Button onClick={handleScheduleEvent}>
  <CalendarIcon className="h-4 w-4 mr-1.5" />
  Add to Calendar
  </Button>

@@ -72,7 +72,7 @@ export function LubricantConsumptionSection({ checklistId, assetIds, value, onCh
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-medium text-sm">{lub.name}</span>
               {isLowStock(lub.quantity_on_hand, lub.reorder_level) && (
-                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning border border-warning/30">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning border border-warning/30">
                   Low stock ({lub.quantity_on_hand} {lub.unit_of_measure})
                 </span>
               )}

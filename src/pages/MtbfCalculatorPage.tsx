@@ -145,11 +145,11 @@ const MtbfCalculatorPage = () => {
         <meta property="og:description" content={PAGE.metaDescription} />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         {/* WebPage, FAQPage and BreadcrumbList JSON-LD ship once in the prerendered HTML
             (scripts/prerender.ts). Repeating them here would duplicate each type after hydration. */}
       </Helmet>
@@ -256,7 +256,7 @@ const MtbfCalculatorPage = () => {
 
           <div className="lg:sticky lg:top-28">
             <div className={`${CARD} p-5 md:p-7`} aria-labelledby={resultHeadingId}>
-              <h2 id={resultHeadingId} className="font-sans text-sm font-semibold uppercase tracking-wide text-muted-foreground">Result</h2>
+              <h2 id={resultHeadingId} className="font-sans text-sm font-semibold text-muted-foreground">Result</h2>
 
               <div aria-live="polite" aria-atomic="true">
                 {result.status === "invalid" ? (
@@ -296,12 +296,12 @@ const MtbfCalculatorPage = () => {
 
                     <dl className="mt-5 grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
                       <div className={TILE}>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Failure rate</dt>
+                        <dt className="text-xs font-semibold text-muted-foreground">Failure rate</dt>
                         <dd className="mt-1 text-2xl font-bold text-foreground tabular-nums">{formatRate(result.failuresPer1000Hours)}</dd>
                         <dd className="text-xs text-muted-foreground">per 1,000 operating h</dd>
                       </div>
                       <div className={TILE}>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">MTTR</dt>
+                        <dt className="text-xs font-semibold text-muted-foreground">MTTR</dt>
                         {result.mttrHours !== null ? (
                           <>
                             <dd className="mt-1 text-2xl font-bold text-foreground tabular-nums">{formatHours(result.mttrHours)} h</dd>
@@ -312,7 +312,7 @@ const MtbfCalculatorPage = () => {
                         )}
                       </div>
                       <div className={`${TILE} min-[360px]:col-span-2`}>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Availability</dt>
+                        <dt className="text-xs font-semibold text-muted-foreground">Availability</dt>
                         {result.availability !== null ? (
                           <>
                             <dd className="mt-1 text-2xl font-bold text-foreground tabular-nums">{formatPercent(result.availability, 2)}</dd>
@@ -323,7 +323,7 @@ const MtbfCalculatorPage = () => {
                         )}
                       </div>
                       <div className={`${TILE} min-[360px]:col-span-2`}>
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Chance of no failure</dt>
+                        <dt className="text-xs font-semibold text-muted-foreground">Chance of no failure</dt>
                         <dd className="mt-1 flex flex-wrap items-baseline gap-x-2">
                           <span className="text-2xl font-bold text-foreground tabular-nums">{formatPercent(result.reliability, result.reliability > 0.99 ? 2 : 0)}</span>
                           <span className="text-sm text-muted-foreground">over the next {missionHours} operating hours</span>

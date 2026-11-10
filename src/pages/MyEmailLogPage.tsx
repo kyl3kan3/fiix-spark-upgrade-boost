@@ -83,14 +83,14 @@ const MyEmailLogPage: React.FC = () => {
         <meta name="description" content="Track delivery status for notification emails sent to you by MaintenEase, including assignments, status changes, and weather alerts." />
         <link rel="canonical" href="https://maintenease.com/notifications/email-log" />
       </Helmet>
-      <div className="px-4 md:px-6 lg:px-8 py-6 space-y-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4 md:px-6 lg:px-8 py-6 space-y-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="-ml-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
         </Button>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2"><Mail className="h-5 w-5" /> My Email Log</h1>
-            <p className="text-sm text-muted-foreground">Delivery status for emails sent to you.</p>
+            <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">My Email Log</h1>
+            <p className="mt-1 text-sm text-muted-foreground max-w-2xl">Delivery status for emails sent to you.</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate("/settings/notifications")}>

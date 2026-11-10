@@ -52,13 +52,13 @@ export function RecentWorkOrders({
             <span className="hidden sm:flex items-center gap-2 shrink-0">
               {workOrder.priority && (
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${getPriorityColor(workOrder.priority)}`}
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${getPriorityColor(workOrder.priority)}`}
                 >
                   {workOrder.priority}
                 </span>
               )}
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${getStatusColor(workOrder.status ?? "")}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${getStatusColor(workOrder.status ?? "")}`}
               >
                 {(workOrder.status ?? "unknown").replace("_", " ")}
               </span>

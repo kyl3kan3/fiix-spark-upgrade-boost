@@ -16,11 +16,11 @@ const LearnIndex = () => (
  <meta property="og:description" content="Plain-English definitions of the terms maintenance teams use every day." />
  <meta property="og:url" content="https://maintenease.com/learn" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="Maintenance Glossary | MaintenEase" />
  <meta name="twitter:description" content="Plain-English definitions of the terms maintenance teams use every day." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
  <script type="application/ld+json">{JSON.stringify(buildItemListJsonLd(
  "MaintenEase maintenance glossary",
  "https://maintenease.com/learn",

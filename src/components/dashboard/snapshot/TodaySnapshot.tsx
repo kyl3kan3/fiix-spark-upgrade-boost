@@ -84,7 +84,7 @@ function Card({
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <h4 className="text-sm font-semibold leading-snug tracking-[0.01em] text-muted-foreground uppercase">
+    <h4 className="text-sm font-semibold leading-snug text-muted-foreground">
       {children}
     </h4>
   );
@@ -170,7 +170,7 @@ function PendingJobsCard({
               key={`${chip}-${index}`}
               to="/work-orders"
               className={cn(
-                "inline-flex items-center rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wide transition-colors",
+                "inline-flex items-center rounded px-2 py-1 text-[10px] font-bold transition-colors",
                 "bg-muted text-foreground hover:bg-muted/80",
               )}
             >

@@ -157,7 +157,7 @@ const ChecklistAssetsSelector: React.FC<Props> = ({
  className="h-7 w-20 text-xs"
  aria-label={`Stagger offset for ${a.name} in minutes`}
  />
- <span className="text-[10px] text-muted-foreground w-24 truncate">
+ <span className="text-xs text-muted-foreground w-24 truncate">
  {formatOffset(assetOffsets[a.id] ?? 0)}
  </span>
  </div>

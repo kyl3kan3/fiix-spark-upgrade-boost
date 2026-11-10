@@ -61,11 +61,11 @@ export default function PricingPage() {
  <meta property="og:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
  <meta property="og:url" content="https://maintenease.com/pricing" />
  <meta property="og:type" content="website" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="MaintenEase Pricing — Plans for Maintenance Teams" />
  <meta name="twitter:description" content="Compare Starter, Pro, and Business plans. 7-day free trial." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
  <script type="application/ld+json">{JSON.stringify(PRODUCT_JSON_LD)}</script>
  </Helmet>
  <MarketingJsonLd />
@@ -134,8 +134,8 @@ export default function PricingPage() {
  <Button
    className={
      plan.popular
-       ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold uppercase tracking-wide"
-       : "w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold uppercase tracking-wide shadow-sm"
+       ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold"
+       : "w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-sm"
    }
    disabled={loadingTier === plan.tier}
    onClick={() => startCheckout(plan.tier)}

@@ -15,7 +15,7 @@ const WorkOrdersPage = () => {
  title="Work Orders"
  description="Oversee asset health and maintenance workflows with precision."
  actions={
- <Button variant="default" size="default" onClick={goNew} className="hidden sm:inline-flex gap-2 uppercase tracking-wide font-semibold">
+ <Button variant="default" size="default" onClick={goNew} className="hidden sm:inline-flex gap-2 font-semibold">
  <Plus className="h-4 w-4" />Report a Problem
  </Button>
  }
@@ -24,9 +24,8 @@ const WorkOrdersPage = () => {
  {/* Mobile CTA */}
  <Button
  variant="default"
- size="lg"
  onClick={goNew}
- className="w-full sm:hidden gap-2 uppercase tracking-wide font-semibold"
+ className="w-full sm:hidden gap-2 font-semibold"
  >
  <Plus className="h-5 w-5" />Report a Problem
  </Button>

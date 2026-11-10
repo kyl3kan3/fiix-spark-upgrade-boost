@@ -39,15 +39,13 @@ const AutomationsPage: React.FC = () => {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-              <Zap className="h-8 w-8" />
-              Automations
+            <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Automations
             </h1>
-            <p className="text-base text-muted-foreground mt-1">
+            <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
               Recurring checklists and scheduled work that runs automatically.
             </p>
           </div>
-          <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold shadow-sm">
+          <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold shadow-sm">
             <Link to="/checklists/new">
               <Plus className="h-4 w-4 mr-2" />
               Create Automation
@@ -85,7 +83,7 @@ const AutomationsPage: React.FC = () => {
                       Create a recurring checklist to automate your facility operations.
                     </p>
                   </div>
-                  <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     <Link to="/checklists/new">Create a recurring checklist</Link>
                   </Button>
                 </div>

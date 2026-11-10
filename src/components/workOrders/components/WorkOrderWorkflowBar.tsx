@@ -70,7 +70,7 @@ export function WorkOrderWorkflowBar({ workOrder, onUpdated }: Props) {
             <div key={step.key} className="flex items-center gap-2">
               <span
                 className={cn(
-                  "text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full border",
+                  "text-xs font-semibold px-2.5 py-1 rounded-full border",
                   i <= stepIndex
                     ? "bg-primary/10 text-primary border-primary/30"
                     : "bg-muted text-muted-foreground border-border",

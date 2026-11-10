@@ -48,7 +48,7 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
         <div className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border">
           <Shield className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Role</p>
+            <p className="text-xs text-muted-foreground font-semibold">Role</p>
             <p className={`text-sm font-medium ${profileData.role === "administrator" ? "text-primary" : "text-foreground"}`}>
               {formatRole(profileData.role)}
             </p>
@@ -57,7 +57,7 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
         {profileData.phone_number && (
           <div className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border">
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Phone</p>
+              <p className="text-xs text-muted-foreground font-semibold">Phone</p>
               <p className="text-sm font-medium text-foreground">{profileData.phone_number}</p>
             </div>
           </div>
@@ -65,7 +65,7 @@ export const ProfileDisplay: React.FC<ProfileDisplayProps> = ({ profileData, onE
         <div className="flex items-center gap-2 p-3 rounded-lg bg-background border border-border">
           <Clock className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">Member since</p>
+            <p className="text-xs text-muted-foreground font-semibold">Member since</p>
             <p className="text-sm font-medium text-foreground">{formatDate(profileData.created_at)}</p>
           </div>
         </div>

@@ -14,14 +14,14 @@ const FormActions: React.FC<FormActionsProps> = ({ isLoading }) => {
         variant="ghost"
         onClick={() => window.history.back()}
         disabled={isLoading}
-        className="uppercase tracking-wide font-semibold text-xs px-6"
+        className="font-semibold text-xs px-6"
       >
         Cancel
       </Button>
       <Button
         type="submit"
         disabled={isLoading}
-        className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+        className="font-semibold text-xs px-8 gap-2 shadow-sm"
       >
         {isLoading ? "Saving…" : "Save Vendor"}
       </Button>

@@ -17,7 +17,7 @@ import {
 import { ChartContainer } from "@/components/ui/chart";
 
 // Colors for charts
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)'];
 
 export type ChartDatum = Record<string, string | number>;
 
@@ -30,9 +30,9 @@ export const BarChartComponent: React.FC<ChartProps> = ({ data }) => {
  <ChartContainer
  className="h-full w-full"
  config={{
- workOrders: { label: "Work Orders", color: "#1976D2" },
- completed: { label: "Completed", color: "#4CAF50" },
- inProgress: { label: "In Progress", color: "#FF9800" },
+ workOrders: { label: "Work Orders", color: "var(--chart-1)" },
+ completed: { label: "Completed", color: "var(--chart-2)" },
+ inProgress: { label: "In Progress", color: "var(--chart-3)" },
  }}
  >
  <BarChart
@@ -49,9 +49,9 @@ export const BarChartComponent: React.FC<ChartProps> = ({ data }) => {
  <YAxis />
  <Tooltip />
  <Legend />
- <Bar dataKey="workOrders" fill="#1976D2" />
- <Bar dataKey="completed" fill="#4CAF50" />
- <Bar dataKey="inProgress" fill="#FF9800" />
+ <Bar dataKey="workOrders" fill="var(--chart-1)" />
+ <Bar dataKey="completed" fill="var(--chart-2)" />
+ <Bar dataKey="inProgress" fill="var(--chart-3)" />
  </BarChart>
  </ChartContainer>
  );
@@ -62,8 +62,8 @@ export const LineChartComponent: React.FC<ChartProps> = ({ data }) => {
  <ChartContainer
  className="h-full w-full"
  config={{
- preventive: { label: "Preventive", color: "#4CAF50" },
- corrective: { label: "Corrective", color: "#FF9800" },
+ preventive: { label: "Preventive", color: "var(--chart-1)" },
+ corrective: { label: "Corrective", color: "var(--chart-2)" },
  }}
  >
  <LineChart
@@ -80,8 +80,8 @@ export const LineChartComponent: React.FC<ChartProps> = ({ data }) => {
  <YAxis />
  <Tooltip />
  <Legend />
- <Line type="monotone" dataKey="preventive" stroke="#4CAF50" activeDot={{ r: 8 }} />
- <Line type="monotone" dataKey="corrective" stroke="#FF9800" />
+ <Line type="monotone" dataKey="preventive" stroke="var(--chart-1)" activeDot={{ r: 8 }} />
+ <Line type="monotone" dataKey="corrective" stroke="var(--chart-2)" />
  </LineChart>
  </ChartContainer>
  );
@@ -92,7 +92,7 @@ export const PieChartComponent: React.FC<ChartProps> = ({ data }) => {
  <ChartContainer
  className="h-full w-full"
  config={{
- value: { label: "Value", color: "#1976D2" },
+ value: { label: "Value", color: "var(--chart-1)" },
  }}
  >
  <PieChart>
@@ -102,7 +102,7 @@ export const PieChartComponent: React.FC<ChartProps> = ({ data }) => {
  cy="50%"
  labelLine={false}
  outerRadius={80}
- fill="#8884d8"
+ fill="var(--chart-1)"
  dataKey="value"
  nameKey="name"
  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}

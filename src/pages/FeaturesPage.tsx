@@ -24,14 +24,14 @@ const FeaturesPage = () => {
         />
         <meta property="og:url" content="https://maintenease.com/features" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Features — MaintenEase" />
         <meta
           name="twitter:description"
           content="Every MaintenEase feature, in one place."
         />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">
           {JSON.stringify(buildItemListJsonLd(
             "MaintenEase CMMS features",

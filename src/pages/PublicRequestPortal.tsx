@@ -187,7 +187,7 @@ const PublicRequestPortal = () => {
  </div>
  )}
  <div>
- <p className="text-xs uppercase tracking-wide text-muted-foreground">Maintenance requests</p>
+ <p className="text-xs text-muted-foreground">Maintenance requests</p>
  <h1 className="text-lg font-semibold text-foreground leading-tight">{company.name}</h1>
  </div>
  </div>

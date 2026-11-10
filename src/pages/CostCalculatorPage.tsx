@@ -16,11 +16,10 @@ import {
   MAX_TEAM_SIZE,
 } from "@/lib/cmmsSavings";
 
-// Chart colors validated with the palette validator (light #2952e6 / dark
-// #3366ff accent vs #64748b neutral: lightness, CVD ΔE≈61, contrast all pass).
+// Bars use the app chart series color against the muted neutral (index.css).
 // Identity is never color-alone — every bar carries its vendor name + value.
-const BAR_ACCENT = "bg-[#2952e6] dark:bg-[#3366ff]";
-const BAR_NEUTRAL = "bg-[#64748b]";
+const BAR_ACCENT = "bg-[var(--chart-series-1)]";
+const BAR_NEUTRAL = "bg-muted-foreground";
 
 const FAQS = [
   {
@@ -97,11 +96,11 @@ const CostCalculatorPage = () => {
         <meta property="og:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="CMMS Cost Calculator — Per-Seat vs Account Plans" />
         <meta name="twitter:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
@@ -129,7 +128,7 @@ const CostCalculatorPage = () => {
           {/* Team size control */}
           <div className="mb-10">
             <div className="flex items-end justify-between mb-4">
-              <label htmlFor="team-size" className="text-sm font-semibold text-foreground uppercase tracking-wide">
+              <label htmlFor="team-size" className="text-sm font-semibold text-foreground">
                 Technicians on your team
               </label>
               <span className="font-headline text-4xl font-bold text-foreground tabular-nums" aria-live="polite">
@@ -154,7 +153,7 @@ const CostCalculatorPage = () => {
           {/* Stat tiles */}
           <div className="grid sm:grid-cols-3 gap-4 mb-10">
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+              <p className="text-xs font-semibold text-muted-foreground mb-1">
                 MaintenEase {result.mainteneasePlan}
               </p>
               <p className="text-2xl font-bold text-foreground tabular-nums">
@@ -167,7 +166,7 @@ const CostCalculatorPage = () => {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+              <p className="text-xs font-semibold text-muted-foreground mb-1">
                 Priciest per-seat rival
               </p>
               <p className="text-2xl font-bold text-foreground tabular-nums">
@@ -176,7 +175,7 @@ const CostCalculatorPage = () => {
               <p className="text-xs text-muted-foreground mt-1">at {result.teamSize} technicians</p>
             </div>
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+              <p className="text-xs font-semibold text-muted-foreground mb-1">
                 Best-case annual savings
               </p>
               <p className="text-2xl font-bold text-foreground tabular-nums">
@@ -192,7 +191,7 @@ const CostCalculatorPage = () => {
 
           {/* Cost comparison figure — direct-labeled horizontal bars */}
           <div role="img" aria-label={`Monthly CMMS cost comparison for a team of ${result.teamSize}`}>
-            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
+            <h2 className="text-sm font-semibold text-foreground mb-4">
               Monthly cost at {result.teamSize} technicians
             </h2>
             <ul className="space-y-4">
@@ -266,7 +265,7 @@ const CostCalculatorPage = () => {
           <p className="text-lg text-primary-foreground/85 mb-8 max-w-2xl mx-auto">
             Start a 7-day free trial with published account-plan and seat pricing, plus free onboarding and data import.
           </p>
-          <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
+          <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md">
             <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
         </div>

@@ -94,17 +94,17 @@ const Landing = () => {
         />
         <meta property="og:url" content="https://maintenease.com/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
+        <meta property="og:image:alt" content="MaintenEase — Stop downtime before it starts. Dark card with the MaintenEase wordmark beside a yellow wrench tag, and the tagline about techs and owners." />
         <meta property="og:site_name" content="MaintenEase" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="MaintenEase — Stop Downtime Before It Starts" />
         <meta name="twitter:description" content={META_DESCRIPTION} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
-        <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Navy card with the MaintenEase wordmark, emerald gear-and-wrench mark, and the tagline about techs and owners." />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
+        <meta name="twitter:image:alt" content="MaintenEase — Stop downtime before it starts. Dark card with the MaintenEase wordmark beside a yellow wrench tag, and the tagline about techs and owners." />
         <meta name="twitter:site" content="@maintenease" />
       <script type="application/ld+json">
           {JSON.stringify({
@@ -150,7 +150,7 @@ const Landing = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide font-semibold group"
+                  className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md font-semibold group"
                   onClick={() => navigate("/auth?signup=true")}
                 >
                   Start free trial
@@ -238,7 +238,7 @@ const Landing = () => {
               </p>
               <Button
                 size="lg"
-                className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md group"
+                className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md group"
                 onClick={() => navigate("/auth?signup=true")}
               >
                 Start Free Trial

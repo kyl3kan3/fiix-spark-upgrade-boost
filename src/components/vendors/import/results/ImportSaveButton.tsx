@@ -16,7 +16,7 @@ export const ImportSaveButton: React.FC<ImportSaveButtonProps> = ({
     <div className="flex justify-end pt-2">
       <Button
         onClick={onSave}
-        className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+        className="font-semibold text-xs px-8 gap-2 shadow-sm"
       >
         <Save className="h-4 w-4" />
         Save {vendorCount} Vendors to Database

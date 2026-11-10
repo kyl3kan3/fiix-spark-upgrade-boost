@@ -16,7 +16,7 @@ const MarketingPrimaryCta = ({
   return (
     <Button
       size="lg"
-      className={`bg-primary text-primary-foreground hover:bg-primary-variant px-8 font-semibold uppercase tracking-wide shadow-md ${className}`.trim()}
+      className={`bg-primary text-primary-foreground hover:bg-primary-variant px-8 font-semibold shadow-md ${className}`.trim()}
       onClick={() => navigate(SIGNUP_PATH)}
     >
       {label}

@@ -104,7 +104,7 @@ export const ConfigureStep: React.FC<ConfigureStepProps> = ({
       <Button variant="outline" onClick={onReset}>Back</Button>
       <Button
         onClick={onPreview}
-        className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+        className="font-semibold text-xs px-8 gap-2 shadow-sm"
       >
         Preview Items
       </Button>

@@ -108,22 +108,22 @@ const InspectionsList: React.FC<InspectionsListProps> = ({ inspections, loading 
  {/* Meta grid */}
  <div className="grid grid-cols-2 md:grid-cols-3 flex-1 gap-4 items-center">
  <div>
- <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Scheduled</span>
+ <span className="text-xs text-muted-foreground font-bold block mb-1">Scheduled</span>
  <span className="text-sm text-foreground flex items-center gap-1.5">
  <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
  {format(new Date(inspection.scheduledDate), "MMM d, yyyy")}
  </span>
  </div>
  <div>
- <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Assigned To</span>
+ <span className="text-xs text-muted-foreground font-bold block mb-1">Assigned To</span>
  <span className="text-sm text-foreground flex items-center gap-1.5">
  <User className="h-3.5 w-3.5 text-muted-foreground" />
  {inspection.assignedTo}
  </span>
  </div>
  <div className="flex flex-col items-start">
- <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block mb-1">Status</span>
- <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase ${getStatusBadge(inspection.status)}`}>
+ <span className="text-xs text-muted-foreground font-bold block mb-1">Status</span>
+ <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(inspection.status)}`}>
  {inspection.status.replace('-', ' ')}
  </span>
  </div>

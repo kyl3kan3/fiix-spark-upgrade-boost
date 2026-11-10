@@ -74,8 +74,8 @@ const AdminEmailLogPage: React.FC = () => {
     return (
       <DashboardLayout>
         <div className="text-center py-20">
-          <h1 className="text-2xl font-bold mb-2">Admins only</h1>
-          <p className="text-muted-foreground mb-4">This page contains sensitive delivery data.</p>
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground mb-6">Admins only</h1>
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">This page contains sensitive delivery data.</p>
           <Button onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
         </div>
       </DashboardLayout>
@@ -91,8 +91,8 @@ const AdminEmailLogPage: React.FC = () => {
         </Button>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2"><Mail className="h-5 w-5" /> Email Delivery Log</h1>
-            <p className="text-sm text-muted-foreground">Resend events for emails sent from your workspace.</p>
+            <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Email Delivery Log</h1>
+            <p className="mt-1 text-sm text-muted-foreground max-w-2xl">Resend events for emails sent from your workspace.</p>
           </div>
           <Button variant="outline" size="sm" onClick={load}>
             <RefreshCw className="h-4 w-4 mr-1" /> Refresh

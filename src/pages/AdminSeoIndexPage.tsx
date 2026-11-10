@@ -134,8 +134,8 @@ const AdminSeoIndexPage: React.FC = () => {
  </Button>
  <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
  <div>
- <h1 className="text-3xl font-bold tracking-normal">SEO Index Tracker</h1>
- <p className="mt-1 text-sm text-foreground">
+ <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">SEO Index Tracker</h1>
+ <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
  Live indexing status from Google Search Console for every marketing URL.
  {lastRunAt && (
  <span className="ml-2 text-muted-foreground">Last scan: {lastRunAt.toLocaleString()}</span>
@@ -192,7 +192,7 @@ const AdminSeoIndexPage: React.FC = () => {
  )}
  {results.length > 0 && (
  <table className="w-full min-w-[760px] text-sm">
- <thead className="bg-muted text-left text-xs uppercase tracking-wide text-muted-foreground">
+ <thead className="bg-muted text-left text-xs text-muted-foreground">
  <tr>
  <th className="px-4 py-2">URL</th>
  <th className="px-4 py-2">Status</th>
@@ -252,7 +252,7 @@ function StatCard({ label, value, tone }: { label: string; value: number; tone?:
  return (
  <Card>
  <CardContent className="p-4">
- <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+ <div className="text-xs text-muted-foreground">{label}</div>
  <div className={`mt-1 text-2xl font-semibold ${toneClass}`}>{value}</div>
  </CardContent>
  </Card>

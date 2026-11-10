@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
+import PageContainer from "@/components/shell/PageContainer";
 import { HelpCircle } from "lucide-react";
 import { HelpSearchBar } from "@/components/help/components/HelpSearchBar";
 import { SearchResults } from "@/components/help/components/SearchResults";
@@ -67,10 +68,8 @@ const Help = () => {
  })),
  })}</script>
  </Helmet>
- <div className="flex items-center mb-6">
- <HelpCircle className="h-6 w-6 text-primary mr-2" />
- <h1 className="text-2xl font-bold text-foreground">Help Center</h1>
- </div>
+ <PageContainer>
+ <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground mb-6">Help Center</h1>
 
  <div className="mb-6 flex flex-wrap gap-2">
  <Button
@@ -115,7 +114,8 @@ const Help = () => {
  searchResults={searchResults}
  onOpenChat={handleOpenChat}
  />
- 
+ </PageContainer>
+
  <LiveChatSheet
  open={chatOpen}
  onOpenChange={setChatOpen}

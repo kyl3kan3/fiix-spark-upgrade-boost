@@ -43,7 +43,7 @@ const MonthView: React.FC<MonthViewProps> = ({ events }) => {
  <h4 className="font-headline text-sm font-semibold text-foreground line-clamp-2 flex-1">
  {event.title}
  </h4>
- <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase shrink-0 ${getStatusBadge(event.status)}`}>
+ <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${getStatusBadge(event.status)}`}>
  {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
  </span>
  </div>

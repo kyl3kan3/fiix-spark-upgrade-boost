@@ -114,7 +114,7 @@ const AssetDetailPage = () => {
               <div className="p-6 flex-1">
                 <div className="flex items-center gap-2 mb-4">
                   <h3 className="font-headline font-semibold text-lg text-foreground">Technical Specifications</h3>
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusConfig.className}`}>
                     {statusConfig.label}
                   </span>
                 </div>
@@ -174,7 +174,7 @@ const AssetDetailPage = () => {
                   <Cog className="h-5 w-5 text-primary" />
                 </div>
                 <p className="font-headline font-semibold text-xl text-foreground mb-1">{asset.name}</p>
-                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
+                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusConfig.className}`}>
                   {statusConfig.label}
                 </span>
                 {locationLabel && (

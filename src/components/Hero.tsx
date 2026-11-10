@@ -1,90 +1,112 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import Tilt3D from "@/components/marketing/Tilt3D";
+import { ArrowRight, CalendarDays, MapPin, User } from "lucide-react";
 import { SIGNUP_PATH } from "@/data/signupRoute";
-import { Menu, LayoutGrid, BarChart3 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+/** Illustrative work orders for the hero. Uses the app's own queue names. */
+const QUEUE = [
+  {
+    id: "WO-1042",
+    title: "Boiler 2 low-water cutoff test",
+    asset: "Boiler room, Building B",
+    who: "Dana R.",
+    due: "Due today",
+    lane: "Right away",
+    tone: "bg-destructive/10 text-destructive border-destructive/30",
+  },
+  {
+    id: "WO-1041",
+    title: "Replace belt on AHU-04 supply fan",
+    asset: "Roof, Building A",
+    who: "Marcus T.",
+    due: "Due Thu",
+    lane: "Being worked on",
+    tone: "bg-primary/10 text-primary border-primary/30",
+  },
+  {
+    id: "WO-1038",
+    title: "Grease conveyor C3 gearbox",
+    asset: "Line 3",
+    who: "Unassigned",
+    due: "Due Mon",
+    lane: "Up next",
+    tone: "bg-warning/10 text-warning border-warning/30",
+  },
+];
 
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <header className="relative overflow-hidden bg-background pb-20 pt-24 md:pb-28 md:pt-28">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsl(var(--primary) / 0.05) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.05) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%)",
-          WebkitMaskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%)",
-        }}
-      />
-
+    <header className="relative overflow-hidden bg-sidebar pb-16 pt-28 text-white md:pb-24 md:pt-36">
       <div className="container relative z-10 mx-auto max-w-7xl px-4">
-        <div className="flex flex-col items-center gap-12 md:flex-row">
-          <div className="flex-1 space-y-8 text-center md:text-left">
-            <h1 className="font-headline text-4xl font-bold leading-[1.1] tracking-normal text-foreground md:text-5xl xl:text-[3.25rem]">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
+          <div>
+            <h1 className="font-headline text-[2.75rem] font-bold leading-[1.02] text-white sm:text-6xl xl:text-7xl">
               CMMS Software for Facility &amp; Maintenance Teams
             </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-sidebar-foreground">
+              Work orders, assets, inspections and preventive maintenance in one place, on the phone your
+              technicians already carry.
+            </p>
 
-            <div className="flex justify-center pt-2 md:justify-start">
+            <div className="mt-8 flex">
               <Button
                 size="lg"
-                className="w-full bg-primary px-8 uppercase tracking-wide text-primary-foreground shadow-md transition-ui hover:bg-primary-variant sm:w-auto"
+                className="w-full bg-highlight px-7 text-highlight-foreground hover:bg-highlight hover:brightness-95 focus-visible:ring-white focus-visible:ring-offset-sidebar sm:w-auto"
                 onClick={() => navigate(SIGNUP_PATH)}
               >
                 Start free trial
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
           </div>
 
-          <div className="relative w-full max-w-xl flex-1">
-            <Tilt3D maxTilt={7} className="float-3d">
-              <div className="flex aspect-[4/3] w-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-                <div className="flex h-12 shrink-0 items-center justify-between border-b border-border bg-card px-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded bg-primary">
-                      <div className="h-3.5 w-3.5 rounded-sm border-2 border-primary-foreground" />
-                    </div>
-                    <span className="font-headline text-sm font-bold text-primary">MaintenEase</span>
-                  </div>
-                  <div className="h-6 w-6 rounded-full border border-border bg-muted" />
-                </div>
-
-                <div className="flex min-h-0 flex-1 overflow-hidden">
-                  <div className="flex w-12 shrink-0 flex-col items-center gap-4 border-r border-border bg-muted/40 py-4">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-                      <Menu className="h-4 w-4" />
-                    </div>
-                    <LayoutGrid className="h-4 w-4 text-muted-foreground" />
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  <div className="grid min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-2 bg-muted/20 p-3">
-                    {[
-                      { l: "Active WOs", v: "142" },
-                      { l: "MTBF Avg", v: "842h" },
-                      { l: "Compliance", v: "98.4%" },
-                    ].map((k) => (
-                      <div
-                        key={k.l}
-                        className="col-span-4 row-span-1 flex flex-col justify-center rounded-md border border-border bg-card p-2"
-                      >
-                        <span className="text-[8px] font-bold uppercase tracking-wider text-muted-foreground">
-                          {k.l}
-                        </span>
-                        <span className="text-lg font-bold leading-none text-primary">{k.v}</span>
-                      </div>
-                    ))}
-                    <div className="col-span-12 row-span-3 rounded-md border border-border bg-card p-3">
-                      <h3 className="text-[10px] font-bold text-primary">Work queue</h3>
-                    </div>
-                  </div>
-                </div>
+          {/* A work queue, drawn the way the app draws it. Decorative. */}
+          <div aria-hidden className="relative mx-auto w-full max-w-xl">
+            <div className="rounded-xl border border-sidebar-border bg-sidebar-accent p-3 sm:p-4">
+              <div className="mb-3 flex items-center justify-between px-1">
+                <span className="font-headline text-base font-semibold text-white">Today's work orders</span>
+                <span className="text-sm tabular-nums text-sidebar-foreground">3 open</span>
               </div>
-            </Tilt3D>
+              <ul className="space-y-2.5">
+                {QUEUE.map((wo) => (
+                  <li
+                    key={wo.id}
+                    className="rounded-lg border border-border bg-card p-4 text-card-foreground shadow-md"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold tabular-nums text-muted-foreground">{wo.id}</div>
+                        <div className="mt-0.5 font-headline text-lg font-semibold leading-snug">{wo.title}</div>
+                      </div>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-sm border px-2 py-0.5 text-xs font-semibold leading-5",
+                          wo.tone,
+                        )}
+                      >
+                        {wo.lane}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {wo.asset}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <User className="h-3.5 w-3.5" />
+                        {wo.who}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        {wo.due}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

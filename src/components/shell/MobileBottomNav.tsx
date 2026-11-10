@@ -29,10 +29,13 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  ];
  const navColumns = items.length + 1;
 
+ const cell =
+ "relative flex flex-col items-center justify-center gap-1 pt-2.5 pb-1.5 px-1 text-[11px] font-semibold leading-none transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
+
  return (
- <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border pb-safe">
+ <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border pb-safe">
  <div
-   className="grid px-1 pt-1.5"
+   className="grid"
    style={{ gridTemplateColumns: `repeat(${navColumns}, minmax(0, 1fr))` }}
  >
  {items.map((it) => {
@@ -43,22 +46,17 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  to={it.href}
  className={({ isActive }) =>
  cn(
- "flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-2xl transition-colors",
+ cell,
  isActive
- ? "text-primary"
+ ? "text-foreground before:absolute before:top-0 before:left-3 before:right-3 before:h-[3px] before:rounded-b-full before:bg-highlight"
  : "text-muted-foreground hover:text-foreground"
  )
  }
  >
  {({ isActive }) => (
  <>
- <div className={cn(
- "h-9 w-12 flex items-center justify-center rounded-2xl transition-ui",
- isActive && "bg-primary/15"
- )}>
- <Icon className="h-5 w-5" strokeWidth={isActive ? 2.6 : 2.2} />
- </div>
- <span className="text-[11px] font-bold leading-none">{it.label}</span>
+ <Icon className="h-5 w-5" strokeWidth={isActive ? 2.4 : 2} />
+ <span>{it.label}</span>
  </>
  )}
  </NavLink>
@@ -66,12 +64,10 @@ const MobileBottomNav: React.FC<Props> = ({ onOpenMenu }) => {
  })}
  <button
  onClick={onOpenMenu}
- className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-2xl text-muted-foreground hover:text-foreground"
+ className={cn(cell, "text-muted-foreground hover:text-foreground")}
  >
- <div className="h-9 w-12 flex items-center justify-center rounded-2xl">
- <Menu className="h-5 w-5" strokeWidth={2.2} />
- </div>
- <span className="text-[11px] font-bold leading-none" aria-label="More navigation options">More</span>
+ <Menu className="h-5 w-5" strokeWidth={2} />
+ <span aria-label="More navigation options">More</span>
  </button>
  </div>
  </nav>

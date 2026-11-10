@@ -24,7 +24,7 @@ const RequestPortalSection = () => (
               No login required
             </li>
           </ul>
-          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold">
+          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold">
             <Link to="/solutions/maintenance-request-portal">Request portal</Link>
           </Button>
         </div>

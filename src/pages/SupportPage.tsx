@@ -72,11 +72,11 @@ const SupportPage = () => (
       <meta property="og:title" content={SUPPORT_PAGE.title} />
       <meta property="og:description" content={SUPPORT_PAGE.description} />
       <meta property="og:url" content={SUPPORT_PAGE.canonicalUrl} />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={SUPPORT_PAGE.title} />
       <meta name="twitter:description" content={SUPPORT_PAGE.description} />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">{JSON.stringify(contactPageJsonLd)}</script>
       <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
     </Helmet>
@@ -113,7 +113,7 @@ const SupportPage = () => (
               <MessageSquareText className="h-6 w-6" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-primary">Faster troubleshooting</p>
+              <p className="text-sm font-semibold text-primary">Faster troubleshooting</p>
               <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">What to include</h2>
             </div>
           </div>
@@ -131,7 +131,7 @@ const SupportPage = () => (
 
     <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Self-service support</p>
+        <p className="text-sm font-semibold text-primary">Self-service support</p>
         <h2 className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
           Start with the topic closest to your question
         </h2>
@@ -169,7 +169,7 @@ const SupportPage = () => (
     <section className="border-y border-border bg-muted/35 py-16 md:py-24">
       <div className="container mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-[1fr_0.9fr] lg:items-center">
         <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Contact support</p>
+          <p className="text-sm font-semibold text-primary">Contact support</p>
           <h2 className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
             Still stuck? Send us the details.
           </h2>
@@ -179,7 +179,7 @@ const SupportPage = () => (
         </div>
         <div className="rounded-3xl bg-primary p-7 text-primary-foreground shadow-lg sm:p-8">
           <Mail className="h-8 w-8" aria-hidden="true" />
-          <p className="mt-5 text-sm font-semibold uppercase tracking-wide text-primary-foreground/75">Support email</p>
+          <p className="mt-5 text-sm font-semibold text-primary-foreground/75">Support email</p>
           <a
             href={SUPPORT_PAGE.emailHref}
             className="mt-2 block break-all font-headline text-2xl font-semibold text-primary-foreground underline decoration-primary-foreground/35 underline-offset-4 hover:decoration-primary-foreground"
@@ -194,7 +194,7 @@ const SupportPage = () => (
     </section>
 
     <section className="container mx-auto max-w-4xl px-4 py-16 md:py-24">
-      <p className="text-sm font-semibold uppercase tracking-wide text-primary">Frequently asked questions</p>
+      <p className="text-sm font-semibold text-primary">Frequently asked questions</p>
       <h2 className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
         Support questions, answered plainly
       </h2>
@@ -210,7 +210,7 @@ const SupportPage = () => (
         ))}
       </div>
 
-      <aside className="mt-8 flex gap-4 rounded-2xl bg-amber-500/10 p-5 text-amber-950 ring-1 ring-amber-500/20 dark:text-amber-100">
+      <aside className="mt-8 flex gap-4 rounded-2xl bg-warning/10 p-5 text-foreground ring-1 ring-warning/30">
         <ShieldAlert className="mt-0.5 h-6 w-6 shrink-0" aria-hidden="true" />
         <div>
           <h3 className="font-semibold text-balance">For immediate hazards, use your emergency procedure</h3>

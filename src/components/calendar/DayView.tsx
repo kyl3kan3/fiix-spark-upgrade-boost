@@ -54,25 +54,25 @@ const DayView: React.FC<DayViewProps> = ({ events }) => {
  <h4 className="font-headline text-base font-semibold text-foreground">{event.title}</h4>
  <p className="text-sm text-muted-foreground mt-0.5">{event.description}</p>
  </div>
- <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase shrink-0 ${getStatusBadge(event.status)}`}>
+ <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0 ${getStatusBadge(event.status)}`}>
  {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
  </span>
  </div>
  <div className="grid grid-cols-2 gap-3 text-sm">
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Technician</p>
+ <p className="text-xs text-muted-foreground font-bold mb-0.5">Technician</p>
  <p className="font-medium text-foreground">{event.technician}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Time</p>
+ <p className="text-xs text-muted-foreground font-bold mb-0.5">Time</p>
  <p className="font-medium text-foreground">{format(event.date, "h:mm a")}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Type</p>
+ <p className="text-xs text-muted-foreground font-bold mb-0.5">Type</p>
  <p className="font-medium text-foreground capitalize">{event.type}</p>
  </div>
  <div>
- <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-0.5">Asset</p>
+ <p className="text-xs text-muted-foreground font-bold mb-0.5">Asset</p>
  <p className="font-medium text-foreground">{event.asset}</p>
  </div>
  </div>

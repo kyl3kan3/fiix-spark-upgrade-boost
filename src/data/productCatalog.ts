@@ -316,7 +316,7 @@ export const PRODUCT_JSON_LD = {
   dateModified: PRODUCT_LAST_MODIFIED,
   image: {
     "@type": "ImageObject",
-    contentUrl: `${SITE_ORIGIN}/og-image.png?v=4`,
+    contentUrl: `${SITE_ORIGIN}/og-image.png?v=5`,
     caption: "MaintenEase CMMS subscription plans",
   },
   brand: { "@id": brandId },

@@ -39,7 +39,7 @@ export const ChecklistSection: React.FC<ChecklistSectionProps> = ({
 
   return (
     <section className="space-y-3">
-      <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <h4 className="text-xs font-medium text-muted-foreground">
         Inspection checklist
       </h4>
 

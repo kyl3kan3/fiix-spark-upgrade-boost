@@ -67,7 +67,7 @@ import TemplatesIndex from "../TemplatesIndex";
 import TemplatePage from "../TemplatePage";
 import SupportPage from "../SupportPage";
 
-const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=4";
+const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=5";
 
 type RouteCase = {
  name: string;

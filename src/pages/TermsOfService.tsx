@@ -15,18 +15,18 @@ export default function TermsOfService() {
  <meta property="og:description" content="The terms governing your use of the MaintenEase service." />
  <meta property="og:url" content="https://maintenease.com/terms" />
  <meta property="og:type" content="article" />
- <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="Terms & Conditions | MaintenEase" />
  <meta name="twitter:description" content="The terms governing your use of the MaintenEase service." />
- <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+ <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
  <script type="application/ld+json">{JSON.stringify({
  "@context": "https://schema.org",
  "@type": "Article",
  headline: "Terms & Conditions",
  datePublished: "2024-01-01",
  author: { "@type": "Organization", name: "Decent4" },
- image: "https://maintenease.com/og-image.png?v=4",
+ image: "https://maintenease.com/og-image.png?v=5",
  publisher: { "@type": "Organization", name: "MaintenEase", logo: { "@type": "ImageObject", url: "https://maintenease.com/favicon.png" } }
  })}</script>
  </Helmet>

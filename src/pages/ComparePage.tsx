@@ -80,11 +80,11 @@ const ComparePage = () => {
         <meta property="og:description" content={c.metaDescription} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={c.metaTitle} />
         <meta name="twitter:description" content={c.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
         {webPageLd ? <script type="application/ld+json">{JSON.stringify(webPageLd)}</script> : null}
@@ -99,7 +99,7 @@ const ComparePage = () => {
           <span className="text-foreground">{c.h1}</span>
         </nav>
         <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{c.h1}</h1>
-        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
+        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
           <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
         </Button>
       </section>
@@ -330,7 +330,7 @@ const ComparePage = () => {
             Start a 7-day free trial on the plan whose included seats and capacity fit your team.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
+            <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md">
               <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </div>

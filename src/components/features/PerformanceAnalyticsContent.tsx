@@ -47,10 +47,10 @@ const PerformanceAnalyticsContent: React.FC = () => {
  ];
 
  const costBredownData = [
- { name: "Labor", value: 45, color: "#3B82F6" },
- { name: "Parts", value: 30, color: "#10B981" },
- { name: "External Services", value: 15, color: "#F59E0B" },
- { name: "Other", value: 10, color: "#EF4444" },
+ { name: "Labor", value: 45, color: "var(--chart-1)" },
+ { name: "Parts", value: 30, color: "var(--chart-2)" },
+ { name: "External Services", value: 15, color: "var(--chart-3)" },
+ { name: "Other", value: 10, color: "var(--chart-4)" },
  ];
 
  const maintenanceTypeData = [
@@ -139,8 +139,8 @@ const PerformanceAnalyticsContent: React.FC = () => {
  <YAxis yAxisId="right" orientation="right" />
  <Tooltip />
  <Legend />
- <Line yAxisId="left" type="monotone" dataKey="uptime" stroke="#3B82F6" name="Uptime %" />
- <Line yAxisId="right" type="monotone" dataKey="mttr" stroke="#EF4444" name="MTTR (hours)" />
+ <Line yAxisId="left" type="monotone" dataKey="uptime" stroke="var(--chart-1)" name="Uptime %" />
+ <Line yAxisId="right" type="monotone" dataKey="mttr" stroke="var(--chart-2)" name="MTTR (hours)" />
  </LineChart>
  </ResponsiveContainer>
  </CardContent>
@@ -157,7 +157,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  <XAxis dataKey="month" />
  <YAxis />
  <Tooltip formatter={(value) => [`$${value}`, 'Cost']} />
- <Bar dataKey="cost" fill="#10B981" />
+ <Bar dataKey="cost" fill="var(--chart-1)" />
  </BarChart>
  </ResponsiveContainer>
  </CardContent>
@@ -181,7 +181,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  </div>
  </div>
  <div className="flex items-center gap-2">
- <div className="w-32 bg-secondary rounded-full h-2">
+ <div className="w-32 bg-muted rounded-full h-2">
  <div 
  className="bg-primary h-2 rounded-full" 
  style={{ width: `${asset.efficiency}%` }}
@@ -210,7 +210,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  cx="50%"
  cy="50%"
  outerRadius={100}
- fill="#8884d8"
+ fill="var(--chart-1)"
  dataKey="value"
  label={({ name, value }) => `${name}: ${value}%`}
  >

@@ -28,7 +28,7 @@ export default function EditorialPolicyPage() {
       </Helmet>
       <MarketingJsonLd />
       <div className="container mx-auto max-w-3xl px-4 py-12 md:py-16">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Last reviewed August 21, 2026</p>
+        <p className="text-sm font-semibold text-primary">Last reviewed August 21, 2026</p>
         <h1 className="mt-3 font-headline text-4xl font-bold text-foreground text-balance md:text-5xl">Editorial policy and methodology</h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground text-pretty">This policy explains how MaintenEase publishes useful maintenance education without inventing experience, research, customer evidence, reviews, or credentials.</p>
         <div className="mt-12 space-y-10">

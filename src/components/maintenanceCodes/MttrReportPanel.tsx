@@ -20,7 +20,7 @@ export function MttrReportPanel() {
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+            <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
               <th className="p-3">Failure code</th>
               <th className="p-3">Jobs</th>
               <th className="p-3">Avg downtime (min)</th>
