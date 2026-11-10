@@ -96,11 +96,11 @@ const BlogIndex = () => {
         <meta property="og:description" content={BLOG_INDEX_META_DESCRIPTION} />
         <meta property="og:url" content="https://maintenease.com/blog" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Blog | MaintenEase" />
         <meta name="twitter:description" content={BLOG_INDEX_META_DESCRIPTION} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       </Helmet>
 
       <MarketingPageHeader title="Blog" />

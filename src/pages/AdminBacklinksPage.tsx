@@ -167,8 +167,8 @@ const AdminBacklinksPage: React.FC = () => {
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="mb-3">
           <ArrowLeft className="mr-1 h-4 w-4" /> Back to Dashboard
         </Button>
-        <h1 className="text-3xl font-bold tracking-normal">Backlink Outreach Tracker</h1>
-        <p className="mt-1 mb-6 text-sm text-muted-foreground">
+        <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Backlink Outreach Tracker</h1>
+        <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
           Log referring-domain prospects, track outreach, and mark links live. Data is scoped to your company.
         </p>
 

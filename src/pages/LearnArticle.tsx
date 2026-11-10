@@ -174,12 +174,12 @@ const LearnArticle = () => {
  <meta property="og:description" content={term.metaDescription} />
  <meta property="og:url" content={url} />
  <meta property="og:type" content="article" />
- <meta property="og:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
+ <meta property="og:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=5"} />
  {term.image && <meta property="og:image:alt" content={term.image.alt} />}
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content={term.metaTitle} />
  <meta name="twitter:description" content={term.metaDescription} />
- <meta name="twitter:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=4"} />
+ <meta name="twitter:image" content={representativeImage ?? "https://maintenease.com/og-image.png?v=5"} />
  <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
  <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>

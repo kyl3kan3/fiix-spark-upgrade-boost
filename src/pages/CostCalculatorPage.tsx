@@ -96,11 +96,11 @@ const CostCalculatorPage = () => {
         <meta property="og:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="CMMS Cost Calculator — Per-Seat vs Account Plans" />
         <meta name="twitter:description" content="Compare published per-seat CMMS pricing with MaintenEase account plans, included seats, and Business extra seats." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>

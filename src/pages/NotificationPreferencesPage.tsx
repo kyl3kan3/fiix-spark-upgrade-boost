@@ -97,13 +97,13 @@ const NotificationPreferencesPage: React.FC = () => {
   return (
     <DashboardLayout>
       <Helmet><title>Notification Preferences | MaintenEase</title></Helmet>
-      <div className="px-4 md:px-6 lg:px-8 py-6 max-w-2xl space-y-4">
+      <div className="mx-auto w-full max-w-[1400px] px-4 md:px-6 lg:px-8 py-6"><div className="max-w-2xl space-y-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="-ml-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Dashboard
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">Notification Preferences</h1>
-          <p className="text-sm text-muted-foreground">Choose how you want to be notified.</p>
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Notification Preferences</h1>
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">Choose how you want to be notified.</p>
         </div>
 
         {loading ? (
@@ -176,7 +176,7 @@ const NotificationPreferencesPage: React.FC = () => {
             </div>
           </>
         )}
-      </div>
+      </div></div>
     </DashboardLayout>
   );
 };

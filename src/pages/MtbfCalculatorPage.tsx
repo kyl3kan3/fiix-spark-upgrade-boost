@@ -145,11 +145,11 @@ const MtbfCalculatorPage = () => {
         <meta property="og:description" content={PAGE.metaDescription} />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         {/* WebPage, FAQPage and BreadcrumbList JSON-LD ship once in the prerendered HTML
             (scripts/prerender.ts). Repeating them here would duplicate each type after hydration. */}
       </Helmet>

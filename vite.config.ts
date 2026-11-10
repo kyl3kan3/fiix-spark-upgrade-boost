@@ -82,8 +82,8 @@ export default defineConfig(({ mode }) => {
           name: "MaintenEase",
           short_name: "MaintenEase",
           description: "Maintenance work orders and assets",
-          theme_color: "#0f172a",
-          background_color: "#0f172a",
+          theme_color: "#141a1f",
+          background_color: "#141a1f",
           display: "standalone",
           start_url: "/dashboard",
           icons: [

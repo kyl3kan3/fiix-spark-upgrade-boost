@@ -72,11 +72,11 @@ const SupportPage = () => (
       <meta property="og:title" content={SUPPORT_PAGE.title} />
       <meta property="og:description" content={SUPPORT_PAGE.description} />
       <meta property="og:url" content={SUPPORT_PAGE.canonicalUrl} />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={SUPPORT_PAGE.title} />
       <meta name="twitter:description" content={SUPPORT_PAGE.description} />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">{JSON.stringify(contactPageJsonLd)}</script>
       <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
     </Helmet>

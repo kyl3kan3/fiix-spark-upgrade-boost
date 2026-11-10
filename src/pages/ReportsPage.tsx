@@ -19,7 +19,7 @@ const ReportsPage = () => {
  title="Analytics & Reports"
  description="Simple summaries of your work — what's done, what's pending, and how things are trending."
  actions={
- <Button className="bg-primary hover:bg-primary-variant text-primary-foreground shadow-sm" size="lg">
+ <Button className="bg-primary hover:bg-primary-variant text-primary-foreground shadow-sm">
  <Download className="h-4 w-4 mr-2" />
  Generate Report
  </Button>

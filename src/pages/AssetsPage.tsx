@@ -101,11 +101,11 @@ const AssetsPage = () => {
        <meta property="og:description" content="Track every tool, vehicle, and machine in one place." />
        <meta property="og:url" content="https://maintenease.com/assets" />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Assets | MaintenEase" />
       <meta name="twitter:description" content="Track every tool, vehicle, and machine in one place." />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
      </Helmet>
      <PageHeader
        title="Assets"
@@ -114,11 +114,11 @@ const AssetsPage = () => {
          <div className="flex gap-2 flex-wrap">
            <Button
              variant="outline"
-             size="lg"
+            
              onClick={handlePrintSetupSheet}
              disabled={filteredAssets.length === 0}
            >
-             <Printer className="h-5 w-5" />
+             <Printer className="h-4 w-4" />
              Setup Sheet
            </Button>
            <AssetBulkQrLabels
@@ -128,8 +128,8 @@ const AssetsPage = () => {
              }))}
            />
            <BulkAddAssetsDialog />
-           <Button variant="accent" size="lg" onClick={() => navigate("/assets/new")}>
-             <Plus className="h-5 w-5" />Add Equipment
+           <Button variant="accent" onClick={() => navigate("/assets/new")}>
+             <Plus className="h-4 w-4" />Add Equipment
            </Button>
          </div>
        }

@@ -107,11 +107,9 @@ const Settings = () => {
 
         {/* Page Header */}
         <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <SettingsIcon className="h-8 w-8" />
-            Settings
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Settings
           </h1>
-          <p className="text-base text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Manage your workspace preferences and organizational profile.
           </p>
         </div>

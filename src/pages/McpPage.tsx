@@ -65,11 +65,11 @@ const McpPage = () => (
       <meta property="og:title" content={MCP_PAGE.metaTitle} />
       <meta property="og:description" content={MCP_PAGE.metaDescription} />
       <meta property="og:url" content={CANONICAL} />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={MCP_PAGE.metaTitle} />
       <meta name="twitter:description" content={MCP_PAGE.metaDescription} />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">{JSON.stringify(pageJsonLd)}</script>
       <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
     </Helmet>

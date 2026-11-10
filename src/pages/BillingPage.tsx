@@ -149,11 +149,9 @@ export default function BillingPage() {
         </Button>
 
         <div>
-          <h1 className="font-headline text-3xl font-bold text-primary flex items-center gap-3">
-            <CreditCard className="h-8 w-8" />
-            Billing &amp; Subscription
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">Billing &amp; Subscription
           </h1>
-          <p className="text-base text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Manage your MaintenEase workspace plan, payment methods, and usage.
           </p>
         </div>

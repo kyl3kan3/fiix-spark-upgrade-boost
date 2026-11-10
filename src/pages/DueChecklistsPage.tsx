@@ -176,7 +176,7 @@ const DueChecklistsPage: React.FC = () => {
  title="Due Today"
  description="What needs checking today, plus anything overdue or coming up."
  actions={
- <Button variant="outline" size="lg" onClick={() => navigate("/checklists")}>
+ <Button variant="outline" onClick={() => navigate("/checklists")}>
  All Checklists
  </Button>
  }

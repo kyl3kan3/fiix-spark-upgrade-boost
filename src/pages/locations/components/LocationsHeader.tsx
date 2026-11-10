@@ -31,10 +31,10 @@ export const LocationsHeader: React.FC<LocationsHeaderProps> = ({
      {/* Title row */}
      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
        <div>
-         <h1 className="font-headline text-2xl sm:text-3xl font-bold text-foreground leading-tight">
+         <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">
            Locations
          </h1>
-         <p className="text-muted-foreground mt-1 text-sm">
+         <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
            Manage your facility locations and site hierarchy
          </p>
        </div>

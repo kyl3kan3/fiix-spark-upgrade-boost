@@ -17,8 +17,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
  code, title, description, actions, meta, className,
 }) => {
  return (
- <div className={cn("border-b border-border bg-card", className)}>
- <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 py-5")}>
+ <div className={cn("bg-transparent", className)}>
+ <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 pt-6")}>
  <div className="flex items-start justify-between gap-4 flex-wrap">
  <div className="min-w-0">
  <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight">

@@ -138,11 +138,11 @@ const MaintenanceSimplifiedPage = () => (
       <meta property="og:description" content={DESCRIPTION} />
       <meta property="og:url" content={URL} />
       <meta property="og:type" content="article" />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={TITLE} />
       <meta name="twitter:description" content={DESCRIPTION} />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
@@ -152,7 +152,7 @@ const MaintenanceSimplifiedPage = () => (
           mainEntityOfPage: URL,
           datePublished: DATE_PUBLISHED,
           dateModified: DATE_MODIFIED,
-          image: "https://maintenease.com/og-image.png?v=4",
+          image: "https://maintenease.com/og-image.png?v=5",
           author: { "@type": "Organization", name: "MaintenEase" },
           publisher: {
             "@type": "Organization",

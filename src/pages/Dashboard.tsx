@@ -58,23 +58,23 @@ const Dashboard: React.FC = () => {
           content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta property="og:url" content="https://maintenease.com/dashboard" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Dashboard | MaintenEase" />
         <meta name="twitter:description" content="Your MaintenEase workspace overview — track work orders, technician activity, and facility KPIs at a glance." />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       </Helmet>
 
       <PageContainer className="min-w-0 overflow-x-hidden">
-        <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between min-w-0">
+        <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between min-w-0">
           <div className="min-w-0">
-            <h2 className="font-headline text-3xl font-bold leading-tight tracking-normal text-foreground sm:text-4xl lg:text-5xl mb-2 break-words">
+            <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground break-words">
               {isLoading
                 ? "Loading…"
                 : `Hello${userName ? `, ${userName.split(" ")[0]}` : ""}.`}
-            </h2>
-            <p className="text-lg leading-relaxed text-muted-foreground">
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Here is your {companyName ? `${companyName} ` : ""}facility
               overview for today, {today}.
             </p>

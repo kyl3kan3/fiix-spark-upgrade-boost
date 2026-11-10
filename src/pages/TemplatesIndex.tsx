@@ -30,11 +30,11 @@ const TemplatesIndex = () => (
       <meta property="og:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
       <meta property="og:url" content="https://maintenease.com/templates" />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Free maintenance templates and checklists" />
       <meta name="twitter:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
-      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+      <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
     </Helmet>
     <MarketingJsonLd />

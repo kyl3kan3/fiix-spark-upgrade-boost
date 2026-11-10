@@ -112,7 +112,7 @@ const BulkAddAssetsDialog: React.FC = () => {
  return (
  <Dialog open={open} onOpenChange={setOpen}>
  <DialogTrigger asChild>
- <Button variant="outline" size="lg">
+ <Button variant="outline">
  <Layers className="h-5 w-5" />
  Bulk Add
  </Button>

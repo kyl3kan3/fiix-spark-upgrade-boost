@@ -45,11 +45,10 @@ export function AssetBulkQrLabels({ assets }: { assets: AssetRow[] }) {
   return (
     <Button
       variant="outline"
-      size="lg"
       onClick={printLabels}
       disabled={printing || assets.length === 0}
     >
-      <Printer className="h-5 w-5" />
+      <Printer className="h-4 w-4" />
       QR labels ({assets.length})
     </Button>
   );

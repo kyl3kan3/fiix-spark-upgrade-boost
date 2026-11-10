@@ -134,8 +134,8 @@ const AdminSeoIndexPage: React.FC = () => {
  </Button>
  <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
  <div>
- <h1 className="text-3xl font-bold tracking-normal">SEO Index Tracker</h1>
- <p className="mt-1 text-sm text-foreground">
+ <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">SEO Index Tracker</h1>
+ <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
  Live indexing status from Google Search Console for every marketing URL.
  {lastRunAt && (
  <span className="ml-2 text-muted-foreground">Last scan: {lastRunAt.toLocaleString()}</span>

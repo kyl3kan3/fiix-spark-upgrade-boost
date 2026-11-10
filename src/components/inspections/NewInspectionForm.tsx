@@ -40,7 +40,7 @@ const NewInspectionForm: React.FC = () => {
  A check-up is a list of things to walk through and tick off — like a safety check or a daily equipment look-over.
  </p>
  </div>
- <Button variant="accent" size="lg" onClick={() => navigate("/checklists/new")}>
+ <Button variant="accent" onClick={() => navigate("/checklists/new")}>
  Create the first check-up
  <ArrowRight className="h-4 w-4" />
  </Button>

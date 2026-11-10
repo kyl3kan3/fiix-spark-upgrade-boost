@@ -55,7 +55,7 @@ import { SIGNUP_PATH } from "../src/data/signupRoute";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
-const OG_IMAGE = `${ORIGIN}/og-image.png?v=4`;
+const OG_IMAGE = `${ORIGIN}/og-image.png?v=5`;
 const SIGNUP_CTA_ROUTES = new Set(["/", "/pricing", "/features"]);
 const FEATURE_ITEMS = [
   ["Work Order Management", "Create, assign, and track work orders from one shared queue."],

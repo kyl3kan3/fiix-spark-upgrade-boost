@@ -25,10 +25,10 @@ const SsoPage: React.FC = () => {
             <ShieldCheck className="h-4 w-4" />
             <span>Administration</span>
           </div>
-          <h1 className="font-headline text-3xl font-bold text-foreground">
+          <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight text-foreground">
             SSO &amp; Security Configuration
           </h1>
-          <p className="text-base text-muted-foreground mt-1 max-w-2xl">
+          <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
             Let your team sign in with your corporate identity provider. Manage enterprise
             authentication protocols and organization-wide security policies.
           </p>

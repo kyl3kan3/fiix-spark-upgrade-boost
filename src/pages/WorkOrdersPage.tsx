@@ -24,7 +24,6 @@ const WorkOrdersPage = () => {
  {/* Mobile CTA */}
  <Button
  variant="default"
- size="lg"
  onClick={goNew}
  className="w-full sm:hidden gap-2 font-semibold"
  >

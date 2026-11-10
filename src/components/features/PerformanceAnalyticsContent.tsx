@@ -47,10 +47,10 @@ const PerformanceAnalyticsContent: React.FC = () => {
  ];
 
  const costBredownData = [
- { name: "Labor", value: 45, color: "#1F63CF" },
- { name: "Parts", value: 30, color: "#2E8B4E" },
- { name: "External Services", value: 15, color: "#C2610C" },
- { name: "Other", value: 10, color: "#C3261D" },
+ { name: "Labor", value: 45, color: "var(--chart-1)" },
+ { name: "Parts", value: 30, color: "var(--chart-2)" },
+ { name: "External Services", value: 15, color: "var(--chart-3)" },
+ { name: "Other", value: 10, color: "var(--chart-4)" },
  ];
 
  const maintenanceTypeData = [
@@ -139,8 +139,8 @@ const PerformanceAnalyticsContent: React.FC = () => {
  <YAxis yAxisId="right" orientation="right" />
  <Tooltip />
  <Legend />
- <Line yAxisId="left" type="monotone" dataKey="uptime" stroke="#1F63CF" name="Uptime %" />
- <Line yAxisId="right" type="monotone" dataKey="mttr" stroke="#C3261D" name="MTTR (hours)" />
+ <Line yAxisId="left" type="monotone" dataKey="uptime" stroke="var(--chart-1)" name="Uptime %" />
+ <Line yAxisId="right" type="monotone" dataKey="mttr" stroke="var(--chart-2)" name="MTTR (hours)" />
  </LineChart>
  </ResponsiveContainer>
  </CardContent>
@@ -157,7 +157,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  <XAxis dataKey="month" />
  <YAxis />
  <Tooltip formatter={(value) => [`$${value}`, 'Cost']} />
- <Bar dataKey="cost" fill="#2E8B4E" />
+ <Bar dataKey="cost" fill="var(--chart-1)" />
  </BarChart>
  </ResponsiveContainer>
  </CardContent>
@@ -210,7 +210,7 @@ const PerformanceAnalyticsContent: React.FC = () => {
  cx="50%"
  cy="50%"
  outerRadius={100}
- fill="#5057C8"
+ fill="var(--chart-1)"
  dataKey="value"
  label={({ name, value }) => `${name}: ${value}%`}
  >

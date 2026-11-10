@@ -61,7 +61,7 @@ const InspectionsPage = () => {
  title="Check-Ups"
  description="Manage scheduled, ongoing, and historical equipment audits."
  actions={
- <Button size="lg" onClick={() => navigate("/inspections/new")}>
+ <Button onClick={() => navigate("/inspections/new")}>
  <Plus className="h-5 w-5 mr-1.5" />
  Start New Inspection
  </Button>

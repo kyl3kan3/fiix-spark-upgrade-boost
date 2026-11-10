@@ -164,7 +164,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                     <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                     <Tooltip />
-                    <Bar dataKey="events" name="Events" fill="#5057C8" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="events" name="Events" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -194,7 +194,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                       label={({ tier, count }) => `${tier}: ${count}`}
                     >
                       {data.byTier.map((d) => (
-                        <Cell key={d.tier} fill={TIER_COLORS[d.tier] ?? "#7A848E"} />
+                        <Cell key={d.tier} fill={TIER_COLORS[d.tier] ?? "hsl(var(--muted-foreground))"} />
                       ))}
                     </Pie>
                     <Tooltip />

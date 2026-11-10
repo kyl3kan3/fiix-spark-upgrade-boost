@@ -266,11 +266,11 @@ const BlogPost = () => {
         <meta property="og:description" content={description} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
         {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>

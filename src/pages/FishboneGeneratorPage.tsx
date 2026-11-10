@@ -110,11 +110,11 @@ const FishboneGeneratorPage = () => {
         <meta property="og:description" content={PAGE.metaDescription} />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
-        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=4" />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
         <script type="application/ld+json">{JSON.stringify(pageLd)}</script>
         <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
       </Helmet>
