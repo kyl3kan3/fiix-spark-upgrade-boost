@@ -34,10 +34,10 @@ type WO = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
- pending: "#F59E0B",
- in_progress: "#3B82F6",
- completed: "#10B981",
- cancelled: "#9CA3AF",
+ pending: "#C2610C",
+ in_progress: "#1F63CF",
+ completed: "#2E8B4E",
+ cancelled: "#7A848E",
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -184,8 +184,8 @@ const AnalyticsOverview: React.FC = () => {
  <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
  <Tooltip />
  <Legend />
- <Bar dataKey="created" name="Created" fill="#3B82F6" radius={[4, 4, 0, 0]} />
- <Bar dataKey="completed" name="Completed" fill="#10B981" radius={[4, 4, 0, 0]} />
+ <Bar dataKey="created" name="Created" fill="#1F63CF" radius={[4, 4, 0, 0]} />
+ <Bar dataKey="completed" name="Completed" fill="#2E8B4E" radius={[4, 4, 0, 0]} />
  </BarChart>
  </ResponsiveContainer>
  </div>
@@ -216,7 +216,7 @@ const AnalyticsOverview: React.FC = () => {
  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
  >
  {statusData.map((d) => (
- <Cell key={d.key} fill={STATUS_COLORS[d.key] ?? "#9CA3AF"} />
+ <Cell key={d.key} fill={STATUS_COLORS[d.key] ?? "#7A848E"} />
  ))}
  </Pie>
  <Tooltip />
@@ -245,7 +245,7 @@ const AnalyticsOverview: React.FC = () => {
  <XAxis type="number" tick={{ fontSize: 12 }} allowDecimals={false} />
  <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={80} />
  <Tooltip />
- <Bar dataKey="value" name="Work Orders" fill="#8B5CF6" radius={[0, 4, 4, 0]} />
+ <Bar dataKey="value" name="Work Orders" fill="#7B4FB8" radius={[0, 4, 4, 0]} />
  </BarChart>
  </ResponsiveContainer>
  )}

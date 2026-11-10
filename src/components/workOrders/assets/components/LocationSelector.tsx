@@ -111,7 +111,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
           <Button
             type="button"
             onClick={handleAddLocation}
-            className="uppercase tracking-wide font-semibold text-xs"
+            className="font-semibold text-xs"
           >
             Add
           </Button>

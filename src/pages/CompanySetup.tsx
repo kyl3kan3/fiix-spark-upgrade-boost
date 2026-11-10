@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import BrandMark from "@/components/shell/BrandMark";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/auth";
-import { Loader2, AlertCircle, Building2, CheckCircle2 } from "lucide-react";
+import {Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createCompany, fetchUserCompany, updateCompany } from "@/services/company";
@@ -161,9 +162,8 @@ const CompanySetup: React.FC = () => {
    {/* Top nav bar */}
    <nav className="fixed top-0 z-50 w-full h-16 bg-background/80 backdrop-blur-md border-b border-border flex items-center justify-between px-6">
      <div className="flex items-center gap-2">
-       <Building2 className="h-5 w-5 text-primary" strokeWidth={1.5} />
-       <span className="font-headline text-lg font-bold text-primary">MaintenEase</span>
-       <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wide">
+       <BrandMark />
+       <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
          Setup
        </span>
      </div>
@@ -218,7 +218,7 @@ const CompanySetup: React.FC = () => {
 
          <form onSubmit={handleSubmit} className="space-y-6">
            <div>
-             <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+             <Label htmlFor="name" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                Company Name <span className="text-destructive">*</span>
              </Label>
              <Input
@@ -228,13 +228,13 @@ const CompanySetup: React.FC = () => {
                onChange={handleChange}
                placeholder="e.g. Acme Manufacturing Corp"
                required
-               className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+              
              />
            </div>
 
            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
              <div>
-               <Label htmlFor="industry" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+               <Label htmlFor="industry" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                  Industry
                </Label>
                <Input
@@ -243,11 +243,11 @@ const CompanySetup: React.FC = () => {
                  value={formData.industry}
                  onChange={handleChange}
                  placeholder="Manufacturing, Healthcare, etc."
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
              <div>
-               <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+               <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                  Phone Number
                </Label>
                <Input
@@ -257,20 +257,20 @@ const CompanySetup: React.FC = () => {
                  value={formData.phone}
                  onChange={handleChange}
                  placeholder="(555) 123-4567"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
            </div>
 
            <div>
-             <Label htmlFor="timezone" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+             <Label htmlFor="timezone" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                Facility Timezone
              </Label>
              <Select
                value={formData.timezone}
                onValueChange={(timezone) => setFormData((current) => ({ ...current, timezone }))}
              >
-               <SelectTrigger id="timezone" className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background">
+               <SelectTrigger id="timezone">
                  <SelectValue placeholder="Select timezone" />
                </SelectTrigger>
                <SelectContent className="max-h-72">
@@ -284,7 +284,7 @@ const CompanySetup: React.FC = () => {
            </div>
 
            <div>
-             <Label htmlFor="address" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+             <Label htmlFor="address" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                Address
              </Label>
              <Textarea
@@ -293,49 +293,49 @@ const CompanySetup: React.FC = () => {
                value={formData.address}
                onChange={handleChange}
                placeholder="123 Main Street"
-               className="resize-none bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+               className="resize-none"
              />
            </div>
 
            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
              <div>
-               <Label htmlFor="city" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">City</Label>
+               <Label htmlFor="city" className="text-xs font-semibold text-muted-foreground mb-1.5 block">City</Label>
                <Input
                  id="city"
                  name="city"
                  value={formData.city}
                  onChange={handleChange}
                  placeholder="New York"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
              <div>
-               <Label htmlFor="state" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">State</Label>
+               <Label htmlFor="state" className="text-xs font-semibold text-muted-foreground mb-1.5 block">State</Label>
                <Input
                  id="state"
                  name="state"
                  value={formData.state}
                  onChange={handleChange}
                  placeholder="NY"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
              <div>
-               <Label htmlFor="zipCode" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">ZIP Code</Label>
+               <Label htmlFor="zipCode" className="text-xs font-semibold text-muted-foreground mb-1.5 block">ZIP Code</Label>
                <Input
                  id="zipCode"
                  name="zipCode"
                  value={formData.zipCode}
                  onChange={handleChange}
                  placeholder="10001"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
            </div>
 
            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
              <div>
-               <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+               <Label htmlFor="email" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                  Business Email
                </Label>
                <Input
@@ -345,11 +345,11 @@ const CompanySetup: React.FC = () => {
                  value={formData.email}
                  onChange={handleChange}
                  placeholder="contact@acme.com"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
              <div>
-               <Label htmlFor="website" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5 block">
+               <Label htmlFor="website" className="text-xs font-semibold text-muted-foreground mb-1.5 block">
                  Website
                </Label>
                <Input
@@ -358,7 +358,7 @@ const CompanySetup: React.FC = () => {
                  value={formData.website}
                  onChange={handleChange}
                  placeholder="https://www.acme.com"
-                 className="bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+                
                />
              </div>
            </div>
@@ -374,7 +374,7 @@ const CompanySetup: React.FC = () => {
              </Button>
              <Button
                type="submit"
-               className="bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui px-8"
+               className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md hover:-translate-y-0.5 transition-ui px-8"
                disabled={isSubmitting || !formData.name}
              >
                {isSubmitting ? (

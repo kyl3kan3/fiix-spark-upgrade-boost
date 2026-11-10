@@ -44,8 +44,8 @@ const Pricing = () => {
                 <Button
                   className={
                     plan.popular
-                      ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold uppercase tracking-wide"
-                      : "w-full border-primary text-primary hover:bg-primary/5 font-semibold uppercase tracking-wide"
+                      ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold"
+                      : "w-full border-primary text-primary hover:bg-primary/5 font-semibold"
                   }
                   variant={plan.popular ? "default" : "outline"}
                   onClick={() => navigate(SIGNUP_PATH)}

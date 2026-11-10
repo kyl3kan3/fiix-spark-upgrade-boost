@@ -108,7 +108,7 @@ export const LocationFilters: React.FC<LocationFiltersProps> = ({
            </span>
          )}
          {dateFilter !== "all" && (
-           <span className="inline-flex items-center gap-1.5 bg-accent/8 text-accent-foreground px-2.5 py-1 rounded-full text-xs font-medium border border-accent/20">
+           <span className="inline-flex items-center gap-1.5 bg-muted text-foreground px-2.5 py-1 rounded-full text-xs font-medium border border-border">
              Date: {dateFilter.charAt(0).toUpperCase() + dateFilter.slice(1)}
            </span>
          )}

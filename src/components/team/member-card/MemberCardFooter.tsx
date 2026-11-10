@@ -31,7 +31,7 @@ const MemberCardFooter: React.FC<MemberCardFooterProps> = ({
  
  return (
  <div className="border-t border-border bg-background/50 px-5 py-3 flex items-center justify-between rounded-b-lg">
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role</span>
+ <span className="text-xs font-semibold text-muted-foreground">Role</span>
  <UserRoleSelector
  userId={userIdString}
  currentRole={displayRole}

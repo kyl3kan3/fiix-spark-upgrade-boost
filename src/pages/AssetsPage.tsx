@@ -179,7 +179,7 @@ const AssetsPage = () => {
            {/* Fleet efficiency */}
            <div className="bg-primary text-primary-foreground rounded-xl p-5 flex items-center justify-between overflow-hidden relative min-h-[120px]">
              <div className="relative z-10">
-               <span className="text-xs font-bold uppercase tracking-widest text-primary-foreground/70 mb-3 block">
+               <span className="text-xs font-bold text-primary-foreground/70 mb-3 block">
                  Fleet Efficiency
                </span>
                <p className="font-headline text-2xl font-bold leading-none mb-1">

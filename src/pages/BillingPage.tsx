@@ -166,7 +166,7 @@ export default function BillingPage() {
             {!isAdminLoading && isAdminUser ? (
               <Button
                 asChild
-                className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
               >
                 <Link to="/pricing">Choose a plan</Link>
               </Button>
@@ -183,7 +183,7 @@ export default function BillingPage() {
                 <div className="p-6 flex-1">
                   <div className="flex justify-between items-start mb-6">
                     <div>
-                      <span className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider mb-2">
+                      <span className="inline-flex items-center px-2 py-1 rounded bg-primary/10 text-primary text-xs font-semibold mb-2">
                         Current Plan
                       </span>
                       <h2 className="font-headline text-2xl font-semibold text-foreground flex items-center gap-2 capitalize">
@@ -278,7 +278,7 @@ export default function BillingPage() {
                   <Button
                     onClick={openPortal}
                     disabled={opening}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
                   >
                     {opening ? (
                       "Opening…"
@@ -325,7 +325,7 @@ export default function BillingPage() {
                 </div>
                 <Button
                   asChild
-                  className="relative z-10 w-full bg-white text-primary hover:bg-white/90 uppercase tracking-wide text-xs font-semibold"
+                  className="relative z-10 w-full bg-white text-primary hover:bg-white/90 text-xs font-semibold"
                 >
                   <Link to="/pricing#plan-business">View the Business plan</Link>
                 </Button>

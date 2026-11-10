@@ -20,7 +20,7 @@ const EmptyWorkOrdersState: React.FC<EmptyWorkOrdersStateProps> = ({ onCreateWor
  <Button
  variant="default"
  size="lg"
- className="mt-8 gap-2 uppercase tracking-wide font-semibold px-8"
+ className="mt-8 gap-2 font-semibold px-8"
  onClick={onCreateWorkOrder}
  >
  <Plus className="h-4 w-4" />

@@ -53,7 +53,7 @@ const OnboardingForm: React.FC = () => {
  <Button
  disabled={submitting || !isFormValid}
  type="submit"
- className="w-full bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md hover:-translate-y-0.5 transition-ui"
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md hover:-translate-y-0.5 transition-ui"
  >
  {submitting ? (
  <>

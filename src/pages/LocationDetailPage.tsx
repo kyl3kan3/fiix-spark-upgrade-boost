@@ -191,7 +191,7 @@ const LocationDetailPage = () => {
                         <p className="text-xs text-muted-foreground truncate">{asset.description}</p>
                       )}
                     </div>
-                    <span className={`ml-3 shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${getAssetStatusConfig(asset.status)}`}>
+                    <span className={`ml-3 shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getAssetStatusConfig(asset.status)}`}>
                       {asset.status}
                     </span>
                   </div>

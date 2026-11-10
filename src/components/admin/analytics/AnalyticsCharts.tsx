@@ -53,12 +53,12 @@ export function AnalyticsCharts({ data, days }: AnalyticsChartsProps) {
                 <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="signups" name="Signups" stroke="#3B82F6" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="purchases" name="New subscriptions" stroke="#10B981" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="trialsStarted" name="Trials started" stroke="#F59E0B" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="cancels" name="Cancellations" stroke="#EF4444" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="leads" name="Leads" stroke="#8B5CF6" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="companies" name="New companies" stroke="#EC4899" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="signups" name="Signups" stroke="#1F63CF" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="purchases" name="New subscriptions" stroke="#2E8B4E" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="trialsStarted" name="Trials started" stroke="#C2610C" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="cancels" name="Cancellations" stroke="#C3261D" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="leads" name="Leads" stroke="#7B4FB8" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="companies" name="New companies" stroke="#B8457F" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -83,8 +83,8 @@ export function AnalyticsCharts({ data, days }: AnalyticsChartsProps) {
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="visitors" name="Unique visitors" stroke="#06B6D4" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="pageviews" name="Pageviews/events" stroke="#6366F1" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="visitors" name="Unique visitors" stroke="#1591A8" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="pageviews" name="Pageviews/events" stroke="#5057C8" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             )}

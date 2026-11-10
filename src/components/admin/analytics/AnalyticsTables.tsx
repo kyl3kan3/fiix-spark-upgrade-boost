@@ -35,7 +35,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
               <div className="p-6"><Empty label="No trials ending in the next 7 days" /></div>
             ) : (
               <table className="w-full min-w-[480px] text-sm">
-                <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Company</th>
                     <th className="px-4 py-2 text-left">Tier</th>
@@ -73,7 +73,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
               <div className="p-6"><Empty label="No new companies in this range" /></div>
             ) : (
               <table className="w-full min-w-[360px] text-sm">
-                <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Company</th>
                     <th className="px-4 py-2 text-right">Created</th>
@@ -112,7 +112,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
             <div className="p-6"><Empty label="No incomplete signups" /></div>
           ) : (
             <table className="w-full min-w-[560px] text-sm">
-              <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-muted text-xs text-muted-foreground">
                 <tr>
                   <th className="px-4 py-2 text-left">Email</th>
                   <th className="px-4 py-2 text-left">Signed up</th>
@@ -164,7 +164,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                     <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                     <Tooltip />
-                    <Bar dataKey="events" name="Events" fill="#6366F1" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="events" name="Events" fill="#5057C8" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -194,7 +194,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
                       label={({ tier, count }) => `${tier}: ${count}`}
                     >
                       {data.byTier.map((d) => (
-                        <Cell key={d.tier} fill={TIER_COLORS[d.tier] ?? "#9CA3AF"} />
+                        <Cell key={d.tier} fill={TIER_COLORS[d.tier] ?? "#7A848E"} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -216,7 +216,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
               <div className="p-6"><Empty label="No events tracked yet" /></div>
             ) : (
               <table className="w-full min-w-[360px] text-sm">
-                <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Event</th>
                     <th className="px-4 py-2 text-right">Count</th>
@@ -244,7 +244,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
               <div className="p-6"><Empty label="No page views tracked yet" /></div>
             ) : (
               <table className="w-full min-w-[360px] text-sm">
-                <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Page</th>
                     <th className="px-4 py-2 text-right">Views</th>
@@ -276,7 +276,7 @@ export function AnalyticsTables({ data, days }: AnalyticsTablesProps) {
               <div className="p-6"><Empty label="No external referrers tracked yet" /></div>
             ) : (
               <table className="w-full min-w-[360px] text-sm">
-                <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Referrer</th>
                     <th className="px-4 py-2 text-right">Visits</th>

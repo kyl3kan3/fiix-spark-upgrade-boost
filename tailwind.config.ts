@@ -21,11 +21,11 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['"Inter"', 'system-ui', 'sans-serif'],
-				display: ['"Playfair Display"', 'Georgia', 'serif'],
-				headline: ['"Playfair Display"', 'Georgia', 'serif'],
-				serif: ['"Playfair Display"', 'Georgia', 'serif'],
-				mono: ['"Inter"', 'system-ui', 'sans-serif'],
+				sans: ['"Barlow"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+				display: ['"Barlow Semi Condensed"', '"Barlow"', 'system-ui', 'sans-serif'],
+				headline: ['"Barlow Semi Condensed"', '"Barlow"', 'system-ui', 'sans-serif'],
+				serif: ['"Barlow Semi Condensed"', '"Barlow"', 'system-ui', 'sans-serif'],
+				mono: ['"Barlow"', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -45,25 +45,29 @@ export default {
 				},
 				'surface': 'hsl(var(--background))',
 				'surface-container': 'hsl(var(--card))',
-				'surface-container-lowest': '#ffffff',
+				'surface-container-lowest': 'hsl(var(--card))',
 				'on-surface': 'hsl(var(--foreground))',
 				'on-surface-variant': 'hsl(var(--muted-foreground))',
-				'outline-variant': 'rgba(0, 40, 142, 0.10)',
+				'outline-variant': 'hsl(var(--border))',
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				success: {
 					DEFAULT: 'hsl(var(--success))',
-					foreground: 'hsl(0 0% 100%)'
+					foreground: 'hsl(var(--success-foreground))'
 				},
 				warning: {
 					DEFAULT: 'hsl(var(--warning))',
-					foreground: 'hsl(0 0% 100%)'
+					foreground: 'hsl(var(--warning-foreground))'
 				},
 				info: {
 					DEFAULT: 'hsl(var(--info))',
-					foreground: 'hsl(0 0% 100%)'
+					foreground: 'hsl(var(--info-foreground))'
+				},
+				highlight: {
+					DEFAULT: 'hsl(var(--highlight))',
+					foreground: 'hsl(var(--highlight-foreground))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
@@ -92,10 +96,23 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			// One tight radius family. xl/2xl/3xl are remapped so the ~230 legacy
+			// uses across pages land on the Nameplate scale without a file-by-file edit.
 			borderRadius: {
-				lg: 'calc(var(--radius) + 2px)',
+				sm: 'calc(var(--radius) - 2px)',
 				md: 'var(--radius)',
-				sm: 'calc(var(--radius) - 1px)'
+				lg: 'calc(var(--radius) + 2px)',
+				xl: 'calc(var(--radius) + 4px)',
+				'2xl': 'calc(var(--radius) + 6px)',
+				'3xl': 'calc(var(--radius) + 8px)',
+			},
+			boxShadow: {
+				sm: 'var(--shadow-sm)',
+				DEFAULT: 'var(--shadow-sm)',
+				md: 'var(--shadow-md)',
+				lg: 'var(--shadow-lg)',
+				xl: 'var(--shadow-lg)',
+				'2xl': 'var(--shadow-lg)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -119,53 +136,22 @@ export default {
 					'100%': { opacity: '1' }
 				},
 				'slide-up': {
-					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'0%': { transform: 'translateY(8px)', opacity: '0' },
 					'100%': { transform: 'translateY(0)', opacity: '1' }
 				},
 				"entry-fade-slide": {
-					"0%": { opacity: "0", transform: "translateY(24px)" },
+					"0%": { opacity: "0", transform: "translateY(8px)" },
 					"100%": { opacity: "1", transform: "translateY(0)" }
 				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.5s ease-out',
-				'slide-up': 'slide-up 0.7s ease-out',
-				"entry-fade-slide": "entry-fade-slide 0.45s cubic-bezier(0.4,0,0.2,1)",
+				'fade-in': 'fade-in 0.25s ease-out',
+				'slide-up': 'slide-up 0.3s cubic-bezier(0.2,0,0,1)',
+				"entry-fade-slide": "entry-fade-slide 0.3s cubic-bezier(0.2,0,0,1)",
 			},
-			// Add custom gradients for glassmorphism and primary accent
-			backgroundImage: {
-				'card-gradient': 'linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)',
-				'glass-morphism': 'linear-gradient(112.1deg, rgba(255,255,255,0.85) 0%, rgba(233,245,255,0.60) 100%)',
-				'dark-card-gradient': 'linear-gradient(135deg, #24243e 0%, #302b63 50%, #0f0c29 100%)',
-				'dark-glass-morphism': 'linear-gradient(120deg, rgba(36,40,62,0.65) 0%, rgba(15,12,41,0.90) 100%)'
-			}
 		}
 	},
-	plugins: [
-		tailwindcssAnimate,
-		function ({ addUtilities }) {
-			addUtilities({
-				".card-gradient": {
-					"background": "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)"
-				},
-				".card-gradient-dark": {
-					"background": "linear-gradient(135deg, #222e34 0%, #09101c 100%)"
-				},
-				".glass-morphism": {
-					"background": "linear-gradient(112.1deg, rgba(255,255,255,0.90) 0%, rgba(233,245,255,0.72) 100%)",
-					"backdropFilter": "blur(20px)",
-					"borderRadius": "1.1rem",
-					"border": "1.5px solid rgba(255,255,255,0.22)"
-				},
-				".glass-morphism-dark": {
-					"background": "linear-gradient(112.1deg, rgba(36,40,62,0.80) 0%, rgba(15,12,41,0.86) 100%)",
-					"backdropFilter": "blur(20px)",
-					"borderRadius": "1.1rem",
-					"border": "1.5px solid rgba(30,47,60,0.48)"
-				}
-			});
-		}
-	],
+	plugins: [tailwindcssAnimate],
 } satisfies Config;

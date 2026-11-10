@@ -188,7 +188,7 @@ const MaintenanceSimplifiedPage = () => (
 
     <main className="flex-1">
       <section className="container mx-auto px-4 py-16 md:py-24 max-w-4xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-secondary mb-3">
+        <p className="text-sm font-semibold text-secondary mb-3">
           The playbook
         </p>
         <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-foreground mb-6">
@@ -200,7 +200,7 @@ const MaintenanceSimplifiedPage = () => (
           and one dashboard the owner actually reads.
         </p>
         <div className="flex flex-wrap gap-3 mb-10">
-          <Button asChild size="lg" className="uppercase tracking-wide font-semibold">
+          <Button asChild size="lg"className="font-semibold">
             <Link to="/auth?signup=true">
               Start free trial <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -410,7 +410,7 @@ const MaintenanceSimplifiedPage = () => (
             Start a 7-day free trial. Import your assets, publish a QR request link, and work
             through the first preventive-maintenance setup with your crew.
           </p>
-          <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 uppercase tracking-wide font-semibold">
+          <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold">
             <Link to="/auth?signup=true">
               Start free trial <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

@@ -157,11 +157,11 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating, companyTi
  {/* Card body */}
  <div className="p-6">
  <div className="flex justify-between items-start mb-4">
- <span className="text-xs font-medium text-muted-foreground tracking-wider uppercase">
+ <span className="text-xs font-medium text-muted-foreground">
  #{job.id.split("-")[0].toUpperCase()}
  </span>
  <span className={cn(
- "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border",
+ "px-3 py-1 rounded-full text-[10px] font-bold border",
  priorityPillClasses(job.priority),
  )}>
  {priorityLabel(job.priority)}
@@ -177,14 +177,14 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating, companyTi
 
  <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border/60 pt-5">
  <div>
- <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Assigned</p>
+ <p className="text-xs text-muted-foreground mb-1">Assigned</p>
  <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
  <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
  <span className="truncate">{assignee}</span>
  </p>
  </div>
  <div>
- <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Due</p>
+ <p className="text-xs text-muted-foreground mb-1">Due</p>
  {dueIso ? (
  <p className={cn(
  "text-sm font-semibold flex items-center gap-1.5",
@@ -199,7 +199,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating, companyTi
  </div>
  {job.asset?.name && (
  <div className="col-span-2">
- <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Asset</p>
+ <p className="text-xs text-muted-foreground mb-1">Asset</p>
  <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
  <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
  <span className="truncate">{job.asset.name}</span>
@@ -212,7 +212,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onAdvance, isUpdating, companyTi
  {/* Card footer */}
  <div className="bg-muted/20 px-6 py-3.5 flex justify-between items-center group-hover:bg-muted/40 transition-colors border-t border-border/40">
  <button
- className="text-xs font-bold text-primary hover:underline flex items-center gap-1 uppercase tracking-wider"
+ className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
  onClick={(e) => { e.stopPropagation(); navigate(`/work-orders/${job.id}`); }}
  >
  <ChevronRight className="h-3.5 w-3.5" /> View

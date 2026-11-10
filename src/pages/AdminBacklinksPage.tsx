@@ -36,10 +36,10 @@ const STATUS_OPTIONS = [
 
 const statusTone: Record<string, string> = {
   prospect: "bg-muted text-foreground",
-  contacted: "bg-blue-500/15 text-blue-700 dark:text-blue-300",
-  replied: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-  won: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-  declined: "bg-red-500/15 text-red-700 dark:text-red-300",
+  contacted: "bg-info/10 text-info",
+  replied: "bg-warning/10 text-warning",
+  won: "bg-success/10 text-success",
+  declined: "bg-destructive/10 text-destructive",
 };
 
 const AdminBacklinksPage: React.FC = () => {
@@ -229,7 +229,7 @@ const AdminBacklinksPage: React.FC = () => {
               <div className="px-6 py-10 text-center text-sm text-muted-foreground">No prospects yet — add your first target above.</div>
             ) : (
               <table className="w-full min-w-[900px] text-sm">
-                <thead className="bg-muted text-left text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-muted text-left text-xs text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2">Domain</th>
                     <th className="px-4 py-2">Contact</th>

@@ -24,9 +24,9 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
   setAccountType,
 }) => {
   const fieldClass =
-    "bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui";
+    "";
   const labelClass =
-    "block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5";
+    "block text-xs font-semibold text-muted-foreground mb-1.5";
 
   return (
     <>

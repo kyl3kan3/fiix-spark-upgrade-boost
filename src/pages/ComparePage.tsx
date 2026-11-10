@@ -99,7 +99,7 @@ const ComparePage = () => {
           <span className="text-foreground">{c.h1}</span>
         </nav>
         <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{c.h1}</h1>
-        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant uppercase tracking-wide font-semibold shadow-md">
+        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
           <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
         </Button>
       </section>
@@ -330,7 +330,7 @@ const ComparePage = () => {
             Start a 7-day free trial on the plan whose included seats and capacity fit your team.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md">
+            <Button asChild size="lg" className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md">
               <Link to="/auth?signup=true">Start free <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
           </div>

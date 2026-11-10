@@ -1,5 +1,6 @@
 
 import React from "react";
+import BrandMark from "@/components/shell/BrandMark";
 import { useTeamSetupAuth } from "@/hooks/team/useTeamSetupAuth";
 import { useTeamInvitation } from "@/hooks/team/useTeamInvitation";
 import { TeamSetupHeader } from "@/components/team/setup/TeamSetupHeader";
@@ -7,7 +8,6 @@ import { TeamSetupForm } from "@/components/team/setup/TeamSetupForm";
 import { TeamSetupActions } from "@/components/team/setup/TeamSetupActions";
 import { TeamSetupNotAuthorized } from "@/components/team/setup/TeamSetupNotAuthorized";
 import { TeamSetupLoading } from "@/components/team/setup/TeamSetupLoading";
-import { Building2 } from "lucide-react";
 
 const TeamSetup: React.FC = () => {
   const { isLoading, isAdmin, companyName } = useTeamSetupAuth();
@@ -26,9 +26,8 @@ const TeamSetup: React.FC = () => {
       {/* Top nav bar */}
       <nav className="fixed top-0 z-50 w-full h-16 bg-background/80 backdrop-blur-md border-b border-border flex items-center justify-between px-6">
         <div className="flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-primary" strokeWidth={1.5} />
-          <span className="font-headline text-lg font-bold text-primary">MaintenEase</span>
-          <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wide">
+          <BrandMark />
+          <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
             Setup Wizard
           </span>
         </div>

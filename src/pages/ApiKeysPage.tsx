@@ -126,7 +126,7 @@ const ApiKeysPage: React.FC = () => {
                   <Button
                     onClick={handleCreate}
                     disabled={creating || !name.trim()}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold shadow-sm"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold shadow-sm"
                   >
                     {creating ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -156,7 +156,7 @@ const ApiKeysPage: React.FC = () => {
                   <Button
                     onClick={handleCreate}
                     disabled={creating}
-                    className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+                    className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
                   >
                     {creating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                     Create key
@@ -208,7 +208,7 @@ const ApiKeysPage: React.FC = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleRevoke(k.id)}
-                              className="border-border text-primary hover:bg-primary/5 text-xs uppercase tracking-wide font-semibold"
+                              className="border-border text-primary hover:bg-primary/5 text-xs font-semibold"
                             >
                               Revoke
                             </Button>
@@ -264,7 +264,7 @@ const ApiKeysPage: React.FC = () => {
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 uppercase tracking-wide text-xs font-semibold"
+                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 text-xs font-semibold"
                 >
                   <a href="#" target="_blank" rel="noreferrer">
                     View API Portal

@@ -21,7 +21,7 @@ const SsoPage: React.FC = () => {
 
         {/* Page Header */}
         <div>
-          <div className="flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="flex items-center gap-2 text-primary text-xs font-semibold mb-2">
             <ShieldCheck className="h-4 w-4" />
             <span>Administration</span>
           </div>
@@ -142,7 +142,7 @@ const SsoPage: React.FC = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="shrink-0 border-border text-primary hover:bg-primary/5 text-xs uppercase tracking-wide font-semibold"
+                        className="shrink-0 border-border text-primary hover:bg-primary/5 text-xs font-semibold"
                       >
                         Configure
                       </Button>
@@ -165,7 +165,7 @@ const SsoPage: React.FC = () => {
                   </p>
                   <Button
                     asChild
-                    className="w-full bg-white text-primary hover:bg-white/90 uppercase tracking-wide text-xs font-semibold mb-3"
+                    className="w-full bg-white text-primary hover:bg-white/90 text-xs font-semibold mb-3"
                   >
                     <a href="mailto:support@maintenease.com?subject=SAML%20SSO%20Setup">
                       Request SSO Setup
@@ -174,7 +174,7 @@ const SsoPage: React.FC = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="w-full border-white/30 text-primary-foreground hover:bg-white/10 uppercase tracking-wide text-xs font-semibold"
+                    className="w-full border-white/30 text-primary-foreground hover:bg-white/10 text-xs font-semibold"
                   >
                     Test SSO Connection
                   </Button>
@@ -184,7 +184,7 @@ const SsoPage: React.FC = () => {
               {/* Docs / help card */}
               <Card className="bg-card border border-border rounded-lg shadow-sm">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground">
                     Documentation
                   </CardTitle>
                 </CardHeader>
@@ -209,7 +209,7 @@ const SsoPage: React.FC = () => {
                   <Button
                     asChild
                     variant="ghost"
-                    className="w-full mt-2 text-primary hover:bg-primary/5 text-xs font-semibold uppercase tracking-wide"
+                    className="w-full mt-2 text-primary hover:bg-primary/5 text-xs font-semibold"
                   >
                     <a href="#">
                       Documentation Portal

@@ -162,7 +162,7 @@ const BulkAddAssetsDialog: React.FC = () => {
  const f = e.target.files?.[0];
  if (f) handleFile(f);
  }}
- className="block w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+ className="block w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-muted file:text-foreground hover:file:bg-border"
  />
  </div>
  <p className="text-xs text-muted-foreground">

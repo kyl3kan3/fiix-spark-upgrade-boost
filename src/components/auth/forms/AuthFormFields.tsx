@@ -32,7 +32,7 @@ export const FormField: React.FC<FormFieldProps> = ({
 }) => {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+      <Label htmlFor={id} className="text-xs font-semibold text-muted-foreground">
         {label}
         {required && <span className="text-destructive ml-1">*</span>}
       </Label>
@@ -46,7 +46,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         autoComplete={autoComplete}
         required={required}
         disabled={disabled}
-        className="w-full bg-muted border-transparent focus:border-primary focus:ring-primary focus:bg-background transition-ui"
+        className="w-full"
       />
     </div>
   );

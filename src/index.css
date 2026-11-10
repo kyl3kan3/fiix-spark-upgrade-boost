@@ -1,156 +1,169 @@
-/* Fonts are loaded from index.html via async, display-optional stylesheets
-   so a slow fonts CDN can never block first paint. Do NOT re-add a CSS
-   @import for Google Fonts here: an @import inside this render-blocking
-   bundle forces the browser to fetch it before painting anything, which is
-   exactly the "site loads super slow" failure mode it caused. */
+/* Fonts are self-hosted from src/assets/fonts (Barlow, SIL OFL 1.1) and
+   declared below. Do NOT add a CSS @import or a <link> to a fonts CDN: a
+   remote stylesheet in the render path was the "site loads super slow"
+   failure mode. `font-display: swap` keeps text visible while they load. */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 400; font-display: swap; src: url("./assets/fonts/barlow-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 500; font-display: swap; src: url("./assets/fonts/barlow-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 600; font-display: swap; src: url("./assets/fonts/barlow-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 700; font-display: swap; src: url("./assets/fonts/barlow-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Semi Condensed"; font-style: normal; font-weight: 600; font-display: swap; src: url("./assets/fonts/barlow-semi-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Semi Condensed"; font-style: normal; font-weight: 700; font-display: swap; src: url("./assets/fonts/barlow-semi-condensed-latin-700-normal.woff2") format("woff2"); }
+
 /* =====================================================================
-   Clean Tech — MaintenEase design system (per maintenease_tailwind_config_snippet.md)
-   - Deep navy primary (#00288e), teal secondary (#0d9488)
-   - Surface #f8f9ff, surface-container #ffffff
-   - Playfair Display headlines, Inter body
-   - 8px corner radius
+   Nameplate: MaintenEase design system
+
+   The reference is the equipment data plate and the lockout tag: a flat
+   galvanized-gray work surface, white plates with a definite edge, ink
+   lettering, and one signal color.
+
+   - Work surface #F0F2F4, plates #FFFFFF, ink #141A1F
+   - Primary: safety blue #0A4FB8 (links, actions, selection)
+   - Secondary: petrol #0F676B (second data series, quiet emphasis)
+   - Highlight: signal yellow #FFC800. Reserved for the nav rail's
+     "new work order" action and the current-page tick. Never body text.
+   - Status: green / orange / red, all dark enough to pass 4.5:1 as text
+   - Type: Barlow Semi Condensed headings, Barlow body, sentence case
+   - 6px corner radius; edges do the work, shadows only lift overlays
+
+   `accent` is the neutral hover wash (shadcn convention), not a hue.
    ===================================================================== */
 
 @layer base {
   :root {
-    /* Surface */
-    --background: 228 100% 99%;           /* #f8f9ff surface */
-    --foreground: 220 30% 18%;            /* deep navy ink */
+    --background: 210 15% 95%;
+    --foreground: 207 22% 10%;
 
-    --card: 0 0% 100%;                    /* surface-container */
-    --card-foreground: 220 30% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 207 22% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 18%;
+    --popover-foreground: 207 22% 10%;
 
-    /* Deep navy primary */
-    --primary: 226 100% 28%;              /* #00288e clean tech navy */
+    --primary: 216 90% 38%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 226 100% 40%;
-    --primary-variant: 226 100% 18%;      /* #001a5e pressed/dark navy */
+    --primary-glow: 216 90% 48%;
+    --primary-variant: 216 92% 29%;
 
-    /* Teal secondary */
-    --secondary: 174 84% 32%;             /* #0d9488 clean tech teal */
+    --secondary: 183 75% 24%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 228 40% 96%;
-    --muted-foreground: 215 16% 47%;      /* #64748b on-surface-variant */
+    --muted: 210 13% 91%;
+    --muted-foreground: 208 9% 37%;
 
-    --accent: 174 84% 32%;                /* mirror teal */
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 13% 91%;
+    --accent-foreground: 207 22% 10%;
 
-    /* Chart series colors — validated (lightness band, chroma, CVD
-       separation, contrast) against the light card surface with the dataviz
-       palette checker. Re-run the validator if these change. */
-    --chart-series-1: #2453d6;            /* opened — brand navy, chart step */
-    --chart-series-2: #0d9488;            /* completed — brand teal */
+    --highlight: 47 100% 50%;
+    --highlight-foreground: 207 22% 10%;
 
-    --success: 142 71% 45%;               /* #22c55e */
-    --warning: 38 92% 50%;                /* #f59e0b */
-    --info:    226 100% 28%;
-    --destructive: 0 84% 60%;             /* #ef4444 */
+    /* Chart series: keep in step with primary/secondary. Re-run the dataviz
+       palette validator if these change. */
+    --chart-series-1: #1f63cf;
+    --chart-series-2: #0f8a86;
+
+    --success: 148 64% 28%;
+    --success-foreground: 0 0% 100%;
+    --warning: 27 92% 35%;
+    --warning-foreground: 0 0% 100%;
+    --info: 216 90% 38%;
+    --info-foreground: 0 0% 100%;
+    --destructive: 4 74% 43%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 91%;
-    --input:  220 14% 91%;
-    --ring:   226 100% 28%;
+    --border: 210 12% 84%;
+    --input: 209 9% 56%;
+    --ring: 207 22% 10%;
 
-    --radius: 0.5rem;                     /* 8px per Clean Tech spec */
+    --radius: 0.375rem;
 
-    --shadow-xs: 0 1px 2px 0 hsl(220 30% 18% / 0.05);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 16px 40px -10px hsl(220 30% 18% / 0.18);
-    --shadow-elegant: 0 12px 32px -8px hsl(226 100% 28% / 0.30);
-    --shadow-glow: 0 0 0 5px hsl(226 100% 28% / 0.15);
+    /* Pure-black alphas so shadows sit neutrally on any surface. */
+    --shadow-xs: 0 1px 0 0 rgb(0 0 0 / 0.04);
+    --shadow-sm: 0 1px 0 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 1px 2px 0 rgb(0 0 0 / 0.07), 0 3px 8px -2px rgb(0 0 0 / 0.08);
+    --shadow-lg: 0 2px 4px 0 rgb(0 0 0 / 0.06), 0 14px 28px -8px rgb(0 0 0 / 0.20);
+    --shadow-elegant: var(--shadow-lg);
+    --shadow-glow: 0 0 0 3px hsl(var(--highlight) / 0.55);
 
-    --gradient-primary: linear-gradient(135deg, hsl(226 100% 28%), hsl(226 100% 40%));
-    --gradient-sun:     linear-gradient(135deg, hsl(174 84% 32%), hsl(174 84% 42%));
-    --gradient-subtle:  linear-gradient(180deg, hsl(228 100% 99%), hsl(228 60% 96%));
-    --gradient-mesh:    radial-gradient(at 15% 0%, hsl(226 100% 28% / 0.06) 0px, transparent 55%),
-                         radial-gradient(at 85% 100%, hsl(174 84% 32% / 0.06) 0px, transparent 55%);
+    /* Legacy gradient names resolve to flat fills: Nameplate has no gradients. */
+    --gradient-primary: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
+    --gradient-sun:     linear-gradient(hsl(var(--highlight)), hsl(var(--highlight)));
+    --gradient-subtle:  linear-gradient(hsl(var(--background)), hsl(var(--background)));
+    --gradient-mesh:    none;
 
-    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: cubic-bezier(0.2, 0, 0, 1);
 
-    /* Sidebar — white with navy accents */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 25% 30%;
-    --sidebar-primary: 226 100% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 226 100% 97%;       /* primary/5 wash */
-    --sidebar-accent-foreground: 226 100% 28%;
-    --sidebar-border: 220 14% 91%;
-    --sidebar-ring: 226 100% 28%;
+    /* Nav rail: ink in both themes, like a machine housing beside the bench. */
+    --sidebar-background: 207 22% 10%;
+    --sidebar-foreground: 210 14% 80%;
+    --sidebar-primary: 47 100% 50%;
+    --sidebar-primary-foreground: 207 22% 10%;
+    --sidebar-accent: 208 18% 17%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 208 16% 20%;
+    --sidebar-ring: 47 100% 50%;
 
-    --grid-line: 220 30% 18%;
+    --grid-line: 207 22% 10%;
   }
 
   .dark {
-    --background: 220 30% 10%;
-    --foreground: 210 30% 96%;
+    --background: 208 20% 8%;
+    --foreground: 210 16% 93%;
 
-    --card: 220 28% 14%;
-    --card-foreground: 210 30% 96%;
+    --card: 208 17% 12%;
+    --card-foreground: 210 16% 93%;
 
-    --popover: 220 28% 14%;
-    --popover-foreground: 210 30% 96%;
+    --popover: 208 17% 14%;
+    --popover-foreground: 210 16% 93%;
 
-    --primary: 226 100% 60%;              /* lifted navy on dark */
-    --primary-foreground: 220 30% 10%;
-    --primary-glow: 226 100% 70%;
-    --primary-variant: 226 100% 45%;
+    --primary: 214 94% 68%;
+    --primary-foreground: 208 24% 8%;
+    --primary-glow: 214 94% 76%;
+    --primary-variant: 214 90% 60%;
 
-    --secondary: 174 84% 50%;             /* lifted teal on dark */
-    --secondary-foreground: 220 30% 10%;
+    --secondary: 180 52% 52%;
+    --secondary-foreground: 208 24% 8%;
 
-    --muted: 220 25% 18%;
-    --muted-foreground: 215 14% 65%;
+    --muted: 208 14% 17%;
+    --muted-foreground: 210 10% 68%;
 
-    --accent: 174 84% 50%;
-    --accent-foreground: 220 30% 10%;
+    --accent: 208 14% 19%;
+    --accent-foreground: 210 16% 93%;
 
-    /* Chart series — validated against the dark card surface (#1a202e). */
-    --chart-series-1: #3363ff;
-    --chart-series-2: #0d9488;
+    --highlight: 47 100% 52%;
+    --highlight-foreground: 207 22% 10%;
 
-    --success: 142 60% 55%;
-    --warning: 38 92% 60%;
-    --info:    226 100% 60%;
-    --destructive: 0 70% 58%;
-    --destructive-foreground: 0 0% 100%;
+    --chart-series-1: #5a9cf8;
+    --chart-series-2: #3fc4bd;
 
-    --border: 220 22% 24%;
-    --input:  220 22% 24%;
-    --ring:   226 100% 60%;
+    --success: 146 50% 54%;
+    --success-foreground: 208 24% 8%;
+    --warning: 30 92% 60%;
+    --warning-foreground: 208 24% 8%;
+    --info: 214 94% 68%;
+    --info-foreground: 208 24% 8%;
+    --destructive: 4 82% 66%;
+    --destructive-foreground: 208 24% 8%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(226 100% 60%), hsl(226 100% 70%));
-    --gradient-sun:     linear-gradient(135deg, hsl(174 84% 50%), hsl(174 84% 60%));
-    --gradient-subtle:  linear-gradient(180deg, hsl(220 30% 12%), hsl(220 30% 9%));
-    --gradient-mesh:    radial-gradient(at 15% 0%, hsl(226 100% 60% / 0.12) 0px, transparent 55%),
-                         radial-gradient(at 85% 100%, hsl(174 84% 50% / 0.10) 0px, transparent 55%);
+    --border: 208 12% 22%;
+    --input: 209 9% 42%;
+    --ring: 210 16% 93%;
 
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
-    --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.4);
-    --shadow-md: 0 8px 20px -6px hsl(0 0% 0% / 0.5);
-    --shadow-lg: 0 16px 40px -10px hsl(0 0% 0% / 0.6);
-    --shadow-elegant: 0 12px 32px -8px hsl(226 100% 60% / 0.4);
-    --shadow-glow: 0 0 0 5px hsl(226 100% 60% / 0.2);
+    --shadow-xs: 0 1px 0 0 rgb(0 0 0 / 0.3);
+    --shadow-sm: 0 1px 0 0 rgb(0 0 0 / 0.35);
+    --shadow-md: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 4px 10px -2px rgb(0 0 0 / 0.45);
+    --shadow-lg: 0 2px 4px 0 rgb(0 0 0 / 0.4), 0 16px 32px -8px rgb(0 0 0 / 0.65);
 
-    --sidebar-background: 220 32% 8%;
-    --sidebar-foreground: 210 25% 88%;
-    --sidebar-primary: 226 100% 60%;
-    --sidebar-primary-foreground: 220 30% 10%;
-    --sidebar-accent: 220 28% 16%;
-    --sidebar-accent-foreground: 226 100% 70%;
-    --sidebar-border: 220 22% 20%;
-    --sidebar-ring: 226 100% 60%;
+    --sidebar-background: 208 26% 5%;
+    --sidebar-foreground: 210 14% 80%;
+    --sidebar-accent: 208 16% 13%;
+    --sidebar-border: 208 14% 16%;
 
-    --grid-line: 210 30% 96%;
+    --grid-line: 210 16% 93%;
   }
 }
 
@@ -159,16 +172,17 @@
 
   html, body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-variant-numeric: lining-nums;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-    @apply tracking-normal font-semibold;
+    font-family: "Barlow Semi Condensed", "Barlow", system-ui, sans-serif;
+    font-weight: 600;
     letter-spacing: 0;
     text-wrap: balance;
   }
@@ -178,22 +192,25 @@
     text-wrap: pretty;
   }
 
+  /* Numbers that update or sit in columns keep their width. */
+  table, time, [data-numeric] { font-variant-numeric: tabular-nums lining-nums; }
+
   /* Larger default body on small screens for readability */
   @media (max-width: 640px) {
     html { font-size: 17px; }
   }
 
-  ::selection { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+  ::selection { background: hsl(var(--highlight)); color: hsl(var(--highlight-foreground)); }
 
   /* Bigger comfortable tap targets on touch devices.
-     Excludes [role="switch"] — Radix's Switch renders as a <button> and the
+     Excludes [role="switch"]: Radix's Switch renders as a <button> and the
      44px floor would stretch its 24px rounded-full pill into a circle. */
   @media (hover: none) and (pointer: coarse) {
     button:not([role="switch"]), a, [role="button"] { min-height: 44px; }
   }
 
   /* Subtle neutral outline on images for consistent depth. Pure black/white at
-     low opacity — never a tinted neutral, which reads as dirt on the edge.
+     low opacity, never a tinted neutral, which reads as dirt on the edge.
      Inset so it never changes layout size. */
   img {
     outline: 1px solid rgba(0, 0, 0, 0.1);
@@ -217,23 +234,20 @@
   }
 }
 
-/* Staggered enter: split content into semantic chunks and reveal each with a
-   small opacity + translateY + blur, offset by ~100ms. One-shot keyframe (not a
-   transition) since it runs once on mount. */
+/* One-shot enter used by page headers. */
 @keyframes enter-fade-up {
-  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @layer utilities {
   .enter-item {
     opacity: 0;
-    will-change: transform, opacity;
-    animation: enter-fade-up 0.45s cubic-bezier(0.2, 0, 0, 1) both;
+    animation: enter-fade-up 0.3s cubic-bezier(0.2, 0, 0, 1) both;
   }
   .enter-d1 { animation-delay: 0ms; }
-  .enter-d2 { animation-delay: 100ms; }
-  .enter-d3 { animation-delay: 200ms; }
+  .enter-d2 { animation-delay: 60ms; }
+  .enter-d3 { animation-delay: 120ms; }
 
   .transition-ui {
     transition-property: color, background-color, border-color, box-shadow, opacity, transform, filter;
@@ -241,28 +255,32 @@
     transition-timing-function: var(--transition-smooth);
   }
 
-  .font-headline { font-family: 'Playfair Display', Georgia, serif; letter-spacing: 0; }
-  .font-display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: 0; }
-  .font-serif   { font-family: 'Playfair Display', Georgia, serif; }
-  .font-mono    { font-family: 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  .font-headline,
+  .font-display,
+  .font-serif { font-family: "Barlow Semi Condensed", "Barlow", system-ui, sans-serif; letter-spacing: 0; }
+  .font-mono  { font-family: "Barlow", system-ui, sans-serif; font-variant-numeric: tabular-nums lining-nums; }
 
+  /* Field label on a plate: small, semibold, sentence case. */
   .label-eyebrow {
-    @apply font-sans uppercase tracking-wider text-xs text-muted-foreground font-bold;
+    @apply font-sans text-xs text-muted-foreground font-semibold;
+    letter-spacing: 0;
+    text-transform: none;
   }
   .label-meta {
     @apply font-sans text-sm text-muted-foreground font-medium;
   }
   .num-mono {
-    font-variant-numeric: tabular-nums;
-    font-weight: 800;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-weight: 700;
   }
 
+  /* Legacy backdrop names: the work surface is flat. */
   .bg-blueprint-grid,
   .bg-blueprint-grid-fine,
   .bg-paper,
   .bg-scanlines {
     background-color: hsl(var(--background));
-    background-image: var(--gradient-mesh);
+    background-image: none;
   }
 
   .hairline   { @apply border border-border; }
@@ -277,17 +295,19 @@
     background-size: 8px 1px; background-repeat: repeat-x; height: 1px;
   }
 
-  /* Clean Tech data cards */
+  /* The plate: every card-like surface in the app. Legacy names kept as
+     aliases so nothing in the codebase loses its surface. */
+  .plate,
   .brutal,
   .brutal-sm,
   .brutal-flat,
-  .ticket-card {
+  .ticket-card,
+  .surface-card,
+  .glass-morphism,
+  .glass-morphism-dark {
     @apply bg-card border border-border rounded-lg;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.2s var(--transition-smooth), box-shadow 0.2s var(--transition-smooth);
   }
-  .brutal:hover,
-  .ticket-card:hover { box-shadow: var(--shadow-md); }
 
   .ticket-card-accent {
     @apply bg-card border border-border rounded-lg;
@@ -297,68 +317,46 @@
   }
 
   .pill {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border border-border bg-secondary/10 text-secondary;
+    @apply inline-flex items-center gap-2 px-2.5 py-1 rounded-md text-sm font-medium border border-border bg-muted text-foreground;
   }
   .pill-dot { @apply inline-block w-2 h-2 rounded-full; }
 
-  .bg-gradient-primary { background-image: var(--gradient-primary); }
-  .bg-gradient-sun     { background-image: var(--gradient-sun); }
-  .bg-gradient-subtle  { background-image: var(--gradient-subtle); }
-  .bg-gradient-mesh    { background-color: hsl(var(--background)); background-image: var(--gradient-mesh); }
+  .bg-gradient-primary { background-image: none; background-color: hsl(var(--primary)); }
+  .bg-gradient-sun     { background-image: none; background-color: hsl(var(--highlight)); }
+  .bg-gradient-subtle  { background-image: none; background-color: hsl(var(--background)); }
+  .bg-gradient-mesh    { background-image: none; background-color: hsl(var(--background)); }
 
-  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-elegant { box-shadow: var(--shadow-lg); }
   .shadow-glow    { box-shadow: var(--shadow-glow); }
-  .shadow-soft    { box-shadow: var(--shadow-md); }
-  .shadow-soft-lg { box-shadow: var(--shadow-lg); }
+  .shadow-soft    { box-shadow: var(--shadow-sm); }
+  .shadow-soft-lg { box-shadow: var(--shadow-md); }
 
-  .text-gradient-primary {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-
-  .surface-card {
-    @apply bg-card border border-border rounded-lg;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.25s var(--transition-smooth);
-  }
-  .surface-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-
-  .glass-morphism,
-  .glass-morphism-dark {
-    @apply bg-card/85 backdrop-blur-md border border-border rounded-lg;
-    box-shadow: var(--shadow-sm);
-  }
+  .text-gradient-primary { color: hsl(var(--primary)); }
 
   .card-gradient,
   .card-gradient-dark { background-color: hsl(var(--card)); }
 
-  .hover-scale { transition: transform 0.2s var(--transition-smooth); }
-  .hover-scale:hover { transform: translateY(-2px); }
+  .hover-scale { transition: none; }
 
-  .animate-entry { animation: entry-fade-slide 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .animate-entry { animation: entry-fade-slide 0.3s cubic-bezier(0.2, 0, 0, 1); }
   .pulse { animation: pulse-badge 2s ease-in-out infinite; }
   .blink { animation: blink 1.4s ease-in-out infinite; }
 
   /* Mobile bottom nav safe area */
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
 
-  /* 3D motion primitives. A .scene-3d parent supplies perspective; .tilt-3d
-     elements are driven by --tilt-x/--tilt-y custom properties (set from JS by
-     Tilt3D); .float-3d adds an idle hover-in-space loop; .reveal-3d elements
-     start rotated back in 3D and stand up when Reveal3D marks them
-     .is-revealed. All are neutralized by the prefers-reduced-motion block. */
-  /* App-wide page entrance: every PageContainer staggers its direct children
-     in with a light fade-up on mount. Fill mode is `backwards` (not `both`)
-     so no transform lingers after the animation — a persistent transform
-     would break position: sticky/fixed descendants. */
-  .page-enter > * {
-    animation: page-fade-up 0.4s cubic-bezier(0.2, 0, 0, 1) backwards;
+  /* Page entrance: one short fade for the whole page body. Fill mode is
+     `backwards` (not `both`) so no transform lingers after the animation;
+     a persistent transform would break position: sticky/fixed descendants. */
+  .page-enter {
+    animation: page-fade-up 0.25s cubic-bezier(0.2, 0, 0, 1) backwards;
   }
-  .page-enter > *:nth-child(2) { animation-delay: 60ms; }
-  .page-enter > *:nth-child(3) { animation-delay: 120ms; }
-  .page-enter > *:nth-child(4) { animation-delay: 180ms; }
-  .page-enter > *:nth-child(n + 5) { animation-delay: 240ms; }
 
+  /* 3D motion primitives used by the marketing pages. A .scene-3d parent
+     supplies perspective; .tilt-3d elements are driven by --tilt-x/--tilt-y
+     custom properties (set from JS by Tilt3D); .reveal-3d elements stand up
+     when Reveal3D marks them .is-revealed. All are neutralized by the
+     prefers-reduced-motion block. */
   .scene-3d { perspective: 1200px; }
   .tilt-3d {
     transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
@@ -371,13 +369,12 @@
   .float-3d { animation: float-3d 7s ease-in-out infinite; }
   .reveal-3d {
     opacity: 0;
-    transform: perspective(1000px) rotateX(10deg) translateY(28px);
+    transform: perspective(1000px) rotateX(6deg) translateY(16px);
     transform-origin: 50% 100%;
     transition:
-      opacity 0.7s var(--transition-smooth),
-      transform 0.7s var(--transition-smooth);
+      opacity 0.5s var(--transition-smooth),
+      transform 0.5s var(--transition-smooth);
     transition-delay: var(--reveal-delay, 0ms);
-    will-change: transform, opacity;
   }
   .reveal-3d.is-revealed {
     opacity: 1;
@@ -387,10 +384,10 @@
 
 @keyframes float-3d {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+  50%      { transform: translateY(-6px); }
 }
 @keyframes page-fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -418,19 +415,19 @@
    Scoped to .blog-prose so it never leaks into product UI.
    ===================================================================== */
 .blog-prose { color: hsl(var(--foreground)); font-size: 1.05rem; line-height: 1.7; }
-.blog-prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1.75rem; margin-bottom: 0.75rem; }
-.blog-prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-.blog-prose p { font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem; color: hsl(220 20% 22%); }
+.blog-prose h2 { font-size: 1.5rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+.blog-prose h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.blog-prose p { font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem; color: hsl(var(--foreground) / 0.88); }
 .blog-prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
 .blog-prose ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
 .blog-prose li { margin-bottom: 0.5rem; }
 .blog-prose blockquote {
   border-left: 4px solid hsl(var(--primary));
-  padding-left: 1rem; font-style: italic; color: hsl(220 15% 40%);
+  padding-left: 1rem; font-style: italic; color: hsl(var(--muted-foreground));
   margin: 1.25rem 0;
 }
 .blog-prose code:not(pre code) {
-  background: hsl(220 15% 95%); padding: 2px 6px; border-radius: 4px;
+  background: hsl(var(--muted)); padding: 2px 6px; border-radius: 4px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em;
 }
 .blog-prose pre {
@@ -451,4 +448,4 @@
 .blog-prose th, .blog-prose td {
   border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; text-align: left;
 }
-.blog-prose tbody tr:nth-child(even) { background: hsl(220 15% 97%); }
+.blog-prose tbody tr:nth-child(even) { background: hsl(var(--muted) / 0.5); }

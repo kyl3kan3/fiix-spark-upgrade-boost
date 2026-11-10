@@ -57,7 +57,7 @@ export default function TriageSuggestionInline({ requestId }: { requestId: strin
     <div className="mb-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
       <div className="flex items-center gap-2 mb-2 flex-wrap">
         <Sparkles className="h-3.5 w-3.5 text-primary" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-primary">AI triage</span>
+        <span className="text-xs font-semibold text-primary">AI triage</span>
         {data.urgency && (
           <Badge variant={(urgencyColor[data.urgency] ?? "outline") as "destructive" | "secondary" | "outline"} className="text-xs">
             {data.urgency}

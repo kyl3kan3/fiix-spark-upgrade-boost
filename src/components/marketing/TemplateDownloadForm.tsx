@@ -141,7 +141,7 @@ const TemplateDownloadForm = ({
 
   return (
     <form onSubmit={onSubmit} className="relative rounded-2xl border border-border bg-card p-6 shadow-sm">
-      <p className="text-sm font-semibold uppercase tracking-wide text-primary">Instant download</p>
+      <p className="text-sm font-semibold text-primary">Instant download</p>
       <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">Get the free template</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
         Enter your email and the selected download will start immediately.

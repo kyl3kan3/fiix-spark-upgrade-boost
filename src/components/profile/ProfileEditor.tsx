@@ -24,7 +24,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
     <form onSubmit={onSubmit} className="space-y-4" aria-label="Edit profile form">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
         <div>
-          <label htmlFor="first_name" className="block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+          <label htmlFor="first_name" className="block text-xs font-semibold text-muted-foreground mb-1">
             First Name
           </label>
           <input
@@ -46,7 +46,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
         </div>
 
         <div>
-          <label htmlFor="last_name" className="block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+          <label htmlFor="last_name" className="block text-xs font-semibold text-muted-foreground mb-1">
             Last Name
           </label>
           <input
@@ -68,7 +68,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+          <label htmlFor="email" className="block text-xs font-semibold text-muted-foreground mb-1">
             Email
           </label>
           <input
@@ -85,7 +85,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
         </div>
 
         <div>
-          <label htmlFor="phone_number" className="block text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+          <label htmlFor="phone_number" className="block text-xs font-semibold text-muted-foreground mb-1">
             Phone Number
           </label>
           <input
@@ -111,7 +111,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({
           type="submit"
           disabled={isSaving}
           aria-label="Save changes"
-          className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+          className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
         >
           {isSaving ? "Saving..." : "Save Changes"}
         </Button>

@@ -116,11 +116,11 @@ const ChecklistSubmissionsPage = () => {
                           {submission.checklist?.name}
                         </h3>
                         {submission.checklist?.type && (
-                          <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${getTypeConfig(submission.checklist.type)}`}>
+                          <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${getTypeConfig(submission.checklist.type)}`}>
                             {ChecklistTypes.find((t) => t.value === submission.checklist?.type)?.label ?? submission.checklist.type}
                           </span>
                         )}
-                        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
+                        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusConfig.className}`}>
                           {statusConfig.label}
                         </span>
                       </div>

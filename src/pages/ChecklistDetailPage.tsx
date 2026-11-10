@@ -100,10 +100,10 @@ const ChecklistDetailPage = () => {
             {/* Meta card */}
             <div className="surface-card rounded-lg p-6">
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${typeConfig.className}`}>
+                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${typeConfig.className}`}>
                   {typeConfig.label}
                 </span>
-                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${freqConfig.className}`}>
+                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${freqConfig.className}`}>
                   {freqConfig.label}
                 </span>
               </div>
@@ -173,11 +173,11 @@ const ChecklistDetailPage = () => {
                           <div className="flex flex-wrap items-center gap-2 mb-1">
                             <span className="font-medium text-foreground">{item.title}</span>
                             {item.is_required && (
-                              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide bg-warning/15 text-warning border border-warning/30">
+                              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-warning/15 text-warning border border-warning/30">
                                 Required
                               </span>
                             )}
-                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide bg-muted text-muted-foreground border border-border capitalize">
+                            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-muted text-muted-foreground border border-border capitalize">
                               {item.item_type}
                             </span>
                           </div>
@@ -201,7 +201,7 @@ const ChecklistDetailPage = () => {
                   <ClipboardList className="h-5 w-5 text-primary" />
                 </div>
                 <p className="font-headline font-semibold text-base text-foreground mb-2">{checklist.name}</p>
-                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${typeConfig.className}`}>
+                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${typeConfig.className}`}>
                   {typeConfig.label}
                 </span>
               </div>

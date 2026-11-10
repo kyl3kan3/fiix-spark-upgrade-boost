@@ -27,7 +27,7 @@ const MaintenanceCalendar: React.FC<MaintenanceCalendarProps> = ({
  date.getMonth() === new Date().getMonth()
  }}
  modifiersStyles={{
- hasTask: { backgroundColor: "#e5deff", fontWeight: "bold" }
+ hasTask: { backgroundColor: "hsl(var(--primary) / 0.14)", fontWeight: "bold" }
  }}
  />
  </div>

@@ -172,7 +172,7 @@ const GoogleAnalyticsPanel = () => {
                     <h3 className="text-sm font-semibold mb-2">Top pages</h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                        <thead className="bg-muted text-xs text-muted-foreground">
                           <tr>
                             <th className="px-3 py-2 text-left">Path</th>
                             <th className="px-3 py-2 text-right">Views</th>
@@ -195,7 +195,7 @@ const GoogleAnalyticsPanel = () => {
                     <h3 className="text-sm font-semibold mb-2">Top channels</h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                        <thead className="bg-muted text-xs text-muted-foreground">
                           <tr>
                             <th className="px-3 py-2 text-left">Channel</th>
                             <th className="px-3 py-2 text-right">Sessions</th>

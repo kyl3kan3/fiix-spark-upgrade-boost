@@ -476,14 +476,14 @@ const ChecklistImportPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   onClick={() => navigate("/checklists")}
-                  className="uppercase tracking-wide font-semibold text-xs px-6"
+                  className="font-semibold text-xs px-6"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={() => saveMutation.mutate()}
                   disabled={saveMutation.isPending || items.filter((i) => i.title.trim()).length === 0}
-                  className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+                  className="font-semibold text-xs px-8 gap-2 shadow-sm"
                 >
                   <Upload className="h-4 w-4" />
                   {saveMutation.isPending ? "Saving…" : "Create Checklist"}

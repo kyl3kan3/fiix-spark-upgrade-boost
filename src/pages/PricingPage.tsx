@@ -134,8 +134,8 @@ export default function PricingPage() {
  <Button
    className={
      plan.popular
-       ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold uppercase tracking-wide"
-       : "w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold uppercase tracking-wide shadow-sm"
+       ? "w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-semibold"
+       : "w-full bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-sm"
    }
    disabled={loadingTier === plan.tier}
    onClick={() => startCheckout(plan.tier)}

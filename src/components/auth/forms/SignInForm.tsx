@@ -51,7 +51,7 @@ export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
 
  <Button
  type="submit"
- className="w-full bg-primary text-primary-foreground hover:bg-primary-variant shadow-sm uppercase tracking-wide font-semibold transition-ui hover:-translate-y-0.5"
+ className="w-full bg-primary text-primary-foreground hover:bg-primary-variant shadow-sm font-semibold transition-ui hover:-translate-y-0.5"
  disabled={isLoading}
  >
  {isLoading ? AUTH_BUTTON_TEXT.SIGNING_IN : AUTH_BUTTON_TEXT.SIGN_IN}
@@ -61,7 +61,7 @@ export const SignInForm: React.FC<FormSubmissionProps> = ({ onError }) => {
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-border" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
+        <div className="relative flex justify-center text-xs">
           <span className="bg-background px-2 text-muted-foreground">Or</span>
         </div>
       </div>

@@ -1,5 +1,5 @@
 
-import { Building2 } from "lucide-react";
+import BrandMark from "@/components/shell/BrandMark";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -91,32 +91,31 @@ p === "/editorial-policy" ||
  ];
 
  return (
- <footer className="bg-foreground text-background border-t border-border/20">
+ <footer className="bg-sidebar text-white border-t border-sidebar-border">
  <div className="container mx-auto px-4 py-12 md:py-16">
  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
  <div className="col-span-2">
            <Link to="/" aria-label="MaintenEase home" className="mb-4 inline-flex items-center gap-2">
-             <Building2 className="h-6 w-6 text-background/80" strokeWidth={1.5} />
-             <span className="text-2xl font-bold text-background font-headline">MaintenEase</span>
+             <BrandMark tone="onInk" />
            </Link>
- <p className="text-background/85 mb-6 max-w-xs text-sm leading-relaxed">
+ <p className="text-white/85 mb-6 max-w-xs text-sm leading-relaxed">
  Modern maintenance management software that helps teams organize, track, and optimize their operations.
  </p>
- <p className="text-background/70 text-sm"><a className="underline underline-offset-4 hover:text-background" href="https://decent4.com/">Built by Decent4</a> · <a className="underline underline-offset-4 hover:text-background" href="mailto:support@maintenease.com">support@maintenease.com</a></p>
+ <p className="text-white/70 text-sm"><a className="underline underline-offset-4 hover:text-white" href="https://decent4.com/">Built by Decent4</a> · <a className="underline underline-offset-4 hover:text-white" href="mailto:support@maintenease.com">support@maintenease.com</a></p>
  </div>
 
  {footerLinks.map((column, idx) => (
  <div key={idx}>
- <h3 className="font-semibold text-background mb-4 text-sm uppercase tracking-wide">{column.title}</h3>
+ <h3 className="font-semibold text-white mb-4 text-sm">{column.title}</h3>
  <ul className="space-y-3">
  {column.links.map((link, linkIdx) => (
  <li key={linkIdx}>
  {link.to.startsWith("/") ? (
- <Link to={link.to} className="text-background/85 hover:text-background transition-colors text-sm">
+ <Link to={link.to} className="text-white/85 hover:text-white transition-colors text-sm">
  {link.label}
  </Link>
  ) : (
- <a href={link.to} className="text-background/85 hover:text-background transition-colors text-sm">
+ <a href={link.to} className="text-white/85 hover:text-white transition-colors text-sm">
  {link.label}
  </a>
  )}
@@ -127,25 +126,25 @@ p === "/editorial-policy" ||
  ))}
  </div>
 
-  <div className="mt-12 pt-8 border-t border-background/10">
+  <div className="mt-12 pt-8 border-t border-white/10">
   <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-  <p className="text-background/80 text-sm mb-0">
+  <p className="text-white/80 text-sm mb-0">
   &copy; {currentYear} Decent4. All rights reserved.
   </p>
   <div className="flex space-x-6">
-  <Link to="/privacy" className="text-background/80 hover:text-background text-sm transition-colors">
+  <Link to="/privacy" className="text-white/80 hover:text-white text-sm transition-colors">
   Privacy Policy
   </Link>
-  <Link to="/terms" className="text-background/80 hover:text-background text-sm transition-colors">
+  <Link to="/terms" className="text-white/80 hover:text-white text-sm transition-colors">
   Terms of Service
   </Link>
-  <Link to="/refund-policy" className="text-background/80 hover:text-background text-sm transition-colors">
+  <Link to="/refund-policy" className="text-white/80 hover:text-white text-sm transition-colors">
   Refund Policy
   </Link>
-  <Link to="/sms-opt-in" className="text-background/80 hover:text-background text-sm transition-colors">
+  <Link to="/sms-opt-in" className="text-white/80 hover:text-white text-sm transition-colors">
   SMS opt-in
   </Link>
-  <Link to="/sitemap" className="text-background/80 hover:text-background text-sm transition-colors">
+  <Link to="/sitemap" className="text-white/80 hover:text-white text-sm transition-colors">
   Sitemap
   </Link>
   </div>

@@ -45,7 +45,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
  </div>
 
  <div className="space-y-2">
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+ <label className="text-xs font-semibold text-muted-foreground block">
  Filter by Technician
  </label>
  <Select value={technicianFilter} onValueChange={setTechnicianFilter}>
@@ -63,7 +63,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
  </div>
 
  <div className="space-y-2">
- <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Event Types</h3>
+ <h3 className="text-xs font-semibold text-muted-foreground">Event Types</h3>
  <div className="flex flex-col gap-2">
  <div className="flex items-center gap-2">
  <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />

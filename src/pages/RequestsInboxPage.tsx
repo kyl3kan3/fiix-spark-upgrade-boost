@@ -148,11 +148,11 @@ const RequestsInboxPage = () => {
  <div className="flex items-start justify-between gap-4 mb-3 flex-wrap">
  <div className="flex items-center gap-2 flex-wrap">
  {r.type === "urgent" && (
- <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-destructive/10 text-destructive border border-destructive/30">
+ <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-destructive/10 text-destructive border border-destructive/30">
  <AlertTriangle className="h-3 w-3" /> Urgent
  </span>
  )}
- <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider border ${
+ <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
  r.status === "new"
  ? "bg-primary/10 text-primary border-primary/30"
  : r.status === "in_progress"
@@ -199,7 +199,7 @@ const RequestsInboxPage = () => {
  <div className="flex gap-2 flex-wrap">
  <Button
  size="sm"
- className="gap-1.5 text-xs font-semibold uppercase tracking-wide"
+ className="gap-1.5 text-xs font-semibold"
  onClick={() => convertToWorkOrder(r)}
  >
  Convert to Work Order

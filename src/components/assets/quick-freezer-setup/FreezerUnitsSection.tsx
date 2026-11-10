@@ -14,7 +14,7 @@ export const FreezerUnitsSection: React.FC<FreezerUnitsSectionProps> = ({ group:
   const names = computeNames(g);
   return (
     <section className="space-y-3">
-      <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <h4 className="text-xs font-medium text-muted-foreground">
         Freezer units
       </h4>
 

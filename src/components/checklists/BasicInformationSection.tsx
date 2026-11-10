@@ -43,7 +43,7 @@ const BasicInformationSection: React.FC<BasicInformationSectionProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-2">
-          <Label htmlFor="type" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <Label htmlFor="type" className="text-xs font-semibold text-muted-foreground">
             Category
           </Label>
           <Select value={formData.type} onValueChange={(v) => onUpdate("type", v)}>
@@ -61,7 +61,7 @@ const BasicInformationSection: React.FC<BasicInformationSectionProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="frequency" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <Label htmlFor="frequency" className="text-xs font-semibold text-muted-foreground">
             Frequency
           </Label>
           <Select value={formData.frequency} onValueChange={(v) => onUpdate("frequency", v)}>

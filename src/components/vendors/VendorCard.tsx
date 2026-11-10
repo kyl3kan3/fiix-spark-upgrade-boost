@@ -60,7 +60,7 @@ const VendorCard: React.FC<VendorCardProps> = ({
  case "contractor":
  return "bg-warning/10 text-warning";
  case "consultant":
- return "bg-accent/10 text-accent-foreground";
+ return "bg-muted text-foreground";
  default:
  return "bg-muted text-muted-foreground";
  }

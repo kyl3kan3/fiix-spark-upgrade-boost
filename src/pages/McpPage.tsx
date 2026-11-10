@@ -111,10 +111,10 @@ const McpPage = () => (
         <aside className="rounded-3xl bg-card p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_12px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)] sm:p-8">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-primary">Production connection</p>
+              <p className="text-sm font-semibold text-primary">Production connection</p>
               <h2 className="mt-2 text-2xl font-semibold text-foreground text-balance">Server details</h2>
             </div>
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-success/10 text-success">
               <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
             </div>
           </div>
@@ -147,7 +147,7 @@ const McpPage = () => (
 
     <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Available tools</p>
+        <p className="text-sm font-semibold text-primary">Available tools</p>
         <h2 className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
           Maintenance actions an AI client can discover
         </h2>
@@ -168,7 +168,7 @@ const McpPage = () => (
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${tool.access === "Write" ? "bg-amber-500/10 text-amber-700 dark:text-amber-300" : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"}`}>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${tool.access === "Write" ? "bg-warning/10 text-warning" : "bg-success/10 text-success"}`}>
                   {tool.access}
                 </span>
               </div>
@@ -207,7 +207,7 @@ const McpPage = () => (
 
     <section className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Connection flow</p>
+        <p className="text-sm font-semibold text-primary">Connection flow</p>
         <h2 className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
           From server card to approved tools
         </h2>

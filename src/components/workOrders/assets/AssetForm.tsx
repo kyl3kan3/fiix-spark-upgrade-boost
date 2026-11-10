@@ -184,14 +184,14 @@ export const AssetForm: React.FC<AssetFormProps> = ({ assetId }) => {
             variant="ghost"
             onClick={() => navigate("/assets")}
             disabled={isSubmitting}
-            className="uppercase tracking-wide font-semibold text-xs px-6"
+            className="font-semibold text-xs px-6"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+            className="font-semibold text-xs px-8 gap-2 shadow-sm"
           >
             {isSubmitting
               ? assetId ? "Updating…" : "Creating…"

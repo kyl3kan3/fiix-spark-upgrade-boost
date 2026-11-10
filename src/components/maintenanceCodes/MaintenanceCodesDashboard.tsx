@@ -68,7 +68,7 @@ function CodePanel({
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+            <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
               <th className="p-3">Code</th>
               <th className="p-3">Label</th>
               <th className="p-3 w-16" />

@@ -21,7 +21,7 @@ export const SetupProgress: React.FC<SetupProgressProps> = ({
     <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-foreground">
             Setup Progress
           </h3>
           <span className="text-xs text-muted-foreground">

@@ -150,7 +150,7 @@ const Landing = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md uppercase tracking-wide font-semibold group"
+                  className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-variant px-8 shadow-md font-semibold group"
                   onClick={() => navigate("/auth?signup=true")}
                 >
                   Start free trial
@@ -238,7 +238,7 @@ const Landing = () => {
               </p>
               <Button
                 size="lg"
-                className="bg-background text-primary hover:bg-background/90 font-semibold uppercase tracking-wide shadow-md group"
+                className="bg-background text-primary hover:bg-background/90 font-semibold shadow-md group"
                 onClick={() => navigate("/auth?signup=true")}
               >
                 Start Free Trial

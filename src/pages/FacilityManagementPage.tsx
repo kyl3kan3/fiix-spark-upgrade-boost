@@ -90,7 +90,7 @@ const FacilityManagementPage = () => {
 
           <div className="mt-8 grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Facility management hub</p>
+              <p className="text-sm font-semibold text-primary">Facility management hub</p>
               <h1 className="mt-4 max-w-4xl font-headline text-4xl font-bold tracking-normal text-foreground text-balance md:text-6xl">
                 {FACILITY_MANAGEMENT_PAGE.title}
               </h1>
@@ -129,7 +129,7 @@ const FacilityManagementPage = () => {
         <section className="border-y border-border bg-muted/30 py-16" aria-labelledby="facility-paths-title">
           <div className="container mx-auto max-w-6xl px-4">
             <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Choose a workstream</p>
+              <p className="text-sm font-semibold text-primary">Choose a workstream</p>
               <h2 id="facility-paths-title" className="mt-3 font-headline text-3xl font-bold text-foreground text-balance md:text-4xl">
                 Navigate the facility management system
               </h2>

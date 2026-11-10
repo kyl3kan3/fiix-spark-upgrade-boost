@@ -75,10 +75,10 @@ const InspectionHeader: React.FC<InspectionHeaderProps> = ({
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusConfig.className}`}>
+            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusConfig.className}`}>
               {statusConfig.label}
             </span>
-            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${priorityConfig.className}`}>
+            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${priorityConfig.className}`}>
               {priorityConfig.label} Priority
             </span>
           </div>

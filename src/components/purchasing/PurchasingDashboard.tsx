@@ -118,7 +118,7 @@ export function PurchasingDashboard() {
           <Card className="overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+                <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                   <th className="p-3">Title</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Created</th>
@@ -157,7 +157,7 @@ export function PurchasingDashboard() {
             <Card className="overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/40 text-left text-xs uppercase text-muted-foreground">
+                  <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                     <th className="p-3">Vendor</th>
                     <th className="p-3">Total</th>
                     <th className="p-3">Status</th>

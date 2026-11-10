@@ -39,7 +39,7 @@ export const NoCompanyInfo: React.FC<NoCompanyInfoProps> = ({ setupCompleted }) 
           </p>
           <Button
             onClick={() => navigate("/setup")}
-            className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+            className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
           >
             {setupCompleted ? "Complete Setup" : "Set Up Company"}
           </Button>

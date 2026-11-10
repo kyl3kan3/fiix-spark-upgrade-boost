@@ -68,7 +68,7 @@ export function LubricantsDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                 <th className="p-3 font-semibold">Name</th>
                 <th className="p-3 font-semibold">Type</th>
                 <th className="p-3 font-semibold">On hand</th>

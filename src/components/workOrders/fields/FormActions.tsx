@@ -18,14 +18,14 @@ export const FormActions = ({ isSubmitting, isEditing }: FormActionsProps) => {
  variant="outline"
  onClick={() => navigate("/work-orders")}
  disabled={isSubmitting}
- className="uppercase tracking-wide font-semibold text-xs px-6"
+ className="font-semibold text-xs px-6"
  >
  Cancel
  </Button>
  <Button
  type="submit"
  disabled={isSubmitting}
- className="uppercase tracking-wide font-semibold text-xs px-8 gap-2 shadow-sm"
+ className="font-semibold text-xs px-8 gap-2 shadow-sm"
  >
  {isEditing ? "Update Work Order" : "Create Work Order"}
  </Button>

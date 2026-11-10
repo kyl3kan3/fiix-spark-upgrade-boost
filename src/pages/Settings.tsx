@@ -201,7 +201,7 @@ const Settings = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4 border-t border-border mt-2">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Save Preferences
                   </Button>
                   <Button
@@ -254,7 +254,7 @@ const Settings = () => {
                     <p className="text-sm font-semibold text-foreground">Password</p>
                     <p className="text-sm text-muted-foreground">Update your account password</p>
                   </div>
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Update Password
                   </Button>
                 </div>
@@ -288,7 +288,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className="flex justify-end pt-2 border-t border-border">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold">
+                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Save Appearance
                   </Button>
                 </div>

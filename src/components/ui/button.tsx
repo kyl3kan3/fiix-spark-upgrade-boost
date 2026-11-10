@@ -5,32 +5,34 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
- "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-base font-bold font-display ring-offset-background transition-[box-shadow,transform,background-color,border-color,color] duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] motion-reduce:active:scale-100 [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0 text-center",
+ "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-[background-color,border-color,color,box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-center",
  {
  variants: {
  variant: {
  default:
- "bg-primary text-primary-foreground shadow-soft hover:shadow-soft-lg hover:-translate-y-0.5",
+ "bg-primary text-primary-foreground hover:bg-primary-variant",
+ // Same as default. Signal yellow is reserved for the nav rail and the
+ // marketing hero; page-level actions are always safety blue.
  accent:
- "bg-accent text-accent-foreground shadow-soft hover:shadow-soft-lg hover:-translate-y-0.5",
+ "bg-primary text-primary-foreground hover:bg-primary-variant",
  primary:
- "bg-primary text-primary-foreground shadow-soft hover:shadow-soft-lg hover:-translate-y-0.5",
+ "bg-primary text-primary-foreground hover:bg-primary-variant",
  destructive:
- "bg-destructive text-destructive-foreground shadow-soft hover:shadow-soft-lg hover:-translate-y-0.5",
+ "bg-destructive text-destructive-foreground hover:brightness-90",
  outline:
- "bg-card text-foreground border-2 border-border hover:bg-secondary hover:border-primary",
+ "bg-card text-foreground border border-input hover:bg-muted hover:border-foreground/60",
  secondary:
- "bg-secondary text-secondary-foreground hover:bg-muted border-2 border-border",
+ "bg-muted text-foreground border border-border hover:bg-border/70",
  ghost:
- "text-foreground hover:bg-secondary rounded-2xl",
+ "text-foreground hover:bg-muted",
  link:
- "text-primary underline-offset-4 hover:underline font-bold",
+ "text-primary underline-offset-4 hover:underline",
  },
  size: {
- default: "h-12 px-6 py-2",
- sm: "h-10 px-4 text-sm rounded-xl",
- lg: "h-14 px-8 text-lg rounded-2xl",
- icon: "h-12 w-12 px-0",
+ default: "h-10 px-4",
+ sm: "h-9 px-3",
+ lg: "h-12 px-6 text-base",
+ icon: "h-10 w-10 px-0",
  },
  },
  defaultVariants: {
@@ -49,7 +51,7 @@ export interface ButtonProps
 }
 
 /** Subtle tactile feedback on press; interruptible via the transform transition. */
-const TAP_SCALE = "active:scale-[0.96]"
+const TAP_SCALE = "active:scale-[0.96] motion-reduce:active:scale-100"
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
  ({ className, variant, size, asChild = false, static: isStatic = false, ...props }, ref) => {

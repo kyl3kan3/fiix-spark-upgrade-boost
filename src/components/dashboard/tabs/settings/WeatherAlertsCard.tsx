@@ -180,7 +180,7 @@ const WeatherAlertsCard: React.FC = () => {
  <Button
  onClick={saveCompany}
  disabled={saving || loading}
- className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+ className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
  >
  {saving ? "Saving..." : "Save thresholds"}
  </Button>

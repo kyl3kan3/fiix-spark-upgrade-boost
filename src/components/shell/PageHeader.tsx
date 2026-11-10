@@ -17,15 +17,15 @@ const PageHeader: React.FC<PageHeaderProps> = ({
  code, title, description, actions, meta, className,
 }) => {
  return (
- <div className={cn("hairline-b bg-background", className)}>
- <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 pt-6 pb-4")}>
+ <div className={cn("border-b border-border bg-card", className)}>
+ <div className={cn("mx-auto w-full", PAGE_MAX_WIDTH, "px-4 md:px-6 lg:px-8 py-5")}>
  <div className="flex items-start justify-between gap-4 flex-wrap">
  <div className="min-w-0">
- <h1 className="enter-item enter-d1 font-display text-2xl md:text-3xl lg:text-[34px] font-extrabold tracking-normal leading-tight">
+ <h1 className="font-display text-2xl md:text-[28px] font-bold leading-tight">
  {title}
  </h1>
  {description && (
- <p className="enter-item enter-d2 mt-2 text-base text-muted-foreground max-w-2xl font-medium">
+ <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
  {description}
  </p>
  )}

@@ -64,7 +64,7 @@ const ChecklistRow: React.FC<{ checklist: Checklist; bucket: Bucket }> = ({ chec
  {checklist.name}
  </div>
  <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
- <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-muted text-muted-foreground border border-border">
+ <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-muted text-muted-foreground border border-border">
  {freqLabel(checklist.frequency)}
  </span>
  {total > 0 && (

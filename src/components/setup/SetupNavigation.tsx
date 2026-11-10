@@ -108,7 +108,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
           <Button
             onClick={handleComplete}
             type="button"
-            className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+            className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
           >
             <CheckCircle className="mr-2 h-4 w-4" />
             Complete Setup
@@ -117,7 +117,7 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
           <Button
             onClick={handleNext}
             type="button"
-            className="bg-primary hover:bg-primary-variant text-primary-foreground uppercase tracking-wide text-xs font-semibold"
+            className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold"
           >
             Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

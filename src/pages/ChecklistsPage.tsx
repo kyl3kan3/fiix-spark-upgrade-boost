@@ -100,7 +100,7 @@ const ChecklistsPage = () => {
                 <button
                   key={value}
                   onClick={() => setTypeFilter(value)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide border transition-colors ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                     typeFilter === value
                       ? "border-primary text-primary bg-primary/5"
                       : "border-border text-muted-foreground hover:bg-muted/60"
@@ -123,7 +123,7 @@ const ChecklistsPage = () => {
             </div>
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <SlidersHorizontal className="h-4 w-4" />
-              <span className="text-xs font-semibold uppercase tracking-wider">Sort:</span>
+              <span className="text-xs font-semibold">Sort:</span>
               <Select defaultValue="modified">
                 <SelectTrigger className="border-none bg-transparent shadow-none focus:ring-0 text-sm font-semibold text-foreground w-36 p-0 h-auto">
                   <SelectValue />
@@ -163,12 +163,12 @@ const ChecklistsPage = () => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-muted/20">
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Template Preview</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Checklist Name</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Category</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Frequency</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Created</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground">Template Preview</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground">Checklist Name</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground">Category</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground">Frequency</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground">Created</th>
+                    <th className="py-4 px-6 text-xs font-semibold text-muted-foreground text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
@@ -204,7 +204,7 @@ const ChecklistsPage = () => {
                       </td>
 
                       <td className="py-4 px-6">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase border ${getTypeTokens(checklist.type)}`}>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${getTypeTokens(checklist.type)}`}>
                           {ChecklistTypes.find((t) => t.value === checklist.type)?.label ?? checklist.type}
                         </span>
                       </td>
@@ -212,7 +212,7 @@ const ChecklistsPage = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold uppercase bg-muted/60 text-muted-foreground">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-muted/60 text-muted-foreground">
                             {ChecklistFrequencies.find((f) => f.value === checklist.frequency)?.label ?? checklist.frequency}
                           </span>
                         </div>

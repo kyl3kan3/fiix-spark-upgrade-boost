@@ -143,7 +143,7 @@ const GoogleAdsPanel = () => {
             {data.campaigns && data.campaigns.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
+                  <thead className="bg-muted text-xs text-muted-foreground">
                     <tr>
                       <th className="px-3 py-2 text-left">Campaign</th>
                       <th className="px-3 py-2 text-left">Status</th>
