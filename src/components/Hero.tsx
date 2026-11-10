@@ -8,7 +8,7 @@ import { Menu, LayoutGrid, BarChart3 } from "lucide-react";
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <header className="relative overflow-hidden bg-background pb-20 pt-8 md:pb-28">
+    <header className="relative overflow-hidden bg-background pb-20 pt-24 md:pb-28 md:pt-28">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
