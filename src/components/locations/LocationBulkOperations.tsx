@@ -1,3 +1,4 @@
+import { canReparent } from "@/lib/locationHierarchy";
 
 import React from "react";
 import { Location } from "@/services/locationService";
@@ -32,7 +33,7 @@ export const LocationBulkOperations: React.FC<LocationBulkOperationsProps> = ({
  } = useBulkOperations(locations, onOperationComplete);
 
  const selectedCount = selectedLocations.size;
- const availableTargets = locations.filter(loc => !selectedLocations.has(loc.id));
+ const availableTargets = locations.filter(loc => [...selectedLocations].every(id => canReparent(locations, id, loc.id)));
 
  return (
  <div className="space-y-4">

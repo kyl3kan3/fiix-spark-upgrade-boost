@@ -1,10 +1,9 @@
+import { fetchCompanyPeople } from "@/services/companyDirectoryService";
+import { parseRiskFactors } from "@/lib/riskFactorValidation";
 import { supabase } from "@/integrations/supabase/client";
-import type { Json } from "@/integrations/supabase/types";
 import { toast } from "sonner";
 import { requireUserCompany } from "@/services/supabaseHelpers";
 import {
-  computeAssetRisk,
-  type AssetScoringInput,
   type RiskFactor,
   type RiskLevel,
 } from "@/lib/predictiveScoring";
@@ -79,14 +78,11 @@ export const fetchRiskScoreRuns = async (limit = 10): Promise<RiskScoreRun[]> =>
   const actorIds = Array.from(new Set((runs ?? []).map((r) => r.actor_id).filter(Boolean))) as string[];
   let nameById = new Map<string, string>();
   if (actorIds.length > 0) {
-    const { data: profs } = await supabase
-      .from("profiles")
-      .select("id, first_name, last_name, email")
-      .in("id", actorIds);
+    const profs = await fetchCompanyPeople();
     nameById = new Map(
       (profs ?? []).map((p) => [
         p.id,
-        [p.first_name, p.last_name].filter(Boolean).join(" ").trim() || p.email || "Unknown",
+        [p.first_name, p.last_name].filter(Boolean).join(" ").trim() || "Team member",
       ]),
     );
   }
@@ -129,7 +125,7 @@ export const fetchAssetRiskScores = async (): Promise<AssetRiskScore[]> => {
       failure_probability: Number(row.failure_probability),
       predicted_failure_date: row.predicted_failure_date,
       remaining_useful_life_days: row.remaining_useful_life_days,
-      contributing_factors: (row.contributing_factors as unknown as RiskFactor[]) ?? [],
+      contributing_factors: parseRiskFactors(row.contributing_factors),
       recommended_action: row.recommended_action,
       model_version: row.model_version,
       computed_at: row.computed_at,
@@ -149,128 +145,21 @@ export const fetchAssetRiskScores = async (): Promise<AssetRiskScore[]> => {
  */
 export const recomputeRiskScores = async (): Promise<AssetRiskScore[]> => {
   try {
-    const startedAt = Date.now();
     const { companyId } = await requireUserCompany();
-    const { data: { user } } = await supabase.auth.getUser();
-    const actorId = user?.id ?? null;
-
-    const [assetsRes, workOrdersRes, failuresRes, metricsRes] = await Promise.all([
-      supabase.from("assets").select("id, name, status, purchase_date"),
-      supabase.from("work_orders").select("asset_id, status, priority, due_date"),
-      supabase.from("asset_failure_events").select("asset_id, failed_at, downtime_minutes, severity"),
-      supabase.from("asset_health_metrics").select("asset_id, metric_type, value, recorded_at"),
-    ]);
-
-    if (assetsRes.error) throw assetsRes.error;
-    if (workOrdersRes.error) throw workOrdersRes.error;
-    if (failuresRes.error) throw failuresRes.error;
-    if (metricsRes.error) throw metricsRes.error;
-
-    const assets = assetsRes.data ?? [];
-    const snapshot = {
-      assets: assets.length,
-      work_orders: workOrdersRes.data?.length ?? 0,
-      failure_events: failuresRes.data?.length ?? 0,
-      health_metrics: metricsRes.data?.length ?? 0,
-    };
-    if (assets.length === 0) {
-      await supabase.from("asset_risk_score_runs").insert({
-        company_id: companyId,
-        actor_id: actorId,
-        triggered_by: "manual",
-        model_version: "heuristic-v1",
-        snapshot,
-        summary: { total: 0 },
-        duration_ms: Date.now() - startedAt,
-        status: "empty",
-      });
-      toast.info("No assets to score yet. Add equipment first.");
-      return [];
-    }
-
-    const now = new Date();
-    const counts = { critical: 0, high: 0, medium: 0, low: 0 } as Record<string, number>;
-    let scoreSum = 0;
-    const rows = assets.map((asset) => {
-      const input: AssetScoringInput = {
-        assetId: asset.id,
-        assetName: asset.name,
-        status: asset.status,
-        purchaseDate: asset.purchase_date,
-        failureEvents: (failuresRes.data ?? [])
-          .filter((f) => f.asset_id === asset.id)
-          .map((f) => ({
-            failed_at: f.failed_at,
-            downtime_minutes: f.downtime_minutes,
-            severity: f.severity,
-          })),
-        workOrders: (workOrdersRes.data ?? [])
-          .filter((w) => w.asset_id === asset.id)
-          .map((w) => ({ status: w.status, priority: w.priority, due_date: w.due_date })),
-        healthMetrics: (metricsRes.data ?? [])
-          .filter((m) => m.asset_id === asset.id)
-          .map((m) => ({
-            metric_type: m.metric_type,
-            value: Number(m.value),
-            recorded_at: m.recorded_at,
-          })),
-        now,
-      };
-
-      const result = computeAssetRisk(input);
-      counts[result.riskLevel] += 1;
-      scoreSum += result.riskScore;
-      return {
-        company_id: companyId,
-        asset_id: asset.id,
-        risk_score: result.riskScore,
-        risk_level: result.riskLevel,
-        failure_probability: result.failureProbability,
-        predicted_failure_date: result.predictedFailureDate,
-        remaining_useful_life_days: result.remainingUsefulLifeDays,
-        contributing_factors: result.contributingFactors as unknown as Json,
-        recommended_action: result.recommendedAction,
-        model_version: result.modelVersion,
-        computed_at: now.toISOString(),
-      };
+    const { data, error } = await supabase.functions.invoke("recompute-risk-scores", {
+      body: { company_id: companyId, triggered_by: "manual" },
     });
-
-    const { error: upsertError } = await supabase
-      .from("asset_risk_scores")
-      .upsert(rows, { onConflict: "asset_id" });
-
-    if (upsertError) {
-      await supabase.from("asset_risk_score_runs").insert({
-        company_id: companyId,
-        actor_id: actorId,
-        triggered_by: "manual",
-        model_version: "heuristic-v1",
-        snapshot,
-        summary: { total: assets.length },
-        duration_ms: Date.now() - startedAt,
-        status: "failed",
-        error_message: upsertError.message,
-      });
-      throw upsertError;
+    if (error) throw error;
+    const result = Array.isArray(data?.results)
+      ? data.results.find((entry: { companyId: string }) => entry.companyId === companyId)
+      : null;
+    if (!data?.ok || !result || !["success", "empty"].includes(result.status)) {
+      throw new Error(result?.error || data?.error || "Risk score recomputation failed");
     }
-
-    await supabase.from("asset_risk_score_runs").insert({
-      company_id: companyId,
-      actor_id: actorId,
-      triggered_by: "manual",
-      model_version: "heuristic-v1",
-      snapshot,
-      summary: {
-        total: assets.length,
-        ...counts,
-        avg_score: Math.round((scoreSum / assets.length) * 10) / 10,
-      },
-      duration_ms: Date.now() - startedAt,
-      status: "success",
-    });
-
-    toast.success(`Risk scores recomputed for ${rows.length} asset${rows.length === 1 ? "" : "s"}`);
-    return fetchAssetRiskScores();
+    const scores = await fetchAssetRiskScores();
+    if (result.status === "empty") toast.info("No assets to score yet. Add equipment first.");
+    else toast.success(`Risk scores recomputed for ${scores.length} assets`);
+    return scores;
   } catch (error) {
     console.error("Error recomputing risk scores:", error);
     toast.error("Failed to recompute risk scores");

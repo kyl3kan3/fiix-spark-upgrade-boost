@@ -84,7 +84,7 @@ export const useTeamData = (
         profiles.map(
           async (profile: {
             id: string;
-            email: string;
+            email: string | null;
             first_name: string | null;
             last_name: string | null;
             role: string | null;
@@ -104,12 +104,12 @@ export const useTeamData = (
             }
 
             const fullName = `${profile.first_name || ""} ${profile.last_name || ""}`.trim();
-            const displayName = fullName || profile.email;
+            const displayName = fullName || profile.email || "Team member";
 
             return {
               id: profile.id,
               name: displayName,
-              email: profile.email,
+              email: profile.email ?? "",
               role: profile.role || "viewer",
               avatar: profile.avatar_url
                 ? profile.avatar_url

@@ -1041,7 +1041,7 @@ function sectionsFromBlogHtml(html: string): { heading: string; body: string }[]
 async function fetchBlogPosts(): Promise<BlogRow[]> {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&order=published_at.desc.nullslast&limit=5000`,
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&published_at=lte.${encodeURIComponent(new Date().toISOString())}&order=published_at.desc.nullslast&limit=5000`,
       { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
     );
     if (!res.ok) {

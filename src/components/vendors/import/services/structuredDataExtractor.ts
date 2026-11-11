@@ -7,12 +7,12 @@ export function extractStructuredData(text: string, instructions?: string): Enti
  
  // More flexible patterns for structured data
  const patterns = {
- company: /(?:Company|Business|Organization|Name)\s*:?\s*(.+?)(?:\n|$)/i,
- address: /(?:Address|Location)\s*:?\s*(.+?)(?:\n|$)/i,
- contact: /(?:Contact\s*Person|Contact\s*Name|Representative)\s*:?\s*(.+?)(?:\n|$)/i,
- phone: /(?:Phone|Contact\s*Number|Contact\s*#|Tel|Telephone|Number)\s*:?\s*(.+?)(?:\n|$)/i,
- email: /(?:Email|E-mail|E\s*mail)\s*:?\s*(.+?)(?:\n|$)/i,
- website: /(?:Website|Web|URL|Site)\s*:?\s*(.+?)(?:\n|$)/i
+ company: /^[ \t]*(?:Company|Business|Organization|Name)[ \t]*[:=][ \t]*(.+)$/im,
+ address: /^[ \t]*(?:Address|Location)[ \t]*[:=][ \t]*(.+)$/im,
+ contact: /^[ \t]*(?:Contact\s*Person|Contact\s*Name|Representative)[ \t]*[:=][ \t]*(.+)$/im,
+ phone: /^[ \t]*(?:Phone|Contact\s*Number|Contact\s*#|Tel|Telephone)[ \t]*[:=][ \t]*(.+)$/im,
+ email: /^[ \t]*(?:Email|E-mail|E\s*mail)[ \t]*[:=][ \t]*(.+)$/im,
+ website: /^[ \t]*(?:Website|Web|URL)[ \t]*[:=][ \t]*(.+)$/im
  };
  
  let foundStructuredData = false;

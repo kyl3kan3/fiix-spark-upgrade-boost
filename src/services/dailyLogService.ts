@@ -60,12 +60,14 @@ const convertDbRowToLogEntry = (data: any): DailyLogEntry => {
 
 export class DailyLogService {
  static async getDailyLog(date: Date): Promise<DailyLogEntry | null> {
+ const user = await requireUser();
  const dateString = date.toISOString().split('T')[0];
  
  const { data, error } = await supabase
  .from('daily_logs')
  .select('*')
  .eq('date', dateString)
+ .eq('user_id', user.id)
  .maybeSingle();
 
  if (error) {

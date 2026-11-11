@@ -1,3 +1,4 @@
+import { attachWorkOrderPeople } from "@/services/companyDirectoryService";
 
 import { add, addMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -81,14 +82,13 @@ export async function getScheduledWorkOrders() {
  .from("work_orders")
  .select(`
  *,
- asset:assets(*),
- assignee:profiles!work_orders_assigned_to_fkey(*)
+ asset:assets(*)
  `)
  .not("due_date", "is", null)
  .order("due_date", { ascending: true });
 
  if (error) throw error;
- return data;
+ return attachWorkOrderPeople(data ?? []);
 }
 
 export interface PmScheduleInput {
@@ -231,16 +231,14 @@ export async function getUnplannedWorkOrders() {
  const { data, error } = await supabase
  .from("work_orders")
  .select(`
- id, title, description, status, priority, created_at, updated_at,
- asset:assets(name),
- assignee:profiles!work_orders_assigned_to_fkey(first_name, last_name),
- creator:profiles!work_orders_created_by_fkey(first_name, last_name)
+ id, title, description, status, priority, created_at, updated_at, assigned_to, created_by,
+ asset:assets(name)
  `)
  .is("due_date", null)
  .order("created_at", { ascending: false });
 
  if (error) throw error;
- return data || [];
+ return attachWorkOrderPeople(data ?? []);
 }
 
 export async function getWorkOrderById(workOrderId: string) {
@@ -248,12 +246,12 @@ export async function getWorkOrderById(workOrderId: string) {
  .from("work_orders")
  .select(`
  *,
- asset:assets(*),
- assignee:profiles!work_orders_assigned_to_fkey(*),
- creator:profiles!work_orders_created_by_fkey(*)
+ asset:assets(*)
  `)
  .eq("id", workOrderId)
  .single();
  
- return response;
+ if (response.error || !response.data) return response;
+ const [data] = await attachWorkOrderPeople([response.data]);
+ return { ...response, data };
 }

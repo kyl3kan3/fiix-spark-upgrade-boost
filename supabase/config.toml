@@ -61,3 +61,6 @@ verify_jwt = false
 
 [functions.receive-article]
 verify_jwt = false
+
+[functions.handle-email-unsubscribe]
+verify_jwt = false

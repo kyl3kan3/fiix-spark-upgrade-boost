@@ -70,14 +70,17 @@ export function subscribeToConversationMessages(
     .channel(getUserMessagesChannelTopic(currentUserId, recipientId), {
       config: { private: true },
     })
-    .on('postgres_changes',
+    .on<Message>('postgres_changes',
       {
         event: '*',
         schema: 'public',
-        table: 'messages',
-        filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
+        table: 'messages'
       },
-      onChange
+      (payload) => {
+        const row = payload.eventType === "DELETE" ? payload.old : payload.new;
+        if ((row.sender_id === currentUserId && row.recipient_id === recipientId) ||
+            (row.sender_id === recipientId && row.recipient_id === currentUserId)) onChange(payload);
+      }
     )
     .subscribe();
 }

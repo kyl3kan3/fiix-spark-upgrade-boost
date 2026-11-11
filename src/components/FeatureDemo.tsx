@@ -10,7 +10,7 @@ const FeatureDemo = () => {
  const { featureId, title } = useParams();
  const navigate = useNavigate();
  const key = featureId ?? title;
- const decodedFeatureId = key ? decodeURIComponent(key) : null;
+ const decodedFeatureId = key || null;
 
  const feature = decodedFeatureId ? featureContentMap[decodedFeatureId] : null;
 

@@ -1,3 +1,4 @@
+import { attachWorkOrderPeople } from "@/services/companyDirectoryService";
 
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -20,9 +21,7 @@ export const useWorkOrders = () => {
  .from("work_orders")
  .select(`
  *,
- asset:assets(*),
- assignee:profiles!work_orders_assigned_to_fkey(*),
- creator:profiles!work_orders_created_by_fkey(*)
+ asset:assets(*)
  `);
  
  // Apply filters if they are set
@@ -39,11 +38,12 @@ export const useWorkOrders = () => {
 
  const { data, error } = await query;
  if (error) throw error;
+ const orders = await attachWorkOrderPeople(data ?? []);
  
  // Apply search filter client-side if needed
  if (filters.searchQuery && filters.searchQuery.trim() !== "") {
  const search = filters.searchQuery.toLowerCase();
- return (data as WorkOrderWithRelations[]).filter(wo => 
+ return orders.filter(wo =>
  wo.title?.toLowerCase().includes(search) || 
  wo.description?.toLowerCase().includes(search) ||
  wo.asset?.name?.toLowerCase().includes(search) ||
@@ -51,7 +51,7 @@ export const useWorkOrders = () => {
  );
  }
  
- return data as WorkOrderWithRelations[];
+ return orders;
  },
  });
 

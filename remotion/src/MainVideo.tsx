@@ -338,10 +338,10 @@ const BLOCKS: Block[] = [
   { kind: "clip", dur: 504, props: { src: "clips/trimmed/02-triage.mp4", kicker: "II · Triage", caption: "Inbox becomes a work order, without ceremony." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter III", title: "Ahead of the breakdown.", italicWord: "Ahead", size: 104 } },
 
-  { kind: "clip", dur: 222, props: { src: "clips/trimmed/03-pm.mp4", kicker: "III · Preventive", caption: "A month, planned in minutes." } },
+  { kind: "clip", dur: 105, props: { src: "clips/trimmed/03-pm.mp4", kicker: "III · Preventive", caption: "A month, planned in minutes." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter IV", title: "Every asset, accounted for.", italicWord: "accounted", size: 104 } },
 
-  { kind: "clip", dur: 102, props: { src: "clips/trimmed/04-registry.mp4", kicker: "IV · Registry", caption: "Equipment, places, and the people who own them." } },
+  { kind: "clip", dur: 60, props: { src: "clips/trimmed/04-registry.mp4", kicker: "IV · Registry", caption: "Equipment, places, and the people who own them." } },
   { kind: "title", dur: 90, props: { eyebrow: "Chapter V", title: "The whole picture.", italicWord: "whole", size: 104 } },
 
   { kind: "clip", dur: 96, props: { src: "clips/trimmed/05-analytics.mp4", kicker: "V · Analytics", caption: "Trends, costs, and the questions you haven't asked yet." } },

@@ -1,3 +1,4 @@
+import { canReparent } from "@/lib/locationHierarchy";
 
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -56,7 +57,7 @@ export const LocationDialogs: React.FC<LocationDialogsProps> = ({
  </DialogHeader>
  {editingLocation && (
  <LocationForm
- locations={allLocations}
+ locations={allLocations.filter(loc => canReparent(allLocations, editingLocation.id, loc.id))}
  initialData={{
  name: editingLocation.name,
  description: editingLocation.description || "",

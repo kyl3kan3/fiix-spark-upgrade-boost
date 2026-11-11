@@ -15,7 +15,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  const { isAuthenticated, isLoading } = useAuth();
  const location = useLocation();
- const { data: sub, isLoading: subLoading } = useSubscription();
+ const { data: sub, isLoading: subLoading, isError: subError } = useSubscription();
   const { profile, isLoading: profileLoading } = useProfile();
 
  // Show loading spinner while checking authentication
@@ -37,7 +37,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // Force users without a company to complete onboarding before using the app.
   const ONBOARDING_ALLOWED = ["/onboarding", "/company-setup", "/setup", "/auth"];
-  const onOnboardingPath = ONBOARDING_ALLOWED.some((p) => location.pathname.startsWith(p));
+  const onOnboardingPath = ONBOARDING_ALLOWED.some((p) => (location.pathname === p || location.pathname.startsWith(`${p}/`)));
   if (isAuthenticated && !profileLoading && profile && !profile.company_id && !onOnboardingPath) {
     return <Navigate to="/onboarding" replace />;
   }
@@ -48,7 +48,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
  "/billing", "/pricing", "/profile", "/settings",
  "/onboarding", "/company-setup", "/setup", "/team-setup",
  ];
- const isAllowed = ALLOWED_WHEN_INACTIVE.some((p) => location.pathname.startsWith(p));
+ const isAllowed = ALLOWED_WHEN_INACTIVE.some((p) => (location.pathname === p || location.pathname.startsWith(`${p}/`)));
+ if (!isAllowed && (profileLoading || subLoading)) {
+   return <div role="status" className="p-8">Checking account access…</div>;
+ }
+ if (!isAllowed && (subError || !sub || !profile)) {
+   return <div role="alert" className="p-8">Unable to verify account access. Please reload and try again.</div>;
+ }
  const isInactive = !subLoading && sub && !sub.is_active;
  const isTechnician = !profileLoading && profile?.company_id && toNavRole(profile.role) === "technician";
  // Technicians cannot access Billing; Profile remains available during a lapse.

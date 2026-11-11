@@ -55,3 +55,15 @@ describe("useAuthOperations", () => {
     });
   });
 });
+
+
+it("does not disclose whether signup returned an existing identity", async () => {
+ const { result } = renderHook(() => useAuthOperations());
+ signUpMock.mockResolvedValueOnce({ data: { user: { identities: [] } }, error: null });
+ let existing;
+ await act(async () => { existing = await result.current.signUp("person@example.com", "password"); });
+ signUpMock.mockResolvedValueOnce({ data: { user: { identities: [{ id: "new" }] } }, error: null });
+ let created;
+ await act(async () => { created = await result.current.signUp("person@example.com", "password"); });
+ expect(existing).toEqual(created);
+});

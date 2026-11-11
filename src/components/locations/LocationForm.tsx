@@ -14,7 +14,7 @@ import { ImageUploadField } from "@/components/common/ImageUploadField";
 const locationSchema = z.object({
  name: z.string().min(1, "Name is required"),
  description: z.string().optional(),
- parent_id: z.string().optional(),
+ parent_id: z.string().nullable().optional(),
  image_url: z.string().url().nullable().optional(),
 });
 
@@ -67,7 +67,7 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  try {
  await onSubmit({
  ...data,
- parent_id: data.parent_id === "" ? undefined : data.parent_id
+ parent_id: data.parent_id || null
  });
  } catch (error) {
  console.error('Form submission error:', error);
@@ -113,7 +113,6 @@ export const LocationForm: React.FC<LocationFormProps> = ({
  <SelectContent>
       <SelectItem value="none">No parent (root location)</SelectItem>
  {locations
- .filter(location => mode === "edit" ? location.id !== initialData?.parent_id : true)
  .map((location) => (
  <SelectItem key={location.id} value={location.id}>
  {location.name}

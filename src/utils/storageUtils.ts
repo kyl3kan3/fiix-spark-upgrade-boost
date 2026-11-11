@@ -22,6 +22,7 @@ export const getStorageItem = (key: string): string | null => {
 export const removeStorageItem = (key: string): void => {
  try {
  localStorage.removeItem(key);
+ if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("auth-storage-changed"));
  } catch (error) {
  logger.warn(`Failed to remove localStorage item: ${key}`, error);
  }

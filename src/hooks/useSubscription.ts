@@ -1,3 +1,4 @@
+import { useAuth } from "@/providers/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { getCompanySubscription, type SubscriptionTier } from "@/services/subscriptionService";
 import { PLAN_BY_TIER } from "@/data/productCatalog";
@@ -66,8 +67,10 @@ export const TIER_FEATURES: Record<
 };
 
 export function useSubscription() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ["subscription"],
+    queryKey: ["subscription", user?.id],
+    enabled: !!user,
     queryFn: getCompanySubscription,
     staleTime: 60_000,
   });

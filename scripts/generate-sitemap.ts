@@ -17,7 +17,7 @@ const SUPABASE_ANON =
 async function fetchBlogEntries(): Promise<SitemapEntry[]> {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,updated_at,published_at&order=published_at.desc.nullslast&limit=5000`,
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,updated_at,published_at&published_at=lte.${encodeURIComponent(new Date().toISOString())}&order=published_at.desc.nullslast&limit=5000`,
       { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
     );
     if (!res.ok) {
@@ -33,7 +33,7 @@ async function fetchBlogEntries(): Promise<SitemapEntry[]> {
       .filter((r) => isSafeBlogSlug(r.slug))
       .map((r) => ({
         path: `/blog/${r.slug}`,
-        lastmod: (r.updated_at ?? r.published_at ?? "").slice(0, 10) || undefined,
+        lastmod: (r.updated_at ?? r.published_at ?? "").match(/^\d{4}-\d{2}-\d{2}(?=T|$)/)?.[0],
         changefreq: "weekly" as const,
         priority: "0.7",
       }))

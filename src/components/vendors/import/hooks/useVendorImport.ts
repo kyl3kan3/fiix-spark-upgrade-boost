@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { normalizeVendorImport, vendorInsertData } from '../services/vendorImportData';
 import { parseFile } from '../services/fileParsingService';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from "@/lib/logger";
@@ -49,7 +50,7 @@ export const useVendorImport = () => {
  logger.log('✅ File parsing completed successfully');
  logger.log('📊 Results:', rows.length, 'vendors found');
  
- setVendors(rows);
+ setVendors(rows.map((row, index) => ({ ...normalizeVendorImport(row), id: `import-${fileId}-${index}` })));
  
  // Show warning if parsed count differs significantly from expected
  if (expectedCount && rows.length > 0) {
@@ -72,7 +73,7 @@ export const useVendorImport = () => {
  logger.log('🏁 File processing completed');
  };
 
- const saveToSupabase = async () => {
+ const saveToSupabase = async (editedVendors: unknown[] = vendors) => {
  try {
  const { data: { user } } = await supabase.auth.getUser();
  if (!user) throw new Error('You must be signed in to import vendors.');
@@ -96,12 +97,11 @@ export const useVendorImport = () => {
         throw new Error('Only administrators or managers can import vendors.');
       }
 
- for (const vendor of vendors) {
- const { error } = await supabase
- .from('vendors')
- .insert([{ ...vendor, company_id: profile.company_id }]);
+ // Validate every row before a single atomic bulk insert. Parser metadata never reaches SQL.
+ const rows = editedVendors.map(vendor => ({ ...vendorInsertData(vendor), company_id: profile.company_id }));
+ if (!rows.length) return;
+ const { error } = await supabase.from('vendors').insert(rows);
  if (error) throw error;
- }
  alert('Vendors saved!');
  } catch (error) {
  console.error('Error saving vendors:', error);

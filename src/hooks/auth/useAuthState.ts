@@ -1,9 +1,12 @@
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export function useAuthState() {
+ const queryClient = useQueryClient();
+ const identity = useRef<string | null>(null);
  const [user, setUser] = useState<User | null>(null);
  const [session, setSession] = useState<Session | null>(null);
  const [isLoading, setIsLoading] = useState(true);
@@ -20,13 +23,19 @@ export function useAuthState() {
  };
 
  const applySession = useCallback((nextSession: Session | null) => {
+ const nextIdentity = nextSession?.user.id ?? null;
+ if (identity.current !== nextIdentity) {
+   void queryClient.cancelQueries();
+   queryClient.clear();
+   identity.current = nextIdentity;
+ }
  setSession(nextSession);
  setUser(nextSession?.user ?? null);
 
  if (nextSession) {
  clearError();
  }
- }, []);
+ }, [queryClient]);
 
  // Logout function
  const logout = async () => {
@@ -41,12 +50,14 @@ export function useAuthState() {
 
  useEffect(() => {
  let isMounted = true;
+ let receivedAuthEvent = false;
 
  // Set up auth state listener
  const { data: { subscription } } = supabase.auth.onAuthStateChange(
  (event, nextSession) => {
  if (!isMounted) return;
 
+ receivedAuthEvent = true;
  applySession(nextSession);
 
  const isResolvedAuthEvent =
@@ -65,7 +76,7 @@ export function useAuthState() {
  // Check for existing session
  supabase.auth.getSession()
  .then(({ data: { session: existingSession }, error: sessionError }) => {
- if (!isMounted) return;
+ if (!isMounted || receivedAuthEvent) return;
 
  if (sessionError) {
  console.error("Error restoring session:", sessionError);
@@ -77,7 +88,7 @@ export function useAuthState() {
  applySession(existingSession);
  })
  .catch((sessionError) => {
- if (!isMounted) return;
+ if (!isMounted || receivedAuthEvent) return;
 
  console.error("Unexpected session restore error:", sessionError);
  handleError("Failed to restore your session");

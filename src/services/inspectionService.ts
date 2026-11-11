@@ -1,3 +1,4 @@
+import { fetchCompanyPeople } from "@/services/companyDirectoryService";
 import { Inspection } from "@/types/inspections";
 import { Checklist, ChecklistSubmission } from "@/types/checklists";
 import { checklistService } from "@/services/checklistService";
@@ -83,7 +84,7 @@ export const fetchInspections = async (): Promise<{
  ? supabase.from("assets").select("id, name").in("id", assetIds)
  : Promise.resolve({ data: [] as Array<{ id: string; name: string }> }),
  submitterIds.length
- ? supabase.from("profiles").select("id, first_name, last_name").in("id", submitterIds)
+ ? fetchCompanyPeople().then(data => ({ data }))
  : Promise.resolve({ data: [] as Array<{ id: string; first_name: string | null; last_name: string | null }> }),
  ]);
 

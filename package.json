@@ -30,7 +30,8 @@
     "check:seo:http": "node scripts/verify-live-seo-routing.mjs",
     "check:duplicates": "node scripts/audit-duplicate-content.mjs",
     "snapshot:meta": "tsx scripts/snapshot-meta-history.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:security": "node --import tsx --test scripts/blog-security.test.mjs scripts/daybreak-boundaries.test.mjs"
   },
   "dependencies": {
     "@datafast/ai-crawl": "^1.0.7",
@@ -68,6 +69,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "docx": "^9.7.1",
+    "dompurify": "3.4.17",
     "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
@@ -115,6 +117,7 @@
     "lovable-tagger": "1.3.1",
     "patch-package": "8.0.1",
     "postcss": "8.5.17",
+    "sanitize-html": "2.18.2",
     "smol-toml": "1.7.0",
     "tailwindcss": "^3.4.11",
     "tsx": "^4.22.3",

@@ -3,7 +3,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { stripTypeScriptTypes } from "node:module";
+import ts from "typescript";
+const stripTypeScriptTypes = source => ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
 import vm from "node:vm";
 import test from "node:test";
 import { isSafeBlogSlug } from "../supabase/functions/_shared/blogSlug.ts";

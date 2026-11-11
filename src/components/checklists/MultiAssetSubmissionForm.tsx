@@ -65,6 +65,16 @@ const MultiAssetSubmissionForm: React.FC<Props> = ({ checklist, onSubmitSuccess 
 
  const submitMutation = useMutation({
  mutationFn: async () => {
+ if (linkedAssets.length !== assetIds.length) throw new Error("Some linked equipment could not be loaded. Reload before submitting.");
+ for (const asset of linkedAssets) {
+   for (const item of items.filter(item => item.is_required)) {
+     const value = values[asset.id]?.[item.id];
+     if (item.item_type === "checkbox" ? !value?.is_checked : !value?.response_value?.trim()) {
+       throw new Error(`Required: ${asset.name} — ${item.title}`);
+     }
+   }
+ }
+
  const payload: Array<{
  item_id: string;
  asset_id: string;

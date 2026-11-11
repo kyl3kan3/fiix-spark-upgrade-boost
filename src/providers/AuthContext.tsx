@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
  return (
  <AuthContext.Provider value={authState}>
- {children}
+ <React.Fragment key={authState.user?.id ?? "anonymous"}>{children}</React.Fragment>
  </AuthContext.Provider>
  );
 };

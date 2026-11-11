@@ -1,3 +1,5 @@
+import { boundedJson } from "../_shared/requestBody.ts";
+import { reserveOperation } from "../_shared/operationBudget.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
@@ -107,7 +109,18 @@ serve(async (req) => {
       });
     }
 
-    const body = await req.json().catch(() => ({}));
+    const { data: profile, error: profileError } = await db.from("profiles").select("company_id").eq("id", userData.user.id).maybeSingle();
+    if (profileError || !profile?.company_id) return new Response("Forbidden", { status: 403, headers: corsHeaders });
+    const { data: roles, error: roleError } = await db.from("user_roles").select("role")
+      .eq("user_id", userData.user.id).eq("company_id", profile.company_id).in("role", ["administrator", "manager"]);
+    if (roleError || !roles?.length) return new Response("Forbidden", { status: 403, headers: corsHeaders });
+    const { data: active, error: subscriptionError } = await db.rpc("company_has_active_subscription", { _company: profile.company_id });
+    if (subscriptionError || !active) return new Response("Subscription required", { status: 403, headers: corsHeaders });
+
+    let body;
+    try { body = await boundedJson(req); }
+    catch (err) { return new Response("Invalid or oversized request", { status: err instanceof RangeError ? 413 : 400, headers: corsHeaders }); }
+    if (!await reserveOperation(userData.user.id, "extract-assets")) return new Response("Rate limit exceeded", { status: 429, headers: corsHeaders });
     const storagePath: string | undefined = body?.storage_path;
     const documentId: string | undefined = body?.document_id;
     let mime: string = body?.mime_type ?? "";

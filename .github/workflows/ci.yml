@@ -60,6 +60,9 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Security boundary regressions
+        run: npm run test:security
+
       - name: Build
         run: npm run build
 

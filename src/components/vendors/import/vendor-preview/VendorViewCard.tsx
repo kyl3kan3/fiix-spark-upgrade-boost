@@ -1,3 +1,4 @@
+import { safeWebUrl } from "@/lib/browserTrust";
 
 import React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +60,7 @@ export const VendorViewCard: React.FC<VendorViewCardProps> = ({
  <p>Status: {vendor.status}</p>
  {vendor.website && (
  <p className="truncate">
- <a href={vendor.website} target="_blank" rel="noopener noreferrer" 
+ <a href={safeWebUrl(vendor.website)} target="_blank" rel="noopener noreferrer"
  className="text-primary hover:underline">
  {vendor.website}
  </a>

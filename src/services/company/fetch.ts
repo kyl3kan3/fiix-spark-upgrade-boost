@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { tryGetUserCompany } from "@/services/supabaseHelpers";
+import { requireUser, resolveCompanyIdForUser } from "@/services/supabaseHelpers";
 import { CompanyData } from "./types";
 
 /**
@@ -8,7 +8,8 @@ import { CompanyData } from "./types";
  */
 export const fetchUserCompany = async (): Promise<CompanyData | null> => {
  try {
- const { userId, companyId } = await tryGetUserCompany();
+ const { id: userId } = await requireUser();
+ const companyId = await resolveCompanyIdForUser(userId);
 
  if (!userId) {
  throw new Error("User not authenticated");

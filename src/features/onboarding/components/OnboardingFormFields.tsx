@@ -55,7 +55,7 @@ const OnboardingFormFields: React.FC<FormFieldsProps> = ({
           </div>
           <p className="text-xs text-muted-foreground mt-1.5">
             {state.accountType === "personal"
-              ? "Use MaintenEase solo. You can create a company later."
+              ? "Use a private workspace for your own maintenance."
               : "Set up a company workspace and invite your team."}
           </p>
         </div>

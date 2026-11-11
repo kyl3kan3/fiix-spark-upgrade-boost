@@ -68,13 +68,14 @@ const VendorImport: React.FC = () => {
               </Label>
               <Textarea
                 id="import-instructions"
-                placeholder="Describe the document format, vendor organization, or any special parsing instructions..."
+                placeholder="e.g. one vendor per page, or one vendor per line"
+                maxLength={4000}
                 value={importInstructions}
                 onChange={(e) => setImportInstructions(e.target.value)}
                 className="min-h-[100px] resize-none bg-muted/30 border-border/60 focus-visible:ring-primary/30"
               />
               <p className="text-sm text-muted-foreground">
-                Provide context about your document structure to improve parsing accuracy
+                Use “one vendor per page” for PDFs or “one vendor per line” for text lists. Additional instructions apply to AI scan extraction.
               </p>
             </div>
 

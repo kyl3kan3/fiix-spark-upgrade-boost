@@ -12,7 +12,7 @@ interface BlogRow {
   meta_description: string | null;
   content_markdown: string | null;
   content_html: string | null;
-  tags: string[] | null;
+  tags: string | string[] | null;
   hero_image_url: string | null;
   hero_image_alt: string | null;
   published_at: string | null;
@@ -78,7 +78,7 @@ export const onRequestGet = async (context: any) => {
     post.published_at ? `Published: ${post.published_at.slice(0, 10)}` : null,
     post.updated_at ? `Updated: ${post.updated_at.slice(0, 10)}` : null,
     post.reading_time ? `Reading time: ${post.reading_time} min` : null,
-    post.tags?.length ? `Tags: ${post.tags.join(", ")}` : null,
+    post.tags?.length ? `Tags: ${Array.isArray(post.tags) ? post.tags.join(", ") : post.tags}` : null,
     "",
     post.hero_image_url
       ? `![${post.hero_image_alt ?? post.title}](${post.hero_image_url})`

@@ -4,6 +4,15 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// These routes run below AuthProvider in the app; supply the same authenticated
+// boundary while keeping route tests independent of a live Supabase session.
+vi.mock("@/providers/AuthContext", () => ({
+ useAuth: () => ({ user: { id: "asset-route-user" }, isAuthenticated: true, isLoading: false }),
+}));
+vi.mock("@/services/subscriptionService", () => ({
+ getCompanySubscription: vi.fn(async () => ({ tier: "starter", is_active: true })),
+}));
+
 vi.mock("@/components/dashboard/DashboardLayout", () => ({
  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));

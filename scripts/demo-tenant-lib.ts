@@ -57,12 +57,17 @@ export const createAdminClient = () => {
 };
 
 export const ensureDemoCompany = async (supabase: ReturnType<typeof createAdminClient>) => {
- const { data: company, error: companyError } = await supabase
- .from("companies")
- .upsert({ name: DEMO_COMPANY_NAME }, { onConflict: "name" })
- .select("id,name")
- .single();
- if (companyError || !company) throw companyError ?? new Error("Failed to create/find demo company");
+ const demoCompanyId = process.env.DEMO_COMPANY_ID;
+ let query = supabase.from("companies").select("id,name");
+ query = demoCompanyId ? query.eq("id", demoCompanyId) : query.eq("name", DEMO_COMPANY_NAME);
+ const { data: matches, error: lookupError } = await query.limit(2);
+ if (lookupError) throw lookupError;
+ if ((matches?.length ?? 0) > 1) throw new Error("Multiple demo companies found; set DEMO_COMPANY_ID explicitly.");
+ if (matches?.length) return matches[0];
+ if (demoCompanyId) throw new Error("DEMO_COMPANY_ID does not identify an existing company.");
+ const { data: company, error: companyError } = await supabase.from("companies")
+   .insert({ name: DEMO_COMPANY_NAME }).select("id,name").single();
+ if (companyError || !company) throw companyError ?? new Error("Failed to create demo company");
  return company;
 };
 

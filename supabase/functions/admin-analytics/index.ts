@@ -74,7 +74,8 @@ Deno.serve(async (req) => {
     if (!roleRow) return json({ error: 'Forbidden' }, 403);
 
     const url = new URL(req.url);
-    const days = Math.max(7, Math.min(90, Number(url.searchParams.get('days') ?? '30')));
+    const requestedDays = Number(url.searchParams.get('days') ?? '30');
+    const days = Number.isFinite(requestedDays) ? Math.max(1, Math.min(90, Math.floor(requestedDays))) : 30;
     const since = daysAgo(days - 1).toISOString();
 
     // Internal accounts to exclude from analytics.
@@ -84,11 +85,22 @@ Deno.serve(async (req) => {
       .split(',')
       .map((e) => e.trim().toLowerCase())
       .filter((e) => e.length > 0);
-    const { data: excludedProfiles } = await admin
-      .from('profiles')
-      .select('id,company_id')
-      .in('email', EXCLUDED_EMAILS);
-    const excludedUserIds = (excludedProfiles ?? []).map((p: any) => p.id);
+    // Profile.email is user-editable. Exclusions must use verified Auth identities.
+    const excludedUserIds: string[] = [];
+    if (EXCLUDED_EMAILS.length) {
+      for (let page = 1; ; page++) {
+        const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
+        if (error) throw error;
+        for (const user of data.users) {
+          if (user.email_confirmed_at && EXCLUDED_EMAILS.includes(user.email?.toLowerCase() ?? '')) excludedUserIds.push(user.id);
+        }
+        if (data.users.length < 1000) break;
+      }
+    }
+    const { data: excludedProfiles, error: excludedProfilesError } = excludedUserIds.length
+      ? await admin.from('profiles').select('id,company_id').in('id', excludedUserIds)
+      : { data: [], error: null };
+    if (excludedProfilesError) throw excludedProfilesError;
     const excludedCompanyIds = Array.from(
       new Set((excludedProfiles ?? []).map((p: any) => p.company_id).filter(Boolean)),
     );
@@ -128,7 +140,7 @@ Deno.serve(async (req) => {
     ] = await Promise.all([
       excludeUsers(admin.from('profiles').select('id', { count: 'exact', head: true })),
       excludeUsers(admin.from('profiles').select('id,created_at').gte('created_at', since)),
-      excludeByCompanyCol(admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end,trial_ends_at,company_id')),
+      excludeByCompanyCol(admin.from('subscriptions').select('id,tier,status,environment,created_at,updated_at,cancel_at_period_end,trial_ends_at,trial_started_at,company_id')),
       excludeByCompanyCol(admin.from('subscriptions').select('created_at,updated_at,status,environment,company_id').gte('updated_at', since)),
       admin.from('marketing_leads').select('id', { count: 'exact', head: true }),
       admin.from('marketing_leads').select('created_at,source_slug').gte('created_at', since),
@@ -203,9 +215,9 @@ Deno.serve(async (req) => {
     const signupsDaily = bucketByDay(profilesRecent.data ?? [], days);
     const subsCreatedDaily = bucketByDay(subsRecent.data ?? [], days);
     const trialsStartedDaily = bucketByDay(
-      (subsRecent.data ?? []).filter((s) => s.status === 'trialing'),
+      subs.filter((s) => s.trial_started_at),
       days,
-      (r) => r.created_at,
+      (r) => r.trial_started_at,
     );
     const cancelsDaily = bucketByDay(
       (subsRecent.data ?? []).filter((s) => s.status === 'canceled'),

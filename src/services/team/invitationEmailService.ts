@@ -16,17 +16,7 @@ export async function sendInvitationEmail(
   // exercised from a preview environment we still want the email link to go
   // to maintenease.com.
   const PRODUCTION_ORIGIN = "https://maintenease.com";
-  const currentOrigin =
-    typeof window !== "undefined" && window.location?.origin
-      ? window.location.origin
-      : "";
-  const isProductionHost = /maintenease\.com$/i.test(
-    (() => {
-      try { return new URL(currentOrigin).hostname; } catch { return ""; }
-    })()
-  );
-  const origin = isProductionHost ? currentOrigin : PRODUCTION_ORIGIN;
-  const inviteUrl = `${origin}/auth?signup=true&token=${token}`;
+  const inviteUrl = `${PRODUCTION_ORIGIN}/auth?signup=true&token=${encodeURIComponent(token)}`;
  const escHtml = (s: unknown) =>
    String(s ?? "")
      .replace(/&/g, "&amp;")

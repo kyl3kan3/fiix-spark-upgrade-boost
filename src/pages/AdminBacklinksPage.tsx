@@ -1,3 +1,4 @@
+import { safeWebUrl } from "@/lib/browserTrust";
 import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
@@ -245,7 +246,7 @@ const AdminBacklinksPage: React.FC = () => {
                       <td className="px-4 py-3">
                         <div className="font-medium text-foreground">{r.domain}</div>
                         {r.url && (
-                          <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary inline-flex items-center gap-1 hover:underline">
+                          <a href={safeWebUrl(r.url)} target="_blank" rel="noopener noreferrer" className="text-xs text-primary inline-flex items-center gap-1 hover:underline">
                             <ExternalLink className="h-3 w-3" /> Open
                           </a>
                         )}

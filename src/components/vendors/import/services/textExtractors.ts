@@ -1,7 +1,11 @@
 
 export function extractEmail(text: string): string | undefined {
- const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
- return emailMatch ? emailMatch[0] : undefined;
+ for (const token of text.split(/\s+/)) {
+   if (token.length > 254) continue;
+   const candidate = token.replace(/^[<(]+|[>),;]+$/g, '');
+   if (/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(candidate)) return candidate;
+ }
+ return undefined;
 }
 
 export function extractPhone(text: string): string | undefined {
@@ -10,16 +14,28 @@ export function extractPhone(text: string): string | undefined {
 }
 
 export function extractWebsite(text: string): string | undefined {
- const websiteMatch = text.match(/(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/);
- if (websiteMatch && !websiteMatch[0].includes('@')) {
- return websiteMatch[0].startsWith('http') ? websiteMatch[0] : `https://${websiteMatch[0]}`;
+ for (const token of text.split(/\s+/)) {
+   if (token.length > 2048 || token.includes('@')) continue;
+   if (/^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}(?:\/[^\s]*)?$/.test(token)) {
+     return /^https?:/.test(token) ? token : `https://${token}`;
+   }
  }
  return undefined;
 }
 
 export function extractAddress(text: string): string | undefined {
- const addressMatch = text.match(/\d+\s+[A-Za-z0-9\s,.-]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Parkway|Pkwy)\b/i);
- return addressMatch ? addressMatch[0].trim() : undefined;
+ // Bounded token scans avoid restarting a greedy suffix search at every digit.
+ const suffix = /^(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Parkway|Pkwy)[.,]?$/i;
+ for (const line of text.split(/\r?\n/)) {
+   const words = line.trim().split(/\s+/);
+   for (let start = 0; start < words.length; start++) {
+     if (!/^\d{1,10}[A-Za-z]?$/.test(words[start])) continue;
+     for (let end = start + 2; end < Math.min(start + 22, words.length); end++) {
+       if (suffix.test(words[end])) return words.slice(start, end + 1).join(' ');
+     }
+   }
+ }
+ return undefined;
 }
 
 export function extractStateAndZip(text: string): { state?: string; zipCode?: string } {

@@ -70,6 +70,8 @@ var create_work_order_default = defineTool2({
       _user_id: ctx.getUserId()
     });
     if (companyErr) return { content: [{ type: "text", text: companyErr.message }], isError: true };
+    const { data: roles, error: roleError } = await sb.from("user_roles").select("role").eq("user_id", ctx.getUserId()).eq("company_id", companyId).in("role", ["administrator", "manager"]);
+    if (roleError || !roles?.length) return { content: [{ type: "text", text: "Forbidden" }], isError: true };
     const { data, error } = await sb.from("work_orders").insert({
       title,
       description: description ?? null,

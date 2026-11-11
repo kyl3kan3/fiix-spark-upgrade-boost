@@ -1,3 +1,4 @@
+import { canReparent, locationPath } from "@/lib/locationHierarchy";
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -74,20 +75,7 @@ export const getLocationById = async (id: string): Promise<Location | null> => {
 export const getLocationPath = async (id: string): Promise<string> => {
  try {
  const locations = await fetchLocations();
- const locationMap = new Map(locations.map(loc => [loc.id, loc]));
- 
- const buildPath = (locationId: string): string[] => {
- const location = locationMap.get(locationId);
- if (!location) return [];
- 
- const path = [location.name];
- if (location.parent_id) {
- path.unshift(...buildPath(location.parent_id));
- }
- return path;
- };
- 
- return buildPath(id).join(' > ');
+ return locationPath(locations, id);
  } catch (error) {
  console.error('Error in getLocationPath:', error);
  return '';
@@ -134,6 +122,10 @@ export const createLocation = async (locationData: CreateLocationData): Promise<
 
 export const updateLocation = async (id: string, updates: Partial<CreateLocationData>): Promise<Location> => {
  try {
+ if (updates.parent_id && !canReparent(await fetchLocations(), id, updates.parent_id)) {
+   throw new Error("A location cannot be moved below itself or a descendant");
+ }
+
  const { data, error } = await supabase
  .from('locations')
  .update(updates)
@@ -244,7 +236,7 @@ export const buildLocationHierarchy = (locations: Location[]): LocationWithChild
  locations.forEach(location => {
  const locationWithChildren = locationMap.get(location.id)!;
  
- if (location.parent_id) {
+ if (location.parent_id && canReparent(locations, location.id, location.parent_id)) {
  const parent = locationMap.get(location.parent_id);
  if (parent) {
  parent.children = parent.children || [];

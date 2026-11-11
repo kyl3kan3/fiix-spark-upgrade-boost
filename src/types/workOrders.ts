@@ -22,7 +22,7 @@ export type WorkOrderCommentFormData = {
 // We can extend these types with UI-specific properties as needed
 export interface WorkOrderWithRelations extends WorkOrder {
  asset?: Asset | null;
- assignee?: Profile | null;
- creator?: Profile | null;
+ assignee?: Pick<Profile, "id" | "first_name" | "last_name"> | null;
+ creator?: Pick<Profile, "id" | "first_name" | "last_name"> | null;
  comments?: WorkOrderComment[];
 }

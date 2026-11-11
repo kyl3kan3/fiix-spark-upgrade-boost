@@ -1,3 +1,4 @@
+import { createClient } from "npm:@supabase/supabase-js@2"
 import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { EmailAPIError, sendLovableEmail } from 'npm:@lovable.dev/email-js@0.1.0'
@@ -56,6 +57,17 @@ export async function sendTemplateEmail(
   if (!recipient) {
     throw new Error('Recipient is required (the template defines no fixed recipient)')
   }
+
+  const suppressionClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } })
+  const { data: suppression, error: suppressionError } = await suppressionClient.from('suppressed_emails')
+    .select('id').eq('email', recipient.trim().toLowerCase()).limit(1)
+  if (suppressionError) throw new Error('Recipient suppression check unavailable')
+  if (suppression?.length) return { sent: false, reason: 'recipient_suppressed' }
+  const { data: optOut, error: optOutError } = await suppressionClient.from('email_unsubscribe_tokens')
+    .select('id').eq('email', recipient.trim().toLowerCase()).not('used_at', 'is', null).limit(1)
+  if (optOutError) throw new Error('Recipient opt-out check unavailable')
+  if (optOut?.length) return { sent: false, reason: 'recipient_suppressed' }
+
 
   const templateData = options.templateData ?? {}
   const element = React.createElement(template.component, templateData)

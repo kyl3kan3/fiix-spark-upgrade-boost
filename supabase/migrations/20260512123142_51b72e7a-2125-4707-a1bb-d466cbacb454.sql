@@ -1,2 +1,2 @@
-UPDATE public.companies SET created_by = NULL WHERE created_by = 'f2a192a8-ca9f-4732-afbd-6deded999517';
-DELETE FROM auth.users WHERE id = 'f2a192a8-ca9f-4732-afbd-6deded999517';
+-- Removed hard-coded production account deletion. User deletion belongs to the
+-- authenticated account-deletion workflow, never schema migration replay.

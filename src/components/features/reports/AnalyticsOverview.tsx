@@ -55,12 +55,12 @@ const AnalyticsOverview: React.FC = () => {
  const [wo, assets, team] = await Promise.all([
  supabase.from("work_orders").select("id,status,priority,created_at,due_date"),
  supabase.from("assets").select("id", { count: "exact", head: true }),
- supabase.from("profiles").select("id", { count: "exact", head: true }),
+ supabase.rpc("get_company_directory"),
  ]);
  if (cancelled) return;
  setWorkOrders((wo.data as WO[]) ?? []);
  setAssetCount(assets.count ?? 0);
- setTeamCount(team.count ?? 0);
+ setTeamCount(team.data?.length ?? 0);
  } finally {
  if (!cancelled) setLoading(false);
  }

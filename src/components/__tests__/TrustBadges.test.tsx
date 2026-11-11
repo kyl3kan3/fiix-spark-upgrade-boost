@@ -12,9 +12,9 @@ describe("TrustBadges", () => {
     );
 
     expect(screen.getByRole("heading", { name: /directories & comparisons/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("img")).toHaveLength(9);
-    expect(screen.getByAltText("Featured on Orynth")).toBeInTheDocument();
-    expect(screen.getByAltText("Featured on DanielLaunches")).toBeInTheDocument();
+    expect(screen.queryAllByRole("img")).toHaveLength(0);
+    expect(screen.getByText("Featured on Orynth")).toBeInTheDocument();
+    expect(screen.getByText("Featured on DanielLaunches")).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: /cmms alternative guides/i })).toBeInTheDocument();
     const alternativeLinks = [
       ["Fiix alternative", "/compare/maintenease-vs-fiix"],

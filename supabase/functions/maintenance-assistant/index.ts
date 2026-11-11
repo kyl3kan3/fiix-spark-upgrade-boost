@@ -1,3 +1,5 @@
+import { boundedJson } from "../_shared/requestBody.ts";
+import { reserveOperation } from "../_shared/operationBudget.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import type { Database } from "../../../src/integrations/supabase/types.ts";
@@ -265,7 +267,10 @@ serve(async (req) => {
       });
     }
 
-    const body = await req.json().catch(() => ({}));
+    let body;
+    try { body = await boundedJson(req); }
+    catch (err) { return new Response("Invalid or oversized request", { status: err instanceof RangeError ? 413 : 400, headers: corsHeaders }); }
+    if (!await reserveOperation(userData.user.id, "maintenance-assistant")) return new Response("Rate limit exceeded", { status: 429, headers: corsHeaders });
     const history = Array.isArray(body?.messages) ? body.messages : [];
     // deno-lint-ignore no-explicit-any
     const messages: any[] = history

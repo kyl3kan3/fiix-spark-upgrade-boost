@@ -1,3 +1,4 @@
+import { attachWorkOrderPeople } from "@/services/companyDirectoryService";
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,15 +12,13 @@ export function useWorkOrdersData() {
  .from("work_orders")
  .select(`
  *,
- asset:assets(*),
- assignee:profiles!work_orders_assigned_to_fkey(*),
- creator:profiles!work_orders_created_by_fkey(*)
+ asset:assets(*)
  `)
  .order("created_at", { ascending: false })
  .limit(10);
  
  if (error) throw error;
- return data as WorkOrderWithRelations[];
+ return attachWorkOrderPeople(data ?? []);
  },
  });
 

@@ -24,7 +24,7 @@ import { useHasFeature } from "@/hooks/useSubscription";
 import { enqueueWorkOrderStatus } from "@/lib/offline/workOrderSync";
 import { useOfflineWorkOrderSync } from "@/hooks/useOfflineWorkOrderSync";
 
-type BucketKey = "urgent" | "todo" | "in_progress" | "done";
+type BucketKey = "urgent" | "todo" | "in_progress" | "done" | "cancelled";
 
 interface BucketDef {
  key: BucketKey;
@@ -38,6 +38,7 @@ interface BucketDef {
 }
 
 const BUCKETS: BucketDef[] = [
+ { key: "cancelled", label: "Cancelled", hint: "Closed without completion", icon: CheckCircle2, accent: "bg-muted text-muted-foreground", surface: "bg-muted/20 border-border" },
  {
  key: "urgent",
  label: "Right away",
@@ -74,9 +75,10 @@ const BUCKETS: BucketDef[] = [
 
 /** Decide which bucket a job belongs in. "Urgent" wins over "todo". */
 const bucketFor = (wo: WorkOrderWithRelations, timeZone: string): BucketKey => {
+ if (wo.status === "cancelled") return "cancelled";
  if (wo.status === "completed") return "done";
  if (wo.status === "in_progress") return "in_progress";
- // pending / on_hold / cancelled all fall here
+ // pending / on_hold fall here
  const isUrgentPriority = wo.priority === "high" || wo.priority === "urgent";
  const isOverdue =
    wo.due_date
@@ -299,7 +301,7 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
 
  const grouped = useMemo(() => {
  const map: Record<BucketKey, WorkOrderWithRelations[]> = {
- urgent: [], todo: [], in_progress: [], done: [],
+ urgent: [], todo: [], in_progress: [], done: [], cancelled: [],
  };
  for (const j of filtered) map[bucketFor(j, companyTimeZone)].push(j);
  return map;

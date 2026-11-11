@@ -55,7 +55,12 @@ serve(async (req) => {
       });
     }
 
-    const { base64Image } = await req.json();
+    const { base64Image, instructions } = await req.json();
+    if (instructions !== undefined && (typeof instructions !== 'string' || instructions.length > 4000)) {
+      return new Response(JSON.stringify({ error: 'Instructions must be at most 4000 characters' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
     if (typeof base64Image !== 'string' || base64Image.length === 0) {
       return new Response(JSON.stringify({ error: 'base64Image is required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -91,7 +96,7 @@ serve(async (req) => {
             content: [
               {
                 type: 'text',
-                text: 'Extract vendor name, address, phone, email, and notes as JSON from this vendor list scan.'
+                text: 'Extract vendor name, address, phone, email, and notes from this vendor list scan. Return only a JSON array, using [] if no vendors are present.' + (instructions ? `\nUser parsing instructions: ${instructions}` : '')
               },
               {
                 type: 'image_url',

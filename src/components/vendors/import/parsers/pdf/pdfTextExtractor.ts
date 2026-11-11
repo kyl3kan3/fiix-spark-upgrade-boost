@@ -1,38 +1,43 @@
+import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+GlobalWorkerOptions.workerSrc = workerUrl;
 
-// Set up PDF.js worker with a fixed URL to avoid top-level await
-GlobalWorkerOptions.workerSrc = '//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.js';
-
-export async function extractTextFromPdf(file: File): Promise<{ text: string; pageTexts: string[] }> {
- const buffer = await file.arrayBuffer();
- const loadingTask = getDocument({ data: buffer });
- const pdf = await loadingTask.promise;
- let text = '';
- 
- // Extract text from all pages, maintaining page structure
- const pageTexts: string[] = [];
- for (let i = 1; i <= pdf.numPages; i++) {
- const page = await pdf.getPage(i);
- const content = await page.getTextContent();
- const pageText = content.items.map((item: any) => item.str).join(' ');
- pageTexts.push(pageText);
- text += pageText + '\n\n';
- }
- 
- return { text, pageTexts };
-}
-
-export async function renderPdfToImage(file: File): Promise<string> {
- const buffer = await file.arrayBuffer();
- const loadingTask = getDocument({ data: buffer });
- const pdf = await loadingTask.promise;
- const page = await pdf.getPage(1);
+async function renderPage(pdf: PDFDocumentProxy, pageNumber: number): Promise<string> {
+ const page = await pdf.getPage(pageNumber);
  const viewport = page.getViewport({ scale: 2 });
  const canvas = document.createElement('canvas');
- const context = canvas.getContext('2d')!;
+ const context = canvas.getContext('2d');
+ if (!context) throw new Error('Canvas rendering is unavailable.');
  canvas.width = viewport.width;
  canvas.height = viewport.height;
- await page.render({ canvasContext: context, viewport, canvas } as any).promise;
+ await page.render({ canvasContext: context, viewport }).promise;
  return canvas.toDataURL('image/png');
+}
+
+export async function extractTextFromPdf(file: File): Promise<{
+ text: string; pageTexts: string[];
+ renderPage?: (pageNumber: number) => Promise<string>;
+ close?: () => Promise<void>;
+}> {
+ const pdf = await getDocument({ data: await file.arrayBuffer() }).promise;
+ try {
+   const pageTexts: string[] = [];
+   for (let i = 1; i <= pdf.numPages; i++) {
+     const page = await pdf.getPage(i);
+     const content = await page.getTextContent();
+     pageTexts.push(content.items.map(item => 'str' in item ? item.str + (item.hasEOL ? '\n' : ' ') : '').join(''));
+   }
+   return { text: pageTexts.join('\n\n'), pageTexts,
+     renderPage: (pageNumber) => renderPage(pdf, pageNumber), close: () => pdf.destroy() };
+ } catch (error) {
+   await pdf.destroy();
+   throw error;
+ }
+}
+
+export async function renderPdfToImage(file: File, pageNumber = 1): Promise<string> {
+ const pdf = await getDocument({ data: await file.arrayBuffer() }).promise;
+ try { return await renderPage(pdf, pageNumber); }
+ finally { await pdf.destroy(); }
 }

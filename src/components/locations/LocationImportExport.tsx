@@ -1,3 +1,4 @@
+import { csvCell } from "@/lib/browserTrust";
 
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -94,9 +95,9 @@ export const LocationImportExport: React.FC<LocationImportExportProps> = ({
  : '';
  
  return [
- `"${location.name}"`,
- `"${location.description || ''}"`,
- `"${parentName}"`
+ csvCell(location.name),
+ csvCell(location.description),
+ csvCell(parentName)
  ].join(',');
  })
  ].join('\n');
