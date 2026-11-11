@@ -7,6 +7,7 @@ import {
   type SitemapEntry,
 } from "../src/data/sitemapEntries";
 import { redirectForPath } from "../src/lib/seoRouting";
+import { isSafeBlogSlug } from "../supabase/functions/_shared/blogSlug.ts";
 
 const BASE_URL = "https://maintenease.com";
 const SUPABASE_URL = "https://wwgljhpuulhljumrhscg.supabase.co";
@@ -29,6 +30,7 @@ async function fetchBlogEntries(): Promise<SitemapEntry[]> {
       published_at: string | null;
     }>;
     return rows
+      .filter((r) => isSafeBlogSlug(r.slug))
       .map((r) => ({
         path: `/blog/${r.slug}`,
         lastmod: (r.updated_at ?? r.published_at ?? "").slice(0, 10) || undefined,
