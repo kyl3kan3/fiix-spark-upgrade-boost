@@ -24,6 +24,8 @@ import {
   FACILITY_MANAGEMENT_PATHS,
 } from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
+import { HOME_FAQS, buildHomeFaqPageJsonLd } from "../src/data/homeFaqs";
+import { jsonLdScriptTag } from "../src/lib/htmlSafeJson";
 import {
   SUPPORT_FAQS,
   SUPPORT_PAGE,
@@ -1162,21 +1164,25 @@ function headFor(route: Route): string {
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${socialImage}" />`,
-    ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map(
-      (block) => `<script type="application/ld+json" data-ld-static="true">${JSON.stringify(block)}</script>`,
+    ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map((block) =>
+      jsonLdScriptTag(block, ' data-ld-static="true"'),
     ),
   ];
 
   if (route.path === "/pricing") {
-    tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(PRODUCT_JSON_LD)}</script>`);
+    tags.push(jsonLdScriptTag(PRODUCT_JSON_LD, ' data-ld-static="true"'));
   }
 
   for (const block of route.jsonLd ?? []) {
-    tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
+    tags.push(jsonLdScriptTag(block));
   }
 
-  // /landing is a paid-acquisition surface: crawlers must see org/site/FAQ
-  // structured data in the static shell (Helmet alone is invisible without JS).
+  // Homepage FAQPage is re-owned at runtime by Index Helmet; data-rh lets
+  // react-helmet-async replace this node instead of duplicating it.
+  if (route.path === "/") {
+    tags.push(jsonLdScriptTag(buildHomeFaqPageJsonLd(), ' data-rh="true"'));
+  }
+
   if (route.path === "/landing") {
     const faq = {
       "@context": "https://schema.org",
@@ -1188,9 +1194,7 @@ function headFor(route: Route): string {
       })),
     };
     for (const block of [faq]) {
-      tags.push(
-        `<script type="application/ld+json">${JSON.stringify(block)}</script>`,
-      );
+      tags.push(jsonLdScriptTag(block));
     }
     // Visible FAQ copy must match FAQPage JSON-LD for rich-result eligibility.
     // bodyFor also mirrors these Q&As below.
@@ -1242,6 +1246,13 @@ function bodyFor(route: Route): string {
         `<p>${inlineMarkdownLinksToHtml(s.body, esc)}</p>`,
       ]),
     );
+  }
+  if (route.path === "/") {
+    parts.push("<h2>Frequently asked questions</h2>");
+    for (const f of HOME_FAQS) {
+      parts.push(`<h3>${esc(f.q)}</h3>`);
+      parts.push(`<p>${esc(f.a)}</p>`);
+    }
   }
   if (route.path === "/landing") {
     parts.push("<h2>Frequently asked questions</h2>");
@@ -1299,7 +1310,9 @@ function markdownFor(route: Route): string {
     lines.push("", `## ${section.heading}`, "", section.body);
   }
 
-  const faqs = route.path === "/landing"
+  const faqs = route.path === "/"
+    ? HOME_FAQS.map((faq) => [faq.q, faq.a] as const)
+    : route.path === "/landing"
     ? LANDING_FAQS.map((faq) => [faq.q, faq.a] as const)
     : route.path === "/maintenance-simplified"
       ? MAINTENANCE_SIMPLIFIED_FAQS
