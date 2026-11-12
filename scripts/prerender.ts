@@ -25,6 +25,7 @@ import {
 } from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import { HOME_FAQS, buildHomeFaqPageJsonLd } from "../src/data/homeFaqs";
+import { jsonLdScriptTag } from "../src/lib/htmlSafeJson";
 import {
   SUPPORT_FAQS,
   SUPPORT_PAGE,
@@ -1163,23 +1164,23 @@ function headFor(route: Route): string {
     `<meta name="twitter:title" content="${title}" />`,
     `<meta name="twitter:description" content="${description}" />`,
     `<meta name="twitter:image" content="${socialImage}" />`,
-    ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map(
-      (block) => `<script type="application/ld+json" data-ld-static="true">${JSON.stringify(block)}</script>`,
+    ...[ORGANIZATION_JSON_LD, WEBSITE_JSON_LD, BRAND_JSON_LD].map((block) =>
+      jsonLdScriptTag(block, ' data-ld-static="true"'),
     ),
   ];
 
   if (route.path === "/pricing") {
-    tags.push(`<script type="application/ld+json" data-ld-static="true">${JSON.stringify(PRODUCT_JSON_LD)}</script>`);
+    tags.push(jsonLdScriptTag(PRODUCT_JSON_LD, ' data-ld-static="true"'));
   }
 
   for (const block of route.jsonLd ?? []) {
-    tags.push(`<script type="application/ld+json">${JSON.stringify(block)}</script>`);
+    tags.push(jsonLdScriptTag(block));
   }
 
-  // /landing is a paid-acquisition surface: crawlers must see org/site/FAQ
-  // structured data in the static shell (Helmet alone is invisible without JS).
+  // Homepage FAQPage is re-owned at runtime by Index Helmet; data-rh lets
+  // react-helmet-async replace this node instead of duplicating it.
   if (route.path === "/") {
-    tags.push(`<script type="application/ld+json">${JSON.stringify(buildHomeFaqPageJsonLd())}</script>`);
+    tags.push(jsonLdScriptTag(buildHomeFaqPageJsonLd(), ' data-rh="true"'));
   }
 
   if (route.path === "/landing") {
@@ -1193,9 +1194,7 @@ function headFor(route: Route): string {
       })),
     };
     for (const block of [faq]) {
-      tags.push(
-        `<script type="application/ld+json">${JSON.stringify(block)}</script>`,
-      );
+      tags.push(jsonLdScriptTag(block));
     }
     // Visible FAQ copy must match FAQPage JSON-LD for rich-result eligibility.
     // bodyFor also mirrors these Q&As below.

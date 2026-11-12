@@ -40,7 +40,9 @@ const Index = () => (
         content="Track work orders, assets, and inspections, with predictive maintenance on eligible plans and account pricing from $49/month."
       />
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
-      <script type="application/ld+json">{JSON.stringify(buildHomeFaqPageJsonLd())}</script>
+      <script type="application/ld+json" data-rh="true">
+        {JSON.stringify(buildHomeFaqPageJsonLd())}
+      </script>
     </Helmet>
     <MarketingJsonLd />
     <Navbar />
