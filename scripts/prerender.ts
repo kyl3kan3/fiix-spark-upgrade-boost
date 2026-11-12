@@ -24,6 +24,7 @@ import {
   FACILITY_MANAGEMENT_PATHS,
 } from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
+import { HOME_FAQS, buildHomeFaqPageJsonLd } from "../src/data/homeFaqs";
 import {
   SUPPORT_FAQS,
   SUPPORT_PAGE,
@@ -1177,6 +1178,10 @@ function headFor(route: Route): string {
 
   // /landing is a paid-acquisition surface: crawlers must see org/site/FAQ
   // structured data in the static shell (Helmet alone is invisible without JS).
+  if (route.path === "/") {
+    tags.push(`<script type="application/ld+json">${JSON.stringify(buildHomeFaqPageJsonLd())}</script>`);
+  }
+
   if (route.path === "/landing") {
     const faq = {
       "@context": "https://schema.org",
@@ -1243,6 +1248,13 @@ function bodyFor(route: Route): string {
       ]),
     );
   }
+  if (route.path === "/") {
+    parts.push("<h2>Frequently asked questions</h2>");
+    for (const f of HOME_FAQS) {
+      parts.push(`<h3>${esc(f.q)}</h3>`);
+      parts.push(`<p>${esc(f.a)}</p>`);
+    }
+  }
   if (route.path === "/landing") {
     parts.push("<h2>Frequently asked questions</h2>");
     for (const f of LANDING_FAQS) {
@@ -1299,7 +1311,9 @@ function markdownFor(route: Route): string {
     lines.push("", `## ${section.heading}`, "", section.body);
   }
 
-  const faqs = route.path === "/landing"
+  const faqs = route.path === "/"
+    ? HOME_FAQS.map((faq) => [faq.q, faq.a] as const)
+    : route.path === "/landing"
     ? LANDING_FAQS.map((faq) => [faq.q, faq.a] as const)
     : route.path === "/maintenance-simplified"
       ? MAINTENANCE_SIMPLIFIED_FAQS
