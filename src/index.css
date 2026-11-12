@@ -46,7 +46,6 @@
 
     --primary: 216 90% 38%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 216 90% 48%;
     --primary-variant: 216 92% 29%;
 
     --secondary: 183 75% 24%;
@@ -100,14 +99,7 @@
     --shadow-sm: 0 1px 0 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 1px 2px 0 rgb(0 0 0 / 0.07), 0 3px 8px -2px rgb(0 0 0 / 0.08);
     --shadow-lg: 0 2px 4px 0 rgb(0 0 0 / 0.06), 0 14px 28px -8px rgb(0 0 0 / 0.20);
-    --shadow-elegant: var(--shadow-lg);
     --shadow-glow: 0 0 0 3px hsl(var(--highlight) / 0.55);
-
-    /* Legacy gradient names resolve to flat fills: Nameplate has no gradients. */
-    --gradient-primary: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
-    --gradient-sun:     linear-gradient(hsl(var(--highlight)), hsl(var(--highlight)));
-    --gradient-subtle:  linear-gradient(hsl(var(--background)), hsl(var(--background)));
-    --gradient-mesh:    none;
 
     --transition-smooth: cubic-bezier(0.2, 0, 0, 1);
 
@@ -136,7 +128,6 @@
 
     --primary: 214 94% 68%;
     --primary-foreground: 208 24% 8%;
-    --primary-glow: 214 94% 76%;
     --primary-variant: 214 90% 60%;
 
     --secondary: 180 52% 52%;
@@ -341,22 +332,9 @@
   }
   .pill-dot { @apply inline-block w-2 h-2 rounded-full; }
 
-  .bg-gradient-primary { background-image: none; background-color: hsl(var(--primary)); }
-  .bg-gradient-sun     { background-image: none; background-color: hsl(var(--highlight)); }
-  .bg-gradient-subtle  { background-image: none; background-color: hsl(var(--background)); }
-  .bg-gradient-mesh    { background-image: none; background-color: hsl(var(--background)); }
-
-  .shadow-elegant { box-shadow: var(--shadow-lg); }
   .shadow-glow    { box-shadow: var(--shadow-glow); }
   .shadow-soft    { box-shadow: var(--shadow-sm); }
   .shadow-soft-lg { box-shadow: var(--shadow-md); }
-
-  .text-gradient-primary { color: hsl(var(--primary)); }
-
-  .card-gradient,
-  .card-gradient-dark { background-color: hsl(var(--card)); }
-
-  .hover-scale { transition: none; }
 
   .animate-entry { animation: entry-fade-slide 0.3s cubic-bezier(0.2, 0, 0, 1); }
   .pulse { animation: pulse-badge 2s ease-in-out infinite; }
