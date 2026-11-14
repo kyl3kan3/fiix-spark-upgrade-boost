@@ -1,9 +1,10 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { requireSuperAdmin, semrushHeaders, SEMRUSH_GATEWAY } from '../_shared/semrushAuth.ts';
 
 // Returns domain overview (authority, traffic, keywords) + top organic competitors
 // for a given domain. Uses Semrush /domains/domain_ranks and /domains/domain_domains.
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   const auth = await requireSuperAdmin(req);
   if (auth instanceof Response) return auth;
@@ -71,5 +72,5 @@ Deno.serve(async (req) => {
     domain: me,
     competitors: compsResult,
     comparison: compOverviews,
-  }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  }), { status: 200, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' } });
 });

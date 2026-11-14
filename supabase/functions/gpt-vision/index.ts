@@ -1,14 +1,10 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.7'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-}
-
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -22,7 +18,7 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 401, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       });
     }
     const supabase = createClient(
@@ -33,7 +29,7 @@ serve(async (req) => {
     const { data: userData, error: userError } = await supabase.auth.getUser(token);
     if (userError || !userData.user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 401, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       });
     }
 
@@ -51,21 +47,21 @@ serve(async (req) => {
     const allowed = roles.some((r) => r === 'administrator' || r === 'manager' || r === 'super_admin');
     if (!allowed) {
       return new Response(JSON.stringify({ error: 'Forbidden' }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 403, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       });
     }
 
     const { base64Image } = await req.json();
     if (typeof base64Image !== 'string' || base64Image.length === 0) {
       return new Response(JSON.stringify({ error: 'base64Image is required' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 400, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       });
     }
     // Cap base64 payload at ~6.7MB (≈5MB decoded)
     const MAX_BASE64_BYTES = 7_000_000;
     if (base64Image.length > MAX_BASE64_BYTES) {
       return new Response(JSON.stringify({ error: 'Image too large (max ~5MB)' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        status: 400, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       });
     }
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -73,7 +69,7 @@ serve(async (req) => {
     if (!openAIApiKey) {
       return new Response(
         JSON.stringify({ error: 'OpenAI API key not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 500, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' } }
       );
     }
 
@@ -111,7 +107,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ result: output }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   } catch (err) {
     console.error('GPT Vision error:', err);
@@ -119,7 +115,7 @@ serve(async (req) => {
       JSON.stringify({ error: 'Failed to process image' }),
       { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' }
       }
     )
   }

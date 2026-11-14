@@ -1,11 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { z } from "https://esm.sh/zod@3.23.8";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -53,6 +49,7 @@ async function sendEmail(to: string, subject: string, html: string) {
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -61,7 +58,7 @@ serve(async (req) => {
     if (!jwt) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -75,7 +72,7 @@ serve(async (req) => {
     if (userError || !actorId) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -83,7 +80,7 @@ serve(async (req) => {
     if (!parsed.success) {
       return new Response(JSON.stringify({ error: parsed.error.flatten().fieldErrors }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -96,7 +93,7 @@ serve(async (req) => {
     if (actorProfileError || !actorProfile?.company_id) {
       return new Response(JSON.stringify({ error: "No company context" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -110,7 +107,7 @@ serve(async (req) => {
     if (!roleRows || roleRows.length === 0) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -123,21 +120,21 @@ serve(async (req) => {
     if (requestError || !request) {
       return new Response(JSON.stringify({ error: "Request not found" }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
     if (request.company_id !== actorProfile.company_id) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
     if (request.status === "resolved") {
       return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "already_resolved" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -153,7 +150,7 @@ serve(async (req) => {
     if (!request.contact_email) {
       return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "missing_contact_email" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -176,20 +173,20 @@ serve(async (req) => {
       const providerMessageId = await sendEmail(request.contact_email, subject, html);
       return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     } catch (emailError) {
       console.error("resolve-public-request email error:", emailError);
       return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "email_send_failed" }), {
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
   } catch (error) {
     console.error("resolve-public-request error:", error);
     return new Response(JSON.stringify({ error: "An internal error occurred. Please try again." }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

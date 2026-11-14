@@ -1,12 +1,8 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
-
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
   const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -23,6 +19,6 @@ Deno.serve(async (req) => {
   if (!roleRow) return new Response('forbidden', { status: 403, headers: corsHeaders });
   await admin.from('google_analytics_connections').delete().not('id', 'is', null);
   return new Response(JSON.stringify({ ok: true }), {
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
   });
 });

@@ -1,49 +1,65 @@
 project_id = "wwgljhpuulhljumrhscg"
 
 [functions]
+  # verify_jwt=false: Lovable auth email hook; preview routes use Bearer LOVABLE_API_KEY.
   [functions.auth-email-hook]
     verify_jwt = false
+  # verify_jwt=false: Public; returns Turnstile site key only (no user data).
   [functions.get-turnstile-config]
     verify_jwt = false
+  # verify_jwt=false: OAuth redirect; validates one-time state row in google_ads_oauth_states.
   [functions.google-ads-oauth-callback]
     verify_jwt = false
+  # verify_jwt=false: OAuth redirect; validates one-time state row in google_analytics_oauth_states.
   [functions.google-analytics-oauth-callback]
     verify_jwt = false
 
+# verify_jwt=false: Internal/dev; Bearer LOVABLE_API_KEY required.
 [functions.preview-transactional-email]
 verify_jwt = false
 
+# verify_jwt=false: Cron/internal; header x-notify-secret = NOTIFY_SHARED_SECRET.
 [functions.send-orynth-hello]
 verify_jwt = false
 
+# verify_jwt=false: Cron/internal; header x-notify-secret = NOTIFY_SHARED_SECRET.
 [functions.triage-request]
 verify_jwt = false
 
+# verify_jwt=false: x-notify-secret, or user JWT + company scope, or service-role Bearer.
 [functions.self-heal]
 verify_jwt = false
 
+  # verify_jwt=false: Public; Cloudflare Turnstile token verification (pre-login).
   [functions.verify-turnstile]
     verify_jwt = false
+  # verify_jwt=false: Cron/internal; header x-notify-secret = NOTIFY_SHARED_SECRET.
   [functions.send-signup-reminders]
     verify_jwt = false
+  # verify_jwt=false: x-notify-secret or admin/super_admin JWT role check.
   [functions.recompute-risk-scores]
     verify_jwt = false
   [functions.maintenance-assistant]
     verify_jwt = true
   [functions.extract-assets]
     verify_jwt = true
+  # verify_jwt=false: Device ingest; x-ingest-token + consume_energy_ingest_token RPC.
   [functions.ingest-energy]
     verify_jwt = false
 
+# verify_jwt=false: Public form; Turnstile + issues upload authorization (no account).
 [functions.authorize-public-request]
 verify_jwt = false
 
+# verify_jwt=false: Public form; valid authorizationId via create_public_request_from_authorization RPC.
 [functions.submit-public-request]
 verify_jwt = false
 
+# verify_jwt=false: Paddle webhook; paddle-signature verification (server-to-server).
 [functions.payments-webhook]
 verify_jwt = false
 
+# verify_jwt=false: Resend webhook; Svix signature + RESEND_WEBHOOK_SECRET.
 [functions.resend-webhook]
 verify_jwt = false
 
@@ -56,8 +72,10 @@ verify_jwt = true
 [functions.update-seats]
 verify_jwt = true
 
+# verify_jwt=false: MCP stack validates OAuth via Supabase Auth in-handler.
 [functions.mcp]
 verify_jwt = false
 
+# verify_jwt=false: AutoSEO webhook; Bearer AUTOSEO_WEBHOOK_TOKEN.
 [functions.receive-article]
 verify_jwt = false

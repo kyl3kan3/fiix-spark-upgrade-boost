@@ -1,15 +1,10 @@
 // Scheduled article generator. Uses Lovable AI Gateway to draft a blog post
 // from a rotating list of topics, then inserts it into public.blog_posts.
 // Triggered by pg_cron (or manual POST with the shared token).
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SITE_ORIGIN = "https://maintenease.com";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 const TOPICS = [
   "How to reduce equipment downtime with preventive maintenance",
@@ -26,10 +21,10 @@ const TOPICS = [
   "Predictive maintenance without expensive sensors",
 ];
 
-function json(status: number, body: unknown) {
+function json(request: Request, status: number, body: unknown) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json" },
   });
 }
 
@@ -52,8 +47,9 @@ function stripFences(s: string): string {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (req.method !== "POST") return json(405, { error: "Method not allowed" });
+  if (req.method !== "POST") return json(req,405, { error: "Method not allowed" });
 
   // Auth: allow either the AUTOSEO shared token (reused for internal triggers)
   // or the service role key (used by pg_cron via net.http_post).
@@ -61,7 +57,7 @@ Deno.serve(async (req) => {
   const expected = Deno.env.get("AUTOSEO_WEBHOOK_TOKEN") ?? "";
   const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   if (!auth || (auth !== expected && auth !== service)) {
-    return json(401, { error: "Unauthorized" });
+    return json(req,401, { error: "Unauthorized" });
   }
 
   let topic: string | undefined;
@@ -75,7 +71,7 @@ Deno.serve(async (req) => {
   }
 
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!lovableKey) return json(500, { error: "LOVABLE_API_KEY not configured" });
+  if (!lovableKey) return json(req,500, { error: "LOVABLE_API_KEY not configured" });
 
   const prompt = `You are an SEO editor for MaintenEase, a CMMS for small facilities teams.
 Write a blog article on: "${topic}".
@@ -109,7 +105,7 @@ No commentary, no code fences. JSON only.`;
 
   if (!aiRes.ok) {
     const text = await aiRes.text();
-    return json(aiRes.status, { error: "AI generation failed", details: text });
+    return json(req,aiRes.status, { error: "AI generation failed", details: text });
   }
 
   const aiJson = await aiRes.json();
@@ -118,13 +114,13 @@ No commentary, no code fences. JSON only.`;
   try {
     article = JSON.parse(stripFences(String(raw)));
   } catch {
-    return json(502, { error: "AI returned invalid JSON", raw });
+    return json(req,502, { error: "AI returned invalid JSON", raw });
   }
 
   const title = String(article.title ?? topic).slice(0, 120);
   const slug = slugify(String(article.slug ?? title));
   const content_html = String(article.content_html ?? "");
-  if (!content_html) return json(502, { error: "AI returned empty content" });
+  if (!content_html) return json(req,502, { error: "AI returned empty content" });
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
@@ -170,7 +166,7 @@ No commentary, no code fences. JSON only.`;
   };
 
   const { error } = await supabase.from("blog_posts").insert(row);
-  if (error) return json(500, { error: error.message });
+  if (error) return json(req,500, { error: error.message });
 
-  return json(200, { url: `${SITE_ORIGIN}/blog/${finalSlug}`, id, topic });
+  return json(req,200, { url: `${SITE_ORIGIN}/blog/${finalSlug}`, id, topic });
 });

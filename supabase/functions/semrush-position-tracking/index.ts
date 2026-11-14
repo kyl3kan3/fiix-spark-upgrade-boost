@@ -1,9 +1,10 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { requireSuperAdmin, semrushHeaders, SEMRUSH_GATEWAY } from '../_shared/semrushAuth.ts';
 
 // Lists Semrush Position Tracking campaigns on the connected account.
 // If a `campaign_id` is provided, also returns an organic visibility snapshot.
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   const auth = await requireSuperAdmin(req);
   if (auth instanceof Response) return auth;
@@ -42,5 +43,5 @@ Deno.serve(async (req) => {
     fetched_at: new Date().toISOString(),
     ...campaigns,
     ...(detail ? detail : {}),
-  }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  }), { status: 200, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' } });
 });

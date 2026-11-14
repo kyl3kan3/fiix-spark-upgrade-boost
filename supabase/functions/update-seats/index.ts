@@ -1,23 +1,20 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { getPaddleClient, type PaddleEnv } from '../_shared/paddle.ts';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-function json(body: unknown, status = 200) {
+function json(req: Request, body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
   });
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) return json({ error: 'Unauthorized' }, 401);
+    if (!authHeader?.startsWith('Bearer ')) return json(req, { error: 'Unauthorized' }, 401);
 
     const userClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -26,17 +23,17 @@ Deno.serve(async (req) => {
     );
     const { data: userData } = await userClient.auth.getUser();
     const user = userData?.user;
-    if (!user) return json({ error: 'Unauthorized' }, 401);
+    if (!user) return json(req, { error: 'Unauthorized' }, 401);
 
     const { extraSeats } = await req.json();
     const desired = Math.max(0, Math.floor(Number(extraSeats ?? 0)));
     if (!Number.isFinite(desired) || desired > 500) {
-      return json({ error: 'Invalid seat count' }, 400);
+      return json(req, { error: 'Invalid seat count' }, 400);
     }
 
     const { data: profile } = await userClient
       .from('profiles').select('company_id').eq('id', user.id).maybeSingle();
-    if (!profile?.company_id) return json({ error: 'No company' }, 400);
+    if (!profile?.company_id) return json(req, { error: 'No company' }, 400);
 
     // Explicit administrator role check (defence-in-depth beyond RLS)
     const adminClient = createClient(
@@ -49,14 +46,14 @@ Deno.serve(async (req) => {
       .eq('user_id', user.id)
       .eq('company_id', profile.company_id)
       .in('role', ['administrator']);
-    if (!roleRows?.length) return json({ error: 'Forbidden' }, 403);
+    if (!roleRows?.length) return json(req, { error: 'Forbidden' }, 403);
 
     const { data: sub } = await userClient
       .from('subscriptions')
       .select('paddle_subscription_id, paddle_price_id, billing_interval, environment, paid_seats')
       .eq('company_id', profile.company_id)
       .maybeSingle();
-    if (!sub?.paddle_subscription_id) return json({ error: 'No subscription' }, 404);
+    if (!sub?.paddle_subscription_id) return json(req, { error: 'No subscription' }, 404);
 
     const env = (sub.environment || 'sandbox') as PaddleEnv;
     const seatExternalId = sub.billing_interval === 'year' ? 'extra_seat_yearly' : 'extra_seat_monthly';
@@ -74,7 +71,7 @@ Deno.serve(async (req) => {
         break;
       }
     }
-    if (!seatPriceId) return json({ error: `Seat price ${seatExternalId} not found` }, 500);
+    if (!seatPriceId) return json(req, { error: `Seat price ${seatExternalId} not found` }, 500);
 
     // Rebuild items: keep existing plan item, set seat item quantity (or omit if 0)
     const items: { priceId: string; quantity: number }[] = [];
@@ -91,9 +88,9 @@ Deno.serve(async (req) => {
       prorationBillingMode: 'prorated_immediately' as any,
     });
 
-    return json({ ok: true, extraSeats: desired });
+    return json(req, { ok: true, extraSeats: desired });
   } catch (e) {
     console.error('update-seats error', e);
-    return json({ error: 'Failed to update seats' }, 500);
+    return json(req, { error: 'Failed to update seats' }, 500);
   }
 });

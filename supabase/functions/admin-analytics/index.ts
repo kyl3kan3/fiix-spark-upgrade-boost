@@ -1,15 +1,10 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-};
-
-const json = (body: unknown, status = 200) =>
+const json = (req: Request, body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
   });
 
 function daysAgo(n: number) {
@@ -49,6 +44,7 @@ function bucketByDay<T extends { created_at?: string | null }>(
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
@@ -62,7 +58,7 @@ Deno.serve(async (req) => {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser();
-    if (userErr || !userData.user) return json({ error: 'Unauthorized' }, 401);
+    if (userErr || !userData.user) return json(req, { error: 'Unauthorized' }, 401);
 
     const admin = createClient(supabaseUrl, serviceKey);
     const { data: roleRow } = await admin
@@ -71,7 +67,7 @@ Deno.serve(async (req) => {
       .eq('user_id', userData.user.id)
       .eq('role', 'super_admin')
       .maybeSingle();
-    if (!roleRow) return json({ error: 'Forbidden' }, 403);
+    if (!roleRow) return json(req, { error: 'Forbidden' }, 403);
 
     const url = new URL(req.url);
     const days = Math.max(7, Math.min(90, Number(url.searchParams.get('days') ?? '30')));
@@ -295,7 +291,7 @@ Deno.serve(async (req) => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    return json({
+    return json(req, {
       days,
       totals,
       byTier,
@@ -318,6 +314,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('admin-analytics error', e);
-    return json({ error: 'An internal error occurred. Please try again.' }, 500);
+    return json(req, { error: 'An internal error occurred. Please try again.' }, 500);
   }
 });

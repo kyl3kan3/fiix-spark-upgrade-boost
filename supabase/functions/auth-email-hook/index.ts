@@ -6,13 +6,8 @@ import { InviteEmail } from '../_shared/email-templates/invite.tsx'
 import { MagicLinkEmail } from '../_shared/email-templates/magic-link.tsx'
 import { RecoveryEmail } from '../_shared/email-templates/recovery.tsx'
 import { EmailChangeEmail } from '../_shared/email-templates/email-change.tsx'
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { ReauthenticationEmail } from '../_shared/email-templates/reauthentication.tsx'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type, x-lovable-signature, x-lovable-timestamp, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-}
 
 // Configuration
 const SITE_NAME = "MaintenEase"
@@ -72,10 +67,9 @@ const SAMPLE_DATA: Record<string, object> = {
 
 // Preview endpoint handler - returns rendered HTML without sending email
 async function handlePreview(req: Request): Promise<Response> {
-  const previewCorsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type',
-  }
+  const previewCorsHeaders = corsHeadersForRequest(req, {
+    "Access-Control-Allow-Headers": "authorization, content-type",
+  });
 
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: previewCorsHeaders })
@@ -184,6 +178,8 @@ const handler = createAuthEmailHandler({
 })
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
+
   const url = new URL(req.url)
 
   // Handle CORS preflight for main endpoint

@@ -1,12 +1,8 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-};
-const json = (b: unknown, s = 200) =>
-  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+const json = (request: Request, b: unknown, s = 200) =>
+  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeadersForRequest(request), 'Content-Type': 'application/json' } });
 
 async function refreshAccessToken(refresh_token: string) {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -24,6 +20,7 @@ async function refreshAccessToken(refresh_token: string) {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
@@ -34,12 +31,12 @@ Deno.serve(async (req) => {
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
     const { data: userData } = await userClient.auth.getUser();
-    if (!userData?.user) return json({ error: 'unauthorized' }, 401);
+    if (!userData?.user) return json(req, { error: 'unauthorized' }, 401);
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
     const { data: roleRow } = await admin
       .from('user_roles').select('role')
       .eq('user_id', userData.user.id).eq('role', 'super_admin').maybeSingle();
-    if (!roleRow) return json({ error: 'forbidden' }, 403);
+    if (!roleRow) return json(req, { error: 'forbidden' }, 403);
 
     let body: { property_id?: string } = {};
     try { body = await req.json(); } catch { /* GET or empty body */ }
@@ -47,7 +44,7 @@ Deno.serve(async (req) => {
     const { data: conn } = await admin
       .from('google_analytics_connections')
       .select('*').order('created_at', { ascending: false }).limit(1).maybeSingle();
-    if (!conn) return json({ connected: false });
+    if (!conn) return json(req, { connected: false });
 
     let access_token = conn.access_token as string | null;
     const expiresAt = conn.token_expires_at ? new Date(conn.token_expires_at).getTime() : 0;
@@ -83,7 +80,7 @@ Deno.serve(async (req) => {
     }
 
     if (!property_id) {
-      return json({
+      return json(req, {
         connected: true, property_id: null, properties,
         error: 'No GA4 property selected. Pick one to start loading metrics.',
       });
@@ -133,7 +130,7 @@ Deno.serve(async (req) => {
     });
 
     const tRow = totals?.rows?.[0]?.metricValues ?? [];
-    return json({
+    return json(req, {
       connected: true,
       property_id,
       property_display_name: conn.property_display_name,
@@ -167,6 +164,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
-    return json({ error: msg }, 200);
+    return json(req, { error: msg }, 200);
   }
 });
