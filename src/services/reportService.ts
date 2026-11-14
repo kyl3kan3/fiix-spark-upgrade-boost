@@ -1,3 +1,4 @@
+import { attachWorkOrderPeople } from "@/services/companyDirectoryService";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -108,13 +109,12 @@ export async function getRecentWorkOrderActivity(limit = 8) {
  const { data, error } = await supabase
  .from("work_orders")
  .select(`
- id, title, status, updated_at,
- asset:assets(name),
- assignee:profiles!work_orders_assigned_to_fkey(first_name, last_name)
+ id, title, status, updated_at, assigned_to,
+ asset:assets(name)
  `)
  .order("updated_at", { ascending: false })
  .limit(limit);
 
  if (error) throw error;
- return data || [];
+ return attachWorkOrderPeople(data ?? []);
 }

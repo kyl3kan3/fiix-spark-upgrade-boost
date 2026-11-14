@@ -1,3 +1,4 @@
+import { canReparent } from "@/lib/locationHierarchy";
 
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -13,19 +14,6 @@ interface LocationEditDialogProps {
  isLoading: boolean;
 }
 
-// Helper function to get all descendant IDs of a location
-const getDescendantIds = (locationId: string, locations: Location[]): string[] => {
- const descendants: string[] = [];
- const children = locations.filter(loc => loc.parent_id === locationId);
- 
- for (const child of children) {
- descendants.push(child.id);
- descendants.push(...getDescendantIds(child.id, locations));
- }
- 
- return descendants;
-};
-
 export const LocationEditDialog: React.FC<LocationEditDialogProps> = ({
  location,
  allLocations,
@@ -36,15 +24,7 @@ export const LocationEditDialog: React.FC<LocationEditDialogProps> = ({
 }) => {
  if (!location) return null;
 
- // Filter out the location being edited and all its descendants from parent options
- const descendantIds = getDescendantIds(location.id, allLocations);
- const availableParents = allLocations.filter(loc => {
- // Exclude the location itself
- if (loc.id === location.id) return false;
- // Exclude all descendants to prevent circular references
- if (descendantIds.includes(loc.id)) return false;
- return true;
- });
+ const availableParents = allLocations.filter(loc => canReparent(allLocations, location.id, loc.id));
 
  return (
  <Dialog open={isOpen} onOpenChange={onClose}>

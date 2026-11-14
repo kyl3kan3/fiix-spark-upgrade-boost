@@ -39,20 +39,20 @@ export async function getBillingUsageCounts(): Promise<BillingUsageCounts> {
     1,
   ).toISOString();
 
-  const [{ count: assets }, { count: workOrders }, { count: seats }] =
+  const [{ count: assets }, { count: workOrders }, { data: directory }] =
     await Promise.all([
       supabase.from("assets").select("*", { count: "exact", head: true }),
       supabase
         .from("work_orders")
         .select("*", { count: "exact", head: true })
         .gte("created_at", monthStart),
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.rpc("get_company_directory"),
     ]);
 
   return {
     assets: assets ?? 0,
     workOrders: workOrders ?? 0,
-    seats: seats ?? 0,
+    seats: directory?.length ?? 0,
   };
 }
 

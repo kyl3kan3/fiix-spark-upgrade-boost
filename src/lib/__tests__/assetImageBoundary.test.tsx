@@ -1,0 +1,11 @@
+import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getSignedAssetImageUrl, useSignedAssetImageUrl } from '../storage/signedAssetImage';
+const { sign } = vi.hoisted(() => ({sign:vi.fn()}));
+vi.mock('@/services/storageService', () => ({createSignedUrl:sign}));
+vi.mock('@/lib/logger', () => ({logger:{warn:vi.fn()}}));
+afterEach(cleanup);
+beforeEach(() => {vi.stubEnv('VITE_SUPABASE_URL','https://project.supabase.co');sign.mockReset().mockResolvedValue('https://project.supabase.co/signed');});
+it.each(['https://evil.example/pixel','https://evil.example/storage/v1/object/public/asset-images/x','javascript:alert(1)','//evil.example/image','data:image/png;base64,foo'])('does not load external image %s', async input => { expect(await getSignedAssetImageUrl(input)).toBeNull();expect(sign).not.toHaveBeenCalled(); });
+it('signs only this project bucket and bare object paths', async () => { await getSignedAssetImageUrl('https://project.supabase.co/storage/v1/object/public/asset-images/company/photo.png');expect(sign).toHaveBeenCalledWith('asset-images','company/photo.png',3600);await getSignedAssetImageUrl('company/photo.png');expect(sign).toHaveBeenCalledTimes(2); });
+it('never exposes raw input on initial render or input change', async () => {const {result,rerender}=renderHook(({input})=>useSignedAssetImageUrl(input),{initialProps:{input:'company/photo.png'}});expect(result.current).toBeNull();await waitFor(()=>expect(result.current).toBe('https://project.supabase.co/signed'));rerender({input:'https://evil.example/pixel'});expect(result.current).toBeNull();});

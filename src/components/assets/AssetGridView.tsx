@@ -177,7 +177,7 @@ const AssetGridView: React.FC<AssetGridViewProps> = ({
                      variant="ghost"
                      size="sm"
                      disabled={isDeleting}
-                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                     onClick={(e) => { e.stopPropagation(); }}
                      className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 w-8 p-0 rounded-lg"
                    >
                      <Trash2 className="h-4 w-4" />

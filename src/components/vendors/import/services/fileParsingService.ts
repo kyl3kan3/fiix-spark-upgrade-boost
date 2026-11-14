@@ -27,7 +27,7 @@ export async function parseFile(file: File, expectedCount?: number, instructions
  rows = await parseXLSX(file);
  } else if (file.name.endsWith('.docx')) {
  logger.log('📄 Processing as Word document');
- rows = await parseDOCX(file, expectedCount);
+ rows = await parseDOCX(file, expectedCount, instructions);
  } else if (file.name.endsWith('.pdf')) {
  logger.log('📄 Processing as PDF document');
  rows = await parsePDF(file, expectedCount, instructions);

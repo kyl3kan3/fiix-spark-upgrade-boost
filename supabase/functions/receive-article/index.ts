@@ -1,6 +1,7 @@
 // AutoSEO webhook receiver. Verifies a shared bearer token and upserts the
 // article into public.blog_posts. Uses the service role key to bypass RLS.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isSafeBlogSlug } from "../_shared/blogSlug.ts";
 
 const SITE_ORIGIN = "https://maintenease.com";
 
@@ -48,10 +49,13 @@ Deno.serve(async (req) => {
 
   try {
     const id = Number(payload.id);
-    const slug = String(payload.slug ?? "");
+    const slug = payload.slug;
     const title = String(payload.title ?? "");
     if (!id || !slug || !title) {
       return json(400, { error: "Missing required fields: id, slug, title" });
+    }
+    if (!isSafeBlogSlug(slug)) {
+      return json(400, { error: "Invalid slug: use lowercase letters, numbers, and single hyphens" });
     }
 
     const contentHtml = (payload.content_html as string | null) ?? null;

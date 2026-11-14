@@ -34,6 +34,7 @@ export function useFreezerSetupMutation({ groups, existingChecklists, onDone }: 
         }
       }
 
+      const updatedChecklists = new Map(existingChecklists.map(c => [c.id, { ...c }]));
       let totalCreated = 0;
       for (const g of groups) {
         const names = computeNames(g);
@@ -72,7 +73,7 @@ export function useFreezerSetupMutation({ groups, existingChecklists, onDone }: 
             autoStaggerMinutes: 15,
           });
         } else {
-          const target = existingChecklists.find((c) => c.id === checklistId);
+          const target = updatedChecklists.get(checklistId);
           const merged = Array.from(new Set([...(target?.asset_ids || []), ...assetIds]));
           // Preserve existing assets' positions; only stagger the appended new ones.
           const offsets: Record<string, number> = { ...(target?.asset_offsets || {}) };
@@ -81,6 +82,7 @@ export function useFreezerSetupMutation({ groups, existingChecklists, onDone }: 
             offsets[id] = (baseCount + i) * 15;
           });
           await checklistService.setChecklistAssets(checklistId, merged, { offsets });
+          if (target) updatedChecklists.set(checklistId, { ...target, asset_ids: merged, asset_offsets: offsets });
         }
 
         totalCreated += assetIds.length;

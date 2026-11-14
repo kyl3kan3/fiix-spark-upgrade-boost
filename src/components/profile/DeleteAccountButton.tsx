@@ -41,13 +41,7 @@ const DeleteAccountButton: React.FC = () => {
       );
       logger.log("[delete-account] invoke result", { body, invokeError });
 
-      // Detect 401 from FunctionsHttpError — the user was already deleted in a
-      // prior attempt and the stale JWT is no longer valid. Treat as success.
-      const ctx: any = (invokeError as any)?.context;
-      const status = ctx?.status ?? ctx?.response?.status;
-      const alreadyDeleted = status === 401;
-
-      if ((!invokeError && body?.success) || alreadyDeleted) {
+      if (!invokeError && body?.success) {
  // Clear all local storage items
  localStorage.clear();
  
@@ -56,9 +50,7 @@ const DeleteAccountButton: React.FC = () => {
  
         toast({
           title: "Account Deleted",
-          description: alreadyDeleted
-            ? "Your account was already deleted. Signing you out."
-            : "Your account has been deleted.",
+          description: "Your account has been deleted.",
  variant: "default",
  });
  

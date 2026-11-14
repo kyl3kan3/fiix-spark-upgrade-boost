@@ -35,7 +35,6 @@ import {
   getBillingUsageCounts,
   updateSubscriptionSeats,
 } from "@/services/billingService";
-import { trackPurchaseConversion } from "@/lib/gtag";
 import { useAdminStatus } from "@/hooks/team/useAdminStatus";
 import {
   EXTRA_BUSINESS_SEAT_MONTHLY,
@@ -64,10 +63,6 @@ export default function BillingPage() {
   useEffect(() => {
     if (params.get("success") === "1") {
       toast.success("Subscription started — welcome!");
-      trackPurchaseConversion({
-        transactionId: params.get("transaction_id") || params.get("_ptxn") || "",
-        email: user?.email ?? null,
-      });
       setTimeout(() => refetch(), 2000);
     }
   }, [params, refetch, user?.email]);
@@ -79,13 +74,14 @@ export default function BillingPage() {
   async function openPortal() {
     setOpening(true);
     const popup = window.open("about:blank", "_blank");
+    if (popup) popup.opener = null;
 
     try {
       const url = await createBillingPortalSession();
 
       if (url) {
         if (popup) popup.location.href = url;
-        else window.open(url, "_blank");
+        else window.open(url, "_blank", "noopener,noreferrer");
       } else {
         popup?.close();
       }

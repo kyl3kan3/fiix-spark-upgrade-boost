@@ -1,78 +1,27 @@
-
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
-import { logger } from "@/lib/logger";
+import { hasVendorName, normalizeVendorImport } from '../../services/vendorImportData';
+import { logger } from '@/lib/logger';
 
 export function processSingleVendor(text: string, instructions?: string): any[] {
- const entity = analyzeAndCategorizeText(text, instructions);
- return [entityToVendor(entity)];
+  const vendor = entityToVendor(analyzeAndCategorizeText(text, instructions));
+  return hasVendorName(vendor) ? [vendor] : [];
 }
 
 export function processMultipleVendors(text: string, pageTexts: string[], expectedCount?: number, instructions?: string): any[] {
- logger.log('🔍 Processing multiple vendors with page grouping');
- logger.log('📄 Page texts:', pageTexts.length, 'pages');
- logger.log('📝 Instructions provided:', instructions || 'None');
- logger.log('🎯 Expected count:', expectedCount || 'Not specified');
- 
- // ALWAYS check instructions first, regardless of other factors
- const shouldTreatPagesAsVendors = shouldTreatEachPageAsVendor(instructions, expectedCount, pageTexts.length);
- 
- logger.log('🚨 DECISION: shouldTreatPagesAsVendors =', shouldTreatPagesAsVendors);
- logger.log('🚨 This means each page will be treated as:', shouldTreatPagesAsVendors ? 'ONE VENDOR' : 'POTENTIALLY MULTIPLE VENDORS');
- 
- // Group vendors by page
- const vendorsByPage = pageTexts.map((pageText, pageIndex) => {
- logger.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
- 
- let sections: string[];
- 
- if (shouldTreatPagesAsVendors) {
- // Treat the entire page as one vendor
- logger.log(`📋 ✅ TREATING ENTIRE PAGE ${pageIndex + 1} AS SINGLE VENDOR based on analysis`);
- sections = [pageText];
- } else {
- // Split the page into sections as before
- logger.log(`📋 ❌ SPLITTING PAGE ${pageIndex + 1} INTO MULTIPLE SECTIONS`);
- sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
- }
- 
- logger.log(`📊 Page ${pageIndex + 1} resulted in ${sections.length} sections`);
- 
- // Analyze each section and convert to vendor format
- const pageVendors = sections.map(section => {
- const entity = analyzeAndCategorizeText(section, instructions);
- const vendor = entityToVendor(entity);
- // Add page information
- vendor.pageNumber = pageIndex + 1;
- vendor.sourceText = section;
- return vendor;
- });
- 
- logger.log(`✅ Found ${pageVendors.length} vendors on page ${pageIndex + 1}`);
- return {
- pageNumber: pageIndex + 1,
- vendors: pageVendors,
- pageText: pageText
- };
- });
- 
- // Flatten all vendors but keep page grouping info
- const allVendors = vendorsByPage.flatMap(page => page.vendors);
- 
- logger.log('📊 Total vendors found:', allVendors.length);
- logger.log('📄 Pages processed:', vendorsByPage.length);
- 
- // Create a result object with typed properties
- const result = allVendors.length > 0 ? allVendors : [entityToVendor(analyzeAndCategorizeText(text, instructions))];
- 
- // Attach page grouping as a non-enumerable property
- Object.defineProperty(result, 'pageGrouping', {
- value: vendorsByPage,
- enumerable: false
- });
- 
- return result;
+  // OCR text replaces empty extraction output; never manufacture rows from blank pages.
+  const hasExtractedText = pageTexts.some(page => page.trim().length > 0);
+  const pages = hasExtractedText ? pageTexts : [text];
+  const wholePage = shouldTreatEachPageAsVendor(instructions, expectedCount, pages.length);
+  const pageGrouping = pages.map((pageText, index) => {
+    const sections = wholePage ? [pageText] : splitTextIntoSections(pageText, [], undefined, instructions);
+    const vendors = sections.flatMap(section => processSingleVendor(section, instructions)).map(vendor => ({ ...vendor, pageNumber: index + 1 }));
+    return { pageNumber: index + 1, pageText, vendors };
+  });
+  const result = pageGrouping.flatMap(page => page.vendors);
+  Object.defineProperty(result, 'pageGrouping', { value: pageGrouping, enumerable: false });
+  return result;
 }
 
 function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: number, pageCount?: number): boolean {
@@ -168,13 +117,7 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
 }
 
 export function processGptResult(gptText: string): any[] {
- try {
- const parsed = JSON.parse(gptText);
- if (Array.isArray(parsed)) {
- return parsed;
- }
- } catch {
- // Fall through to normal processing
- }
- return [];
+  const parsed: unknown = JSON.parse(gptText);
+  if (!Array.isArray(parsed)) throw new Error('Expected a vendor array from image analysis.');
+  return parsed.map(normalizeVendorImport).filter(hasVendorName);
 }

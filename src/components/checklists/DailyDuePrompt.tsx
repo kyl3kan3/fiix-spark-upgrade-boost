@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import { useAuth } from "@/providers/AuthContext";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -13,23 +14,24 @@ const STORAGE_KEY = "due-prompt:lastShown";
  * For "twice-daily" frequency we fire twice (AM/PM). Otherwise once per calendar day.
  * Never re-fires within the same window even if the user reloads the app.
  */
-const promptKey = (now: Date) => {
+const promptKey = (now: Date, frequency: string) => {
  const half = now.getHours() < 12 ? "AM" : "PM";
- return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-${half}`;
+ return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}${frequency === "twice-daily" ? `-${half}` : ""}`;
 };
 
 const DailyDuePrompt: React.FC = () => {
  const navigate = useNavigate();
- const firedRef = useRef(false);
+ const { user } = useAuth();
 
  const { data: due = [] } = useQuery({
- queryKey: ["due-checklists"],
+ queryKey: ["due-checklists", user?.id],
+ enabled: !!user,
  queryFn: checklistService.getDueChecklists,
  refetchInterval: 5 * 60 * 1000,
  });
 
  useEffect(() => {
- if (firedRef.current) return;
+ if (!user) return;
  // Respect per-asset stagger: only count checklists that have at least one
  // currently-due asset (or no assets at all, which means "checklist itself is due").
  const now = new Date();
@@ -40,23 +42,17 @@ const DailyDuePrompt: React.FC = () => {
  });
  if (!activeDue.length) return;
 
- const key = promptKey(new Date());
- let last: string | null = null;
- try {
- last = localStorage.getItem(STORAGE_KEY);
- } catch {
- // ignore (private mode etc.)
- }
- if (last === key) return;
-
- firedRef.current = true;
- try {
- localStorage.setItem(STORAGE_KEY, key);
- } catch {
- /* ignore */
- }
-
- const count = activeDue.length;
+ const unseen = activeDue.filter((checklist: any) => {
+   const storageKey = `${STORAGE_KEY}:${user.id}:${checklist.id}`;
+   const key = promptKey(now, checklist.frequency);
+   try {
+     if (localStorage.getItem(storageKey) === key) return false;
+     localStorage.setItem(storageKey, key);
+   } catch { /* storage unavailable: allow the reminder */ }
+   return true;
+ });
+ if (!unseen.length) return;
+ const count = unseen.length;
  toast(`${count} inspection${count === 1 ? "" : "s"} due`, {
  description: "Open the Due dashboard to start checking your equipment.",
  icon: <Bell className="h-4 w-4" />,
@@ -66,7 +62,7 @@ const DailyDuePrompt: React.FC = () => {
  onClick: () => navigate("/checklists/due"),
  },
  });
- }, [due, navigate]);
+ }, [due, navigate, user]);
 
  return null;
 };

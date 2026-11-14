@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
@@ -107,6 +108,7 @@ const BlogPost = () => {
       .from("blog_posts" as never)
       .select("*")
       .eq("slug", slug)
+      .lte("published_at", new Date().toISOString())
       .maybeSingle();
     if (error || !data) {
       setNotFound(true);
@@ -121,6 +123,7 @@ const BlogPost = () => {
       .from("blog_posts" as never)
       .select("id,slug,title,hero_image_url,hero_image_alt,published_at")
       .neq("id", row.id)
+      .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false, nullsFirst: false })
       .limit(3);
     setRelated((rel ?? []) as unknown as RelatedPost[]);
@@ -271,8 +274,8 @@ const BlogPost = () => {
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
-        <script type="application/ld+json">{JSON.stringify(articleLd)}</script>
-        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
+        <script type="application/ld+json">{JSON.stringify(articleLd).replace(/</g, "\\u003c")}</script>
+        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd).replace(/</g, "\\u003c")}</script>}
       </Helmet>
 
       <article className="container mx-auto px-4 py-10 md:py-14 max-w-[720px]">
@@ -307,7 +310,7 @@ const BlogPost = () => {
         <div
           id="blog-content"
           className="blog-prose"
-          dangerouslySetInnerHTML={{ __html: post.content_html ?? "" }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content_html ?? "", { USE_PROFILES: { html: true }, FORBID_TAGS: ["form", "input", "button", "textarea", "select", "style"], FORBID_ATTR: ["style"] }) }}
         />
 
         {post.infographic_url && !hideInfographic && (

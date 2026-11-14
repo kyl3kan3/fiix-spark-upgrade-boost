@@ -1,3 +1,4 @@
+import { safeWebUrl } from "@/lib/browserTrust";
 
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -256,7 +257,7 @@ const EnhancedVendorPreview: React.FC<EnhancedVendorPreviewProps> = ({
  <p>Status: {vendor.status}</p>
  {vendor.website && (
  <p className="truncate">
- <a href={vendor.website} target="_blank" rel="noopener noreferrer" 
+ <a href={safeWebUrl(vendor.website)} target="_blank" rel="noopener noreferrer"
  className="text-primary hover:underline">
  {vendor.website}
  </a>

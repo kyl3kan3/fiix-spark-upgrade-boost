@@ -1,3 +1,6 @@
+import { boundedJson } from "../_shared/requestBody.ts";
+import { reserveOperation } from "../_shared/operationBudget.ts";
+import { validInternalSecret } from "../_shared/internalSecret.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
@@ -14,7 +17,7 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
 const TWILIO_FROM_NUMBER = Deno.env.get("TWILIO_FROM_NUMBER");
 const FROM = Deno.env.get("EMAIL_FROM") ?? "MaintenEase <noreply@maintenease.com>";
-const RESEND_GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const RESEND_API_URL = "https://api.resend.com";
 
 const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false },
@@ -53,14 +56,24 @@ async function getRecipient(userId: string): Promise<Recipient | null> {
     .eq("user_id", userId)
     .maybeSingle();
 
+  const { data: identity, error: identityError } = await admin.auth.admin.getUserById(userId);
   return {
     user_id: userId,
-    email: prefs?.email_address || profile.email || null,
+    email: !identityError && identity?.user?.email_confirmed_at ? identity.user.email ?? null : null,
     email_enabled: prefs ? !!prefs.email_enabled : true,
     sms_enabled: prefs ? !!prefs.sms_enabled : false,
     phone: prefs?.phone_number || (profile as any).phone_number || null,
     company_id: (profile as any).company_id || null,
   };
+}
+
+async function canEmail(recipient: string): Promise<boolean> {
+  const email = recipient.trim().toLowerCase();
+  const [suppressed, optedOut] = await Promise.all([
+    admin.from("suppressed_emails").select("id").eq("email", email).limit(1),
+    admin.from("email_unsubscribe_tokens").select("id").eq("email", email).not("used_at", "is", null).limit(1),
+  ]);
+  return !suppressed.error && !optedOut.error && !suppressed.data?.length && !optedOut.data?.length;
 }
 
 async function alreadySent(eventType: string, refId: string, userId: string): Promise<boolean> {
@@ -109,18 +122,17 @@ async function deliver(opts: {
   });
 
   // Email
-  if (recipient.email_enabled && recipient.email) {
+  if (recipient.email_enabled && recipient.email && await canEmail(recipient.email)) {
     try {
-      if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
+      if (!RESEND_API_KEY) {
         throw new Error("Email gateway configuration is missing");
       }
 
-      const gatewayRes = await fetch(`${RESEND_GATEWAY_URL}/emails`, {
+      const gatewayRes = await fetch(`${RESEND_API_URL}/emails`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-          "X-Connection-Api-Key": RESEND_API_KEY,
+          "Authorization": `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
           from: FROM,
@@ -396,21 +408,34 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Require shared secret — only the database (cron + triggers) may call this.
-    if (!NOTIFY_SHARED_SECRET) {
-      console.error("NOTIFY_SHARED_SECRET not configured");
-      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+    const input = await boundedJson(req);
+    const event_type = input?.event_type;
+    let payload = input?.payload;
+    const internal = await validInternalSecret(req.headers.get("x-notify-secret"), NOTIFY_SHARED_SECRET);
+    if (!internal) {
+      // Browser callers get only the bounded report-sharing capability.
+      if (event_type !== "report_shared") return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+      const jwt = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
+      const { data: identity, error: identityError } = await admin.auth.getUser(jwt);
+      const actor = identity?.user;
+      if (identityError || !actor) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+      const { data: profile, error: profileError } = await admin.from("profiles").select("company_id,first_name,last_name").eq("id", actor.id).maybeSingle();
+      if (profileError || !profile?.company_id) return new Response("Forbidden", { status: 403, headers: corsHeaders });
+      const { data: roles, error: roleError } = await admin.from("user_roles").select("role").eq("user_id", actor.id).eq("company_id", profile.company_id).in("role", ["administrator", "manager"]);
+      const { data: active, error: activeError } = await admin.rpc("company_has_active_subscription", { _company: profile.company_id });
+      if (roleError || !roles?.length || activeError || !active) return new Response("Forbidden", { status: 403, headers: corsHeaders });
+      const requested = payload?.recipients;
+      if (!Array.isArray(requested) || !requested.length || requested.length > 10 || requested.some(id => typeof id !== "string") ||
+          typeof payload?.report_name !== "string" || !payload.report_name.trim() || payload.report_name.length > 200 ||
+          (payload.summary != null && (typeof payload.summary !== "string" || payload.summary.length > 2000))) return new Response("Invalid report", { status: 400, headers: corsHeaders });
+      const recipients = [...new Set(requested)].filter(id => id !== actor.id);
+      const { data: members, error: memberError } = await admin.from("profiles").select("id").eq("company_id", profile.company_id).in("id", recipients);
+      if (memberError || members?.length !== recipients.length) return new Response("Forbidden recipient", { status: 403, headers: corsHeaders });
+      if (!await reserveOperation(actor.id, "send-email")) return new Response("Notification limit reached", { status: 429, headers: corsHeaders });
+      payload = { report_name: payload.report_name, report_id: undefined, summary: payload.summary,
+        recipients, actor_id: actor.id, sender_name: [profile.first_name, profile.last_name].filter(Boolean).join(" ") || "A teammate" };
     }
-    const provided = req.headers.get("x-notify-secret");
-    if (!provided || provided !== NOTIFY_SHARED_SECRET) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { event_type, payload } = await req.json();
 
     switch (event_type) {
       case "wo_assigned":
@@ -445,9 +470,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("notify-event error:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
+    console.error("notify-event failed");
+    return new Response(JSON.stringify({ error: "Notification failed" }), {
+      status: err instanceof RangeError ? 413 : err instanceof SyntaxError ? 400 : 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

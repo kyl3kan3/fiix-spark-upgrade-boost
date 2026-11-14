@@ -42,7 +42,7 @@ The Supabase URL/publishable key are committed defaults in
 `src/integrations/supabase/`. Optional overrides:
 
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID`
-- `VITE_SENTRY_DSN` — per-environment Sentry project (a default DSN is hard-coded)
+- `VITE_SENTRY_DSN` — per-environment Sentry project (optional; reporting is disabled when omitted)
 - `VITE_APP_VERSION` — release tag for Sentry; CI sets this to the commit SHA
 - `VITE_PAYMENTS_CLIENT_TOKEN` — payments/billing client token
 
@@ -80,48 +80,11 @@ with `package.json` when changing dependencies.
 
 ## Error monitoring (Sentry)
 
-Client errors are reported to Sentry from `src/lib/sentry.ts`. Reporting is
-disabled in development and active in any non-dev build.
-
-Every event is tagged with:
-
-- `route` — current pathname (kept in sync by `SentryContextSync`)
-- `session_id` — stable per-tab id (survives navigation, resets on reload)
-- `user.id` / `user.email` — when authenticated, `anon:<sessionId>` otherwise
-- `release` — from `VITE_APP_VERSION` (CI sets this to the commit SHA)
-
-Network failures (5xx / fetch errors) carry the request URL, method, status,
-and response headers via `httpClientIntegration`. For thrown errors inside
-service code, prefer:
-
-```ts
-import { captureApiError } from "@/lib/sentry";
-
-try {
-  // ...fetch / supabase call
-} catch (err) {
-  captureApiError(err, { method: "POST", url, status, body, response });
-  throw err;
-}
-```
-
-### Releases & alerting
-
-CI sets `VITE_APP_VERSION=${{ github.sha }}` on every build, so each deploy
-shows up as a distinct release in Sentry → Releases with crash-free session
-and user metrics.
-
-To get notified about production error spikes, create these alerts in the
-Sentry UI (Alerts → Create Alert → Issues):
-
-1. **New issue in production** — `event.type:error environment:production`,
-   trigger: a new issue is created, action: email / Slack.
-2. **Error spike** — Metric alert on `event.count`, filter
-   `environment:production level:error`, threshold: `> 20 events in 5m`.
-3. **Regression** — trigger: an issue changes state to `regressed`.
-
-The default DSN is hard-coded; override per environment with
-`VITE_SENTRY_DSN` if you need a separate Sentry project.
+Client error reporting is opt-in through `VITE_SENTRY_DSN` and disabled in development.
+The privacy filter retains standard error types and local asset stack positions only.
+It discards error text, user identity, routes, request/response data, headers, breadcrumbs,
+and other application context. Replay, tracing, automatic network collection, and
+third-party marketing scripts are disabled. HTTP 500 exceptions are still reported.
 
 ## Deployment
 

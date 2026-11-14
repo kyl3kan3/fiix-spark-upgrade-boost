@@ -25,9 +25,11 @@ const InviteMessage = () => {
     };
     window.addEventListener("pending-invite-company-resolved", onCompany);
     window.addEventListener("storage", onStorage);
+    window.addEventListener("auth-storage-changed", onStorage);
     return () => {
       window.removeEventListener("pending-invite-company-resolved", onCompany);
       window.removeEventListener("storage", onStorage);
+      window.removeEventListener("auth-storage-changed", onStorage);
     };
   }, []);
 

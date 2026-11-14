@@ -26,7 +26,7 @@ const NotificationPreferences: React.FC<NotificationPreferencesProps> = ({
  {preferences.map((pref) => (
  <div 
  key={pref.id} 
- className="flex items-center justify-between p-3 border rounded-md /50"
+ className="flex items-center justify-between p-3 border rounded-md bg-muted/50"
  >
  <div>
  <p className="font-medium">{pref.title}</p>

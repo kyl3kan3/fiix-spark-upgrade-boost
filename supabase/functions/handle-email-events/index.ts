@@ -31,7 +31,7 @@ async function record(
     (event.data?.recipient as string | undefined) ??
       (event.data?.to as string | undefined) ??
       '',
-  ).toLowerCase()
+  ).trim().toLowerCase()
   if (!recipient) {
     console.warn('Email event without recipient', { event_id: event.event_id })
     return

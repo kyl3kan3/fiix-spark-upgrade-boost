@@ -144,7 +144,12 @@ const WeatherAlertsCard: React.FC = () => {
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
  <div>
  <Label className="text-sm font-semibold text-foreground mb-1.5 block">Unit</Label>
- <Select value={unit} onValueChange={(v) => setUnit(v as Unit)}>
+ <Select value={unit} onValueChange={(v) => {
+   const next = v as Unit;
+   setMinDisp(cToDisplay(displayToC(minDisp, unit), next));
+   setMaxDisp(cToDisplay(displayToC(maxDisp, unit), next));
+   setUnit(next);
+ }}>
  <SelectTrigger className="border-border focus:ring-primary">
  <SelectValue />
  </SelectTrigger>

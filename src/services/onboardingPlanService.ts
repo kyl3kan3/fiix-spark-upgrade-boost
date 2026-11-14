@@ -29,7 +29,7 @@ export const fetchOnboardingProfile = async (): Promise<OnboardingProfile | null
     goals: (data.goals ?? []) as GoalKey[],
     industry: data.industry,
     teamSize: data.team_size,
-    plan: (data.plan ?? {}) as unknown as OnboardingPlan,
+    plan: buildOnboardingPlan({ goals: Array.isArray(data.goals) ? data.goals as GoalKey[] : [], industry: data.industry, teamSize: data.team_size }),
     completedAt: data.completed_at,
   };
 };

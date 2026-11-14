@@ -16,10 +16,7 @@ export function analyzeAndCategorizeText(text: string, instructions?: string): E
  
  // First, try to extract structured data using labels
  const structuredData = extractStructuredData(text, instructions);
- if (structuredData.hasStructuredData) {
- return { ...result, ...structuredData };
- }
- 
- // Fall back to the original analysis method
- return analyzeUnstructuredText(text, result, instructions);
+ // Contacts alone do not identify a company; fill unlabeled fields as well.
+ const unstructured = analyzeUnstructuredText(text, result, instructions);
+ return { ...unstructured, ...structuredData };
 }

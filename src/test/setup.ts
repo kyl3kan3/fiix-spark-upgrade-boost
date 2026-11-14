@@ -28,6 +28,7 @@ Object.defineProperty(globalThis, "sessionStorage", {
  value: createMemoryStorage(),
 });
 
+if (typeof window !== "undefined") {
 Object.defineProperty(window, "matchMedia", {
  writable: true,
  value: (query: string) => ({
@@ -41,3 +42,4 @@ Object.defineProperty(window, "matchMedia", {
  dispatchEvent: () => {},
  }),
 });
+}

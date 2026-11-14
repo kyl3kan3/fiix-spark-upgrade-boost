@@ -1,3 +1,4 @@
+import { csvCell } from "@/lib/browserTrust";
 import type { DraftItem } from "./types";
 
 interface ReportArgs {
@@ -20,14 +21,14 @@ export function downloadImportReport({
 }: ReportArgs) {
   const valid = items.filter((it) => it.title.trim());
   const dupExtras = duplicateIndices.size - new Set(Array.from(dupOf.values())).size;
-  const esc = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
+  const esc = csvCell;
 
   const lines: string[] = [
     "Checklist Import Report",
     `Generated,${new Date().toISOString()}`,
-    `Checklist name,"${name}"`,
+    `Checklist name,${esc(name)}`,
   ];
-  if (sourceFiles.length) lines.push(`Source files,"${sourceFiles.join("; ")}"`);
+  if (sourceFiles.length) lines.push(`Source files,${esc(sourceFiles.join("; "))}`);
   lines.push(
     "",
     "Summary",

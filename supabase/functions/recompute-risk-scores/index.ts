@@ -1,3 +1,4 @@
+import { validInternalSecret } from "../_shared/internalSecret.ts";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { computeAssetRisk, MODEL_VERSION } from "./scoring.ts";
@@ -6,7 +7,7 @@ import type { Database, Json } from "../../../src/integrations/supabase/types.ts
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
-const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
+const MAINTENANCE_JOB_SECRET = Deno.env.get("MAINTENANCE_JOB_SECRET");
 
 type Counts = { critical: number; high: number; medium: number; low: number };
 
@@ -126,7 +127,7 @@ Deno.serve(async (req) => {
     // Accept either:
     //   1. A valid shared-secret header (used by scheduled jobs / self-heal)
     //   2. A valid user JWT belonging to an administrator/super_admin
-    const providedSecret = req.headers.get("x-notify-secret");
+    const providedSecret = req.headers.get("x-maintenance-secret");
     const authHeader = req.headers.get("Authorization") ?? "";
     const bearer = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
 
@@ -135,7 +136,7 @@ Deno.serve(async (req) => {
     let verifiedUserCompanyId: string | null = null;
     let verifiedIsSuperAdmin = false;
 
-    if (NOTIFY_SHARED_SECRET && providedSecret && providedSecret === NOTIFY_SHARED_SECRET) {
+    if ((SERVICE_ROLE && bearer === SERVICE_ROLE) || (await validInternalSecret(providedSecret, MAINTENANCE_JOB_SECRET))) {
       authMode = "secret";
     } else if (bearer && bearer !== SUPABASE_ANON_KEY) {
       // Verify the JWT
@@ -163,10 +164,11 @@ Deno.serve(async (req) => {
       const { data: roles } = await adminLookup
         .from("user_roles")
         .select("role")
-        .eq("user_id", verifiedUserId);
+        .eq("user_id", verifiedUserId).eq("company_id", verifiedUserCompanyId);
       const roleSet = new Set((roles ?? []).map((r: { role: string }) => r.role));
-      verifiedIsSuperAdmin = roleSet.has("super_admin");
-      const isAdmin = verifiedIsSuperAdmin || roleSet.has("administrator");
+      const { data: superAdmin, error: superAdminError } = await userClient.rpc("is_super_admin", { _user_id: verifiedUserId });
+      verifiedIsSuperAdmin = !superAdminError && superAdmin === true;
+      const isAdmin = verifiedIsSuperAdmin || roleSet.has("administrator") || roleSet.has("manager");
       if (!isAdmin) {
         return new Response(JSON.stringify({ error: "Forbidden" }), {
           status: 403,
@@ -197,6 +199,8 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+      const { data: featureAllowed, error: featureError } = await admin.rpc("has_feature", { _company_id: verifiedUserCompanyId, _feature: "predictive_maintenance" });
+      if (featureError || !featureAllowed) return new Response(JSON.stringify({ error: "Subscription required" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       onlyCompanyId = verifiedUserCompanyId;
     }
 

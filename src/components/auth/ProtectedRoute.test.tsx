@@ -8,6 +8,8 @@ const state = vi.hoisted(() => ({
   active: false,
   profileLoading: false,
   subscriptionLoading: false,
+  subscriptionError: false,
+  missingSubscription: false,
 }));
 
 vi.mock("@/hooks/auth", () => ({
@@ -21,7 +23,7 @@ vi.mock("@/hooks/profile/useProfile", () => ({
 }));
 vi.mock("@/hooks/useSubscription", () => ({
   useSubscription: () => ({
-    data: { is_active: state.active }, isLoading: state.subscriptionLoading,
+    data: state.missingSubscription ? null : { is_active: state.active }, isLoading: state.subscriptionLoading, isError: state.subscriptionError,
   }),
 }));
 vi.mock("@/components/billing/SubscriptionStatusBanner", () => ({
@@ -34,6 +36,8 @@ afterEach(() => {
   state.active = false;
   state.profileLoading = false;
   state.subscriptionLoading = false;
+  state.subscriptionError = false;
+  state.missingSubscription = false;
 });
 
 function CurrentPage() {
@@ -80,7 +84,8 @@ describe("subscription recovery routing", () => {
   it("settles on Profile when the technician profile arrives after the subscription", async () => {
     state.profileLoading = true;
     const view = open("/dashboard");
-    await waitFor(() => expect(screen.getByTestId("current-page").textContent).toBe("/billing?inactive=1"));
+    expect(screen.queryByTestId("current-page")).toBeNull();
+    expect(screen.getByRole("status")).toBeTruthy();
     state.profileLoading = false;
     view.rerender(
       <MemoryRouter initialEntries={["/dashboard"]}>
@@ -91,4 +96,17 @@ describe("subscription recovery routing", () => {
     );
     await waitFor(() => expect(screen.getByTestId("current-page").textContent).toBe("/profile?inactive=1"));
   });
+});
+
+describe("unverified subscription access", () => {
+ it.each(["subscriptionLoading", "subscriptionError", "missingSubscription"] as const)("blocks private content during %s", field => {
+   state[field] = true;
+   open("/dashboard");
+   expect(screen.queryByTestId("current-page")).toBeNull();
+ });
+ it("does not allow lookalike recovery paths", () => {
+   state.missingSubscription = true;
+   open("/billing-evil");
+   expect(screen.queryByTestId("current-page")).toBeNull();
+ });
 });

@@ -12,7 +12,7 @@ export async function deleteAsset(assetId: string) {
  
  if (assetError) {
  if (assetError.code === 'PGRST116') {
- throw new Error("Asset not found - it may have already been deleted");
+ return; // An already-deleted asset is an idempotent success.
  }
  console.error('❌ deleteAsset service - Error fetching asset details:', assetError);
  throw assetError;
@@ -50,29 +50,8 @@ export async function deleteAsset(assetId: string) {
  throw new Error(`Cannot delete asset "${assetDetails.name}" because it has ${workOrders.length} associated work orders: ${workOrderTitles}. Please resolve these work orders first.`);
  }
 
- // Auto-delete vendor asset relationships
- const { data: vendorAssets, error: vendorError } = await supabase
- .from('vendor_assets')
- .select('id')
- .eq('asset_id', assetId);
- 
- if (vendorError) {
- console.error('❌ deleteAsset service - Error checking vendor relationships:', vendorError);
- throw new Error(`Failed to check vendor relationships: ${vendorError.message}`);
- }
- 
- if (vendorAssets && vendorAssets.length > 0) {
- const { error: vendorDeleteError } = await supabase
- .from("vendor_assets")
- .delete()
- .eq("asset_id", assetId);
- 
- if (vendorDeleteError) {
- console.error('❌ deleteAsset service - Error deleting vendor relationships:', vendorDeleteError);
- throw new Error(`Failed to delete vendor relationships: ${vendorDeleteError.message}`);
- }
- }
-
+ // The vendor_assets FK cascades inside the asset DELETE transaction.
+ // Never remove relationships in an earlier independent request.
  const { error: deleteError } = await supabase
  .from("assets")
  .delete()
@@ -84,12 +63,13 @@ export async function deleteAsset(assetId: string) {
  }
  
  // Verify the asset is actually gone
- const { data: verifyGone } = await supabase
+ const { data: verifyGone, error: verifyError } = await supabase
  .from("assets")
  .select("id")
  .eq("id", assetId)
  .maybeSingle();
  
+ if (verifyError) throw verifyError;
  if (verifyGone) {
  console.error('❌ deleteAsset service - Asset still exists after deletion attempt');
  throw new Error(`Asset deletion failed - "${assetDetails.name}" could not be deleted. This may be due to database constraints or permissions.`);

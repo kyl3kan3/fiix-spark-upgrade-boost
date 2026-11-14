@@ -1,3 +1,5 @@
+import { reserveOperation } from "../_shared/operationBudget.ts";
+import { sendTemplateEmailWithLog } from "../_shared/transactional-email-templates/send-with-log.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 import { z } from "https://esm.sh/zod@3.23.8";
@@ -27,29 +29,6 @@ function esc(s: unknown): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-
-async function sendEmail(to: string, subject: string, html: string) {
-  if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
-    throw new Error("Email gateway configuration is missing");
-  }
-
-  const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "X-Connection-Api-Key": RESEND_API_KEY,
-    },
-    body: JSON.stringify({ from: FROM, to: [to], subject, html }),
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error((data as any)?.message || (data as any)?.error || `Gateway HTTP ${response.status}`);
-  }
-
-  return (data as any)?.data?.id || (data as any)?.id || null;
 }
 
 serve(async (req) => {
@@ -157,24 +136,19 @@ serve(async (req) => {
       });
     }
 
-    const actorName = [actorProfile.first_name, actorProfile.last_name].filter(Boolean).join(" ").trim() || "the property team";
-    const subject = `Your request has been resolved: ${request.title}`;
-    const photoList = Array.isArray(request.photos) ? request.photos : [];
-    const html = `
-      <p><strong>Your maintenance request has been marked as resolved.</strong></p>
-      <p>${esc(actorName)} marked the request below as complete.</p>
-      <p><strong>Title:</strong> ${esc(request.title)}</p>
-      ${request.description ? `<p><strong>Description:</strong><br/>${esc(request.description)}</p>` : ""}
-      ${request.location_text ? `<p><strong>Location:</strong> ${esc(request.location_text)}</p>` : ""}
-      ${request.contact_name ? `<p><strong>Submitted by:</strong> ${esc(request.contact_name)}</p>` : ""}
-      ${request.contact_phone ? `<p><strong>Phone:</strong> ${esc(request.contact_phone)}</p>` : ""}
-      ${photoList.length ? `<p><strong>Photos:</strong></p><p>${photoList.map((u) => `<a href="${esc(u)}">${esc(u)}</a>`).join("<br/>")}</p>` : ""}
-      <p>If the issue still isn’t fixed, reply to this email or submit a new request.</p>
-    `.trim();
+    if (!await reserveOperation(actorId, "resolve-public-request")) return new Response(JSON.stringify({ error: "Notification limit reached" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const { data: claimed, error: claimError } = await admin.rpc("claim_request_notification", { p_request_id: request.id });
+    if (claimError) throw new Error("Notification claim unavailable");
+    if (!claimed) return new Response(JSON.stringify({ ok: true, emailSent: false, reason: "already_notified" }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Public request fields are unverified content, never a trusted outbound message.
+    const subject = "Maintenance request resolved";
+    const html = "<p>Your maintenance request has been marked as resolved.</p><p>If the issue persists, contact your property team through your usual channel.</p>";
 
     try {
-      const providerMessageId = await sendEmail(request.contact_email, subject, html);
-      return new Response(JSON.stringify({ ok: true, emailSent: true, providerMessageId }), {
+      const result = await sendTemplateEmailWithLog("generic", request.contact_email, { templateData: { subject, html }, idempotencyKey: `request-resolved-${request.id}` });
+      return new Response(JSON.stringify({ ok: true, emailSent: result.sent }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

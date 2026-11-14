@@ -8,7 +8,7 @@ import { ImportSaveButton } from './results/ImportSaveButton';
 
 interface ImportResultsProps {
   vendors: VendorImportData[];
-  onSave: () => void;
+  onSave: (vendors: VendorImportData[]) => void;
   expectedCount?: number;
 }
 
@@ -22,7 +22,7 @@ const ImportResults: React.FC<ImportResultsProps> = ({ vendors, onSave, expected
   if (vendors.length === 0) return null;
 
   const handleSaveEditedVendors = () => {
-    onSave();
+    onSave(editableVendors);
   };
 
   return (

@@ -24,23 +24,8 @@ export const useInvitation = (email: string) => {
  }
  }
 
- if (!email) return;
-
- const { data: invites, error } = await supabase
- .from("organization_invitations")
- .select("*")
- .eq("email", email)
- .eq("status", "pending");
-
- if (error) {
- console.error("Error checking invitations:", error);
- return;
- }
-
- if (invites && invites.length > 0) {
- setIsInvited(true);
- setInviteDetails(invites[0]);
- }
+ setIsInvited(false);
+ setInviteDetails(null);
  };
  
  checkInvitation();

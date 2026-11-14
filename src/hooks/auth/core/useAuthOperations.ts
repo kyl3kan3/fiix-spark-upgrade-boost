@@ -63,24 +63,11 @@ export function useAuthOperations() {
  return { success: false, error: error.message };
  }
 
-        // Supabase returns success with an empty identities array when the
-        // email is already registered (to prevent email enumeration). Detect
-        // that case and tell the user to sign in instead — otherwise they
-        // sit waiting for a verification email that will never arrive.
-        const identities = (data?.user as any)?.identities;
-        if (Array.isArray(identities) && identities.length === 0) {
-          const msg = hasPendingInvite
-            ? "An account with this email already exists. Please sign in to accept your invitation."
-            : "An account with this email already exists. Please sign in instead.";
-          toast.error("Account already exists", { description: msg });
-          return { success: false, error: msg };
-        }
-
         if (userData?.company_name?.trim()) {
           setStorageItem("pending_company_name", userData.company_name.trim());
         }
 
- toast.success("Account created successfully!");
+ toast.success("Check your email to continue. If you already have an account, sign in.");
  return { success: true };
  } catch (error: any) {
  const errorMessage = error.message || "An unexpected error occurred";

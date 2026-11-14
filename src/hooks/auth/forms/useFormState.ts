@@ -1,27 +1,16 @@
 
 import { useState, useEffect } from "react";
 import { FormStateData } from "@/types/forms";
-import { AUTH_STORAGE_KEYS } from "@/constants/authConstants";
-
-const safeGetItem = (key: string): string => {
-  try {
-    if (typeof window === "undefined") return "";
-    if (typeof localStorage === "undefined" || localStorage === null) return "";
-    return localStorage.getItem(key) || "";
-  } catch {
-    return "";
-  }
-};
 
 export function useFormState() {
- const initialEmail = safeGetItem(AUTH_STORAGE_KEYS.PENDING_EMAIL);
+ const initialEmail = "";
 
  const [formData, setFormData] = useState<FormStateData>({
  email: initialEmail,
  password: "",
  name: "",
  companyName: "",
- rememberMe: true
+ rememberMe: false
  });
 
   // If the invitation email is resolved asynchronously (after the form

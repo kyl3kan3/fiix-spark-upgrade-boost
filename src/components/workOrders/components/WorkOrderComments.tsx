@@ -1,3 +1,4 @@
+import { fetchCompanyPeople } from "@/services/companyDirectoryService";
 
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -46,18 +47,16 @@ export const WorkOrderComments: React.FC<WorkOrderCommentsProps> = ({ workOrder 
  // Then get paginated data
  const { data, error } = await supabase
  .from("work_order_comments")
- .select(`
- *,
- user:profiles(*)
- `)
+ .select("*")
  .eq("work_order_id", workOrder.id)
  .order("created_at", { ascending: false })
  .range((currentPage - 1) * COMMENTS_PER_PAGE, currentPage * COMMENTS_PER_PAGE - 1);
 
  if (error) throw error;
+ const people = new Map((await fetchCompanyPeople()).map(person => [person.id, person]));
  
  return {
- comments: data as (WorkOrderComment & { user: any })[],
+ comments: (data ?? []).map(comment => ({ ...comment, user: people.get(comment.user_id) ?? null })),
  totalCount,
  totalPages: Math.ceil(totalCount / COMMENTS_PER_PAGE)
  };

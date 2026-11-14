@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
       // Keep bundled files away from the application's /assets route so edge
       // rewrites can serve /assets/:id from the protected app shell.
       assetsDir: "static",
-      sourcemap: true,
+      sourcemap: false,
       rollupOptions: {
         output: {
           // Split long-lived vendor code out of the entry chunk so it caches

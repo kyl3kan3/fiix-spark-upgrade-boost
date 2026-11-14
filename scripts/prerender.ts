@@ -13,7 +13,8 @@
  * interactive app changes.
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, resolve, relative, isAbsolute, sep } from "node:path";
+import { isSafeBlogSlug } from "../supabase/functions/_shared/blogSlug.ts";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
@@ -1044,7 +1045,7 @@ function sectionsFromBlogHtml(html: string): { heading: string; body: string }[]
 async function fetchBlogPosts(): Promise<BlogRow[]> {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&order=published_at.desc.nullslast&limit=5000`,
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&published_at=lte.${encodeURIComponent(new Date().toISOString())}&order=published_at.desc.nullslast&limit=5000`,
       { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
     );
     if (!res.ok) {
@@ -1059,7 +1060,7 @@ async function fetchBlogPosts(): Promise<BlogRow[]> {
 }
 
 const blogPosts = (await fetchBlogPosts()).filter(
-  (post) => !redirectForPath(`/blog/${post.slug}`),
+  (post) => isSafeBlogSlug(post.slug) && !redirectForPath(`/blog/${post.slug}`),
 );
 
 if (blogPosts.length) {
@@ -1152,14 +1153,14 @@ function headFor(route: Route): string {
     `<title>${title}</title>`,
     `<meta name="description" content="${description}" data-rh="true" />`,
     `<meta name="robots" content="${route.indexable === false ? "noindex,nofollow" : "index,follow,max-image-preview:large"}" data-rh="true" />`,
-    `<link data-rh="true" rel="canonical" href="${canonical}" />`,
+    `<link data-rh="true" rel="canonical" href="${esc(canonical)}" />`,
     route.indexable === false
       ? ""
       : `<link rel="alternate" type="text/markdown" href="${ORIGIN}${route.path === "/" ? "/index.md" : `${route.path}.md`}" />`,
     `<meta property="og:type" content="${route.ogType ?? "website"}" />`,
     `<meta property="og:title" content="${title}" />`,
     `<meta property="og:description" content="${description}" />`,
-    `<meta property="og:url" content="${canonical}" />`,
+    `<meta property="og:url" content="${esc(canonical)}" />`,
     `<meta property="og:image" content="${socialImage}" />`,
     route.image ? `<meta property="og:image:alt" content="${esc(route.image.alt)}" />` : "",
     `<meta name="twitter:card" content="summary_large_image" />`,
@@ -1399,6 +1400,13 @@ if (existsSync(faviconPngPath)) {
 
 let written = 0;
 let markdownWritten = 0;
+function assertOutputPath(outPath: string, routePath: string): void {
+  const root = routePath.startsWith("/blog/") ? join(DIST, "blog") : DIST;
+  const rel = relative(root, resolve(outPath));
+  if (!rel || rel === ".." || rel.startsWith(`..${sep}`) || isAbsolute(rel)) {
+    throw new Error(`Prerender output escapes its directory: ${routePath}`);
+  }
+}
 for (const route of routes) {
   const html = renderRoute(route);
   // Write both `<path>/index.html` and `<path>.html` so clean URLs resolve on
@@ -1411,6 +1419,7 @@ for (const route of routes) {
           join(DIST, `${route.path.replace(/^\//, "")}.html`),
         ];
   for (const outPath of targets) {
+    assertOutputPath(outPath, route.path);
     mkdirSync(dirname(outPath), { recursive: true });
     writeFileSync(outPath, html);
     written++;
@@ -1423,6 +1432,7 @@ for (const route of routes) {
     const markdownPath = route.path === "/"
       ? join(DIST, "index.md")
       : join(DIST, `${route.path.replace(/^\//, "")}.md`);
+    assertOutputPath(markdownPath, route.path);
     if (!existsSync(markdownPath)) {
       mkdirSync(dirname(markdownPath), { recursive: true });
       writeFileSync(markdownPath, markdownFor(route));

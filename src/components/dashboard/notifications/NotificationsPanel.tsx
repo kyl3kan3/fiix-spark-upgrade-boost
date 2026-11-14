@@ -71,7 +71,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  <>
  {isOpen && (
  <div 
- className="fixed inset-0 bg-foreground/20 /50 z-40 backdrop-blur-[2px] animate-fade-in"
+ className="fixed inset-0 bg-foreground/20 z-40 backdrop-blur-[2px] animate-fade-in"
  aria-hidden="true" 
  />
  )}
@@ -90,7 +90,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  />
  
  <NotificationsList 
- notifications={notifications.filter((n) => n.type !== 'email')}
+ notifications={notifications}
  loading={loading}
  onDismiss={handleDismissNotification}
  />
@@ -99,7 +99,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  unreadCount={getUnreadCount()}
  onMarkAllAsRead={handleMarkAllAsRead}
  onClearAll={handleClearAll}
- totalCount={notifications.filter((n) => n.type !== 'email').length}
+ totalCount={notifications.length}
  />
  </Card>
  </div>

@@ -5,7 +5,7 @@ import { VendorImportData } from '@/services/vendorService';
 export function entityToVendor(entity: EntityClassification): VendorImportData {
  const vendor: VendorImportData = {
  id: `vendor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
- name: entity.companyName || 'Unnamed Vendor',
+ name: entity.companyName || '',
  email: entity.email,
  phone: entity.phone,
  website: entity.website,

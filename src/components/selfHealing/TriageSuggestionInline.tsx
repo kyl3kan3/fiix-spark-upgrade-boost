@@ -31,7 +31,8 @@ export default function TriageSuggestionInline({ requestId }: { requestId: strin
         .maybeSingle();
       return (data ?? null) as Triage | null;
     },
-    refetchInterval: (q) => (q.state.data?.status === "ready" ? false : 5000),
+    refetchInterval: (q) => (["ready", "failed"].includes(q.state.data?.status ?? "") || q.state.dataUpdateCount >= 12 || q.state.errorUpdateCount >= 3 ? false : 5000),
+    retry: 2,
   });
 
   if (isLoading) return null;

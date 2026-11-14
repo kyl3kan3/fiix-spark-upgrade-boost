@@ -179,7 +179,7 @@ const TeamCollaborationContent: React.FC = () => {
  {notifications.map((notification) => (
  <Card 
  key={notification.id} 
- className={`cursor-pointer transition-colors hover:bg-muted ${ !notification.read ? 'border-primary/30 bg-primary/10/50' : '' }`}
+ className={`cursor-pointer transition-colors hover:bg-muted ${ !notification.read ? 'border-primary/30 bg-primary/5' : '' }`}
  onClick={() => handleMarkAsRead(notification.id)}
  >
  <CardContent className="p-4">

@@ -1,3 +1,4 @@
+import { safeAppPath } from "@/lib/browserTrust";
 
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,10 +31,8 @@ export const AuthContainer: React.FC = () => {
   const nextParam = params.get("next");
   // Only accept same-origin relative paths for `next`.
   const safeNext =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
-      ? nextParam
-      : null;
-  const from = safeNext || location.state?.from?.pathname || "/dashboard";
+    safeAppPath(nextParam);
+  const from = safeNext || safeAppPath(location.state?.from?.pathname) || "/dashboard";
  navigate(hasPendingInvite ? "/onboarding" : from, { replace: true });
  }
  }, [isAuthenticated, isLoading, navigate, location.search, location.state]);

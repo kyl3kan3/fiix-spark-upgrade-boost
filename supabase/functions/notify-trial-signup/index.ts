@@ -1,141 +1,42 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 import { sendTemplateEmailWithLog } from "../_shared/transactional-email-templates/send-with-log.ts";
-
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-// Fixed internal recipient — never accepted from the client to prevent
-// abuse of the verified sending domain for arbitrary recipients.
-const INTERNAL_RECIPIENT = "Kyle@decent4.com";
-
-// Single source of truth on the server. Keep in sync with `TRIAL_DAYS`
-// in src/constants/trial.ts and the Paddle price trial_period settings.
-const TRIAL_DAYS = 7;
-
-interface Body {
-  company?: string;
-  companyId?: string;
-}
-
-const escape = (s: string) =>
-  String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
+import { reserveOperation } from "../_shared/operationBudget.ts";
+const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
+const reply = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return reply(405, { error: "Method not allowed" });
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!supabaseUrl || !anonKey || !serviceKey) {
-      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const authHeader = req.headers.get("authorization") ?? "";
-    const jwt = authHeader.replace("Bearer ", "").trim();
-    if (!jwt) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: `Bearer ${jwt}` } },
-      auth: { persistSession: false },
+    const url = Deno.env.get("SUPABASE_URL")!;
+    const jwt = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
+    const client = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: `Bearer ${jwt}` } }, auth: { persistSession: false } });
+    const { data, error } = await client.auth.getUser(jwt);
+    const user = data?.user;
+    if (error || !user) return reply(401, { error: "Unauthorized" });
+    if (!user.email || !user.email_confirmed_at) return reply(403, { error: "Verified email required" });
+    const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+    const { data: profile, error: profileError } = await admin.from("profiles").select("company_id, first_name").eq("id", user.id).maybeSingle();
+    if (profileError || !profile?.company_id) return reply(403, { error: "No company" });
+    const { data: company, error: companyError } = await admin.from("companies").select("id, name, created_by, created_at").eq("id", profile.company_id).maybeSingle();
+    const { data: subscription, error: subscriptionError } = await admin.from("subscriptions").select("status, trial_ends_at").eq("company_id", profile.company_id).maybeSingle();
+    if (companyError || subscriptionError || !company || company.created_by !== user.id ||
+        !(Date.parse(company.created_at) > Date.now() - 86400000) || subscription?.status !== "trialing" ||
+        !(Date.parse(subscription.trial_ends_at) > Date.now())) return reply(403, { error: "New trial required" });
+    if (!(await reserveOperation(user.id, "trial-signup"))) return reply(200, { success: true, reason: "already_notified" });
+    // Identity, tenant and trial dates come solely from authoritative records.
+    await sendTemplateEmailWithLog("trial-start", user.email, {
+      idempotencyKey: `trial-start-${company.id}`,
+      templateData: { firstName: profile.first_name, companyName: company.name, trialDays: 7, trialEndsAt: subscription.trial_ends_at, appUrl: "https://maintenease.com/dashboard" },
     });
-    const { data: userData, error: userError } = await userClient.auth.getUser(jwt);
-    const user = userData?.user;
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    let body: Body = {};
-    try { body = await req.json(); } catch { /* allow empty */ }
-    const company = String(body.company ?? "").slice(0, 200);
-    const companyId = String(body.companyId ?? "").slice(0, 64);
-
-    // Load profile server-side so we never trust client-supplied identity.
-    const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("first_name,last_name,phone_number,email")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
-    const userEmail = profile?.email ?? user.email ?? "";
-    const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString();
-    const html = `
-      <p>A new company just started a MaintenEase trial.</p>
-      <ul>
-        <li><strong>Company:</strong> ${escape(company)}</li>
-        <li><strong>Name:</strong> ${escape(fullName)}</li>
-        <li><strong>Email:</strong> ${escape(userEmail)}</li>
-        <li><strong>Phone:</strong> ${escape(profile?.phone_number ?? "")}</li>
-        <li><strong>Company ID:</strong> ${escape(companyId)}</li>
-        <li><strong>Trial length:</strong> ${TRIAL_DAYS} days</li>
-        <li><strong>When:</strong> ${escape(new Date().toISOString())}</li>
-      </ul>
-    `;
-
-    // 1) Internal ops notification.
-    try {
-      await sendTemplateEmailWithLog("generic", INTERNAL_RECIPIENT, {
-        idempotencyKey: `trial-signup-${companyId || user.id}`,
-        templateData: {
-          subject: `New trial signup: ${company}`,
-          preheader: `${company} just started a trial`,
-          html,
-        },
-      });
-    } catch (err) {
-      console.error("notify-trial-signup internal notification failed", err);
-      return new Response(JSON.stringify({ success: false }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // 2) Confirmation email to the new trial user. Fire-and-forget — never
-    //    block the response on the welcome email.
-    if (userEmail) {
-      sendTemplateEmailWithLog("trial-start", userEmail, {
-        idempotencyKey: `trial-start-${companyId || user.id}`,
-        templateData: {
-          firstName: profile?.first_name ?? undefined,
-          companyName: company,
-          trialDays: TRIAL_DAYS,
-          trialEndsAt,
-          appUrl: "https://maintenease.com/dashboard",
-        },
-      }).catch((err) => console.error("trial-start email failed", err));
-    }
-
-
-    return new Response(JSON.stringify({ success: true, trialDays: TRIAL_DAYS, trialEndsAt }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Optional operator-owned address. No signup identity/contact data leaves the app.
+    const ops = Deno.env.get("TRIAL_OPERATIONS_EMAIL");
+    if (ops) await sendTemplateEmailWithLog("generic", ops, {
+      idempotencyKey: `trial-signup-${company.id}`,
+      templateData: { subject: "New MaintenEase trial", html: "<p>A new trial has started. Review the authorized admin dashboard for details.</p>" },
     });
-  } catch (err) {
-    console.error("notify-trial-signup error", err);
-    return new Response(JSON.stringify({ success: false }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return reply(200, { success: true, trialDays: 7, trialEndsAt: subscription.trial_ends_at });
+  } catch {
+    console.error("notify-trial-signup failed");
+    return reply(500, { success: false });
   }
 });

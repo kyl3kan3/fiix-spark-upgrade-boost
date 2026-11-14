@@ -24,14 +24,6 @@ const badges = [
     height: 54,
   },
   {
-    href: "https://seoreceipts.com/site/maintenease-293/?ref=badge&utm_source=embed&utm_medium=badge&utm_campaign=status-auto",
-    src: "https://seoreceipts.com/api/badge?slug=maintenease-293&mode=auto&theme=paper&size=card",
-    alt: "Google Search Console stats for maintenease.com",
-    width: 220,
-    height: 68,
-    rel: "nofollow sponsored noopener noreferrer",
-  },
-  {
     href: "https://www.foundrlist.com/product/maintenease?utm_source=badge&utm_medium=embed",
     src: "https://www.foundrlist.com/api/badge/maintenease",
     alt: "Featured on FoundrList",
@@ -93,18 +85,10 @@ const TrustBadges = () => (
             key={badge.href}
             href={badge.href}
             target="_blank"
-            rel={"rel" in badge ? badge.rel : "nofollow noopener noreferrer"}
+            rel="nofollow noopener noreferrer"
             className="flex min-h-24 items-center justify-center rounded-xl border border-border bg-card px-5 py-4 shadow-sm outline-none transition-[border-color,box-shadow,transform] duration-200 hover:border-primary/30 hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.96]"
           >
-            <img
-              src={badge.src}
-              alt={badge.alt}
-              width={badge.width}
-              height={badge.height}
-              loading="lazy"
-              decoding="async"
-              className="max-h-[68px] max-w-full rounded-sm object-contain ring-1 ring-black/10 dark:ring-white/10"
-            />
+            <span>{badge.alt}</span>
           </a>
         ))}
       </div>

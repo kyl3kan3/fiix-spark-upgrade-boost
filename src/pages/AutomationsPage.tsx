@@ -1,3 +1,4 @@
+import { useHasFeature } from "@/hooks/useSubscription";
 import React, { useEffect, useState } from "react";
 import { Zap, Loader2, Plus, Pencil } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -16,6 +17,7 @@ import { formatChecklistNextDue } from "@/lib/checklistSchedule";
 import { formatDateOnly } from "@/components/workOrders/utils/dateUtils";
 
 const AutomationsPage: React.FC = () => {
+  const canAutomate = useHasFeature("automations");
   const [items, setItems] = useState<RecurringChecklistSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,12 +47,12 @@ const AutomationsPage: React.FC = () => {
               Recurring checklists and scheduled work that runs automatically.
             </p>
           </div>
-          <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold shadow-sm">
+          {canAutomate && <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold shadow-sm">
             <Link to="/checklists/new">
               <Plus className="h-4 w-4 mr-2" />
               Create Automation
             </Link>
-          </Button>
+          </Button>}
         </div>
 
         <PaywallGate

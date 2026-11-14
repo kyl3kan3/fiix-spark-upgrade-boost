@@ -1,3 +1,4 @@
+import { safeAppPath } from "@/lib/browserTrust";
 // WebMCP (https://webmachinelearning.github.io/webmcp/) — expose a few safe,
 // public MaintenEase actions to browser-resident AI agents. Nothing here reads
 // or writes customer data; authenticated data access goes through the MCP
@@ -74,8 +75,8 @@ const tools: WebMcpTool[] = [
       required: ["path"],
     },
     execute: async ({ path }) => {
-      const raw = String(path ?? "");
-      if (!raw.startsWith("/") || raw.startsWith("//")) return text("Rejected: path must be a same-origin path starting with /.");
+      const raw = safeAppPath(path);
+      if (!raw) return text("Rejected: path must be a same-origin path starting with /.");
       window.location.assign(raw);
       return text(`Navigating to ${raw}`);
     },

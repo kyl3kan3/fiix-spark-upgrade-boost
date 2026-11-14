@@ -49,7 +49,7 @@ const formatOffset = (m: number) => {
  */
 export const getAssetBarcodeValue = (a: AssetLite): string => {
  const sn = (a.serial_number || "").trim();
- if (sn) return sn.toUpperCase();
+ if (sn && sn.length <= 64 && /^[\x20-\x7e]+$/.test(sn)) return sn.toUpperCase();
  const compact = (a.id || "").replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
  return `AST-${compact.slice(0, 6) || "000000"}`;
 };
@@ -57,7 +57,7 @@ export const getAssetBarcodeValue = (a: AssetLite): string => {
 /** Generate a Code128 barcode PNG data URL for the given value. */
 const generateBarcodeDataUrl = (value: string): string | null => {
  try {
- if (typeof document === "undefined") return null;
+ if (typeof document === "undefined" || value.length > 64) return null;
  const canvas = document.createElement("canvas");
  JsBarcode(canvas, value, {
  format: "CODE128",

@@ -1,3 +1,4 @@
+import { validInternalSecret } from "../_shared/internalSecret.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
@@ -59,7 +60,7 @@ async function healRiskScoring(companyId: string): Promise<RunResult> {
           "Content-Type": "application/json",
           Authorization: `Bearer ${SERVICE_ROLE}`,
           apikey: SERVICE_ROLE,
-          "x-notify-secret": Deno.env.get("NOTIFY_SHARED_SECRET") ?? "",
+          "x-maintenance-secret": Deno.env.get("MAINTENANCE_JOB_SECRET") ?? "",
         },
         body: JSON.stringify({ company_id: companyId, triggered_by: "self_heal" }),
       });
@@ -199,24 +200,9 @@ async function healDataIntegrity(companyId: string): Promise<RunResult> {
     for (const p of profilesNoRole ?? []) {
       if (!haveRole.has(p.id) && p.role) {
         out.scanned += 1;
-        const roleVal = ["administrator", "technician", "manager", "viewer"].includes(p.role)
-          ? p.role
-          : "technician";
-        const { error } = await sb.from("user_roles").insert({
-          user_id: p.id,
-          role: roleVal,
-          company_id: companyId,
-        });
-        if (!error) {
-          out.fixed += 1;
-          out.actions.push({
-            entity_type: "user_role",
-            entity_id: p.id,
-            action: "fix",
-            after: { role: roleVal, company_id: companyId },
-            details: `Created missing role entry (${roleVal})`,
-          });
-        }
+        out.flagged += 1;
+        out.actions.push({ entity_type: "user_role", entity_id: p.id, action: "flag", requires_review: true,
+          details: "Missing authoritative role; an administrator must review access." });
       }
     }
   }
@@ -437,9 +423,9 @@ Deno.serve(async (req) => {
     let scopedCompany: string | undefined = body.company_id;
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
-    const SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
+    const SHARED_SECRET = Deno.env.get("MAINTENANCE_JOB_SECRET");
     const hasValidSecret =
-      !!SHARED_SECRET && req.headers.get("x-notify-secret") === SHARED_SECRET;
+      await validInternalSecret(req.headers.get("x-maintenance-secret"), SHARED_SECRET);
     const isServiceRole = !!token && token === SERVICE_ROLE;
     const hasUserToken = !!token && !isServiceRole;
 
@@ -455,6 +441,13 @@ Deno.serve(async (req) => {
       actorId = user.id;
       const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
       if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const { data: roles, error: roleError } = await sb.from("user_roles").select("role")
+        .eq("user_id", user.id).eq("company_id", profile.company_id).in("role", ["administrator", "manager"]);
+      if (roleError || !roles?.length) return new Response(JSON.stringify({ error: "forbidden" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+      const { data: active, error: subscriptionError } = await userClient.rpc("company_has_active_subscription", { _company: profile.company_id });
+      if (subscriptionError || !active) return new Response(JSON.stringify({ error: "Subscription required" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       scopedCompany = profile.company_id;
     } else if (!isServiceRole) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {

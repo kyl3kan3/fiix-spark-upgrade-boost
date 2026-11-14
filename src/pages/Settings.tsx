@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings as SettingsIcon, User, Bell, Shield, Palette, Send, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,10 +14,43 @@ import ProfileInformation from "@/components/profile/ProfileInformation";
 import WeatherAlertsCard from "@/components/dashboard/tabs/settings/WeatherAlertsCard";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { getNotificationPreferencesByUserId, upsertNotificationPreferences } from '@/services/notifications';
 
 const Settings = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(false);
+  const [preferencesUserId, setPreferencesUserId] = useState<string | null>(null);
+  const [notificationEmail, setNotificationEmail] = useState<string | null>(null);
+  const [savingPreferences, setSavingPreferences] = useState(false);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        if (!user) return;
+        const prefs = await getNotificationPreferencesByUserId(user.id);
+        if (!active) return;
+        setEmailNotifications(prefs?.email_enabled ?? true);
+        setNotificationEmail(prefs?.email_address ?? null);
+        setPushNotifications(prefs?.push_enabled ?? false);
+        setPreferencesUserId(user.id);
+      } catch { if (active) toast.error('Unable to load notification preferences'); }
+    })();
+    return () => { active = false; };
+  }, []);
+  const savePreferences = async () => {
+    if (!preferencesUserId) return;
+    setSavingPreferences(true);
+    try {
+      await upsertNotificationPreferences({ user_id: preferencesUserId,
+        email_enabled: emailNotifications, push_enabled: pushNotifications,
+        email_address: notificationEmail, updated_at: new Date().toISOString() });
+      toast.success('Notification preferences saved');
+    } catch { toast.error('Unable to save notification preferences'); }
+    finally { setSavingPreferences(false); }
+  };
   const [sendingTest, setSendingTest] = useState(false);
   const [sendingTestSms, setSendingTestSms] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -180,6 +213,7 @@ const Settings = () => {
                     id="emailNotifications"
                     checked={emailNotifications}
                     onCheckedChange={setEmailNotifications}
+                    disabled={!preferencesUserId || savingPreferences}
                   />
                 </div>
 
@@ -195,11 +229,12 @@ const Settings = () => {
                     id="pushNotifications"
                     checked={pushNotifications}
                     onCheckedChange={setPushNotifications}
+                    disabled={!preferencesUserId || savingPreferences}
                   />
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4 border-t border-border mt-2">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
+                  <Button onClick={savePreferences} disabled={!preferencesUserId || savingPreferences} className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
                     Save Preferences
                   </Button>
                   <Button
@@ -252,8 +287,8 @@ const Settings = () => {
                     <p className="text-sm font-semibold text-foreground">Password</p>
                     <p className="text-sm text-muted-foreground">Update your account password</p>
                   </div>
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
-                    Update Password
+                  <Button asChild className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
+                    <Link to="/forgot-password">Update Password</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -286,9 +321,7 @@ const Settings = () => {
                   />
                 </div>
                 <div className="flex justify-end pt-2 border-t border-border">
-                  <Button className="bg-primary hover:bg-primary-variant text-primary-foreground text-xs font-semibold">
-                    Save Appearance
-                  </Button>
+                  <p className="text-sm text-muted-foreground">Appearance changes are saved automatically.</p>
                 </div>
               </CardContent>
             </Card>

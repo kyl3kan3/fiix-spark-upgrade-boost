@@ -103,7 +103,7 @@ jobs:
               • https://www.linkedin.com/post-inspector/
               • https://cards-dev.twitter.com/validator
           attachments: social-audit.log,reports/meta-history/latest-diff.md
-          ignore_cert: true
+          ignore_cert: false
 
       - name: Open alert issue on failure
         if: failure()

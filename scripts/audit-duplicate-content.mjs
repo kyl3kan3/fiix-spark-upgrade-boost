@@ -104,7 +104,15 @@ if (urls.length === 0) {
   process.exit(1);
 }
 
-const duplicateSitemapUrls = Object.values(Object.groupBy(urls, (url) => url)).filter(
+function groupBy(values, keyFor) {
+  return values.reduce((groups, value) => {
+    const key = keyFor(value);
+    (groups[key] ??= []).push(value);
+    return groups;
+  }, Object.create(null));
+}
+
+const duplicateSitemapUrls = Object.values(groupBy(urls, (url) => url)).filter(
   (group) => group.length > 1,
 );
 for (const group of duplicateSitemapUrls) {
@@ -176,7 +184,7 @@ for (const row of rows) {
   if (wordCount < 20) warnings.push(`${label}: crawler-facing body has only ${wordCount} words`);
 }
 
-const duplicateBodies = Object.values(Object.groupBy(rows.filter((row) => row.hash), (row) => row.hash))
+const duplicateBodies = Object.values(groupBy(rows.filter((row) => row.hash), (row) => row.hash))
   .filter((group) => group.length > 1);
 for (const group of duplicateBodies) {
   errors.push(

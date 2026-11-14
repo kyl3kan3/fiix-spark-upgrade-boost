@@ -50,7 +50,7 @@ SELECT cron.schedule(
     headers:=jsonb_build_object(
       'Content-Type', 'application/json',
       'apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdvd2Rja2l0d2dtY3RxbHBxem9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY4MjE1MjksImV4cCI6MjA2MjM5NzUyOX0.1FWkUEhqOZk_pTpCJk46JGXXjXf9CljbAckaB1ZOxwA',
-      'x-notify-secret', 'ed5ede7dacf0a83d2873a2c20ab0975337b2c89d5b81e60c1ef50e0217850154'
+      'x-notify-secret', (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE lower(name) = 'notify_shared_secret' LIMIT 1)
     ),
     body:='{}'::jsonb
   ) as request_id;

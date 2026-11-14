@@ -1,5 +1,5 @@
 // Custom storage adapter for Supabase auth that supports "Remember me".
-// When REMEMBER flag is set (default), tokens go to localStorage (persist across browser restarts).
+// When REMEMBER flag is explicitly set, tokens go to localStorage (persist across browser restarts).
 // When unset, tokens go to sessionStorage (cleared when the browser/tab session ends).
 
 const REMEMBER_FLAG_KEY = "sb-remember-me";
@@ -18,11 +18,11 @@ export function setSupabaseRememberMe(remember: boolean) {
 
 function shouldUseLocal(): boolean {
  try {
- // Default to true (persistent) if the flag has never been set.
+ // Persistent sessions require an explicit opt-in.
  const v = localStorage.getItem(REMEMBER_FLAG_KEY);
- return v === null ? true : v === "true";
+ return v === "true";
  } catch {
- return true;
+ return false;
  }
 }
 

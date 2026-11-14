@@ -18,6 +18,8 @@
  */
 
 const BASE_URL = process.env.BASE_URL ?? "https://maintenease.com";
+// Preview hosts fetch the same pages while retaining the production SEO identity.
+const CANONICAL_BASE_URL = process.env.CANONICAL_BASE_URL ?? "https://maintenease.com";
 const EXPECTED_IMAGE = "https://maintenease.com/og-image.png?v=5";
 const FB_TOKEN = process.env.FB_APP_ACCESS_TOKEN;
 const SITEMAP_URL = `${BASE_URL}/sitemap.xml`;
@@ -166,10 +168,10 @@ async function checkOne(path: string, crawler: { name: string; ua: string }): Pr
         `og:url / canonical mismatch — og:url=${ogUrl} canonical=${canonical}`,
       );
     }
-    const expectedAbs = normalizeUrl(url);
+    const expectedAbs = normalizeUrl(new URL(path, CANONICAL_BASE_URL).href);
     if (canonical && normalizeUrl(canonical) !== expectedAbs) {
       ok = false;
-      messages.push(`canonical does not match request URL — got ${canonical}`);
+      messages.push(`canonical does not match expected canonical URL — got ${canonical}`);
     }
     const sitemap = await loadSitemapEntries();
     if (sitemap.size > 0 && !sitemap.has(expectedAbs)) {
