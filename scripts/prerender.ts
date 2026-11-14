@@ -50,6 +50,7 @@ import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
 import { buildExpandedTemplateStaticBody } from "../src/lib/templateExpandedStaticBody";
 import { inlineMarkdownLinksToHtml } from "../src/lib/inlineMarkdownLinks";
 import { redirectForPath } from "../src/lib/seoRouting";
+import { buildMtbfCalculatorSoftwareApplicationJsonLd } from "../src/data/mtbfCalculatorJsonLd";
 import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 import { BLOG_INDEX_INTRO_SECTIONS, BLOG_INDEX_META_DESCRIPTION } from "../src/data/blogIndexContent";
 import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
@@ -552,6 +553,7 @@ const staticRoutes: Route[] = [
             },
           ]
         : []),
+      ...(page.slug === "mtbf-calculator" ? [buildMtbfCalculatorSoftwareApplicationJsonLd()] : []),
     ],
   })),
   {

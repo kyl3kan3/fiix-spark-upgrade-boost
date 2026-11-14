@@ -150,8 +150,8 @@ const MtbfCalculatorPage = () => {
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
-        {/* WebPage, FAQPage and BreadcrumbList JSON-LD ship once in the prerendered HTML
-            (scripts/prerender.ts). Repeating them here would duplicate each type after hydration. */}
+        {/* WebPage, FAQPage, BreadcrumbList, and SoftwareApplication JSON-LD ship once in the
+            prerendered HTML (scripts/prerender.ts). Repeating them here would duplicate after hydration. */}
       </Helmet>
       <MarketingJsonLd />
 
