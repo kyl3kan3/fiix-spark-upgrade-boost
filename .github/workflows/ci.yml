@@ -63,5 +63,8 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install Playwright Chromium (homepage hydration test)
+        run: npx playwright install chromium
+
       - name: Post-build prerender HTML check
         run: npm run test:postbuild
