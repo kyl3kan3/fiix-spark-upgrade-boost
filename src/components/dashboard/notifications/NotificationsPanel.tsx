@@ -71,7 +71,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
  <>
  {isOpen && (
  <div 
- className="fixed inset-0 bg-foreground/20 /50 z-40 backdrop-blur-[2px] animate-fade-in"
+ className="fixed inset-0 bg-foreground/20 z-40 backdrop-blur-[2px] animate-fade-in"
  aria-hidden="true" 
  />
  )}
