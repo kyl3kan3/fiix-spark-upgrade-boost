@@ -51,12 +51,6 @@ vi.mock("@/providers/AuthContext", () => ({
  useAuth: () => ({ user: null, session: null, loading: false, signOut: () => Promise.resolve() }),
 }));
 
-vi.mock("@/components/marketing/ScrambleText", () => ({
- default: ({ text, className }: { text: string; className?: string }) => (
- <span className={className}>{text}</span>
- ),
-}));
-
 import Index from "../Index";
 import McpPage from "../McpPage";
 import SolutionsIndex from "../SolutionsIndex";
