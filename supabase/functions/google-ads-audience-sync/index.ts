@@ -1,14 +1,9 @@
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import type { Database } from '../../../src/integrations/supabase/types.ts';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
-
-const json = (b: unknown, s = 200) =>
-  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+const json = (request: Request, b: unknown, s = 200) =>
+  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeadersForRequest(request), 'Content-Type': 'application/json' } });
 
 type Segment = 'all_users' | 'trial_users' | 'paying_users' | 'churned_users';
 
@@ -172,20 +167,21 @@ async function uploadHashedEmails(
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405);
+  if (req.method !== 'POST') return json(req, { error: 'method not allowed' }, 405);
   try {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
     const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const DEV_TOKEN = Deno.env.get('GOOGLE_ADS_DEVELOPER_TOKEN');
-    if (!DEV_TOKEN) return json({ error: 'GOOGLE_ADS_DEVELOPER_TOKEN not configured' }, 500);
+    if (!DEV_TOKEN) return json(req, { error: 'GOOGLE_ADS_DEVELOPER_TOKEN not configured' }, 500);
 
     const token = (req.headers.get('Authorization') ?? '').replace('Bearer ', '');
     const userClient = createClient<Database>(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
     const { data: userData } = await userClient.auth.getUser();
-    if (!userData?.user) return json({ error: 'unauthorized' }, 401);
+    if (!userData?.user) return json(req, { error: 'unauthorized' }, 401);
     const admin = createClient<Database>(SUPABASE_URL, SERVICE_KEY);
     const { data: roleRow } = await admin
       .from('user_roles')
@@ -193,13 +189,13 @@ Deno.serve(async (req) => {
       .eq('user_id', userData.user.id)
       .eq('role', 'super_admin')
       .maybeSingle();
-    if (!roleRow) return json({ error: 'forbidden' }, 403);
+    if (!roleRow) return json(req, { error: 'forbidden' }, 403);
 
     const body = await req.json().catch(() => ({}));
     const segment: Segment = (body?.segment ?? 'all_users') as Segment;
     const listName: string = body?.list_name ?? `MaintenEase — ${segment}`;
     if (!['all_users', 'trial_users', 'paying_users', 'churned_users'].includes(segment)) {
-      return json({ error: 'invalid segment' }, 400);
+      return json(req, { error: 'invalid segment' }, 400);
     }
 
     const { data: conn } = await admin
@@ -208,8 +204,8 @@ Deno.serve(async (req) => {
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (!conn) return json({ error: 'Google Ads not connected' }, 400);
-    if (!conn.customer_id) return json({ error: 'No customer_id on Google Ads connection' }, 400);
+    if (!conn) return json(req, { error: 'Google Ads not connected' }, 400);
+    if (!conn.customer_id) return json(req, { error: 'No customer_id on Google Ads connection' }, 400);
 
     // Refresh token if needed
     let access_token = conn.access_token as string | null;
@@ -233,14 +229,14 @@ Deno.serve(async (req) => {
 
     const emails = await emailsForSegment(admin, segment);
     if (emails.length === 0) {
-      return json({ ok: true, segment, list_name: listName, emails_count: 0, message: 'No emails for segment' });
+      return json(req, { ok: true, segment, list_name: listName, emails_count: 0, message: 'No emails for segment' });
     }
     const hashed = await Promise.all(emails.map((e) => sha256Hex(normalizeEmail(e))));
 
     const userListResource = await findOrCreateUserList(customerId, listName, ctx);
     const jobResource = await uploadHashedEmails(customerId, userListResource, hashed, ctx);
 
-    return json({
+    return json(req, {
       ok: true,
       segment,
       list_name: listName,
@@ -251,6 +247,6 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
     console.error('audience-sync error', msg);
-    return json({ error: msg }, 500);
+    return json(req, { error: msg }, 500);
   }
 });

@@ -1,11 +1,7 @@
+// Public form endpoint: auth is the one-time authorizationId from authorize-public-request (verify_jwt=false).
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { z } from "npm:zod@3.23.8";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -35,23 +31,25 @@ const BodySchema = z.object({
   user_agent: z.string().max(500).optional().nullable(),
 });
 
-function json(body: unknown, status = 200): Response {
+function json(req: Request, body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
   });
 }
 
 Deno.serve(async (request) => {
+  const corsHeaders = corsHeadersForRequest(request);
+
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
-  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (request.method !== "POST") return json(request, { error: "Method not allowed" }, 405);
 
   try {
     const parsed = BodySchema.safeParse(await request.json());
     if (!parsed.success) {
-      return json({ error: parsed.error.flatten().fieldErrors }, 400);
+      return json(request, { error: parsed.error.flatten().fieldErrors }, 400);
     }
 
     const payload = parsed.data;
@@ -76,7 +74,7 @@ Deno.serve(async (request) => {
     );
 
     if (error) {
-      if (error.code === "42501") return json({ error: error.message }, 403);
+      if (error.code === "42501") return json(request, { error: error.message }, 403);
       throw error;
     }
 
@@ -89,9 +87,9 @@ Deno.serve(async (request) => {
     }
 
     // The database insert trigger dispatches deduplicated notifications.
-    return json({ ok: true, requestId: result.request_id });
+    return json(request, { ok: true, requestId: result.request_id });
   } catch (error) {
     console.error("submit-public-request error:", error);
-    return json({ error: "An internal error occurred. Please try again." }, 500);
+    return json(request, { error: "An internal error occurred. Please try again." }, 500);
   }
 });

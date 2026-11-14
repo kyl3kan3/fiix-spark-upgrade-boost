@@ -1,4 +1,4 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/semrush';
@@ -12,6 +12,7 @@ const DEFAULT_KEYWORD = 'maintenance software';
 const DEFAULT_DATABASES = ['us', 'uk', 'au', 'ca', 'de', 'in'];
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   // Require authenticated administrator. This endpoint consumes paid SEMRush
@@ -19,7 +20,7 @@ Deno.serve(async (req) => {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 401, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
   const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -31,7 +32,7 @@ Deno.serve(async (req) => {
   const { data: userData, error: userErr } = await userClient.auth.getUser();
   if (userErr || !userData?.user) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 401, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
   const adminClient = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
@@ -43,7 +44,7 @@ Deno.serve(async (req) => {
     .maybeSingle();
   if (!roleRow) {
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
-      status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 403, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
 
@@ -51,7 +52,7 @@ Deno.serve(async (req) => {
   const SEMRUSH_API_KEY = Deno.env.get('SEMRUSH_API_KEY');
   if (!LOVABLE_API_KEY || !SEMRUSH_API_KEY) {
     return new Response(JSON.stringify({ error: 'Semrush connector not configured' }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
 
@@ -94,6 +95,6 @@ Deno.serve(async (req) => {
   }));
 
   return new Response(JSON.stringify({ keyword, fetched_at: new Date().toISOString(), results }), {
-    status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    status: 200, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
   });
 });

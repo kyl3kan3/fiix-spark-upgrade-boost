@@ -1,12 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { sendTemplateEmailWithLog } from "../_shared/transactional-email-templates/send-with-log.ts";
 
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 interface EmailNotificationRequest {
   to: string;
@@ -49,6 +45,7 @@ function sanitizeHtml(input: string): string {
 // transactional email pipeline (queue + verified sender domain). Resend is no
 // longer used.
 const handler = async (req: Request): Promise<Response> => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

@@ -2,11 +2,12 @@
   "version": "5",
   "specifiers": {
     "npm:@ai-sdk/openai-compatible@*": "3.0.7_zod@4.4.3",
-    "npm:@lovable.dev/email-js@*": "0.1.0_react@18.3.1_react-dom@18.3.1__react@18.3.1",
-    "npm:@lovable.dev/mcp-js@0.20.1": "0.20.1_vite@8.1.4__esbuild@0.27.7_zod@4.4.3",
+    "npm:@lovable.dev/email-js@*": "0.1.0_react@18.3.1_react-dom@18.3.1",
+    "npm:@lovable.dev/email-js@0.1.0": "0.1.0_react@18.3.1_react-dom@18.3.1",
+    "npm:@lovable.dev/mcp-js@0.20.1": "0.20.1_vite@8.1.4_zod@4.4.3",
     "npm:@lovable.dev/webhooks-js@*": "0.0.1",
     "npm:@paddle/paddle-node-sdk@*": "3.8.0",
-    "npm:@react-email/components@0.0.22": "0.0.22_react@18.3.1_@types+react@18.3.1_react-dom@18.3.1__react@18.3.1",
+    "npm:@react-email/components@0.0.22": "0.0.22_react@18.3.1_@types+react@18.3.1_react-dom@18.3.1",
     "npm:@supabase/supabase-js@2": "2.110.2",
     "npm:@supabase/supabase-js@^2.106.0": "2.110.2",
     "npm:@types/react@18.3.1": "18.3.1",
@@ -216,7 +217,7 @@
         "wrap-ansi-cjs@npm:wrap-ansi@7.0.0"
       ]
     },
-    "@lovable.dev/email-js@0.1.0_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+    "@lovable.dev/email-js@0.1.0_react@18.3.1_react-dom@18.3.1": {
       "integrity": "sha512-AtWpcToomJu3xh5+6WQ7c7aarWfakX0sPq7KUnixsp8c2ro4w+x7pPHhm/Q5IafD4GPRyejD2ufg9e2LfTxz9Q==",
       "dependencies": [
         "@lovable.dev/webhooks-js",
@@ -228,7 +229,7 @@
         "react-dom"
       ]
     },
-    "@lovable.dev/mcp-js@0.20.1_vite@8.1.4__esbuild@0.27.7_zod@4.4.3": {
+    "@lovable.dev/mcp-js@0.20.1_vite@8.1.4_zod@4.4.3": {
       "integrity": "sha512-om6CeutH0umP7WJLNqO7HnBYBnPje6iqQbSrE4PTFiWu0XhwC4BbEC6j0AmhiZWDV00Fu1TVidXCnAn45KVw2A==",
       "dependencies": [
         "@modelcontextprotocol/sdk",
@@ -341,7 +342,7 @@
       ],
       "deprecated": true
     },
-    "@react-email/components@0.0.22_react@18.3.1_@types+react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+    "@react-email/components@0.0.22_react@18.3.1_@types+react@18.3.1_react-dom@18.3.1": {
       "integrity": "sha512-GO6F+fS3c3aQ6OnqL8esQ/KqtrPGwz80U6uQ8Nd/ETpgFt7y1PXvSGfr8v12wyLffAagdowc/JjoThfIr0L6aA==",
       "dependencies": [
         "@react-email/body",
@@ -440,7 +441,7 @@
       ],
       "deprecated": true
     },
-    "@react-email/render@0.0.17_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+    "@react-email/render@0.0.17_react@18.3.1_react-dom@18.3.1": {
       "integrity": "sha512-xBQ+/73+WsGuXKY7r1U73zMBNV28xdV0cp9cFjhNYipBReDHhV97IpA6v7Hl0dDtDzt+yS/72dY5vYXrF1v8NA==",
       "dependencies": [
         "html-to-text",
@@ -1663,6 +1664,9 @@
       "integrity": "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="
     }
   },
+  "redirects": {
+    "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.119.0"
+  },
   "remote": {
     "https://deno.land/std@0.168.0/async/abortable.ts": "80b2ac399f142cc528f95a037a7d0e653296352d95c681e284533765961de409",
     "https://deno.land/std@0.168.0/async/deadline.ts": "2c2deb53c7c28ca1dda7a3ad81e70508b1ebc25db52559de6b8636c9278fd41f",
@@ -1703,6 +1707,7 @@
     "https://deno.land/x/media_types@v2.9.0/deps.ts": "364b24c35845cfd5c6903ab22b8ba9873bf1022bbbf6bf3d001695332d4bbb4f",
     "https://deno.land/x/media_types@v2.9.0/mod.ts": "d63583b978d32eff8b76e1ae5d83cba2fb27baa90cc1bcb0ad15a06122ea8c19",
     "https://deno.land/x/xhr@0.1.0/mod.ts": "5200325d879e571961f0927e8e32e66fd33f4ba0d29a219560cf9e0fe9bc6cdf",
+    "https://esm.sh/@supabase/supabase-js@2.119.0": "5b053344a262b305cfd47fdd75b3d244e47983d70fd7f7e68dc4dbbb98bc90bc",
     "https://esm.sh/@supabase/supabase-js@2.39.7": "5361671c958daa350e504d9975da64b2d6dc9e81390b985ccdafb2e3572e24e7",
     "https://esm.sh/@supabase/supabase-js@2.45.0": "36ae57c3f2dc3f94fd122a846b40a87114d29bb2f47e910cb46bee5575febf2e",
     "https://esm.sh/svix-fetch@3.0.0": "5a1dba6b172e83a41384b51192fe349e1efa6474c061bb82f936103190eee4b9",

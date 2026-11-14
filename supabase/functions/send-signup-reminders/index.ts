@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { sendTemplateEmailWithLog } from '../_shared/transactional-email-templates/send-with-log.ts'
 
 
@@ -40,6 +40,7 @@ const STAGES: Record<Stage['name'], Stage> = {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -48,7 +49,7 @@ Deno.serve(async (req) => {
   if (!sharedSecret || req.headers.get('x-notify-secret') !== sharedSecret) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 
@@ -134,7 +135,7 @@ Deno.serve(async (req) => {
 
   if (candidates.length === 0) {
     return new Response(JSON.stringify({ sent: 0, scanned: 0 }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 
@@ -149,7 +150,7 @@ Deno.serve(async (req) => {
     console.error('signup_reminders_sent query failed', sentErr)
     return new Response(JSON.stringify({ error: 'state lookup failed' }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 
@@ -201,6 +202,6 @@ Deno.serve(async (req) => {
 
   return new Response(
     JSON.stringify({ scanned: candidates.length, sent, failed, eligible: todo.length }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    { headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' } }
   )
 })

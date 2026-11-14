@@ -1,11 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { sendTemplateEmailWithLog } from "../_shared/transactional-email-templates/send-with-log.ts";
 
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 // Fixed internal recipient — never accepted from the client to prevent
 // abuse of the verified sending domain for arbitrary recipients.
@@ -27,6 +23,7 @@ const escape = (s: string) =>
     .replace(/>/g, "&gt;");
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -38,7 +35,7 @@ Deno.serve(async (req) => {
     if (!supabaseUrl || !anonKey || !serviceKey) {
       return new Response(JSON.stringify({ error: "Server misconfigured" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -47,7 +44,7 @@ Deno.serve(async (req) => {
     if (!jwt) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -60,7 +57,7 @@ Deno.serve(async (req) => {
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -107,7 +104,7 @@ Deno.serve(async (req) => {
       console.error("notify-trial-signup internal notification failed", err);
       return new Response(JSON.stringify({ success: false }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -129,13 +126,13 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ success: true, trialDays: TRIAL_DAYS, trialEndsAt }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("notify-trial-signup error", err);
     return new Response(JSON.stringify({ success: false }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

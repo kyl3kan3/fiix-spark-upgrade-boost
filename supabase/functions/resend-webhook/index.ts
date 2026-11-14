@@ -1,11 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { Webhook } from "https://esm.sh/svix@1.21.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, svix-id, svix-timestamp, svix-signature",
-};
 
 const admin = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -14,6 +10,7 @@ const admin = createClient(
 );
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
@@ -22,7 +19,7 @@ serve(async (req) => {
       console.error("RESEND_WEBHOOK_SECRET not configured");
       return new Response(JSON.stringify({ error: "Server misconfigured" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -32,7 +29,7 @@ serve(async (req) => {
     if (!svixId || !svixTimestamp || !svixSignature) {
       return new Response(JSON.stringify({ error: "Missing signature headers" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -49,7 +46,7 @@ serve(async (req) => {
       console.error("Webhook signature verification failed:", e);
       return new Response(JSON.stringify({ error: "Invalid signature" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -62,7 +59,7 @@ serve(async (req) => {
 
     if (!messageId) {
       return new Response(JSON.stringify({ ok: true, ignored: "no message id" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -90,13 +87,13 @@ serve(async (req) => {
     });
 
     return new Response(JSON.stringify({ ok: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("resend-webhook error:", err);
     return new Response(JSON.stringify({ error: String(err) }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

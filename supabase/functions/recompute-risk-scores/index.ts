@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { computeAssetRisk, MODEL_VERSION } from "./scoring.ts";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import type { Database, Json } from "../../../src/integrations/supabase/types.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -119,6 +119,7 @@ async function scoreCompany(
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -146,7 +147,7 @@ Deno.serve(async (req) => {
       if (userError || !userData?.user) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
           status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
         });
       }
       verifiedUserId = userData.user.id;
@@ -170,14 +171,14 @@ Deno.serve(async (req) => {
       if (!isAdmin) {
         return new Response(JSON.stringify({ error: "Forbidden" }), {
           status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
         });
       }
       authMode = "user";
     } else {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -194,7 +195,7 @@ Deno.serve(async (req) => {
       if (!verifiedUserCompanyId) {
         return new Response(JSON.stringify({ error: "No company context" }), {
           status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
         });
       }
       onlyCompanyId = verifiedUserCompanyId;
@@ -220,12 +221,12 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ ok: true, processed: results.length, results }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      { headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } },
     );
   } catch (e) {
     return new Response(
       JSON.stringify({ ok: false, error: (e as Error).message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      { status: 500, headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } },
     );
   }
 });
