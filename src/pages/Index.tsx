@@ -3,15 +3,10 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ProblemSolved from "@/components/ProblemSolved";
 import Features from "@/components/Features";
-import LocalBusinesses from "@/components/LocalBusinesses";
-import WhyDifferent from "@/components/WhyDifferent";
-import RequestPortalSection from "@/components/RequestPortalSection";
-import Testimonials from "@/components/Testimonials";
-import Pricing from "@/components/Pricing";
-import FlatFeeAdvantage from "@/components/FlatFeeAdvantage";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import SiteIndexLinks from "@/components/SiteIndexLinks";
+import HomeExploreSection from "@/components/HomeExploreSection";
+import HomePricingSummary from "@/components/HomePricingSummary";
 import TrustBadges from "@/components/TrustBadges";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { HOME_FAQS, buildHomeFaqPageJsonLd } from "@/data/homeFaqs";
@@ -49,14 +44,9 @@ const Index = () => (
     <main className="flex-1">
       <Hero />
       <ProblemSolved />
-      <Features variant="home" />
-      <LocalBusinesses />
+      <Features variant="home" homeFeatureLimit={6} />
       <TrustBadges />
-      <RequestPortalSection />
-      <Testimonials />
-      <WhyDifferent />
-      <FlatFeeAdvantage />
-      <Pricing />
+      <HomePricingSummary />
       <section className="py-16 bg-card border-y border-border">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="font-headline text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
@@ -78,7 +68,7 @@ const Index = () => (
         </div>
       </section>
       <CTA />
-      <SiteIndexLinks />
+      <HomeExploreSection />
     </main>
     <Footer />
   </div>

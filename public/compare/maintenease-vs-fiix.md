@@ -1,4 +1,4 @@
-# MaintenEase vs Fiix
+# Fiix Pricing 2026 vs MaintenEase: Real Team Cost
 
 > Account plans with included seats compared with per-user pricing.
 

@@ -33,7 +33,7 @@ export function RouteSuspense({
     <Suspense fallback={showInitialContent ? (
       // This is the same build-generated HTML already in #root, not user input.
       // React replaces it once the lazy route commits; it is never duplicated.
-      <div dangerouslySetInnerHTML={{ __html: content.html }} />
+      <div aria-hidden="true" dangerouslySetInnerHTML={{ __html: content.html }} />
     ) : (
       <div className="flex min-h-[40vh] items-center justify-center" role="status">
         <LoaderCircle className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />

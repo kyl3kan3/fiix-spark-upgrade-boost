@@ -34,6 +34,7 @@ Set the target from risk, priority, required response time, parts and access con
 
 - [work order software](https://maintenease.com/solutions/work-order-software)
 - [free maintenance work order template](https://maintenease.com/templates/work-order-template)
+- [CMMS pricing from $49/month](https://maintenease.com/pricing)
 - [modern work order management guide](https://maintenease.com/blog/the-ultimate-guide-to-modern-work-order-management-in-2026)
 
 ## Related

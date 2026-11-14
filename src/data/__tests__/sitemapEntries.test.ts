@@ -28,6 +28,12 @@ describe("static sitemap entries", () => {
     "/tools/maintenance-sop-generator",
     "/tools/root-cause-fishbone-generator",
     "/tools/mtbf-calculator",
+    "/compare/maintenease-vs-upkeep",
+    "/compare/maintenease-vs-fiix",
+    "/compare/maintenease-vs-maintainx",
+    "/compare/maintenease-vs-limble",
+    "/compare/maintenease-vs-emaint",
+    "/learn/cmms",
   ])("publishes an evidence-backed lastmod for %s", (path) => {
     const entry = STATIC_SITEMAP_ENTRIES.find((candidate) => candidate.path === path);
 

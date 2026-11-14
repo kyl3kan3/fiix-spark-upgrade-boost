@@ -75,6 +75,7 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   })),
   ...comparisons.map((comparison) => ({
     path: `/compare/${comparison.slug}`,
+    lastmod: comparison.dateModified ?? comparison.datePublished,
     changefreq: "monthly" as const,
     priority: "0.8",
   })),

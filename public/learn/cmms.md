@@ -136,6 +136,7 @@ A CMMS stores recurring schedules by date or meter reading, generates work order
 - [MaintenEase vs MaintainX](https://maintenease.com/compare/maintenease-vs-maintainx)
 - [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble)
 - [asset tracking software](https://maintenease.com/solutions/asset-tracking-software)
+- [CMMS pricing from $49/month](https://maintenease.com/pricing)
 
 ## Related
 

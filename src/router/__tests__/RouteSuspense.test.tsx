@@ -42,8 +42,10 @@ describe("route loading content", () => {
         </MemoryRouter>
       </StrictMode>,
     );
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByText("Existing guide content.")).toBeInTheDocument();
+    expect(document.querySelectorAll("h1")).toHaveLength(1);
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+    expect(document.querySelector('[data-prerender="static"]')?.closest('[aria-hidden="true"]')).toBeTruthy();
+    expect(document.body.textContent).toContain("Existing guide content.");
     expect(document.querySelectorAll("#buyer-guide")).toHaveLength(1);
     expect(screen.queryByText("Loading page")).not.toBeInTheDocument();
 

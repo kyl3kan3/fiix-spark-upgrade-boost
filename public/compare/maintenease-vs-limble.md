@@ -1,4 +1,4 @@
-# MaintenEase vs Limble
+# Limble Pricing 2026 vs MaintenEase: Real Team Cost
 
 > Account and per-user pricing for preventive maintenance teams.
 
