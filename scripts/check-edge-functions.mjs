@@ -8,6 +8,47 @@ const root = process.cwd();
 const functionsRoot = path.join(root, "supabase", "functions");
 const configPath = path.join(root, "supabase", "config.toml");
 
+const mcpViteEmitPath = path.join(
+  root,
+  "node_modules",
+  "@lovable.dev",
+  "mcp-js",
+  "dist",
+  "stacks",
+  "supabase",
+  "vite.js",
+);
+try {
+  const mcpViteEmit = await readFile(mcpViteEmitPath, "utf8");
+  if (!mcpViteEmit.includes("wrapMcpHandler")) {
+    throw new Error(
+      "@lovable.dev/mcp-js vite emit is missing wrapMcpHandler (patches/@lovable.dev+mcp-js+0.20.1.patch may have failed or the package was upgraded without refreshing the patch). Run: npm ci",
+    );
+  }
+} catch (error) {
+  if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+    throw new Error(
+      "Missing @lovable.dev/mcp-js — run npm ci before check:edge so the MCP CORS emit patch can apply.",
+    );
+  }
+  throw error;
+}
+
+const mcpIndexPath = path.join(functionsRoot, "mcp", "index.ts");
+try {
+  const mcpIndex = await readFile(mcpIndexPath, "utf8");
+  if (!mcpIndex.includes("wrapMcpHandler")) {
+    throw new Error(
+      "supabase/functions/mcp/index.ts must wrap createSupabaseHandler with wrapMcpHandler (regenerate via npm run build after applying patches).",
+    );
+  }
+} catch (error) {
+  if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+    throw new Error("Missing supabase/functions/mcp/index.ts");
+  }
+  throw error;
+}
+
 const config = parse(await readFile(configPath, "utf8"));
 const expectedJwtSettings = {
   "authorize-public-request": false,

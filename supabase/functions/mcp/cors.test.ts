@@ -81,3 +81,39 @@ Deno.test("OPTIONS with disallowed origin returns 204 without ACAO", () => {
   assertEquals(res.status, 204);
   assertEquals(res.headers.get("Access-Control-Allow-Origin"), null);
 });
+
+Deno.test("OPTIONS allow-headers includes MCP session headers", () => {
+  const req = new Request("https://example.test/mcp", {
+    method: "OPTIONS",
+    headers: { Origin: "https://maintenease.com" },
+  });
+  const res = handleMcpCorsPreflight(req)!;
+  const allowHeaders = res.headers.get("Access-Control-Allow-Headers") ?? "";
+  assertEquals(allowHeaders.includes("Mcp-Session-Id"), true);
+  assertEquals(allowHeaders.includes("Mcp-Protocol-Version"), true);
+  assertEquals(allowHeaders.includes("Last-Event-ID"), true);
+});
+
+Deno.test("strips lowercase library Access-Control-Allow-Origin wildcard", () => {
+  const req = new Request("https://example.test/mcp", {
+    headers: { Origin: "https://evil.example" },
+  });
+  const inner = new Response("{}", {
+    headers: new Headers([["access-control-allow-origin", "*"]]),
+  });
+  const res = applyMcpCors(req, inner);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), null);
+});
+
+Deno.test("merges Vary with existing response Vary", () => {
+  const req = new Request("https://example.test/mcp", {
+    headers: { Origin: "https://maintenease.com" },
+  });
+  const inner = new Response("{}", {
+    headers: { Vary: "Accept-Encoding" },
+  });
+  const res = applyMcpCors(req, inner);
+  const vary = res.headers.get("Vary") ?? "";
+  assertEquals(vary.includes("Origin"), true);
+  assertEquals(vary.includes("Accept-Encoding"), true);
+});
