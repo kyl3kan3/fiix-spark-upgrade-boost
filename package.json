@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "patch-package --error-on-fail",
+    "postinstall": "node scripts/ensure-mcp-js-patch.mjs",
     "predev": "tsx scripts/generate-sitemap.ts && tsx scripts/generate-llms.ts",
     "dev": "vite",
     "prebuild": "tsx scripts/generate-sitemap.ts && tsx scripts/generate-llms.ts",
