@@ -200,4 +200,154 @@ var mcp_default = defineMcp({
 
 // lovable-mcp-supabase-entry.ts
 import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.20.1/stacks/supabase";
-Deno.serve(createSupabaseHandler(mcp_default, { functionName: "mcp" }));
+
+// supabase/functions/_shared/cors.ts
+var LOVABLE_PROJECT_ID = "8e4b0baf-d26e-4fdc-947e-b3bad90e188b";
+var LOVABLE_PROJECT_ID_LC = LOVABLE_PROJECT_ID.toLowerCase();
+var HTTPS_PRODUCTION_ORIGINS = /* @__PURE__ */ new Set([
+  "https://maintenease.com",
+  "https://www.maintenease.com",
+  "https://maintenease.lovable.app"
+]);
+var PREVIEW_ZONES = [
+  "lovable.app",
+  "lovableproject.com",
+  "lovableproject-dev.com",
+  "gpt-eng.com",
+  "gptengineer.run"
+];
+var ID_PREVIEW_WITH_SLUG = new RegExp(
+  `^id-preview-[a-z0-9]+--${LOVABLE_PROJECT_ID_LC}(?:-dev)?$`,
+  "i"
+);
+var LIVE_WITH_THR = new RegExp(
+  `^live--${LOVABLE_PROJECT_ID_LC}-thr_[a-z0-9]+$`,
+  "i"
+);
+function isAllowedPreviewLabel(label) {
+  const l = label.toLowerCase();
+  if (l === LOVABLE_PROJECT_ID_LC) return true;
+  if (l === `project--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (l === `project--${LOVABLE_PROJECT_ID_LC}-dev`) return true;
+  if (l === `id-preview--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (l === `id-preview--${LOVABLE_PROJECT_ID_LC}-dev`) return true;
+  if (ID_PREVIEW_WITH_SLUG.test(l)) return true;
+  if (l === `live--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (LIVE_WITH_THR.test(l)) return true;
+  return false;
+}
+function hostMatchesLovableProjectPreview(hostname) {
+  const h = hostname.toLowerCase();
+  for (const zone of PREVIEW_ZONES) {
+    const suffix = `.${zone}`;
+    if (!h.endsWith(suffix)) continue;
+    const label = h.slice(0, -suffix.length);
+    if (!label || label.includes(".")) return false;
+    if (isAllowedPreviewLabel(label)) return true;
+  }
+  return false;
+}
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  let url;
+  try {
+    url = new URL(origin);
+  } catch {
+    return false;
+  }
+  const hostname = url.hostname.toLowerCase();
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+  if (url.protocol !== "https:") return false;
+  if (HTTPS_PRODUCTION_ORIGINS.has(url.origin)) return true;
+  return hostMatchesLovableProjectPreview(hostname);
+}
+var BASE_CORS = {
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-notify-secret, x-ingest-token, svix-id, svix-timestamp, svix-signature, paddle-signature",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+  Vary: "Origin"
+};
+function corsHeadersForRequest(req, extraHeaders) {
+  const headers = { ...BASE_CORS, ...extraHeaders };
+  const origin = req.headers.get("Origin");
+  if (isAllowedOrigin(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+    headers["Access-Control-Allow-Credentials"] = "true";
+  }
+  return headers;
+}
+
+// supabase/functions/mcp/corsWrap.ts
+var BASE_ALLOW_HEADERS = "authorization, x-client-info, apikey, content-type, x-notify-secret, x-ingest-token, svix-id, svix-timestamp, svix-signature, paddle-signature";
+var MCP_CORS_EXTRAS = {
+  "Access-Control-Allow-Headers": `${BASE_ALLOW_HEADERS}, Mcp-Session-Id, Mcp-Protocol-Version, Last-Event-ID`,
+  "Access-Control-Expose-Headers": "WWW-Authenticate, Mcp-Session-Id, Mcp-Protocol-Version"
+};
+function mergeVary(existing, addition) {
+  const merged = /* @__PURE__ */ new Set();
+  for (const token of (existing ?? "").split(",")) {
+    const trimmed = token.trim();
+    if (trimmed) merged.add(trimmed);
+  }
+  for (const token of addition.split(",")) {
+    const trimmed = token.trim();
+    if (trimmed) merged.add(trimmed);
+  }
+  return [...merged].join(", ");
+}
+function stripAccessControlHeaders(headers) {
+  for (const name of [...headers.keys()]) {
+    if (name.toLowerCase().startsWith("access-control-")) {
+      headers.delete(name);
+    }
+  }
+}
+function applyCorsRecord(headers, cors) {
+  const priorVary = headers.get("Vary");
+  for (const key of Object.keys(cors)) {
+    const value = cors[key];
+    if (key === "Vary") {
+      headers.set("Vary", mergeVary(priorVary, value));
+    } else {
+      headers.set(key, value);
+    }
+  }
+}
+function applyMcpCors(req, response) {
+  const headers = new Headers(response.headers);
+  stripAccessControlHeaders(headers);
+  const origin = req.headers.get("Origin");
+  if (!origin) {
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
+    });
+  }
+  const cors = corsHeadersForRequest(req, MCP_CORS_EXTRAS);
+  applyCorsRecord(headers, cors);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+function handleMcpCorsPreflight(req) {
+  if (req.method !== "OPTIONS") return null;
+  return new Response(null, {
+    status: 204,
+    headers: corsHeadersForRequest(req, MCP_CORS_EXTRAS)
+  });
+}
+function wrapMcpHandler(handler) {
+  return async (req) => {
+    const preflight = handleMcpCorsPreflight(req);
+    if (preflight) return preflight;
+    const response = await handler(req);
+    return applyMcpCors(req, response);
+  };
+}
+
+// lovable-mcp-supabase-entry.ts
+Deno.serve(wrapMcpHandler(createSupabaseHandler(mcp_default, { functionName: "mcp" })));
