@@ -78,10 +78,13 @@ function checkEntrypoints(configFile, files) {
 checkEntrypoints("deno.json", strictEntrypoints);
 checkEntrypoints("deno.generated.json", generatedEntrypoints);
 
-const corsTest = path.join("supabase", "functions", "_shared", "cors.test.ts");
+const corsTests = [
+  path.join("supabase", "functions", "_shared", "cors.test.ts"),
+  path.join("supabase", "functions", "mcp", "cors.test.ts"),
+];
 const denoConfig = path.join("supabase", "functions", "deno.json");
 const testCommand = useInstalledDeno ? "deno" : process.execPath;
-const testArgs = ["test", "--config", denoConfig, corsTest];
+const testArgs = ["test", "--config", denoConfig, ...corsTests];
 const testSpawnArgs = useInstalledDeno
   ? testArgs
   : [npmCli, "exec", "--yes", "--", "deno", ...testArgs];
