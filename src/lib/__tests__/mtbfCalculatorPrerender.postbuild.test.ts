@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { jsonLdTypes } from "@/data/mtbfCalculatorJsonLd";
+import { isSoftwareApplicationType, jsonLdTypes } from "@/data/mtbfCalculatorJsonLd";
 import { jsonLdScriptTag, stringifyJsonLdForHtml } from "../htmlSafeJson";
 
 type JsonLdNode = { "@type"?: string | string[] };
@@ -52,7 +52,10 @@ describe("built /tools/mtbf-calculator prerender", () => {
   it("ships exactly one SoftwareApplication-type JSON-LD node and one FAQPage node", () => {
     expect(existsSync(distIndex), "dist/tools/mtbf-calculator/index.html missing — run npm run build").toBe(true);
     const html = readFileSync(distIndex, "utf8");
-    expect(countNodesWithType(html, "SoftwareApplication")).toBe(1);
+    const nodes = allJsonLdNodesFromHtml(html);
+    const appNodes = nodes.filter((node) => isSoftwareApplicationType(node));
+    expect(appNodes).toHaveLength(1);
+    expect(jsonLdTypes(appNodes[0])).toContain("SoftwareApplication");
     expect(countNodesWithType(html, "FAQPage")).toBe(1);
   });
 
