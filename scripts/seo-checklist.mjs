@@ -66,12 +66,12 @@ const marketingPages = [
 ];
 for (const p of marketingPages) {
   const src = readFileSync(join(ROOT, p), "utf8");
-  if (!/<h1[\s>]/.test(src)) fail(`${p} has no <h1>`);
+  if (!/<h1[\s>]/.test(src) && !/<MarketingPageHeader\b/.test(src)) fail(`${p} has no <h1>`);
 }
-// Index.tsx owns the single homepage H1 (Hero renders an H2 below it).
-if (!/<h1[\s>]/.test(indexTsx)) fail("Index.tsx (homepage H1 owner) has no <h1>");
+// Index.tsx + Hero.tsx together render the single homepage H1.
+const heroTsx = readFileSync(join(ROOT, "src/components/Hero.tsx"), "utf8");
 const homeH1Count = (indexTsx.match(/<h1[\s>]/g) ?? []).length +
-  (readFileSync(join(ROOT, "src/components/Hero.tsx"), "utf8").match(/<h1[\s>]/g) ?? []).length;
+  (heroTsx.match(/<h1[\s>]/g) ?? []).length;
 if (homeH1Count !== 1) fail(`Homepage should render exactly 1 <h1>, found ${homeH1Count}`);
 pass("Every marketing page has an <h1>");
 
