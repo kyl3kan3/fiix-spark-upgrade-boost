@@ -78,6 +78,20 @@ function checkEntrypoints(configFile, files) {
 checkEntrypoints("deno.json", strictEntrypoints);
 checkEntrypoints("deno.generated.json", generatedEntrypoints);
 
+const corsTest = path.join("supabase", "functions", "_shared", "cors.test.ts");
+const denoConfig = path.join("supabase", "functions", "deno.json");
+const testCommand = useInstalledDeno ? "deno" : process.execPath;
+const testArgs = ["test", "--config", denoConfig, corsTest];
+const testSpawnArgs = useInstalledDeno
+  ? testArgs
+  : [npmCli, "exec", "--yes", "--", "deno", ...testArgs];
+const testResult = spawnSync(testCommand, testSpawnArgs, {
+  cwd: root,
+  stdio: "inherit",
+});
+if (testResult.error) throw testResult.error;
+if (testResult.status !== 0) process.exit(testResult.status ?? 1);
+
 console.log(
-  `Checked ${strictEntrypoints.length} strict and ${generatedEntrypoints.length} generated Edge Function entrypoints plus JWT settings.`,
+  `Checked ${strictEntrypoints.length} strict and ${generatedEntrypoints.length} generated Edge Function entrypoints, JWT settings, and CORS unit tests.`,
 );

@@ -3,55 +3,80 @@
  */
 
 /** From README / Lovable project URL — used to match preview hostnames only. */
-const LOVABLE_PROJECT_ID = "8e4b0baf-d26e-4fdc-947e-b3bad90e188b";
+export const LOVABLE_PROJECT_ID = "8e4b0baf-d26e-4fdc-947e-b3bad90e188b";
 
-const HTTPS_EXACT_ORIGINS = new Set([
+const LOVABLE_PROJECT_ID_LC = LOVABLE_PROJECT_ID.toLowerCase();
+
+/** Production site origins (canonical `URL#origin` form). */
+const HTTPS_PRODUCTION_ORIGINS = new Set([
   "https://maintenease.com",
   "https://www.maintenease.com",
   "https://maintenease.lovable.app",
 ]);
 
-/** Preview DNS zones where this Lovable project may be served (see previewAuthStorage.ts). */
-const LOVABLE_PREVIEW_HOST_SUFFIXES = [
+/** Preview DNS zones (see previewAuthStorage.ts PREVIEW_ZONES). */
+const PREVIEW_ZONES = [
   "lovable.app",
   "lovableproject.com",
   "lovableproject-dev.com",
   "gpt-eng.com",
   "gptengineer.run",
-];
+] as const;
 
-function hostMatchesLovableProjectPreview(host: string): boolean {
-  const h = host.toLowerCase();
-  const onZone = LOVABLE_PREVIEW_HOST_SUFFIXES.some(
-    (suffix) => h === suffix || h.endsWith(`.${suffix}`),
-  );
-  if (!onZone) return false;
+/** Full-string preview label patterns (no prefix-only match). */
+const ID_PREVIEW_WITH_SLUG = new RegExp(
+  `^id-preview-[a-z0-9]+--${LOVABLE_PROJECT_ID_LC}(?:-dev)?$`,
+  "i",
+);
+const LIVE_WITH_THR = new RegExp(
+  `^live--${LOVABLE_PROJECT_ID_LC}-thr_[a-z0-9]+$`,
+  "i",
+);
 
-  const id = LOVABLE_PROJECT_ID;
-  const patterns = [
-    new RegExp(`^(?:id-preview(?:-[a-z0-9]+)?|project)--${id}(?:-dev)?(?=\\.|$)`, "i"),
-    new RegExp(`^live--${id}(?:-thr_[a-z0-9]+)?(?=\\.|$)`, "i"),
-    new RegExp(`^${id}(?=[.-])`, "i"),
-  ];
-  return patterns.some((re) => re.test(h));
+function isAllowedPreviewLabel(label: string): boolean {
+  const l = label.toLowerCase();
+  if (l === LOVABLE_PROJECT_ID_LC) return true;
+  if (l === `project--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (l === `project--${LOVABLE_PROJECT_ID_LC}-dev`) return true;
+  if (l === `id-preview--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (l === `id-preview--${LOVABLE_PROJECT_ID_LC}-dev`) return true;
+  if (ID_PREVIEW_WITH_SLUG.test(l)) return true;
+  if (l === `live--${LOVABLE_PROJECT_ID_LC}`) return true;
+  if (LIVE_WITH_THR.test(l)) return true;
+  return false;
+}
+
+function hostMatchesLovableProjectPreview(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  for (const zone of PREVIEW_ZONES) {
+    const suffix = `.${zone}`;
+    if (!h.endsWith(suffix)) continue;
+    const label = h.slice(0, -suffix.length);
+    if (!label || label.includes(".")) return false;
+    if (isAllowedPreviewLabel(label)) return true;
+  }
+  return false;
 }
 
 export function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
+  let url: URL;
   try {
-    const url = new URL(origin);
-    const host = url.hostname.toLowerCase();
-
-    if (host === "localhost" || host === "127.0.0.1") {
-      return url.protocol === "http:" || url.protocol === "https:";
-    }
-
-    if (url.protocol !== "https:") return false;
-    if (HTTPS_EXACT_ORIGINS.has(origin)) return true;
-    return hostMatchesLovableProjectPreview(host);
+    url = new URL(origin);
   } catch {
     return false;
   }
+
+  const hostname = url.hostname.toLowerCase();
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
+  if (url.protocol !== "https:") return false;
+
+  if (HTTPS_PRODUCTION_ORIGINS.has(url.origin)) return true;
+  return hostMatchesLovableProjectPreview(hostname);
 }
 
 const BASE_CORS: Record<string, string> = {
