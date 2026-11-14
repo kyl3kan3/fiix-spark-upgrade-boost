@@ -1,4 +1,4 @@
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -7,7 +7,7 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const PREVIEW_PORT = 4174;
 const BASE = `http://127.0.0.1:${PREVIEW_PORT}`;
 
-let preview: ChildProcessWithoutNullStreams;
+let preview: ChildProcess;
 
 beforeAll(async () => {
   preview = spawn("npx", ["vite", "preview", "--port", String(PREVIEW_PORT), "--host", "127.0.0.1"], {
