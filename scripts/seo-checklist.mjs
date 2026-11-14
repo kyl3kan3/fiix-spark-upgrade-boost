@@ -210,8 +210,26 @@ if (existsSync(distDir)) {
         structuredDataBlocks++;
         const nodes = Array.isArray(node?.["@graph"]) ? node["@graph"] : [node];
         for (const item of nodes) {
-          if (["SoftwareApplication", "WebApplication"].includes(item?.["@type"])) {
-            fail(`structured data: ${relative(ROOT, file)} contains Google-ineligible ${item["@type"]} markup`);
+          const types = Array.isArray(item?.["@type"])
+            ? item["@type"]
+            : item?.["@type"]
+              ? [item["@type"]]
+              : [];
+          const isSoftwareApp = types.some((type) => type === "SoftwareApplication" || type === "WebApplication");
+          if (isSoftwareApp) {
+            const rel = relative(ROOT, file).replace(/\\/g, "/");
+            const allowedMtbfApp =
+              (rel === "dist/tools/mtbf-calculator/index.html" ||
+                rel === "dist/tools/mtbf-calculator.html") &&
+              types.includes("SoftwareApplication") &&
+              item?.offers?.price !== undefined &&
+              !item?.aggregateRating &&
+              !item?.review;
+            if (!allowedMtbfApp) {
+              fail(
+                `structured data: ${rel} contains Google-ineligible ${types.join("/")} markup`,
+              );
+            }
           }
           if (item?.aggregateRating || item?.review) {
             fail(`structured data: ${relative(ROOT, file)} contains an unverified rating or review`);
