@@ -1,19 +1,14 @@
 // AutoSEO webhook receiver. Verifies a shared bearer token and upserts the
 // article into public.blog_posts. Uses the service role key to bypass RLS.
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SITE_ORIGIN = "https://maintenease.com";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-function json(status: number, body: unknown) {
+function json(request: Request, status: number, body: unknown) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json" },
   });
 }
 
@@ -25,25 +20,26 @@ function estimateReadingTime(html: string | null | undefined): number {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  if (req.method !== "POST") return json(405, { error: "Method not allowed" });
+  if (req.method !== "POST") return json(req,405, { error: "Method not allowed" });
 
   const auth = req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
   const token = auth.replace(/^Bearer\s+/i, "").trim();
   const expected = Deno.env.get("AUTOSEO_WEBHOOK_TOKEN") ?? "";
-  if (!expected || token !== expected) return json(401, { error: "Unauthorized" });
+  if (!expected || token !== expected) return json(req,401, { error: "Unauthorized" });
 
   let payload: Record<string, unknown>;
   try {
     payload = await req.json();
   } catch {
-    return json(400, { error: "Invalid JSON body" });
+    return json(req,400, { error: "Invalid JSON body" });
   }
 
   const event = String(payload.event ?? "");
   if (event === "test") {
-    return json(200, { url: `${SITE_ORIGIN}/blog/test`, status: "ok" });
+    return json(req,200, { url: `${SITE_ORIGIN}/blog/test`, status: "ok" });
   }
 
   try {
@@ -51,7 +47,7 @@ Deno.serve(async (req) => {
     const slug = String(payload.slug ?? "");
     const title = String(payload.title ?? "");
     if (!id || !slug || !title) {
-      return json(400, { error: "Missing required fields: id, slug, title" });
+      return json(req,400, { error: "Missing required fields: id, slug, title" });
     }
 
     const contentHtml = (payload.content_html as string | null) ?? null;
@@ -88,10 +84,10 @@ Deno.serve(async (req) => {
       .from("blog_posts")
       .upsert(row, { onConflict: "id" });
 
-    if (error) return json(500, { error: error.message });
+    if (error) return json(req,500, { error: error.message });
 
-    return json(200, { url: `${SITE_ORIGIN}/blog/${slug}` });
+    return json(req,200, { url: `${SITE_ORIGIN}/blog/${slug}` });
   } catch (err) {
-    return json(500, { error: err instanceof Error ? err.message : "Unknown error" });
+    return json(req,500, { error: err instanceof Error ? err.message : "Unknown error" });
   }
 });

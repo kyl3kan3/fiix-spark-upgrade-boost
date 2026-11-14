@@ -1,14 +1,15 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { sendTemplateEmailWithLog } from '../_shared/transactional-email-templates/send-with-log.ts'
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
 
   const SHARED_SECRET = Deno.env.get('NOTIFY_SHARED_SECRET')
   if (!SHARED_SECRET || req.headers.get('x-notify-secret') !== SHARED_SECRET) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 
@@ -27,14 +28,14 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ ok: true, ...result }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     console.error('send-orynth-hello failed', message)
     return new Response(JSON.stringify({ ok: false, error: message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 })

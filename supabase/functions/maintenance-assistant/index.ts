@@ -1,12 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import type { Database } from "../../../src/integrations/supabase/types.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 const MODEL = "claude-sonnet-4-6";
 const MAX_TURNS = 6;
@@ -230,6 +225,7 @@ async function executeTool(db: Db, name: string, input: any, proposals: any[]): 
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return new Response("Only POST allowed", { status: 405, headers: corsHeaders });
 
@@ -238,7 +234,7 @@ serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -246,7 +242,7 @@ serve(async (req) => {
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Assistant is not configured (missing API key)." }), {
         status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -261,7 +257,7 @@ serve(async (req) => {
     if (userError || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -276,7 +272,7 @@ serve(async (req) => {
     if (messages.length === 0) {
       return new Response(JSON.stringify({ error: "No message provided." }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -300,7 +296,7 @@ serve(async (req) => {
         console.error("Anthropic error:", resp.status, errText);
         return new Response(JSON.stringify({ error: "The assistant is temporarily unavailable." }), {
           status: 502,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
         });
       }
 
@@ -322,13 +318,13 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ reply: reply || "…", proposals }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("maintenance-assistant error:", e);
     return new Response(JSON.stringify({ error: "Something went wrong." }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

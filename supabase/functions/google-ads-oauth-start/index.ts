@@ -1,14 +1,10 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-};
 
 const SCOPES = ['https://www.googleapis.com/auth/adwords'];
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
@@ -24,7 +20,7 @@ Deno.serve(async (req) => {
     const { data: userData, error: userErr } = await userClient.auth.getUser();
     if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
@@ -36,7 +32,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (!roleRow) {
       return new Response(JSON.stringify({ error: 'forbidden' }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
 
@@ -62,12 +58,12 @@ Deno.serve(async (req) => {
     });
     const url = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
     return new Response(JSON.stringify({ url }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
     return new Response(JSON.stringify({ error: msg }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
 });

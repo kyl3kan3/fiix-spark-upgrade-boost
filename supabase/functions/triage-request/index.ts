@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible";
 import { generateText, Output } from "npm:ai";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { z } from "npm:zod";
 
 const PROJECT_URL = Deno.env.get("SUPABASE_URL")!;
@@ -23,6 +23,7 @@ const TriageSchema = z.object({
 });
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -31,13 +32,13 @@ Deno.serve(async (req) => {
     if (!SHARED_SECRET) {
       return new Response(JSON.stringify({ error: "Server misconfigured" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
     if (req.headers.get("x-notify-secret") !== SHARED_SECRET) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -46,7 +47,7 @@ Deno.serve(async (req) => {
     if (!requestId) {
       return new Response(JSON.stringify({ error: "request_id required" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -60,7 +61,7 @@ Deno.serve(async (req) => {
     if (reqErr || !request) {
       return new Response(JSON.stringify({ error: "request not found" }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -72,7 +73,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (existing && existing.status === "ready") {
       return new Response(JSON.stringify({ ok: true, skipped: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -85,7 +86,7 @@ Deno.serve(async (req) => {
       }, { onConflict: "request_id" });
       return new Response(JSON.stringify({ error: "ai key missing" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -128,7 +129,7 @@ Be conservative with "critical" — reserve it for safety hazards, flooding, no 
       }, { onConflict: "request_id" });
 
       return new Response(JSON.stringify({ ok: true, triage: output }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     } catch (e) {
       const msg = (e as Error).message;
@@ -141,14 +142,14 @@ Be conservative with "critical" — reserve it for safety hazards, flooding, no 
       console.error("triage AI error", e);
       return new Response(JSON.stringify({ error: msg }), {
         status: 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
   } catch (e) {
     console.error("triage fatal", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

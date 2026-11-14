@@ -1,8 +1,9 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { requireSuperAdmin, semrushHeaders, SEMRUSH_GATEWAY } from '../_shared/semrushAuth.ts';
 
 // Backlinks overview + top referring domains for a target.
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   const auth = await requireSuperAdmin(req);
   if (auth instanceof Response) return auth;
@@ -64,5 +65,5 @@ Deno.serve(async (req) => {
     target,
     overview: ov,
     referring_domains: rd,
-  }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  }), { status: 200, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' } });
 });

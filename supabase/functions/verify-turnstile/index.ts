@@ -1,6 +1,8 @@
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 
+// Intentionally unauthenticated: browsers call this before login; Cloudflare verifies the token (verify_jwt=false).
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -10,7 +12,7 @@ Deno.serve(async (req) => {
     if (!token || typeof token !== 'string') {
       return new Response(JSON.stringify({ success: false, error: 'Missing token' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       })
     }
 
@@ -18,7 +20,7 @@ Deno.serve(async (req) => {
     if (!secret) {
       return new Response(JSON.stringify({ success: false, error: 'Turnstile not configured' }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       })
     }
 
@@ -36,12 +38,12 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ success: !!data.success, errors: data['error-codes'] || [] }), {
       status: data.success ? 200 : 403,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   } catch (e) {
     return new Response(JSON.stringify({ success: false, error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     })
   }
 })

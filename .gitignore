@@ -14,10 +14,9 @@ dist-ssr
 tmp/
 *.local
 
-# Local environment files
-.env
-.env.local
-.env.*.local
+# Local environment files (keep .env.example tracked)
+.env*
+!.env.example
 
 # Editor directories and files
 .vscode/*

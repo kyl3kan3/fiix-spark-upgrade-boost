@@ -1,15 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { z } from "npm:zod@3.23.8";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import {
   TurnstileConfigurationError,
   verifyTurnstile,
 } from "../_shared/turnstile.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const BUCKET = "public-request-photos";
@@ -24,10 +19,10 @@ const BodySchema = z.object({
   })).max(6),
 });
 
-function json(body: unknown, status = 200): Response {
+function json(req: Request, body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
   });
 }
 
@@ -48,19 +43,21 @@ function fileExtension(name: string, mimeType: string): string {
 }
 
 Deno.serve(async (request) => {
+  const corsHeaders = corsHeadersForRequest(request);
+
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
-  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (request.method !== "POST") return json(request, { error: "Method not allowed" }, 405);
 
   try {
     const parsed = BodySchema.safeParse(await request.json());
     if (!parsed.success) {
-      return json({ error: parsed.error.flatten().fieldErrors }, 400);
+      return json(request, { error: parsed.error.flatten().fieldErrors }, 400);
     }
 
     if (!await verifyTurnstile(request, parsed.data.turnstileToken)) {
-      return json({ error: "Verification failed" }, 403);
+      return json(request, { error: "Verification failed" }, 403);
     }
 
     const admin = createClient(
@@ -75,7 +72,7 @@ Deno.serve(async (request) => {
       .eq("id", parsed.data.companyId)
       .maybeSingle();
     if (companyError) throw companyError;
-    if (!company) return json({ error: "Request portal not found" }, 404);
+    if (!company) return json(request, { error: "Request portal not found" }, 404);
 
     const authorizationId = crypto.randomUUID();
     const uploadPrefix = `${company.id}/${authorizationId}`;
@@ -102,7 +99,7 @@ Deno.serve(async (request) => {
         return { path: data.path, token: data.token };
       }));
 
-      return json({ authorizationId, uploads, expiresAt });
+      return json(request, { authorizationId, uploads, expiresAt });
     } catch (error) {
       await admin
         .from("public_request_authorizations")
@@ -113,10 +110,10 @@ Deno.serve(async (request) => {
   } catch (error) {
     if (error instanceof TurnstileConfigurationError) {
       console.error(error.message);
-      return json({ error: "Verification is not configured" }, 500);
+      return json(request, { error: "Verification is not configured" }, 500);
     }
 
     console.error("authorize-public-request error", error);
-    return json({ error: "Could not authorize this request" }, 500);
+    return json(request, { error: "Could not authorize this request" }, 500);
   }
 });

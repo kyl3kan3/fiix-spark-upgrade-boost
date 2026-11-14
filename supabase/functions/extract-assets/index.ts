@@ -1,12 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 const MODEL = "claude-sonnet-4-6";
 const BUCKET = "onboarding-docs";
@@ -75,6 +70,7 @@ function buildContent(mime: string, bytes: Uint8Array): any[] {
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return new Response("Only POST allowed", { status: 405, headers: corsHeaders });
 
@@ -83,14 +79,14 @@ serve(async (req) => {
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
     const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Extraction is not configured (missing API key)." }), {
         status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -103,7 +99,7 @@ serve(async (req) => {
     if (userError || !userData.user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -114,7 +110,7 @@ serve(async (req) => {
     if (!storagePath) {
       return new Response(JSON.stringify({ error: "Missing storage_path." }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -123,14 +119,14 @@ serve(async (req) => {
     if (dlErr || !file) {
       return new Response(JSON.stringify({ error: "Couldn't read that document." }), {
         status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
     const bytes = new Uint8Array(await file.arrayBuffer());
     if (bytes.byteLength > MAX_BYTES) {
       return new Response(JSON.stringify({ error: "Document is too large to extract (max 10 MB)." }), {
         status: 413,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
     if (!mime) mime = file.type || "application/octet-stream";
@@ -157,7 +153,7 @@ serve(async (req) => {
       if (documentId) await db.from("onboarding_documents").update({ status: "failed" }).eq("id", documentId);
       return new Response(JSON.stringify({ error: "The extractor is temporarily unavailable." }), {
         status: 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -172,13 +168,13 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ assets }), {
       status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("extract-assets error:", e);
     return new Response(JSON.stringify({ error: "Something went wrong." }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

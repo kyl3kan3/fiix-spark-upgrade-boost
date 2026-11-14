@@ -1,9 +1,5 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 const SITE_URL = 'https://maintenease.com/';
 const GATEWAY = 'https://connector-gateway.lovable.dev/google_search_console/v1/urlInspection/index:inspect';
@@ -58,6 +54,7 @@ async function inspectOne(loveKey: string, gscKey: string, inspectionUrl: string
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
@@ -67,7 +64,7 @@ Deno.serve(async (req) => {
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
     const supabase = createClient(
@@ -79,7 +76,7 @@ Deno.serve(async (req) => {
     if (userErr || !userData?.user) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
     const adminClient = createClient(
@@ -96,7 +93,7 @@ Deno.serve(async (req) => {
     if (!roleRow) {
       return new Response(JSON.stringify({ error: 'forbidden' }), {
         status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
 
@@ -110,7 +107,7 @@ Deno.serve(async (req) => {
     if (urls.length === 0) {
       return new Response(JSON.stringify({ error: 'urls[] required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
       });
     }
     // Cap per-request size; the Search Console API is rate-limited.
@@ -127,14 +124,14 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ siteUrl: SITE_URL, results }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('seo-index-status error', msg);
     return new Response(JSON.stringify({ error: 'An unexpected error occurred.' }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeadersForRequest(req), 'Content-Type': 'application/json' },
     });
   }
 });
