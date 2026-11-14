@@ -2,7 +2,6 @@
 import { analyzeAndCategorizeText } from '../../services/textAnalysisService';
 import { entityToVendor } from './entityToVendorConverter';
 import { splitTextIntoSections } from './pdfTextSplitter';
-import { logger } from "@/lib/logger";
 
 export function processSingleVendor(text: string, instructions?: string): any[] {
  const entity = analyzeAndCategorizeText(text, instructions);
@@ -10,34 +9,20 @@ export function processSingleVendor(text: string, instructions?: string): any[] 
 }
 
 export function processMultipleVendors(text: string, pageTexts: string[], expectedCount?: number, instructions?: string): any[] {
- logger.log('🔍 Processing multiple vendors with page grouping');
- logger.log('📄 Page texts:', pageTexts.length, 'pages');
- logger.log('📝 Instructions provided:', instructions || 'None');
- logger.log('🎯 Expected count:', expectedCount || 'Not specified');
- 
  // ALWAYS check instructions first, regardless of other factors
  const shouldTreatPagesAsVendors = shouldTreatEachPageAsVendor(instructions, expectedCount, pageTexts.length);
  
- logger.log('🚨 DECISION: shouldTreatPagesAsVendors =', shouldTreatPagesAsVendors);
- logger.log('🚨 This means each page will be treated as:', shouldTreatPagesAsVendors ? 'ONE VENDOR' : 'POTENTIALLY MULTIPLE VENDORS');
- 
  // Group vendors by page
  const vendorsByPage = pageTexts.map((pageText, pageIndex) => {
- logger.log(`📄 Processing page ${pageIndex + 1}:`, pageText.substring(0, 200) + '...');
- 
  let sections: string[];
  
  if (shouldTreatPagesAsVendors) {
  // Treat the entire page as one vendor
- logger.log(`📋 ✅ TREATING ENTIRE PAGE ${pageIndex + 1} AS SINGLE VENDOR based on analysis`);
  sections = [pageText];
  } else {
  // Split the page into sections as before
- logger.log(`📋 ❌ SPLITTING PAGE ${pageIndex + 1} INTO MULTIPLE SECTIONS`);
  sections = splitTextIntoSections(pageText, pageTexts, expectedCount);
  }
- 
- logger.log(`📊 Page ${pageIndex + 1} resulted in ${sections.length} sections`);
  
  // Analyze each section and convert to vendor format
  const pageVendors = sections.map(section => {
@@ -49,7 +34,6 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
  return vendor;
  });
  
- logger.log(`✅ Found ${pageVendors.length} vendors on page ${pageIndex + 1}`);
  return {
  pageNumber: pageIndex + 1,
  vendors: pageVendors,
@@ -59,9 +43,6 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
  
  // Flatten all vendors but keep page grouping info
  const allVendors = vendorsByPage.flatMap(page => page.vendors);
- 
- logger.log('📊 Total vendors found:', allVendors.length);
- logger.log('📄 Pages processed:', vendorsByPage.length);
  
  // Create a result object with typed properties
  const result = allVendors.length > 0 ? allVendors : [entityToVendor(analyzeAndCategorizeText(text, instructions))];
@@ -76,20 +57,11 @@ export function processMultipleVendors(text: string, pageTexts: string[], expect
 }
 
 function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: number, pageCount?: number): boolean {
- logger.log('🔍 === INSTRUCTION ANALYSIS START ===');
- logger.log('📝 Raw instructions:', instructions);
- logger.log('🔢 Expected count:', expectedCount);
- logger.log('📄 Page count:', pageCount);
- 
  if (!instructions) {
- logger.log('❌ No instructions provided, checking count fallback');
- const result = expectedCount === pageCount;
- logger.log('🎯 Count fallback result:', result);
- return result;
+ return expectedCount === pageCount;
  }
  
  const instructionsLower = instructions.toLowerCase();
- logger.log('🔍 Analyzing instructions for page handling:', instructionsLower);
  
  // Look for explicit instructions about pages being vendors - more comprehensive patterns
  const pageVendorPatterns = [
@@ -122,13 +94,8 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
  /full pages? (are|is) vendors?/
  ];
  
- logger.log('🔍 Testing patterns against instructions...');
- for (let i = 0; i < pageVendorPatterns.length; i++) {
- const pattern = pageVendorPatterns[i];
- const matches = pattern.test(instructionsLower);
- logger.log(`Pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
- if (matches) {
- logger.log('✅ Instructions clearly indicate each page should be treated as a vendor');
+ for (const pattern of pageVendorPatterns) {
+ if (pattern.test(instructionsLower)) {
  return true;
  }
  }
@@ -144,26 +111,18 @@ function shouldTreatEachPageAsVendor(instructions?: string, expectedCount?: numb
  /parse pages? for multiple/
  ];
  
- logger.log('🔍 Testing split patterns...');
- for (let i = 0; i < splitPatterns.length; i++) {
- const pattern = splitPatterns[i];
- const matches = pattern.test(instructionsLower);
- logger.log(`Split pattern ${i + 1}: ${pattern} -> ${matches ? '✅ MATCH' : '❌ no match'}`);
- if (matches) {
- logger.log('📋 Instructions indicate pages should be split into multiple vendors');
+ for (const pattern of splitPatterns) {
+ if (pattern.test(instructionsLower)) {
  return false;
  }
  }
  
  // If expected count matches page count and no conflicting instructions, treat pages as vendors
  if (expectedCount === pageCount) {
- logger.log('📋 Expected count matches page count, treating each page as vendor');
  return true;
  }
  
  // Default to splitting if unclear
- logger.log('📋 Instructions unclear, defaulting to splitting pages');
- logger.log('🔍 === INSTRUCTION ANALYSIS END ===');
  return false;
 }
 
