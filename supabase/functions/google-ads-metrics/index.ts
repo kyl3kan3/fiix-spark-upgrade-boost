@@ -1,13 +1,8 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-};
-
-const json = (b: unknown, s = 200) =>
-  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+const json = (request: Request, b: unknown, s = 200) =>
+  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeadersForRequest(request), 'Content-Type': 'application/json' } });
 
 async function refreshAccessToken(refresh_token: string) {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -25,19 +20,20 @@ async function refreshAccessToken(refresh_token: string) {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
     const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const DEV_TOKEN = Deno.env.get('GOOGLE_ADS_DEVELOPER_TOKEN');
-    if (!DEV_TOKEN) return json({ error: 'GOOGLE_ADS_DEVELOPER_TOKEN not configured' }, 500);
+    if (!DEV_TOKEN) return json(req, { error: 'GOOGLE_ADS_DEVELOPER_TOKEN not configured' }, 500);
 
     const token = (req.headers.get('Authorization') ?? '').replace('Bearer ', '');
     const userClient = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
     const { data: userData } = await userClient.auth.getUser();
-    if (!userData?.user) return json({ error: 'unauthorized' }, 401);
+    if (!userData?.user) return json(req, { error: 'unauthorized' }, 401);
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
     const { data: roleRow } = await admin
       .from('user_roles')
@@ -45,15 +41,15 @@ Deno.serve(async (req) => {
       .eq('user_id', userData.user.id)
       .eq('role', 'super_admin')
       .maybeSingle();
-    if (!roleRow) return json({ error: 'forbidden' }, 403);
+    if (!roleRow) return json(req, { error: 'forbidden' }, 403);
 
     const { data: conn } = await admin
       .from('google_ads_connections')
       .select('*').order('created_at', { ascending: false }).limit(1).maybeSingle();
 
-    if (!conn) return json({ connected: false });
+    if (!conn) return json(req, { connected: false });
     if (!conn.customer_id) {
-      return json({ connected: true, customer_id: null, error: 'No customer_id on connection — link a Google Ads account first.' });
+      return json(req, { connected: true, customer_id: null, error: 'No customer_id on connection — link a Google Ads account first.' });
     }
 
     // refresh access token if expired/expiring
@@ -88,7 +84,7 @@ Deno.serve(async (req) => {
     const url = `https://googleads.googleapis.com/v17/customers/${conn.customer_id}/googleAds:search`;
     const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify({ query }) });
     const data = await res.json();
-    if (!res.ok) return json({ connected: true, customer_id: conn.customer_id, error: data }, 200);
+    if (!res.ok) return json(req, { connected: true, customer_id: conn.customer_id, error: data }, 200);
 
     const campaigns = (data.results ?? []).map((r: any) => ({
       id: r.campaign?.id,
@@ -108,7 +104,7 @@ Deno.serve(async (req) => {
       conversions: acc.conversions + c.conversions,
     }), { impressions: 0, clicks: 0, cost: 0, conversions: 0 });
 
-    return json({
+    return json(req, {
       connected: true,
       customer_id: conn.customer_id,
       account_name: conn.account_descriptive_name,
@@ -117,6 +113,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
-    return json({ error: msg }, 500);
+    return json(req, { error: msg }, 500);
   }
 });

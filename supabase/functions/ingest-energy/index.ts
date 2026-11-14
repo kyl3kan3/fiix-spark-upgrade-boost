@@ -1,21 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-ingest-token",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 const MAX_ROWS = 1000;
 // Per-token rate limit: up to this many requests per rolling window.
 const RATE_MAX_PER_WINDOW = 120;
 const RATE_WINDOW_SECONDS = 60;
 
-function json(status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
+function json(request: Request, status: number, body: unknown, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json", ...extraHeaders },
+    headers: { ...corsHeadersForRequest(request), "Content-Type": "application/json", ...extraHeaders },
   });
 }
 
@@ -25,12 +20,13 @@ function toNum(v: unknown): number | null {
 }
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return new Response("Only POST allowed", { status: 405, headers: corsHeaders });
 
   try {
     const token = req.headers.get("x-ingest-token");
-    if (!token) return json(401, { error: "Missing x-ingest-token header." });
+    if (!token) return json(req,401, { error: "Missing x-ingest-token header." });
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -46,12 +42,12 @@ serve(async (req) => {
     });
     if (tokenErr) {
       console.error("Token lookup error:", tokenErr);
-      return json(500, { error: "Lookup failed." });
+      return json(req,500, { error: "Lookup failed." });
     }
     const tokenRow = Array.isArray(consumed) ? consumed[0] : consumed;
-    if (!tokenRow?.company_id) return json(403, { error: "Invalid ingest token." });
+    if (!tokenRow?.company_id) return json(req,403, { error: "Invalid ingest token." });
     if (!tokenRow.allowed) {
-      return json(
+      return json(req,
         429,
         { error: `Rate limit exceeded (max ${RATE_MAX_PER_WINDOW} requests per ${RATE_WINDOW_SECONDS}s).` },
         { "Retry-After": String(RATE_WINDOW_SECONDS) },
@@ -69,8 +65,8 @@ serve(async (req) => {
           ? [b]
           : [];
 
-    if (list.length === 0) return json(400, { error: "No readings provided." });
-    if (list.length > MAX_ROWS) return json(413, { error: `Too many readings (max ${MAX_ROWS}).` });
+    if (list.length === 0) return json(req,400, { error: "No readings provided." });
+    if (list.length > MAX_ROWS) return json(req,413, { error: `Too many readings (max ${MAX_ROWS}).` });
 
     const errors: string[] = [];
     const rows = [];
@@ -112,7 +108,7 @@ serve(async (req) => {
       });
     }
 
-    if (rows.length === 0) return json(400, { error: "No valid readings.", errors });
+    if (rows.length === 0) return json(req,400, { error: "No valid readings.", errors });
 
     // Upsert (ignore duplicates) on (company_id, external_id) so retried POSTs are
     // idempotent. Rows without an external_id carry NULL, which never conflicts.
@@ -122,11 +118,11 @@ serve(async (req) => {
       .select("id");
     if (insErr) {
       console.error("Insert error:", insErr);
-      return json(500, { error: "Insert failed." });
+      return json(req,500, { error: "Insert failed." });
     }
 
     const inserted = insertedRows?.length ?? 0;
-    return json(200, {
+    return json(req,200, {
       inserted,
       deduped: rows.length - inserted,
       skipped: errors.length,
@@ -134,6 +130,6 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("ingest-energy error:", e);
-    return json(500, { error: "Something went wrong." });
+    return json(req,500, { error: "Something went wrong." });
   }
 });

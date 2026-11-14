@@ -1,5 +1,5 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 type Healer = "risk_scoring" | "work_orders" | "data_integrity" | "ai_triage";
 
@@ -421,6 +421,7 @@ async function runForCompany(
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
@@ -451,15 +452,15 @@ Deno.serve(async (req) => {
         auth: { persistSession: false },
       });
       const { data: { user } } = await userClient.auth.getUser();
-      if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (!user) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } });
       actorId = user.id;
       const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
-      if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } });
       scopedCompany = profile.company_id;
     } else if (!isServiceRole) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -468,7 +469,7 @@ Deno.serve(async (req) => {
     if (scopedCompany) {
       await runForCompany(scopedCompany, triggeredBy, actorId, body.healer);
       return new Response(JSON.stringify({ ok: true, company_id: scopedCompany }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
       });
     }
 
@@ -484,13 +485,13 @@ Deno.serve(async (req) => {
       }
     }
     return new Response(JSON.stringify({ ok: true, processed }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("self-heal fatal", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
     });
   }
 });

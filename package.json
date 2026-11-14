@@ -126,6 +126,10 @@
     "vitest": "3.2.7"
   },
   "overrides": {
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.1",
+    "dompurify": "^3.4.17",
+    "proxy-addr": "^2.0.8",
+    "tinypool": "^2.2.0",
+    "@vitest/mocker": "^3.2.4"
   }
 }

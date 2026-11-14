@@ -1,15 +1,10 @@
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-};
-
-function html(body: string, status = 200) {
+function html(req: Request, body: string, status = 200) {
   return new Response(`<!doctype html><meta charset="utf-8"><title>Google Ads</title>
 <body style="font-family:system-ui;padding:40px;text-align:center;">${body}</body>`, {
-    status, headers: { ...corsHeaders, 'Content-Type': 'text/html; charset=utf-8' },
+    status, headers: { ...corsHeadersForRequest(req), 'Content-Type': 'text/html; charset=utf-8' },
   });
 }
 
@@ -23,14 +18,16 @@ function esc(s: string) {
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersForRequest(req);
+
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   try {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
     const errParam = url.searchParams.get('error');
-    if (errParam) return html(`<h2>Google Ads connection failed</h2><p>${esc(errParam)}</p>`, 400);
-    if (!code || !state) return html('<h2>Missing code or state</h2>', 400);
+    if (errParam) return html(req,`<h2>Google Ads connection failed</h2><p>${esc(errParam)}</p>`, 400);
+    if (!code || !state) return html(req,'<h2>Missing code or state</h2>', 400);
 
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
     const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -46,7 +43,7 @@ Deno.serve(async (req) => {
       .gte('created_at', cutoff)
       .select('*')
       .maybeSingle();
-    if (stateErr || !stateRow) return html('<h2>Invalid or expired state</h2>', 400);
+    if (stateErr || !stateRow) return html(req,'<h2>Invalid or expired state</h2>', 400);
 
     const redirectUri = `${SUPABASE_URL}/functions/v1/google-ads-oauth-callback`;
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -58,7 +55,7 @@ Deno.serve(async (req) => {
       }),
     });
     const tokenJson = await tokenRes.json();
-    if (!tokenRes.ok) return html(`<h2>Token exchange failed</h2><pre>${esc(JSON.stringify(tokenJson))}</pre>`, 400);
+    if (!tokenRes.ok) return html(req,`<h2>Token exchange failed</h2><pre>${esc(JSON.stringify(tokenJson))}</pre>`, 400);
 
     const refresh_token = tokenJson.refresh_token;
     const access_token = tokenJson.access_token;
@@ -66,7 +63,7 @@ Deno.serve(async (req) => {
     const scope = tokenJson.scope ?? '';
 
     if (!refresh_token) {
-      return html('<h2>No refresh_token returned</h2><p>Revoke access at Google Account → Security, then try again.</p>', 400);
+      return html(req,'<h2>No refresh_token returned</h2><p>Revoke access at Google Account → Security, then try again.</p>', 400);
     }
 
     // Look up the user's company
@@ -104,10 +101,10 @@ Deno.serve(async (req) => {
     });
     if (connectionError) throw connectionError;
 
-    return html(`<h2>Google Ads connected</h2><p>You can close this tab and return to the dashboard.</p>
+    return html(req,`<h2>Google Ads connected</h2><p>You can close this tab and return to the dashboard.</p>
 <script>setTimeout(()=>window.close(), 1500);</script>`);
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'unknown';
-    return html(`<h2>Error</h2><pre>${esc(msg)}</pre>`, 500);
+    return html(req,`<h2>Error</h2><pre>${esc(msg)}</pre>`, 500);
   }
 });

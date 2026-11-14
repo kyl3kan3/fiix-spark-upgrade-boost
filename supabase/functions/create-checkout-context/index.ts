@@ -1,37 +1,34 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { z } from "npm:zod@3.23.8";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
 
 const BodySchema = z.object({
   environment: z.enum(["sandbox", "live"]),
 });
 
-function json(body: unknown, status = 200): Response {
+function json(req: Request, body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" },
   });
 }
 
 Deno.serve(async (request) => {
+  const corsHeaders = corsHeadersForRequest(request);
+
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
-  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (request.method !== "POST") return json(request, { error: "Method not allowed" }, 405);
 
   try {
     const authHeader = request.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
-      return json({ error: "Unauthorized" }, 401);
+      return json(request, { error: "Unauthorized" }, 401);
     }
 
     const parsed = BodySchema.safeParse(await request.json());
-    if (!parsed.success) return json({ error: "Invalid environment" }, 400);
+    if (!parsed.success) return json(request, { error: "Invalid environment" }, 400);
 
     const userClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -39,7 +36,7 @@ Deno.serve(async (request) => {
       { global: { headers: { Authorization: authHeader } } },
     );
     const { data: userData, error: userError } = await userClient.auth.getUser();
-    if (userError || !userData.user) return json({ error: "Unauthorized" }, 401);
+    if (userError || !userData.user) return json(request, { error: "Unauthorized" }, 401);
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -54,7 +51,7 @@ Deno.serve(async (request) => {
       .eq("id", user.id)
       .maybeSingle();
     if (profileError) throw profileError;
-    if (!profile?.company_id) return json({ error: "No company" }, 400);
+    if (!profile?.company_id) return json(request, { error: "No company" }, 400);
 
     const { data: role, error: roleError } = await admin
       .from("user_roles")
@@ -64,7 +61,7 @@ Deno.serve(async (request) => {
       .eq("role", "administrator")
       .maybeSingle();
     if (roleError) throw roleError;
-    if (!role) return json({ error: "Administrator access required" }, 403);
+    if (!role) return json(request, { error: "Administrator access required" }, 403);
 
     const expiresAt = new Date(Date.now() + 2 * 60 * 60_000).toISOString();
     const { data: authorization, error: authorizationError } = await admin
@@ -79,13 +76,13 @@ Deno.serve(async (request) => {
       .single();
     if (authorizationError) throw authorizationError;
 
-    return json({
+    return json(request, {
       checkoutAuthorizationId: authorization.id,
       email: user.email ?? null,
       expiresAt,
     });
   } catch (error) {
     console.error("create-checkout-context error", error);
-    return json({ error: "Could not start checkout" }, 500);
+    return json(request, { error: "Could not start checkout" }, 500);
   }
 });
