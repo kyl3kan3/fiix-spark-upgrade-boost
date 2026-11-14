@@ -1,16 +1,18 @@
 /**
- * Restrict browser CORS to MaintenEase production, Lovable preview hosts, and local dev.
- * Server-to-server callers (webhooks, cron) typically send no Origin; responses omit ACAO.
+ * Browser CORS for MaintenEase app origins only. Server-to-server callers omit Origin.
  */
 
-const EXACT_ORIGINS = new Set([
+/** From README / Lovable project URL — used to match preview hostnames only. */
+const LOVABLE_PROJECT_ID = "8e4b0baf-d26e-4fdc-947e-b3bad90e188b";
+
+const HTTPS_EXACT_ORIGINS = new Set([
   "https://maintenease.com",
   "https://www.maintenease.com",
   "https://maintenease.lovable.app",
 ]);
 
-/** Host suffixes used by Lovable / preview surfaces (see src/integrations/supabase/previewAuthStorage.ts). */
-const HOST_SUFFIXES = [
+/** Preview DNS zones where this Lovable project may be served (see previewAuthStorage.ts). */
+const LOVABLE_PREVIEW_HOST_SUFFIXES = [
   "lovable.app",
   "lovableproject.com",
   "lovableproject-dev.com",
@@ -18,18 +20,35 @@ const HOST_SUFFIXES = [
   "gptengineer.run",
 ];
 
+function hostMatchesLovableProjectPreview(host: string): boolean {
+  const h = host.toLowerCase();
+  const onZone = LOVABLE_PREVIEW_HOST_SUFFIXES.some(
+    (suffix) => h === suffix || h.endsWith(`.${suffix}`),
+  );
+  if (!onZone) return false;
+
+  const id = LOVABLE_PROJECT_ID;
+  const patterns = [
+    new RegExp(`^(?:id-preview(?:-[a-z0-9]+)?|project)--${id}(?:-dev)?(?=\\.|$)`, "i"),
+    new RegExp(`^live--${id}(?:-thr_[a-z0-9]+)?(?=\\.|$)`, "i"),
+    new RegExp(`^${id}(?=[.-])`, "i"),
+  ];
+  return patterns.some((re) => re.test(h));
+}
+
 export function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
   try {
     const url = new URL(origin);
-    if (url.protocol !== "https:" && url.protocol !== "http:") return false;
-    if (EXACT_ORIGINS.has(origin)) return true;
-
     const host = url.hostname.toLowerCase();
+
     if (host === "localhost" || host === "127.0.0.1") {
-      return url.protocol === "http:";
+      return url.protocol === "http:" || url.protocol === "https:";
     }
-    return HOST_SUFFIXES.some((suffix) => host === suffix || host.endsWith(`.${suffix}`));
+
+    if (url.protocol !== "https:") return false;
+    if (HTTPS_EXACT_ORIGINS.has(origin)) return true;
+    return hostMatchesLovableProjectPreview(host);
   } catch {
     return false;
   }
@@ -61,5 +80,8 @@ export function handleCorsPreflight(
   extraHeaders?: Record<string, string>,
 ): Response | null {
   if (req.method !== "OPTIONS") return null;
-  return new Response("ok", { status: 204, headers: corsHeadersForRequest(req, extraHeaders) });
+  return new Response(null, {
+    status: 204,
+    headers: corsHeadersForRequest(req, extraHeaders),
+  });
 }
