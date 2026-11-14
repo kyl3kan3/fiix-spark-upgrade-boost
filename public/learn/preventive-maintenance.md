@@ -128,6 +128,7 @@ A spreadsheet can support a small stable program. A CMMS becomes more practical 
 - [asset management software](https://maintenease.com/solutions/asset-management-software)
 - [preventive maintenance software](https://maintenease.com/solutions/preventive-maintenance-software)
 - [facility management guide](https://maintenease.com/facility-management)
+- [CMMS pricing from $49/month](https://maintenease.com/pricing)
 
 ## Related
 

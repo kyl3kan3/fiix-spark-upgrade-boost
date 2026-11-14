@@ -32,6 +32,11 @@ const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline:
  { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie recurring work to the asset, parts and history." },
  { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Calendar-based recurring maintenance and overdue work." },
  ],
+ "cmms": [
+  { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Recurring PMs tied to assets and work orders." },
+  { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule, and close maintenance work." },
+  { slug: "asset-management-software", anchor: "Asset management software", tagline: "Equipment records, documents, and service history." },
+ ],
  "work-order": [
  { slug: "work-order-software", anchor: "Work order software", tagline: "Assign, schedule and close work orders fast." },
  { slug: "asset-tracking-software", anchor: "Track the asset behind every work order", tagline: "Attach work to a located, searchable asset record." },
@@ -398,6 +403,9 @@ const LearnArticle = () => {
   <Link to={term.slug === "agentic-cmms" ? "/features" : "/cmms-cost-calculator"}>
   {term.slug === "agentic-cmms" ? "Explore MaintenEase features" : "Run the CMMS cost calculator"}
   </Link>
+  </Button>
+  <Button asChild variant="outline">
+  <Link to="/pricing">View CMMS pricing from $49/mo</Link>
   </Button>
   </div>
   {term.slug !== "cmms-benchmarks-2026" && (

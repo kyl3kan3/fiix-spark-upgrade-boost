@@ -28,9 +28,9 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 ## Comparisons
 
 - [UpKeep Pricing 2026 vs MaintenEase: Real Team Cost](https://maintenease.com/compare/maintenease-vs-upkeep.md): The same core CMMS — without paying by the technician.
-- [MaintenEase vs Fiix](https://maintenease.com/compare/maintenease-vs-fiix.md): Account plans with included seats compared with per-user pricing.
+- [Fiix Pricing 2026 vs MaintenEase: Real Team Cost](https://maintenease.com/compare/maintenease-vs-fiix.md): Account plans with included seats compared with per-user pricing.
 - [MaintainX Pricing vs MaintenEase](https://maintenease.com/compare/maintenease-vs-maintainx.md): Account plans with included seats and published capacity limits.
-- [MaintenEase vs Limble](https://maintenease.com/compare/maintenease-vs-limble.md): Account and per-user pricing for preventive maintenance teams.
+- [Limble Pricing 2026 vs MaintenEase: Real Team Cost](https://maintenease.com/compare/maintenease-vs-limble.md): Account and per-user pricing for preventive maintenance teams.
 - [eMaint Pricing vs MaintenEase](https://maintenease.com/compare/maintenease-vs-emaint.md): Published account plans compared with configurable eMaint pricing.
 
 ## Learn (glossary)

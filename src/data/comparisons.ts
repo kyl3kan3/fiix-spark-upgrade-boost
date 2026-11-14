@@ -127,13 +127,13 @@ export const comparisons: Comparison[] = [
   {
     slug: "maintenease-vs-upkeep",
     datePublished: "2026-08-13",
-    dateModified: "2026-08-16",
+    dateModified: "2026-11-14",
     competitor: "UpKeep",
     competitorPlan: "Premium",
     competitorPricePerUser: 55,
-    metaTitle: "UpKeep Pricing 2026: Plans, Limits & MaintenEase Cost",
+    metaTitle: "UpKeep Pricing 2026 vs MaintenEase: Real Team Cost",
     metaDescription:
-      "UpKeep pricing explained tier by tier, compared with MaintenEase account plans and included seats. See real monthly cost for a team of 8 before you switch.",
+      "UpKeep per-user pricing vs MaintenEase flat plans from $49/mo with free onboarding. Compare real monthly cost for an 8-person crew before you switch.",
     h1: "UpKeep Pricing 2026 vs MaintenEase: Real Team Cost",
     tagline: "The same core CMMS — without paying by the technician.",
     intro:
@@ -249,14 +249,14 @@ export const comparisons: Comparison[] = [
   {
     slug: "maintenease-vs-fiix",
     datePublished: "2026-07-25",
-    dateModified: PRODUCT_LAST_MODIFIED,
+    dateModified: "2026-11-14",
     competitor: "Fiix",
     competitorPlan: "Basic",
     competitorPricePerUser: 45,
-    metaTitle: "MaintenEase vs Fiix — CMMS Pricing Comparison (2026)",
+    metaTitle: "Fiix Pricing 2026 vs MaintenEase: Real Team Cost",
     metaDescription:
-      "MaintenEase vs Fiix: compare account plans with included seats against Fiix's per-user pricing. Review work orders, assets, PMs, and estimated team cost.",
-    h1: "MaintenEase vs Fiix",
+      "Fiix per-user CMMS pricing vs MaintenEase from $49/mo with included seats and free onboarding. Estimate monthly cost for your maintenance team.",
+    h1: "Fiix Pricing 2026 vs MaintenEase: Real Team Cost",
     tagline: "Account plans with included seats compared with per-user pricing.",
     intro:
       "Fiix publishes a free tier, Basic and Professional per-user plans, and custom Enterprise pricing. MaintenEase publishes account plans with included seats and capacity limits. This comparison uses Fiix's official pricing page for current plan facts and identifies the questions a buyer should verify before choosing or migrating.",
@@ -331,10 +331,10 @@ export const comparisons: Comparison[] = [
     // publication record exists in the squashed history, so publication is
     // recorded as the same date rather than fabricating an older one.
     datePublished: "2026-07-25",
-    dateModified: "2026-10-22",
-    metaTitle: "MaintainX Pricing 2026: Plans, Cost & Cheaper Alternative",
+    dateModified: "2026-11-14",
+    metaTitle: "MaintainX Pricing 2026 vs MaintenEase: Team Cost",
     metaDescription:
-      "MaintainX pricing and cost per user for 2026, plan by plan, compared with MaintenEase account plans. See the real monthly cost for your team.",
+      "MaintainX per-user pricing vs MaintenEase flat plans from $49/mo and free onboarding. See the real monthly bill for your crew size.",
     h1: "MaintainX Pricing vs MaintenEase",
     tagline: "Account plans with included seats and published capacity limits.",
     intro:
@@ -460,14 +460,15 @@ export const comparisons: Comparison[] = [
   },
   {
     slug: "maintenease-vs-limble",
-    dateModified: "2026-08-13",
+    datePublished: "2026-07-25",
+    dateModified: "2026-11-14",
     competitor: "Limble",
     competitorPlan: "Standard",
     competitorPricePerUser: null,
-    metaTitle: "MaintenEase vs Limble — CMMS Pricing Comparison (2026)",
+    metaTitle: "Limble CMMS Pricing 2026 vs MaintenEase from $49",
     metaDescription:
-      "MaintenEase vs Limble CMMS: compare account plans with included seats against per-user pricing across work orders, assets, PM, and estimated team cost.",
-    h1: "MaintenEase vs Limble",
+      "Limble quote-based CMMS pricing vs MaintenEase published plans from $49/mo with free onboarding. Compare team cost before you request a quote.",
+    h1: "Limble Pricing 2026 vs MaintenEase: Real Team Cost",
     tagline: "Account and per-user pricing for preventive maintenance teams.",
     intro:
       "Limble is a modern CMMS that now asks buyers to calculate an estimate or request pricing rather than publishing dollar amounts for its Standard, Premium+, and Enterprise plans. MaintenEase covers the same day-to-day — work orders, asset management, preventive and predictive maintenance, inspections, and reporting — through published account plans with included seats. Business adds seats at $15 per month each.",
@@ -516,13 +517,13 @@ export const comparisons: Comparison[] = [
   {
     slug: "maintenease-vs-emaint",
     datePublished: "2026-07-25",
-    dateModified: "2026-10-22",
+    dateModified: "2026-11-14",
     competitor: "eMaint",
     competitorPlan: "Professional / Enterprise",
     competitorPricePerUser: null,
-    metaTitle: "eMaint CMMS Pricing 2026 vs MaintenEase Plans",
+    metaTitle: "eMaint Pricing 2026 vs MaintenEase: Real Team Cost",
     metaDescription:
-      "eMaint CMMS pricing explained: quote-based tiers, minimum users, and add-ons, compared with MaintenEase's published plans. Estimate your cost.",
+      "eMaint quote-based CMMS tiers vs MaintenEase from $49/mo with free onboarding. Compare minimum users, modules, and total monthly cost.",
     h1: "eMaint Pricing vs MaintenEase",
     tagline: "Published account plans compared with configurable eMaint pricing.",
     intro:

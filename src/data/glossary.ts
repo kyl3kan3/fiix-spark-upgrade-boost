@@ -133,6 +133,7 @@ export const glossary: GlossaryTerm[] = [
  { label: "MaintenEase vs MaintainX", href: "/compare/maintenease-vs-maintainx" },
  { label: "MaintenEase vs Limble", href: "/compare/maintenease-vs-limble" },
  { label: "asset tracking software", href: "/solutions/asset-tracking-software" },
+ { label: "CMMS pricing from $49/month", href: "/pricing" },
  ],
  sources: [
  { label: "U.S. Department of Energy: Operations and Maintenance Best Practices Guide", url: "https://www.energy.gov/cmei/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency" },
@@ -342,6 +343,7 @@ export const glossary: GlossaryTerm[] = [
  { label: "asset management software", href: "/solutions/asset-management-software" },
  { label: "preventive maintenance software", href: "/solutions/preventive-maintenance-software" },
  { label: "facility management guide", href: "/facility-management" },
+ { label: "CMMS pricing from $49/month", href: "/pricing" },
  ],
  sources: [
  { label: "OSHA: Hazard prevention and control, including preventive maintenance", url: "https://www.osha.gov/safety-management/hazard-prevention" },
@@ -508,6 +510,7 @@ export const glossary: GlossaryTerm[] = [
  internalLinks: [
  { label: "work order software", href: "/solutions/work-order-software" },
  { label: "free maintenance work order template", href: "/templates/work-order-template" },
+ { label: "CMMS pricing from $49/month", href: "/pricing" },
  { label: "modern work order management guide", href: "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026" },
  ],
  },

@@ -118,9 +118,9 @@ const TemplatePage = () => {
         <meta name="twitter:title" content={template.metaTitle} />
         <meta name="twitter:description" content={template.metaDescription} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
-        <script type="application/ld+json">{JSON.stringify(creativeWorkLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
-        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        <script type="application/ld+json" data-rh="true">{JSON.stringify(creativeWorkLd)}</script>
+        <script type="application/ld+json" data-rh="true">{JSON.stringify(faqLd)}</script>
+        <script type="application/ld+json" data-rh="true">{JSON.stringify(breadcrumbLd)}</script>
       </Helmet>
       <MarketingJsonLd />
 
