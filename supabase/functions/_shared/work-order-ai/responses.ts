@@ -18,7 +18,15 @@ export function createResponsesCall(
     baseURL: `${config.baseURL.replace(/\/+$/, "").replace(/\/v1$/, "")}/v1`,
     apiKey: config.apiKey,
     headers: { "Lovable-API-Key": config.apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
-    fetch: runIdFetch.fetch,
+    fetch: async (input, init) => {
+      const response = await runIdFetch.fetch(input, init);
+      if (!response.ok) {
+        const body = await response.clone().json().catch(() => null);
+        const message = body?.message ?? body?.error?.message ?? "AI summary is unavailable.";
+        throw Object.assign(new Error(message), { statusCode: response.status });
+      }
+      return response;
+    },
   });
   const reasoning = config.model !== "openai/chat-latest";
   const result = streamText({
@@ -28,6 +36,7 @@ export function createResponsesCall(
     messages,
     abortSignal: request.signal,
     maxRetries: 0,
+    onError: ({ error }) => { throw error; },
     providerOptions: {
       openai: {
         store: false,

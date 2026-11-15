@@ -46,6 +46,7 @@ Deno.serve(async (req) => {
     if (req.signal.aborted) return json({ error: "Summary stopped." }, 499);
     const status = typeof error === "object" && error !== null && "statusCode" in error
       ? Number(error.statusCode) : 500;
-    return json({ error: "AI summary could not be generated. Please try again later." }, status >= 400 && status <= 599 ? status : 500);
+    const message = status < 500 && error instanceof Error ? error.message : "AI summary could not be generated. Please try again later.";
+    return json({ error: message }, status >= 400 && status <= 599 ? status : 500);
   }
 });
