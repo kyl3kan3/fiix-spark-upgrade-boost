@@ -55,6 +55,13 @@ import { SECOND_PASS_TOOL_PAGES } from "../src/data/secondPassTools";
 import { BLOG_INDEX_INTRO_SECTIONS, BLOG_INDEX_META_DESCRIPTION } from "../src/data/blogIndexContent";
 import { STATIC_SITEMAP_ENTRIES } from "../src/data/sitemapEntries";
 import { SIGNUP_PATH } from "../src/data/signupRoute";
+import {
+  SMALL_BUSINESS_CMMS_FAQS,
+  SMALL_BUSINESS_CMMS_OPTIONS,
+  SMALL_BUSINESS_CMMS_PATH,
+  SMALL_BUSINESS_TEAM_SIZES,
+  TEAM_COST_ROWS,
+} from "../src/data/smallBusinessCmms";
 
 const DIST = resolve("dist");
 const ORIGIN = "https://maintenease.com";
@@ -469,6 +476,39 @@ const staticRoutes: Route[] = [
     links: [
       ...comparisons.map((c) => ({ href: `/compare/${c.slug}`, label: `MaintenEase vs ${c.competitor}` })),
       { href: "/cmms-cost-calculator", label: "CMMS cost calculator" },
+    ],
+  },
+  {
+    path: SMALL_BUSINESS_CMMS_PATH,
+    title: "Best CMMS Software for Small Business 2026: Real Prices",
+    description:
+      "Six CMMS options for small maintenance teams compared on published pricing, seat rules and fit, with monthly cost for 4, 8 and 12 users.",
+    h1: "Best CMMS software for small business in 2026",
+    intro:
+      "A small maintenance team mostly needs work orders, preventive maintenance schedules and asset history at a price that does not climb with every new login. This page compares six options on what each vendor publishes about price and seats. MaintenEase publishes this page and is one of the six products on it.",
+    ogType: "article",
+    sections: [
+      {
+        heading: `Monthly cost for ${SMALL_BUSINESS_TEAM_SIZES.join(", ")} users`,
+        body: TEAM_COST_ROWS.map(
+          (row) =>
+            `${row.name}: ${row.costs
+              .map((cost, index) => `${SMALL_BUSINESS_TEAM_SIZES[index]} users ${cost === null ? "quote required" : `$${cost}/mo`}`)
+              .join(", ")}.`,
+        ).join(" "),
+      },
+      ...SMALL_BUSINESS_CMMS_OPTIONS.map((option) => ({
+        heading: option.name,
+        body: `Fits: ${option.fits} ${option.pricingSummary} Source: ${option.sourceLabel}, checked ${option.verifiedOn}.`,
+      })),
+      ...SMALL_BUSINESS_CMMS_FAQS.map((faq) => ({ heading: faq.q, body: faq.a })),
+    ],
+    links: [
+      ...SMALL_BUSINESS_CMMS_OPTIONS.flatMap((option) =>
+        option.compareHref ? [{ href: option.compareHref, label: `MaintenEase vs ${option.name}` }] : [],
+      ),
+      { href: "/cmms-cost-calculator", label: "CMMS cost calculator" },
+      { href: "/compare", label: "All CMMS comparisons" },
     ],
   },
   {

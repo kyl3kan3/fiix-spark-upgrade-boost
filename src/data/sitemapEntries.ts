@@ -5,6 +5,7 @@ import { MCP_PAGE } from "./mcpPage";
 import { PRODUCT_LAST_MODIFIED } from "./productCatalog";
 import { solutions } from "./solutions";
 import { SECOND_PASS_TOOL_PAGES } from "./secondPassTools";
+import { SMALL_BUSINESS_CMMS_PATH, SMALL_BUSINESS_CMMS_UPDATED } from "./smallBusinessCmms";
 
 export interface SitemapEntry {
   path: string;
@@ -67,6 +68,7 @@ export const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   })),
   { path: "/compare", changefreq: "monthly", priority: "0.8" },
   { path: "/cmms-cost-calculator", changefreq: "monthly", priority: "0.8" },
+  { path: SMALL_BUSINESS_CMMS_PATH, lastmod: SMALL_BUSINESS_CMMS_UPDATED, changefreq: "monthly", priority: "0.8" },
   ...SECOND_PASS_TOOL_PAGES.map((page) => ({
     path: page.path,
     lastmod: page.updated,
