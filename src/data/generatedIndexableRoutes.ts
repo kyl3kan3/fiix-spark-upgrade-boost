@@ -3,6 +3,7 @@
 export const GENERATED_INDEXABLE_ROUTES = [
   "/",
   "/about",
+  "/best-cmms-software-for-small-business",
   "/blog",
   "/blog/fixed-price-maintenance-software-ending-the-per-user-tax-in-2026",
   "/blog/industrial-maintenance-optimization-the-2026-guide-to-maximum-uptime",

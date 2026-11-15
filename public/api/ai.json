@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-10-31T21:33:01.656Z",
+  "generated_at": "2026-11-15T11:51:39.120Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -293,6 +293,11 @@
       "path": "/cmms-cost-calculator",
       "html_url": "https://maintenease.com/cmms-cost-calculator",
       "markdown_url": "https://maintenease.com/cmms-cost-calculator.md"
+    },
+    {
+      "path": "/best-cmms-software-for-small-business",
+      "html_url": "https://maintenease.com/best-cmms-software-for-small-business",
+      "markdown_url": "https://maintenease.com/best-cmms-software-for-small-business.md"
     },
     {
       "path": "/tools/maintenance-sop-generator",

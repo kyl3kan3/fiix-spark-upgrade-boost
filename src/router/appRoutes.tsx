@@ -31,6 +31,7 @@ const TemplatesIndex = lazy(() => import("@/pages/TemplatesIndex"));
 const TemplatePage = lazy(() => import("@/pages/TemplatePage"));
 const McpPage = lazy(() => import("@/pages/McpPage"));
 const CostCalculatorPage = lazy(() => import("@/pages/CostCalculatorPage"));
+const BestCmmsSmallBusinessPage = lazy(() => import("@/pages/BestCmmsSmallBusinessPage"));
 const PublicRequestPortal = lazy(() => import("@/pages/PublicRequestPortal"));
 const OAuthConsentPage = lazy(() => import("@/pages/OAuthConsentPage"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
@@ -81,6 +82,7 @@ export const AppRoutes = () => (
         <Route path="/templates/:slug" element={<TemplatePage />} />
         <Route path="/mcp" element={<McpPage />} />
         <Route path="/cmms-cost-calculator" element={<CostCalculatorPage />} />
+        <Route path="/best-cmms-software-for-small-business" element={<BestCmmsSmallBusinessPage />} />
         <Route path="/maintenance-simplified" element={<MaintenanceSimplifiedPage />} />
         <Route path="/facility-management" element={<FacilityManagementPage />} />
         <Route path="/support" element={<SupportPage />} />

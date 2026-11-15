@@ -23,6 +23,7 @@ const INDEXABLE_ROUTES = new Set([
   "/templates",
   "/mcp",
   "/cmms-cost-calculator",
+  "/best-cmms-software-for-small-business",
   "/tools/maintenance-sop-generator",
   "/tools/root-cause-fishbone-generator",
   "/tools/mtbf-calculator",

@@ -59,6 +59,9 @@ const CompareIndex = () => (
         ))}
       </div>
       <div className="mt-10 flex flex-col items-center gap-6">
+        <Link to="/best-cmms-software-for-small-business" className="font-semibold text-primary hover:underline">
+          Best CMMS software for small business
+        </Link>
         <Link to="/cmms-cost-calculator" className="font-semibold text-primary hover:underline">
           CMMS cost calculator
         </Link>
