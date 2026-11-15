@@ -13,6 +13,7 @@ import { WorkOrderComments } from "./components/WorkOrderComments";
 import { DeleteWorkOrderDialog } from "./components/DeleteWorkOrderDialog";
 import { WorkOrderWorkflowBar } from "./components/WorkOrderWorkflowBar";
 import { WorkOrderCompletionSection } from "./components/WorkOrderCompletionSection";
+import { WorkOrderAiSummary } from "./components/WorkOrderAiSummary";
 
 // Define props interface for the component
 interface WorkOrderDetailProps {
@@ -61,6 +62,7 @@ const WorkOrderDetail: React.FC<WorkOrderDetailProps> = ({ workOrder }) => {
  
  {/* Work Order Details */}
  <WorkOrderDetailsCard workOrder={workOrder} />
+ <WorkOrderAiSummary key={`${workOrder.id}:${workOrder.updated_at}`} workOrderId={workOrder.id} />
 
  <WorkOrderCompletionSection workOrder={workOrder} />
  
