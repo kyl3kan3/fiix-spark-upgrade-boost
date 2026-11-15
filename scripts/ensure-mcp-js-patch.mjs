@@ -48,16 +48,13 @@ function lockedMcpVersion() {
 }
 
 function runPatchPackage() {
-  const npmExec = process.env.npm_execpath;
-  const result = npmExec
-    ? spawnSync(process.execPath, [npmExec, "exec", "--", "patch-package", "--error-on-fail"], {
-        cwd: root,
-        stdio: "inherit",
-      })
-    : spawnSync("npx", ["patch-package", "--error-on-fail"], {
-        cwd: root,
-        stdio: "inherit",
-      });
+  // npm_execpath can be a native Bun executable, not a JavaScript CLI.
+  // Run the already-installed patch-package entry directly under Node.
+  const patchEntry = path.join(root, "node_modules", "patch-package", "index.js");
+  const result = spawnSync(process.execPath, [patchEntry, "--error-on-fail"], {
+    cwd: root,
+    stdio: "inherit",
+  });
   if (result.error) throw result.error;
   return result.status ?? 1;
 }
@@ -68,16 +65,11 @@ function reinstallMcpJs() {
     rmSync(mcpRoot, { recursive: true, force: true });
   }
 
-  const npmExec = process.env.npm_execpath;
   const spec = `${packageName}@${version}`;
   const installArgs = ["install", spec, "--no-save", "--ignore-scripts"];
 
-  const result = npmExec
-    ? spawnSync(process.execPath, [npmExec, ...installArgs], {
-        cwd: root,
-        stdio: "inherit",
-      })
-    : spawnSync("npm", installArgs, { cwd: root, stdio: "inherit" });
+  // Invoke npm itself; never interpret npm_execpath's native binary as JS.
+  const result = spawnSync("npm", installArgs, { cwd: root, stdio: "inherit" });
 
   if (result.error) throw result.error;
   if ((result.status ?? 1) !== 0) {
