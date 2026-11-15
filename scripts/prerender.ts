@@ -1211,7 +1211,7 @@ function headFor(route: Route): string {
     ),
   ];
 
-  if (route.path === "/pricing") {
+  if (route.path === "/" || route.path === "/pricing") {
     tags.push(jsonLdScriptTag(PRODUCT_JSON_LD, ' data-ld-static="true"'));
   }
 
