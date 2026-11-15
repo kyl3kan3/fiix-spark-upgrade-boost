@@ -6,21 +6,45 @@ import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { PWA_APP_SHELL_NAVIGATE_ALLOWLIST } from "./src/lib/pwaAppShellRoutes";
 
+const SUPABASE_ENV_KEYS = [
+  "VITE_SUPABASE_URL",
+  "VITE_SUPABASE_PUBLISHABLE_KEY",
+  "VITE_SUPABASE_PROJECT_ID",
+] as const;
+
+function assertSupabaseEnvForBuild(env: Record<string, string>): void {
+  const missing = SUPABASE_ENV_KEYS.filter((key) => !env[key]?.trim());
+  if (missing.length === 0) return;
+
+  throw new Error(
+    `Missing required Supabase environment variables for production build:\n` +
+      missing.map((key) => `  - ${key}`).join("\n") +
+      `\n\nSet them in the environment or a .env file (see .env.example). ` +
+      `CI uses placeholders in .github/workflows/ci.yml.`,
+  );
+}
+
+function supabaseRestCachePattern(supabaseUrl: string): RegExp | null {
+  const base = supabaseUrl.trim().replace(/\/$/, "");
+  if (!base) return null;
+  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^${escaped}/rest/.*`, "i");
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
-  const supabaseUrl =
-    env.VITE_SUPABASE_URL ||
-    "https://wwgljhpuulhljumrhscg.supabase.co";
+  const isProductionBuild = mode === "production";
+  if (isProductionBuild) {
+    assertSupabaseEnvForBuild(env);
+  }
 
-  const supabasePublishableKey =
-    env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
+  const supabaseUrl = env.VITE_SUPABASE_URL?.trim() ?? "";
+  const supabasePublishableKey = env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim() ?? "";
+  const supabaseProjectId = env.VITE_SUPABASE_PROJECT_ID?.trim() ?? "";
 
-  const supabaseProjectId =
-    env.VITE_SUPABASE_PROJECT_ID ||
-    "wwgljhpuulhljumrhscg";
+  const supabaseRestPattern = supabaseRestCachePattern(supabaseUrl);
 
   return {
     server: {
@@ -113,13 +137,15 @@ export default defineConfig(({ mode }) => {
           navigateFallback: "/index.html",
           navigateFallbackAllowlist: PWA_APP_SHELL_NAVIGATE_ALLOWLIST,
           globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/wwgljhpuulhljumrhscg\.supabase\.co\/rest\/.*/i,
-              handler: "NetworkFirst",
-              options: { cacheName: "supabase-api", networkTimeoutSeconds: 8 },
-            },
-          ],
+          runtimeCaching: supabaseRestPattern
+            ? [
+                {
+                  urlPattern: supabaseRestPattern,
+                  handler: "NetworkFirst",
+                  options: { cacheName: "supabase-api", networkTimeoutSeconds: 8 },
+                },
+              ]
+            : [],
         },
       }),
       mode === "development" && componentTagger(),
