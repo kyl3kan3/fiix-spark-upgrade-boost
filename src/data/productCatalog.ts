@@ -306,12 +306,18 @@ export const PLAN_OFFERS_JSON_LD = PRODUCT_PLANS.flatMap((plan) => [
 
 export const PRODUCT_JSON_LD = {
   "@context": "https://schema.org",
-  "@type": "Product",
+  // Product keeps the plan offers eligible as product snippets; SoftwareApplication
+  // tells crawlers the thing being sold is a web app. No aggregateRating or review
+  // is emitted because there is no first-party rating data to back one.
+  "@type": ["Product", "SoftwareApplication"],
   "@id": `${PRICING_URL}#product`,
   name: PRODUCT_NAME,
   description: PRODUCT_DESCRIPTION,
   url: PRICING_URL,
   category: "CMMS software subscription",
+  applicationCategory: "BusinessApplication",
+  applicationSubCategory: "CMMS",
+  operatingSystem: "Web",
   inLanguage: "en-US",
   dateModified: PRODUCT_LAST_MODIFIED,
   image: {
