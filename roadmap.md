@@ -1,4 +1,6 @@
 # Growth tasks
+- [x] Add on-demand AI Gateway summaries on work-order details; service tests, live access checks and sample AI generation passed.
+- [ ] Verify summary generation through the signed-in detail page — waits for an accessible work order in the requesting account.
 - [x] Prepare safe existing-domain connection checklist.
 - [ ] Connect staging and cut over domain — waits for approved hostname, DNS access and safe end-to-end tests.
 - [x] Prepare existing-account call guide, manager invitation variants and response tracker.
