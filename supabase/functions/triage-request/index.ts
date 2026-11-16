@@ -1,6 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible";
-import { generateText, Output } from "npm:ai";
+import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible@3.0.7";
+import { generateText, Output, type LanguageModel } from "npm:ai";
 import { corsHeadersForRequest } from "../_shared/cors.ts";
 import { z } from "npm:zod";
 
@@ -110,7 +110,7 @@ Be conservative with "critical" — reserve it for safety hazards, flooding, no 
 
     try {
       const { output } = await generateText({
-        model: gateway("google/gemini-3-flash-preview"),
+        model: gateway("google/gemini-3-flash-preview") as unknown as LanguageModel,
         prompt,
         output: Output.object({ schema: TriageSchema }),
       });
