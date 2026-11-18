@@ -15,6 +15,10 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { buildHomepagePrerenderShell } from "../src/lib/homepagePrerenderHero";
+import {
+  buildSolutionMarketingPrerenderShell,
+  marketingDetailHeroVariant,
+} from "../src/lib/marketingPrerenderShell";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
@@ -1246,8 +1250,9 @@ function headFor(route: Route): string {
 }
 
 function bodyFor(route: Route): string {
+  const heroVariant = marketingDetailHeroVariant(route.path);
   const parts: string[] = [];
-  if (route.path !== "/") {
+  if (route.path !== "/" && !heroVariant) {
     parts.push(`<h1>${esc(route.h1)}</h1>`, `<p>${esc(route.intro)}</p>`);
   }
   if (SIGNUP_CTA_ROUTES.has(route.path)) {
@@ -1335,6 +1340,14 @@ function bodyFor(route: Route): string {
 
   if (route.path === "/") {
     return buildHomepagePrerenderShell({
+      heroH1: esc(route.h1),
+      heroIntro: esc(route.intro),
+      bodyHtml: bodyInner,
+    });
+  }
+
+  if (heroVariant === "solution") {
+    return buildSolutionMarketingPrerenderShell({
       heroH1: esc(route.h1),
       heroIntro: esc(route.intro),
       bodyHtml: bodyInner,

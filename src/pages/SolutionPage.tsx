@@ -18,6 +18,7 @@ import {
  TableRow,
 } from "@/components/ui/table";
 import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
+import { SOLUTION_PAGE_HERO_H1_CLASS } from "@/lib/marketingPrerenderShell";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -103,7 +104,7 @@ const SolutionPage = () => {
  <span className="mx-2">/</span>
  <span className="text-foreground">{solution.name}</span>
  </nav>
- <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{solution.h1}</h1>
+ <h1 className={SOLUTION_PAGE_HERO_H1_CLASS}>{solution.h1}</h1>
  <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mb-8">{solution.intro}</p>
  <div className="mb-12">
  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">

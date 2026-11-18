@@ -11,6 +11,7 @@ import {
   comparisons,
   type CompareValue,
 } from "@/data/comparisons";
+import { SOLUTION_PAGE_HERO_H1_CLASS } from "@/lib/marketingPrerenderShell";
 
 const Cell = ({ value, accent }: { value: CompareValue; accent?: boolean }) => {
   if (value === true) return <Check className={`h-5 w-5 ${accent ? "text-primary" : "text-success"}`} aria-label="Yes" />;
@@ -98,7 +99,7 @@ const ComparePage = () => {
           <span className="mx-2">/</span>
           <span className="text-foreground">{c.h1}</span>
         </nav>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-normal mb-8 max-w-3xl text-foreground">{c.h1}</h1>
+        <h1 className={SOLUTION_PAGE_HERO_H1_CLASS}>{c.h1}</h1>
         <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
           <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
         </Button>
