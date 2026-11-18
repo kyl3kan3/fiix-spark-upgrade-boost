@@ -18,7 +18,15 @@ import {
  TableRow,
 } from "@/components/ui/table";
 import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
-import { SOLUTION_PAGE_HERO_H1_CLASS } from "@/lib/marketingPrerenderShell";
+import {
+  MARKETING_BREADCRUMB_LINK_CLASS,
+  MARKETING_BREADCRUMB_NAV_CLASS,
+  MARKETING_HERO_CTA_WRAP_CLASS,
+  MARKETING_HERO_PRIMARY_CTA_LINK_CLASS,
+  SOLUTION_HERO_BREADCRUMB,
+  SOLUTION_PAGE_HERO_H1_CLASS,
+  SOLUTION_PAGE_INTRO_CLASS,
+} from "@/lib/marketingPrerenderShell";
 
 const LEAD_FORM_SLUGS = new Set(["asset-tracking-software", "asset-management-software"]);
 
@@ -99,16 +107,20 @@ const SolutionPage = () => {
 
  {/* Hero section */}
  <section className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
- <nav className="text-sm text-muted-foreground mb-6">
- <Link to="/solutions" className="hover:text-primary transition-colors">Solutions</Link>
+ <nav className={MARKETING_BREADCRUMB_NAV_CLASS}>
+ <Link to={SOLUTION_HERO_BREADCRUMB.href} className={MARKETING_BREADCRUMB_LINK_CLASS}>
+   {SOLUTION_HERO_BREADCRUMB.label}
+ </Link>
  <span className="mx-2">/</span>
  <span className="text-foreground">{solution.name}</span>
  </nav>
  <h1 className={SOLUTION_PAGE_HERO_H1_CLASS}>{solution.h1}</h1>
- <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mb-8">{solution.intro}</p>
- <div className="mb-12">
+ <p className={SOLUTION_PAGE_INTRO_CLASS}>{solution.intro}</p>
+ <div className={MARKETING_HERO_CTA_WRAP_CLASS}>
  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
-   <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
+   <Link to="/auth?signup=true" className={MARKETING_HERO_PRIMARY_CTA_LINK_CLASS}>
+     Start free trial <ArrowRight className="ml-1 h-4 w-4" />
+   </Link>
  </Button>
  </div>
  </section>

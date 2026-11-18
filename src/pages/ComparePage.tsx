@@ -11,7 +11,14 @@ import {
   comparisons,
   type CompareValue,
 } from "@/data/comparisons";
-import { SOLUTION_PAGE_HERO_H1_CLASS } from "@/lib/marketingPrerenderShell";
+import {
+  COMPARE_HERO_BREADCRUMB,
+  MARKETING_BREADCRUMB_LINK_CLASS,
+  MARKETING_BREADCRUMB_NAV_CLASS,
+  MARKETING_HERO_CTA_WRAP_CLASS,
+  MARKETING_HERO_PRIMARY_CTA_LINK_CLASS,
+  SOLUTION_PAGE_HERO_H1_CLASS,
+} from "@/lib/marketingPrerenderShell";
 
 const Cell = ({ value, accent }: { value: CompareValue; accent?: boolean }) => {
   if (value === true) return <Check className={`h-5 w-5 ${accent ? "text-primary" : "text-success"}`} aria-label="Yes" />;
@@ -94,15 +101,21 @@ const ComparePage = () => {
 
       {/* Hero */}
       <section className="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
-        <nav className="text-sm text-muted-foreground mb-6">
-          <Link to="/compare" className="hover:text-primary transition-colors">Compare</Link>
+        <nav className={MARKETING_BREADCRUMB_NAV_CLASS}>
+          <Link to={COMPARE_HERO_BREADCRUMB.href} className={MARKETING_BREADCRUMB_LINK_CLASS}>
+            {COMPARE_HERO_BREADCRUMB.label}
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">{c.h1}</span>
         </nav>
         <h1 className={SOLUTION_PAGE_HERO_H1_CLASS}>{c.h1}</h1>
-        <Button asChild size="lg" className="mb-12 bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
-          <Link to="/auth?signup=true">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
-        </Button>
+        <div className={MARKETING_HERO_CTA_WRAP_CLASS}>
+          <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary-variant font-semibold shadow-md">
+            <Link to="/auth?signup=true" className={MARKETING_HERO_PRIMARY_CTA_LINK_CLASS}>
+              Start free trial <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       {c.pricingTable ? (

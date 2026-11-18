@@ -16,6 +16,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { dirname, join, resolve } from "node:path";
 import { buildHomepagePrerenderShell } from "../src/lib/homepagePrerenderHero";
 import {
+  buildCompareMarketingPrerenderShell,
   buildSolutionMarketingPrerenderShell,
   marketingDetailHeroVariant,
 } from "../src/lib/marketingPrerenderShell";
@@ -1347,9 +1348,20 @@ function bodyFor(route: Route): string {
   }
 
   if (heroVariant === "solution") {
+    const solution = solutions.find((item) => route.path === `/solutions/${item.slug}`);
     return buildSolutionMarketingPrerenderShell({
+      breadcrumbCurrent: esc(solution?.name ?? route.h1),
       heroH1: esc(route.h1),
       heroIntro: esc(route.intro),
+      bodyHtml: bodyInner,
+    });
+  }
+
+  if (heroVariant === "compare") {
+    const comparison = comparisons.find((item) => route.path === `/compare/${item.slug}`);
+    return buildCompareMarketingPrerenderShell({
+      breadcrumbCurrent: esc(comparison?.h1 ?? route.h1),
+      heroH1: esc(route.h1),
       bodyHtml: bodyInner,
     });
   }
