@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import BrandMark from "@/components/shell/BrandMark";
@@ -12,38 +12,45 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const authCheckStarted = useRef(false);
+  const cancelScheduledAuth = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
-    let cancelled = false;
-    let cancelScheduled: (() => void) | undefined;
-
-    const checkAuth = async () => {
-      const { supabase } = await import('@/integrations/supabase/client');
-      if (cancelled) return;
-      const { data } = await supabase.auth.getSession();
-      if (!cancelled) setIsLoggedIn(!!data.session);
-    };
-
-    const run = () => {
-      void checkAuth();
-    };
-
-    if (shouldDeferAuthBootstrap(pathname)) {
-      cancelScheduled = scheduleIdleTask(run);
-    } else {
-      void checkAuth();
-    }
-
     window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const runAuthCheck = async () => {
+    if (authCheckStarted.current) return;
+    authCheckStarted.current = true;
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data } = await supabase.auth.getSession();
+    setIsLoggedIn(!!data.session);
+  };
+
+  useEffect(() => {
+    if (shouldDeferAuthBootstrap(window.location.pathname)) {
+      cancelScheduledAuth.current = scheduleIdleTask(() => {
+        void runAuthCheck();
+      });
+    } else {
+      void runAuthCheck();
+    }
     return () => {
-      cancelled = true;
-      cancelScheduled?.();
-      window.removeEventListener('scroll', handleScroll);
+      cancelScheduledAuth.current?.();
     };
+  }, []);
+
+  useEffect(() => {
+    if (authCheckStarted.current) return;
+    if (!shouldDeferAuthBootstrap(pathname)) {
+      cancelScheduledAuth.current?.();
+      cancelScheduledAuth.current = null;
+      void runAuthCheck();
+    }
   }, [pathname]);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);

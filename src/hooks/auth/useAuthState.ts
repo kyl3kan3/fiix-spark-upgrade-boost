@@ -6,7 +6,6 @@ import { shouldDeferAuthBootstrap, scheduleIdleTask } from "@/lib/deferAuthBoots
 
 export function useAuthState() {
   const { pathname } = useLocation();
-  const deferBootstrap = shouldDeferAuthBootstrap(pathname);
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(() => {
@@ -15,7 +14,10 @@ export function useAuthState() {
   });
   const [error, setError] = useState<string | null>(null);
   const hasResolvedInitialSession = useRef(false);
-  const bootstrapGeneration = useRef(0);
+  const bootstrapStarted = useRef(false);
+  const cancelScheduledBootstrap = useRef<(() => void) | null>(null);
+  const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const bootstrapAlive = useRef(true);
 
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
@@ -45,84 +47,91 @@ export function useAuthState() {
     }
   };
 
-  useEffect(() => {
-    const generation = ++bootstrapGeneration.current;
-    let isMounted = true;
-    let cancelScheduled: (() => void) | undefined;
-    let subscription: { unsubscribe: () => void } | null = null;
+  const startBootstrap = useCallback(async (showLoading: boolean) => {
+    if (bootstrapStarted.current) return;
+    bootstrapStarted.current = true;
 
-    const finishBootstrap = () => {
-      if (!isMounted) return;
-      hasResolvedInitialSession.current = true;
-      setIsLoading(false);
-    };
+    if (showLoading) {
+      setIsLoading(true);
+    }
 
-    const startBootstrap = async () => {
-      if (!deferBootstrap) {
-        setIsLoading(true);
-      }
+    const { supabase } = await import("@/integrations/supabase/client");
+    if (!bootstrapAlive.current) return;
 
-      const { supabase } = await import("@/integrations/supabase/client");
-      if (!isMounted || generation !== bootstrapGeneration.current) return;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, nextSession) => {
+        if (!bootstrapAlive.current) return;
 
-      const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
-        (event, nextSession) => {
-          if (!isMounted) return;
+        applySession(nextSession);
 
-          applySession(nextSession);
+        const isResolvedAuthEvent =
+          event === "SIGNED_IN" ||
+          event === "SIGNED_OUT" ||
+          event === "TOKEN_REFRESHED" ||
+          event === "USER_UPDATED" ||
+          (event === "INITIAL_SESSION" && !!nextSession);
 
-          const isResolvedAuthEvent =
-            event === "SIGNED_IN" ||
-            event === "SIGNED_OUT" ||
-            event === "TOKEN_REFRESHED" ||
-            event === "USER_UPDATED" ||
-            (event === "INITIAL_SESSION" && !!nextSession);
-
-          if (hasResolvedInitialSession.current || isResolvedAuthEvent) {
-            setIsLoading(false);
-          }
-        },
-      );
-      subscription = authSub;
-
-      try {
-        const { data: { session: existingSession }, error: sessionError } = await supabase.auth.getSession();
-        if (!isMounted || generation !== bootstrapGeneration.current) return;
-
-        if (sessionError) {
-          console.error("Error restoring session:", sessionError);
-          handleError("Failed to restore your session");
-          applySession(null);
-        } else {
-          applySession(existingSession);
+        if (hasResolvedInitialSession.current || isResolvedAuthEvent) {
+          setIsLoading(false);
         }
-      } catch (sessionError) {
-        if (!isMounted || generation !== bootstrapGeneration.current) return;
+      },
+    );
+    subscriptionRef.current = subscription;
 
-        console.error("Unexpected session restore error:", sessionError);
+    try {
+      const {
+        data: { session: existingSession },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+      if (!bootstrapAlive.current) return;
+
+      if (sessionError) {
+        console.error("Error restoring session:", sessionError);
         handleError("Failed to restore your session");
         applySession(null);
-      } finally {
-        finishBootstrap();
+      } else {
+        applySession(existingSession);
       }
-    };
+    } catch (sessionError) {
+      if (!bootstrapAlive.current) return;
 
-    const run = () => {
-      void startBootstrap();
-    };
+      console.error("Unexpected session restore error:", sessionError);
+      handleError("Failed to restore your session");
+      applySession(null);
+    } finally {
+      if (bootstrapAlive.current) {
+        hasResolvedInitialSession.current = true;
+        setIsLoading(false);
+      }
+    }
+  }, [applySession]);
 
-    if (deferBootstrap) {
-      cancelScheduled = scheduleIdleTask(run);
+  useEffect(() => {
+    bootstrapAlive.current = true;
+    const defer = shouldDeferAuthBootstrap(window.location.pathname);
+    if (defer) {
+      cancelScheduledBootstrap.current = scheduleIdleTask(() => {
+        void startBootstrap(false);
+      });
     } else {
-      run();
+      void startBootstrap(true);
     }
 
     return () => {
-      isMounted = false;
-      cancelScheduled?.();
-      subscription?.unsubscribe();
+      bootstrapAlive.current = false;
+      cancelScheduledBootstrap.current?.();
+      subscriptionRef.current?.unsubscribe();
     };
-  }, [deferBootstrap, pathname, applySession]);
+  }, [startBootstrap]);
+
+  useEffect(() => {
+    if (bootstrapStarted.current) return;
+    if (!shouldDeferAuthBootstrap(pathname)) {
+      cancelScheduledBootstrap.current?.();
+      cancelScheduledBootstrap.current = null;
+      void startBootstrap(true);
+    }
+  }, [pathname, startBootstrap]);
 
   return {
     user,

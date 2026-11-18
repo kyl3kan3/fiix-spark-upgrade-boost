@@ -1,9 +1,12 @@
-import { expect, it } from "vitest";
+import { expect, it, describe } from "vitest";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
+const bunPath = spawnSync("which", ["bun"], { encoding: "utf8" }).stdout.trim();
+
+describe.skipIf(!bunPath)("MCP patch repair with Bun", () => {
 it("repairs an unpatched SDK when npm_execpath is the native Bun binary", () => {
   const root = mkdtempSync(path.join(tmpdir(), "mcp-patch-repair-"));
   try {
@@ -21,8 +24,6 @@ it("repairs an unpatched SDK when npm_execpath is the native Bun binary", () => 
       }
       console.log('local patch tool executed');
     `);
-    const bunPath = spawnSync("which", ["bun"], { encoding: "utf8" }).stdout.trim();
-    expect(bunPath).not.toBe("");
     const result = spawnSync(process.execPath, [path.resolve("scripts/ensure-mcp-js-patch.mjs")], {
       cwd: root,
       env: { ...process.env, npm_execpath: bunPath },
@@ -35,4 +36,5 @@ it("repairs an unpatched SDK when npm_execpath is the native Bun binary", () => 
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
 });
