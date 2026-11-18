@@ -13,6 +13,10 @@ import {
 } from "@/data/comparisons";
 import {
   COMPARE_HERO_BREADCRUMB,
+  COMPARE_PRICING_CARD_CLASS,
+  COMPARE_PRICING_H2_CLASS,
+  COMPARE_PRICING_SECTION_CLASS,
+  COMPARE_PRICING_SUMMARY_CLASS,
   MARKETING_BREADCRUMB_LINK_CLASS,
   MARKETING_BREADCRUMB_NAV_CLASS,
   MARKETING_HERO_CTA_WRAP_CLASS,
@@ -119,12 +123,12 @@ const ComparePage = () => {
       </section>
 
       {c.pricingTable ? (
-        <section className="container mx-auto max-w-4xl px-4 pb-16">
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8">
-            <h2 className="font-headline text-2xl font-bold text-foreground text-balance sm:text-3xl">
+        <section className={COMPARE_PRICING_SECTION_CLASS}>
+          <div className={COMPARE_PRICING_CARD_CLASS}>
+            <h2 className={COMPARE_PRICING_H2_CLASS}>
               {c.pricingTable.heading}
             </h2>
-            <p className="mt-4 max-w-3xl text-muted-foreground leading-relaxed text-pretty">
+            <p className={COMPARE_PRICING_SUMMARY_CLASS}>
               {c.pricingTable.summary}
             </p>
             <div className="mt-6 overflow-x-auto rounded-xl border border-border">

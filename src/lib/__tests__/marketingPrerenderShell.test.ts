@@ -9,6 +9,7 @@ import {
   buildCompareMarketingPrerenderShell,
   buildSolutionMarketingPrerenderShell,
   marketingDetailHeroVariant,
+  SOLUTION_PAGE_INTRO_CLASS,
 } from "@/lib/marketingPrerenderShell";
 
 function assertBalancedCssBraces(css: string): void {
@@ -84,8 +85,17 @@ describe("marketing prerender shell", () => {
       breadcrumbCurrent: "MaintenEase vs MaintainX",
       heroH1: "MaintenEase vs MaintainX",
       bodyHtml: "<h2>Pricing</h2>",
+      pricingTable: {
+        heading: "MaintainX cost in 2026",
+        summary: "MaintainX lists a free Basic plan.",
+      },
     });
     expect(() => assertCompareHeroParity(shell)).not.toThrow();
-    expect(shell).not.toMatch(/prerender-marketing-hero-inner[\s\S]*<p class=/);
+    const heroInner =
+      shell.match(/prerender-marketing-hero-inner">([\s\S]*?)<\/div>\s*<\/section>/)?.[1] ?? "";
+    expect(heroInner).not.toContain(SOLUTION_PAGE_INTRO_CLASS);
+    expect(heroInner).not.toMatch(/<p class=/);
+    expect(shell).toContain("MaintainX lists a free Basic plan.");
+    expect(SOLUTION_MARKETING_HERO_CRITICAL_CSS).toContain("p.text-pretty");
   });
 });

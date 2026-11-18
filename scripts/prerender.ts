@@ -1359,10 +1359,17 @@ function bodyFor(route: Route): string {
 
   if (heroVariant === "compare") {
     const comparison = comparisons.find((item) => route.path === `/compare/${item.slug}`);
+    const pricingTable = comparison?.pricingTable
+      ? {
+          heading: esc(comparison.pricingTable.heading),
+          summary: esc(comparison.pricingTable.summary),
+        }
+      : undefined;
     return buildCompareMarketingPrerenderShell({
       breadcrumbCurrent: esc(comparison?.h1 ?? route.h1),
       heroH1: esc(route.h1),
       bodyHtml: bodyInner,
+      pricingTable,
     });
   }
 
