@@ -3,29 +3,48 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import BrandMark from "@/components/shell/BrandMark";
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { shouldDeferAuthBootstrap, scheduleIdleTask } from '@/lib/deferAuthBootstrap';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
+    let cancelled = false;
+    let cancelScheduled: (() => void) | undefined;
+
     const checkAuth = async () => {
+      const { supabase } = await import('@/integrations/supabase/client');
+      if (cancelled) return;
       const { data } = await supabase.auth.getSession();
-      setIsLoggedIn(!!data.session);
+      if (!cancelled) setIsLoggedIn(!!data.session);
     };
 
-    checkAuth();
+    const run = () => {
+      void checkAuth();
+    };
+
+    if (shouldDeferAuthBootstrap(pathname)) {
+      cancelScheduled = scheduleIdleTask(run);
+    } else {
+      void checkAuth();
+    }
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => {
+      cancelled = true;
+      cancelScheduled?.();
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [pathname]);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 

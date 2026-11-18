@@ -42,17 +42,35 @@
       {"@context":"https://schema.org","@type":"WebSite","name":"MaintenEase","url":"https://maintenease.com/","publisher":{"@type":"Organization","name":"MaintenEase","url":"https://maintenease.com/"}}
     </script>
 
-    <link rel="preconnect" href="https://wwgljhpuulhljumrhscg.supabase.co" crossorigin />
+    <!-- Hero headline font: stable public URL so prerender + preload share one file. -->
+    <link rel="preload" href="/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Fonts are self-hosted and declared in src/index.css; no fonts CDN. -->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18051376894"></script>
+  <!-- Google tag: queue events immediately; load gtag.js after load + idle -->
     <script defer data-website-id="dfid_4BRVKzjIQLv5Psqg0AK9u" data-domain="maintenease.com" src="https://datafa.st/js/script.js"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
       gtag('js', new Date());
       gtag('config', 'AW-18051376894');
       gtag('config', 'AW-18190364490', { allow_enhanced_conversions: true });
+      (function () {
+        function loadGtag() {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18051376894';
+          document.head.appendChild(s);
+        }
+        function schedule() {
+          if (typeof requestIdleCallback === 'function') {
+            requestIdleCallback(loadGtag, { timeout: 3000 });
+          } else {
+            setTimeout(loadGtag, 1500);
+          }
+        }
+        if (document.readyState === 'complete') schedule();
+        else window.addEventListener('load', schedule, { once: true });
+      })();
     </script>
 </head>
 

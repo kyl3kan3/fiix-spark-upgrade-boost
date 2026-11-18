@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarDays, MapPin, User } from "lucide-react";
 import { SIGNUP_PATH } from "@/data/signupRoute";
+import { HOMEPAGE_HERO_H1_CLASS } from "@/lib/homepagePrerenderHero";
 import { cn } from "@/lib/utils";
 
 /** Illustrative work orders for the hero. Uses the app's own queue names. */
@@ -42,7 +43,7 @@ const Hero = () => {
       <div className="container relative z-10 mx-auto max-w-7xl px-4">
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
           <div>
-            <h1 className="font-headline text-[2.75rem] font-bold leading-[1.02] text-white sm:text-6xl xl:text-7xl">
+            <h1 className={HOMEPAGE_HERO_H1_CLASS}>
               CMMS Software for Facility &amp; Maintenance Teams
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-sidebar-foreground">

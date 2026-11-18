@@ -14,6 +14,7 @@
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { buildHomepagePrerenderShell } from "../src/lib/homepagePrerenderHero";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
@@ -1245,10 +1246,10 @@ function headFor(route: Route): string {
 }
 
 function bodyFor(route: Route): string {
-  const parts = [
-    `<h1>${esc(route.h1)}</h1>`,
-    `<p>${esc(route.intro)}</p>`,
-  ];
+  const parts: string[] = [];
+  if (route.path !== "/") {
+    parts.push(`<h1>${esc(route.h1)}</h1>`, `<p>${esc(route.intro)}</p>`);
+  }
   if (SIGNUP_CTA_ROUTES.has(route.path)) {
     parts.push(`<p><a href="${SIGNUP_PATH}">Start your free trial</a></p>`);
   }
@@ -1329,10 +1330,21 @@ function bodyFor(route: Route): string {
         "</ul></nav>",
     );
   }
+
+  const bodyInner = parts.join("\n      ");
+
+  if (route.path === "/") {
+    return buildHomepagePrerenderShell({
+      heroH1: esc(route.h1),
+      heroIntro: esc(route.intro),
+      bodyHtml: bodyInner,
+    });
+  }
+
   // Ordinary HTML gives non-JavaScript clients the same page-specific body and
   // link graph. React replaces this build-time shell when the app starts, so it
   // is never duplicated in the visible document.
-  return `<main data-prerender="static" style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${parts.join("\n      ")}</main>`;
+  return `<main data-prerender="static" style="max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">${bodyInner}</main>`;
 }
 
 function markdownFor(route: Route): string {
