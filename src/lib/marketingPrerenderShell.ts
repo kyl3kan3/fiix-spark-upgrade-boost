@@ -19,7 +19,8 @@ export const SOLUTION_MARKETING_HERO_GEOMETRY = {
   mdBreakpointPx: 768,
   h1: {
     baseFontSizeRem: 2.25,
-    baseLineHeight: 2.5,
+    /** Matches Tailwind `text-4xl` (`line-height: 2.5rem`, not unitless 2.5). */
+    baseLineHeightRem: 2.5,
     mdFontSizeRem: 3,
     mdLineHeight: 1,
     maxWidthRem: 48,
@@ -43,7 +44,7 @@ export const SOLUTION_MARKETING_HERO_CRITICAL_CSS = `
 .prerender-marketing-hero{padding:${g.paddingTopRem}rem 0 ${g.paddingBottomRem}rem;overflow:hidden;color:${g.foregroundColor}}
 @media (min-width:${g.mdBreakpointPx}px){.prerender-marketing-hero{padding-top:${g.paddingTopMdRem}rem;padding-bottom:${g.paddingBottomMdRem}rem}}
 .prerender-marketing-hero-inner{max-width:${g.containerMaxWidthRem}rem;margin:0 auto;padding:0 ${g.containerPaddingXRem}rem}
-.prerender-marketing-hero h1{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeight};letter-spacing:0;margin:0 0 ${g.h1.marginBottomRem}rem;max-width:${g.h1.maxWidthRem}rem;color:${g.foregroundColor}}
+.prerender-marketing-hero h1{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeightRem}rem;letter-spacing:0;margin:0 0 ${g.h1.marginBottomRem}rem;max-width:${g.h1.maxWidthRem}rem;color:${g.foregroundColor}}
 @media (min-width:${g.mdBreakpointPx}px){.prerender-marketing-hero h1{font-size:${g.h1.mdFontSizeRem}rem;line-height:${g.h1.mdLineHeight}}}
 .prerender-marketing-intro{margin:0 0 ${g.intro.marginBottomRem}rem;max-width:${g.intro.maxWidthRem}rem;font-family:Barlow,system-ui,sans-serif;font-size:${g.intro.fontSizeRem}rem;line-height:${g.intro.lineHeight};color:${g.mutedForegroundColor}}
 .prerender-body{max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 Barlow,system-ui,sans-serif;color:${g.foregroundColor}}

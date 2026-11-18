@@ -65,9 +65,11 @@ describe("marketing prerender shell", () => {
   it("matches SolutionPage hero geometry tokens", () => {
     expect(g.containerMaxWidthRem).toBe(64);
     expect(g.h1.baseFontSizeRem).toBe(2.25);
+    expect(g.h1.baseLineHeightRem).toBe(2.5);
     expect(g.h1.mdFontSizeRem).toBe(3);
     expect(g.intro.fontSizeRem).toBe(1.125);
     expect(g.intro.lineHeight).toBe(1.625);
+    expect(SOLUTION_MARKETING_HERO_CRITICAL_CSS).toContain("line-height:2.5rem");
   });
 
   it("emits hero markup with shared H1 classes and styled intro", () => {
