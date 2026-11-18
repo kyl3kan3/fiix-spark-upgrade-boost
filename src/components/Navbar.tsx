@@ -1,31 +1,57 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import BrandMark from "@/components/shell/BrandMark";
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { shouldDeferAuthBootstrap, scheduleIdleTask } from '@/lib/deferAuthBootstrap';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const authCheckStarted = useRef(false);
+  const cancelScheduledAuth = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsLoggedIn(!!data.session);
-    };
-
-    checkAuth();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const runAuthCheck = async () => {
+    if (authCheckStarted.current) return;
+    authCheckStarted.current = true;
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data } = await supabase.auth.getSession();
+    setIsLoggedIn(!!data.session);
+  };
+
+  useEffect(() => {
+    if (shouldDeferAuthBootstrap(window.location.pathname)) {
+      cancelScheduledAuth.current = scheduleIdleTask(() => {
+        void runAuthCheck();
+      });
+    } else {
+      void runAuthCheck();
+    }
+    return () => {
+      cancelScheduledAuth.current?.();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (authCheckStarted.current) return;
+    if (!shouldDeferAuthBootstrap(pathname)) {
+      cancelScheduledAuth.current?.();
+      cancelScheduledAuth.current = null;
+      void runAuthCheck();
+    }
+  }, [pathname]);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
