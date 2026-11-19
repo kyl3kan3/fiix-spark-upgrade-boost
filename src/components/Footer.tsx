@@ -26,7 +26,7 @@ p === "/editorial-policy" ||
   <footer className="bg-muted/50 border-t border-border py-4">
   <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-3 text-center text-sm text-muted-foreground">
     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-      <span>&copy; {currentYear} Decent4. All rights reserved.</span>
+      <span suppressHydrationWarning>&copy; {currentYear} Decent4. All rights reserved.</span>
       <span className="hidden sm:inline">·</span>
       <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
       <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>

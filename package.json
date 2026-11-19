@@ -9,7 +9,8 @@
     "dev": "vite",
     "prebuild": "tsx scripts/generate-sitemap.ts && tsx scripts/generate-llms.ts",
     "build": "vite build",
-    "postbuild": "tsx scripts/prerender.ts",
+    "build:ssr": "vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "postbuild": "npm run build:ssr && tsx scripts/prerender.ts",
     "prerender": "tsx scripts/prerender.ts",
     "build:dev": "vite build --mode development",
     "seed:demo": "tsx scripts/seed-demo-tenant.ts",
@@ -89,6 +90,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^6.0.1",
+    "ws": "^8.23.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "zod": "^4"
   },

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { TRIAL_CANCEL_BY_DAY, TRIAL_DAYS } from "@/constants/trial";
+import { buildMtbfCalculatorSoftwareApplicationJsonLd } from "@/data/mtbfCalculatorJsonLd";
 import { SECOND_PASS_TOOL_PAGES } from "@/data/secondPassTools";
 import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 import {
@@ -135,6 +136,37 @@ const MtbfCalculatorPage = () => {
   const errors = result.status === "invalid" ? result.errors : {};
 
   const breadcrumbs = [...(PAGE.breadcrumbs ?? []), { label: PAGE.h1, href: PAGE.path }];
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: PAGE.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  };
+  const pageLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: PAGE.h1,
+    url: CANONICAL_URL,
+    description: PAGE.metaDescription,
+    isPartOf: { "@id": `${ORIGIN}/#website` },
+    datePublished: PAGE.published,
+    dateModified: PAGE.updated,
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.label,
+      item: `${ORIGIN}${crumb.href}`,
+    })),
+  };
+  const softwareAppLd = buildMtbfCalculatorSoftwareApplicationJsonLd();
+
   return (
     <MarketingLayout>
       <Helmet>
@@ -150,8 +182,10 @@ const MtbfCalculatorPage = () => {
         <meta name="twitter:title" content={PAGE.metaTitle} />
         <meta name="twitter:description" content={PAGE.metaDescription} />
         <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
-        {/* WebPage, FAQPage, BreadcrumbList, and SoftwareApplication JSON-LD ship once in the
-            prerendered HTML (scripts/prerender.ts). Repeating them here would duplicate after hydration. */}
+        <script type="application/ld+json">{JSON.stringify(pageLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(softwareAppLd)}</script>
       </Helmet>
       <MarketingJsonLd />
 

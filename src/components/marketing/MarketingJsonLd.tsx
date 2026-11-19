@@ -14,8 +14,6 @@ import {
 export default function MarketingJsonLd() {
  const { pathname } = useLocation();
  const isHome = pathname === "/";
- const hasStaticCatalog = typeof document !== "undefined" &&
- document.querySelector('script[type="application/ld+json"][data-ld-static="true"]');
 
  // On non-home routes (including client-side navigations away from "/"),
  // drop the homepage-only static blocks so no duplicate nodes remain.
@@ -26,19 +24,15 @@ export default function MarketingJsonLd() {
  .forEach((el) => el.remove());
  }, [isHome]);
 
- // The homepage ships these two blocks statically in index.html (visible to
- // no-JS crawlers), so skip them here to avoid duplicate nodes.
- if (isHome || hasStaticCatalog) return null;
-
  return (
  <Helmet>
- <script type="application/ld+json" data-ld="organization">
+ <script type="application/ld+json" data-ld="organization" data-rh="true">
  {JSON.stringify(ORGANIZATION_JSON_LD)}
  </script>
- <script type="application/ld+json" data-ld="website">
+ <script type="application/ld+json" data-ld="website" data-rh="true">
  {JSON.stringify(WEBSITE_JSON_LD)}
  </script>
- <script type="application/ld+json" data-ld="brand">
+ <script type="application/ld+json" data-ld="brand" data-rh="true">
  {JSON.stringify(BRAND_JSON_LD)}
  </script>
  </Helmet>

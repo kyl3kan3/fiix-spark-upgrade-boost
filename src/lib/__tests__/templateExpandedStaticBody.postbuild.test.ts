@@ -16,9 +16,9 @@ describe("expanded maintenance log built prerender HTML", () => {
     expect(existsSync(distPath), "dist missing — run npm run build before this test").toBe(true);
     const built = readFileSync(distPath, "utf8");
     expect(built).toContain("Example only — fictional entries for illustration.");
-    expect(built).toContain("<th scope=\"col\">Next Service Due</th>");
-    expect(built).toContain('overflow-x:auto;max-width:100%');
-    expect((built.match(/<th scope="col">/g) ?? []).length).toBeGreaterThanOrEqual(13);
+    expect(built).toContain("Next Service Due</th>");
+    expect(built).toContain("overflow-x-auto");
+    expect((built.match(/\bscope="col"/g) ?? []).length).toBeGreaterThanOrEqual(13);
     expect(built).toContain('"@type":"FAQPage"');
     for (const faq of template.faqs) {
       expect(built).toContain(faq.q);

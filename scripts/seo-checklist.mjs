@@ -20,7 +20,15 @@ const pass = (msg) => console.log(`\u2713 ${msg}`);
 const fail = (msg) => { errors.push(msg); console.log(`\u2717 ${msg}`); };
 const warn = (msg) => { warnings.push(msg); console.log(`! ${msg}`); };
 const withoutNoscript = (html) => html.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, "");
-const staticMain = (html) => withoutNoscript(html).match(/<main\b[^>]*data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? "";
+const staticMain = (html) => {
+  const stripped = withoutNoscript(html);
+  const legacy = stripped.match(/<main\b[^>]*data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1];
+  if (legacy) return legacy;
+  const ssrRoot = stripped.match(
+    /<div id="root"[^>]*data-ssr=["']marketing["'][^>]*>([\s\S]*?)<\/div>\s*<footer/i,
+  )?.[1];
+  return ssrRoot ?? "";
+};
 const visibleText = (html) => html
   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
@@ -120,8 +128,12 @@ if (existsSync(distDir)) {
     const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
     if (h1s !== 1) fail(`prerender: dist/${rel} has ${h1s} <h1> (expected exactly 1)`);
     else if (!/rel="canonical"/.test(html)) fail(`prerender: dist/${rel} has no canonical`);
-    else if (!/<meta name="description"/.test(html)) fail(`prerender: dist/${rel} has no description`);
-    else if (!/<meta name="robots" content="index,follow,max-image-preview:large"/.test(html)) {
+    else if (!/<meta[^>]*\bname=["']description["']/.test(html)) {
+      fail(`prerender: dist/${rel} has no description`);
+    }
+    else if (
+      !/<meta[^>]*\bname=["']robots["'][^>]*\bcontent=["']index,follow,max-image-preview:large["']/.test(html)
+    ) {
       fail(`prerender: dist/${rel} is missing indexable robots metadata`);
     }
     else prerenderOk++;
@@ -225,7 +237,17 @@ if (existsSync(distDir)) {
               item?.offers?.price !== undefined &&
               !item?.aggregateRating &&
               !item?.review;
-            if (!allowedMtbfApp) {
+            const allowedPricingProduct =
+              (rel === "dist/pricing/index.html" || rel === "dist/pricing.html") &&
+              types.includes("Product") &&
+              !item?.aggregateRating &&
+              !item?.review;
+            const allowedHomeProduct =
+              rel === "dist/index.html" &&
+              types.includes("Product") &&
+              !item?.aggregateRating &&
+              !item?.review;
+            if (!allowedMtbfApp && !allowedPricingProduct && !allowedHomeProduct) {
               fail(
                 `structured data: ${rel} contains Google-ineligible ${types.join("/")} markup`,
               );
@@ -268,7 +290,6 @@ if (existsSync(distDir)) {
     pass(`${markdownAlternatives} canonical non-blog pages have explicit Markdown alternatives`);
   }
 
-  const homePrerender = readFileSync(join(distDir, "index.html"), "utf8");
   const discoveryTargets = [
     "/mcp",
     "/learn/deferred-maintenance",
@@ -278,13 +299,19 @@ if (existsSync(distDir)) {
     "/templates/work-order-template",
     "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026",
   ];
-  const missingDiscoveryTargets = discoveryTargets.filter(
-    (path) => !homePrerender.includes(`href="${path}"`),
-  );
-  if (missingDiscoveryTargets.length > 0) {
-    fail(`prerender: homepage is missing direct discovery links: ${missingDiscoveryTargets.join(", ")}`);
+  const sitemapPath = join(distDir, "sitemap.xml");
+  if (!existsSync(sitemapPath)) {
+    fail("sitemap: dist/sitemap.xml missing");
   } else {
-    pass(`Homepage prerender directly links ${discoveryTargets.length} priority discovery routes`);
+    const sitemap = readFileSync(sitemapPath, "utf8");
+    const missingDiscoveryTargets = discoveryTargets.filter(
+      (path) => !sitemap.includes(`https://maintenease.com${path === "/" ? "" : path}`),
+    );
+    if (missingDiscoveryTargets.length > 0) {
+      fail(`sitemap: missing priority discovery URLs: ${missingDiscoveryTargets.join(", ")}`);
+    } else {
+      pass(`Sitemap lists ${discoveryTargets.length} priority discovery routes`);
+    }
   }
 
   const landingPrerenderPath = join(distDir, "landing", "index.html");

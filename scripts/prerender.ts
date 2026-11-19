@@ -48,6 +48,8 @@ import {
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
+import { injectSsrDocument, loadSsrRenderer, type SsrRenderFn } from "./marketingSsr";
+import type { BlogSsrPayload } from "../src/ssr/blogSsr";
 import { buildExpandedTemplateStaticBody } from "../src/lib/templateExpandedStaticBody";
 import { inlineMarkdownLinksToHtml } from "../src/lib/inlineMarkdownLinks";
 import { redirectForPath } from "../src/lib/seoRouting";
@@ -1031,10 +1033,19 @@ const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3Z2xqaHB1dWxobGp1bXJoc2NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTgzOTAsImV4cCI6MjA5NDY5NDM5MH0.21tgSpPihdVl5XE9pFpwFzvaD2I05DE7uGzkuI7u6ac";
 
 type BlogRow = {
+  id: number;
   slug: string;
   title: string;
   meta_description: string | null;
   content_html: string | null;
+  hero_image_url: string | null;
+  hero_image_alt: string | null;
+  infographic_url: string | null;
+  meta_keywords: string | null;
+  faq_schema: { question: string; answer: string }[] | null;
+  reading_time: number | null;
+  published_at: string | null;
+  updated_at: string | null;
 };
 
 const stripHtml = (html: string) =>
@@ -1085,7 +1096,7 @@ function sectionsFromBlogHtml(html: string): { heading: string; body: string }[]
 async function fetchBlogPosts(): Promise<BlogRow[]> {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,meta_description,content_html&order=published_at.desc.nullslast&limit=5000`,
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=id,slug,title,meta_description,content_html,hero_image_url,hero_image_alt,infographic_url,meta_keywords,faq_schema,reading_time,published_at,updated_at&order=published_at.desc.nullslast&limit=5000`,
       { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
     );
     if (!res.ok) {
@@ -1393,7 +1404,7 @@ function markdownFor(route: Route): string {
   return `${lines.join("\n").trim()}\n`;
 }
 
-function renderRoute(route: Route): string {
+function renderRouteLegacy(route: Route): string {
   let html = shell;
 
   // Replace the shell's title / description / canonical with route-specific tags.
@@ -1412,6 +1423,51 @@ function renderRoute(route: Route): string {
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
   return injectStaticSeoFooter(html);
+}
+
+let ssrRenderer: SsrRenderFn | null = null;
+
+function blogSsrPayloadForRoute(route: Route): BlogSsrPayload | null {
+  if (route.path === "/blog") {
+    return {
+      indexPosts: blogPosts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        hero_image_url: post.hero_image_url,
+        hero_image_alt: post.hero_image_alt,
+        meta_description: post.meta_description,
+        published_at: post.published_at,
+        reading_time: post.reading_time,
+      })),
+    };
+  }
+  if (route.path.startsWith("/blog/")) {
+    const slug = route.path.slice("/blog/".length);
+    const post = blogPosts.find((entry) => entry.slug === slug);
+    if (!post) return null;
+    return { post };
+  }
+  return null;
+}
+
+async function renderRouteWithSsr(route: Route): Promise<string> {
+  if (!ssrRenderer) {
+    ssrRenderer = await loadSsrRenderer(DIST);
+  }
+  const blog = blogSsrPayloadForRoute(route);
+  const { html: appHtml, helmet } = await ssrRenderer(route.path, { blog });
+  return injectStaticSeoFooter(
+    injectSsrDocument({
+      shell,
+      routePath: route.path,
+      indexable: route.indexable !== false,
+      appHtml,
+      helmet,
+      origin: ORIGIN,
+      blogSsrPayload: blog,
+    }),
+  );
 }
 
 const APP_SHELL_STATIC_BODY = `<main data-prerender="static" style="max-width:42rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">
@@ -1452,7 +1508,15 @@ if (existsSync(faviconPngPath)) {
 let written = 0;
 let markdownWritten = 0;
 for (const route of routes) {
-  const html = renderRoute(route);
+  let html: string;
+  try {
+    html = await renderRouteWithSsr(route);
+  } catch (err) {
+    console.error(`[prerender] SSR failed for ${route.path}`);
+    console.error(err);
+    process.exitCode = 1;
+    throw err;
+  }
   // Write both `<path>/index.html` and `<path>.html` so clean URLs resolve on
   // any static host (some map /a/b -> a/b/index.html, others -> a/b.html).
   const targets =
@@ -1483,4 +1547,8 @@ for (const route of routes) {
   }
 }
 
+if (process.exitCode) {
+  console.error(`[prerender] aborting — fix SSR errors before shipping marketing HTML`);
+  process.exit(process.exitCode);
+}
 console.log(`[prerender] wrote ${written} HTML documents and ${markdownWritten} missing Markdown alternatives → dist/`);

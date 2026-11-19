@@ -47,9 +47,8 @@ const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const EditorialPolicyPage = lazy(() => import("@/pages/EditorialPolicyPage"));
 const SitemapPage = lazy(() => import("@/pages/SitemapPage"));
 
-export const AppRoutes = () => (
-  <ErrorBoundary>
-    <RouteSuspense>
+export const AppRoutes = ({ skipRouteSuspense = false }: { skipRouteSuspense?: boolean }) => {
+  const routes = (
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/landing" element={<Landing />} />
@@ -114,6 +113,11 @@ export const AppRoutes = () => (
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </RouteSuspense>
-  </ErrorBoundary>
-);
+  );
+
+  return (
+    <ErrorBoundary>
+      {skipRouteSuspense ? routes : <RouteSuspense>{routes}</RouteSuspense>}
+    </ErrorBoundary>
+  );
+};

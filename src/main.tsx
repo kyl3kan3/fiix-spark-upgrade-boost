@@ -1,10 +1,8 @@
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
 import { STATIC_SEO_FOOTER_ID } from "./lib/staticSeoFooter";
+import { shouldHydrateMarketingPage } from "./lib/marketingHydration";
 
 initSentry();
 document.getElementById(STATIC_SEO_FOOTER_ID)?.remove();
@@ -47,8 +45,29 @@ if (import.meta.env.PROD) {
   });
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
- <React.StrictMode>
- <App />
- </React.StrictMode>
-);
+const rootEl = document.getElementById("root");
+
+async function mountMarketingHydrate(): Promise<void> {
+  if (!rootEl) return;
+  const { preloadMarketingRoute } = await import("./ssr/preloadMarketingRoute");
+  await preloadMarketingRoute(window.location.pathname);
+  const { renderMarketingHydrate } = await import("./marketing/renderMarketingHydrate");
+  renderMarketingHydrate(rootEl);
+}
+
+async function mountSpaApp(): Promise<void> {
+  if (!rootEl) return;
+  const { mountSpa } = await import("./spa/mountSpa");
+  mountSpa(rootEl);
+}
+
+async function mount(): Promise<void> {
+  if (!rootEl) return;
+  if (shouldHydrateMarketingPage(window.location.pathname, rootEl)) {
+    await mountMarketingHydrate();
+    return;
+  }
+  await mountSpaApp();
+}
+
+void mount();

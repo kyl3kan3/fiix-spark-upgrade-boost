@@ -44,7 +44,7 @@ const Hero = () => {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
           <div>
             <h1 className={HOMEPAGE_HERO_H1_CLASS}>
-              CMMS Software for Facility &amp; Maintenance Teams
+              CMMS Software for Facility & Maintenance Teams
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-sidebar-foreground">
               Work orders, assets, inspections and preventive maintenance in one place, on the phone your
