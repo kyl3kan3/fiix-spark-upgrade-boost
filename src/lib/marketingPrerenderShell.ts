@@ -175,6 +175,8 @@ export function buildSolutionMarketingPrerenderShell(parts: {
   heroH1: string;
   heroIntro: string;
   bodyHtml: string;
+  /** Escaped JSON for `application/json` script (hero + head without the full solutions bundle). */
+  routePayloadJson?: string;
 }): string {
   const heroInner = [
     buildMarketingBreadcrumb(SOLUTION_HERO_BREADCRUMB, parts.breadcrumbCurrent),
@@ -183,7 +185,19 @@ export function buildSolutionMarketingPrerenderShell(parts: {
     buildMarketingHeroCta(),
   ].join("\n          ");
 
-  return buildMarketingHeroShell(heroInner, parts.bodyHtml);
+  const payloadScript = parts.routePayloadJson
+    ? `<script type="application/json" id="solution-route-payload">${parts.routePayloadJson}</script>`
+    : "";
+
+  return `<main data-prerender="static">
+      ${payloadScript}
+      <section class="container mx-auto px-4 py-12 md:py-20 max-w-5xl">
+          ${heroInner}
+      </section>
+      <div class="prerender-body">
+      ${parts.bodyHtml}
+      </div>
+    </main>`;
 }
 
 export function buildCompareMarketingPrerenderShell(parts: {

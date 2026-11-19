@@ -29,8 +29,8 @@ function classNeedle(className: string): string {
 
 function selectorReferencesClass(selector: string, className: string): boolean {
   const needle = classNeedle(className);
-  const parts = selector.split(/[\s,>+~]+/);
-  return parts.some((part) => part === needle || part.endsWith(needle) || part.includes(needle));
+  const parts = selector.split(/[\s,>+~]+/).filter(Boolean);
+  return parts.some((part) => part === needle);
 }
 
 function ruleMatchesClasses(rule: Rule, classNames: Set<string>): boolean {

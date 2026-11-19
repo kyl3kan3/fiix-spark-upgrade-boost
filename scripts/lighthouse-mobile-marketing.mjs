@@ -37,11 +37,17 @@ async function waitForServer() {
   throw new Error("serve did not start");
 }
 
-async function measureTtfb(url) {
-  const start = performance.now();
-  const res = await fetch(url, { signal: AbortSignal.timeout(30_000) });
-  await res.arrayBuffer();
-  return Math.round(performance.now() - start);
+function lcpElementFromReport(json) {
+  const elAudit = json.audits["largest-contentful-paint-element"];
+  const item = elAudit?.details?.items?.[0];
+  if (item?.node?.snippet) {
+    return item.node.snippet.replace(/\s+/g, " ").slice(0, 120);
+  }
+  const insight = json.audits["lcp-breakdown-insight"]?.details?.items?.[0];
+  if (insight?.node?.snippet) {
+    return insight.node.snippet.replace(/\s+/g, " ").slice(0, 120);
+  }
+  return "n/a";
 }
 
 function runLighthouse(url) {
@@ -69,8 +75,13 @@ function runLighthouse(url) {
       if (code !== 0) return reject(new Error(`lighthouse exit ${code}`));
       try {
         const json = JSON.parse(out);
-        const lcp = json.audits["largest-contentful-paint"]?.numericValue;
-        resolvePromise(lcp != null ? lcp / 1000 : null);
+        const lcpMs = json.audits["largest-contentful-paint"]?.numericValue;
+        const fcpMs = json.audits["first-contentful-paint"]?.numericValue;
+        resolvePromise({
+          lcpSec: lcpMs != null ? lcpMs / 1000 : null,
+          fcpSec: fcpMs != null ? fcpMs / 1000 : null,
+          lcpElement: lcpElementFromReport(json),
+        });
       } catch (e) {
         reject(e);
       }
@@ -81,18 +92,24 @@ function runLighthouse(url) {
 async function main() {
   await waitForServer();
   for (const route of ROUTES) {
-    const url = `${BASE}${route}`;
-    await fetch(url);
+    await fetch(`${BASE}${route}`);
   }
 
   const rows = [];
   for (const route of ROUTES) {
     const url = `${BASE}${route}`;
     for (let run = 1; run <= RUNS; run++) {
-      const ttfb = await measureTtfb(url);
-      const lcpSec = await runLighthouse(url);
-      rows.push({ route, run, ttfbMs: ttfb, lcpSec: lcpSec?.toFixed(3) ?? "n/a" });
-      process.stderr.write(`${route} run ${run}/${RUNS} LCP=${lcpSec?.toFixed(3)}s TTFB=${ttfb}ms\n`);
+      const { lcpSec, fcpSec, lcpElement } = await runLighthouse(url);
+      rows.push({
+        route,
+        run,
+        fcpSec: fcpSec?.toFixed(3) ?? "n/a",
+        lcpSec: lcpSec?.toFixed(3) ?? "n/a",
+        lcpElement,
+      });
+      process.stderr.write(
+        `${route} run ${run}/${RUNS} FCP=${fcpSec?.toFixed(3)}s LCP=${lcpSec?.toFixed(3)}s\n`,
+      );
     }
   }
 

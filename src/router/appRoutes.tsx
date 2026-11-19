@@ -22,7 +22,7 @@ const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
 const SmsOptIn = lazy(() => import("@/pages/SmsOptIn"));
 const PricingPage = lazy(() => import("@/pages/PricingPage"));
 const LearnArticle = lazy(() => import("@/pages/LearnArticle"));
-const SolutionPage = lazy(() => import("@/pages/SolutionPage"));
+import SolutionMarketingRoute from "@/routes/SolutionMarketingRoute";
 const ComparePage = lazy(() => import("@/pages/ComparePage"));
 const LearnIndex = lazy(() => import("@/pages/LearnIndex"));
 const SolutionsIndex = lazy(() => import("@/pages/SolutionsIndex"));
@@ -75,7 +75,7 @@ export const AppRoutes = () => (
         <Route path="/learn" element={<LearnIndex />} />
         <Route path="/learn/:slug" element={<LearnArticle />} />
         <Route path="/solutions" element={<SolutionsIndex />} />
-        <Route path="/solutions/:slug" element={<SolutionPage />} />
+        <Route path="/solutions/:slug" element={<SolutionMarketingRoute />} />
         <Route path="/compare" element={<CompareIndex />} />
         <Route path="/compare/:slug" element={<ComparePage />} />
         <Route path="/templates" element={<TemplatesIndex />} />

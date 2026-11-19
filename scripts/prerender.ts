@@ -21,9 +21,10 @@ import {
   marketingDetailHeroVariant,
 } from "../src/lib/marketingPrerenderShell";
 import {
+  buildCompareCriticalCss,
   buildHomepageCriticalCss,
   buildLearnCriticalCss,
-  buildMarketingDetailCriticalCss,
+  buildSolutionCriticalCss,
 } from "../src/lib/marketingCriticalCssBuilder";
 import { buildLearnArticlePrerenderShell, learnDetailHeroVariant } from "../src/lib/learnPrerenderShell";
 import { solutions } from "../src/data/solutions";
@@ -37,7 +38,7 @@ import {
 } from "../src/data/facilityManagement";
 import { MCP_PAGE } from "../src/data/mcpPage";
 import { HOME_FAQS, buildHomeFaqPageJsonLd } from "../src/data/homeFaqs";
-import { jsonLdScriptTag } from "../src/lib/htmlSafeJson";
+import { jsonLdScriptTag, stringifyJsonLdForHtml } from "../src/lib/htmlSafeJson";
 import {
   SUPPORT_FAQS,
   SUPPORT_PAGE,
@@ -94,44 +95,12 @@ function readCompiledCss(): string {
 
 const COMPILED_CSS = readCompiledCss();
 
-function staticChunkHref(filenamePrefix: string): string | null {
-  const staticDir = join(DIST, "static");
-  if (!existsSync(staticDir)) return null;
-  const file = readdirSync(staticDir).find((name) => name.startsWith(filenamePrefix) && name.endsWith(".js"));
-  return file ? `/static/${file}` : null;
-}
-
-function routeModulePreloads(path: string): string {
-  const links: string[] = [];
-  const push = (prefix: string) => {
-    const href = staticChunkHref(prefix);
-    if (href) links.push(`<link rel="modulepreload" href="${href}" crossorigin>`);
-  };
-
-  if (path === "/") return "";
-  if (path === "/pricing") {
-    push("PricingPage-");
-    return links.join("\n    ");
-  }
-  const heroVariant = marketingDetailHeroVariant(path);
-  if (heroVariant === "solution") {
-    push("SolutionPage-");
-    push("solutions-");
-  } else if (heroVariant === "compare") {
-    push("ComparePage-");
-    push("comparisons-");
-  } else if (learnDetailHeroVariant(path)) {
-    push("LearnArticle-");
-    push("glossary-");
-  }
-  push("MarketingLayout-");
-  return links.join("\n    ");
-}
-
 function heroCriticalCssForRoute(path: string): string | null {
   if (path === "/") return buildHomepageCriticalCss(COMPILED_CSS);
   if (learnDetailHeroVariant(path)) return buildLearnCriticalCss(COMPILED_CSS);
-  if (marketingDetailHeroVariant(path)) return buildMarketingDetailCriticalCss(COMPILED_CSS);
+  const heroVariant = marketingDetailHeroVariant(path);
+  if (heroVariant === "solution") return buildSolutionCriticalCss(COMPILED_CSS);
+  if (heroVariant === "compare") return buildCompareCriticalCss(COMPILED_CSS);
   return null;
 }
 const ORIGIN = "https://maintenease.com";
@@ -1428,11 +1397,23 @@ function bodyFor(route: Route): string {
 
   if (heroVariant === "solution") {
     const solution = solutions.find((item) => route.path === `/solutions/${item.slug}`);
+    const routePayloadJson = solution
+      ? stringifyJsonLdForHtml({
+          slug: solution.slug,
+          name: solution.name,
+          h1: solution.h1,
+          intro: solution.intro,
+          metaTitle: solution.metaTitle,
+          metaDescription: solution.metaDescription,
+          faqs: solution.faqs,
+        })
+      : undefined;
     return buildSolutionMarketingPrerenderShell({
       breadcrumbCurrent: esc(solution?.name ?? route.h1),
       heroH1: esc(route.h1),
       heroIntro: esc(route.intro),
       bodyHtml: bodyInner,
+      routePayloadJson,
     });
   }
 
@@ -1534,11 +1515,7 @@ function renderRoute(route: Route): string {
     ? `<style data-prerender="hero-critical">${heroCriticalCss}</style>`
     : "";
 
-  const modulePreloads = routeModulePreloads(route.path);
-  html = html.replace(
-    "</head>",
-    `  ${headFor(route)}\n  ${criticalStyleTag}\n  ${modulePreloads}\n  </head>`,
-  );
+  html = html.replace("</head>", `  ${headFor(route)}\n  ${criticalStyleTag}\n  </head>`);
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
   return injectStaticSeoFooter(html);

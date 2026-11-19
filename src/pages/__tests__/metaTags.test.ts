@@ -17,7 +17,7 @@ const KEY_PAGES = [
  "src/pages/PricingPage.tsx",
  "src/pages/McpPage.tsx",
  "src/pages/SolutionsIndex.tsx",
- "src/pages/SolutionPage.tsx",
+ "src/pages/solution/SolutionPageHead.tsx",
  "src/pages/LearnIndex.tsx",
  "src/pages/LearnArticle.tsx",
  "src/pages/TemplatesIndex.tsx",

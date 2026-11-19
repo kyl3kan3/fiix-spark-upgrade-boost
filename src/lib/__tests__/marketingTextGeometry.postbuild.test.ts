@@ -22,14 +22,14 @@ type TextBox = { text: string; width: number; height: number; area: number };
 async function collectAboveFoldTextBoxes(page: import("playwright").Page): Promise<TextBox[]> {
   return page.evaluate((foldHeight) => {
     const blocks: TextBox[] = [];
-    const selectors = "h1, h2, h3, p";
+    const selectors = "nav, h1, h2, h3, p, a";
     for (const el of document.querySelectorAll<HTMLElement>(selectors)) {
       if (el.closest('[aria-hidden="true"]')) continue;
       const rect = el.getBoundingClientRect();
       if (rect.bottom <= 0 || rect.top >= foldHeight) continue;
       if (rect.width <= 0 || rect.height <= 0) continue;
       const text = (el.textContent ?? "").replace(/\s+/g, " ").trim();
-      if (text.length < 12) continue;
+      if (text.length < 8) continue;
       blocks.push({
         text,
         width: Math.round(rect.width * 100) / 100,
