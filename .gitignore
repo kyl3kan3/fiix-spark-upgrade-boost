@@ -29,3 +29,6 @@ tmp/
 *.sln
 *.sw?
 .vercel
+
+# Lighthouse lab outputs
+artifacts/

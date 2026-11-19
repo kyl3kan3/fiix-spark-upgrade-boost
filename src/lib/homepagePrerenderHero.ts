@@ -64,6 +64,29 @@ export const HOMEPAGE_HERO_CRITICAL_CSS = `
 .prerender-body{max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033}
 `.trim();
 
+/** Critical CSS for SSR homepage: paints the real Hero header before the app stylesheet loads. */
+export const HOMEPAGE_SSR_HERO_CRITICAL_CSS = `
+@font-face{font-family:"Barlow Semi Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("${HERO_FONT}") format("woff2")}
+#root header.relative{position:relative;overflow:hidden;background-color:hsl(207 22% 10%);color:#fff;padding:${g.paddingTopRem}rem 0 ${g.paddingBottomRem}rem}
+@media (min-width:${g.mdBreakpointPx}px){#root header.relative{padding-top:${g.paddingTopMdRem}rem;padding-bottom:${g.paddingBottomMdRem}rem}}
+#root header h1{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeight};margin:0;color:#fff}
+@media (min-width:${g.h1.smBreakpointPx}px){#root header h1{font-size:${g.h1.smFontSizeRem}rem;line-height:${g.h1.smLineHeight}}}
+@media (min-width:${g.h1.xlBreakpointPx}px){#root header h1{font-size:${g.h1.xlFontSizeRem}rem;line-height:${g.h1.xlLineHeight}}}
+`.trim();
+
+export function buildHomepageSsrHeadBoost(stylesheetHref?: string): string {
+  const parts = [
+    `<link rel="preload" href="${HERO_FONT}" as="font" type="font/woff2" crossorigin />`,
+    `<style data-ssr="hero-critical">${HOMEPAGE_SSR_HERO_CRITICAL_CSS}</style>`,
+  ];
+  if (stylesheetHref) {
+    parts.unshift(
+      `<link rel="preload" href="${stylesheetHref}" as="style" crossorigin="anonymous" />`,
+    );
+  }
+  return parts.join("\n    ");
+}
+
 export function buildHomepagePrerenderShell(parts: {
   heroH1: string;
   heroIntro: string;

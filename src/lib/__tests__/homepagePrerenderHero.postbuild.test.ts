@@ -10,7 +10,7 @@ describe("built homepage marketing SSR shell", () => {
     expect(existsSync(distIndex), "dist/index.html missing — run npm run build").toBe(true);
     const html = readFileSync(distIndex, "utf8");
     expect(html).toContain('id="root" data-ssr="marketing"');
-    expect(html).not.toContain('data-prerender="hero-critical"');
+    expect(html).toContain('data-ssr="hero-critical"');
     const h1Match = html.match(
       new RegExp(
         `<h1[^>]*class="[^"]*${HOMEPAGE_HERO_H1_CLASS.split(" ")[0]}[^"]*"[^>]*>([\\s\\S]*?)</h1>`,

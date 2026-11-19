@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { BlogSsrPayload } from "../src/ssr/blogSsr";
+import { buildHomepageSsrHeadBoost } from "../src/lib/homepagePrerenderHero";
 
 type HelmetFragments = {
   title: { toString(): string };
@@ -75,6 +76,13 @@ export function injectSsrDocument(options: {
 }): string {
   const { shell, routePath, indexable, appHtml, helmet, origin } = options;
   let html = stripDefaultHead(shell);
+  if (routePath === "/") {
+    const stylesheetHref = html.match(/<link rel="stylesheet"[^>]+href="([^"]+)"/)?.[1];
+    html = html.replace(
+      /<head>/i,
+      `<head>\n    ${buildHomepageSsrHeadBoost(stylesheetHref)}\n`,
+    );
+  }
   const headParts = [
     helmet.title.toString(),
     helmet.meta.toString(),
