@@ -1,8 +1,8 @@
-/** Join Tailwind class strings into a single-class selector (`.a.b.c`). */
+import { tailwindCompoundSelector } from "@/lib/extractTailwindCriticalCss";
+
+/** Join Tailwind class strings into a compound selector with CSS.escape per class. */
 export function tailwindClassSelector(classString: string): string {
-  const parts = classString.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "";
-  return `.${parts.join(".")}`;
+  return tailwindCompoundSelector(classString);
 }
 
 /**

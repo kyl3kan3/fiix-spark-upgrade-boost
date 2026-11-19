@@ -1,10 +1,5 @@
 import { SIGNUP_PATH } from "@/data/signupRoute";
-import {
-  TAILWIND_FONT_SIZE,
-  TAILWIND_SCREEN_MD_PX,
-  TAILWIND_SCREEN_SM_PX,
-  tailwindClassSelector,
-} from "@/lib/marketingCriticalCssUtils";
+import { TAILWIND_FONT_SIZE, TAILWIND_SCREEN_MD_PX } from "@/lib/marketingCriticalCssUtils";
 
 /**
  * Critical CSS + HTML shell for marketing detail pages (solutions, comparisons)
@@ -128,47 +123,6 @@ export const SOLUTION_MARKETING_HERO_GEOMETRY = {
   primaryColor: "hsl(216 90% 38%)",
   primaryForegroundColor: "hsl(0 0% 100%)",
 } as const;
-
-const HEADLINE_FONT = "/fonts/barlow-semi-condensed-latin-700-normal.woff2";
-const g = SOLUTION_MARKETING_HERO_GEOMETRY;
-
-const heroH1Selector = tailwindClassSelector(SOLUTION_PAGE_HERO_H1_CLASS);
-const heroIntroSelector = tailwindClassSelector(SOLUTION_PAGE_INTRO_CLASS);
-const compareH2Selector = tailwindClassSelector(COMPARE_PRICING_H2_CLASS);
-const compareSummarySelector = tailwindClassSelector(COMPARE_PRICING_SUMMARY_CLASS);
-const compareSectionSelector = tailwindClassSelector(COMPARE_PRICING_SECTION_CLASS);
-const compareCardSelector = tailwindClassSelector(COMPARE_PRICING_CARD_CLASS);
-const breadcrumbNavSelector = tailwindClassSelector(MARKETING_BREADCRUMB_NAV_CLASS);
-const ctaWrapSelector = `.${MARKETING_HERO_CTA_WRAP_CLASS}`;
-const ctaLinkSelector = tailwindClassSelector(MARKETING_HERO_PRIMARY_CTA_LINK_CLASS);
-
-export const SOLUTION_MARKETING_HERO_CRITICAL_CSS = `
-@font-face{font-family:"Barlow Semi Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("${HEADLINE_FONT}") format("woff2")}
-.prerender-marketing-hero{padding:${g.paddingTopRem}rem 0 ${g.paddingBottomRem}rem;overflow:hidden;color:${g.foregroundColor}}
-@media (min-width:${g.mdBreakpointPx}px){.prerender-marketing-hero{padding-top:${g.paddingTopMdRem}rem;padding-bottom:${g.paddingBottomMdRem}rem}}
-.prerender-marketing-hero-inner{max-width:${g.containerMaxWidthRem}rem;margin:0 auto;padding:0 ${g.containerPaddingXRem}rem}
-${breadcrumbNavSelector}{font-size:0.875rem;line-height:1.25rem;margin-bottom:1.5rem;color:${g.mutedForegroundColor}}
-${breadcrumbNavSelector} a{color:inherit;text-decoration:none}
-${breadcrumbNavSelector} .text-foreground{color:${g.foregroundColor}}
-${heroH1Selector}{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeightRem}rem;letter-spacing:0;margin:0 0 ${g.h1.marginBottomRem}rem;max-width:${g.h1.maxWidthRem}rem;color:${g.foregroundColor}}
-@media (min-width:${g.mdBreakpointPx}px){${heroH1Selector}{font-size:${g.h1.mdFontSizeRem}rem;line-height:${g.h1.mdLineHeight}}}
-${heroIntroSelector}{margin:0 0 ${g.intro.marginBottomRem}rem;max-width:${g.intro.maxWidthRem}rem;font-family:Barlow,system-ui,sans-serif;font-size:${g.intro.fontSizeRem}rem;line-height:${g.intro.lineHeight};color:${g.mutedForegroundColor}}
-${ctaWrapSelector}{margin:0 0 ${g.cta.marginBottomRem}rem}
-${ctaLinkSelector}{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:600;height:${g.cta.heightRem}rem;padding:0 ${g.cta.paddingXRem}rem;font-size:${g.cta.fontSizeRem}rem;border-radius:0.375rem;background:${g.primaryColor};color:${g.primaryForegroundColor};box-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1),0 1px 2px -1px rgb(0 0 0 / 0.1)}
-${compareSectionSelector}{max-width:${g.comparePricing.sectionMaxWidthRem}rem;margin-left:auto;margin-right:auto;padding-left:${g.comparePricing.sectionPaddingXRem}rem;padding-right:${g.comparePricing.sectionPaddingXRem}rem;padding-bottom:${g.comparePricing.sectionPaddingBottomRem}rem}
-${compareCardSelector}{border:${g.comparePricing.cardBorderWidthPx}px solid ${g.comparePricing.cardBorderColor};border-radius:${g.comparePricing.cardRadiusRem}rem;background:${g.comparePricing.cardBackgroundColor};padding:${g.comparePricing.cardPaddingRem}rem;box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05)}
-@media (min-width:${TAILWIND_SCREEN_SM_PX}px){${compareCardSelector}{padding:${g.comparePricing.cardPaddingSmRem}rem}}
-${compareH2Selector}{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.comparePricing.h2FontSizeRem}rem;font-weight:700;line-height:${g.comparePricing.h2LineHeightRem}rem;margin:0;color:${g.foregroundColor}}
-@media (min-width:${TAILWIND_SCREEN_SM_PX}px){${compareH2Selector}{font-size:${g.comparePricing.h2SmFontSizeRem}rem;line-height:${g.comparePricing.h2SmLineHeightRem}rem}}
-${compareSummarySelector}{margin:${g.comparePricing.summaryMarginTopRem}rem 0 0;max-width:${g.comparePricing.summaryMaxWidthRem}rem;font-family:Barlow,system-ui,sans-serif;font-size:${g.comparePricing.summaryFontSizeRem}rem;line-height:${g.comparePricing.summaryLineHeight};color:${g.mutedForegroundColor}}
-.prerender-body{max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 Barlow,system-ui,sans-serif;color:${g.foregroundColor}}
-`.trim();
-
-export function marketingDetailCriticalCss(path: string): string | null {
-  const variant = marketingDetailHeroVariant(path);
-  if (variant) return SOLUTION_MARKETING_HERO_CRITICAL_CSS;
-  return null;
-}
 
 export function marketingDetailHeroVariant(path: string): "solution" | "compare" | null {
   if (/^\/solutions\/[^/]+$/.test(path)) return "solution";

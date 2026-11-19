@@ -12,16 +12,20 @@
  * children, so the shell is discarded the moment JS runs. Nothing about the
  * interactive app changes.
  */
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { buildHomepagePrerenderShell } from "../src/lib/homepagePrerenderHero";
 import {
   buildCompareMarketingPrerenderShell,
   buildSolutionMarketingPrerenderShell,
-  marketingDetailCriticalCss,
   marketingDetailHeroVariant,
 } from "../src/lib/marketingPrerenderShell";
-import { HOMEPAGE_HERO_CRITICAL_CSS } from "../src/lib/homepagePrerenderHero";
+import {
+  buildHomepageCriticalCss,
+  buildLearnCriticalCss,
+  buildMarketingDetailCriticalCss,
+} from "../src/lib/marketingCriticalCssBuilder";
+import { buildLearnArticlePrerenderShell, learnDetailHeroVariant } from "../src/lib/learnPrerenderShell";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
@@ -72,6 +76,64 @@ import {
 } from "../src/data/smallBusinessCmms";
 
 const DIST = resolve("dist");
+
+function readCompiledCss(): string {
+  const searchDirs = [join(DIST, "assets"), join(DIST, "static")].filter((dir) => existsSync(dir));
+  if (searchDirs.length === 0) {
+    throw new Error("dist CSS missing — run vite build before prerender");
+  }
+  const chunks: string[] = [];
+  for (const dir of searchDirs) {
+    for (const name of readdirSync(dir)) {
+      if (name.endsWith(".css")) chunks.push(readFileSync(join(dir, name), "utf8"));
+    }
+  }
+  if (chunks.length === 0) throw new Error("no .css files in dist — run vite build before prerender");
+  return chunks.join("\n");
+}
+
+const COMPILED_CSS = readCompiledCss();
+
+function staticChunkHref(filenamePrefix: string): string | null {
+  const staticDir = join(DIST, "static");
+  if (!existsSync(staticDir)) return null;
+  const file = readdirSync(staticDir).find((name) => name.startsWith(filenamePrefix) && name.endsWith(".js"));
+  return file ? `/static/${file}` : null;
+}
+
+function routeModulePreloads(path: string): string {
+  const links: string[] = [];
+  const push = (prefix: string) => {
+    const href = staticChunkHref(prefix);
+    if (href) links.push(`<link rel="modulepreload" href="${href}" crossorigin>`);
+  };
+
+  if (path === "/") return "";
+  if (path === "/pricing") {
+    push("PricingPage-");
+    return links.join("\n    ");
+  }
+  const heroVariant = marketingDetailHeroVariant(path);
+  if (heroVariant === "solution") {
+    push("SolutionPage-");
+    push("solutions-");
+  } else if (heroVariant === "compare") {
+    push("ComparePage-");
+    push("comparisons-");
+  } else if (learnDetailHeroVariant(path)) {
+    push("LearnArticle-");
+    push("glossary-");
+  }
+  push("MarketingLayout-");
+  return links.join("\n    ");
+}
+
+function heroCriticalCssForRoute(path: string): string | null {
+  if (path === "/") return buildHomepageCriticalCss(COMPILED_CSS);
+  if (learnDetailHeroVariant(path)) return buildLearnCriticalCss(COMPILED_CSS);
+  if (marketingDetailHeroVariant(path)) return buildMarketingDetailCriticalCss(COMPILED_CSS);
+  return null;
+}
 const ORIGIN = "https://maintenease.com";
 const OG_IMAGE = `${ORIGIN}/og-image.png?v=5`;
 const SIGNUP_CTA_ROUTES = new Set(["/", "/pricing", "/features"]);
@@ -1255,7 +1317,7 @@ function headFor(route: Route): string {
 function bodyFor(route: Route): string {
   const heroVariant = marketingDetailHeroVariant(route.path);
   const parts: string[] = [];
-  if (route.path !== "/" && !heroVariant) {
+  if (route.path !== "/" && !heroVariant && !learnDetailHeroVariant(route.path)) {
     parts.push(`<h1>${esc(route.h1)}</h1>`, `<p>${esc(route.intro)}</p>`);
   }
   if (SIGNUP_CTA_ROUTES.has(route.path)) {
@@ -1390,6 +1452,16 @@ function bodyFor(route: Route): string {
     });
   }
 
+  if (learnDetailHeroVariant(route.path)) {
+  const entry = glossary.find((g) => route.path === `/learn/${g.slug}`);
+    return buildLearnArticlePrerenderShell({
+      breadcrumbCurrent: esc(entry?.term ?? route.h1),
+      heroH1: esc(route.h1),
+      heroIntro: esc(route.intro),
+      bodyHtml: bodyInner,
+    });
+  }
+
   // Ordinary HTML gives non-JavaScript clients the same page-specific body and
   // link graph. React replaces this build-time shell when the app starts, so it
   // is never duplicated in the visible document.
@@ -1457,13 +1529,16 @@ function renderRoute(route: Route): string {
     /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
     "",
   );
-  const heroCriticalCss =
-    route.path === "/" ? HOMEPAGE_HERO_CRITICAL_CSS : marketingDetailCriticalCss(route.path);
+  const heroCriticalCss = heroCriticalCssForRoute(route.path);
   const criticalStyleTag = heroCriticalCss
     ? `<style data-prerender="hero-critical">${heroCriticalCss}</style>`
     : "";
 
-  html = html.replace("</head>", `  ${headFor(route)}\n  ${criticalStyleTag}\n  </head>`);
+  const modulePreloads = routeModulePreloads(route.path);
+  html = html.replace(
+    "</head>",
+    `  ${headFor(route)}\n  ${criticalStyleTag}\n  ${modulePreloads}\n  </head>`,
+  );
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
   return injectStaticSeoFooter(html);

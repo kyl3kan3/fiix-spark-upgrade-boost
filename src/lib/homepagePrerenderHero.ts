@@ -8,6 +8,10 @@
 export const HOMEPAGE_HERO_H1_CLASS =
   "font-headline text-[2.75rem] font-bold leading-[1.02] text-white sm:text-6xl xl:text-7xl";
 
+/** Same classes as the lead paragraph in `Hero.tsx`. */
+export const HOMEPAGE_HERO_LEAD_CLASS =
+  "mt-6 max-w-xl text-lg leading-relaxed text-sidebar-foreground";
+
 /** Tailwind-aligned geometry for prerender critical CSS ↔ React Hero. */
 export const HOMEPAGE_HERO_GEOMETRY = {
   /** Matches `max-w-7xl` */
@@ -47,23 +51,6 @@ export const HOMEPAGE_HERO_GEOMETRY = {
   },
 } as const;
 
-const HERO_FONT = "/fonts/barlow-semi-condensed-latin-700-normal.woff2";
-
-const g = HOMEPAGE_HERO_GEOMETRY;
-
-/** Critical CSS for the homepage prerender hero (no Tailwind on static HTML). */
-export const HOMEPAGE_HERO_CRITICAL_CSS = `
-@font-face{font-family:"Barlow Semi Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("${HERO_FONT}") format("woff2")}
-.prerender-hero{background-color:hsl(207 22% 10%);color:#fff;padding:${g.paddingTopRem}rem 0 ${g.paddingBottomRem}rem;overflow:hidden}
-@media (min-width:${g.mdBreakpointPx}px){.prerender-hero{padding-bottom:${g.paddingBottomMdRem}rem;padding-top:${g.paddingTopMdRem}rem}}
-.prerender-hero-inner{max-width:${g.containerMaxWidthRem}rem;margin:0 auto;padding:0 ${g.containerPaddingXRem}rem}
-.prerender-hero h1{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeight};margin:0;color:#fff}
-@media (min-width:${g.h1.smBreakpointPx}px){.prerender-hero h1{font-size:${g.h1.smFontSizeRem}rem;line-height:${g.h1.smLineHeight}}}
-@media (min-width:${g.h1.xlBreakpointPx}px){.prerender-hero h1{font-size:${g.h1.xlFontSizeRem}rem;line-height:${g.h1.xlLineHeight}}}
-.prerender-hero-lead{margin-top:${g.leadMarginTopRem}rem;max-width:${g.leadMaxWidthRem}rem;font-size:${g.leadFontSizeRem}rem;line-height:${g.leadLineHeight};color:hsl(210 14% 80%)}
-.prerender-body{max-width:72rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033}
-`.trim();
-
 export function buildHomepagePrerenderShell(parts: {
   heroH1: string;
   heroIntro: string;
@@ -73,7 +60,7 @@ export function buildHomepagePrerenderShell(parts: {
       <header class="prerender-hero">
         <div class="prerender-hero-inner">
           <h1 class="${HOMEPAGE_HERO_H1_CLASS}">${parts.heroH1}</h1>
-          <p class="prerender-hero-lead">${parts.heroIntro}</p>
+          <p class="${HOMEPAGE_HERO_LEAD_CLASS}">${parts.heroIntro}</p>
         </div>
       </header>
       <div class="prerender-body">

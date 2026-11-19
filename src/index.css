@@ -470,12 +470,3 @@
 }
 .blog-prose tbody tr:nth-child(even) { background: hsl(var(--muted) / 0.5); }
 
-/* Build-time marketing shell shown until the matching route commits (LCP stability). */
-.marketing-prerender-overlay {
-  position: fixed;
-  inset: 6rem 0 0;
-  z-index: 30;
-  overflow-y: auto;
-  background: hsl(var(--background));
-  pointer-events: none;
-}

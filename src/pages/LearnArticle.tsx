@@ -8,6 +8,15 @@ import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import PreventiveMaintenanceCapacityCalculator from "@/components/marketing/PreventiveMaintenanceCapacityCalculator";
 import { trackMarketingEvent } from "@/lib/analytics/marketingEvents";
 import { renderInlineMarkdownLinks } from "@/lib/renderInlineMarkdownLinks";
+import {
+  LEARN_ARTICLE_CONTAINER_CLASS,
+  LEARN_ARTICLE_H1_CLASS,
+  LEARN_ARTICLE_LEAD_CLASS,
+} from "@/lib/learnPrerenderShell";
+import {
+  MARKETING_BREADCRUMB_LINK_CLASS,
+  MARKETING_BREADCRUMB_NAV_CLASS,
+} from "@/lib/marketingPrerenderShell";
 
 const sectionId = (heading: string) =>
  heading
@@ -190,14 +199,14 @@ const LearnArticle = () => {
  <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
  </Helmet>
  <MarketingJsonLd />
- <article className="container mx-auto px-4 py-12 md:py-16 max-w-3xl">
- <nav className="text-sm text-muted-foreground mb-6">
- <Link to="/learn" className="hover:text-primary">Learn</Link>
+ <article className={LEARN_ARTICLE_CONTAINER_CLASS}>
+ <nav className={MARKETING_BREADCRUMB_NAV_CLASS}>
+ <Link to="/learn" className={MARKETING_BREADCRUMB_LINK_CLASS}>Learn</Link>
  <span className="mx-2">/</span>
  <span className="text-foreground">{term.term}</span>
  </nav>
- <h1 className="text-4xl md:text-5xl font-bold tracking-normal mb-4 text-balance">{term.term}</h1>
- <p className="text-xl text-foreground text-pretty">{term.short}</p>
+ <h1 className={LEARN_ARTICLE_H1_CLASS}>{term.term}</h1>
+ <p className={LEARN_ARTICLE_LEAD_CLASS}>{term.short}</p>
  {term.slug === "cmms" ? (
   <aside className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-foreground leading-relaxed text-pretty shadow-[0_0_0_1px_rgba(0,0,0,0.04)]">
    <strong className="font-semibold text-primary">Quick answer:</strong> CMMS stands for computerized maintenance management system — software that tracks assets, work orders, and preventive maintenance in one searchable record.

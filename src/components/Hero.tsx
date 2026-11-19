@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarDays, MapPin, User } from "lucide-react";
 import { SIGNUP_PATH } from "@/data/signupRoute";
-import { HOMEPAGE_HERO_H1_CLASS } from "@/lib/homepagePrerenderHero";
+import { HOMEPAGE_HERO_H1_CLASS, HOMEPAGE_HERO_LEAD_CLASS } from "@/lib/homepagePrerenderHero";
 import { cn } from "@/lib/utils";
 
 /** Illustrative work orders for the hero. Uses the app's own queue names. */
@@ -46,7 +46,7 @@ const Hero = () => {
             <h1 className={HOMEPAGE_HERO_H1_CLASS}>
               CMMS Software for Facility &amp; Maintenance Teams
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-sidebar-foreground">
+            <p className={HOMEPAGE_HERO_LEAD_CLASS}>
               Work orders, assets, inspections and preventive maintenance in one place, on the phone your
               technicians already carry.
             </p>

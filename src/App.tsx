@@ -1,6 +1,5 @@
 import { AppProviders } from "@/providers/AppProviders";
 import { AppRoutes } from "@/router/appRoutes";
-import { MarketingPrerenderOverlay } from "@/components/marketing/MarketingPrerenderOverlay";
 import { SentryContextSync } from "@/components/SentryContextSync";
 import { GtagRouterTracker } from "@/components/analytics/GtagRouterTracker";
 import { MarketingAttributionTracker } from "@/components/analytics/MarketingAttributionTracker";
@@ -14,9 +13,7 @@ const App = () => (
     <MarketingAttributionTracker />
     <ScrollToTop />
     <CanonicalUrl />
-    <MarketingPrerenderOverlay>
-      <AppRoutes />
-    </MarketingPrerenderOverlay>
+    <AppRoutes />
   </AppProviders>
 );
 
