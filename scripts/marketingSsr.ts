@@ -17,8 +17,16 @@ export type SsrRenderFn = (
 
 let cachedRenderer: SsrRenderFn | null = null;
 
+/** Supabase realtime needs WebSocket; Node 20 in CI has no native global. */
+async function ensureNodeWebSocket(): Promise<void> {
+  if (typeof globalThis.WebSocket !== "undefined") return;
+  const { default: ws } = await import("ws");
+  globalThis.WebSocket = ws as unknown as typeof WebSocket;
+}
+
 export async function loadSsrRenderer(distDir: string): Promise<SsrRenderFn> {
   if (cachedRenderer) return cachedRenderer;
+  await ensureNodeWebSocket();
   const entry = join(distDir, "server", "entry-server.js");
   if (!existsSync(entry)) {
     throw new Error(
