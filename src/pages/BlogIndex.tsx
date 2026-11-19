@@ -44,7 +44,7 @@ const BlogIndex = () => {
   const [posts, setPosts] = useState<BlogPostCard[]>(ssr?.indexPosts ?? []);
   const [loading, setLoading] = useState(!ssr?.indexPosts?.length);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(() => (ssr?.indexPosts?.length ?? 0) >= PAGE_SIZE);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const fetchPage = useCallback(async (from: number) => {
@@ -75,6 +75,14 @@ const BlogIndex = () => {
     if (ssr?.indexPosts?.length) return;
     void load();
   }, [load, ssr?.indexPosts?.length]);
+
+  useEffect(() => {
+    if (!ssr?.indexPosts?.length) return;
+    setPosts(ssr.indexPosts);
+    setHasMore(ssr.indexPosts.length >= PAGE_SIZE);
+    setLoading(false);
+    setError(null);
+  }, [ssr?.indexPosts]);
 
   const loadMore = async () => {
     setLoadingMore(true);

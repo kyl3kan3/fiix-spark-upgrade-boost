@@ -7,7 +7,8 @@ import { StaticRouter } from "react-router-dom/server";
 import { HelmetProvider, type FilledContext } from "react-helmet-async";
 import { AuthProvider } from "@/providers/AuthContext";
 import { MarketingLightShell } from "@/components/theme/MarketingLightShell";
-import { BlogSsrProvider, type BlogSsrPayload } from "@/ssr/blogSsr";
+import { BlogSsrProvider, blogSsrPayloadForPath, type BlogSsrPayload } from "@/ssr/blogSsr";
+import { useLocation } from "react-router-dom";
 import { readBlogSsrPayloadFromDom } from "@/ssr/readBlogSsrPayloadFromDom";
 
 const queryClient = new QueryClient();
@@ -28,16 +29,24 @@ interface AppProvidersProps {
 
 function ProviderTree({
   blogPayload,
+  scopeBlogByPath,
   children,
 }: {
   blogPayload: BlogSsrPayload | null;
+  scopeBlogByPath?: boolean;
   children: React.ReactNode;
 }) {
+  const { pathname } = useLocation();
+  const scopedBlog = useMemo(
+    () => (scopeBlogByPath ? blogSsrPayloadForPath(blogPayload, pathname) : blogPayload),
+    [blogPayload, pathname, scopeBlogByPath],
+  );
+
   return (
     <MarketingLightShell>
       <TooltipProvider>
         <DeferredToasters />
-        <BlogSsrProvider value={blogPayload}>
+        <BlogSsrProvider value={scopedBlog}>
           <AuthProvider>{children}</AuthProvider>
         </BlogSsrProvider>
       </TooltipProvider>
@@ -64,7 +73,9 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children, ssr, marke
       <HelmetProvider context={ssr.helmetContext}>
         <QueryClientProvider client={queryClient}>
           <StaticRouter location={ssr.location} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <ProviderTree blogPayload={initialBlogSsrPayload}>{children}</ProviderTree>
+            <ProviderTree blogPayload={initialBlogSsrPayload} scopeBlogByPath={false}>
+              {children}
+            </ProviderTree>
           </StaticRouter>
         </QueryClientProvider>
       </HelmetProvider>
@@ -75,7 +86,9 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children, ssr, marke
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ProviderTree blogPayload={initialBlogSsrPayload}>{children}</ProviderTree>
+          <ProviderTree blogPayload={initialBlogSsrPayload} scopeBlogByPath>
+            {children}
+          </ProviderTree>
         </BrowserRouter>
       </QueryClientProvider>
     </HelmetProvider>

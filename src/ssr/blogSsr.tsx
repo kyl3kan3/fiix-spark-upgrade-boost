@@ -48,3 +48,20 @@ export function BlogSsrProvider({
 export function useBlogSsrPayload(): BlogSsrPayload | null {
   return useContext(BlogSsrContext);
 }
+
+/** Drop serialized blog rows when the client navigates away from the matching route. */
+export function blogSsrPayloadForPath(
+  payload: BlogSsrPayload | null,
+  pathname: string,
+): BlogSsrPayload | null {
+  if (!payload) return null;
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  if (normalized === "/blog") {
+    return payload.indexPosts?.length ? { indexPosts: payload.indexPosts } : null;
+  }
+  const slugMatch = normalized.match(/^\/blog\/([^/]+)$/);
+  if (slugMatch && payload.post?.slug === slugMatch[1]) {
+    return { post: payload.post };
+  }
+  return null;
+}

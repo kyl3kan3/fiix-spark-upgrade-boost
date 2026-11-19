@@ -72,6 +72,7 @@ export const HOMEPAGE_SSR_HERO_CRITICAL_CSS = `
 #root header h1{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-size:${g.h1.baseFontSizeRem}rem;font-weight:700;line-height:${g.h1.baseLineHeight};margin:0;color:#fff}
 @media (min-width:${g.h1.smBreakpointPx}px){#root header h1{font-size:${g.h1.smFontSizeRem}rem;line-height:${g.h1.smLineHeight}}}
 @media (min-width:${g.h1.xlBreakpointPx}px){#root header h1{font-size:${g.h1.xlFontSizeRem}rem;line-height:${g.h1.xlLineHeight}}}
+#root header .max-w-7xl>p,#root header p.mt-6{margin-top:${g.leadMarginTopRem}rem;max-width:${g.leadMaxWidthRem}rem;font-size:${g.leadFontSizeRem}rem;line-height:${g.leadLineHeight};color:hsl(210 14% 80%)}
 `.trim();
 
 export function buildHomepageSsrHeadBoost(stylesheetHref?: string): string {

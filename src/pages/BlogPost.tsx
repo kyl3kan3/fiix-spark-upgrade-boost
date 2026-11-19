@@ -131,9 +131,15 @@ const BlogPost = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (seededPost) return;
+    if (seededPost) {
+      setPost(seededPost);
+      setLoading(false);
+      setNotFound(false);
+      return;
+    }
+    setPost(null);
     void load();
-  }, [load, seededPost]);
+  }, [load, seededPost, slug]);
 
   useHideBrokenImages(post?.content_html ?? null);
 

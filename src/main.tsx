@@ -1,11 +1,7 @@
 
 import React from "react";
-import { createRoot, hydrateRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./App";
-import type { FilledContext } from "react-helmet-async";
-import { AppProviders } from "./providers/AppProviders";
-import { AppContent } from "./AppContent";
-import { readBlogSsrPayloadFromDom } from "./ssr/readBlogSsrPayloadFromDom";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
 import { STATIC_SEO_FOOTER_ID } from "./lib/staticSeoFooter";
@@ -60,20 +56,8 @@ async function mount() {
   const hydrate = shouldHydrateMarketingPage(window.location.pathname, rootEl);
   if (hydrate) {
     await preloadMarketingRoute(window.location.pathname);
-    const helmetContext = {} as FilledContext;
-    hydrateRoot(
-      rootEl,
-      <AppProviders
-        marketingHydrate
-        ssr={{
-          location: window.location.pathname,
-          helmetContext,
-          blog: readBlogSsrPayloadFromDom(),
-        }}
-      >
-        <AppContent />
-      </AppProviders>,
-    );
+    const { renderMarketingHydrate } = await import("./marketing/renderMarketingHydrate");
+    renderMarketingHydrate(rootEl);
     return;
   }
   createRoot(rootEl).render(
