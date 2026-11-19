@@ -62,6 +62,7 @@ function isAllowedThirdPartyNoise(line: string): boolean {
   return (
     /DataFast: Tracking disabled - bot detected/i.test(line) ||
     /net::ERR_BLOCKED_BY_RESPONSE/i.test(line) ||
+    /net::ERR_NAME_NOT_RESOLVED/i.test(line) ||
     /ERR_CONNECTION_CLOSED/i.test(line)
   );
 }
