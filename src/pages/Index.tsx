@@ -5,7 +5,7 @@ import ProblemSolved from "@/components/ProblemSolved";
 import Features from "@/components/Features";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import SiteIndexLinks from "@/components/SiteIndexLinks";
+import HomeExploreSection from "@/components/HomeExploreSection";
 import HomePricingSummary from "@/components/HomePricingSummary";
 import TrustBadges from "@/components/TrustBadges";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
@@ -72,7 +72,7 @@ const Index = () => (
         </div>
       </section>
       <CTA />
-      <SiteIndexLinks />
+      <HomeExploreSection />
     </main>
     <Footer />
   </div>

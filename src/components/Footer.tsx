@@ -9,7 +9,6 @@ const Footer = () => {
  // Show full marketing footer on landing/feature and SEO marketing routes
  const p = location.pathname;
  const showFullFooter =
- p === "/" ||
  p === "/landing" ||
  p.startsWith("/feature") ||
  p.startsWith("/learn") ||
