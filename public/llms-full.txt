@@ -1719,9 +1719,24 @@ MRO stands for Maintenance, Repair, and Operations — the parts, tools, and con
 
 MRO refers to the goods a business consumes to keep itself running. Spare bearings, lubricants, hand tools, safety gloves, light bulbs, cleaning supplies, and PPE are all MRO. Storerooms often mix critical spares with everyday consumables, which is why disciplined naming, bin locations, and issue records matter as much as the catalog itself.
 
-## Common MRO supplies and items
+## MRO supplies list: common items by category
 
-Typical MRO supplies include fasteners and hardware, bearings and seals, lubricants and greases, filters, belts and hoses, electrical components, cleaning chemicals, PPE, lighting, batteries, and small power tools. The exact list depends on your assets; tie each stocked item to compatible equipment in the CMMS so technicians pick the right part the first time.
+MRO supplies are the items a site buys to keep equipment and buildings working, not to build the product it sells. Typical MRO supplies include fasteners and hardware, bearings and seals, lubricants and greases, filters, belts and hoses, electrical components, cleaning chemicals, PPE, lighting, batteries, and small power tools. The exact list depends on your assets; tie each stocked item to compatible equipment in the CMMS so technicians pick the right part the first time.
+
+_MRO supplies by category, with examples_
+
+| Category | Example MRO supplies | Usually stocked or ordered as needed? |
+| --- | --- | --- |
+| Repair and spare parts | Bearings, seals, belts, motors, valves, contactors | Stocked for critical assets, ordered as needed for the rest |
+| Consumables | Lubricants, greases, filters, fasteners, tape, adhesives | Stocked with a reorder point |
+| Safety supplies | Gloves, eye and hearing protection, lockout devices, first-aid stock | Stocked |
+| Tools and equipment | Hand tools, power tools, meters, ladders | Issued and tracked, replaced as needed |
+| Janitorial and facility supplies | Cleaning chemicals, lamps, batteries, air filters | Stocked with a reorder point |
+| Office and IT operating supplies | Printer supplies, labels, cables | Often bought outside the storeroom |
+
+## MRO spare parts: critical, insurance, and consumable
+
+MRO spare parts are the replacement components held so equipment can be repaired without waiting on a supplier. A practical way to sort them is by what happens if the part is missing. Critical spares protect assets whose downtime is expensive and whose parts have long lead times, so you hold them even if they rarely move. Insurance spares are a subset: high-cost items kept for a failure that may never happen, justified by the consequence rather than the usage rate. Consumable or fast-moving spares, such as filters, belts, and common bearings, turn over regularly and suit minimum and maximum levels. Everything else can be ordered when a work order calls for it. Record the reasoning with each part so a later cleanup does not scrap the one spare the plant depends on.
 
 ## MRO in the supply chain
 
@@ -1740,6 +1755,14 @@ A CMMS may connect on-hand quantity, reorder points, supplier, cost, and asset c
 Standardize on as few part numbers as possible; consolidate suppliers to negotiate better terms; lock the storeroom and require check-out; do a quarterly cycle count rather than an annual full inventory; and review the slow-moving list every six months to write off true obsolescence.
 
 ## FAQ
+
+### What are MRO supplies?
+
+MRO supplies are the parts, consumables, tools, and safety and facility items used to maintain, repair, and operate equipment and buildings. They support production but do not become part of the finished product.
+
+### What are MRO spare parts?
+
+MRO spare parts are replacement components, such as bearings, seals, belts, and motors, kept on hand or ordered to repair equipment. Critical spares are stocked for assets where downtime is costly and lead times are long.
 
 ### Is MRO the same as spare parts?
 
