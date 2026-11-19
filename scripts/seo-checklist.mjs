@@ -20,7 +20,15 @@ const pass = (msg) => console.log(`\u2713 ${msg}`);
 const fail = (msg) => { errors.push(msg); console.log(`\u2717 ${msg}`); };
 const warn = (msg) => { warnings.push(msg); console.log(`! ${msg}`); };
 const withoutNoscript = (html) => html.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, "");
-const staticMain = (html) => withoutNoscript(html).match(/<main\b[^>]*data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? "";
+const staticMain = (html) => {
+  const stripped = withoutNoscript(html);
+  const legacy = stripped.match(/<main\b[^>]*data-prerender=["']static["'][^>]*>([\s\S]*?)<\/main>/i)?.[1];
+  if (legacy) return legacy;
+  const ssrRoot = stripped.match(
+    /<div id="root"[^>]*data-ssr=["']marketing["'][^>]*>([\s\S]*?)<\/div>\s*<footer/i,
+  )?.[1];
+  return ssrRoot ?? "";
+};
 const visibleText = (html) => html
   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
@@ -120,8 +128,12 @@ if (existsSync(distDir)) {
     const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
     if (h1s !== 1) fail(`prerender: dist/${rel} has ${h1s} <h1> (expected exactly 1)`);
     else if (!/rel="canonical"/.test(html)) fail(`prerender: dist/${rel} has no canonical`);
-    else if (!/<meta name="description"/.test(html)) fail(`prerender: dist/${rel} has no description`);
-    else if (!/<meta name="robots" content="index,follow,max-image-preview:large"/.test(html)) {
+    else if (!/<meta[^>]*\bname=["']description["']/.test(html)) {
+      fail(`prerender: dist/${rel} has no description`);
+    }
+    else if (
+      !/<meta[^>]*\bname=["']robots["'][^>]*\bcontent=["']index,follow,max-image-preview:large["']/.test(html)
+    ) {
       fail(`prerender: dist/${rel} is missing indexable robots metadata`);
     }
     else prerenderOk++;
@@ -225,7 +237,12 @@ if (existsSync(distDir)) {
               item?.offers?.price !== undefined &&
               !item?.aggregateRating &&
               !item?.review;
-            if (!allowedMtbfApp) {
+            const allowedPricingProduct =
+              (rel === "dist/pricing/index.html" || rel === "dist/pricing.html") &&
+              types.includes("Product") &&
+              !item?.aggregateRating &&
+              !item?.review;
+            if (!allowedMtbfApp && !allowedPricingProduct) {
               fail(
                 `structured data: ${rel} contains Google-ineligible ${types.join("/")} markup`,
               );

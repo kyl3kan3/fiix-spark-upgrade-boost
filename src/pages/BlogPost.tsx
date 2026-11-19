@@ -13,6 +13,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft } from "lucide-react";
 import { blogBodyHasFaqHeading, getSupplementalBlogFaqs } from "@/lib/blogContent";
+import { useBlogSsrPayload } from "@/ssr/blogSsr";
 
 interface FaqItem {
   question: string;
@@ -91,9 +92,11 @@ function useHideBrokenImages(html: string | null) {
 
 const BlogPost = () => {
   const { slug = "" } = useParams();
-  const [post, setPost] = useState<BlogPostRow | null>(null);
+  const ssr = useBlogSsrPayload();
+  const seededPost = ssr?.post?.slug === slug ? (ssr.post as BlogPostRow) : null;
+  const [post, setPost] = useState<BlogPostRow | null>(seededPost);
   const [related, setRelated] = useState<RelatedPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!seededPost);
   const [notFound, setNotFound] = useState(false);
   const [hideHero, setHideHero] = useState(false);
   const [hideInfographic, setHideInfographic] = useState(false);
@@ -128,8 +131,9 @@ const BlogPost = () => {
   }, [slug]);
 
   useEffect(() => {
+    if (seededPost) return;
     void load();
-  }, [load]);
+  }, [load, seededPost]);
 
   useHideBrokenImages(post?.content_html ?? null);
 

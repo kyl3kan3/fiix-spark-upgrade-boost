@@ -34,6 +34,9 @@ export default defineConfig(({ mode }) => {
       host: "::",
       port: 8080,
     },
+    ssr: {
+      noExternal: ["react-helmet-async"],
+    },
     build: {
       // Keep bundled files away from the application's /assets route so edge
       // rewrites can serve /assets/:id from the protected app shell.

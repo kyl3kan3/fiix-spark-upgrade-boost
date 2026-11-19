@@ -12,6 +12,7 @@ import {
 } from "@/data/blogIndexContent";
 import MarketingPageHeader from "@/components/marketing/MarketingPageHeader";
 import MarketingPrimaryCta from "@/components/marketing/MarketingPrimaryCta";
+import { useBlogSsrPayload } from "@/ssr/blogSsr";
 
 const PAGE_SIZE = 12;
 
@@ -39,8 +40,9 @@ function truncate(text: string | null, n: number): string {
 }
 
 const BlogIndex = () => {
-  const [posts, setPosts] = useState<BlogPostCard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const ssr = useBlogSsrPayload();
+  const [posts, setPosts] = useState<BlogPostCard[]>(ssr?.indexPosts ?? []);
+  const [loading, setLoading] = useState(!ssr?.indexPosts?.length);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -70,8 +72,9 @@ const BlogIndex = () => {
   }, [fetchPage]);
 
   useEffect(() => {
+    if (ssr?.indexPosts?.length) return;
     void load();
-  }, [load]);
+  }, [load, ssr?.indexPosts?.length]);
 
   const loadMore = async () => {
     setLoadingMore(true);

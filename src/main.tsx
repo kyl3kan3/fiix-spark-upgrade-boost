@@ -1,10 +1,12 @@
 
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
 import { STATIC_SEO_FOOTER_ID } from "./lib/staticSeoFooter";
+import { shouldHydrateMarketingPage } from "./lib/marketingHydration";
+import { preloadMarketingRoute } from "./ssr/preloadMarketingRoute";
 
 initSentry();
 document.getElementById(STATIC_SEO_FOOTER_ID)?.remove();
@@ -47,8 +49,23 @@ if (import.meta.env.PROD) {
   });
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
- <React.StrictMode>
- <App />
- </React.StrictMode>
+const rootEl = document.getElementById("root");
+
+const app = (
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
+
+async function mount() {
+  if (!rootEl) return;
+  const hydrate = shouldHydrateMarketingPage(window.location.pathname, rootEl);
+  if (hydrate) {
+    await preloadMarketingRoute(window.location.pathname);
+    hydrateRoot(rootEl, app);
+    return;
+  }
+  createRoot(rootEl).render(app);
+}
+
+void mount();

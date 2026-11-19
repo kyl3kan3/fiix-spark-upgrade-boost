@@ -9,7 +9,7 @@ export function useAuthState() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(() => {
-    if (typeof window === "undefined") return true;
+    if (typeof window === "undefined") return false;
     return !shouldDeferAuthBootstrap(window.location.pathname);
   });
   const [error, setError] = useState<string | null>(null);

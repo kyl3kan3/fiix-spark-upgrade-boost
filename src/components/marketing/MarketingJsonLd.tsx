@@ -26,19 +26,26 @@ export default function MarketingJsonLd() {
  .forEach((el) => el.remove());
  }, [isHome]);
 
- // The homepage ships these two blocks statically in index.html (visible to
- // no-JS crawlers), so skip them here to avoid duplicate nodes.
- if (isHome || hasStaticCatalog) return null;
+ // Legacy static shells (data-ld-home / data-ld-static) are replaced at build
+ // time on marketing routes; only skip when those nodes are still in the document.
+ if (hasStaticCatalog) return null;
+ if (
+   isHome &&
+   typeof document !== "undefined" &&
+   document.querySelector('script[type="application/ld+json"][data-ld-home]')
+ ) {
+   return null;
+ }
 
  return (
  <Helmet>
- <script type="application/ld+json" data-ld="organization">
+ <script type="application/ld+json" data-ld="organization" data-rh="true">
  {JSON.stringify(ORGANIZATION_JSON_LD)}
  </script>
- <script type="application/ld+json" data-ld="website">
+ <script type="application/ld+json" data-ld="website" data-rh="true">
  {JSON.stringify(WEBSITE_JSON_LD)}
  </script>
- <script type="application/ld+json" data-ld="brand">
+ <script type="application/ld+json" data-ld="brand" data-rh="true">
  {JSON.stringify(BRAND_JSON_LD)}
  </script>
  </Helmet>
