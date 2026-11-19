@@ -7,8 +7,6 @@ import {
   HOMEPAGE_HERO_H1_CLASS,
   HOMEPAGE_HERO_LEAD_CLASS,
 } from "@/lib/homepagePrerenderHero";
-import { tailwindClassSelector } from "@/lib/marketingCriticalCssUtils";
-
 function readDistCss(): string {
   const assetsDir = resolve("dist/static");
   return readdirSync(assetsDir)
