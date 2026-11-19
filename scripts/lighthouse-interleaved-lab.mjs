@@ -1,3 +1,4 @@
+import http from "node:http";
 import { spawn } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -22,7 +23,8 @@ const ROUTES = [
 ];
 
 const serverPath = resolve(repoRoot, "scripts/lab-static-server.mjs");
-const lighthouseBin = resolve(repoRoot, "node_modules/.bin/lighthouse");
+const lighthouseBin = process.env.LIGHTHOUSE_BIN || "npx";
+const lighthouseArgsPrefix = process.env.LIGHTHOUSE_BIN ? [] : ["lighthouse"];
 const outDir = resolve(repoRoot, "artifacts/lighthouse-interleaved");
 mkdirSync(outDir, { recursive: true });
 
@@ -32,16 +34,23 @@ function median(nums) {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-async function waitForServer(port) {
-  for (let i = 0; i < 40; i++) {
-    try {
-      const res = await fetch(`http://127.0.0.1:${port}/`);
-      if (res.ok) return;
-    } catch {
-      await new Promise((r) => setTimeout(r, 250));
-    }
-  }
-  throw new Error(`server on ${port} did not start`);
+function waitForServer(port) {
+  return new Promise((resolve, reject) => {
+    let tries = 0;
+    const attempt = () => {
+      const req = http.get(`http://127.0.0.1:${port}/`, (res) => {
+        res.resume();
+        if (res.statusCode === 200) resolve();
+        else if (++tries < 120) setTimeout(attempt, 250);
+        else reject(new Error(`server on ${port} returned ${res.statusCode}`));
+      });
+      req.on("error", () => {
+        if (++tries < 120) setTimeout(attempt, 250);
+        else reject(new Error(`server on ${port} did not start`));
+      });
+    };
+    attempt();
+  });
 }
 
 function runLighthouse(url, outFile) {
@@ -49,6 +58,7 @@ function runLighthouse(url, outFile) {
     const child = spawn(
       lighthouseBin,
       [
+        ...lighthouseArgsPrefix,
         url,
         "--quiet",
         "--chrome-flags=--headless --no-sandbox --disable-gpu",
@@ -80,7 +90,8 @@ const mainServer = spawn(process.execPath, [serverPath, mainDist, String(mainPor
 const prServer = spawn(process.execPath, [serverPath, prDist, String(prPort)], { stdio: "inherit" });
 
 try {
-  await Promise.all([waitForServer(mainPort), waitForServer(prPort)]);
+  await waitForServer(mainPort);
+  await waitForServer(prPort);
   const summary = { main: {}, pr: {} };
   for (const route of ROUTES) {
     const mainRows = [];
