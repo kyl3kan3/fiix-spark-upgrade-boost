@@ -3,9 +3,14 @@ import { useLocation } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import { initialPrerender, type InitialPrerender } from "@/lib/initialPrerender";
 import { normalizeSeoPath } from "@/lib/seoRouting";
+import { useMarketingPrerenderOverlay } from "@/components/marketing/MarketingPrerenderOverlay";
 
 function RouteReady({ onReady }: { onReady: () => void }) {
-  useLayoutEffect(onReady, [onReady]);
+  const { dismissAfterPaint } = useMarketingPrerenderOverlay();
+  useLayoutEffect(() => {
+    onReady();
+    dismissAfterPaint();
+  }, [onReady, dismissAfterPaint]);
   return null;
 }
 

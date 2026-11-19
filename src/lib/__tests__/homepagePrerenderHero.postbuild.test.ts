@@ -15,6 +15,7 @@ describe("built homepage prerender hero", () => {
     expect(existsSync(distIndex), "dist/index.html missing — run npm run build").toBe(true);
     const html = readFileSync(distIndex, "utf8");
     expect(html).toContain('data-prerender="hero-critical"');
+    expect(html.indexOf('<style data-prerender="hero-critical">')).toBeLessThan(html.indexOf('<div id="root">'));
     expect(html).toContain('class="prerender-hero"');
     const h1Match = html.match(
       new RegExp(

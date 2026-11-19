@@ -18,8 +18,10 @@ import { buildHomepagePrerenderShell } from "../src/lib/homepagePrerenderHero";
 import {
   buildCompareMarketingPrerenderShell,
   buildSolutionMarketingPrerenderShell,
+  marketingDetailCriticalCss,
   marketingDetailHeroVariant,
 } from "../src/lib/marketingPrerenderShell";
+import { HOMEPAGE_HERO_CRITICAL_CSS } from "../src/lib/homepagePrerenderHero";
 import { solutions } from "../src/data/solutions";
 import { glossary } from "../src/data/glossary";
 import { comparisons, getFaqSchemaEntries } from "../src/data/comparisons";
@@ -1288,9 +1290,24 @@ function bodyFor(route: Route): string {
       parts.push(...buildExpandedTemplateStaticBody(expandedTemplate, esc));
     }
   } else {
+    const comparison =
+      heroVariant === "compare"
+        ? comparisons.find((item) => route.path === `/compare/${item.slug}`)
+        : undefined;
+    const sections = (route.sections ?? []).filter((section, index) => {
+      if (
+        heroVariant === "compare" &&
+        comparison?.pricingTable &&
+        index === 0 &&
+        section.heading === comparison.pricingTable.heading
+      ) {
+        return false;
+      }
+      return true;
+    });
     parts.push(
       ...(route.image ? [`<img src="${esc(route.image.src)}" alt="${esc(route.image.alt)}" width="1200" height="630" />`] : []),
-      ...(route.sections ?? []).flatMap((s) => [
+      ...sections.flatMap((s) => [
         `<h2>${esc(s.heading)}</h2>`,
         `<p>${inlineMarkdownLinksToHtml(s.body, esc)}</p>`,
       ]),
@@ -1440,7 +1457,13 @@ function renderRoute(route: Route): string {
     /<script type="application\/ld\+json" data-ld-home="[^"]*">[\s\S]*?<\/script>\s*/g,
     "",
   );
-  html = html.replace("</head>", `  ${headFor(route)}\n  </head>`);
+  const heroCriticalCss =
+    route.path === "/" ? HOMEPAGE_HERO_CRITICAL_CSS : marketingDetailCriticalCss(route.path);
+  const criticalStyleTag = heroCriticalCss
+    ? `<style data-prerender="hero-critical">${heroCriticalCss}</style>`
+    : "";
+
+  html = html.replace("</head>", `  ${headFor(route)}\n  ${criticalStyleTag}\n  </head>`);
 
   html = html.replace('<div id="root"></div>', `<div id="root">${bodyFor(route)}</div>`);
   return injectStaticSeoFooter(html);

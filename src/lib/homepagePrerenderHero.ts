@@ -70,7 +70,6 @@ export function buildHomepagePrerenderShell(parts: {
   bodyHtml: string;
 }): string {
   return `<main data-prerender="static">
-      <style data-prerender="hero-critical">${HOMEPAGE_HERO_CRITICAL_CSS}</style>
       <header class="prerender-hero">
         <div class="prerender-hero-inner">
           <h1 class="${HOMEPAGE_HERO_H1_CLASS}">${parts.heroH1}</h1>

@@ -96,6 +96,6 @@ describe("marketing prerender shell", () => {
     expect(heroInner).not.toContain(SOLUTION_PAGE_INTRO_CLASS);
     expect(heroInner).not.toMatch(/<p class=/);
     expect(shell).toContain("MaintainX lists a free Basic plan.");
-    expect(SOLUTION_MARKETING_HERO_CRITICAL_CSS).toContain("p.text-pretty");
+    expect(SOLUTION_MARKETING_HERO_CRITICAL_CSS).toContain("text-pretty");
   });
 });

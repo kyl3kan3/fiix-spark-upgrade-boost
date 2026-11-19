@@ -18,6 +18,7 @@ describe("built marketing prerender heroes", () => {
     const html = readFileSync(distPath, "utf8");
     const styleMatch = html.match(/<style data-prerender="hero-critical">([\s\S]*?)<\/style>/);
     expect(styleMatch?.[1]?.trim()).toBe(SOLUTION_MARKETING_HERO_CRITICAL_CSS);
+    expect(html.indexOf('<style data-prerender="hero-critical">')).toBeLessThan(html.indexOf('<div id="root">'));
     assertSolutionHeroParity(html);
   });
 
@@ -45,6 +46,12 @@ describe("built marketing prerender heroes", () => {
       if (comparison?.pricingTable) {
         expect(html).toContain(comparison.pricingTable.summary);
         expect(html).toContain(comparison.pricingTable.heading);
+        const headingCount = html.split(`<h2 class="font-headline text-2xl`).length - 1;
+        const summaryInMain = (html.split('<div class="prerender-body">')[0] ?? "").split(
+          comparison.pricingTable.summary,
+        ).length - 1;
+        expect(summaryInMain).toBe(1);
+        expect(headingCount).toBeLessThanOrEqual(1);
       }
     },
   );
