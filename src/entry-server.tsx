@@ -3,7 +3,7 @@ import { renderToString } from "react-dom/server";
 import type { FilledContext } from "react-helmet-async";
 import { AppContent } from "./AppContent";
 import { SsrAppRoutes } from "./router/ssrAppRoutes";
-import { SsrProviders } from "./ssr/SsrProviders";
+import { AppProviders } from "./providers/AppProviders";
 import { preloadMarketingRoute } from "./ssr/preloadMarketingRoute";
 import type { BlogSsrPayload } from "./ssr/blogSsr";
 
@@ -20,9 +20,9 @@ export async function render(pathname: string, options?: RenderOptions): Promise
   await preloadMarketingRoute(pathname);
   const helmetContext = {} as FilledContext;
   const html = renderToString(
-    <SsrProviders location={pathname} helmetContext={helmetContext} blog={options?.blog}>
+    <AppProviders ssr={{ location: pathname, helmetContext, blog: options?.blog }}>
       <AppContent RoutesComponent={SsrAppRoutes} />
-    </SsrProviders>,
+    </AppProviders>,
   );
   if (!helmetContext.helmet) {
     throw new Error(`SSR render produced no Helmet context for ${pathname}`);

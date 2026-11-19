@@ -17,10 +17,10 @@ const HomePricingSummary = () => (
           <li key={plan.tier} className="rounded-xl border border-border bg-card p-5">
             <h3 className="font-headline text-lg font-semibold text-foreground">{plan.name}</h3>
             <p className="mt-2 text-3xl font-bold text-primary">
-              ${plan.monthlyPrice}
+              {`$${plan.monthlyPrice}`}
               <span className="text-base font-normal text-muted-foreground">/mo</span>
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">{plan.includedSeats} included seats</p>
+            <p className="mt-2 text-sm text-muted-foreground">{`${plan.includedSeats} included seats`}</p>
           </li>
         ))}
       </ul>

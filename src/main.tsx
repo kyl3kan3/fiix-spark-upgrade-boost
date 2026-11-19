@@ -2,6 +2,10 @@
 import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
+import type { FilledContext } from "react-helmet-async";
+import { AppProviders } from "./providers/AppProviders";
+import { AppContent } from "./AppContent";
+import { readBlogSsrPayloadFromDom } from "./ssr/readBlogSsrPayloadFromDom";
 import "./index.css";
 import { initSentry } from "./lib/sentry";
 import { STATIC_SEO_FOOTER_ID } from "./lib/staticSeoFooter";
@@ -51,21 +55,32 @@ if (import.meta.env.PROD) {
 
 const rootEl = document.getElementById("root");
 
-const app = (
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
 async function mount() {
   if (!rootEl) return;
   const hydrate = shouldHydrateMarketingPage(window.location.pathname, rootEl);
   if (hydrate) {
     await preloadMarketingRoute(window.location.pathname);
-    hydrateRoot(rootEl, app);
+    const helmetContext = {} as FilledContext;
+    hydrateRoot(
+      rootEl,
+      <AppProviders
+        marketingHydrate
+        ssr={{
+          location: window.location.pathname,
+          helmetContext,
+          blog: readBlogSsrPayloadFromDom(),
+        }}
+      >
+        <AppContent />
+      </AppProviders>,
+    );
     return;
   }
-  createRoot(rootEl).render(app);
+  createRoot(rootEl).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
 }
 
 void mount();

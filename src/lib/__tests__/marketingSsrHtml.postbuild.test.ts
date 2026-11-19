@@ -29,6 +29,13 @@ function countJsonLdBlocks(html: string): number {
 }
 
 describe("marketing SSR prerendered HTML", () => {
+  it("homepage includes Product / SoftwareApplication JSON-LD", () => {
+    const html = readFileSync(distPath("index.html"), "utf8");
+    expect(html).toMatch(/Product/);
+    expect(html).toMatch(/SoftwareApplication/);
+    expect(html).toMatch(/MaintenEase CMMS/);
+  });
+
   for (const route of MARKETING_ROUTES) {
     it(`ships one SEO head + marketing root for ${route.rel}`, () => {
       const file = distPath(route.rel);

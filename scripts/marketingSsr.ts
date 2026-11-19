@@ -48,22 +48,8 @@ export function stripDefaultHead(html: string): string {
   return out;
 }
 
-export function injectCrawlerOnlyDiscoveryNav(
-  html: string,
-  links: Array<{ href: string; label: string }>,
-): string {
-  if (!links.length) return html;
-  const esc = (value: string) =>
-    value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  const items = links
-    .map((link) => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`)
-    .join("");
-  const nav = `<nav data-crawler-discovery="true" aria-hidden="true" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"><ul>${items}</ul></nav>`;
-  return html.replace("</body>", `    ${nav}\n  </body>`);
+function serializeBlogSsrPayload(payload: unknown): string {
+  return JSON.stringify(payload).replace(/</g, "\\u003c");
 }
 
 export function injectSsrDocument(options: {
@@ -73,8 +59,9 @@ export function injectSsrDocument(options: {
   appHtml: string;
   helmet: HelmetFragments;
   origin: string;
+  blogSsrPayload?: unknown;
 }): string {
-  const { shell, routePath, indexable, appHtml, helmet, origin } = options;
+  const { shell, routePath, indexable, appHtml, helmet, origin, blogSsrPayload } = options;
   let html = stripDefaultHead(shell);
   if (routePath === "/") {
     const stylesheetHref = html.match(/<link rel="stylesheet"[^>]+href="([^"]+)"/)?.[1];
@@ -108,5 +95,9 @@ export function injectSsrDocument(options: {
     rootPattern,
     `<div id="root" data-ssr="marketing">${appHtml}</div>`,
   );
+  if (blogSsrPayload != null && Object.keys(blogSsrPayload as object).length > 0) {
+    const script = `<script type="application/json" id="blog-ssr-payload">${serializeBlogSsrPayload(blogSsrPayload)}</script>`;
+    html = html.replace("</body>", `    ${script}\n  </body>`);
+  }
   return html;
 }

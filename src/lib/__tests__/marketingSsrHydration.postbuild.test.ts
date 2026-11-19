@@ -1,4 +1,5 @@
 import { spawn, type ChildProcess } from "node:child_process";
+import { existsSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -8,7 +9,7 @@ const LAB_PORT = 4192;
 const BASE = `http://127.0.0.1:${LAB_PORT}`;
 const STATIC_SERVER = resolve(repoRoot, "scripts/lab-static-server.mjs");
 
-const ROUTES = [
+const MARKETING_ROUTES = [
   "/",
   "/pricing",
   "/solutions/work-order-software",
@@ -17,6 +18,18 @@ const ROUTES = [
   "/compare/maintenease-vs-fiix",
   "/learn/cmms",
 ];
+
+function discoverBlogRoutes(): string[] {
+  const blogDir = resolve(repoRoot, "dist/blog");
+  const routes = ["/blog"];
+  if (!existsSync(blogDir)) return routes;
+  const slugDir = readdirSync(blogDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .find((name) => existsSync(resolve(blogDir, name, "index.html")));
+  if (slugDir) routes.push(`/blog/${slugDir}`);
+  return routes;
+}
 
 let server: ChildProcess;
 
@@ -43,21 +56,30 @@ afterAll(() => {
   server?.kill("SIGTERM");
 });
 
+const HYDRATION_ROUTES = [...MARKETING_ROUTES, ...discoverBlogRoutes()];
+
+function isAllowedThirdPartyNoise(line: string): boolean {
+  return (
+    /DataFast: Tracking disabled - bot detected/i.test(line) ||
+    /net::ERR_BLOCKED_BY_RESPONSE/i.test(line) ||
+    /ERR_CONNECTION_CLOSED/i.test(line)
+  );
+}
+
 describe("marketing pages hydrate without mismatch", () => {
-  for (const route of ROUTES) {
-    it(`hydrates ${route} with no React hydration warnings`, async () => {
+  for (const route of HYDRATION_ROUTES) {
+    it(`hydrates ${route} with no React hydration errors`, async () => {
       const { chromium } = await import("playwright");
       const browser = await chromium.launch();
       const page = await browser.newPage();
-      const hydrationIssues: string[] = [];
+      const issues: string[] = [];
       page.on("console", (msg) => {
-        const text = msg.text();
-        if (
-          /hydration|did not match|Hydration failed|server HTML/i.test(text) ||
-          (msg.type() === "error" && /react/i.test(text))
-        ) {
-          hydrationIssues.push(text);
+        if (msg.type() === "error" || msg.type() === "warning") {
+          issues.push(`[console.${msg.type()}] ${msg.text()}`);
         }
+      });
+      page.on("pageerror", (err) => {
+        issues.push(`[pageerror] ${err.message}`);
       });
 
       await page.goto(`${BASE}${route}`, { waitUntil: "networkidle" });
@@ -65,12 +87,22 @@ describe("marketing pages hydrate without mismatch", () => {
 
       const root = await page.$("#root[data-ssr='marketing']");
       expect(root, "expected hydrated marketing root").toBeTruthy();
-      expect(hydrationIssues, hydrationIssues.join("\n")).toEqual([]);
+      const reactHydration = issues.filter(
+        (line) =>
+          /#418|#423|hydration|did not match|Hydration failed|server HTML|Minified React error/i.test(
+            line,
+          ),
+      );
+      expect(reactHydration, issues.join("\n")).toEqual([]);
+      const blocking = issues.filter((line) => !isAllowedThirdPartyNoise(line));
+      expect(blocking, blocking.join("\n")).toEqual([]);
 
-      const jsonLdCount = await page.evaluate(() => {
-        return document.querySelectorAll('script[type="application/ld+json"]').length;
-      });
-      expect(jsonLdCount).toBeGreaterThanOrEqual(1);
+      if (route !== "/blog") {
+        const jsonLdCount = await page.evaluate(() => {
+          return document.querySelectorAll('script[type="application/ld+json"]').length;
+        });
+        expect(jsonLdCount).toBeGreaterThanOrEqual(1);
+      }
 
       await browser.close();
     }, 90_000);

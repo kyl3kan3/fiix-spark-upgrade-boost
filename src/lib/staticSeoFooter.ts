@@ -6,7 +6,7 @@ export const STATIC_SEO_FOOTER_HTML = `<footer id="${STATIC_SEO_FOOTER_ID}" data
 export function injectStaticSeoFooter(html: string): string {
   if (html.includes(`id="${STATIC_SEO_FOOTER_ID}"`)) return html;
   return html.replace(
-    /(<div id="root">[\s\S]*?<\/div>)(\s*<script)/,
+    /(<div id="root"[^>]*>[\s\S]*?<\/div>)(\s*(?:<script|<footer))/,
     `$1\n    ${STATIC_SEO_FOOTER_HTML}$2`,
   );
 }

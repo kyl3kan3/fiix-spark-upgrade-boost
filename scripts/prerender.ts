@@ -48,12 +48,7 @@ import {
 } from "../src/data/productCatalog";
 import { computeCmmsCosts, formatUsd } from "../src/lib/cmmsSavings";
 import { injectStaticSeoFooter } from "../src/lib/staticSeoFooter";
-import {
-  injectCrawlerOnlyDiscoveryNav,
-  injectSsrDocument,
-  loadSsrRenderer,
-  type SsrRenderFn,
-} from "./marketingSsr";
+import { injectSsrDocument, loadSsrRenderer, type SsrRenderFn } from "./marketingSsr";
 import type { BlogSsrPayload } from "../src/ssr/blogSsr";
 import { buildExpandedTemplateStaticBody } from "../src/lib/templateExpandedStaticBody";
 import { inlineMarkdownLinksToHtml } from "../src/lib/inlineMarkdownLinks";
@@ -1462,7 +1457,7 @@ async function renderRouteWithSsr(route: Route): Promise<string> {
   }
   const blog = blogSsrPayloadForRoute(route);
   const { html: appHtml, helmet } = await ssrRenderer(route.path, { blog });
-  let html = injectStaticSeoFooter(
+  return injectStaticSeoFooter(
     injectSsrDocument({
       shell,
       routePath: route.path,
@@ -1470,12 +1465,9 @@ async function renderRouteWithSsr(route: Route): Promise<string> {
       appHtml,
       helmet,
       origin: ORIGIN,
+      blogSsrPayload: blog,
     }),
   );
-  if (route.path === "/" && route.links?.length) {
-    html = injectCrawlerOnlyDiscoveryNav(html, route.links);
-  }
-  return html;
 }
 
 const APP_SHELL_STATIC_BODY = `<main data-prerender="static" style="max-width:42rem;margin:0 auto;padding:2rem 1rem;font:16px/1.65 system-ui,sans-serif;color:#172033">
@@ -1515,15 +1507,15 @@ if (existsSync(faviconPngPath)) {
 
 let written = 0;
 let markdownWritten = 0;
-let ssrFailures = 0;
 for (const route of routes) {
   let html: string;
   try {
     html = await renderRouteWithSsr(route);
   } catch (err) {
-    ssrFailures++;
-    console.warn(`[prerender] SSR failed for ${route.path}: ${(err as Error).message}`);
-    html = renderRouteLegacy(route);
+    console.error(`[prerender] SSR failed for ${route.path}`);
+    console.error(err);
+    process.exitCode = 1;
+    throw err;
   }
   // Write both `<path>/index.html` and `<path>.html` so clean URLs resolve on
   // any static host (some map /a/b -> a/b/index.html, others -> a/b.html).
@@ -1555,7 +1547,8 @@ for (const route of routes) {
   }
 }
 
-if (ssrFailures > 0) {
-  console.warn(`[prerender] ${ssrFailures} route(s) fell back to legacy static HTML after SSR errors`);
+if (process.exitCode) {
+  console.error(`[prerender] aborting — fix SSR errors before shipping marketing HTML`);
+  process.exit(process.exitCode);
 }
 console.log(`[prerender] wrote ${written} HTML documents and ${markdownWritten} missing Markdown alternatives → dist/`);

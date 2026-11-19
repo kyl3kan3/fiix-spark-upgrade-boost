@@ -4,11 +4,18 @@ import { MarketingAttributionTracker } from "@/components/analytics/MarketingAtt
 import ScrollToTop from "@/components/ScrollToTop";
 import { CanonicalUrl } from "@/components/CanonicalUrl";
 import { AppRoutes } from "@/router/appRoutes";
+import { SsrAppRoutes } from "@/router/ssrAppRoutes";
+import { isMarketingSsrDocument } from "@/lib/marketingHydration";
 import type { ComponentType } from "react";
 
+function defaultRoutesComponent(): ComponentType {
+  if (typeof document === "undefined") return AppRoutes;
+  return isMarketingSsrDocument() ? SsrAppRoutes : AppRoutes;
+}
+
 /** Router-agnostic app tree (shared by client App and SSR entry-server). */
-export function AppContent({ RoutesComponent = AppRoutes }: { RoutesComponent?: ComponentType }) {
-  const RoutesTree = RoutesComponent;
+export function AppContent({ RoutesComponent }: { RoutesComponent?: ComponentType }) {
+  const RoutesTree = RoutesComponent ?? defaultRoutesComponent();
   return (
     <>
       <SentryContextSync />

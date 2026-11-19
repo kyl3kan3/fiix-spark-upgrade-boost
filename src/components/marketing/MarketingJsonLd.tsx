@@ -14,8 +14,6 @@ import {
 export default function MarketingJsonLd() {
  const { pathname } = useLocation();
  const isHome = pathname === "/";
- const hasStaticCatalog = typeof document !== "undefined" &&
- document.querySelector('script[type="application/ld+json"][data-ld-static="true"]');
 
  // On non-home routes (including client-side navigations away from "/"),
  // drop the homepage-only static blocks so no duplicate nodes remain.
@@ -25,17 +23,6 @@ export default function MarketingJsonLd() {
  .querySelectorAll('script[type="application/ld+json"][data-ld-home]')
  .forEach((el) => el.remove());
  }, [isHome]);
-
- // Legacy static shells (data-ld-home / data-ld-static) are replaced at build
- // time on marketing routes; only skip when those nodes are still in the document.
- if (hasStaticCatalog) return null;
- if (
-   isHome &&
-   typeof document !== "undefined" &&
-   document.querySelector('script[type="application/ld+json"][data-ld-home]')
- ) {
-   return null;
- }
 
  return (
  <Helmet>

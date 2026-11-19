@@ -10,6 +10,7 @@ import HomePricingSummary from "@/components/HomePricingSummary";
 import TrustBadges from "@/components/TrustBadges";
 import MarketingJsonLd from "@/components/marketing/MarketingJsonLd";
 import { HOME_FAQS, buildHomeFaqPageJsonLd } from "@/data/homeFaqs";
+import { PRODUCT_JSON_LD } from "@/data/productCatalog";
 
 const Index = () => (
   <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -37,6 +38,9 @@ const Index = () => (
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json" data-rh="true">
         {JSON.stringify(buildHomeFaqPageJsonLd())}
+      </script>
+      <script type="application/ld+json" data-rh="true">
+        {JSON.stringify(PRODUCT_JSON_LD)}
       </script>
     </Helmet>
     <MarketingJsonLd />

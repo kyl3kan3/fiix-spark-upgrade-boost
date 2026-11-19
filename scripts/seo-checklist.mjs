@@ -242,7 +242,12 @@ if (existsSync(distDir)) {
               types.includes("Product") &&
               !item?.aggregateRating &&
               !item?.review;
-            if (!allowedMtbfApp && !allowedPricingProduct) {
+            const allowedHomeProduct =
+              rel === "dist/index.html" &&
+              types.includes("Product") &&
+              !item?.aggregateRating &&
+              !item?.review;
+            if (!allowedMtbfApp && !allowedPricingProduct && !allowedHomeProduct) {
               fail(
                 `structured data: ${rel} contains Google-ineligible ${types.join("/")} markup`,
               );
@@ -285,7 +290,6 @@ if (existsSync(distDir)) {
     pass(`${markdownAlternatives} canonical non-blog pages have explicit Markdown alternatives`);
   }
 
-  const homePrerender = readFileSync(join(distDir, "index.html"), "utf8");
   const discoveryTargets = [
     "/mcp",
     "/learn/deferred-maintenance",
@@ -295,13 +299,19 @@ if (existsSync(distDir)) {
     "/templates/work-order-template",
     "/blog/the-ultimate-guide-to-modern-work-order-management-in-2026",
   ];
-  const missingDiscoveryTargets = discoveryTargets.filter(
-    (path) => !homePrerender.includes(`href="${path}"`),
-  );
-  if (missingDiscoveryTargets.length > 0) {
-    fail(`prerender: homepage is missing direct discovery links: ${missingDiscoveryTargets.join(", ")}`);
+  const sitemapPath = join(distDir, "sitemap.xml");
+  if (!existsSync(sitemapPath)) {
+    fail("sitemap: dist/sitemap.xml missing");
   } else {
-    pass(`Homepage prerender directly links ${discoveryTargets.length} priority discovery routes`);
+    const sitemap = readFileSync(sitemapPath, "utf8");
+    const missingDiscoveryTargets = discoveryTargets.filter(
+      (path) => !sitemap.includes(`https://maintenease.com${path === "/" ? "" : path}`),
+    );
+    if (missingDiscoveryTargets.length > 0) {
+      fail(`sitemap: missing priority discovery URLs: ${missingDiscoveryTargets.join(", ")}`);
+    } else {
+      pass(`Sitemap lists ${discoveryTargets.length} priority discovery routes`);
+    }
   }
 
   const landingPrerenderPath = join(distDir, "landing", "index.html");
