@@ -101,6 +101,16 @@ const BlogPost = () => {
   const [hideHero, setHideHero] = useState(false);
   const [hideInfographic, setHideInfographic] = useState(false);
 
+  const loadRelated = useCallback(async (postId: number) => {
+    const { data: rel } = await supabase
+      .from("blog_posts" as never)
+      .select("id,slug,title,hero_image_url,hero_image_alt,published_at")
+      .neq("id", postId)
+      .order("published_at", { ascending: false, nullsFirst: false })
+      .limit(3);
+    setRelated((rel ?? []) as unknown as RelatedPost[]);
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
     setNotFound(false);
@@ -119,27 +129,21 @@ const BlogPost = () => {
     }
     const row = data as unknown as BlogPostRow;
     setPost(row);
-
-    const { data: rel } = await supabase
-      .from("blog_posts" as never)
-      .select("id,slug,title,hero_image_url,hero_image_alt,published_at")
-      .neq("id", row.id)
-      .order("published_at", { ascending: false, nullsFirst: false })
-      .limit(3);
-    setRelated((rel ?? []) as unknown as RelatedPost[]);
+    await loadRelated(row.id);
     setLoading(false);
-  }, [slug]);
+  }, [slug, loadRelated]);
 
   useEffect(() => {
     if (seededPost) {
       setPost(seededPost);
       setLoading(false);
       setNotFound(false);
+      void loadRelated(seededPost.id);
       return;
     }
     setPost(null);
     void load();
-  }, [load, seededPost, slug]);
+  }, [load, loadRelated, seededPost, slug]);
 
   useHideBrokenImages(post?.content_html ?? null);
 
