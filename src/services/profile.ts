@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentUser } from "@/services/supabaseHelpers";
 import { normalizeError } from "@/lib/errors";
+import { fetchAuthoritativeUserRole } from "@/lib/authoritativeUserRole";
 
 /**
  * Gets the profile of the currently authenticated user.
@@ -17,7 +18,10 @@ export const getCurrentUserProfile = async () => {
     .eq("id", user.id)
     .single();
 
-  return profile;
+  if (!profile) return null;
+
+  const role = await fetchAuthoritativeUserRole(user.id, profile.role);
+  return { ...profile, role: role ?? profile.role };
 };
 
 /**

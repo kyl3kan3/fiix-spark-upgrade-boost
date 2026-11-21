@@ -4,9 +4,9 @@ import {
  CommandDialog, CommandEmpty, CommandGroup, CommandInput,
  CommandItem, CommandList, CommandSeparator,
 } from "@/components/ui/command";
-import { NAV_GROUPS, filterNavItems, type NavRole } from "./navConfig";
+import { NAV_GROUPS, filterNavItems } from "./navConfig";
 import { Plus } from "lucide-react";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useNavRole } from "@/hooks/useNavRole";
 import { useSubscription } from "@/hooks/useSubscription";
 
 interface CommandPaletteProps {
@@ -24,10 +24,9 @@ const CREATE_ACTIONS = [
 
 const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onOpenChange }) => {
  const navigate = useNavigate();
- const { profile } = useUserProfile();
+ const { navRole } = useNavRole();
  const { data: sub } = useSubscription();
- const role = (profile?.role ?? "viewer") as NavRole;
- const navItems = filterNavItems(role, sub);
+ const navItems = filterNavItems(navRole, sub);
 
  const go = (href: string) => {
  onOpenChange(false);

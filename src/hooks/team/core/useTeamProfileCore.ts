@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TeamProfileData, TeamProfileResult } from "../types";
 import { logger } from "@/lib/logger";
+import { fetchAuthoritativeUserRole } from "@/lib/authoritativeUserRole";
 
 /**
  * Core hook for team profile data fetching and management
@@ -84,19 +85,7 @@ export const useTeamProfileCore = (fields: string[] = DEFAULT_PROFILE_FIELDS): T
  return null;
  }
 
- // Fetch role from user_roles table
- const { data: roleData, error: roleError } = await supabase
- .from('user_roles')
- .select('role')
- .eq('user_id', user.id)
- .maybeSingle();
-
- if (roleError) {
- console.error("Error fetching user role:", roleError);
- }
-
- // Use role from user_roles if available, fallback to profiles.role
- const userRole = roleData?.role || (data as any).role || null;
+ const userRole = await fetchAuthoritativeUserRole(user.id, (data as { role?: string | null }).role);
  
  logger.log("Profile data fetched successfully:", data, "Role:", userRole);
  
