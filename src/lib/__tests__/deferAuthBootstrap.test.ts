@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { shouldDeferAuthBootstrap } from "@/lib/deferAuthBootstrap";
 
 describe("shouldDeferAuthBootstrap", () => {
-  it("defers on indexable marketing routes", () => {
+  it("skips bootstrap on indexable marketing routes", () => {
     expect(shouldDeferAuthBootstrap("/")).toBe(true);
     expect(shouldDeferAuthBootstrap("/pricing")).toBe(true);
     expect(shouldDeferAuthBootstrap("/best-cmms-software-for-small-business")).toBe(true);

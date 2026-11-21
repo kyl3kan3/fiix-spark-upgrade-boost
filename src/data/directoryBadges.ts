@@ -1,0 +1,67 @@
+/** Third-party directory badges (backlinks). Shared by footer and tests. */
+export const DIRECTORY_BADGES = [
+  {
+    href: "https://verifieddr.com/website/maintenease-com",
+    src: "https://verifieddr.com/badge/maintenease-com.svg?metric=truedr",
+    alt: "Verified domain rating for maintenease.com",
+    width: 220,
+    height: 68,
+  },
+  {
+    href: "https://startupbase.io/products/maintenease?utm_source=startupbase&utm_medium=badge&utm_campaign=launch-badge-light",
+    src: "https://statics.startupbase.io/site/badges/launched-on-sb.svg",
+    alt: "Launched on StartupBase",
+    width: 185,
+    height: 55,
+  },
+  {
+    href: "https://saasgrow.app?ref=maintenease.com",
+    src: "https://saasgrow.app/api/badge?type=featured&style=blue",
+    alt: "MaintenEase featured on SaaSGrow",
+    width: 240,
+    height: 54,
+  },
+  {
+    href: "https://seoreceipts.com/site/maintenease-293/?ref=badge&utm_source=embed&utm_medium=badge&utm_campaign=status-auto",
+    src: "https://seoreceipts.com/api/badge?slug=maintenease-293&mode=auto&theme=paper&size=card",
+    alt: "Google Search Console stats for maintenease.com",
+    width: 220,
+    height: 68,
+    rel: "nofollow sponsored noopener noreferrer",
+  },
+  {
+    href: "https://www.foundrlist.com/product/maintenease?utm_source=badge&utm_medium=embed",
+    src: "https://www.foundrlist.com/api/badge/maintenease",
+    alt: "Featured on FoundrList",
+    width: 150,
+    height: 48,
+  },
+  {
+    href: "https://findly.tools/maintenease?utm_source=maintenease",
+    src: "https://findly.tools/badges/findly-tools-badge-light.svg",
+    alt: "Featured on Findly.tools",
+    width: 175,
+    height: 55,
+  },
+  {
+    href: "https://neeed.directory",
+    src: "https://neeed.directory/badges/neeed-badge-light.svg",
+    alt: "Featured on neeed.directory",
+    width: 139,
+    height: 44,
+  },
+  {
+    href: "https://orynth.dev/projects/maintenease",
+    src: "https://orynth.dev/api/badge/maintenease?theme=light&style=default",
+    alt: "Featured on Orynth",
+    width: 260,
+    height: 80,
+  },
+  {
+    href: "https://daniellaunches.com/tools/maintenease",
+    src: "https://daniellaunches.com/badge.svg",
+    alt: "Featured on DanielLaunches",
+    width: 200,
+    height: 44,
+  },
+] as const;

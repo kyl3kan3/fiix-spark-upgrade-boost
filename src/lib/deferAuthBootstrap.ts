@@ -1,8 +1,8 @@
 import { classifySeoPath, normalizeSeoPath } from "@/lib/seoRouting";
 
 /**
- * Indexable marketing routes can defer Supabase auth until after first paint.
- * Auth, app, and checkout paths still bootstrap immediately.
+ * Indexable marketing routes skip Supabase auth entirely until the user hits
+ * sign-in, sign-up, or an app route. Auth and app paths bootstrap immediately.
  */
 export function shouldDeferAuthBootstrap(pathname: string): boolean {
   const path = normalizeSeoPath(pathname);

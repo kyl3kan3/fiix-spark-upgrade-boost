@@ -1,4 +1,4 @@
-import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
+import { classifySeoPath, normalizeSeoPath } from "@/lib/seoRouting";
 
 const SAFE_MARKETING_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -145,7 +145,12 @@ export async function trackMarketingEvent({
  }
  }
 
+ if (classifySeoPath(normalizeSeoPath(window.location.pathname)) === "indexable") {
+  return;
+ }
+
  try {
+ const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
  await insertMarketingPageEvent({
  event_type: eventType,
  page_slug: pageSlug,

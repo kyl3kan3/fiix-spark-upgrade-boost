@@ -1,5 +1,4 @@
 import { Check, X } from "lucide-react";
-import Reveal3D from "@/components/marketing/Reveal3D";
 import MarketingPrimaryCta from "@/components/marketing/MarketingPrimaryCta";
 import { pricedComparisons, TEAM_SIZE } from "@/data/comparisons";
 import { getMaintenEaseTeamPrice } from "@/data/productCatalog";
@@ -14,7 +13,7 @@ const FlatFeeAdvantage = () => {
           Team of {TEAM_SIZE}: monthly cost
         </h2>
 
-        <Reveal3D className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_1fr] text-sm">
               <div className="bg-muted px-6 py-4 font-semibold text-foreground border-b border-border">
@@ -59,7 +58,7 @@ const FlatFeeAdvantage = () => {
               })}
             </div>
           </div>
-        </Reveal3D>
+        </div>
 
         <div className="mt-10 flex justify-center">
           <MarketingPrimaryCta />

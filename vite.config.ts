@@ -42,6 +42,11 @@ export default defineConfig(({ mode }) => {
       // rewrites can serve /assets/:id from the protected app shell.
       assetsDir: "static",
       sourcemap: true,
+      modulePreload: {
+        resolveDependencies(_filename, deps) {
+          return deps.filter((dep) => !dep.includes("vendor-supabase"));
+        },
+      },
       rollupOptions: {
         output: {
           // Split long-lived vendor code out of the entry chunk so it caches
@@ -56,9 +61,6 @@ export default defineConfig(({ mode }) => {
               moduleId.includes("/node_modules/@tanstack/react-query/")
             ) {
               return "vendor-react";
-            }
-            if (moduleId.includes("/node_modules/@supabase/")) {
-              return "vendor-supabase";
             }
           },
         },

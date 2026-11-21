@@ -1,5 +1,4 @@
 import { Building2, UtensilsCrossed, Dumbbell, Wrench, GraduationCap, BedDouble, Factory, Landmark } from "lucide-react";
-import Reveal3D from "@/components/marketing/Reveal3D";
 import Tilt3D from "@/components/marketing/Tilt3D";
 
 const businesses = [
@@ -21,17 +20,15 @@ const LocalBusinesses = () => (
       </h2>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-        {businesses.map((b, index) => (
-          <Reveal3D key={b.name} delayMs={(index % 4) * 90} className="h-full">
-            <Tilt3D maxTilt={6} className="h-full">
-              <div className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/30 hover:shadow-md">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <b.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="font-semibold text-foreground">{b.name}</h3>
+        {businesses.map((b) => (
+          <Tilt3D key={b.name} maxTilt={6} className="h-full">
+            <div className="h-full rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/30 hover:shadow-md">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <b.icon className="h-5 w-5 text-primary" />
               </div>
-            </Tilt3D>
-          </Reveal3D>
+              <h3 className="font-semibold text-foreground">{b.name}</h3>
+            </div>
+          </Tilt3D>
         ))}
       </div>
     </div>

@@ -1,11 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { DeferredToasters } from "@/components/DeferredToasters";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 import { HelmetProvider, type FilledContext } from "react-helmet-async";
-import { AuthProvider } from "@/providers/AuthContext";
+import { MarketingAuthProvider } from "@/providers/MarketingAuthProvider";
+import { marketingAuthStub } from "@/providers/authContextShared";
+import { AuthContext } from "@/providers/authContextShared";
+import { shouldDeferAuthBootstrap } from "@/lib/deferAuthBootstrap";
+
 import { MarketingLightShell } from "@/components/theme/MarketingLightShell";
 import { BlogSsrProvider, blogSsrPayloadForPath, type BlogSsrPayload } from "@/ssr/blogSsr";
 import { useLocation } from "react-router-dom";
@@ -37,18 +41,43 @@ function ProviderTree({
   children: React.ReactNode;
 }) {
   const { pathname } = useLocation();
+  const deferAuth = shouldDeferAuthBootstrap(pathname);
+  const [LiveAuthProvider, setLiveAuthProvider] = useState<ComponentType<{ children: ReactNode }> | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (deferAuth) {
+      setLiveAuthProvider(null);
+      return;
+    }
+    let cancelled = false;
+    void import("@/providers/AuthContext").then((m) => {
+      if (!cancelled) setLiveAuthProvider(() => m.AuthProvider);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [deferAuth]);
+
   const scopedBlog = useMemo(
     () => (scopeBlogByPath ? blogSsrPayloadForPath(blogPayload, pathname) : blogPayload),
     [blogPayload, pathname, scopeBlogByPath],
+  );
+
+  const authWrapper = deferAuth ? (
+    <MarketingAuthProvider>{children}</MarketingAuthProvider>
+  ) : LiveAuthProvider ? (
+    <LiveAuthProvider>{children}</LiveAuthProvider>
+  ) : (
+    <AuthContext.Provider value={marketingAuthStub}>{children}</AuthContext.Provider>
   );
 
   return (
     <MarketingLightShell>
       <TooltipProvider>
         <DeferredToasters />
-        <BlogSsrProvider value={scopedBlog}>
-          <AuthProvider>{children}</AuthProvider>
-        </BlogSsrProvider>
+        <BlogSsrProvider value={scopedBlog}>{authWrapper}</BlogSsrProvider>
       </TooltipProvider>
     </MarketingLightShell>
   );

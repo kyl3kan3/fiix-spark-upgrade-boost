@@ -1,16 +1,16 @@
 import React from "react";
 import { lazyWithRetry as lazy } from "@/lib/lazyWithRetry";
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "@/pages/Index";
-import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import { PROTECTED_ROUTES } from "./routeManifest";
 import { RouteSuspense } from "./RouteSuspense";
 
 // Public / marketing pages. Every authenticated page is registered in
 // routeManifest.ts and rendered from the map below.
+const Auth = lazy(() => import("@/pages/Auth"));
+const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const UnsubscribePage = lazy(() => import("@/pages/UnsubscribePage"));
