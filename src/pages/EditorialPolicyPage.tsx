@@ -25,6 +25,11 @@ export default function EditorialPolicyPage() {
         <meta property="og:title" content="MaintenEase Editorial Policy" />
         <meta property="og:description" content="Sourcing, review, corrections, comparisons, calculations, and safety scope." />
         <meta property="og:url" content={CANONICAL} />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="MaintenEase Editorial Policy" />
+        <meta name="twitter:description" content="Sourcing, review, corrections, comparisons, calculations, and safety scope." />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       </Helmet>
       <MarketingJsonLd />
       <div className="container mx-auto max-w-3xl px-4 py-12 md:py-16">
