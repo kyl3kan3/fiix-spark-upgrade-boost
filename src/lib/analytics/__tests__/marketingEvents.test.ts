@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { hasWindowLoadCompleted, resetWindowLoadGateForTests } from "@/lib/deferAuthBootstrap";
 import {
   clearSignupAttribution,
   isTrackedMarketingSlug,
@@ -131,14 +132,17 @@ describe("trackMarketingEvent deferred persistence", () => {
     );
   });
 
-  it("does not flush on pagehide before window load completes", async () => {
-    const insert = vi.fn().mockResolvedValue(undefined);
-    setMarketingPageEventInserterForTests(insert);
+  it("does not flush on hide until window load even if readyState is already complete", async () => {
     const readyState = Object.getOwnPropertyDescriptor(document, "readyState");
     Object.defineProperty(document, "readyState", {
       configurable: true,
-      get: () => "interactive",
+      get: () => "complete",
     });
+
+    const insert = vi.fn().mockResolvedValue(undefined);
+    setMarketingPageEventInserterForTests(insert);
+    resetWindowLoadGateForTests();
+    expect(hasWindowLoadCompleted()).toBe(false);
 
     try {
       await trackMarketingEvent({ eventType: "page_view", pageSlug: "home" });
@@ -147,6 +151,15 @@ describe("trackMarketingEvent deferred persistence", () => {
 
       expect(getPendingMarketingEventInsertsForTests()).toHaveLength(1);
       expect(insert).not.toHaveBeenCalled();
+
+      window.dispatchEvent(new Event("load"));
+      expect(hasWindowLoadCompleted()).toBe(true);
+
+      idleTask?.();
+      await Promise.resolve();
+
+      expect(getPendingMarketingEventInsertsForTests()).toHaveLength(0);
+      expect(insert).toHaveBeenCalledTimes(1);
     } finally {
       if (readyState) {
         Object.defineProperty(document, "readyState", readyState);

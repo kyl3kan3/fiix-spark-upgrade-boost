@@ -1,4 +1,4 @@
-import { scheduleIdleTask } from "@/lib/deferAuthBootstrap";
+import { hasWindowLoadCompleted, scheduleIdleTask } from "@/lib/deferAuthBootstrap";
 import { classifySeoPath, normalizeSeoPath } from "@/lib/seoRouting";
 import type { MarketingPageEventInsert } from "@/services/analyticsEventsService";
 
@@ -205,8 +205,8 @@ function installPendingMarketingEventFlushHooks(): void {
  pendingFlushHooksInstalled = true;
 
  const flushBestEffortOnHide = () => {
-  // Keep Supabase off the critical path until after window load (same as idle flush).
-  if (document.readyState !== "complete") return;
+  // Keep Supabase off the critical path until after window `load` (same as idle flush).
+  if (!hasWindowLoadCompleted()) return;
   void flushPendingMarketingEventInserts(true);
  };
 

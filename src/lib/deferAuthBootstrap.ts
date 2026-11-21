@@ -9,6 +9,42 @@ export function shouldDeferAuthBootstrap(pathname: string): boolean {
   return classifySeoPath(path) === "indexable";
 }
 
+let windowLoadCompleted =
+  typeof document !== "undefined" && document.readyState === "complete";
+
+let windowLoadGateListenerAttached = false;
+
+const attachWindowLoadGateListener = (): void => {
+  if (typeof window === "undefined" || windowLoadGateListenerAttached || windowLoadCompleted) {
+    return;
+  }
+  windowLoadGateListenerAttached = true;
+  window.addEventListener(
+    "load",
+    () => {
+      windowLoadCompleted = true;
+      windowLoadGateListenerAttached = false;
+    },
+    { once: true },
+  );
+};
+
+if (typeof window !== "undefined" && !windowLoadCompleted) {
+  attachWindowLoadGateListener();
+}
+
+/** True after the window `load` event (or already past load at module init). */
+export function hasWindowLoadCompleted(): boolean {
+  return windowLoadCompleted;
+}
+
+/** Reset load gate and re-attach listener (tests only). */
+export function resetWindowLoadGateForTests(): void {
+  windowLoadCompleted = false;
+  windowLoadGateListenerAttached = false;
+  attachWindowLoadGateListener();
+}
+
 export function scheduleIdleTask(task: () => void, timeoutMs = 4000): () => void {
   if (typeof window === "undefined") return () => undefined;
 
@@ -28,7 +64,7 @@ export function scheduleIdleTask(task: () => void, timeoutMs = 4000): () => void
   };
 
   let cancelInner: (() => void) | undefined;
-  if (document.readyState === "complete") {
+  if (hasWindowLoadCompleted()) {
     cancelInner = onLoad();
   } else {
     const handler = () => {
