@@ -8,7 +8,6 @@ import { steps } from "./setupSteps";
 import { saveSetupData } from "@/services/setup";
 import { setSetupComplete as setLocalSetupComplete } from "@/features/onboarding/hooks/storageUtils";
 import { useOnboardingProgress } from "@/features/onboarding/hooks/useOnboardingProgress";
-import { logger } from "@/lib/logger";
 
 interface SetupNavigationProps {
   currentStep: number;
@@ -33,13 +32,9 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
   const handleNext = async () => {
     try {
       if (currentStep < steps.length - 1) {
-        logger.log("Saving setup data before moving to next step:", setupData);
         await saveSetupData(setupData, false);
         onNext();
         window.scrollTo(0, 0);
-        logger.log(`Moving to step ${currentStep + 1}: ${steps[currentStep + 1].label}`);
-      } else {
-        logger.log("Already at the last step");
       }
     } catch (error) {
       console.error("Error navigating to next step:", error);
@@ -51,7 +46,6 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
     if (currentStep > 0) {
       onPrevious();
       window.scrollTo(0, 0);
-      logger.log(`Moving to previous step ${currentStep - 1}: ${steps[currentStep - 1].label}`);
     }
   };
 
@@ -70,7 +64,6 @@ export const SetupNavigation: React.FC<SetupNavigationProps> = ({
       localStorage.setItem("maintenease_setup_complete", "true");
       completeWizard();
       toast.success("Setup completed successfully!");
-      logger.log("Setup marked as complete successfully");
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
