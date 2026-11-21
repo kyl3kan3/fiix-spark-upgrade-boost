@@ -9,8 +9,22 @@ export function shouldDeferAuthBootstrap(pathname: string): boolean {
   return classifySeoPath(path) === "indexable";
 }
 
-let windowLoadCompleted =
-  typeof document !== "undefined" && document.readyState === "complete";
+const readInitialWindowLoadCompleted = (): boolean => {
+  if (typeof window === "undefined") return false;
+
+  if (typeof performance !== "undefined" && typeof performance.getEntriesByType === "function") {
+    const navigationEntry = performance.getEntriesByType("navigation")[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (navigationEntry) {
+      return navigationEntry.loadEventEnd > 0;
+    }
+  }
+
+  return typeof document !== "undefined" && document.readyState === "complete";
+};
+
+let windowLoadCompleted = readInitialWindowLoadCompleted();
 
 let windowLoadGateListenerAttached = false;
 
