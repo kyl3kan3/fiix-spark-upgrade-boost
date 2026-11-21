@@ -25,6 +25,12 @@ export const marketingAuthStub: AuthContextType = {
   logout: async () => undefined,
 };
 
+/** App/protected routes: holds ProtectedRoute in a loading state until live auth loads. */
+export const marketingAuthLoadingStub: AuthContextType = {
+  ...marketingAuthStub,
+  isLoading: true,
+};
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

@@ -1,3 +1,4 @@
+import { scheduleIdleTask } from "@/lib/deferAuthBootstrap";
 import { classifySeoPath, normalizeSeoPath } from "@/lib/seoRouting";
 
 const SAFE_MARKETING_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -145,23 +146,32 @@ export async function trackMarketingEvent({
  }
  }
 
- if (classifySeoPath(normalizeSeoPath(window.location.pathname)) === "indexable") {
+ const persist = async () => {
+  try {
+   const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
+   await insertMarketingPageEvent({
+    event_type: eventType,
+    page_slug: pageSlug,
+    page_url: window.location.href.slice(0, 2048),
+    referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
+    user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
+    metadata: metadata ?? {},
+   });
+  } catch {
+   // Never let analytics failures surface to the user.
+  }
+ };
+
+ const isIndexableMarketing =
+  classifySeoPath(normalizeSeoPath(window.location.pathname)) === "indexable";
+ if (isIndexableMarketing) {
+  scheduleIdleTask(() => {
+   void persist();
+  });
   return;
  }
 
- try {
- const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
- await insertMarketingPageEvent({
- event_type: eventType,
- page_slug: pageSlug,
- page_url: window.location.href.slice(0, 2048),
- referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
- user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
- metadata: metadata ?? {},
- });
- } catch {
- // Never let analytics failures surface to the user.
- }
+ await persist();
 }
 
 /** Extract UTM params + referrer from the current window for lead attribution. */

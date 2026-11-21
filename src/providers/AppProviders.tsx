@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 import { HelmetProvider, type FilledContext } from "react-helmet-async";
 import { MarketingAuthProvider } from "@/providers/MarketingAuthProvider";
-import { marketingAuthStub } from "@/providers/authContextShared";
+import { marketingAuthLoadingStub } from "@/providers/authContextShared";
 import { AuthContext } from "@/providers/authContextShared";
 import { shouldDeferAuthBootstrap } from "@/lib/deferAuthBootstrap";
 
@@ -70,7 +70,7 @@ function ProviderTree({
   ) : LiveAuthProvider ? (
     <LiveAuthProvider>{children}</LiveAuthProvider>
   ) : (
-    <AuthContext.Provider value={marketingAuthStub}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={marketingAuthLoadingStub}>{children}</AuthContext.Provider>
   );
 
   return (

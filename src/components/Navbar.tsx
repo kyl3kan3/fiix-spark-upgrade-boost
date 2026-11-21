@@ -1,13 +1,19 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import BrandMark from "@/components/shell/BrandMark";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { shouldDeferAuthBootstrap, scheduleIdleTask } from '@/lib/deferAuthBootstrap';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const authCheckStarted = useRef(false);
+  const cancelScheduledAuth = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +22,36 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const runAuthCheck = async () => {
+    if (authCheckStarted.current) return;
+    authCheckStarted.current = true;
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data } = await supabase.auth.getSession();
+    setIsLoggedIn(!!data.session);
+  };
+
+  useEffect(() => {
+    if (shouldDeferAuthBootstrap(window.location.pathname)) {
+      cancelScheduledAuth.current = scheduleIdleTask(() => {
+        void runAuthCheck();
+      });
+    } else {
+      void runAuthCheck();
+    }
+    return () => {
+      cancelScheduledAuth.current?.();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (authCheckStarted.current) return;
+    if (!shouldDeferAuthBootstrap(pathname)) {
+      cancelScheduledAuth.current?.();
+      cancelScheduledAuth.current = null;
+      void runAuthCheck();
+    }
+  }, [pathname]);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
@@ -44,12 +80,32 @@ const Navbar = () => {
             <Link to="/blog" className={navLinkClass}>Blog</Link>
           </div>
           <div className="flex items-center gap-3">
-            <Button asChild variant="ghost">
-              <Link to="/auth">Log In</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/auth?signup=true">Start free trial</Link>
-            </Button>
+            {isLoggedIn ? (
+              <>
+                <Button
+                  onClick={() => navigate("/dashboard")}
+                  variant="outline"
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  onClick={() => navigate("/profile")}
+                  className="flex items-center gap-2"
+                >
+                  <User size={15} />
+                  Profile
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost">
+                  <Link to="/auth">Log In</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/auth?signup=true">Start free trial</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -75,12 +131,33 @@ const Navbar = () => {
             <a href="/pricing" className="text-foreground font-medium py-3 border-b border-border text-sm">Pricing</a>
             <a href="/blog" className="text-foreground font-medium py-3 border-b border-border text-sm">Blog</a>
             <div className="flex flex-col gap-2 pt-3">
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/auth">Log In</Link>
-              </Button>
-              <Button asChild className="w-full">
-                <Link to="/auth?signup=true">Start free trial</Link>
-              </Button>
+              {isLoggedIn ? (
+                <>
+                  <Button
+                    onClick={() => navigate("/dashboard")}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Dashboard
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/profile")}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <User size={15} />
+                    Profile
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/auth">Log In</Link>
+                  </Button>
+                  <Button asChild className="w-full">
+                    <Link to="/auth?signup=true">Start free trial</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
