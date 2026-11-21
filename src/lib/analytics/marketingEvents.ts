@@ -128,6 +128,10 @@ const pendingMarketingEventInserts: MarketingPageEventInsert[] = [];
 let deferredFlushScheduled = false;
 let cancelDeferredFlush: (() => void) | undefined;
 let pendingFlushHooksInstalled = false;
+let onPageHideFlush: (() => void) | undefined;
+let onVisibilityHiddenFlush: (() => void) | undefined;
+let marketingPageEventInserterForTests: ((event: MarketingPageEventInsert) => Promise<void>) | null =
+ null;
 
 /** Snapshot page context at event time (used by tests and deferred inserts). */
 export const buildMarketingPageEventRecord = ({
@@ -143,10 +147,18 @@ export const buildMarketingPageEventRecord = ({
  metadata: metadata ?? {},
 });
 
+async function resolveMarketingPageEventInserter(): Promise<
+ (event: MarketingPageEventInsert) => Promise<void>
+> {
+ if (marketingPageEventInserterForTests) return marketingPageEventInserterForTests;
+ const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
+ return insertMarketingPageEvent;
+}
+
 async function insertMarketingPageEventRecord(record: MarketingPageEventInsert): Promise<void> {
  try {
-  const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
-  await insertMarketingPageEvent(record);
+  const insert = await resolveMarketingPageEventInserter();
+  await insert(record);
  } catch {
   // Never let analytics failures surface to the user.
  }
@@ -160,10 +172,10 @@ async function flushPendingMarketingEventInserts(bestEffort = false): Promise<vo
 
  const batch = pendingMarketingEventInserts.splice(0, pendingMarketingEventInserts.length);
  try {
-  const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
+  const insert = await resolveMarketingPageEventInserter();
   for (const record of batch) {
    try {
-    await insertMarketingPageEvent(record);
+    await insert(record);
    } catch {
     if (!bestEffort) {
      // Never let analytics failures surface to the user.
@@ -175,18 +187,36 @@ async function flushPendingMarketingEventInserts(bestEffort = false): Promise<vo
  }
 }
 
+function uninstallPendingMarketingEventFlushHooks(): void {
+ if (!pendingFlushHooksInstalled || typeof window === "undefined") return;
+ if (onPageHideFlush) {
+  window.removeEventListener("pagehide", onPageHideFlush);
+  onPageHideFlush = undefined;
+ }
+ if (onVisibilityHiddenFlush) {
+  document.removeEventListener("visibilitychange", onVisibilityHiddenFlush);
+  onVisibilityHiddenFlush = undefined;
+ }
+ pendingFlushHooksInstalled = false;
+}
+
 function installPendingMarketingEventFlushHooks(): void {
  if (pendingFlushHooksInstalled || typeof window === "undefined") return;
  pendingFlushHooksInstalled = true;
 
- const flushBestEffort = () => {
+ const flushBestEffortOnHide = () => {
+  // Keep Supabase off the critical path until after window load (same as idle flush).
+  if (document.readyState !== "complete") return;
   void flushPendingMarketingEventInserts(true);
  };
 
- window.addEventListener("pagehide", flushBestEffort);
- document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") flushBestEffort();
- });
+ onPageHideFlush = flushBestEffortOnHide;
+ onVisibilityHiddenFlush = () => {
+  if (document.visibilityState === "hidden") flushBestEffortOnHide();
+ };
+
+ window.addEventListener("pagehide", onPageHideFlush);
+ document.addEventListener("visibilitychange", onVisibilityHiddenFlush);
 }
 
 function enqueueDeferredMarketingPageEventInsert(record: MarketingPageEventInsert): void {
@@ -206,7 +236,15 @@ export function resetDeferredMarketingEventQueueForTests(): void {
  cancelDeferredFlush = undefined;
  deferredFlushScheduled = false;
  pendingMarketingEventInserts.length = 0;
- pendingFlushHooksInstalled = false;
+ marketingPageEventInserterForTests = null;
+ uninstallPendingMarketingEventFlushHooks();
+}
+
+/** Override the deferred inserter (tests only). */
+export function setMarketingPageEventInserterForTests(
+ inserter: ((event: MarketingPageEventInsert) => Promise<void>) | null,
+): void {
+ marketingPageEventInserterForTests = inserter;
 }
 
 /** Peek pending deferred inserts (tests only). */

@@ -6,6 +6,7 @@ import {
   readSignupAttribution,
   getPendingMarketingEventInsertsForTests,
   resetDeferredMarketingEventQueueForTests,
+  setMarketingPageEventInserterForTests,
   storeSignupAttribution,
   trackMarketingEvent,
 } from "../marketingEvents";
@@ -72,6 +73,7 @@ describe("marketing event coverage and attribution", () => {
 describe("trackMarketingEvent deferred persistence", () => {
   beforeEach(() => {
     resetDeferredMarketingEventQueueForTests();
+    setMarketingPageEventInserterForTests(vi.fn().mockResolvedValue(undefined));
     idleTask = undefined;
     window.history.replaceState({}, "", "/");
     Object.defineProperty(document, "referrer", {
@@ -106,6 +108,9 @@ describe("trackMarketingEvent deferred persistence", () => {
   });
 
   it("flushes pending inserts on pagehide without waiting for idle", async () => {
+    const insert = vi.fn().mockResolvedValue(undefined);
+    setMarketingPageEventInserterForTests(insert);
+
     await trackMarketingEvent({ eventType: "page_view", pageSlug: "home" });
 
     expect(getPendingMarketingEventInsertsForTests()).toHaveLength(1);
@@ -113,7 +118,39 @@ describe("trackMarketingEvent deferred persistence", () => {
 
     window.dispatchEvent(new Event("pagehide"));
     await Promise.resolve();
+    await Promise.resolve();
 
     expect(getPendingMarketingEventInsertsForTests()).toHaveLength(0);
+    expect(insert).toHaveBeenCalledTimes(1);
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_type: "page_view",
+        page_slug: "home",
+        referrer: "https://example.com/home",
+      }),
+    );
+  });
+
+  it("does not flush on pagehide before window load completes", async () => {
+    const insert = vi.fn().mockResolvedValue(undefined);
+    setMarketingPageEventInserterForTests(insert);
+    const readyState = Object.getOwnPropertyDescriptor(document, "readyState");
+    Object.defineProperty(document, "readyState", {
+      configurable: true,
+      get: () => "interactive",
+    });
+
+    try {
+      await trackMarketingEvent({ eventType: "page_view", pageSlug: "home" });
+      window.dispatchEvent(new Event("pagehide"));
+      await Promise.resolve();
+
+      expect(getPendingMarketingEventInsertsForTests()).toHaveLength(1);
+      expect(insert).not.toHaveBeenCalled();
+    } finally {
+      if (readyState) {
+        Object.defineProperty(document, "readyState", readyState);
+      }
+    }
   });
 });
