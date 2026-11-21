@@ -1,16 +1,44 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearSignupAttribution,
   isTrackedMarketingSlug,
   marketingPageSlugFromPath,
   readSignupAttribution,
+  getPendingMarketingEventInsertsForTests,
+  resetDeferredMarketingEventQueueForTests,
   storeSignupAttribution,
+  trackMarketingEvent,
 } from "../marketingEvents";
+
+let idleTask: (() => void) | undefined;
+
+vi.mock("@/lib/deferAuthBootstrap", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/deferAuthBootstrap")>();
+  return {
+    ...actual,
+    scheduleIdleTask: (task: () => void) => {
+      idleTask = task;
+      return () => {
+        idleTask = undefined;
+      };
+    },
+  };
+});
 
 describe("marketing event coverage and attribution", () => {
   beforeEach(() => {
     clearSignupAttribution();
+    resetDeferredMarketingEventQueueForTests();
+    idleTask = undefined;
     window.history.replaceState({}, "", "/learn/cmms?utm_source=test");
+    Object.defineProperty(document, "referrer", {
+      configurable: true,
+      value: "https://example.com/landing",
+    });
+  });
+
+  afterEach(() => {
+    resetDeferredMarketingEventQueueForTests();
   });
 
   it("covers new normalized SEO page slugs without a manual allowlist", () => {
@@ -38,5 +66,54 @@ describe("marketing event coverage and attribution", () => {
       ctaLocation: "article-cta",
       campaign: { utm_source: "test" },
     });
+  });
+});
+
+describe("trackMarketingEvent deferred persistence", () => {
+  beforeEach(() => {
+    resetDeferredMarketingEventQueueForTests();
+    idleTask = undefined;
+    window.history.replaceState({}, "", "/");
+    Object.defineProperty(document, "referrer", {
+      configurable: true,
+      value: "https://example.com/home",
+    });
+  });
+
+  afterEach(() => {
+    resetDeferredMarketingEventQueueForTests();
+  });
+
+  it("captures page_url and referrer synchronously before a same-tab navigation", async () => {
+    const sourceHref = window.location.href;
+
+    await trackMarketingEvent({
+      eventType: "cta_click",
+      pageSlug: "home",
+      metadata: { cta: "start_free_trial" },
+    });
+
+    window.history.replaceState({}, "", "/auth");
+    expect(window.location.href).not.toBe(sourceHref);
+
+    const [pending] = getPendingMarketingEventInsertsForTests();
+    expect(pending).toMatchObject({
+      event_type: "cta_click",
+      page_slug: "home",
+      page_url: sourceHref,
+      referrer: "https://example.com/home",
+    });
+  });
+
+  it("flushes pending inserts on pagehide without waiting for idle", async () => {
+    await trackMarketingEvent({ eventType: "page_view", pageSlug: "home" });
+
+    expect(getPendingMarketingEventInsertsForTests()).toHaveLength(1);
+    expect(idleTask).toBeDefined();
+
+    window.dispatchEvent(new Event("pagehide"));
+    await Promise.resolve();
+
+    expect(getPendingMarketingEventInsertsForTests()).toHaveLength(0);
   });
 });
