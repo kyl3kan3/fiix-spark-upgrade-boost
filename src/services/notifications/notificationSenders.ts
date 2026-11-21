@@ -1,6 +1,5 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/lib/logger";
 
 // Function to send an in-app notification
 export const sendInAppNotification = async (
@@ -30,12 +29,7 @@ export const sendEmailNotification = async (
  userId: string,
  referenceId?: string
 ): Promise<void> => {
- logger.log("=== EMAIL NOTIFICATION START ===");
- logger.log("sendEmailNotification called with:", { to, subject, userId, referenceId });
- 
  try {
- logger.log("About to invoke send-email edge function...");
- 
  const { data, error } = await supabase.functions.invoke("send-email", {
  body: {
  to,
@@ -46,9 +40,7 @@ export const sendEmailNotification = async (
  referenceId
  }
  });
- 
- logger.log("Edge function response received:", { data, error });
- 
+
  if (error) {
  console.error("Edge function returned error:", error);
  throw new Error(`Email service error: ${error.message || 'Unknown error'}`);
@@ -59,10 +51,7 @@ export const sendEmailNotification = async (
  throw new Error(`Email sending failed: ${data?.error || 'Unknown error'}`);
  }
 
- logger.log("Email function invoked successfully:", data);
-
  // Also store in notifications table
- logger.log("Storing notification in database...");
  const { error: dbError } = await supabase
  .from('notifications')
  .insert({
@@ -76,13 +65,8 @@ export const sendEmailNotification = async (
  if (dbError) {
  console.error("Database storage error:", dbError);
  // Don't throw here, email was sent successfully
- } else {
- logger.log("Email notification stored in database successfully");
  }
- 
- logger.log("=== EMAIL NOTIFICATION SUCCESS ===");
  } catch (err) {
- console.error("=== EMAIL NOTIFICATION FAILED ===");
  console.error("Error in sendEmailNotification:", err);
  throw err;
  }
