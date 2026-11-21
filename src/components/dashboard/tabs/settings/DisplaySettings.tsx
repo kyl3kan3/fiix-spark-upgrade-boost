@@ -35,7 +35,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = ({
  <div className="space-y-4">
  <h3 className="text-lg font-medium">Display Settings</h3>
  <div className="grid gap-4">
- <div className="flex items-center justify-between p-3 border rounded-md /50">
+ <div className="flex items-center justify-between p-3 border rounded-md">
  <div>
  <p className="font-medium">Dark Mode</p>
  <p className="text-sm text-muted-foreground">Use dark theme for the application</p>
@@ -50,7 +50,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = ({
  {settings.filter(setting => setting.id !== 'darkMode').map((setting) => (
  <div 
  key={setting.id} 
- className="flex items-center justify-between p-3 border rounded-md /50"
+ className="flex items-center justify-between p-3 border rounded-md"
  >
  <div>
  <p className="font-medium">{setting.title}</p>
@@ -64,7 +64,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = ({
  </div>
  ))}
  
- <div className="flex items-center justify-between p-3 border rounded-md /50">
+ <div className="flex items-center justify-between p-3 border rounded-md">
  <div>
  <p className="font-medium">Dashboard Layout</p>
  <p className="text-sm text-muted-foreground">Choose your preferred dashboard layout</p>
