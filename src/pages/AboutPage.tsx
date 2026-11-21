@@ -21,6 +21,11 @@ export default function AboutPage() {
         <meta property="og:title" content="About MaintenEase" />
         <meta property="og:description" content="MaintenEase product, operator, contact, and publishing information." />
         <meta property="og:url" content={CANONICAL} />
+        <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About MaintenEase" />
+        <meta name="twitter:description" content="MaintenEase product, operator, contact, and publishing information." />
+        <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       </Helmet>
       <MarketingJsonLd />
       <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">
