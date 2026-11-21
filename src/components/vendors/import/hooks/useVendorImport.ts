@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { parseFile } from '../services/fileParsingService';
 import { supabase } from '@/integrations/supabase/client';
-import { logger } from "@/lib/logger";
 
 export const useVendorImport = () => {
  const [vendors, setVendors] = useState<any[]>([]);
@@ -10,7 +9,6 @@ export const useVendorImport = () => {
  const [error, setError] = useState('');
 
  const clearResults = () => {
- logger.log('🧹 Clearing all import results');
  setVendors([]);
  setError('');
  setLoading(false);
@@ -19,35 +17,19 @@ export const useVendorImport = () => {
  const handleFile = async (
  e: React.ChangeEvent<HTMLInputElement>, 
  expectedCount?: number, 
- instructions?: string,
- timestamp?: number
+ instructions?: string
  ) => {
- logger.log('🚀 STARTING FRESH FILE PROCESSING');
- logger.log('⏰ Processing timestamp:', timestamp || 'Not provided');
- 
  setError('');
  setVendors([]);
  setLoading(true);
  
  const file = e.target.files?.[0];
  if (!file) {
- logger.log('❌ No file selected');
  return setLoading(false);
  }
 
- logger.log('📁 Processing file:', file.name, 'Size:', file.size);
- logger.log('📋 Expected count:', expectedCount);
- logger.log('📝 Instructions:', instructions || 'None provided');
-
  try {
- // Add cache busting by creating a unique file identifier
- const fileId = `${file.name}_${file.size}_${file.lastModified}_${timestamp || Date.now()}`;
- logger.log('🆔 Unique file identifier:', fileId);
- 
  const rows = await parseFile(file, expectedCount, instructions);
- 
- logger.log('✅ File parsing completed successfully');
- logger.log('📊 Results:', rows.length, 'vendors found');
  
  setVendors(rows);
  
@@ -58,7 +40,6 @@ export const useVendorImport = () => {
  
  if (percentDiff > 50) {
  const warningMsg = `Warning: Found ${rows.length} vendors but expected ${expectedCount}. The parsing might need adjustment.`;
- logger.log('⚠️', warningMsg);
  setError(warningMsg);
  }
  }
@@ -69,7 +50,6 @@ export const useVendorImport = () => {
  }
  
  setLoading(false);
- logger.log('🏁 File processing completed');
  };
 
  const saveToSupabase = async () => {
