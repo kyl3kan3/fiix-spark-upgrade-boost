@@ -16,6 +16,8 @@ export interface MeterReading {
   recorded_at: string;
   recorded_by: string | null;
   notes: string | null;
+  work_orders_created: number;
+  work_orders_deferred: number;
 }
 
 export interface ChecklistMeterRule {
@@ -23,6 +25,7 @@ export interface ChecklistMeterRule {
   meter_id: string;
   interval_units: number;
   last_service_reading: number;
+  auto_create_work_order: boolean;
   meter?: AssetMeter | null;
 }
 

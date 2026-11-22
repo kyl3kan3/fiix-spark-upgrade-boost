@@ -24,7 +24,6 @@ export function PartsDashboard() {
     create,
     update,
     remove,
-    adjustStock,
   } = useParts();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -219,21 +218,7 @@ export function PartsDashboard() {
         }}
       />
 
-      <PartStockAdjustDialog
-        part={stockPart}
-        open={!!stockPart}
-        onOpenChange={(o) => !o && setStockPart(null)}
-        isPending={adjustStock.isPending}
-        onAdjust={async (args) => {
-          if (!stockPart) return;
-          await adjustStock.mutateAsync({
-            partId: stockPart.id,
-            type: args.type,
-            delta: args.delta,
-            notes: args.notes,
-          });
-        }}
-      />
+      {stockPart && <PartStockAdjustDialog part={stockPart} onClose={() => setStockPart(null)} />}
     </div>
   );
 }

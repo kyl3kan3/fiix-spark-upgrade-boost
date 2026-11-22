@@ -75,7 +75,7 @@ In week one, clean the asset list and agree on locations, priorities, statuses, 
 
 ## What MaintenEase supports today
 
-MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.
+MaintenEase connects public maintenance requests, assets, work orders, checklists, labor, parts, and costs. Teams can schedule preventive work by date. On Pro and Business, a recorded asset meter reading can also trigger a work order when a linked checklist's service interval is reached. Use the selection worksheet below to check your team's telematics, assignment, and compliance requirements with each vendor.
 
 ## FAQ
 

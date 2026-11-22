@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { updateWorkOrderStatus } from "@/services/workOrderService";
 import {
  WorkOrderStatus, WorkOrderPriority, WorkOrderWithRelations,
 } from "@/types/workOrders";
@@ -251,11 +251,10 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  const [completePartsJob, setCompletePartsJob] = useState<WorkOrderWithRelations | null>(null);
 
  const applyJobStatus = async (jobId: string, status: WorkOrderStatus) => {
- const { error } = await supabase.from("work_orders").update({ status }).eq("id", jobId);
- if (error) throw error;
+ await updateWorkOrderStatus(jobId, status, "advance");
  };
 
- const { pendingCount } = useOfflineWorkOrderSync(
+ const { pendingCount, refresh: refreshOfflineQueue } = useOfflineWorkOrderSync(
  async (id, status) => applyJobStatus(id, status as WorkOrderStatus),
  offlineEnabled,
  );
@@ -270,8 +269,8 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  await applyJobStatus(jobId, status);
  }
  } catch (error) {
- const message = error instanceof Error ? error.message : "Update failed";
- if (offlineEnabled) {
+ const message = error && typeof error === "object" && "message" in error ? String(error.message) : "Update failed";
+ if (offlineEnabled && (!navigator.onLine || /failed to fetch|network error|networkerror|load failed/i.test(message))) {
  enqueueWorkOrderStatus(jobId, status);
  toast.message("Saved offline — will sync when you're back online.");
  } else {
@@ -427,10 +426,11 @@ const JobsBuckets: React.FC<JobsBucketsProps> = ({ jobs }) => {
  workOrderId={completePartsJob?.id ?? ""}
  workOrderTitle={completePartsJob?.title}
  assetId={completePartsJob?.asset_id}
- onCompleted={() => {
- if (completePartsJob) markJobStatus(completePartsJob.id, "completed");
- setCompletePartsJob(null);
- }}
+ queueOfflineCompletion={offlineEnabled && completePartsJob ? () => {
+ enqueueWorkOrderStatus(completePartsJob.id, "completed");
+ refreshOfflineQueue();
+ toast.message("Saved offline. Completion will sync when you reconnect.");
+ } : undefined}
  />
  </div>
  );

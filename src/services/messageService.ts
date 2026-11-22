@@ -1,21 +1,25 @@
-import type { RealtimeChannel, RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Message } from "@/types/chat";
 
-const getUserMessagesChannelTopic = (userId: string, recipientId: string) =>
-  `user:${userId}:messages:${recipientId}`;
+export const MESSAGE_PAGE_SIZE = 100;
+type MessageCursor = Pick<Message, "id" | "created_at">;
 
-/** Fetch every message exchanged between the two users, oldest first. */
+/** Fetch newest messages first, so long-running conversations also receive new replies. */
 export async function getConversationMessages(
   currentUserId: string,
-  recipientId: string
+  recipientId: string,
+  before: MessageCursor | null,
+  signal?: AbortSignal
 ): Promise<Message[]> {
-  const { data, error } = await supabase
+  const query = supabase
     .from("messages")
     .select("*")
     .or(`and(sender_id.eq.${currentUserId},recipient_id.eq.${recipientId}),and(sender_id.eq.${recipientId},recipient_id.eq.${currentUserId})`)
-    .order("created_at", { ascending: true });
-
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(MESSAGE_PAGE_SIZE);
+  if (before) query.or(`created_at.lt.${before.created_at},and(created_at.eq.${before.created_at},id.lt.${before.id})`);
+  const { data, error } = await (signal ? query.abortSignal(signal) : query);
   if (error) throw error;
   return data || [];
 }
@@ -53,36 +57,17 @@ export async function markConversationAsRead(
   if (error) throw error;
 }
 
-export type MessageChangePayload = RealtimePostgresChangesPayload<Message>;
+export const conversationKey = (userId?: string, peerId?: string) =>
+  peerId ? ["messages", userId, peerId] : ["messages", userId];
 
-/**
- * Open a realtime channel for the conversation between the two users and
- * invoke `onChange` for every INSERT/UPDATE/DELETE on the messages table that
- * involves the recipient. Returns the channel; callers own its lifecycle and
- * must pass it to `removeMessagesChannel` on cleanup.
- */
-export function subscribeToConversationMessages(
-  currentUserId: string,
-  recipientId: string,
-  onChange: (payload: MessageChangePayload) => void
-): RealtimeChannel {
-  return supabase
-    .channel(getUserMessagesChannelTopic(currentUserId, recipientId), {
-      config: { private: true },
+/** Refresh through RLS on join/reconnect as well as on each database notification. */
+export function subscribeToMessageUpdates(userId: string, refresh: (peerId?: string) => void) {
+  const channel = supabase.channel(`user:${userId}:messages`, { config: { private: true } })
+    .on("broadcast", { event: "changed" }, ({ payload }) => {
+      if (typeof payload?.peer_id === "string") refresh(payload.peer_id);
     })
-    .on('postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'messages',
-        filter: `or(recipient_id.eq.${recipientId},sender_id.eq.${recipientId})`
-      },
-      onChange
-    )
-    .subscribe();
-}
-
-/** Tear down a channel created by `subscribeToConversationMessages`. */
-export function removeMessagesChannel(channel: RealtimeChannel): void {
-  supabase.removeChannel(channel);
+    .subscribe(status => {
+      if (status === "SUBSCRIBED") refresh();
+    });
+  return () => { void supabase.removeChannel(channel); };
 }

@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Play, CheckCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { updateWorkOrderStatus } from "@/services/workOrderService";
 import { toast } from "sonner";
 import type { WorkOrderStatus, WorkOrderWithRelations } from "@/types/workOrders";
 import { WorkOrderCompletePartsDialog } from "@/components/parts/WorkOrderCompletePartsDialog";
@@ -40,8 +40,7 @@ export function WorkOrderWorkflowBar({ workOrder, onUpdated }: Props) {
   const applyStatus = async (status: WorkOrderStatus) => {
     setUpdating(true);
     try {
-      const { error } = await supabase.from("work_orders").update({ status }).eq("id", workOrder.id);
-      if (error) throw error;
+      await updateWorkOrderStatus(workOrder.id, status, "advance");
       toast.success(status === "in_progress" ? "Work order started" : "Work order completed");
       await queryClient.invalidateQueries({ queryKey: ["workOrder", workOrder.id] });
       await queryClient.invalidateQueries({ queryKey: ["workOrders"] });
@@ -101,7 +100,7 @@ export function WorkOrderWorkflowBar({ workOrder, onUpdated }: Props) {
         workOrderId={workOrder.id}
         workOrderTitle={workOrder.title}
         assetId={workOrder.asset_id}
-        onCompleted={() => applyStatus("completed")}
+        onCompleted={onUpdated}
       />
     </>
   );

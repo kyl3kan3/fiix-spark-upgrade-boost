@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Gauge, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,10 +26,12 @@ interface Props {
 
 export function AssetMetersCard({ assetId }: Props) {
   const enabled = useHasFeature("meter_based_pm");
+  const apiEnabled = useHasFeature("api");
   const qc = useQueryClient();
   const [addOpen, setAddOpen] = useState(false);
   const [name, setName] = useState("");
   const [unit, setUnit] = useState("hrs");
+  const [startingReading, setStartingReading] = useState("0");
   const [readingMeterId, setReadingMeterId] = useState<string | null>(null);
   const [readingValue, setReadingValue] = useState("");
 
@@ -45,18 +48,39 @@ export function AssetMetersCard({ assetId }: Props) {
     enabled: enabled && meterIds.length > 0,
   });
 
+  const selectedMeter = meters.find((m) => m.id === readingMeterId);
+  const initialValue = Number(startingReading);
+  const canAdd = name.trim() && unit.trim() && startingReading.trim() && Number.isFinite(initialValue) && initialValue >= 0;
+  const addMeter = useMutation({
+    mutationFn: () => createMeter({ asset_id: assetId, name: name.trim(), unit: unit.trim(), current_reading: initialValue }),
+    onSuccess: () => {
+      setAddOpen(false);
+      setName("");
+      setStartingReading("0");
+      qc.invalidateQueries({ queryKey: ["meters", assetId] });
+      qc.invalidateQueries({ queryKey: ["meters-for-checklist"] });
+    },
+    onError: (error) => toast.error(error.message || "Could not add meter"),
+  });
+  const value = Number(readingValue);
+  const canRecord = selectedMeter && readingValue.trim() && Number.isFinite(value) && value >= selectedMeter.current_reading;
+  const submitReading = useMutation({
+    mutationFn: ({ id, reading }: { id: string; reading: number }) => recordMeterReading(id, reading),
+    onSuccess: (reading) => {
+      setReadingMeterId(null);
+      setReadingValue("");
+      for (const key of ["meters", "checklist-meter-rule", "meters-for-checklist", "checklists", "due-checklists", "scheduled-checklists", "asset-pm-checklists"]) {
+        qc.invalidateQueries({ queryKey: [key] });
+      }
+      if (reading.work_orders_created) {
+        for (const key of ["asset-work-orders", "workOrders", "dashboard-work-orders"]) {
+          qc.invalidateQueries({ queryKey: [key] });
+        }
+      }
+    },
+    onError: (error) => toast.error(error.message || "Could not record reading"),
+  });
   if (!enabled) return null;
-
-  const submitReading = async () => {
-    if (!readingMeterId) return;
-    const val = Number(readingValue);
-    if (Number.isNaN(val)) return;
-    await recordMeterReading(readingMeterId, val);
-    setReadingMeterId(null);
-    setReadingValue("");
-    qc.invalidateQueries({ queryKey: ["meters", assetId] });
-    qc.invalidateQueries({ queryKey: ["checklists"] });
-  };
 
   return (
     <div className="surface-card rounded-lg p-6">
@@ -76,7 +100,19 @@ export function AssetMetersCard({ assetId }: Props) {
             <li key={m.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-2">
               <span className="font-medium">{m.name}</span>
               <span className="text-muted-foreground">{m.current_reading} {m.unit}</span>
-              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setReadingMeterId(m.id)}>
+              {apiEnabled && (
+                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(m.id);
+                    toast.success("Meter ID copied");
+                  } catch {
+                    toast.info("Meter ID", { description: m.id });
+                  }
+                }}>
+                  Copy meter ID
+                </Button>
+              )}
+              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => { setReadingValue(""); setReadingMeterId(m.id); }}>
                 Log reading
               </Button>
             </li>
@@ -105,24 +141,20 @@ export function AssetMetersCard({ assetId }: Props) {
           <DialogHeader><DialogTitle>Add meter</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label>Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Runtime hours" />
+              <Label htmlFor="meter-name">Name</Label>
+              <Input id="meter-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Runtime hours" />
             </div>
             <div>
-              <Label>Unit</Label>
-              <Input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="hrs" />
+              <Label htmlFor="meter-unit">Unit</Label>
+              <Input id="meter-unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="hrs" />
+            </div>
+            <div>
+              <Label htmlFor="meter-initial-reading">Current reading</Label>
+              <Input id="meter-initial-reading" type="number" min={0} step="any" value={startingReading} onChange={(e) => setStartingReading(e.target.value)} />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              onClick={async () => {
-                if (!name.trim()) return;
-                await createMeter({ asset_id: assetId, name: name.trim(), unit });
-                setAddOpen(false);
-                setName("");
-                qc.invalidateQueries({ queryKey: ["meters", assetId] });
-              }}
-            >
+            <Button onClick={() => addMeter.mutate()} disabled={!canAdd || addMeter.isPending}>
               Save
             </Button>
           </DialogFooter>
@@ -132,10 +164,12 @@ export function AssetMetersCard({ assetId }: Props) {
       <Dialog open={!!readingMeterId} onOpenChange={(o) => !o && setReadingMeterId(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Record meter reading</DialogTitle></DialogHeader>
-          <Label>New reading (must be ≥ current)</Label>
-          <Input type="number" min={0} step="any" value={readingValue} onChange={(e) => setReadingValue(e.target.value)} />
+          <Label htmlFor="asset-reading">New reading ({selectedMeter?.current_reading} {selectedMeter?.unit} or higher)</Label>
+          <Input id="asset-reading" type="number" min={selectedMeter?.current_reading ?? 0} step="any" value={readingValue} onChange={(e) => setReadingValue(e.target.value)} />
           <DialogFooter>
-            <Button onClick={submitReading}>Save</Button>
+            <Button disabled={!canRecord || submitReading.isPending} onClick={() => {
+              if (canRecord) submitReading.mutate({ id: selectedMeter.id, reading: value });
+            }}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

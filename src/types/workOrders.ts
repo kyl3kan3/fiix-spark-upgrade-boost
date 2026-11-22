@@ -12,7 +12,7 @@ export type WorkOrderStatus = Database['public']['Enums']['work_order_status'];
 export type WorkOrderPriority = Database['public']['Enums']['work_order_priority'];
 
 // Form submission types (for creating/updating)
-export type WorkOrderFormData = Omit<WorkOrder, 'id' | 'created_at' | 'updated_at' | 'created_by'>;
+export type WorkOrderFormData = Omit<WorkOrder, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'meter_checklist_id'>;
 export type AssetFormData = Omit<Asset, 'id' | 'created_at' | 'updated_at'>;
 export type WorkOrderCommentFormData = {
  comment: string;

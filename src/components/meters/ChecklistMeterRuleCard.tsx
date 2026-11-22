@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Gauge } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useHasFeature } from "@/hooks/useSubscription";
 import {
   fetchChecklistMeterRule,
   fetchMetersForAsset,
-  upsertChecklistMeterRule,
+  saveChecklistMeterRule,
 } from "@/services/meterService";
 
 interface Props {
@@ -21,8 +23,10 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
   const qc = useQueryClient();
   const [meterId, setMeterId] = useState("");
   const [interval, setInterval] = useState("");
+  const [createWorkOrder, setCreateWorkOrder] = useState(true);
+  const [initialReading, setInitialReading] = useState<string | null>(null);
 
-  const { data: rule } = useQuery({
+  const { data: rule, isLoading, isError } = useQuery({
     queryKey: ["checklist-meter-rule", checklistId],
     queryFn: () => fetchChecklistMeterRule(checklistId),
     enabled: enabled && !!checklistId,
@@ -41,10 +45,15 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
     enabled: enabled && assetIds.length > 0,
   });
 
+  const savedMeter = rule?.meter_id ?? "";
+  const savedInterval = rule?.interval_units?.toString() ?? "";
+  const savedWorkOrderSetting = rule?.auto_create_work_order ?? true;
   useEffect(() => {
-    if (rule?.meter_id) setMeterId(rule.meter_id);
-    if (rule?.interval_units) setInterval(String(rule.interval_units));
-  }, [rule?.meter_id, rule?.interval_units]);
+    setMeterId(savedMeter);
+    setInterval(savedInterval);
+    setCreateWorkOrder(savedWorkOrderSetting);
+    setInitialReading(null);
+  }, [checklistId, savedMeter, savedInterval, savedWorkOrderSetting]);
 
   const meterOptions = useMemo(
     () =>
@@ -55,21 +64,40 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
     [meters],
   );
 
+  const units = Number(interval);
+  const meter = meters.find((item) => item.id === meterId);
+  const startingCycle = meterId !== savedMeter;
+  const baselineInput = initialReading ?? String(meter?.current_reading ?? "");
+  const baseline = startingCycle ? Number(baselineInput) : rule?.last_service_reading;
+  const validBaseline = !!meter && baseline !== undefined && Number.isFinite(baseline)
+    && (!startingCycle || (baselineInput.trim() !== "" && baseline >= 0 && baseline <= meter.current_reading));
+  const canSave = validBaseline && Number.isFinite(units) && units > 0;
+  const save = useMutation({
+    mutationFn: () => saveChecklistMeterRule({
+      checklistId, meterId, intervalUnits: units, createWorkOrder,
+      expectedMeterId: savedMeter || undefined,
+      initialServiceReading: startingCycle ? baseline : undefined,
+    }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["checklist-meter-rule", checklistId] });
+      qc.invalidateQueries({ queryKey: ["meter-rules"] });
+      toast.success("Meter rule saved");
+    },
+    onError: (error) => {
+      qc.invalidateQueries({ queryKey: ["checklist-meter-rule", checklistId] });
+      toast.error(error.message || "Could not save meter rule");
+    },
+  });
   if (!enabled) return null;
-
-  const save = async () => {
-    const units = Number(interval);
-    if (!meterId || Number.isNaN(units) || units <= 0) return;
-    await upsertChecklistMeterRule(checklistId, meterId, units);
-    qc.invalidateQueries({ queryKey: ["checklist-meter-rule", checklistId] });
-  };
 
   return (
     <div className="surface-card rounded-lg p-6">
       <h3 className="label-eyebrow flex items-center gap-2 mb-3">
         <Gauge className="h-4 w-4" /> Meter-based PM
       </h3>
-      {assetIds.length === 0 ? (
+      {isLoading || isError ? (
+        <p className="text-sm text-muted-foreground">{isError ? "Could not load the meter rule." : "Loading meter rule…"}</p>
+      ) : assetIds.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Link equipment to this PM checklist to choose a meter and service interval.
         </p>
@@ -80,11 +108,12 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
       ) : (
         <div className="space-y-3 max-w-md">
           <div>
-            <Label className="text-xs">Meter</Label>
+            <Label htmlFor="pm-meter" className="text-xs">Meter</Label>
             <select
+              id="pm-meter"
               className="w-full mt-1 rounded-md border bg-background px-3 py-2 text-sm"
               value={meterId}
-              onChange={(e) => setMeterId(e.target.value)}
+              onChange={(e) => { setMeterId(e.target.value); setInitialReading(null); }}
             >
               <option value="">Select meter…</option>
               {meterOptions.map((m) => (
@@ -92,11 +121,22 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
               ))}
             </select>
           </div>
+          {startingCycle && meter && (
+            <div>
+              <Label htmlFor="pm-last-service" className="text-xs">Last service reading ({meter.unit})</Label>
+              <Input id="pm-last-service" type="number" min={0} max={meter.current_reading} step="any"
+                className="h-9 mt-1" value={baselineInput} onChange={(e) => setInitialReading(e.target.value)} />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Enter the reading at the last service, or use the current reading to start the interval now.
+              </p>
+            </div>
+          )}
           <div>
-            <Label className="text-xs">Service every (units)</Label>
+            <Label htmlFor="pm-interval" className="text-xs">Service every (units)</Label>
             <Input
+              id="pm-interval"
               type="number"
-              min={1}
+              min={0}
               step="any"
               className="h-9 mt-1"
               value={interval}
@@ -104,13 +144,19 @@ export function ChecklistMeterRuleCard({ checklistId, assetIds }: Props) {
               placeholder="e.g. 250"
             />
           </div>
-          <Button size="sm" onClick={save} disabled={!meterId || !interval}>
+          <div className="flex items-center gap-2">
+            <Switch id="meter-work-order" checked={createWorkOrder} onCheckedChange={setCreateWorkOrder} />
+            <Label htmlFor="meter-work-order">Create a work order when service is due</Label>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            A reading at or above the threshold marks this checklist due. Submit the checklist after service to start the next interval.
+          </p>
+          <Button size="sm" onClick={() => save.mutate()} disabled={!canSave || save.isPending}>
             Save meter rule
           </Button>
-          {rule?.meter && (
+          {canSave && meter && (
             <p className="text-xs text-muted-foreground">
-              Last service at {rule.last_service_reading} {rule.meter.unit}; current{" "}
-              {rule.meter.current_reading} {rule.meter.unit}.
+              Service due at {baseline + units} {meter.unit}. Current reading {meter.current_reading} {meter.unit}.
             </p>
           )}
         </div>

@@ -3,11 +3,12 @@ import { add, addMonths } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { requireUser, requireUserCompany } from "@/services/supabaseHelpers";
 import {
-  workOrderDueDateInputValue,
   workOrderDueInstantFromDateInput,
 } from "@/lib/workOrderDueDate";
 import { WorkOrderFormValues } from "@/components/workOrders/WorkOrderFormSchema";
 import { WorkOrderStatus } from "@/types/workOrders";
+import type { PartUsageLine } from "@/types/parts";
+import type { LubricantUsageLine } from "@/types/lubricants";
 
 async function resolveDueDateIso(dateOnly: string | undefined | null): Promise<string | null> {
   if (!dateOnly?.trim()) return null;
@@ -162,22 +163,49 @@ export async function getUpcomingPmWorkOrders() {
  return data || [];
 }
 
-export async function updateWorkOrderStatus(workOrderId: string, status: WorkOrderStatus) {
- const { data, error } = await supabase
- .from("work_orders")
- .update({ status })
- .eq("id", workOrderId)
- .select("id");
-
- if (error) throw error;
- if (!data || data.length === 0) {
- throw new Error("You don't have permission to update this work order.");
- }
- return data;
+export async function updateWorkOrderStatus(
+  workOrderId: string,
+  status: WorkOrderStatus,
+  mode: "set" | "advance" = "set",
+) {
+  let update = supabase.from("work_orders").update({ status }).eq("id", workOrderId);
+  // A delayed Start from an offline device must not reopen a completed job.
+  const starting = mode === "advance" && status === "in_progress";
+  if (starting) update = update.eq("status", "pending");
+  const { data, error } = await update.select("id");
+  if (error) throw error;
+  if (data?.length) return data;
+  if (starting) {
+    const current = await supabase.from("work_orders").select("id, status").eq("id", workOrderId).maybeSingle();
+    if (current.error) throw current.error;
+    if (current.data?.status === "in_progress" || current.data?.status === "completed") {
+      return [{ id: workOrderId }];
+    }
+  }
+  throw new Error("You don't have permission to update this work order.");
 }
 
 export async function completeWorkOrder(workOrderId: string) {
  return updateWorkOrderStatus(workOrderId, "completed");
+}
+
+export async function completeWorkOrderWithUsage(workOrderId: string, details: {
+  parts: PartUsageLine[];
+  lubricants: LubricantUsageLine[];
+  failureCodeId?: string;
+  downtimeCodeId?: string;
+  downtimeMinutes?: number;
+}) {
+  const { data, error } = await supabase.rpc("complete_work_order_with_usage", {
+    _work_order_id: workOrderId,
+    _parts: details.parts.map(({ part_id, quantity }) => ({ part_id, quantity })),
+    _lubricants: details.lubricants.map(({ lubricant_id, quantity }) => ({ lubricant_id, quantity })),
+    _failure_code_id: details.failureCodeId,
+    _downtime_code_id: details.downtimeCodeId,
+    _downtime_minutes: details.downtimeMinutes,
+  });
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export type UnplannedUrgency = "critical" | "high" | "medium" | "low";

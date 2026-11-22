@@ -249,7 +249,7 @@ export default function BillingPage() {
                     />
                     <UsageMetric
                       icon={<ClipboardList className="h-4 w-4" />}
-                      label="Work Orders"
+                      label="Work Orders This Month"
                       used={counts.workOrders}
                       limit={sub.work_order_limit}
                     />

@@ -726,6 +726,8 @@ export type Database = {
       }
       checklist_meter_rules: {
         Row: {
+          auto_create_work_order: boolean
+          work_order_created_at: string | null
           checklist_id: string
           company_id: string
           created_at: string
@@ -735,6 +737,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          auto_create_work_order?: boolean
+          work_order_created_at?: string | null
           checklist_id: string
           company_id: string
           created_at?: string
@@ -744,6 +748,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          auto_create_work_order?: boolean
+          work_order_created_at?: string | null
           checklist_id?: string
           company_id?: string
           created_at?: string
@@ -2068,8 +2074,31 @@ export type Database = {
         }
         Relationships: []
       }
+      meter_reading_events: {
+        Row: { event_id: string; meter_id: string; reading_id: string; unit: string }
+        Insert: { event_id: string; meter_id: string; reading_id: string; unit: string }
+        Update: { event_id?: string; meter_id?: string; reading_id?: string; unit?: string }
+        Relationships: [
+          {
+            foreignKeyName: "meter_reading_events_meter_id_fkey"
+            columns: ["meter_id"]
+            isOneToOne: false
+            referencedRelation: "asset_meters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meter_reading_events_reading_id_fkey"
+            columns: ["reading_id"]
+            isOneToOne: true
+            referencedRelation: "meter_readings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meter_readings: {
         Row: {
+          work_orders_created: number
+          work_orders_deferred: number
           company_id: string
           id: string
           meter_id: string
@@ -2079,6 +2108,8 @@ export type Database = {
           recorded_by: string | null
         }
         Insert: {
+          work_orders_created?: number
+          work_orders_deferred?: number
           company_id: string
           id?: string
           meter_id: string
@@ -2088,6 +2119,8 @@ export type Database = {
           recorded_by?: string | null
         }
         Update: {
+          work_orders_created?: number
+          work_orders_deferred?: number
           company_id?: string
           id?: string
           meter_id?: string
@@ -3684,6 +3717,7 @@ export type Database = {
       }
       work_orders: {
         Row: {
+          meter_checklist_id: string | null
           asset_id: string | null
           assigned_to: string | null
           company_id: string | null
@@ -3702,6 +3736,7 @@ export type Database = {
           vendor_id: string | null
         }
         Insert: {
+          meter_checklist_id?: string | null
           asset_id?: string | null
           assigned_to?: string | null
           company_id?: string | null
@@ -3720,6 +3755,7 @@ export type Database = {
           vendor_id?: string | null
         }
         Update: {
+          meter_checklist_id?: string | null
           asset_id?: string | null
           assigned_to?: string | null
           company_id?: string | null
@@ -3778,6 +3814,13 @@ export type Database = {
             columns: ["failure_code_id"]
             isOneToOne: false
             referencedRelation: "maintenance_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_meter_checklist_id_fkey"
+            columns: ["meter_checklist_id"]
+            isOneToOne: false
+            referencedRelation: "checklists"
             referencedColumns: ["id"]
           },
           {
@@ -3894,6 +3937,17 @@ export type Database = {
           company_id: string
         }[]
       }
+      complete_work_order_with_usage: {
+        Args: {
+          _work_order_id: string
+          _parts?: Json
+          _lubricants?: Json
+          _failure_code_id?: string
+          _downtime_code_id?: string
+          _downtime_minutes?: number
+        }
+        Returns: boolean
+      }
       create_pm_work_orders_from_preview: {
         Args: { _items: Json }
         Returns: number
@@ -4002,6 +4056,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      ingest_meter_reading: {
+        Args: {
+          _api_key_hash: string
+          _event_id: string
+          _meter_id: string
+          _notes?: string
+          _observed_at: string
+          _reading_value: number
+          _unit: string
+        }
+        Returns: Json
+      }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       log_attachment_event: {
         Args: {
@@ -4018,6 +4084,7 @@ export type Database = {
         Args: { _frequency: string; _from: string; _timezone: string }
         Returns: string
       }
+      monthly_work_order_count: { Args: { _company?: string }; Returns: number }
       preview_pm_work_orders: { Args: { _days_ahead?: number }; Returns: Json }
       recalculate_purchase_order_totals: {
         Args: { _po_id: string }
@@ -4030,6 +4097,8 @@ export type Database = {
       record_asset_meter_reading: {
         Args: { _meter_id: string; _notes?: string; _reading_value: number }
         Returns: {
+          work_orders_created: number
+          work_orders_deferred: number
           company_id: string
           id: string
           meter_id: string
@@ -4065,6 +4134,17 @@ export type Database = {
         Returns: number
       }
       regenerate_energy_ingest_token: { Args: never; Returns: string }
+      save_checklist_meter_rule: {
+        Args: {
+          _checklist_id: string
+          _meter_id: string
+          _interval_units: number
+          _auto_create_work_order: boolean
+          _expected_meter_id?: string
+          _initial_service_reading?: number
+        }
+        Returns: undefined
+      }
       set_checklist_schedule: {
         Args: { _checklist_id: string }
         Returns: undefined

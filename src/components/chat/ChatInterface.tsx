@@ -14,7 +14,7 @@ const ChatInterface = () => {
     excludeCurrentUser: true,
   });
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
-  const { messages, sendMessage, markAsRead, loading: loadingMessages } = useMessages(selectedUser?.id);
+  const conversation = useMessages(selectedUser?.id);
 
   // Select first user by default once team members are loaded
   useEffect(() => {
@@ -37,12 +37,6 @@ const ChatInterface = () => {
       }
     }
   }, [teamMembers, selectedUser]);
-
-  const handleSendMessage = (content: string) => {
-    if (selectedUser && content.trim()) {
-      sendMessage(content, selectedUser.id);
-    }
-  };
 
   const handleRefresh = () => {
     refreshTeamMembers();
@@ -81,11 +75,15 @@ const ChatInterface = () => {
       <div className="md:col-span-3">
         <div className="h-full bg-card border border-border rounded-lg shadow-sm flex flex-col overflow-hidden">
           <MessageArea
+            key={selectedUser?.id}
             selectedUser={selectedUser}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            loading={loadingMessages}
-            onMarkAsRead={markAsRead}
+            messages={conversation.messages}
+            onSendMessage={conversation.sendMessage}
+            loadError={conversation.loadError}
+            loadEarlier={conversation.loadEarlier}
+            loadingEarlier={conversation.loadingEarlier}
+            loading={conversation.loading}
+            onMarkAsRead={conversation.markAsRead}
           />
         </div>
       </div>

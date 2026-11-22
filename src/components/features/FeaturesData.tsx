@@ -37,7 +37,7 @@ export const featureItems: FeatureItem[] = [
  },
  {
  title: "Preventive Maintenance",
- description: "Schedule recurring maintenance tasks to prevent costly breakdowns and extend asset life.",
+ description: "Schedule work by date. On Pro and Business, recorded meter readings can also trigger a work order by runtime or mileage.",
  icon: <Calendar className="h-12 w-12 p-2 bg-primary/10 text-primary rounded-lg" />,
  category: "core",
  benefits: ["Reduce unexpected downtime", "Extend equipment life", "Optimize maintenance schedules"],
@@ -61,7 +61,7 @@ export const featureItems: FeatureItem[] = [
  },
  {
  title: "Team Collaboration",
- description: "Improve communication between maintenance teams with real-time updates and notifications.",
+ description: "Send a teammate a direct message in Team Chat to coordinate a repair or hand off a job.",
  icon: <Users className="h-12 w-12 p-2 bg-primary/10 text-primary rounded-lg" />,
  category: "advanced",
  benefits: ["Streamlined communication", "Task assignment", "Mobile notifications"],

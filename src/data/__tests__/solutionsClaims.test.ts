@@ -27,14 +27,19 @@ describe("solution-page product claims", () => {
   });
 
   it("states important scope boundaries alongside supported workflows", () => {
+    const pm = solutions.find((solution) => solution.slug === "preventive-maintenance-software");
     const fleet = solutions.find((solution) => solution.slug === "fleet-maintenance-software");
     const portal = solutions.find((solution) => solution.slug === "maintenance-request-portal");
     const tracking = solutions.find((solution) => solution.slug === "asset-tracking-software");
 
-    expect(fleet?.intro).toContain("does not claim native telematics feeds");
+    expect(pm?.intro).toContain("Pro and Business");
+    expect(pm?.intro).toContain("automatically creates a work order");
+    expect(fleet?.intro).toContain("odometer or engine-hour reading");
+    expect(fleet?.faqs.map((faq) => faq.a).join(" ")).toContain("On Business, a custom integration can also post readings");
     expect(portal?.features.map((feature) => feature.body).join(" ")).toContain("Turnstile");
     expect(portal?.faqs.map((faq) => faq.a).join(" ")).toContain("not a substitute for emergency services");
     expect(tracking?.features.map((feature) => feature.body).join(" ")).toContain("Code 128");
+    expect(tracking?.features.map((feature) => feature.body).join(" ")).toContain("part number or part ID");
   });
 
   it("publishes a real last-modified date for every solution page", () => {

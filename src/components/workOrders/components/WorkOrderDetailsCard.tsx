@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { Calendar, Package, User } from "lucide-react";
 import { WorkOrderWithRelations } from "@/types/workOrders";
 import { formatDateOnly } from "../utils/dateUtils";
@@ -60,12 +61,17 @@ export const WorkOrderDetailsCard: React.FC<WorkOrderDetailsCardProps> = ({ work
  </div>
 
  {/* Description card */}
- {workOrder.description && (
+ {(workOrder.description || workOrder.meter_checklist_id) && (
  <div className="bg-surface-container-lowest rounded-xl border border-border/60 shadow-sm p-6">
  <h3 className="text-xs font-bold text-muted-foreground mb-4">Detailed Description</h3>
  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
  {workOrder.description}
  </p>
+ {workOrder.meter_checklist_id && (
+ <Link className="mt-3 inline-block text-sm font-medium text-primary underline" to={`/checklists/${workOrder.meter_checklist_id}/submit`}>
+ Record service on the PM checklist
+ </Link>
+ )}
  </div>
  )}
 

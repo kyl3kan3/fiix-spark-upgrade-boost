@@ -9,10 +9,10 @@ const Chat = () => {
  <DashboardLayout>
  <Helmet>
  <title>Team Chat | MaintenEase</title>
- <meta name="description" content="Real-time team chat for maintenance crews. Coordinate work orders, share updates, and collaborate with technicians in one secure channel." />
+ <meta name="description" content="Send direct messages to teammates to coordinate work orders and share maintenance updates." />
  <link rel="canonical" href="https://maintenease.com/chat" />
  </Helmet>
- <PageHeader code="MSG · 001" title="Team Chat" description="Direct messages and channel conversations." />
+ <PageHeader code="MSG · 001" title="Team Chat" description="Send a direct message to a teammate." />
  <div className="px-4 md:px-6 lg:px-8 py-6">
  <ChatInterface />
  </div>

@@ -63,14 +63,14 @@ export const solutions: Solution[] = [
  },
  {
  slug: "preventive-maintenance-software",
- updated: "2026-08-23",
+ updated: "2026-11-22",
  name: "Preventive Maintenance Software",
  h1: "Preventive Maintenance Software that stops failures before they cost you",
- tagline: "Turn recurring maintenance dates into visible, assigned work.",
+ tagline: "Schedule maintenance by date, runtime, or mileage.",
  metaTitle: "Preventive Maintenance Software — Schedules & PM Compliance",
- metaDescription: "Preventive maintenance software for recurring calendar schedules, assigned work orders, checklists, asset history, overdue work, and PM reporting.",
+ metaDescription: "Schedule preventive maintenance by date on every plan. Pro and Business also generate work orders from recorded asset meter readings.",
  intro:
- "MaintenEase turns recurring maintenance from an isolated calendar reminder into assigned work with a completion record. Create calendar-based schedules against an asset, set the frequency and owner, and review the resulting work alongside notes, parts, attachments, and service history. Meter and condition readings can inform planning and predictive risk, but the current scheduler should not be described as a native meter-trigger engine.",
+ "Use a calendar schedule for work due on a date. On Pro and Business, link a PM checklist to an asset meter, set the service interval, and enable automatic work orders. When a technician records a reading at or beyond the interval, MaintenEase automatically creates a work order for that service cycle. Completing the checklist starts the next interval.",
  benefits: [
  { title: "Fewer avoidable breakdowns", body: "Put recurring inspections and service on a visible schedule, then compare failures before and after each PM interval so the team can adjust the work based on its own history." },
  { title: "More visible workload", body: "Upcoming and overdue work gives supervisors a clearer view of the schedule before the day begins." },
@@ -78,6 +78,7 @@ export const solutions: Solution[] = [
  ],
  features: [
  { title: "Calendar schedules", body: "Create recurring work by day, week, month, or year and associate it with the relevant asset and owner." },
+ { title: "Meter-based schedules", body: "For a pump serviced every 500 operating hours, link the pump's hour meter to its checklist and set the interval to 500. Record the current meter value on the asset to check whether service is due." },
  { title: "Procedures and checklists", body: "Use work-order instructions and recurring checklists to capture steps, pass/fail items, notes, and attachments." },
  { title: "Documented completion", body: "Keep the due date, status, assignee, completion record, and supporting evidence together for later review." },
  { title: "Schedule health insights", body: "See which PMs are overdue, which assets keep failing between PMs, and where intervals should change." },
@@ -86,7 +87,7 @@ export const solutions: Solution[] = [
  "Compliance-heavy facilities (healthcare, education, public sector)",
  "Manufacturing teams chasing a higher planned-to-reactive ratio",
  "Property managers managing recurring life-safety tasks",
- "Fleet operators coordinating recurring calendar inspections and service",
+ "Fleet operators coordinating annual inspections and mileage-based service",
  ],
  faqs: [
  { q: "Can we import our existing maintenance data from a spreadsheet?", a: "Free onboarding and data-import help are included. Provide a representative file first so the team can confirm which asset, work-order, and schedule fields can be mapped without implying that every legacy format imports automatically." },
@@ -129,14 +130,14 @@ export const solutions: Solution[] = [
  },
  {
  slug: "fleet-maintenance-software",
- updated: "2026-08-23",
+ updated: "2026-11-22",
  name: "Fleet Maintenance Software",
  h1: "Fleet Maintenance Software for service, inspections, and repair history",
  tagline: "Vehicle records, recurring service, inspections, parts, and repair history in one queue.",
  metaTitle: "Fleet Maintenance Software — Service, Inspections & History",
- metaDescription: "Fleet maintenance software for vehicle records, recurring calendar service, inspections, work orders, parts, cost, and repair history.",
+ metaDescription: "Track vehicle service by date, mileage, or engine hours. Keep inspections, work orders, parts, and repair costs with each vehicle.",
  intro:
- "MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.",
+ "Track each vehicle's inspections, service, parts, and repair costs in its asset record. On Pro and Business, a technician can record an odometer or engine-hour reading. Enable automatic work orders on the linked PM checklist to open a service job when that reading reaches the interval.",
  benefits: [
  { title: "One vehicle history", body: "Keep work orders, recurring service, inspection results, notes, parts, and cost against the relevant vehicle record." },
  { title: "Repeatable inspections", body: "Use mobile-friendly checklists for the inspections your qualified fleet program defines, with follow-up work for defects." },
@@ -144,7 +145,7 @@ export const solutions: Solution[] = [
  ],
  features: [
  { title: "Vehicle asset records", body: "Store the vehicle name, serial or unit identifier, location, status, purchase date, attachments, and related maintenance history." },
- { title: "Calendar-based service", body: "Create recurring day-, week-, month-, or year-based work and review runtime or condition readings separately when available." },
+ { title: "Service by date or usage", body: "Schedule an annual inspection by date. For an oil change every 5,000 miles, set a 5,000-mile checklist interval against the vehicle's odometer on Pro or Business." },
  { title: "Mobile-friendly inspections", body: "Complete checklists from a phone, record notes or photos, and create corrective work when the result requires follow-up." },
  { title: "Parts and cost records", body: "Record parts and labor against repairs so the vehicle history contains the inputs needed for internal cost analysis." },
  ],
@@ -155,7 +156,8 @@ export const solutions: Solution[] = [
  "Heavy equipment and construction yards",
  ],
  faqs: [
- { q: "Do you integrate with telematics providers?", a: "No prebuilt Samsara, Geotab, or other telematics connector is claimed here. Business includes API access, so a buyer can scope a custom integration only after validating the provider, fields, authentication, trigger logic, and implementation work." },
+ { q: "Where do the mileage and engine-hour readings come from?", a: "Technicians can enter readings on the vehicle record. On Business, a custom integration can also post readings to the meter-readings API. To connect a telematics provider, map its vehicles and units to MaintenEase meters and arrange delivery through that integration." },
+ { q: "Can we use these records for fleet compliance?", a: "You can keep inspection checklists, work orders, and service history for each vehicle. If your fleet requires DVIR reporting or specific DOT records, verify those requirements separately." },
  { q: "Can drivers use this without a full MaintenEase license?", a: "Public requesters do not need a login, but staff who sign in to use MaintenEase count toward the plan's included seats. Business supports additional seats at $15 per month each; no separate reduced-price driver role is published." },
  { q: "What is fleet maintenance software?", a: "Fleet maintenance software organizes vehicle records, service schedules, inspections, repair history, parts, and cost. Products vary in telematics and regulatory-record support, so verify the exact workflow and jurisdiction before relying on a feature list." },
  { q: "Can I run fleet and facility maintenance in the same system?", a: "Yes. Vehicles, buildings, and production equipment are all assets in MaintenEase, so one team can run mixed fleets and facilities without a second subscription." },
@@ -199,7 +201,7 @@ export const solutions: Solution[] = [
  },
  {
  slug: "asset-tracking-software",
- updated: "2026-11-03",
+ updated: "2026-11-22",
  name: "Asset Tracking Software",
  h1: "CMMS Asset Registry Fields",
  tagline: "Searchable equipment records, locations, printable labels, and maintenance history.",
@@ -226,6 +228,7 @@ export const solutions: Solution[] = [
  ],
  features: [
  { title: "Printable asset labels", body: "Generate a setup-sheet PDF with a Code 128 barcode based on the asset serial number or ID for use in the team's labeling workflow." },
+ { title: "Parts barcode lookup", body: "On Pro and Business, scan a barcode containing the part number or part ID to open the inventory record. You can also enter the code manually." },
  { title: "Nested locations", body: "Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level." },
  { title: "Asset hierarchy", body: "Link parent and child assets and place equipment in nested locations so related records stay easier to navigate." },
  { title: "Documents and photos", body: "Attach manuals, photos, purchase records, or warranty documents without claiming an unverified warranty-alert engine." },
@@ -246,7 +249,7 @@ export const solutions: Solution[] = [
  },
  {
  slug: "asset-management-software",
- updated: "2026-08-23",
+ updated: "2026-11-22",
  name: "Asset Management Software",
  h1: "Asset Management Software that turns your asset register into a working system",
  tagline: "Register, schedule, maintain, and report on every asset — in one place.",
@@ -261,7 +264,7 @@ export const solutions: Solution[] = [
  ],
  features: [
  { title: "Core asset register", body: "Capture name, model, serial number, purchase date, location, status, hierarchy, description, image, and attachments." },
- { title: "Recurring work per asset", body: "Create calendar-based recurring work and checklists against the equipment record; do not assume native meter-trigger scheduling." },
+ { title: "Recurring work per asset", body: "Schedule work by date. On Pro and Business, link a checklist to an asset meter and enable automatic work orders to generate a job when a reading reaches the service interval." },
  { title: "Work orders and parts", body: "Every repair, inspection, and part swap is recorded against the asset — building a complete service history." },
  { title: "Documents and history", body: "Attach warranty or contract documents and review related work without claiming an automatic renewal-alert feature." },
  { title: "Cost and reliability inputs", body: "Record labor, parts, downtime, repair frequency, and risk factors for internal reporting; finance owns depreciation policy." },

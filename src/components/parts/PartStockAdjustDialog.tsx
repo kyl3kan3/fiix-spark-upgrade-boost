@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -17,46 +18,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PartWithLinks } from "@/types/parts";
+import type { ScannedPart } from "@/services/scanService";
+import { useAdjustPartStock } from "@/hooks/useParts";
 
 interface Props {
-  part: PartWithLinks | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  isPending?: boolean;
-  onAdjust: (args: { type: "receive" | "adjustment"; delta: number; notes?: string }) => Promise<void>;
+  part: ScannedPart;
+  onClose: () => void;
 }
 
-export function PartStockAdjustDialog({ part, open, onOpenChange, isPending, onAdjust }: Props) {
+export function PartStockAdjustDialog({ part, onClose }: Props) {
+  const adjustment = useAdjustPartStock();
   const [type, setType] = useState<"receive" | "adjustment">("receive");
   const [quantity, setQuantity] = useState("");
   const [notes, setNotes] = useState("");
 
-  const handleSubmit = async () => {
-    if (!part) return;
-    const signed = Number(quantity);
-    if (Number.isNaN(signed) || signed === 0) return;
-    if (type === "receive" && signed < 0) return;
-    await onAdjust({ type, delta: signed, notes: notes.trim() || undefined });
-    setQuantity("");
-    setNotes("");
-    onOpenChange(false);
+  const delta = Number(quantity);
+  const valid = Number.isFinite(delta) && delta !== 0 && (type === "adjustment" || delta > 0);
+  const handleSubmit = () => {
+    if (!valid || adjustment.isPending) return;
+    adjustment.mutate({ partId: part.id, type, delta, notes: notes.trim() || undefined }, { onSuccess: onClose });
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open onOpenChange={(open) => { if (!open && !adjustment.isPending) onClose(); }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adjust stock — {part?.name}</DialogTitle>
+          <DialogTitle>Adjust stock — {part.name}</DialogTitle>
+          <DialogDescription>On hand: {part.quantity_on_hand} {part.unit_of_measure}</DialogDescription>
         </DialogHeader>
-        <p className="text-sm text-muted-foreground">
-          On hand: {part?.quantity_on_hand} {part?.unit_of_measure}
-        </p>
         <div className="space-y-3 py-2">
           <div className="space-y-2">
-            <Label>Type</Label>
+            <Label htmlFor="adjust-stock-type">Type</Label>
             <Select value={type} onValueChange={(v) => setType(v as "receive" | "adjustment")}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger id="adjust-stock-type"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="receive">Receive</SelectItem>
                 <SelectItem value="adjustment">Adjustment (+/−)</SelectItem>
@@ -64,17 +58,18 @@ export function PartStockAdjustDialog({ part, open, onOpenChange, isPending, onA
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Quantity</Label>
-            <Input type="number" step="any" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+            <Label htmlFor="adjust-stock-quantity">Quantity</Label>
+            <Input id="adjust-stock-quantity" type="number" step="any" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Notes</Label>
-            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
+            <Label htmlFor="adjust-stock-notes">Notes</Label>
+            <Textarea id="adjust-stock-notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
           </div>
         </div>
+        {adjustment.isError && <p role="alert" className="text-sm text-destructive">Could not save the stock adjustment. Check the quantity and try again.</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={isPending || !quantity}>Save</Button>
+          <Button variant="outline" disabled={adjustment.isPending} onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit} disabled={adjustment.isPending || !valid}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

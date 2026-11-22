@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import type { BlogSsrPayload } from "../src/ssr/blogSsr";
 import { buildHomepageSsrHeadBoost } from "../src/lib/homepagePrerenderHero";
 
@@ -33,7 +34,7 @@ export async function loadSsrRenderer(distDir: string): Promise<SsrRenderFn> {
       `Missing ${entry}. Run vite build --ssr src/entry-server.tsx --outDir dist/server before prerender.`,
     );
   }
-  const mod = (await import(entry)) as { render: SsrRenderFn };
+  const mod = (await import(pathToFileURL(entry).href)) as { render: SsrRenderFn };
   if (typeof mod.render !== "function") {
     throw new Error("SSR entry-server.js does not export render()");
   }
