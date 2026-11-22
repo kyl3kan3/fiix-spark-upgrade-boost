@@ -13,6 +13,6 @@ Start with **Samsara** for a fleet pilot. It supplies the two readings MaintenEa
 
 Use the endpoint and request example in **API Keys → Meter readings** on Business. Map one source counter to one asset meter. Send observations in order, in the meter's configured unit, with a stable event ID and the original observation time.
 
-1. Enable automatic work orders on a checklist linked to the pilot asset. Submit one reading below its service threshold, then another at the threshold. Verify that the second response reports one created order and that the order opens the correct checklist.
+1. Enter the current meter reading and the reading at the last service. For a vehicle at 62,000 miles that was serviced at 60,000, a 5,000-mile interval should show service due at 65,000. Enable automatic work orders on the linked checklist. Submit a reading below 65,000 and another at 65,000. Verify that the second response reports one created order and that the order opens the correct checklist.
 2. Replay the second event with the same payload. Verify that the API returns the original reading ID and the order list still contains one order.
 3. Submit the checklist after service. Advance the meter by the configured interval and verify a new order. Reconcile a reset or a decreasing counter with the customer before resuming the feed.

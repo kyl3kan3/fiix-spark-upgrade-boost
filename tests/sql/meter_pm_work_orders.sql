@@ -17,6 +17,8 @@ DECLARE
   _checklist uuid := gen_random_uuid();
   _meter uuid := gen_random_uuid();
   _other_meter uuid := gen_random_uuid();
+  _used_checklist uuid := gen_random_uuid();
+  _used_meter uuid := gen_random_uuid();
   _reading public.meter_readings;
 BEGIN
   INSERT INTO public.companies (id, name) VALUES (_company, 'Meter test'), (_other, 'Other workspace');
@@ -72,6 +74,40 @@ BEGIN
   _reading := public.record_asset_meter_reading(_other_meter, 601);
   ASSERT _reading.work_orders_created = 0, 'unlinked asset generated work';
   ASSERT (SELECT count(*) FROM public.work_orders WHERE company_id = _company) = 2;
+
+  INSERT INTO public.checklists (id, company_id, created_by, name) VALUES (_used_checklist, _company, _actor, 'Used vehicle service');
+  INSERT INTO public.checklist_assets (asset_id, checklist_id) VALUES (_asset, _used_checklist);
+  INSERT INTO public.asset_meters (id, company_id, asset_id, name, unit, current_reading)
+  VALUES (_used_meter, _company, _asset, 'Used vehicle odometer', 'mi', 62000);
+  INSERT INTO public.checklist_meter_rules (checklist_id, company_id, meter_id, interval_units)
+  VALUES (_used_checklist, _company, _used_meter, 5000);
+  ASSERT (SELECT last_service_reading FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist) = 62000,
+    'clients that omit the initial baseline should use the current meter reading';
+  DELETE FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist;
+  PERFORM public.save_checklist_meter_rule(_used_checklist, _used_meter, 5000, true);
+  ASSERT (SELECT last_service_reading FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist) = 62000;
+  _reading := public.record_asset_meter_reading(_used_meter, 62000);
+  ASSERT _reading.work_orders_created = 0, 'a new rule on a used vehicle must start at its current mileage';
+  DELETE FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist;
+  PERFORM public.save_checklist_meter_rule(_used_checklist, _used_meter, 5000, true, NULL, 60000);
+  _reading := public.record_asset_meter_reading(_used_meter, 64999);
+  ASSERT _reading.work_orders_created = 0;
+  _reading := public.record_asset_meter_reading(_used_meter, 65000);
+  ASSERT _reading.work_orders_created = 1, 'historical service at 60,000 should be due at 65,000';
+
+  INSERT INTO public.checklist_submissions (checklist_id, submitted_by) VALUES (_used_checklist, _actor);
+  PERFORM public.save_checklist_meter_rule(_used_checklist, _used_meter, 4000, false, _used_meter, 60000);
+  ASSERT (SELECT last_service_reading FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist) = 65000,
+    'saving settings must preserve service submitted while the form was open';
+  PERFORM public.save_checklist_meter_rule(_used_checklist, _other_meter, 100, true, _used_meter, 550);
+  ASSERT (SELECT last_service_reading FROM public.checklist_meter_rules WHERE checklist_id = _used_checklist) = 550,
+    'a replacement meter can use its own historical baseline';
+  BEGIN
+    PERFORM public.save_checklist_meter_rule(_used_checklist, _used_meter, 1000, true, _other_meter, 65001);
+    RAISE EXCEPTION 'accepted service above the current reading' USING ERRCODE = 'XX000';
+  EXCEPTION WHEN raise_exception THEN
+    ASSERT SQLERRM LIKE 'Last service reading must be%';
+  END;
 
   BEGIN
     PERFORM public.record_asset_meter_reading(_meter, 2000);

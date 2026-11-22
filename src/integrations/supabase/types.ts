@@ -4134,6 +4134,17 @@ export type Database = {
         Returns: number
       }
       regenerate_energy_ingest_token: { Args: never; Returns: string }
+      save_checklist_meter_rule: {
+        Args: {
+          _checklist_id: string
+          _meter_id: string
+          _interval_units: number
+          _auto_create_work_order: boolean
+          _expected_meter_id?: string
+          _initial_service_reading?: number
+        }
+        Returns: undefined
+      }
       set_checklist_schedule: {
         Args: { _checklist_id: string }
         Returns: undefined

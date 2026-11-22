@@ -31,6 +31,7 @@ export function AssetMetersCard({ assetId }: Props) {
   const [addOpen, setAddOpen] = useState(false);
   const [name, setName] = useState("");
   const [unit, setUnit] = useState("hrs");
+  const [startingReading, setStartingReading] = useState("0");
   const [readingMeterId, setReadingMeterId] = useState<string | null>(null);
   const [readingValue, setReadingValue] = useState("");
 
@@ -48,6 +49,19 @@ export function AssetMetersCard({ assetId }: Props) {
   });
 
   const selectedMeter = meters.find((m) => m.id === readingMeterId);
+  const initialValue = Number(startingReading);
+  const canAdd = name.trim() && unit.trim() && startingReading.trim() && Number.isFinite(initialValue) && initialValue >= 0;
+  const addMeter = useMutation({
+    mutationFn: () => createMeter({ asset_id: assetId, name: name.trim(), unit: unit.trim(), current_reading: initialValue }),
+    onSuccess: () => {
+      setAddOpen(false);
+      setName("");
+      setStartingReading("0");
+      qc.invalidateQueries({ queryKey: ["meters", assetId] });
+      qc.invalidateQueries({ queryKey: ["meters-for-checklist"] });
+    },
+    onError: (error) => toast.error(error.message || "Could not add meter"),
+  });
   const value = Number(readingValue);
   const canRecord = selectedMeter && readingValue.trim() && Number.isFinite(value) && value >= selectedMeter.current_reading;
   const submitReading = useMutation({
@@ -127,24 +141,20 @@ export function AssetMetersCard({ assetId }: Props) {
           <DialogHeader><DialogTitle>Add meter</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label>Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Runtime hours" />
+              <Label htmlFor="meter-name">Name</Label>
+              <Input id="meter-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Runtime hours" />
             </div>
             <div>
-              <Label>Unit</Label>
-              <Input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="hrs" />
+              <Label htmlFor="meter-unit">Unit</Label>
+              <Input id="meter-unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="hrs" />
+            </div>
+            <div>
+              <Label htmlFor="meter-initial-reading">Current reading</Label>
+              <Input id="meter-initial-reading" type="number" min={0} step="any" value={startingReading} onChange={(e) => setStartingReading(e.target.value)} />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              onClick={async () => {
-                if (!name.trim()) return;
-                await createMeter({ asset_id: assetId, name: name.trim(), unit });
-                setAddOpen(false);
-                setName("");
-                qc.invalidateQueries({ queryKey: ["meters", assetId] });
-              }}
-            >
+            <Button onClick={() => addMeter.mutate()} disabled={!canAdd || addMeter.isPending}>
               Save
             </Button>
           </DialogFooter>

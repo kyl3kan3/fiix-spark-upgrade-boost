@@ -7,6 +7,28 @@ interface Props {
   paused?: boolean;
 }
 
+type NativeDetector = {
+  new (): { detect: (source: HTMLVideoElement) => Promise<{ rawValue: string }[]> };
+  getSupportedFormats?: () => Promise<string[]>;
+};
+
+async function createCameraReader() {
+  const Detector = (window as Window & { BarcodeDetector?: NativeDetector }).BarcodeDetector;
+  if (Detector) {
+    try {
+      const formats = await Detector.getSupportedFormats?.();
+      if (!formats || ["qr_code", "code_128", "ean_13"].every((format) => formats.includes(format))) {
+        const detector = new Detector();
+        return async (video: HTMLVideoElement) => (await detector.detect(video))[0]?.rawValue;
+      }
+    } catch {
+      // Some browsers expose the detector before a native decoder is available.
+    }
+  }
+  const { createSoftwareBarcodeReader } = await import("./softwareBarcodeReader");
+  return createSoftwareBarcodeReader();
+}
+
 export function BarcodeScanner({ onScan, paused = false }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastCameraCode = useRef<string>();
@@ -41,10 +63,8 @@ export function BarcodeScanner({ onScan, paused = false }: Props) {
 
   useEffect(() => {
     if (paused) return;
-    const Detector = (window as unknown as { BarcodeDetector?: new () => {
-      detect: (source: HTMLVideoElement) => Promise<{ rawValue: string }[]>;
-    } }).BarcodeDetector;
-    if (!Detector || !navigator.mediaDevices?.getUserMedia) {
+    const video = videoRef.current;
+    if (!video || !navigator.mediaDevices?.getUserMedia) {
       setSupported(false);
       return;
     }
@@ -54,27 +74,31 @@ export function BarcodeScanner({ onScan, paused = false }: Props) {
     let timer: number | undefined;
     let cancelled = false;
     let detecting = false;
+    const stopCamera = () => {
+      if (!stream) return;
+      stream.getTracks().forEach((track) => track.stop());
+      if (video.srcObject === stream) video.srcObject = null;
+      stream = null;
+    };
 
     const start = async () => {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         if (cancelled) {
-          stream.getTracks().forEach((track) => track.stop());
+          stopCamera();
           return;
         }
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-        }
+        video.srcObject = stream;
+        await video.play();
         if (cancelled) return;
-        const detector = new Detector();
+        const readFrame = await createCameraReader();
+        if (cancelled) return;
         timer = window.setInterval(async () => {
-          if (!videoRef.current || detecting || request.current) return;
+          if (detecting || request.current) return;
           detecting = true;
           try {
-            const codes = await detector.detect(videoRef.current);
+            const value = await readFrame(video);
             if (cancelled) return;
-            const value = codes[0]?.rawValue;
             if (value && value !== lastCameraCode.current) void lookup(value);
             lastCameraCode.current = value;
           } catch {
@@ -84,7 +108,7 @@ export function BarcodeScanner({ onScan, paused = false }: Props) {
           }
         }, 500);
       } catch (e) {
-        stream?.getTracks().forEach((track) => track.stop());
+        stopCamera();
         if (!cancelled) setCameraError(e instanceof Error ? e.message : "Camera unavailable");
       }
     };
@@ -92,7 +116,7 @@ export function BarcodeScanner({ onScan, paused = false }: Props) {
     return () => {
       cancelled = true;
       if (timer) window.clearInterval(timer);
-      stream?.getTracks().forEach((t) => t.stop());
+      stopCamera();
     };
   }, [lookup, paused]);
 

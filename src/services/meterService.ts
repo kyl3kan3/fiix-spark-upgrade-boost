@@ -67,19 +67,21 @@ export async function fetchMeterReadings(meterId: string): Promise<MeterReading[
   return (data ?? []).map((r) => ({ ...r, reading_value: Number(r.reading_value) })) as MeterReading[];
 }
 
-export async function upsertChecklistMeterRule(
-  checklistId: string,
-  meterId: string,
-  intervalUnits: number,
-  createWorkOrder: boolean,
-): Promise<void> {
-  const { companyId } = await requireUserCompany();
-  const { error } = await supabase.from("checklist_meter_rules").upsert({
-    checklist_id: checklistId,
-    company_id: companyId,
-    meter_id: meterId,
-    interval_units: intervalUnits,
-    auto_create_work_order: createWorkOrder,
+export async function saveChecklistMeterRule(rule: {
+  checklistId: string;
+  meterId: string;
+  intervalUnits: number;
+  createWorkOrder: boolean;
+  expectedMeterId?: string;
+  initialServiceReading?: number;
+}): Promise<void> {
+  const { error } = await supabase.rpc("save_checklist_meter_rule", {
+    _checklist_id: rule.checklistId,
+    _meter_id: rule.meterId,
+    _interval_units: rule.intervalUnits,
+    _auto_create_work_order: rule.createWorkOrder,
+    _expected_meter_id: rule.expectedMeterId,
+    _initial_service_reading: rule.initialServiceReading,
   });
   if (error) throw error;
 }

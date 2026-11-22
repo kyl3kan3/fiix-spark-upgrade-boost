@@ -1,5 +1,6 @@
 -- Existing checklist rules keep their due-date behavior until a customer enables work orders.
 ALTER TABLE public.checklist_meter_rules
+  ALTER COLUMN last_service_reading DROP DEFAULT,
   ADD COLUMN auto_create_work_order boolean NOT NULL DEFAULT false,
   ADD COLUMN work_order_created_at timestamptz;
 
@@ -144,5 +145,63 @@ $$;
 CREATE TRIGGER reset_pm_rule_on_meter_change BEFORE UPDATE OF meter_id ON public.checklist_meter_rules
 FOR EACH ROW WHEN (NEW.meter_id IS DISTINCT FROM OLD.meter_id)
 EXECUTE FUNCTION public.reset_pm_rule_on_meter_change();
+-- Older clients can still insert a rule without a baseline for an in-use meter.
+CREATE TRIGGER initialize_pm_service_baseline BEFORE INSERT ON public.checklist_meter_rules
+FOR EACH ROW WHEN (NEW.last_service_reading IS NULL)
+EXECUTE FUNCTION public.reset_pm_rule_on_meter_change();
+
+-- Rule setup locks the same meter as readings and service submissions. A settings-only
+-- edit never writes service history; changing the selected meter starts a new cycle.
+CREATE FUNCTION public.save_checklist_meter_rule(
+  _checklist_id uuid, _meter_id uuid, _interval_units numeric, _auto_create_work_order boolean,
+  _expected_meter_id uuid DEFAULT NULL, _initial_service_reading numeric DEFAULT NULL
+)
+RETURNS void LANGUAGE plpgsql SECURITY INVOKER SET search_path = '' AS $$
+DECLARE
+  _company uuid := public.get_user_company(auth.uid());
+  _current numeric;
+  _baseline numeric;
+BEGIN
+  IF NOT public.has_feature(_company, 'meter_based_pm') THEN
+    RAISE EXCEPTION USING ERRCODE = '42501', MESSAGE = 'Meter-based PM requires Pro or Business';
+  END IF;
+  IF _interval_units IS NULL OR _interval_units <= 0 OR _interval_units >= 'Infinity'::numeric THEN
+    RAISE EXCEPTION 'Enter a positive, finite service interval';
+  END IF;
+  SELECT m.current_reading INTO _current FROM public.asset_meters m
+  JOIN public.assets a ON a.id = m.asset_id AND a.company_id = m.company_id
+  JOIN public.checklist_assets ca ON ca.asset_id = a.id AND ca.checklist_id = _checklist_id
+  JOIN public.checklists c ON c.id = ca.checklist_id AND c.company_id = m.company_id
+  WHERE m.id = _meter_id AND m.company_id = _company FOR UPDATE OF m;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Select a meter on equipment linked to this checklist'; END IF;
+
+  IF _expected_meter_id IS DISTINCT FROM _meter_id THEN
+    _baseline := COALESCE(_initial_service_reading, _current);
+    IF _baseline < 0 OR _baseline > _current OR _baseline >= 'Infinity'::numeric THEN
+      RAISE EXCEPTION 'Last service reading must be between zero and the current meter reading';
+    END IF;
+  END IF;
+  IF _expected_meter_id IS NULL THEN
+    INSERT INTO public.checklist_meter_rules (
+      checklist_id, company_id, meter_id, interval_units, auto_create_work_order, last_service_reading
+    ) VALUES (_checklist_id, _company, _meter_id, _interval_units, _auto_create_work_order, _baseline)
+    ON CONFLICT (checklist_id) DO NOTHING;
+  ELSE
+    UPDATE public.checklist_meter_rules SET meter_id = _meter_id, interval_units = _interval_units,
+      auto_create_work_order = _auto_create_work_order, updated_at = now()
+    WHERE checklist_id = _checklist_id AND company_id = _company AND meter_id = _expected_meter_id;
+  END IF;
+  IF NOT FOUND THEN RAISE EXCEPTION 'The selected meter changed. Reload the rule and try again'; END IF;
+  -- The meter-change trigger defaults to the new counter's current reading. Apply a
+  -- supplied service history under the same row lock when the operator chose an earlier value.
+  IF _expected_meter_id IS NOT NULL AND _baseline IS NOT NULL AND _baseline <> _current THEN
+    UPDATE public.checklist_meter_rules SET last_service_reading = _baseline WHERE checklist_id = _checklist_id;
+  END IF;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.save_checklist_meter_rule(uuid, uuid, numeric, boolean, uuid, numeric)
+FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.save_checklist_meter_rule(uuid, uuid, numeric, boolean, uuid, numeric)
+TO authenticated;
 
 NOTIFY pgrst, 'reload schema';
