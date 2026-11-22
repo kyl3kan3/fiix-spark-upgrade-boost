@@ -1,4 +1,5 @@
-import { next, rewrite } from "@vercel/functions";
+import { next, rewrite, waitUntil } from "@vercel/functions";
+import { trackAICrawlerRequest } from "@datafast/ai-crawl";
 import {
   acceptsMarkdown,
   appendVary,
@@ -46,6 +47,15 @@ function crawlerLog(request: Request, representation: "html" | "markdown" | "mac
 }
 
 export default function middleware(request: Request): Response {
+  // Match the existing browser and Cloudflare tracking ID. Scheduling via
+  // Vercel's runtime keeps tracking alive without delaying the page response.
+  try {
+    trackAICrawlerRequest(request, { waitUntil }, {
+      websiteId: "dfid_4BRVKzjIQLv5Psqg0AK9u",
+    });
+  } catch {
+    // Analytics must never prevent a page from being served.
+  }
   if (request.method !== "GET" && request.method !== "HEAD") return next();
 
   const url = new URL(request.url);

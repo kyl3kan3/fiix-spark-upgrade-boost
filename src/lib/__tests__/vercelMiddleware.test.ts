@@ -1,8 +1,50 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { trackAICrawlerRequest } from "@datafast/ai-crawl";
+import { waitUntil } from "@vercel/functions";
 import { HTML_SECURITY_HEADERS } from "../htmlSecurityHeaders";
 import middleware from "../../../middleware";
 
+vi.mock("@datafast/ai-crawl", () => ({
+  trackAICrawlerRequest: vi.fn(),
+}));
+
 describe("Vercel SEO middleware", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it.each(["/pricing", "/robots.txt", "/llms.txt", "/llms-full.txt", "/sitemap.xml", "/learn/cmms.md"])(
+    "schedules DataFast tracking for %s without waiting for delivery",
+    (path) => {
+      const request = new Request(`https://maintenease.com${path}`, {
+        headers: { "User-Agent": "ChatGPT-User/1.0" },
+      });
+      // The SDK reports scheduled delivery synchronously; the middleware
+      // must return a response rather than waiting for that background work.
+      vi.mocked(trackAICrawlerRequest).mockReturnValue({ tracked: true, scheduled: true });
+
+      const response = middleware(request);
+
+      expect(response).toBeInstanceOf(Response);
+      expect(trackAICrawlerRequest).toHaveBeenCalledExactlyOnceWith(
+        request,
+        { waitUntil },
+        { websiteId: "dfid_4BRVKzjIQLv5Psqg0AK9u" },
+      );
+    },
+  );
+
+  it("keeps serving pages if the tracker throws", () => {
+    vi.mocked(trackAICrawlerRequest).mockImplementation(() => {
+      throw new Error("Tracking unavailable");
+    });
+
+    const response = middleware(new Request("https://maintenease.com/pricing"));
+
+    expect(response.headers.get("x-middleware-next")).toBe("1");
+    expect(response.headers.get("link")).toContain("</api/ai.json>");
+  });
+
   it("advertises agent resources and the Markdown alternate on HTML pages", () => {
     const response = middleware(new Request("https://maintenease.com/learn/cmms"));
 
