@@ -45,8 +45,7 @@
     <!-- Hero headline font: stable public URL so prerender + preload share one file. -->
     <link rel="preload" href="/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Fonts are self-hosted and declared in src/index.css; no fonts CDN. -->
-  <!-- Google tag: queue events immediately; load gtag.js after load + idle -->
-    <script defer data-website-id="dfid_4BRVKzjIQLv5Psqg0AK9u" data-domain="maintenease.com" src="https://datafa.st/js/script.js"></script>
+  <!-- Google tag + DataFast: queue events immediately; load scripts after load + idle -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -55,17 +54,23 @@
       gtag('config', 'AW-18051376894');
       gtag('config', 'AW-18190364490', { allow_enhanced_conversions: true });
       (function () {
-        function loadGtag() {
+        function loadAnalytics() {
           var s = document.createElement('script');
           s.async = true;
           s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18051376894';
           document.head.appendChild(s);
+          var df = document.createElement('script');
+          df.defer = true;
+          df.setAttribute('data-website-id', 'dfid_4BRVKzjIQLv5Psqg0AK9u');
+          df.setAttribute('data-domain', 'maintenease.com');
+          df.src = 'https://datafa.st/js/script.js';
+          document.head.appendChild(df);
         }
         function schedule() {
           if (typeof requestIdleCallback === 'function') {
-            requestIdleCallback(loadGtag, { timeout: 3000 });
+            requestIdleCallback(loadAnalytics, { timeout: 3000 });
           } else {
-            setTimeout(loadGtag, 1500);
+            setTimeout(loadAnalytics, 1500);
           }
         }
         if (document.readyState === 'complete') schedule();
