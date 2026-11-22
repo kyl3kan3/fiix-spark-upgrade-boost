@@ -109,6 +109,10 @@ const REDIRECTS: Record<string, SeoRedirect> = {
     location: "/best-cmms-software-for-small-business",
     status: 301,
   },
+  "/pricing/trial": {
+    location: "/pricing",
+    status: 301,
+  },
 };
 
 const GENERATED_INDEXABLE_ROUTE_SET = new Set<string>(GENERATED_INDEXABLE_ROUTES);

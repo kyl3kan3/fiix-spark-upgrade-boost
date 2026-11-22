@@ -57,6 +57,7 @@
     { "src": "^/blog/how-to-build-an-industrial-preventive-maintenance-plan-in-2026/?$", "headers": { "Location": "/learn/preventive-maintenance" }, "status": 301 },
     { "src": "^/learn/asset-management/?$", "headers": { "Location": "/solutions/asset-management-software" }, "status": 301 },
     { "src": "^/compare/best-cmms(-software)?-for-small-business/?$", "headers": { "Location": "/best-cmms-software-for-small-business" }, "status": 301 },
+    { "src": "^/pricing/trial/?$", "headers": { "Location": "/pricing" }, "status": 301 },
     { "src": "^/feature/[^/]+/?$", "headers": { "Location": "/features" }, "status": 301 },
     {
       "src": "^/static/(.*)",
