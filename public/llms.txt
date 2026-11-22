@@ -18,7 +18,7 @@ Every canonical public page below has an explicit Markdown URL. Do not guess or 
 ## Solutions
 
 - [Work Order Software](https://maintenease.com/solutions/work-order-software.md): Capture, assign, and close work orders without the spreadsheet sprawl.
-- [Preventive Maintenance Software](https://maintenease.com/solutions/preventive-maintenance-software.md): Turn recurring maintenance dates into visible, assigned work.
+- [Preventive Maintenance Software](https://maintenease.com/solutions/preventive-maintenance-software.md): Schedule maintenance by date, runtime, or mileage.
 - [Facility Maintenance Software](https://maintenease.com/solutions/facility-maintenance-software.md): One system for assets, work orders, PMs, and tenant requests across every building.
 - [Fleet Maintenance Software](https://maintenease.com/solutions/fleet-maintenance-software.md): Vehicle records, recurring service, inspections, parts, and repair history in one queue.
 - [Maintenance Request Portal](https://maintenease.com/solutions/maintenance-request-portal.md): Standard requests and an urgent lane — submissions enter a structured review inbox.

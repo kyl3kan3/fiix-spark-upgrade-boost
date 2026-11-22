@@ -42,8 +42,18 @@ export async function recordMeterReading(
     _notes: notes ?? undefined,
   });
   if (error) throw error;
-  toast.success("Reading recorded");
-  return data as unknown as MeterReading;
+  const reading = data as MeterReading;
+  toast.success("Reading recorded", {
+    description: reading.work_orders_created
+      ? `${reading.work_orders_created} PM work ${reading.work_orders_created === 1 ? "order" : "orders"} created.`
+      : undefined,
+  });
+  if (reading.work_orders_deferred) {
+    toast.warning("Monthly work order limit reached", {
+      description: "The checklist is due. Log a reading again when work order capacity is available.",
+    });
+  }
+  return reading;
 }
 
 export async function fetchMeterReadings(meterId: string): Promise<MeterReading[]> {
@@ -61,6 +71,7 @@ export async function upsertChecklistMeterRule(
   checklistId: string,
   meterId: string,
   intervalUnits: number,
+  createWorkOrder: boolean,
 ): Promise<void> {
   const { companyId } = await requireUserCompany();
   const { error } = await supabase.from("checklist_meter_rules").upsert({
@@ -68,6 +79,7 @@ export async function upsertChecklistMeterRule(
     company_id: companyId,
     meter_id: meterId,
     interval_units: intervalUnits,
+    auto_create_work_order: createWorkOrder,
   });
   if (error) throw error;
 }

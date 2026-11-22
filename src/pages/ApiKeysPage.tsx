@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { KeyRound, Loader2, Copy, Trash2, Plus, CheckCircle2 } from "lucide-react";
+import { KeyRound, Loader2, Copy, Trash2, Plus } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BackToDashboard from "@/components/dashboard/BackToDashboard";
 import { PaywallGate } from "@/components/billing/PaywallGate";
@@ -228,46 +228,39 @@ const ApiKeysPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Developer Docs sidebar */}
-            <Card className="bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-primary/20 transition-ui flex flex-col relative overflow-hidden">
-              <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
-              <CardHeader className="border-b border-border pb-4 relative z-10">
-                <CardTitle className="font-headline text-xl text-foreground flex items-center gap-2">
-                  <KeyRound className="h-5 w-5 text-primary" />
-                  Developer Docs
-                </CardTitle>
-                <CardDescription className="text-muted-foreground mt-1">
-                  Explore guides, endpoints, and SDKs to build custom workflows.
+            <Card className="min-w-0">
+              <CardHeader>
+                <CardTitle>Meter readings API</CardTitle>
+                <CardDescription>
+                  Send one observation per request from your integration. Copy the meter ID from the asset
+                  and convert your reading to the exact unit shown there before sending.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6 flex-1 flex flex-col relative z-10">
-                <ul className="space-y-3 flex-1">
-                  {[
-                    "REST API Reference",
-                    "Authentication Guide",
-                    "Webhook Events",
-                    "SDK Downloads",
-                  ].map((item) => (
-                    <li key={item}>
-                      <a
-                        href="#"
-                        className="flex items-center gap-2 text-primary hover:underline text-sm font-semibold group"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        {item}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full mt-6 border-border text-primary hover:bg-primary/5 text-xs font-semibold"
-                >
-                  <a href="#" target="_blank" rel="noreferrer">
-                    View API Portal
-                  </a>
-                </Button>
+              <CardContent className="space-y-3 text-sm">
+                <h3 className="font-semibold">Request</h3>
+                <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">{`POST ${import.meta.env.VITE_SUPABASE_URL}/functions/v1/meter-readings
+Authorization: Bearer <your-api-key>
+Content-Type: application/json
+
+{
+  "meter_id": "122f4fa1-a004-4765-82ae-96b44bfd00bb",
+  "event_id": "pump-7-reading-581",
+  "reading_value": 1500,
+  "unit": "hrs",
+  "observed_at": "2026-11-22T10:00:00Z"
+}`}</pre>
+                <h3 className="font-semibold">201 Created</h3>
+                <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">{`{
+  "reading_id": "262ba1b4-7da9-41be-a483-ea32b6044599",
+  "replayed": false,
+  "work_orders_created": 1,
+  "work_orders_deferred": 0
+}`}</pre>
+                <p>Use a unique event ID per observation on each meter. A retry with the same payload
+                  returns 200 and its original result, even after newer readings arrive. Reusing the
+                  ID with different data returns 409.</p>
+                <p>The API preserves the observation time and checks new readings in arrival order.
+                  A value below the meter’s current reading returns 409. A different unit returns 422.</p>
               </CardContent>
             </Card>
           </div>

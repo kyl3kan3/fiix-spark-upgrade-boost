@@ -1,6 +1,6 @@
 import {
  LayoutDashboard, ClipboardList, ClipboardCheck, Bell,
- Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox,
+ Package, Building, Calendar, Users, Building2, Settings, BarChart3, CreditCard, Inbox, MessagesSquare,
  Zap, KeyRound, ShieldCheck, BrainCircuit, HeartPulse, Wallet, FileStack, Gauge, Bot, Compass, Upload, Droplets, Boxes, ShoppingCart, Tags, ScanLine, Wrench, type LucideIcon,
 } from "lucide-react";
 import { TIER_FEATURES } from "@/hooks/useSubscription";
@@ -32,6 +32,7 @@ export const NAV_ITEMS: NavItem[] = [
  { label: "Assets", href: "/assets", icon: Package, code: "AST", group: "Things" },
  { label: "Locations", href: "/locations", icon: Building, code: "LOC", group: "Things" },
  { label: "Team", href: "/team", icon: Users, code: "TM", group: "People" },
+ { label: "Team Chat", href: "/chat", icon: MessagesSquare, code: "MSG", group: "People" },
  { label: "Vendors", href: "/vendors", icon: Building2, code: "VEN", group: "People" },
  { label: "Predictive", href: "/predictive-maintenance", icon: BrainCircuit, code: "PDM", group: "More", feature: "predictive_maintenance" },
  { label: "Self-Healing", href: "/self-healing", icon: HeartPulse, code: "HEAL", group: "More", hideForRoles: ["technician"] },

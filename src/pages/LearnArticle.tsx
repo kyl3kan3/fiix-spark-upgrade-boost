@@ -30,7 +30,7 @@ const SAFETY_SCOPE_SLUGS = new Set([
 const RELATED_SOLUTIONS: Record<string, { slug: string; anchor: string; tagline: string }[]> = {
  "preventive-maintenance": [
  { slug: "asset-management-software", anchor: "Asset register built for preventive maintenance", tagline: "Tie recurring work to the asset, parts and history." },
- { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Calendar-based recurring maintenance and overdue work." },
+ { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Calendar schedules and meter-based work orders." },
  ],
  "cmms": [
   { slug: "preventive-maintenance-software", anchor: "Preventive maintenance software", tagline: "Recurring PMs tied to assets and work orders." },

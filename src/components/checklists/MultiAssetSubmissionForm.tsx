@@ -102,6 +102,8 @@ const MultiAssetSubmissionForm: React.FC<Props> = ({ checklist, onSubmitSuccess 
  onSuccess: () => {
  queryClient.invalidateQueries({ queryKey: ["checklist-submissions"] });
  queryClient.invalidateQueries({ queryKey: ["due-checklists"] });
+ queryClient.invalidateQueries({ queryKey: ["scheduled-checklists"] });
+ queryClient.invalidateQueries({ queryKey: ["checklist-meter-rule", checklist.id] });
  queryClient.invalidateQueries({ queryKey: ["lubricants"] });
  toast.success("Inspection submitted");
  onSubmitSuccess();

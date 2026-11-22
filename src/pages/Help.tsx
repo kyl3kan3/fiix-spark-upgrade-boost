@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import PageContainer from "@/components/shell/PageContainer";
-import { HelpCircle } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { HelpSearchBar } from "@/components/help/components/HelpSearchBar";
 import { SearchResults } from "@/components/help/components/SearchResults";
 import { HelpTabs } from "@/components/help/components/HelpTabs";
@@ -114,6 +114,14 @@ const Help = () => {
  searchResults={searchResults}
  onOpenChat={handleOpenChat}
  />
+ <a
+ className="mt-6 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+ href="https://www.g2.com/products/maintenease/reviews"
+ target="_blank"
+ rel="noopener noreferrer"
+ >
+ Review MaintenEase on G2 <ExternalLink aria-hidden="true" className="h-4 w-4" />
+ </a>
  </PageContainer>
 
  <LiveChatSheet

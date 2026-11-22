@@ -58,6 +58,7 @@ const expectedJwtSettings = {
   "create-checkout-context": true,
   "paddle-portal": true,
   "update-seats": true,
+  "meter-readings": false,
   "mcp": false,
 };
 
@@ -119,13 +120,14 @@ function checkEntrypoints(configFile, files) {
 checkEntrypoints("deno.json", strictEntrypoints);
 checkEntrypoints("deno.generated.json", generatedEntrypoints);
 
-const corsTests = [
+const edgeTests = [
   path.join("supabase", "functions", "_shared", "cors.test.ts"),
   path.join("supabase", "functions", "mcp", "cors.test.ts"),
+  path.join("supabase", "functions", "meter-readings", "handler.test.ts"),
 ];
 const denoConfig = path.join("supabase", "functions", "deno.json");
 const testCommand = useInstalledDeno ? "deno" : process.execPath;
-const testArgs = ["test", "--config", denoConfig, ...corsTests];
+const testArgs = ["test", "--config", denoConfig, ...edgeTests];
 const testSpawnArgs = useInstalledDeno
   ? testArgs
   : [npmCli, "exec", "--yes", "--", "deno", ...testArgs];
@@ -137,5 +139,5 @@ if (testResult.error) throw testResult.error;
 if (testResult.status !== 0) process.exit(testResult.status ?? 1);
 
 console.log(
-  `Checked ${strictEntrypoints.length} strict and ${generatedEntrypoints.length} generated Edge Function entrypoints, JWT settings, and CORS unit tests.`,
+  `Checked ${strictEntrypoints.length} strict and ${generatedEntrypoints.length} generated Edge Function entrypoints, JWT settings, and edge unit tests.`,
 );

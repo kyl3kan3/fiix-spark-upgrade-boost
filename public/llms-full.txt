@@ -200,11 +200,11 @@ Test it against the five things that go wrong today — requests arriving by tex
 
 # Preventive Maintenance Software that stops failures before they cost you
 
-> Turn recurring maintenance dates into visible, assigned work.
+> Schedule maintenance by date, runtime, or mileage.
 
 Canonical URL: https://maintenease.com/solutions/preventive-maintenance-software
 
-MaintenEase turns recurring maintenance from an isolated calendar reminder into assigned work with a completion record. Create calendar-based schedules against an asset, set the frequency and owner, and review the resulting work alongside notes, parts, attachments, and service history. Meter and condition readings can inform planning and predictive risk, but the current scheduler should not be described as a native meter-trigger engine.
+Use a calendar schedule for work due on a date. On Pro and Business, link a PM checklist to an asset meter, set the service interval, and enable automatic work orders. When a technician records a reading at or beyond the interval, MaintenEase automatically creates a work order for that service cycle. Completing the checklist starts the next interval.
 
 
 ## Benefits
@@ -216,6 +216,7 @@ MaintenEase turns recurring maintenance from an isolated calendar reminder into 
 ## Features
 
 - **Calendar schedules** — Create recurring work by day, week, month, or year and associate it with the relevant asset and owner.
+- **Meter-based schedules** — For a pump serviced every 500 operating hours, link the pump's hour meter to its checklist and set the interval to 500. Record the current meter value on the asset to check whether service is due.
 - **Procedures and checklists** — Use work-order instructions and recurring checklists to capture steps, pass/fail items, notes, and attachments.
 - **Documented completion** — Keep the due date, status, assignee, completion record, and supporting evidence together for later review.
 - **Schedule health insights** — See which PMs are overdue, which assets keep failing between PMs, and where intervals should change.
@@ -225,7 +226,7 @@ MaintenEase turns recurring maintenance from an isolated calendar reminder into 
 - Compliance-heavy facilities (healthcare, education, public sector)
 - Manufacturing teams chasing a higher planned-to-reactive ratio
 - Property managers managing recurring life-safety tasks
-- Fleet operators coordinating recurring calendar inspections and service
+- Fleet operators coordinating annual inspections and mileage-based service
 
 ## FAQ
 
@@ -294,7 +295,7 @@ Business includes API access, but MaintenEase does not publish a prebuilt BMS co
 
 Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
 
-MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.
+Track each vehicle's inspections, service, parts, and repair costs in its asset record. On Pro and Business, a technician can record an odometer or engine-hour reading. Enable automatic work orders on the linked PM checklist to open a service job when that reading reaches the interval.
 
 
 ## Benefits
@@ -306,7 +307,7 @@ MaintenEase can treat each vehicle or mobile unit as an asset with its own locat
 ## Features
 
 - **Vehicle asset records** — Store the vehicle name, serial or unit identifier, location, status, purchase date, attachments, and related maintenance history.
-- **Calendar-based service** — Create recurring day-, week-, month-, or year-based work and review runtime or condition readings separately when available.
+- **Service by date or usage** — Schedule an annual inspection by date. For an oil change every 5,000 miles, set a 5,000-mile checklist interval against the vehicle's odometer on Pro or Business.
 - **Mobile-friendly inspections** — Complete checklists from a phone, record notes or photos, and create corrective work when the result requires follow-up.
 - **Parts and cost records** — Record parts and labor against repairs so the vehicle history contains the inputs needed for internal cost analysis.
 
@@ -319,9 +320,13 @@ MaintenEase can treat each vehicle or mobile unit as an asset with its own locat
 
 ## FAQ
 
-### Do you integrate with telematics providers?
+### Where do the mileage and engine-hour readings come from?
 
-No prebuilt Samsara, Geotab, or other telematics connector is claimed here. Business includes API access, so a buyer can scope a custom integration only after validating the provider, fields, authentication, trigger logic, and implementation work.
+Technicians can enter readings on the vehicle record. On Business, a custom integration can also post readings to the meter-readings API. To connect a telematics provider, map its vehicles and units to MaintenEase meters and arrange delivery through that integration.
+
+### Can we use these records for fleet compliance?
+
+You can keep inspection checklists, work orders, and service history for each vehicle. If your fleet requires DVIR reporting or specific DOT records, verify those requirements separately.
 
 ### Can drivers use this without a full MaintenEase license?
 
@@ -419,6 +424,7 @@ MaintenEase gives each asset a searchable CMMS registry record with the fields t
 ## Features
 
 - **Printable asset labels** — Generate a setup-sheet PDF with a Code 128 barcode based on the asset serial number or ID for use in the team's labeling workflow.
+- **Parts barcode lookup** — On Pro and Business, scan a barcode containing the part number or part ID to open the inventory record. You can also enter the code manually.
 - **Nested locations** — Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level.
 - **Asset hierarchy** — Link parent and child assets and place equipment in nested locations so related records stay easier to navigate.
 - **Documents and photos** — Attach manuals, photos, purchase records, or warranty documents without claiming an unverified warranty-alert engine.
@@ -466,7 +472,7 @@ MaintenEase is asset management software for the teams who maintain physical equ
 ## Features
 
 - **Core asset register** — Capture name, model, serial number, purchase date, location, status, hierarchy, description, image, and attachments.
-- **Recurring work per asset** — Create calendar-based recurring work and checklists against the equipment record; do not assume native meter-trigger scheduling.
+- **Recurring work per asset** — Schedule work by date. On Pro and Business, link a checklist to an asset meter and enable automatic work orders to generate a job when a reading reaches the service interval.
 - **Work orders and parts** — Every repair, inspection, and part swap is recorded against the asset — building a complete service history.
 - **Documents and history** — Attach warranty or contract documents and review related work without claiming an automatic renewal-alert feature.
 - **Cost and reliability inputs** — Record labor, parts, downtime, repair frequency, and risk factors for internal reporting; finance owns depreciation policy.
@@ -1078,7 +1084,7 @@ In week one, clean the asset list and agree on locations, priorities, statuses, 
 
 ## What MaintenEase supports today
 
-MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.
+MaintenEase connects public maintenance requests, assets, work orders, checklists, labor, parts, and costs. Teams can schedule preventive work by date. On Pro and Business, a recorded asset meter reading can also trigger a work order when a linked checklist's service interval is reached. Use the selection worksheet below to check your team's telematics, assignment, and compliance requirements with each vendor.
 
 ## FAQ
 
@@ -1893,7 +1899,7 @@ It runs in three layers. First, sensors (or manual readings) capture a condition
 
 ## Predictive vs preventive maintenance
 
-Preventive maintenance acts on a fixed schedule whether the asset needs it or not, which means some work is done too early (wasting component life) and some failures still slip through between intervals. Predictive maintenance acts only on evidence, so it cuts both unnecessary work and surprise breakdowns. The trade-off is setup: PdM needs sensors or readings and a baseline, where preventive needs only a calendar.
+Preventive maintenance schedules service at a set interval, such as every six months or every 500 operating hours. Predictive maintenance uses changes in measured condition, such as a rising vibration trend, to estimate when the equipment will need attention. That estimate depends on a baseline and a history of comparable readings.
 
 ## Where to start with predictive maintenance
 
@@ -1979,7 +1985,7 @@ First, choose a condition that reliably indicates wear or impending failure for 
 
 ## CBM vs preventive vs predictive
 
-Preventive maintenance acts on time. Condition-based maintenance acts on a present-moment reading crossing a line. Predictive maintenance goes one step further, using trends and models to forecast when the line will be crossed in the future. CBM is often the practical middle ground: more efficient than fixed schedules, far simpler to implement than full predictive analytics.
+A calendar or usage-based PM comes due at a set interval, such as every quarter or every 500 hours. A condition-based task comes due when a measured condition, such as vibration, crosses its limit. Predictive maintenance uses trends in those readings to estimate when the asset will reach that limit.
 
 ## Getting started with CBM
 
@@ -1987,7 +1993,7 @@ Pick one critical asset and one telling parameter — vibration on a pump, tempe
 
 ## Where MaintenEase fits in a condition route
 
-MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.
+Use recurring inspection routes to record condition findings, photos, and follow-up work against the asset. For a vibration or temperature limit, document the reading and the supervisor's follow-up decision. For cumulative usage, Pro and Business can automatically open a work order when a recorded meter reading reaches a checklist's service interval.
 
 ## FAQ
 

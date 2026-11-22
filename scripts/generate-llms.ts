@@ -521,6 +521,7 @@ const apiContent = {
       additional_seat_monthly_price: plan.extraSeatMonthlyPrice,
       asset_limit: plan.assetLimit,
       monthly_work_order_limit: plan.monthlyWorkOrderLimit,
+      capabilities: plan.capabilities,
     })),
   },
   solutions: solutions.map((s) => ({

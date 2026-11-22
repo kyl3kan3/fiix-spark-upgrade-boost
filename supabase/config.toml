@@ -46,6 +46,9 @@ verify_jwt = false
   # verify_jwt=false: Device ingest; x-ingest-token + consume_energy_ingest_token RPC.
   [functions.ingest-energy]
     verify_jwt = false
+  # Business API key in Authorization, validated inside ingest_meter_reading.
+  [functions.meter-readings]
+    verify_jwt = false
 
 # verify_jwt=false: Public form; Turnstile + issues upload authorization (no account).
 [functions.authorize-public-request]

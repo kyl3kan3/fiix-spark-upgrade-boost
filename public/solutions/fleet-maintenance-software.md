@@ -4,7 +4,7 @@
 
 Canonical URL: https://maintenease.com/solutions/fleet-maintenance-software
 
-MaintenEase can treat each vehicle or mobile unit as an asset with its own location, work orders, recurring calendar service, inspection checklists, parts, costs, and repair history. Teams may record runtime and condition readings for risk review, but this page does not claim native telematics feeds, automatic odometer-triggered PMs, a dedicated DVIR module, or DOT compliance conclusions.
+Track each vehicle's inspections, service, parts, and repair costs in its asset record. On Pro and Business, a technician can record an odometer or engine-hour reading. Enable automatic work orders on the linked PM checklist to open a service job when that reading reaches the interval.
 
 
 ## Benefits
@@ -16,7 +16,7 @@ MaintenEase can treat each vehicle or mobile unit as an asset with its own locat
 ## Features
 
 - **Vehicle asset records** — Store the vehicle name, serial or unit identifier, location, status, purchase date, attachments, and related maintenance history.
-- **Calendar-based service** — Create recurring day-, week-, month-, or year-based work and review runtime or condition readings separately when available.
+- **Service by date or usage** — Schedule an annual inspection by date. For an oil change every 5,000 miles, set a 5,000-mile checklist interval against the vehicle's odometer on Pro or Business.
 - **Mobile-friendly inspections** — Complete checklists from a phone, record notes or photos, and create corrective work when the result requires follow-up.
 - **Parts and cost records** — Record parts and labor against repairs so the vehicle history contains the inputs needed for internal cost analysis.
 
@@ -29,9 +29,13 @@ MaintenEase can treat each vehicle or mobile unit as an asset with its own locat
 
 ## FAQ
 
-### Do you integrate with telematics providers?
+### Where do the mileage and engine-hour readings come from?
 
-No prebuilt Samsara, Geotab, or other telematics connector is claimed here. Business includes API access, so a buyer can scope a custom integration only after validating the provider, fields, authentication, trigger logic, and implementation work.
+Technicians can enter readings on the vehicle record. On Business, a custom integration can also post readings to the meter-readings API. To connect a telematics provider, map its vehicles and units to MaintenEase meters and arrange delivery through that integration.
+
+### Can we use these records for fleet compliance?
+
+You can keep inspection checklists, work orders, and service history for each vehicle. If your fleet requires DVIR reporting or specific DOT records, verify those requirements separately.
 
 ### Can drivers use this without a full MaintenEase license?
 

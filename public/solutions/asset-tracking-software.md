@@ -29,6 +29,7 @@ MaintenEase gives each asset a searchable CMMS registry record with the fields t
 ## Features
 
 - **Printable asset labels** — Generate a setup-sheet PDF with a Code 128 barcode based on the asset serial number or ID for use in the team's labeling workflow.
+- **Parts barcode lookup** — On Pro and Business, scan a barcode containing the part number or part ID to open the inventory record. You can also enter the code manually.
 - **Nested locations** — Portfolio → site → building → floor → room. Assets inherit the hierarchy, and reports roll up cleanly at every level.
 - **Asset hierarchy** — Link parent and child assets and place equipment in nested locations so related records stay easier to navigate.
 - **Documents and photos** — Attach manuals, photos, purchase records, or warranty documents without claiming an unverified warranty-alert engine.

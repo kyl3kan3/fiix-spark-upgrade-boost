@@ -98,8 +98,8 @@ export function PartFormDialog({ open, onOpenChange, initial, isPending, onSubmi
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Part number</Label>
-              <Input value={partNumber} onChange={(e) => setPartNumber(e.target.value)} />
+              <Label htmlFor="part-number">Part number / barcode</Label>
+              <Input id="part-number" value={partNumber} onChange={(e) => setPartNumber(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label>Manufacturer</Label>

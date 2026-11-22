@@ -16,5 +16,6 @@ describe("navConfig", () => {
     const hrefs = visible.map((item) => item.href);
     expect(hrefs).not.toContain("/billing");
     expect(hrefs).not.toContain("/import");
+    expect(hrefs).toContain("/chat");
   });
 });

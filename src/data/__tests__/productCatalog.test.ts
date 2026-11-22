@@ -79,6 +79,7 @@ describe("product catalog", () => {
       additional_seat_monthly_price: plan.extraSeatMonthlyPrice,
       asset_limit: plan.assetLimit,
       monthly_work_order_limit: plan.monthlyWorkOrderLimit,
+      capabilities: plan.capabilities,
     })));
     expect(agentCatalog.pricing.trial_days).toBe(PRODUCT_TRIAL_DAYS);
     expect(agentCatalog.pricing.support_summary).toBe(PRODUCT_SUPPORT_SUMMARY);

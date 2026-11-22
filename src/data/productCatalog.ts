@@ -3,7 +3,7 @@ import { TRIAL_CANCEL_BY_DAY, TRIAL_DAYS } from "@/constants/trial";
 export const SITE_ORIGIN = "https://maintenease.com";
 export const PRICING_URL = `${SITE_ORIGIN}/pricing`;
 export const PRODUCT_NAME = "MaintenEase CMMS";
-export const PRODUCT_LAST_MODIFIED = "2026-08-21";
+export const PRODUCT_LAST_MODIFIED = "2026-11-22";
 export const PRICE_CURRENCY = "USD";
 export const EXTRA_BUSINESS_SEAT_MONTHLY = 15;
 export const PRODUCT_TRIAL_DAYS = TRIAL_DAYS;
@@ -109,8 +109,8 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       "Up to 500 assets",
       "2,000 work orders/mo",
       "Lubricant catalog & inventory",
-      "Parts inventory & low-stock alerts",
-      "Meter readings & meter-based PM",
+      "Parts inventory, barcode lookup & low-stock alerts",
+      "Automatic work orders from asset meter readings",
       "Purchasing & PO receiving",
       "Failure/downtime codes & MTTR",
       "Mobile PWA, offline jobs & scan",
@@ -149,6 +149,7 @@ export const PRODUCT_PLANS: ProductPlan[] = [
       "$15/extra seat/mo",
       "Unlimited assets",
       "Unlimited work orders",
+      "All Pro features, including meter-based PM and parts barcode lookup",
       "Predictive maintenance",
       "Full analytics & exports",
       "Automations + API",

@@ -6,13 +6,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Loader2, MessageCircle } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import { ChatUser, Message } from "@/types/chat";
-import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 
 interface MessageAreaProps {
   selectedUser: ChatUser | null;
   messages: Message[];
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string) => Promise<boolean>;
+  loadError: boolean;
+  loadEarlier?: () => void;
+  loadingEarlier: boolean;
   loading: boolean;
   onMarkAsRead: () => void;
 }
@@ -22,16 +24,19 @@ const MessageArea: React.FC<MessageAreaProps> = ({
   messages,
   onSendMessage,
   loading,
+  loadError,
+  loadEarlier,
+  loadingEarlier,
   onMarkAsRead,
 }) => {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when messages change
+  const lastMessageId = messages[messages.length - 1]?.id;
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [lastMessageId]);
 
   // Mark messages as read when the user views them
   useEffect(() => {
@@ -43,9 +48,11 @@ const MessageArea: React.FC<MessageAreaProps> = ({
   const handleSend = async () => {
     if (newMessage.trim() && !sending && selectedUser) {
       setSending(true);
-      await onSendMessage(newMessage);
-      setNewMessage("");
-      setSending(false);
+      try {
+        if (await onSendMessage(newMessage)) setNewMessage("");
+      } finally {
+        setSending(false);
+      }
     }
   };
 
@@ -55,20 +62,6 @@ const MessageArea: React.FC<MessageAreaProps> = ({
       handleSend();
     }
   };
-
-  const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null);
-
-  // Get current user id
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setCurrentUser({ id: data.user.id });
-      }
-    };
-
-    getCurrentUser();
-  }, []);
 
   const formatMessageDate = (dateString: string) => {
     const today = new Date();
@@ -128,6 +121,8 @@ const MessageArea: React.FC<MessageAreaProps> = ({
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
+            ) : loadError ? (
+              <p role="alert" className="p-4 text-sm text-destructive">Could not load this conversation.</p>
             ) : messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-40 text-center text-muted-foreground">
                 <MessageCircle className="h-10 w-10 mb-3 text-muted-foreground/40" />
@@ -136,6 +131,11 @@ const MessageArea: React.FC<MessageAreaProps> = ({
               </div>
             ) : (
               <div className="space-y-6">
+                {loadEarlier && (
+                  <Button variant="ghost" size="sm" onClick={loadEarlier} disabled={loadingEarlier}>
+                    Load earlier messages
+                  </Button>
+                )}
                 {groupedMessages.map((group, groupIndex) => (
                   <div key={groupIndex} className="space-y-3">
                     {/* Date divider */}
@@ -150,7 +150,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
                         <MessageBubble
                           key={message.id}
                           message={message}
-                          isOwnMessage={currentUser?.id === message.sender_id}
+                          isOwnMessage={selectedUser.id === message.recipient_id}
                           formattedTime={formatMessageDate(message.created_at)}
                         />
                       ))}
@@ -167,6 +167,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
             <Textarea
               placeholder="Type your message… (Enter to send, Shift+Enter for new line)"
               value={newMessage}
+              disabled={sending}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               className="resize-none min-h-[72px] bg-background border-border focus-visible:ring-primary/30 text-sm"
@@ -174,6 +175,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
             />
             <Button
               onClick={handleSend}
+              aria-label="Send message"
               disabled={!newMessage.trim() || sending || !selectedUser}
               className="bg-primary hover:bg-primary-variant text-primary-foreground shrink-0"
             >

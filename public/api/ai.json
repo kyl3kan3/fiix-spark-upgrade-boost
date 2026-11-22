@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-11-15T11:51:39.120Z",
+  "generated_at": "2026-11-22T13:01:53.624Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -404,7 +404,7 @@
   "pricing": {
     "model": "account_plans_with_included_seats",
     "currency": "USD",
-    "date_modified": "2026-08-21",
+    "date_modified": "2026-11-22",
     "trial_days": 7,
     "billing_intervals": [
       "month",
@@ -422,7 +422,21 @@
         "included_seats": 2,
         "additional_seat_monthly_price": null,
         "asset_limit": 50,
-        "monthly_work_order_limit": 100
+        "monthly_work_order_limit": 100,
+        "capabilities": {
+          "analytics": false,
+          "automations": false,
+          "api": false,
+          "sso": false,
+          "predictiveMaintenance": false,
+          "lubricantTracking": false,
+          "partsInventory": false,
+          "meterBasedPm": false,
+          "bulkPmGeneration": false,
+          "purchasing": false,
+          "failureDowntimeCodes": false,
+          "mobilePwaOffline": false
+        }
       },
       {
         "name": "Pro",
@@ -431,7 +445,21 @@
         "included_seats": 4,
         "additional_seat_monthly_price": null,
         "asset_limit": 500,
-        "monthly_work_order_limit": 2000
+        "monthly_work_order_limit": 2000,
+        "capabilities": {
+          "analytics": true,
+          "automations": true,
+          "api": false,
+          "sso": false,
+          "predictiveMaintenance": true,
+          "lubricantTracking": true,
+          "partsInventory": true,
+          "meterBasedPm": true,
+          "bulkPmGeneration": true,
+          "purchasing": true,
+          "failureDowntimeCodes": true,
+          "mobilePwaOffline": true
+        }
       },
       {
         "name": "Business",
@@ -440,7 +468,21 @@
         "included_seats": 4,
         "additional_seat_monthly_price": 15,
         "asset_limit": null,
-        "monthly_work_order_limit": null
+        "monthly_work_order_limit": null,
+        "capabilities": {
+          "analytics": true,
+          "automations": true,
+          "api": true,
+          "sso": true,
+          "predictiveMaintenance": true,
+          "lubricantTracking": true,
+          "partsInventory": true,
+          "meterBasedPm": true,
+          "bulkPmGeneration": true,
+          "purchasing": true,
+          "failureDowntimeCodes": true,
+          "mobilePwaOffline": true
+        }
       }
     ]
   },
@@ -455,7 +497,7 @@
     {
       "slug": "preventive-maintenance-software",
       "name": "Preventive Maintenance Software",
-      "tagline": "Turn recurring maintenance dates into visible, assigned work.",
+      "tagline": "Schedule maintenance by date, runtime, or mileage.",
       "html_url": "https://maintenease.com/solutions/preventive-maintenance-software",
       "markdown_url": "https://maintenease.com/solutions/preventive-maintenance-software.md"
     },

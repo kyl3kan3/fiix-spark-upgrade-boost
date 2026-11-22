@@ -10,7 +10,8 @@ const BASE = `http://127.0.0.1:${PREVIEW_PORT}`;
 let preview: ChildProcess;
 
 beforeAll(async () => {
-  preview = spawn("npx", ["vite", "preview", "--port", String(PREVIEW_PORT), "--host", "127.0.0.1"], {
+  const vite = resolve(repoRoot, "node_modules/vite/bin/vite.js");
+  preview = spawn(process.execPath, [vite, "preview", "--port", String(PREVIEW_PORT), "--host", "127.0.0.1"], {
     cwd: repoRoot,
     stdio: "ignore",
   });

@@ -1,10 +1,10 @@
 # Preventive Maintenance Software that stops failures before they cost you
 
-> Turn recurring maintenance dates into visible, assigned work.
+> Schedule maintenance by date, runtime, or mileage.
 
 Canonical URL: https://maintenease.com/solutions/preventive-maintenance-software
 
-MaintenEase turns recurring maintenance from an isolated calendar reminder into assigned work with a completion record. Create calendar-based schedules against an asset, set the frequency and owner, and review the resulting work alongside notes, parts, attachments, and service history. Meter and condition readings can inform planning and predictive risk, but the current scheduler should not be described as a native meter-trigger engine.
+Use a calendar schedule for work due on a date. On Pro and Business, link a PM checklist to an asset meter, set the service interval, and enable automatic work orders. When a technician records a reading at or beyond the interval, MaintenEase automatically creates a work order for that service cycle. Completing the checklist starts the next interval.
 
 
 ## Benefits
@@ -16,6 +16,7 @@ MaintenEase turns recurring maintenance from an isolated calendar reminder into 
 ## Features
 
 - **Calendar schedules** — Create recurring work by day, week, month, or year and associate it with the relevant asset and owner.
+- **Meter-based schedules** — For a pump serviced every 500 operating hours, link the pump's hour meter to its checklist and set the interval to 500. Record the current meter value on the asset to check whether service is due.
 - **Procedures and checklists** — Use work-order instructions and recurring checklists to capture steps, pass/fail items, notes, and attachments.
 - **Documented completion** — Keep the due date, status, assignee, completion record, and supporting evidence together for later review.
 - **Schedule health insights** — See which PMs are overdue, which assets keep failing between PMs, and where intervals should change.
@@ -25,7 +26,7 @@ MaintenEase turns recurring maintenance from an isolated calendar reminder into 
 - Compliance-heavy facilities (healthcare, education, public sector)
 - Manufacturing teams chasing a higher planned-to-reactive ratio
 - Property managers managing recurring life-safety tasks
-- Fleet operators coordinating recurring calendar inspections and service
+- Fleet operators coordinating annual inspections and mileage-based service
 
 ## FAQ
 

@@ -14,7 +14,7 @@ It runs in three layers. First, sensors (or manual readings) capture a condition
 
 ## Predictive vs preventive maintenance
 
-Preventive maintenance acts on a fixed schedule whether the asset needs it or not, which means some work is done too early (wasting component life) and some failures still slip through between intervals. Predictive maintenance acts only on evidence, so it cuts both unnecessary work and surprise breakdowns. The trade-off is setup: PdM needs sensors or readings and a baseline, where preventive needs only a calendar.
+Preventive maintenance schedules service at a set interval, such as every six months or every 500 operating hours. Predictive maintenance uses changes in measured condition, such as a rising vibration trend, to estimate when the equipment will need attention. That estimate depends on a baseline and a history of comparable readings.
 
 ## Where to start with predictive maintenance
 

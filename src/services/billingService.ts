@@ -27,25 +27,14 @@ export interface BillingUsageCounts {
 }
 
 /**
- * Head-only count queries for the billing usage meters: total assets, work
- * orders created this calendar month, and profile seats. Missing counts
- * (including failed queries) intentionally resolve to 0 rather than throwing —
- * the usage meters are best-effort.
+ * The billing page uses the same monthly work order count as plan enforcement.
+ * A missing count resolves to zero for these best-effort usage meters.
  */
 export async function getBillingUsageCounts(): Promise<BillingUsageCounts> {
-  const monthStart = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    1,
-  ).toISOString();
-
-  const [{ count: assets }, { count: workOrders }, { count: seats }] =
+  const [{ count: assets }, { data: workOrders }, { count: seats }] =
     await Promise.all([
       supabase.from("assets").select("*", { count: "exact", head: true }),
-      supabase
-        .from("work_orders")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", monthStart),
+      supabase.rpc("monthly_work_order_count"),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
     ]);
 

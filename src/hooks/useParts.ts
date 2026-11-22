@@ -42,19 +42,6 @@ export function useParts() {
     mutationFn: (id: string) => deletePart(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PARTS_KEY }),
   });
-  const adjustStock = useMutation({
-    mutationFn: (args: {
-      partId: string;
-      type: "receive" | "adjustment";
-      delta: number;
-      notes?: string;
-    }) => adjustPartStock(args.partId, args.type, args.delta, args.notes),
-    onSuccess: (_, vars) => {
-      queryClient.invalidateQueries({ queryKey: PARTS_KEY });
-      queryClient.invalidateQueries({ queryKey: ["parts", "adjustments", vars.partId] });
-    },
-  });
-
   return {
     parts: list.data ?? [],
     isLoading: list.isLoading,
@@ -66,8 +53,20 @@ export function useParts() {
     create,
     update,
     remove,
-    adjustStock,
   };
+}
+
+export function useAdjustPartStock() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (args: {
+      partId: string;
+      type: "receive" | "adjustment";
+      delta: number;
+      notes?: string;
+    }) => adjustPartStock(args.partId, args.type, args.delta, args.notes),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PARTS_KEY }),
+  });
 }
 
 export function usePartAdjustments(partId: string | undefined) {

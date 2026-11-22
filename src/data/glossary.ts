@@ -31,7 +31,7 @@ export const glossary: GlossaryTerm[] = [
  metaDescription:
    "CMMS stands for computerized maintenance management system. See what CMMS systems do, key features, real costs, and a free vendor worksheet.",
  published: "2026-01-15",
- updated: "2026-10-22",
+ updated: "2026-11-22",
  sections: [
  {
  heading: "CMMS in brief",
@@ -107,7 +107,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "What MaintenEase supports today",
- body: "MaintenEase connects asset records, public maintenance requests, assigned work orders, calendar-based recurring maintenance, mobile-friendly checklists, attachments, labor, parts, cost, locations, vendors, and reporting inputs. Buyers should not infer native meter-trigger scheduling, a prebuilt telematics connector, autonomous assignment, or a regulatory-compliance conclusion from this guide. Use the selection worksheet below to separate demonstrated product facts from roadmap items and assumptions for every vendor under review.",
+ body: "MaintenEase connects public maintenance requests, assets, work orders, checklists, labor, parts, and costs. Teams can schedule preventive work by date. On Pro and Business, a recorded asset meter reading can also trigger a work order when a linked checklist's service interval is reached. Use the selection worksheet below to check your team's telematics, assignment, and compliance requirements with each vendor.",
  },
  ],
  faqs: [
@@ -755,6 +755,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Using live condition data — vibration, temperature, current — to predict failures and service equipment just before it would break, not on a fixed calendar.",
  metaTitle: "What is Predictive Maintenance? Definition & How It Works",
  metaDescription: "Predictive maintenance uses sensor data to fix equipment just before it fails. Learn how it works, how it differs from preventive maintenance.",
+ updated: "2026-11-22",
  sections: [
  {
  heading: "Definition",
@@ -766,7 +767,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Predictive vs preventive maintenance",
- body: "Preventive maintenance acts on a fixed schedule whether the asset needs it or not, which means some work is done too early (wasting component life) and some failures still slip through between intervals. Predictive maintenance acts only on evidence, so it cuts both unnecessary work and surprise breakdowns. The trade-off is setup: PdM needs sensors or readings and a baseline, where preventive needs only a calendar.",
+ body: "Preventive maintenance schedules service at a set interval, such as every six months or every 500 operating hours. Predictive maintenance uses changes in measured condition, such as a rising vibration trend, to estimate when the equipment will need attention. That estimate depends on a baseline and a history of comparable readings.",
  },
  {
  heading: "Where to start with predictive maintenance",
@@ -820,7 +821,7 @@ export const glossary: GlossaryTerm[] = [
  short: "Servicing equipment when a monitored condition (temperature, vibration, pressure) crosses a defined threshold — not on a fixed schedule.",
  metaTitle: "Condition-Based Maintenance (CBM): Thresholds & Setup",
  metaDescription: "Condition-based maintenance triggers work when vibration, temperature, or pressure crosses a limit—see CBM vs PM, threshold tips, and a free inspection sheet.",
- updated: "2026-10-15",
+ updated: "2026-11-22",
  sections: [
  {
  heading: "Definition",
@@ -832,7 +833,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "CBM vs preventive vs predictive",
- body: "Preventive maintenance acts on time. Condition-based maintenance acts on a present-moment reading crossing a line. Predictive maintenance goes one step further, using trends and models to forecast when the line will be crossed in the future. CBM is often the practical middle ground: more efficient than fixed schedules, far simpler to implement than full predictive analytics.",
+ body: "A calendar or usage-based PM comes due at a set interval, such as every quarter or every 500 hours. A condition-based task comes due when a measured condition, such as vibration, crosses its limit. Predictive maintenance uses trends in those readings to estimate when the asset will reach that limit.",
  },
  {
  heading: "Getting started with CBM",
@@ -840,7 +841,7 @@ export const glossary: GlossaryTerm[] = [
  },
  {
  heading: "Where MaintenEase fits in a condition route",
- body: "MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.",
+ body: "Use recurring inspection routes to record condition findings, photos, and follow-up work against the asset. For a vibration or temperature limit, document the reading and the supervisor's follow-up decision. For cumulative usage, Pro and Business can automatically open a work order when a recorded meter reading reaches a checklist's service interval.",
  },
  ],
  faqs: [

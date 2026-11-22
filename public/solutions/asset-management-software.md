@@ -16,7 +16,7 @@ MaintenEase is asset management software for the teams who maintain physical equ
 ## Features
 
 - **Core asset register** — Capture name, model, serial number, purchase date, location, status, hierarchy, description, image, and attachments.
-- **Recurring work per asset** — Create calendar-based recurring work and checklists against the equipment record; do not assume native meter-trigger scheduling.
+- **Recurring work per asset** — Schedule work by date. On Pro and Business, link a checklist to an asset meter and enable automatic work orders to generate a job when a reading reaches the service interval.
 - **Work orders and parts** — Every repair, inspection, and part swap is recorded against the asset — building a complete service history.
 - **Documents and history** — Attach warranty or contract documents and review related work without claiming an automatic renewal-alert feature.
 - **Cost and reliability inputs** — Record labor, parts, downtime, repair frequency, and risk factors for internal reporting; finance owns depreciation policy.

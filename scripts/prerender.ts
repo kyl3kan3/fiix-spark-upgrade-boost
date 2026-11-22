@@ -72,10 +72,10 @@ const OG_IMAGE = `${ORIGIN}/og-image.png?v=5`;
 const SIGNUP_CTA_ROUTES = new Set(["/", "/pricing", "/features"]);
 const FEATURE_ITEMS = [
   ["Work Order Management", "Create, assign, and track work orders from one shared queue."],
-  ["Preventive Maintenance", "Schedule recurring maintenance and generate planned work orders."],
+  ["Preventive Maintenance", "Schedule work by date. On Pro and Business, recorded meter readings can also trigger a work order by runtime or mileage."],
   ["Asset Management", "Keep equipment details, documents, and maintenance history together."],
   ["Predictive Maintenance", "Use risk scoring on eligible plans to prioritize inspections and planned work."],
-  ["Team Collaboration", "Coordinate assignments, updates, and notifications across the maintenance team."],
+  ["Team Collaboration", "Send a teammate a direct message in Team Chat to coordinate a repair or hand off a job."],
   ["Performance Analytics", "Review maintenance reports and operational KPIs on eligible plans."],
   ["Downtime Tracking", "Record equipment downtime and compare recurring interruptions."],
 ] as const;

@@ -14,7 +14,7 @@ First, choose a condition that reliably indicates wear or impending failure for 
 
 ## CBM vs preventive vs predictive
 
-Preventive maintenance acts on time. Condition-based maintenance acts on a present-moment reading crossing a line. Predictive maintenance goes one step further, using trends and models to forecast when the line will be crossed in the future. CBM is often the practical middle ground: more efficient than fixed schedules, far simpler to implement than full predictive analytics.
+A calendar or usage-based PM comes due at a set interval, such as every quarter or every 500 hours. A condition-based task comes due when a measured condition, such as vibration, crosses its limit. Predictive maintenance uses trends in those readings to estimate when the asset will reach that limit.
 
 ## Getting started with CBM
 
@@ -22,7 +22,7 @@ Pick one critical asset and one telling parameter — vibration on a pump, tempe
 
 ## Where MaintenEase fits in a condition route
 
-MaintenEase can retain asset records, inspection results, notes, attachments, work orders, and calendar-based recurring routes so a team can build reviewable condition history. Its current scheduler should not be described as a native threshold-trigger engine. Use qualified procedures or manufacturer guidance to define the measurement and limits, then use the downloadable worksheet to make the evidence and follow-up decision explicit before considering sensor or automation claims.
+Use recurring inspection routes to record condition findings, photos, and follow-up work against the asset. For a vibration or temperature limit, document the reading and the supervisor's follow-up decision. For cumulative usage, Pro and Business can automatically open a work order when a recorded meter reading reaches a checklist's service interval.
 
 ## FAQ
 

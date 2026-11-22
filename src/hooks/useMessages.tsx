@@ -1,121 +1,50 @@
+import { useCallback, useMemo } from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/auth";
+import { conversationKey, getConversationMessages, insertMessage, markConversationAsRead, MESSAGE_PAGE_SIZE } from "@/services/messageService";
+import type { Message } from "@/types/chat";
 
-import { useState, useEffect, useCallback } from "react";
-import type { RealtimeChannel } from "@supabase/supabase-js";
-import { Message } from "@/types/chat";
-import { toast } from "@/hooks/use-toast";
-import { getCurrentUser } from "@/services/supabaseHelpers";
-import {
-  getConversationMessages,
-  insertMessage,
-  markConversationAsRead,
-  subscribeToConversationMessages,
-  removeMessagesChannel,
-} from "@/services/messageService";
-
-export const useMessages = (recipientId: string | undefined) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
+export function useMessages(peerId?: string) {
+  const userId = useAuth().user?.id;
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: conversationKey(userId, peerId),
+    enabled: Boolean(userId && peerId),
+    initialPageParam: null as Pick<Message, "id" | "created_at"> | null,
+    queryFn: ({ signal, pageParam }) => getConversationMessages(userId!, peerId!, pageParam, signal),
+    getNextPageParam: (page: Message[]) => page.length === MESSAGE_PAGE_SIZE ? page[page.length - 1] : undefined,
+  });
+  const messages = useMemo(() => data?.pages.flat().reverse() ?? [], [data]);
 
   const markAsRead = useCallback(async () => {
+    if (!userId || !peerId) return;
     try {
-      const user = await getCurrentUser();
-      const currentUserId = user?.id;
-
-      if (!currentUserId || !recipientId) return;
-
-      await markConversationAsRead(currentUserId, recipientId);
-    } catch (error) {
-      console.error("Error marking messages as read:", error);
+      await markConversationAsRead(userId, peerId);
+    } catch {
+      toast.error("Could not mark messages as read.");
     }
-  }, [recipientId]);
+  }, [userId, peerId]);
 
-  useEffect(() => {
-    // Skip if no recipient is selected
-    if (!recipientId) {
-      setMessages([]);
-      return;
-    }
-
-    let subscription: RealtimeChannel | null = null;
-    let cancelled = false;
-
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const user = await getCurrentUser();
-        const currentUserId = user?.id;
-
-        if (!currentUserId) return;
-
-        // Get messages between current user and selected recipient (both sent and received)
-        const data = await getConversationMessages(currentUserId, recipientId);
-
-        if (cancelled) return;
-
-        setMessages(data || []);
-
-        // Mark messages from this recipient as read
-        void markAsRead();
-
-        subscription = subscribeToConversationMessages(currentUserId, recipientId, (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setMessages(prev => [...prev, payload.new]);
-            if (payload.new.sender_id === recipientId) {
-              void markAsRead();
-            }
-          } else if (payload.eventType === 'UPDATE') {
-            setMessages(prev =>
-              prev.map(msg => msg.id === payload.new.id ? payload.new : msg)
-            );
-          }
-        });
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load messages",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
-
-    return () => {
-      cancelled = true;
-      if (subscription) {
-        removeMessagesChannel(subscription);
-      }
-    };
-  }, [recipientId, markAsRead]);
-
-  const sendMessage = async (content: string, recipientId: string) => {
+  async function sendMessage(content: string) {
+    if (!userId || !peerId || !content.trim()) return false;
     try {
-      const user = await getCurrentUser();
-      const currentUserId = user?.id;
-
-      if (!currentUserId) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to send messages",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      await insertMessage(currentUserId, recipientId, content);
-
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive"
-      });
+      await insertMessage(userId, peerId, content.trim());
+      void queryClient.invalidateQueries({ queryKey: conversationKey(userId, peerId) });
+      return true;
+    } catch {
+      toast.error("Could not send your message. Your draft is saved here.");
+      return false;
     }
+  }
+
+  return {
+    messages,
+    sendMessage,
+    markAsRead,
+    loading: isLoading,
+    loadError: isError,
+    loadEarlier: hasNextPage ? () => { void fetchNextPage(); } : undefined,
+    loadingEarlier: isFetchingNextPage,
   };
-
-  return { messages, sendMessage, markAsRead, loading };
-};
+}
