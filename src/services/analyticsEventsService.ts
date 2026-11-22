@@ -1,5 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-
 /** Insert payload for a row in the marketing_page_events analytics table. */
 export interface MarketingPageEventInsert {
   event_type: string;
@@ -17,6 +15,7 @@ export interface MarketingPageEventInsert {
  * swallow the error, since analytics must never break the page.
  */
 export async function insertMarketingPageEvent(event: MarketingPageEventInsert): Promise<void> {
+  const { supabase } = await import("@/integrations/supabase/client");
   const { error } = await supabase.from("marketing_page_events").insert({
     ...event,
     metadata: event.metadata as never,

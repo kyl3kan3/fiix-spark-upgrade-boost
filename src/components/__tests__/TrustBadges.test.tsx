@@ -4,17 +4,13 @@ import { MemoryRouter } from "react-router-dom";
 import TrustBadges from "@/components/TrustBadges";
 
 describe("TrustBadges", () => {
-  it("keeps every directory badge and alternative guide visible in the shared section", () => {
+  it("keeps alternative comparison guides on the homepage section", () => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TrustBadges />
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("heading", { name: /directories & comparisons/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("img")).toHaveLength(9);
-    expect(screen.getByAltText("Featured on Orynth")).toBeInTheDocument();
-    expect(screen.getByAltText("Featured on DanielLaunches")).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: /cmms alternative guides/i })).toBeInTheDocument();
     const alternativeLinks = [
       ["Fiix alternative", "/compare/maintenease-vs-fiix"],

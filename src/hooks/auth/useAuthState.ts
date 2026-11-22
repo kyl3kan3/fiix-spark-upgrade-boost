@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import type { User, Session } from "@supabase/supabase-js";
-import { shouldDeferAuthBootstrap, scheduleIdleTask } from "@/lib/deferAuthBootstrap";
+import { shouldDeferAuthBootstrap } from "@/lib/deferAuthBootstrap";
 
 export function useAuthState() {
   const { pathname } = useLocation();
@@ -15,7 +15,6 @@ export function useAuthState() {
   const [error, setError] = useState<string | null>(null);
   const hasResolvedInitialSession = useRef(false);
   const bootstrapStarted = useRef(false);
-  const cancelScheduledBootstrap = useRef<(() => void) | null>(null);
   const subscriptionRef = useRef<{ unsubscribe: () => void } | null>(null);
   const bootstrapAlive = useRef(true);
 
@@ -108,18 +107,12 @@ export function useAuthState() {
 
   useEffect(() => {
     bootstrapAlive.current = true;
-    const defer = shouldDeferAuthBootstrap(window.location.pathname);
-    if (defer) {
-      cancelScheduledBootstrap.current = scheduleIdleTask(() => {
-        void startBootstrap(false);
-      });
-    } else {
+    if (!shouldDeferAuthBootstrap(window.location.pathname)) {
       void startBootstrap(true);
     }
 
     return () => {
       bootstrapAlive.current = false;
-      cancelScheduledBootstrap.current?.();
       subscriptionRef.current?.unsubscribe();
     };
   }, [startBootstrap]);
@@ -127,8 +120,6 @@ export function useAuthState() {
   useEffect(() => {
     if (bootstrapStarted.current) return;
     if (!shouldDeferAuthBootstrap(pathname)) {
-      cancelScheduledBootstrap.current?.();
-      cancelScheduledBootstrap.current = null;
       void startBootstrap(true);
     }
   }, [pathname, startBootstrap]);

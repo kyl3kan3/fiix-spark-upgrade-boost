@@ -50,11 +50,7 @@ const Features = ({ variant = "page", homeFeatureLimit }: FeaturesProps) => {
      onCategoryChange={setSelectedCategory}
      onViewTypeChange={setViewType}
    />
- ) : (
-   <p className="mx-auto mb-10 max-w-2xl text-center text-muted-foreground">
-     Core CMMS capabilities for work orders, assets, preventive maintenance, and team coordination.
-   </p>
- )}
+ ) : null}
 
  <div className={viewType === "grid" 
  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 

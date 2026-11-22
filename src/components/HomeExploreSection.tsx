@@ -14,9 +14,6 @@ const HomeExploreSection = () => (
   <section aria-label="Explore MaintenEase" className="border-t border-border bg-muted/30 py-16">
     <div className="container mx-auto px-4">
       <h2 className="font-headline text-center text-2xl font-bold text-foreground md:text-3xl">Go deeper</h2>
-      <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">
-        The homepage stays focused on CMMS essentials. Use these hubs for full feature lists, guides, and downloads.
-      </p>
       <ul className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {EXPLORE_LINKS.map((item) => (
           <li key={item.href} className="rounded-xl border border-border bg-card p-5">

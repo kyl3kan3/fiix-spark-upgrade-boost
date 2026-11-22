@@ -1,4 +1,6 @@
-import { insertMarketingPageEvent } from "@/services/analyticsEventsService";
+import { hasWindowLoadCompleted, scheduleIdleTask } from "@/lib/deferAuthBootstrap";
+import { classifySeoPath, normalizeSeoPath } from "@/lib/seoRouting";
+import type { MarketingPageEventInsert } from "@/services/analyticsEventsService";
 
 const SAFE_MARKETING_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -122,6 +124,134 @@ interface TrackOptions {
  dedupeKey?: string;
 }
 
+const pendingMarketingEventInserts: MarketingPageEventInsert[] = [];
+let deferredFlushScheduled = false;
+let cancelDeferredFlush: (() => void) | undefined;
+let pendingFlushHooksInstalled = false;
+let onPageHideFlush: (() => void) | undefined;
+let onVisibilityHiddenFlush: (() => void) | undefined;
+let marketingPageEventInserterForTests: ((event: MarketingPageEventInsert) => Promise<void>) | null =
+ null;
+
+/** Snapshot page context at event time (used by tests and deferred inserts). */
+export const buildMarketingPageEventRecord = ({
+ eventType,
+ pageSlug,
+ metadata,
+}: Pick<TrackOptions, "eventType" | "pageSlug" | "metadata">): MarketingPageEventInsert => ({
+ event_type: eventType,
+ page_slug: pageSlug,
+ page_url: window.location.href.slice(0, 2048),
+ referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
+ user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
+ metadata: metadata ?? {},
+});
+
+async function resolveMarketingPageEventInserter(): Promise<
+ (event: MarketingPageEventInsert) => Promise<void>
+> {
+ if (marketingPageEventInserterForTests) return marketingPageEventInserterForTests;
+ const { insertMarketingPageEvent } = await import("@/services/analyticsEventsService");
+ return insertMarketingPageEvent;
+}
+
+async function insertMarketingPageEventRecord(record: MarketingPageEventInsert): Promise<void> {
+ try {
+  const insert = await resolveMarketingPageEventInserter();
+  await insert(record);
+ } catch {
+  // Never let analytics failures surface to the user.
+ }
+}
+
+async function flushPendingMarketingEventInserts(bestEffort = false): Promise<void> {
+ if (pendingMarketingEventInserts.length === 0) return;
+ cancelDeferredFlush?.();
+ cancelDeferredFlush = undefined;
+ deferredFlushScheduled = false;
+
+ const batch = pendingMarketingEventInserts.splice(0, pendingMarketingEventInserts.length);
+ try {
+  const insert = await resolveMarketingPageEventInserter();
+  for (const record of batch) {
+   try {
+    await insert(record);
+   } catch {
+    if (!bestEffort) {
+     // Never let analytics failures surface to the user.
+    }
+   }
+  }
+ } catch {
+  // Dynamic import failure — swallow for analytics.
+ }
+}
+
+function uninstallPendingMarketingEventFlushHooks(): void {
+ if (!pendingFlushHooksInstalled || typeof window === "undefined") return;
+ if (onPageHideFlush) {
+  window.removeEventListener("pagehide", onPageHideFlush);
+  onPageHideFlush = undefined;
+ }
+ if (onVisibilityHiddenFlush) {
+  document.removeEventListener("visibilitychange", onVisibilityHiddenFlush);
+  onVisibilityHiddenFlush = undefined;
+ }
+ pendingFlushHooksInstalled = false;
+}
+
+function installPendingMarketingEventFlushHooks(): void {
+ if (pendingFlushHooksInstalled || typeof window === "undefined") return;
+ pendingFlushHooksInstalled = true;
+
+ const flushBestEffortOnHide = () => {
+  // Keep Supabase off the critical path until after window `load` (same as idle flush).
+  if (!hasWindowLoadCompleted()) return;
+  void flushPendingMarketingEventInserts(true);
+ };
+
+ onPageHideFlush = flushBestEffortOnHide;
+ onVisibilityHiddenFlush = () => {
+  if (document.visibilityState === "hidden") flushBestEffortOnHide();
+ };
+
+ window.addEventListener("pagehide", onPageHideFlush);
+ document.addEventListener("visibilitychange", onVisibilityHiddenFlush);
+}
+
+function enqueueDeferredMarketingPageEventInsert(record: MarketingPageEventInsert): void {
+ pendingMarketingEventInserts.push(record);
+ installPendingMarketingEventFlushHooks();
+
+ if (deferredFlushScheduled) return;
+ deferredFlushScheduled = true;
+ cancelDeferredFlush = scheduleIdleTask(() => {
+  void flushPendingMarketingEventInserts();
+ });
+}
+
+/** Reset deferred flush queue state (tests only). */
+export function resetDeferredMarketingEventQueueForTests(): void {
+ cancelDeferredFlush?.();
+ cancelDeferredFlush = undefined;
+ deferredFlushScheduled = false;
+ pendingMarketingEventInserts.length = 0;
+ marketingPageEventInserterForTests = null;
+ uninstallPendingMarketingEventFlushHooks();
+}
+
+/** Override the deferred inserter (tests only). */
+export function setMarketingPageEventInserterForTests(
+ inserter: ((event: MarketingPageEventInsert) => Promise<void>) | null,
+): void {
+ marketingPageEventInserterForTests = inserter;
+}
+
+/** Peek pending deferred inserts (tests only). */
+export function getPendingMarketingEventInsertsForTests(): readonly MarketingPageEventInsert[] {
+ return pendingMarketingEventInserts;
+}
+
 export async function trackMarketingEvent({
  eventType,
  pageSlug,
@@ -145,18 +275,16 @@ export async function trackMarketingEvent({
  }
  }
 
- try {
- await insertMarketingPageEvent({
- event_type: eventType,
- page_slug: pageSlug,
- page_url: window.location.href.slice(0, 2048),
- referrer: document.referrer ? document.referrer.slice(0, 2048) : null,
- user_agent: navigator.userAgent ? navigator.userAgent.slice(0, 1024) : null,
- metadata: metadata ?? {},
- });
- } catch {
- // Never let analytics failures surface to the user.
+ const record = buildMarketingPageEventRecord({ eventType, pageSlug, metadata });
+
+ const isIndexableMarketing =
+  classifySeoPath(normalizeSeoPath(window.location.pathname)) === "indexable";
+ if (isIndexableMarketing) {
+  enqueueDeferredMarketingPageEventInsert(record);
+  return;
  }
+
+ await insertMarketingPageEventRecord(record);
 }
 
 /** Extract UTM params + referrer from the current window for lead attribution. */

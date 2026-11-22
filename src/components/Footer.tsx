@@ -1,5 +1,6 @@
 
 import BrandMark from "@/components/shell/BrandMark";
+import FooterDirectoryBadges from "@/components/FooterDirectoryBadges";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -25,6 +26,9 @@ p === "/editorial-policy" ||
  return (
   <footer className="bg-muted/50 border-t border-border py-4">
   <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-3 text-center text-sm text-muted-foreground">
+    {p === "/" && (
+      <FooterDirectoryBadges />
+    )}
     <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
       <span suppressHydrationWarning>&copy; {currentYear} Decent4. All rights reserved.</span>
       <span className="hidden sm:inline">·</span>

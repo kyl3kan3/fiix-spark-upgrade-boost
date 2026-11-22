@@ -248,7 +248,6 @@
       scroll-behavior: auto !important;
     }
     .enter-item { opacity: 1 !important; filter: none !important; transform: none !important; }
-    .reveal-3d { opacity: 1 !important; transform: none !important; }
     .float-3d { animation: none !important; }
     .page-enter > * { animation: none !important; }
   }
@@ -374,9 +373,7 @@
 
   /* 3D motion primitives used by the marketing pages. A .scene-3d parent
      supplies perspective; .tilt-3d elements are driven by --tilt-x/--tilt-y
-     custom properties (set from JS by Tilt3D); .reveal-3d elements stand up
-     when Reveal3D marks them .is-revealed. All are neutralized by the
-     prefers-reduced-motion block. */
+     custom properties (set from JS by Tilt3D). Neutralized by prefers-reduced-motion. */
   .scene-3d { perspective: 1200px; }
   .tilt-3d {
     transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
@@ -387,19 +384,6 @@
   }
   .tilt-3d.is-tilting { transition: transform 80ms linear; }
   .float-3d { animation: float-3d 7s ease-in-out infinite; }
-  .reveal-3d {
-    opacity: 0;
-    transform: perspective(1000px) rotateX(6deg) translateY(16px);
-    transform-origin: 50% 100%;
-    transition:
-      opacity 0.5s var(--transition-smooth),
-      transform 0.5s var(--transition-smooth);
-    transition-delay: var(--reveal-delay, 0ms);
-  }
-  .reveal-3d.is-revealed {
-    opacity: 1;
-    transform: perspective(1000px) rotateX(0deg) translateY(0);
-  }
 }
 
 @keyframes float-3d {

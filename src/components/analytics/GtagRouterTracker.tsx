@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/providers/authContextShared";
 import { trackPageView, setUserData } from "@/lib/gtag";
 
 /**
