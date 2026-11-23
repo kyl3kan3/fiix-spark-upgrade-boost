@@ -180,11 +180,11 @@ export const PLAN_CAPACITY_SUMMARY =
   "Starter supports up to 50 assets and 100 work orders per month. Pro supports up to 500 assets and 2,000 work orders per month. Business includes unlimited assets and unlimited work orders.";
 
 export const PLAN_SEAT_SUMMARY =
-  "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats with additional seats at $15 per month each on Business only; Pro does not add extra seats.";
+  "Starter includes 2 seats, Pro includes 4 seats, and Business includes 4 seats. Extra seats are $15 per month each on Business only.";
 
 /** Visible on /pricing — Pro and Business share the same included seat count. */
 export const PLAN_SEAT_PRICING_NOTE =
-  "Pro and Business both include 4 seats. Extra seats at $15/mo are available on Business only; Pro does not add extra seats. Business adds unlimited assets and work orders, API, SSO, and chat support—not a higher included seat count.";
+  "Pro and Business both include 4 seats. Extra seats ($15/mo each) are available on Business only.";
 
 export type MaintenEaseTeamPrice = {
   plan: ProductPlan;

@@ -2,7 +2,7 @@
 export const HOME_FAQS = [
   {
     q: "How much does MaintenEase cost?",
-    a: "Plans start at $49 per month. Starter is $49/mo with 2 seats. Pro is $129/mo with 4 seats. Business is $299/mo with 4 seats. Extra seats are $15/mo each on Business only; Pro does not add extra seats.",
+    a: "Plans start at $49 per month. Starter is $49/mo with 2 seats. Pro is $129/mo with 4 seats. Business is $299/mo with 4 seats. Extra seats are $15/mo each on Business only.",
   },
   {
     q: "What does MaintenEase do?",

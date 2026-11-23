@@ -8,7 +8,6 @@ import {
   AlertTriangle,
   Gauge,
   CalendarClock,
-  TrendingDown,
   Sparkles,
 } from "lucide-react";
 import {
@@ -34,7 +33,6 @@ const PredictiveMaintenanceContent: React.FC = () => {
     { name: "Sample: critical assets", value: "3", icon: AlertTriangle, accent: "text-destructive" },
     { name: "Sample: avg risk score", value: "42.6", icon: Gauge, accent: "text-foreground" },
     { name: "Sample: predicted failures (30d)", value: "5", icon: CalendarClock, accent: "text-warning" },
-    { name: "Sample: downtime metric", value: "62h", icon: TrendingDown, accent: "text-success" },
   ];
 
   const riskedAssets = [
@@ -86,7 +84,7 @@ const PredictiveMaintenanceContent: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {kpiData.map((kpi) => (
               <Card key={kpi.name}>
                 <CardContent className="p-4">
