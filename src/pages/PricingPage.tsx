@@ -18,6 +18,7 @@ import { getPaddleEnvironment } from "@/lib/paddle";
 import {
  PRODUCT_PLANS,
  PRODUCT_JSON_LD,
+ PLAN_SEAT_PRICING_NOTE,
 } from "@/data/productCatalog";
 
 export default function PricingPage() {
@@ -155,6 +156,8 @@ export default function PricingPage() {
  );
  })}
  </div>
+
+ <p className="mx-auto mt-10 max-w-3xl text-center text-sm text-foreground">{PLAN_SEAT_PRICING_NOTE}</p>
 
  <nav className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
    <Link to="/compare/maintenease-vs-upkeep" className="text-primary underline underline-offset-4">UpKeep</Link>

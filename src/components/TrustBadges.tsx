@@ -1,4 +1,3 @@
-import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const alternativeGuides = [
@@ -36,16 +35,6 @@ const TrustBadges = () => (
             </li>
           ))}
         </ul>
-
-        <a
-          href="https://freealternatives.net/"
-          target="_blank"
-          rel="nofollow noopener noreferrer"
-          className="mt-4 inline-flex min-h-10 items-center gap-2 font-medium text-primary outline-none hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          FreeAlternatives.net
-          <ExternalLink className="h-4 w-4" aria-hidden="true" />
-        </a>
       </nav>
     </div>
   </section>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PRODUCT_PLANS } from "@/data/productCatalog";
+import { PLAN_SEAT_PRICING_NOTE, PRODUCT_PLANS } from "@/data/productCatalog";
 
 /**
  * Homepage pricing snapshot — full plan details live on /pricing.
@@ -24,6 +24,7 @@ const HomePricingSummary = () => (
           </li>
         ))}
       </ul>
+      <p className="mx-auto mt-8 max-w-2xl text-sm text-muted-foreground">{PLAN_SEAT_PRICING_NOTE}</p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Button asChild size="lg" className="font-semibold">
           <Link to="/pricing">See full pricing and limits</Link>

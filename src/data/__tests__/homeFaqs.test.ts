@@ -6,7 +6,7 @@ describe("homepage FAQ / JSON-LD", () => {
     expect(HOME_FAQS).toHaveLength(2);
     expect(HOME_FAQS[0]).toEqual({
       q: "How much does MaintenEase cost?",
-      a: "Plans start at $49 per month. Starter is $49/mo with 2 seats. Pro is $129/mo with 4 seats. Business is $299/mo with 4 seats. Extra seats are $15/mo each.",
+      a: "Plans start at $49 per month. Starter is $49/mo with 2 seats. Pro is $129/mo with 4 seats. Business is $299/mo with 4 seats. Extra seats are $15/mo each on Business only.",
     });
     expect(HOME_FAQS[1]).toEqual({
       q: "What does MaintenEase do?",

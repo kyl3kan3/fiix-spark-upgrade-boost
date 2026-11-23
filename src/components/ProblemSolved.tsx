@@ -1,4 +1,5 @@
 import { CheckCircle2, XCircle, Activity, CalendarClock, History, SearchCheck } from "lucide-react";
+import { buildHomeRiskSampleWorkflow } from "@/data/homeRiskSample";
 
 const before = [
   "Breakdowns are discovered when something stops working",
@@ -21,7 +22,13 @@ const metrics = [
   { icon: SearchCheck, label: "Top risk driver" },
 ];
 
-const ProblemSolved = () => (
+const scoreInputsLine =
+  "The failure-risk score uses the asset's age, failure history, open work orders, and condition readings.";
+
+const ProblemSolved = () => {
+  const sampleWorkflow = buildHomeRiskSampleWorkflow();
+
+  return (
   <section className="py-20 bg-background">
     <div className="container mx-auto px-4">
       <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground mb-12 text-center max-w-3xl mx-auto">
@@ -54,6 +61,8 @@ const ProblemSolved = () => (
         </div>
       </div>
 
+      <p className="max-w-3xl mx-auto mt-10 text-center text-sm text-foreground">{scoreInputsLine}</p>
+
       <div className="max-w-5xl mx-auto mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
           <div key={m.label} className="h-full rounded-lg border border-border bg-card p-4 flex items-center gap-3">
@@ -62,8 +71,21 @@ const ProblemSolved = () => (
           </div>
         ))}
       </div>
+
+      <div className="max-w-3xl mx-auto mt-10 rounded-xl border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">Sample predicted-failure workflow</h3>
+        <ol className="space-y-3">
+          {sampleWorkflow.map((row) => (
+            <li key={row.step} className="text-sm">
+              <span className="font-medium text-foreground">{row.step}: </span>
+              <span className="text-foreground">{row.detail}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
-);
+  );
+};
 
 export default ProblemSolved;
