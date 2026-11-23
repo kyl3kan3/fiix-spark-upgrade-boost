@@ -22,9 +22,6 @@ describe("TrustBadges", () => {
     for (const [name, href] of alternativeLinks) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
     }
-    expect(screen.getByRole("link", { name: /freealternatives\.net/i })).toHaveAttribute(
-      "href",
-      "https://freealternatives.net/",
-    );
+    expect(screen.queryByRole("link", { name: /freealternatives\.net/i })).not.toBeInTheDocument();
   });
 });

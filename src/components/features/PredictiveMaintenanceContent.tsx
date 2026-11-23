@@ -25,13 +25,16 @@ import {
   Cell,
 } from "recharts";
 
+const RISK_SCORE_INPUTS_LINE =
+  "The failure-risk score uses the asset's age, failure history, open work orders, and condition readings.";
+
 const PredictiveMaintenanceContent: React.FC = () => {
-  // Mock data illustrating the real in-app model's output.
+  // Mock data illustrating the real in-app model's output — not customer results.
   const kpiData = [
-    { name: "Critical assets", value: "3", icon: AlertTriangle, accent: "text-destructive" },
-    { name: "Avg risk score", value: "42.6", icon: Gauge, accent: "text-foreground" },
-    { name: "Predicted failures (30d)", value: "5", icon: CalendarClock, accent: "text-warning" },
-    { name: "Downtime avoided", value: "62h", icon: TrendingDown, accent: "text-success" },
+    { name: "Sample: critical assets", value: "3", icon: AlertTriangle, accent: "text-destructive" },
+    { name: "Sample: avg risk score", value: "42.6", icon: Gauge, accent: "text-foreground" },
+    { name: "Sample: predicted failures (30d)", value: "5", icon: CalendarClock, accent: "text-warning" },
+    { name: "Sample: downtime metric", value: "62h", icon: TrendingDown, accent: "text-success" },
   ];
 
   const riskedAssets = [
@@ -67,13 +70,12 @@ const PredictiveMaintenanceContent: React.FC = () => {
         <CardHeader>
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 flex-wrap">
                 <BrainCircuit className="h-5 w-5" />
                 Predictive Maintenance
+                <Badge variant="secondary">Sample data</Badge>
               </CardTitle>
-              <p className="text-muted-foreground mt-1">
-                Risk scores computed from asset age, failure history, open work and condition data
-              </p>
+              <p className="text-muted-foreground mt-1">{RISK_SCORE_INPUTS_LINE}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
@@ -132,7 +134,7 @@ const PredictiveMaintenanceContent: React.FC = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-base">Highest-risk assets</CardTitle>
+                    <CardTitle className="text-base">Sample: highest-risk assets</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -157,7 +159,7 @@ const PredictiveMaintenanceContent: React.FC = () => {
             <TabsContent value="forecast" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Predicted vs actual failures</CardTitle>
+                  <CardTitle className="text-base">Sample: predicted vs actual failures</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>

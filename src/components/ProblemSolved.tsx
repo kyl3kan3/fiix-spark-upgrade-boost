@@ -21,6 +21,17 @@ const metrics = [
   { icon: SearchCheck, label: "Top risk driver" },
 ];
 
+const sampleWorkflow = [
+  { step: "Sample asset", detail: "Compressor #2 — installed 2016, expected service life 12 years" },
+  { step: "Recorded context", detail: "3 failures in the last 90 days; 2 open work orders (1 overdue); vibration reading above target" },
+  { step: "Failure-risk score", detail: "91 — top driver: failure history" },
+  { step: "Recommended action", detail: "Schedule bearing inspection and emergency PM within 48 hours" },
+  { step: "Work order", detail: "WO-1042 (sample): Compressor #2 — risk-driven inspection, scheduled" },
+];
+
+const scoreInputsLine =
+  "The failure-risk score uses the asset's age, failure history, open work orders, and condition readings.";
+
 const ProblemSolved = () => (
   <section className="py-20 bg-background">
     <div className="container mx-auto px-4">
@@ -54,6 +65,8 @@ const ProblemSolved = () => (
         </div>
       </div>
 
+      <p className="max-w-3xl mx-auto mt-10 text-center text-sm text-foreground">{scoreInputsLine}</p>
+
       <div className="max-w-5xl mx-auto mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
           <div key={m.label} className="h-full rounded-lg border border-border bg-card p-4 flex items-center gap-3">
@@ -61,6 +74,18 @@ const ProblemSolved = () => (
             <div className="text-sm font-semibold text-foreground">{m.label}</div>
           </div>
         ))}
+      </div>
+
+      <div className="max-w-3xl mx-auto mt-10 rounded-xl border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">Sample predicted-failure workflow</h3>
+        <ol className="space-y-3">
+          {sampleWorkflow.map((row) => (
+            <li key={row.step} className="text-sm">
+              <span className="font-medium text-foreground">{row.step}: </span>
+              <span className="text-foreground">{row.detail}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   </section>
