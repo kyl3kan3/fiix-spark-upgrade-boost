@@ -1,4 +1,5 @@
 import { CheckCircle2, XCircle, Activity, CalendarClock, History, SearchCheck } from "lucide-react";
+import { buildHomeRiskSampleWorkflow } from "@/data/homeRiskSample";
 
 const before = [
   "Breakdowns are discovered when something stops working",
@@ -21,18 +22,13 @@ const metrics = [
   { icon: SearchCheck, label: "Top risk driver" },
 ];
 
-const sampleWorkflow = [
-  { step: "Sample asset", detail: "Compressor #2 — installed 2016, expected service life 12 years" },
-  { step: "Recorded context", detail: "3 failures in the last 90 days; 2 open work orders (1 overdue); vibration reading above target" },
-  { step: "Failure-risk score", detail: "91 — top driver: failure history" },
-  { step: "Recommended action", detail: "Schedule bearing inspection and emergency PM within 48 hours" },
-  { step: "Work order", detail: "WO-1042 (sample): Compressor #2 — risk-driven inspection, scheduled" },
-];
-
 const scoreInputsLine =
   "The failure-risk score uses the asset's age, failure history, open work orders, and condition readings.";
 
-const ProblemSolved = () => (
+const ProblemSolved = () => {
+  const sampleWorkflow = buildHomeRiskSampleWorkflow();
+
+  return (
   <section className="py-20 bg-background">
     <div className="container mx-auto px-4">
       <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground mb-12 text-center max-w-3xl mx-auto">
@@ -89,6 +85,7 @@ const ProblemSolved = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default ProblemSolved;
