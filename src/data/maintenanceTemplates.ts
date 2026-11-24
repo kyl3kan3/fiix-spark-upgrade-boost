@@ -41,7 +41,7 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
     title: "Maintenance Log Template",
     metaTitle: "Free Maintenance Log Template (CSV Download) | MaintenEase",
     metaDescription:
-      "Free maintenance log template (CSV). Record date, work order, asset, type, technician, labor hours, parts cost, status and next service due.",
+      "Free maintenance log template (CSV): record date, asset, location, technician, labor, parts cost, status, and next service due.",
     h1: "Free maintenance log template (CSV)",
     eyebrow: "Free CSV template",
     intro:
@@ -179,11 +179,11 @@ export const maintenanceTemplates: MaintenanceTemplate[] = [
   },
   {
     slug: "preventive-maintenance-checklist",
-    title: "Preventive Maintenance Checklist",
-    metaTitle: "Free Preventive Maintenance Checklist Template",
+    title: "Maintenance Checklist Template",
+    metaTitle: "Preventive Maintenance Checklist Template",
     metaDescription:
-      "Download a free preventive maintenance checklist with asset, task, frequency, acceptance criteria, owner, last-completed date, and next-due date fields.",
-    h1: "Free preventive maintenance checklist",
+      "Maintenance checklist template (CSV) with asset, PM task, frequency, acceptance criteria, owner, last-completed date, and next-due date.",
+    h1: "Maintenance checklist template",
     eyebrow: "Free CSV checklist",
     intro:
       "Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.",

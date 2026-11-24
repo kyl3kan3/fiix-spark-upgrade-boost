@@ -85,6 +85,12 @@ describe("SEO fix rendering", () => {
 
   it.each([
     [
+      "asset-management-software",
+      "CMMS asset registry and asset management software",
+      "CMMS asset registry fields",
+      "Serial number",
+    ],
+    [
       "asset-tracking-software",
       "CMMS Asset Registry Fields",
       "Equipment fields to track",
@@ -100,8 +106,9 @@ describe("SEO fix rendering", () => {
     renderRoute(`/solutions/${slug}`, "/solutions/:slug", <SolutionPage />);
 
     expect(screen.getByRole("heading", { level: 1, name: h1 })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: sectionHeading })).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(snippet, "i"))).toBeInTheDocument();
+    const section = screen.getByRole("heading", { name: sectionHeading }).closest("section");
+    expect(section).toBeTruthy();
+    expect(within(section as HTMLElement).getByText(new RegExp(snippet, "i"))).toBeInTheDocument();
     expect(getSolution(slug)?.metaTitle).toBeTruthy();
   });
 });

@@ -25,7 +25,7 @@ export type GlossaryTerm = {
 export const glossary: GlossaryTerm[] = [
  {
  slug: "cmms",
- term: "What Is a CMMS? Meaning, Systems & Buyer's Guide",
+ term: "What Does CMMS Stand For?",
  short: "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
  metaTitle: "What Does CMMS Stand For? CMMS Meaning & Systems Guide",
  metaDescription:

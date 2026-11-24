@@ -13,6 +13,10 @@ export type Solution = {
  faqs: { q: string; a: string }[];
  /** Optional CMMS registry field table for SEO content blocks. */
  registryFields?: { field: string; purpose: string }[];
+ /** Override default "Equipment fields to track" section heading. */
+ registryFieldsHeading?: string;
+ /** When true, render a plain field list without the intro paragraph or purpose column. */
+ registryFieldsPlainList?: boolean;
  /** Optional numbered close-work-order workflow for SEO content blocks. */
  closeWorkOrderSteps?: { title: string; detail: string }[];
 };
@@ -246,12 +250,26 @@ export const solutions: Solution[] = [
  },
  {
  slug: "asset-management-software",
- updated: "2026-08-23",
+ updated: "2026-11-24",
  name: "Asset Management Software",
- h1: "Asset Management Software that turns your asset register into a working system",
+ h1: "CMMS asset registry and asset management software",
  tagline: "Register, schedule, maintain, and report on every asset — in one place.",
- metaTitle: "Asset Management Software for Maintenance Teams",
- metaDescription: "Asset management software with equipment records, locations, attachments, recurring work, parts, costs, maintenance history, and risk prioritization.",
+ metaTitle: "CMMS Asset Registry and Asset Management Software",
+ metaDescription:
+ "CMMS asset registry with serial number, model, location, status, purchase date, hierarchy, and service history tied to work orders and PMs.",
+ registryFieldsHeading: "CMMS asset registry fields",
+ registryFieldsPlainList: true,
+ registryFields: [
+ { field: "Name", purpose: "" },
+ { field: "Serial number", purpose: "" },
+ { field: "Model", purpose: "" },
+ { field: "Location", purpose: "" },
+ { field: "Status", purpose: "" },
+ { field: "Purchase date", purpose: "" },
+ { field: "Description", purpose: "" },
+ { field: "Parent asset", purpose: "" },
+ { field: "Image", purpose: "" },
+ ],
  intro:
  "MaintenEase is asset management software for the teams who maintain physical equipment. Register each asset with core identifiers, location, status, purchase date, hierarchy, photos, and attachments. Connect recurring calendar work, corrective work orders, parts, labor, cost, and predictive-risk records so the asset register supports day-to-day maintenance decisions.",
  benefits: [
