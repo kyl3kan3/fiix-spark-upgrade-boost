@@ -39,10 +39,17 @@ if (typeof window !== "undefined") {
   });
 }
 
-if (import.meta.env.PROD) {
-  void import("virtual:pwa-register").then(({ registerSW }) => {
-    registerSW({ immediate: true });
-  });
+if (import.meta.env.PROD && typeof window !== "undefined") {
+  const registerPwa = () => {
+    void import("virtual:pwa-register").then(({ registerSW }) => {
+      registerSW({ immediate: true });
+    });
+  };
+  if (document.readyState === "complete") {
+    window.setTimeout(registerPwa, 1500);
+  } else {
+    window.addEventListener("load", () => window.setTimeout(registerPwa, 1500), { once: true });
+  }
 }
 
 const rootEl = document.getElementById("root");
