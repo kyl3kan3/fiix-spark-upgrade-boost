@@ -1,4 +1,4 @@
-# Free preventive maintenance checklist
+# Maintenance checklist template
 
 > Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.
 

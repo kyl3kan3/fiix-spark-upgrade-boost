@@ -114,10 +114,21 @@ const SolutionPage = () => {
 
  {solution.registryFields && solution.registryFields.length > 0 && (
  <section className="container mx-auto px-4 pb-16 max-w-5xl">
- <h2 className="font-headline text-3xl font-bold mb-4 text-foreground">Equipment fields to track</h2>
+ <h2 className="font-headline text-3xl font-bold mb-4 text-foreground">
+ {solution.registryFieldsHeading ?? "Equipment fields to track"}
+ </h2>
+ {!solution.registryFieldsPlainList && (
  <p className="text-muted-foreground text-sm mb-6 max-w-3xl">
  A CMMS asset registry should capture these fields so technicians can find equipment and see its service context.
  </p>
+ )}
+ {solution.registryFieldsPlainList ? (
+ <ul className="list-disc pl-5 space-y-1 max-w-3xl text-foreground">
+ {solution.registryFields.map((row) => (
+ <li key={row.field}>{row.field}</li>
+ ))}
+ </ul>
+ ) : (
  <div className="rounded-xl border border-border overflow-hidden bg-card">
  <Table>
  <TableHeader>
@@ -136,6 +147,7 @@ const SolutionPage = () => {
  </TableBody>
  </Table>
  </div>
+ )}
  </section>
  )}
 

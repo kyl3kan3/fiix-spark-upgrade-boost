@@ -102,6 +102,8 @@ type Route = {
   /** Extra crawlable body copy (headings/paragraphs), already escaped-safe text. */
   sections?: { heading: string; body: string }[];
   registryFieldTable?: { field: string; purpose: string }[];
+  registryFieldHeading?: string;
+  registryFieldPlainList?: boolean;
   closeWorkOrderSteps?: { title: string; detail: string }[];
   links?: { href: string; label: string }[];
   expandedTemplateSlug?: string;
@@ -817,6 +819,8 @@ const solutionRoutes: Route[] = solutions.map((s) => {
     h1: s.h1,
     intro: s.intro,
     registryFieldTable: s.registryFields,
+    registryFieldHeading: s.registryFieldsHeading,
+    registryFieldPlainList: s.registryFieldsPlainList,
     closeWorkOrderSteps: s.closeWorkOrderSteps,
     sections: [
       ...s.benefits.map((b) => ({ heading: b.title, body: b.body })),
@@ -933,14 +937,15 @@ const compareRoutes: Route[] = comparisons.map((c) => ({
 
 const templateIndexRoute: Route = {
   path: "/templates",
-  title: "Free Maintenance Templates & Checklists | MaintenEase",
-  description: "Download free maintenance logs, PM checklists, work orders, and preliminary hazard analysis templates for Excel and Google Sheets.",
-  h1: "Free maintenance templates that stay useful",
+  title: "Maintenance Templates Library | MaintenEase",
+  description:
+    "Free maintenance templates library: logs, work orders, hazard worksheets, and related CSV downloads for Excel and Google Sheets.",
+  h1: "Maintenance templates library",
   intro: "Clean, practical CSV templates for the maintenance work your team does every day.",
   sections: maintenanceTemplates.map((template) => ({ heading: template.title, body: template.intro })),
   links: maintenanceTemplates.map((template) => ({ href: `/templates/${template.slug}`, label: template.title })),
   jsonLd: [buildItemListJsonLd(
-    "Free maintenance templates",
+    "Maintenance templates library",
     `${ORIGIN}/templates`,
     maintenanceTemplates.map((template) => ({
       name: template.title,
@@ -1265,17 +1270,25 @@ function bodyFor(route: Route): string {
     parts.push(`<p><a href="${SIGNUP_PATH}">Start your free trial</a></p>`);
   }
   if (route.registryFieldTable?.length) {
-    parts.push("<h2>Equipment fields to track</h2>");
-    parts.push(
-      "<table><thead><tr><th scope=\"col\">Field</th><th scope=\"col\">Purpose</th></tr></thead><tbody>" +
-        route.registryFieldTable
-          .map(
-            (row) =>
-              `<tr><td>${esc(row.field)}</td><td>${esc(row.purpose)}</td></tr>`,
-          )
-          .join("") +
-        "</tbody></table>",
-    );
+    parts.push(`<h2>${esc(route.registryFieldHeading ?? "Equipment fields to track")}</h2>`);
+    if (route.registryFieldPlainList) {
+      parts.push(
+        "<ul>" +
+          route.registryFieldTable.map((row) => `<li>${esc(row.field)}</li>`).join("") +
+          "</ul>",
+      );
+    } else {
+      parts.push(
+        "<table><thead><tr><th scope=\"col\">Field</th><th scope=\"col\">Purpose</th></tr></thead><tbody>" +
+          route.registryFieldTable
+            .map(
+              (row) =>
+                `<tr><td>${esc(row.field)}</td><td>${esc(row.purpose)}</td></tr>`,
+            )
+            .join("") +
+          "</tbody></table>",
+      );
+    }
   }
   if (route.closeWorkOrderSteps?.length) {
     parts.push("<h2>How to close work orders faster</h2>");

@@ -1,4 +1,4 @@
-# Asset Management Software that turns your asset register into a working system
+# CMMS asset registry and asset management software
 
 > Register, schedule, maintain, and report on every asset — in one place.
 
@@ -6,6 +6,17 @@ Canonical URL: https://maintenease.com/solutions/asset-management-software
 
 MaintenEase is asset management software for the teams who maintain physical equipment. Register each asset with core identifiers, location, status, purchase date, hierarchy, photos, and attachments. Connect recurring calendar work, corrective work orders, parts, labor, cost, and predictive-risk records so the asset register supports day-to-day maintenance decisions.
 
+## CMMS asset registry fields
+
+- Name
+- Serial number
+- Model
+- Location
+- Status
+- Purchase date
+- Description
+- Parent asset
+- Image
 
 ## Benefits
 

@@ -1,4 +1,4 @@
-# What Is a CMMS? Meaning, Systems & Buyer's Guide
+# What Does CMMS Stand For?
 
 > Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
 

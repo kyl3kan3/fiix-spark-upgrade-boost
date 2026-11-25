@@ -99,7 +99,7 @@ export const emergingAiGlossary: GlossaryTerm[] = [
     slug: "maintenance-mcp-server",
     term: "Maintenance MCP Server",
     short: "A Model Context Protocol service that exposes controlled maintenance data and actions to compatible AI clients without granting direct database access.",
-    metaTitle: "Maintenance MCP Server: Tools, Security & CMMS Design",
+    metaTitle: "Maintenance MCP Server",
     metaDescription: "Understand how a maintenance MCP server exposes CMMS tools, handles OAuth and tenant isolation, and supports safe AI maintenance workflows.",
     published,
     updated: published,

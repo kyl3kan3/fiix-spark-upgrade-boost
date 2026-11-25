@@ -8,7 +8,7 @@ import { maintenanceTemplates } from "@/data/maintenanceTemplates";
 import { buildItemListJsonLd } from "@/data/productCatalog";
 
 const itemListLd = buildItemListJsonLd(
-  "Free maintenance templates",
+  "Maintenance templates library",
   "https://maintenease.com/templates",
   maintenanceTemplates.map((template) => ({
     name: template.title,
@@ -20,26 +20,26 @@ const itemListLd = buildItemListJsonLd(
 const TemplatesIndex = () => (
   <MarketingLayout>
     <Helmet>
-      <title>Free Maintenance Templates & Checklists | MaintenEase</title>
+      <title>Maintenance Templates Library | MaintenEase</title>
       <meta
         name="description"
-        content="Download free maintenance logs, preventive-maintenance checklists, work orders, and preliminary hazard analysis templates for Excel and Google Sheets."
+        content="Free maintenance templates library: logs, work orders, hazard worksheets, and related CSV downloads for Excel and Google Sheets."
       />
       <link rel="canonical" href="https://maintenease.com/templates" />
-      <meta property="og:title" content="Free maintenance templates and checklists" />
-      <meta property="og:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
+      <meta property="og:title" content="Maintenance Templates Library" />
+      <meta property="og:description" content="Browse free maintenance log, work order, and safety worksheet downloads." />
       <meta property="og:url" content="https://maintenease.com/templates" />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://maintenease.com/og-image.png?v=5" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="Free maintenance templates and checklists" />
-      <meta name="twitter:description" content="Practical maintenance-log, PM, work-order, and preliminary hazard analysis templates." />
+      <meta name="twitter:title" content="Maintenance Templates Library" />
+      <meta name="twitter:description" content="Browse free maintenance log, work order, and safety worksheet downloads." />
       <meta name="twitter:image" content="https://maintenease.com/og-image.png?v=5" />
       <script type="application/ld+json">{JSON.stringify(itemListLd)}</script>
     </Helmet>
     <MarketingJsonLd />
 
-    <MarketingPageHeader title="Free maintenance templates" />
+    <MarketingPageHeader title="Maintenance templates library" />
 
     <section className="container mx-auto max-w-6xl px-4 pb-16">
       <div className="grid gap-6 md:grid-cols-3">
