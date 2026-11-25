@@ -448,7 +448,7 @@ The current setup-sheet generator creates Code 128 barcode images from the asset
 
 ---
 
-# Asset Management Software that turns your asset register into a working system
+# CMMS asset registry and asset management software
 
 > Register, schedule, maintain, and report on every asset — in one place.
 
@@ -456,6 +456,17 @@ Canonical URL: https://maintenease.com/solutions/asset-management-software
 
 MaintenEase is asset management software for the teams who maintain physical equipment. Register each asset with core identifiers, location, status, purchase date, hierarchy, photos, and attachments. Connect recurring calendar work, corrective work orders, parts, labor, cost, and predictive-risk records so the asset register supports day-to-day maintenance decisions.
 
+## CMMS asset registry fields
+
+- Name
+- Serial number
+- Model
+- Location
+- Status
+- Purchase date
+- Description
+- Parent asset
+- Image
 
 ## Benefits
 
@@ -1001,7 +1012,7 @@ Yes. Export your assets and work orders (CSV/Excel) and our team imports them fo
 
 ---
 
-# What Is a CMMS? Meaning, Systems & Buyer's Guide
+# What Does CMMS Stand For?
 
 > Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.
 
@@ -3049,7 +3060,7 @@ Add an entry as soon as each job is completed, ideally the same day, while detai
 
 ---
 
-# Free preventive maintenance checklist
+# Maintenance checklist template
 
 > Turn recurring maintenance into a schedule your team can actually follow. This preventive maintenance checklist defines the asset, task, frequency, acceptance criteria, responsible role, and next due date in one portable sheet.
 

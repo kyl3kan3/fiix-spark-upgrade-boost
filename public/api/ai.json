@@ -2,7 +2,7 @@
   "name": "MaintenEase",
   "description": "Modern maintenance management software (CMMS) with account plans, included seats, and published capacity limits.",
   "site": "https://maintenease.com",
-  "generated_at": "2026-11-23T16:13:46.277Z",
+  "generated_at": "2026-11-25T13:24:21.508Z",
   "llms_txt": "https://maintenease.com/llms.txt",
   "llms_full_txt": "https://maintenease.com/llms-full.txt",
   "content_negotiation": {
@@ -540,7 +540,7 @@
   "glossary": [
     {
       "slug": "cmms",
-      "term": "What Is a CMMS? Meaning, Systems & Buyer's Guide",
+      "term": "What Does CMMS Stand For?",
       "short": "Maintenance management systems centralize work orders, assets, inspections, and preventive schedules so teams can plan, execute, and measure maintenance in one system of record.",
       "html_url": "https://maintenease.com/learn/cmms",
       "markdown_url": "https://maintenease.com/learn/cmms.md",
@@ -785,7 +785,7 @@
     },
     {
       "slug": "preventive-maintenance-checklist",
-      "name": "Preventive Maintenance Checklist",
+      "name": "Maintenance Checklist Template",
       "html_url": "https://maintenease.com/templates/preventive-maintenance-checklist",
       "markdown_url": "https://maintenease.com/templates/preventive-maintenance-checklist.md",
       "formats": [
