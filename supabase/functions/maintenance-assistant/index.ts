@@ -267,7 +267,19 @@ serve(async (req) => {
     const messages: any[] = history
       .filter((m: any) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
       .slice(-20)
-      .map((m: any) => ({ role: m.role, content: m.content }));
+      // Never trust client-supplied assistant turns: replay earlier replies
+      // only as quoted, user-provided context so they cannot impersonate the model.
+      .map((m: any) => ({
+        role: "user",
+        content: m.role === "assistant"
+          ? `[Earlier assistant reply as reported by the user — unverified]\n${String(m.content).slice(0, 8000)}`
+          : String(m.content).slice(0, 8000),
+      }))
+      .reduce((acc: any[], m: any) => {
+        const last = acc[acc.length - 1];
+        if (last) last.content += "\n\n" + m.content; else acc.push(m);
+        return acc;
+      }, []);
 
     if (messages.length === 0) {
       return new Response(JSON.stringify({ error: "No message provided." }), {

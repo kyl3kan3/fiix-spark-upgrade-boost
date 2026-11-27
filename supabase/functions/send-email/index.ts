@@ -100,6 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
     const adminClient = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
     const recipientLower = String(to).trim().toLowerCase();
     let recipientAllowed = false;
+    let invitationContent: { subject: string; html: string } | null = null;
 
     const { data: profile } = await adminClient
       .from("profiles").select("email").eq("id", authedUserId).maybeSingle();
@@ -115,7 +116,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!recipientAllowed && notificationType === "invitation" && referenceId) {
       const { data: invite } = await adminClient
         .from("organization_invitations")
-        .select("email, invited_by, status")
+        .select("email, invited_by, status, token, organization_id")
         .eq("id", referenceId)
         .maybeSingle();
       if (
@@ -125,6 +126,17 @@ const handler = async (req: Request): Promise<Response> => {
         String(invite.email).trim().toLowerCase() === recipientLower
       ) {
         recipientAllowed = true;
+        // Invitation emails use server-built content only; caller text is ignored.
+        const { data: company } = await adminClient
+          .from("companies").select("name").eq("id", (invite as any).organization_id).maybeSingle();
+        const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        const companyName = String((company as any)?.name ?? "your team").slice(0, 200);
+        const inviteUrl = `https://maintenease.com/auth?signup=true&token=${encodeURIComponent(String((invite as any).token ?? ""))}`;
+        invitationContent = {
+          subject: `You're invited to join ${companyName.replace(/[\r\n]+/g, " ")} on MaintenEase`,
+          html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><h2>You're invited to join ${esc(companyName)}!</h2><p>You've been invited to join <strong>${esc(companyName)}</strong> on MaintenEase, a maintenance management platform.</p><p style="margin:20px 0"><a href="${esc(inviteUrl)}" style="background-color:#2563eb;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Accept Invitation</a></p><p>Or copy and paste this link into your browser:</p><p style="word-break:break-all;color:#666">${esc(inviteUrl)}</p><p>This invitation will expire in 7 days.</p><p>Best regards,<br>The MaintenEase Team</p></div>`,
+        };
       }
     }
 
@@ -136,8 +148,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send through Lovable's managed email delivery
-    const safeSubject = String(subject).replace(/[\r\n]+/g, " ").slice(0, 300);
-    const safeBody = sanitizeHtml(body);
+    const safeSubject = invitationContent?.subject ?? String(subject).replace(/[\r\n]+/g, " ").slice(0, 300);
+    const safeBody = invitationContent?.html ?? sanitizeHtml(body);
     const result = await sendTemplateEmailWithLog("generic", to, {
       templateData: { subject: safeSubject, html: safeBody },
       idempotencyKey: referenceId

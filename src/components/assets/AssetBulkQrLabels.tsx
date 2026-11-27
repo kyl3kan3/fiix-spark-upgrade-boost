@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { assetScanUrl } from "@/lib/assetScanUrl";
+import { escapeHtml } from "@/lib/security/escape";
 
 type AssetRow = { id: string; name: string };
 
@@ -27,9 +28,9 @@ export function AssetBulkQrLabels({ assets }: { assets: AssetRow[] }) {
         .map(
           (l) => `
         <div style="display:inline-block;width:2.25in;padding:12px;text-align:center;vertical-align:top;page-break-inside:avoid">
-          <p style="font-size:11px;font-weight:600;margin:0 0 8px;max-height:2.4em;overflow:hidden">${l.name}</p>
-          <img src="${l.dataUrl}" width="140" height="140" alt="" />
-          <p style="font-size:8px;color:#666;margin:6px 0 0;word-break:break-all">${l.url}</p>
+          <p style="font-size:11px;font-weight:600;margin:0 0 8px;max-height:2.4em;overflow:hidden">${escapeHtml(l.name)}</p>
+          <img src="${escapeHtml(l.dataUrl)}" width="140" height="140" alt="" />
+          <p style="font-size:8px;color:#666;margin:6px 0 0;word-break:break-all">${escapeHtml(l.url)}</p>
         </div>`,
         )
         .join("");

@@ -4,7 +4,7 @@ import { logger } from "@/lib/logger";
 
 const BUCKET = "asset-images";
 const PUBLIC_PREFIX = `/storage/v1/object/public/${BUCKET}/`;
-const SIGN_TTL = 60 * 60; // 1 hour
+const SIGN_TTL = 60 * 5; // 5 minutes — short-lived so removed members lose access quickly
 
 const cache = new Map<string, { url: string; expiresAt: number }>();
 

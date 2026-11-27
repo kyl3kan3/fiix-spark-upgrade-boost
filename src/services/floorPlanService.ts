@@ -44,7 +44,7 @@ export const fetchFloorPlans = async (): Promise<FloorPlan[]> => {
 };
 
 export const getFloorPlanUrl = async (storagePath: string): Promise<string> => {
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(storagePath, 60 * 30);
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(storagePath, 60 * 5);
   if (error) throw error;
   return data.signedUrl;
 };

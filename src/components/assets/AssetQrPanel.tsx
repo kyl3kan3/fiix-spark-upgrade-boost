@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { escapeHtml } from "@/lib/security/escape";
 import QRCode from "qrcode";
 import { Button } from "@/components/ui/button";
 import { Download, Printer } from "lucide-react";
@@ -39,11 +40,11 @@ export function AssetQrPanel({ assetId, assetName }: Props) {
     const w = window.open("", "_blank", "width=400,height=520");
     if (!w || !dataUrl) return;
     w.document.write(`
-      <html><head><title>${assetName} QR</title></head>
+      <html><head><title>${escapeHtml(assetName)} QR</title></head>
       <body style="font-family:sans-serif;text-align:center;padding:24px">
-        <h2 style="font-size:14px;margin:0 0 12px">${assetName}</h2>
-        <img src="${dataUrl}" width="200" height="200" alt="QR" />
-        <p style="font-size:10px;color:#666;margin-top:8px">${url}</p>
+        <h2 style="font-size:14px;margin:0 0 12px">${escapeHtml(assetName)}</h2>
+        <img src="${escapeHtml(dataUrl)}" width="200" height="200" alt="QR" />
+        <p style="font-size:10px;color:#666;margin-top:8px">${escapeHtml(url)}</p>
       </body></html>`);
     w.document.close();
     w.focus();

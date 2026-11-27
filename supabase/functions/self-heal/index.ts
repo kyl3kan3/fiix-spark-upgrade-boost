@@ -457,6 +457,10 @@ Deno.serve(async (req) => {
       const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
       if (!profile?.company_id) return new Response(JSON.stringify({ error: "no company" }), { status: 400, headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } });
       scopedCompany = profile.company_id;
+      const { data: adminRole } = await sb.from("user_roles").select("id")
+        .eq("user_id", user.id).eq("company_id", profile.company_id)
+        .in("role", ["administrator", "super_admin"]).limit(1).maybeSingle();
+      if (!adminRole) return new Response(JSON.stringify({ error: "forbidden" }), { status: 403, headers: { ...corsHeadersForRequest(req), "Content-Type": "application/json" } });
     } else if (!isServiceRole) {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,

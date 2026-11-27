@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { WorkOrderWithRelations, WorkOrderComment } from "@/types/workOrders";
 import { formatDate } from './dateUtils';
+import { csvCell, escapeHtml } from '@/lib/security/escape';
 
 // Define a proper type for the comment with user
 interface CommentWithUser extends WorkOrderComment {
@@ -133,7 +134,7 @@ export const exportWorkOrderToCsv = (workOrder: WorkOrderWithRelations) => {
  const data = [
  workOrder.id.split('-')[0],
  workOrder.title,
- workOrder.description.replace(/,/g, ';').replace(/\n/g, ' '), // Replace commas and newlines to avoid CSV formatting issues
+ workOrder.description,
  workOrder.status.replace('_', ' '),
  workOrder.priority,
  formatDate(workOrder.created_at),
@@ -147,7 +148,7 @@ export const exportWorkOrderToCsv = (workOrder: WorkOrderWithRelations) => {
  
  // Create CSV content
  let csvContent = headers.join(',') + '\n';
- csvContent += data.join(',');
+ csvContent += data.map(csvCell).join(',');
  
  // Add comments section if there are comments
  if (workOrder.comments && workOrder.comments.length > 0) {
@@ -157,9 +158,9 @@ export const exportWorkOrderToCsv = (workOrder: WorkOrderWithRelations) => {
  workOrder.comments.forEach((comment: CommentWithUser) => {
  const commentUser = comment.user ? `${comment.user.first_name} ${comment.user.last_name}` : 'Unknown';
  const commentDate = formatDate(comment.created_at);
- const commentText = comment.comment.replace(/,/g, ';').replace(/\n/g, ' '); // Replace commas and newlines
+ const commentText = comment.comment;
  
- csvContent += `${commentUser},${commentDate},${commentText}\n`;
+ csvContent += `${csvCell(commentUser)},${csvCell(commentDate)},${csvCell(commentText)}\n`;
  });
  }
  
@@ -206,7 +207,7 @@ export const exportWorkOrderToExcel = (workOrder: WorkOrderWithRelations) => {
  const addRow = (field: string, value: string) => {
  xmlContent += '<Row>';
  xmlContent += `<Cell><Data ss:Type="String">${field}</Data></Cell>`;
- xmlContent += `<Cell><Data ss:Type="String">${value}</Data></Cell>`;
+ xmlContent += `<Cell><Data ss:Type="String">${escapeHtml(value)}</Data></Cell>`;
  xmlContent += '</Row>';
  };
  
