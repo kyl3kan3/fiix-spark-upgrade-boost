@@ -44,19 +44,18 @@ const bufferRejection = (event: PromiseRejectionEvent) => {
   preInitErrors.push(event.reason);
 };
 
-function scheduleAfterLoadIdle(task: () => void) {
-  const onIdle = () => {
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(task, { timeout: 3000 });
-    } else {
-      window.setTimeout(task, 1500);
-    }
+function scheduleOnInteractionOrError(task: () => void) {
+  let triggered = false;
+  const run = () => {
+    if (triggered) return;
+    triggered = true;
+    task();
   };
-  if (document.readyState === "complete") {
-    onIdle();
-  } else {
-    window.addEventListener("load", onIdle, { once: true });
-  }
+  (["pointerdown", "keydown", "scroll", "touchstart"] as const).forEach((ev) => {
+    window.addEventListener(ev, run, { once: true, passive: true });
+  });
+  window.addEventListener("error", run, { once: true });
+  window.addEventListener("unhandledrejection", run, { once: true });
 }
 
 export function initSentry() {
@@ -71,7 +70,7 @@ export function initSentry() {
     resolveLoad = resolve;
   });
 
-  scheduleAfterLoadIdle(() => {
+  scheduleOnInteractionOrError(() => {
     import("@sentry/react")
       .then((Sentry) => {
         const release = (import.meta.env.VITE_APP_VERSION as string | undefined) || undefined;

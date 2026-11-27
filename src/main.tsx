@@ -40,16 +40,17 @@ if (typeof window !== "undefined") {
 }
 
 if (import.meta.env.PROD && typeof window !== "undefined") {
+  let pwaRegistered = false;
   const registerPwa = () => {
+    if (pwaRegistered) return;
+    pwaRegistered = true;
     void import("virtual:pwa-register").then(({ registerSW }) => {
       registerSW({ immediate: true });
     });
   };
-  if (document.readyState === "complete") {
-    window.setTimeout(registerPwa, 1500);
-  } else {
-    window.addEventListener("load", () => window.setTimeout(registerPwa, 1500), { once: true });
-  }
+  (["pointerdown", "keydown", "scroll", "touchstart"] as const).forEach((ev) => {
+    window.addEventListener(ev, registerPwa, { once: true, passive: true });
+  });
 }
 
 const rootEl = document.getElementById("root");

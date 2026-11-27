@@ -45,7 +45,7 @@
     <!-- Hero headline font: stable public URL so prerender + preload share one file. -->
     <link rel="preload" href="/fonts/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Fonts are self-hosted and declared in src/index.css; no fonts CDN. -->
-  <!-- Google tag + DataFast: queue events immediately; load scripts after load + idle -->
+  <!-- Google tag + DataFast: queue events immediately; load scripts on first user interaction -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -54,7 +54,10 @@
       gtag('config', 'AW-18051376894');
       gtag('config', 'AW-18190364490', { allow_enhanced_conversions: true });
       (function () {
+        var loaded = false;
         function loadAnalytics() {
+          if (loaded) return;
+          loaded = true;
           var s = document.createElement('script');
           s.async = true;
           s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18051376894';
@@ -66,15 +69,9 @@
           df.src = 'https://datafa.st/js/script.js';
           document.head.appendChild(df);
         }
-        function schedule() {
-          if (typeof requestIdleCallback === 'function') {
-            requestIdleCallback(loadAnalytics, { timeout: 3000 });
-          } else {
-            setTimeout(loadAnalytics, 1500);
-          }
-        }
-        if (document.readyState === 'complete') schedule();
-        else window.addEventListener('load', schedule, { once: true });
+        ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (ev) {
+          window.addEventListener(ev, loadAnalytics, { once: true, passive: true });
+        });
       })();
     </script>
 </head>
