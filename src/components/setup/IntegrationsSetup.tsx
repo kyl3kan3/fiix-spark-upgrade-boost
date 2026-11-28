@@ -18,6 +18,8 @@ import {
  SelectValue 
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { IterationCw, Link, FileJson, DollarSign, Mail } from "lucide-react";
 
 interface IntegrationOption {
@@ -291,45 +293,6 @@ const IntegrationsSetup: React.FC<IntegrationsSetupProps> = ({ data, onUpdate })
  </CardFooter>
  </Card>
  )}
- </div>
- );
-};
-
-// Add Badge component since it's used but not imported
-const Badge = ({ children, className, variant = "default" }: { 
- children: React.ReactNode, 
- className?: string, 
- variant?: "default" | "outline" | "secondary" 
-}) => {
- const baseStyle = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold";
- const variantStyles = {
- default: "bg-primary text-primary-foreground",
- secondary: "bg-secondary text-secondary-foreground",
- outline: "bg-background text-foreground border"
- };
- 
- return (
- <span className={`${baseStyle} ${variantStyles[variant]} ${className || ""}`}>
- {children}
- </span>
- );
-};
-
-// Add Checkbox component since it's used but not imported
-const Checkbox = ({ id, checked, onCheckedChange }: {
- id: string,
- checked?: boolean,
- onCheckedChange?: (checked: boolean) => void
-}) => {
- return (
- <div className="flex items-center space-x-2">
- <input
- type="checkbox"
- id={id}
- checked={checked}
- onChange={(e) => onCheckedChange && onCheckedChange(e.target.checked)}
- className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
- />
  </div>
  );
 };
